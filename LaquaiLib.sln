@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaquaiLib", "LaquaiLib\LaquaiLib.csproj", "{5FD0CC75-1479-451C-8AD4-E2BABF4CABFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FD0CC75-1479-451C-8AD4-E2BABF4CABFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FD0CC75-1479-451C-8AD4-E2BABF4CABFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FD0CC75-1479-451C-8AD4-E2BABF4CABFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FD0CC75-1479-451C-8AD4-E2BABF4CABFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC5E770B-3DE7-4B90-B7E4-F8A99EBD522C}
+	EndGlobalSection
+EndGlobal
