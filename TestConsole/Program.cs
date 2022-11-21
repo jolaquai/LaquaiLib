@@ -1,22 +1,11 @@
 ﻿using LaquaiLib;
 
-namespace TestConsole
-{
-    public class Program
-    {
-        public static void Main()
-        {
-            Write(
-                Constants.LettersUppercase.Shuffle().Join(", ")
-            );
-        }
+namespace TestConsole;
 
-        public static void Write(params object[] lines)
-        {
-            foreach (object line in lines)
-            {
-                Console.WriteLine(line);
-            }
-        }
+public class Program
+{
+    public static void Main()
+    {
+        Miscellaneous.LoggingMethods.Read(new List<string>(), "");
     }
 }
