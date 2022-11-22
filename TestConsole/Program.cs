@@ -1,11 +1,15 @@
 ﻿using LaquaiLib;
 
+using static LaquaiLib.Miscellaneous;
+
 namespace TestConsole;
 
 public class Program
 {
     public static void Main()
     {
-        Miscellaneous.LoggingMethods.Read(new List<string>(), "");
+        Logger log = new();
+        log.LogInfo("fuck", "you");
+        Console.WriteLine(log);
     }
 }
