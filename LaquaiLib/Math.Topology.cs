@@ -30,7 +30,7 @@ public static partial class Math
                     for (int j = 0; j < Nodes.Count; j++)
                     {
                         Grid[i].Add(0);
-                    }
+            }
                 }
             }
 
@@ -56,6 +56,7 @@ public static partial class Math
                     Grid[node2][node1] = weight;
                 }
             }
+
             public void SetWeight(Node node1, Node node2, double weight, bool bidirectional = true) => SetWeight(Nodes.IndexOf(node1), Nodes.IndexOf(node2), weight, bidirectional);
             public void SetWeight(string node1, string node2, double weight, bool bidirectional = true) => SetWeight(Nodes.IndexOf(Nodes.Where(node => node.Name == node1).First()), Nodes.IndexOf(Nodes.Where(node => node.Name == node2).First()), weight, bidirectional);
 
