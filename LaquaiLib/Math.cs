@@ -1,14 +1,8 @@
-﻿using System.CodeDom;
-using System.Collections;
-using System.Numerics;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using System.Windows.Shapes;
+﻿using System.Collections;
 
 namespace LaquaiLib;
 
-public static class Math
+public static partial class Math
 {
     public static double Sum(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Select(fn).Sum();
     public static double Product(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Select(fn).Aggregate(1d, (seed, res) => seed *= res);
@@ -34,6 +28,8 @@ public static class Math
         }
         return 1;
     }
+
+    public static double RoundToMultiple(double n, double m) => System.Math.Round(n / m) * m;
 
     public static Func<double, double> SmoothFunctions(Func<double, double> f, Func<double, double> g, double xStart, double xEnd)
     {
@@ -143,6 +139,11 @@ public static class Math
             }
             return true;
         }
+    }
+
+    public static class Geometry
+    {
+
     }
 
     public static class VectorGeometry
@@ -274,9 +275,9 @@ public static class Math
             
             public static bool operator !=(Vector a, Vector b) => !(a == b);
 
-            public double Abs() => Sum(1, this.Dimension, n => System.Math.Pow(this[(int)n], 2));
+            public double Abs() => Sum(1, Dimension, n => System.Math.Pow(this[(int)n], 2));
 
-            public Vector Simplify() => new(this.Coordinates.Select(co => co / GCD(this.Coordinates.Select(x => (int)x).ToArray())).ToArray());
+            public Vector Simplify() => new(Coordinates.Select(co => co / GCD(Coordinates.Select(x => (int)x).ToArray())).ToArray());
 
             public IEnumerator GetEnumerator() => this;
 
@@ -308,6 +309,8 @@ public static class Math
 
                 return this == (Vector)obj;
             }
+
+            public override int GetHashCode() => HashCode.Combine(Dimension, Coordinates, _current, Current);
         }
 
         public static Vector NullVector(int d) => new(0d.Repeat(d).Select(obj => (double)obj).ToArray());
@@ -461,12 +464,5 @@ public static class Math
                     throw new ArgumentException($"Cannot determine linear dependence of {vectors.Length} vectors.", nameof(vectors));
             }
         }
-    }
-
-    public static class MatrixComputation
-    {
-        // Constructors for row mode and column mode
-
-
     }
 }

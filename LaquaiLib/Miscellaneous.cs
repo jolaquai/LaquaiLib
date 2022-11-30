@@ -1,5 +1,8 @@
 ﻿namespace LaquaiLib;
 
+#pragma warning disable CA1069 // Enums values should not be duplicated
+#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
+
 public static class Miscellaneous
 {
     public class Logger
@@ -28,7 +31,7 @@ public static class Miscellaneous
         {
             internal DateTime DateTime { get; init; }
             internal LogEntryType LogEntryTypes { get; init; }
-            internal string Tag { get; init; }
+            internal string? Tag { get; init; }
             internal object[] Logged { get; init; }
 
             internal LogEntry(DateTime dateTime, LogEntryType logEntryTypes, object[] logged)
