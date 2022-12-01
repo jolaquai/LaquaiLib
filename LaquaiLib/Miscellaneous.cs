@@ -1,4 +1,7 @@
-﻿namespace LaquaiLib;
+﻿using System.Diagnostics;
+using System.Reflection;
+
+namespace LaquaiLib;
 
 #pragma warning disable CA1069 // Enums values should not be duplicated
 #pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
@@ -7,6 +10,8 @@ public static class Miscellaneous
 {
     public class Logger
     {
+        private const string FormatString = @"MM-dd-yyyy HH-mm-ss";
+
         internal enum LogEntryType
         {
             Info =             0b0000010,
@@ -158,7 +163,7 @@ public static class Miscellaneous
         /// <returns>A string containing the line read from standard input.</returns>
         public static string Read(IEnumerable<string>? promptlines, string inputDelimiter, Func<string, bool> validator)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             string str = "";
             string ret = "";
             if (promptlines is not null)
@@ -265,7 +270,7 @@ public static class Miscellaneous
         /// <param name="color">The <see cref="ConsoleColor"/> to apply to the line.</param>
         /// <param name="towrite">The object(s) to log.</param>
         /// <exception cref="ArgumentException" />
-        public static void WriteCustom(string tag = "CUST", ConsoleColor color = ConsoleColor.White, params object[] towrite)
+        public static void WriteCustom(string tag = "CUST", bool detailed = true, ConsoleColor color = ConsoleColor.White, params object[] towrite)
         {
             if (tag.Length is not 0 and not 2 and not 4)
             {
@@ -274,17 +279,29 @@ public static class Miscellaneous
 
             tag = tag.Replace(new List<string> { "\r", "\n" }, "");
 
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = color;
-            foreach (object thing in towrite)
+            if (detailed)
             {
-                Console.WriteLine($"[{now}]{(tag.Length == 0 ? "" : (tag.Length == 2 ? $"[ {tag} ]" : $"[{tag}]"))} {thing}");
+                Console.WriteLine($"""
+                                  [{now}]{(tag.Length == 0 ? "" : (tag.Length == 2 ? $"[ {tag} ]" : $"[{tag}]"))}
+                                      From: {(new StackFrame(1).GetMethod() is not null ? new StackFrame(1).GetMethod().Name + "()" : "")}
+                                      Content:
+                                  {string.Join(Environment.NewLine, towrite.Select(obj => "        " + obj.ToString())).ForEachLine(line => "        " + line, line => !line.StartsWith("        "))}
+                                  """);
+            }
+            else
+            {
+                foreach (object thing in towrite)
+                {
+                    Console.WriteLine($"[{now}]{(tag.Length == 0 ? "" : (tag.Length == 2 ? $"[ {tag} ]" : $"[{tag}]"))} {thing}");
+                }
             }
             Console.ResetColor();
         }
         public static void WriteSuccess(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.Green;
             foreach (object thing in towrite)
             {
@@ -294,7 +311,7 @@ public static class Miscellaneous
         }
         public static void WriteFollowUpSuccess(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.Green;
             foreach (object thing in towrite)
             {
@@ -304,7 +321,7 @@ public static class Miscellaneous
         }
         public static void WriteInfo(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             foreach (object thing in towrite)
             {
                 Console.WriteLine($"[{now}][INFO] {thing}");
@@ -312,7 +329,7 @@ public static class Miscellaneous
         }
         public static void WriteFollowUpInfo(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             foreach (object thing in towrite)
             {
                 Console.WriteLine($"[{now}][ -> ] {thing}");
@@ -320,7 +337,7 @@ public static class Miscellaneous
         }
         public static void WriteWarn(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             foreach (object thing in towrite)
             {
@@ -330,7 +347,7 @@ public static class Miscellaneous
         }
         public static void WriteFollowUpWarn(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             foreach (object thing in towrite)
             {
@@ -340,7 +357,7 @@ public static class Miscellaneous
         }
         public static void WriteSoftWarn(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (object thing in towrite)
             {
@@ -350,7 +367,7 @@ public static class Miscellaneous
         }
         public static void WriteFollowUpSoftWarn(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.Yellow;
             foreach (object thing in towrite)
             {
@@ -360,7 +377,7 @@ public static class Miscellaneous
         }
         public static void WriteFail(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.Red;
             foreach (object thing in towrite)
             {
@@ -370,7 +387,7 @@ public static class Miscellaneous
         }
         public static void WriteFollowUpFail(params object[] towrite)
         {
-            string now = DateTime.Now.ToString("MM-dd-yyyy HH-mm-ss");
+            string now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = ConsoleColor.Red;
             foreach (object thing in towrite)
             {

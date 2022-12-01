@@ -18,16 +18,19 @@ public class Program
         );
 
         grid.SetWeight("A", "B", 10);
+        grid.SetWeight("A", "C",  5);
         grid.SetWeight("A", "D", 20);
 
-        grid.SetWeight("B", "C", 20);
+        grid.SetWeight("B", "C", 25);
 
-        grid.SetWeight("C", "D", 10);
+        grid.SetWeight("C", "D", 30);
 
-        var path = grid.GetPath("A", "D");
         Logger.WriteInfo(
-            string.Join(", ", path.Path),
-            path.Total
+            "A: " + grid.Star("A"),
+            "B: " + grid.Star("B"),
+            "C: " + grid.Star("C"),
+            "D: " + grid.Star("D"),
+            "f: " + grid.FullMesh()
         );
     }
 }
