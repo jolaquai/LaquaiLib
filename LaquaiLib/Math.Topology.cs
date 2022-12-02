@@ -1,9 +1,4 @@
-﻿using System.IO;
-using System.Windows.Media.Media3D;
-using System.Linq;
-using static LaquaiLib.Miscellaneous;
-
-namespace LaquaiLib;
+﻿namespace LaquaiLib;
 
 public static partial class Math
 {
@@ -37,15 +32,17 @@ public static partial class Math
 
         public class NodeGrid
         {
-            private readonly List<Node> Nodes = new();
-            private readonly List<List<double>> Grid = new();
+            private readonly List<Node> _nodes = new();
+            private readonly List<List<double>> _grid = new();
+
+            public IReadOnlyList<Node> Nodes => _nodes.ToList();
 
             public NodeGrid(params Node[] nodes)
             {
-                Nodes = nodes.ToList();
-                foreach (Node node in Nodes)
+                _nodes = nodes.ToList();
+                foreach (Node node in _nodes)
                 {
-                    List<Node> remaining = new(Nodes);
+                    List<Node> remaining = new(_nodes);
                     remaining.Remove(node);
                     if (remaining.Any(rem => rem == node))
                     {
@@ -53,49 +50,49 @@ public static partial class Math
                     }
                 }
 
-                for (int i = 0; i < Nodes.Count; i++)
+                for (int i = 0; i < _nodes.Count; i++)
                 {
-                    Grid.Add(new());
-                    for (int j = 0; j < Nodes.Count; j++)
+                    _grid.Add(new());
+                    for (int j = 0; j < _nodes.Count; j++)
                     {
-                        Grid[i].Add(0);
+                        _grid[i].Add(0);
                     }
                 }
             }
 
             public NodeGrid(IEnumerable<Node> nodes)
             {
-                Nodes = nodes.ToList();
+                _nodes = nodes.ToList();
 
-                for (int i = 0; i < Nodes.Count; i++)
+                for (int i = 0; i < _nodes.Count; i++)
                 {
-                    Grid.Add(new());
-                    for (int j = 0; j < Nodes.Count; j++)
+                    _grid.Add(new());
+                    for (int j = 0; j < _nodes.Count; j++)
                     {
-                        Grid[i].Add(0);
+                        _grid[i].Add(0);
                     }
                 }
             }
 
             public void SetWeight(int node1, int node2, double weight, bool bidirectional = true)
             {
-                Grid[node1][node2] = weight;
+                _grid[node1][node2] = weight;
                 if (bidirectional)
                 {
-                    Grid[node2][node1] = weight;
+                    _grid[node2][node1] = weight;
                 }
             }
 
-            public void SetWeight(Node node1, Node node2, double weight, bool bidirectional = true) => SetWeight(Nodes.IndexOf(node1), Nodes.IndexOf(node2), weight, bidirectional);
-            public void SetWeight(string node1, string node2, double weight, bool bidirectional = true) => SetWeight(Nodes.IndexOf(Nodes.Where(node => node.Name == node1).First()), Nodes.IndexOf(Nodes.Where(node => node.Name == node2).First()), weight, bidirectional);
+            public void SetWeight(Node node1, Node node2, double weight, bool bidirectional = true) => SetWeight(_nodes.IndexOf(node1), _nodes.IndexOf(node2), weight, bidirectional);
+            public void SetWeight(string node1, string node2, double weight, bool bidirectional = true) => SetWeight(_nodes.IndexOf(_nodes.Where(node => node.Name == node1).First()), _nodes.IndexOf(_nodes.Where(node => node.Name == node2).First()), weight, bidirectional);
 
-            public double GetWeight(int node1, int node2) => Grid[node1][node2];
-            public double GetWeight(Node node1, Node node2) => GetWeight(Nodes.IndexOf(node1), Nodes.IndexOf(node2));
-            public double GetWeight(string node1, string node2) => GetWeight(Nodes.IndexOf(Nodes.Where(node => node.Name == node1).First()), Nodes.IndexOf(Nodes.Where(node => node.Name == node2).First()));
+            public double GetWeight(int node1, int node2) => _grid[node1][node2];
+            public double GetWeight(Node node1, Node node2) => GetWeight(_nodes.IndexOf(node1), _nodes.IndexOf(node2));
+            public double GetWeight(string node1, string node2) => GetWeight(_nodes.IndexOf(_nodes.Where(node => node.Name == node1).First()), _nodes.IndexOf(_nodes.Where(node => node.Name == node2).First()));
 
-            public IEnumerable<int> GetNeighbors(int node) => Nodes.Where(n => Grid[node][Nodes.IndexOf(n)] > 0 || Grid[node][Nodes.IndexOf(n)] > 0).Select(n => Nodes.IndexOf(n));
-            public IEnumerable<int> GetNeighbors(Node node) => GetNeighbors(Nodes.IndexOf(node));
-            public IEnumerable<int> GetNeighbors(string node) => GetNeighbors(Nodes.IndexOf(Nodes.Where(n => n.Name == node).First()));
+            public IEnumerable<int> GetNeighbors(int node) => _nodes.Where(n => _grid[node][_nodes.IndexOf(n)] > 0 || _grid[node][_nodes.IndexOf(n)] > 0).Select(n => _nodes.IndexOf(n));
+            public IEnumerable<int> GetNeighbors(Node node) => GetNeighbors(_nodes.IndexOf(node));
+            public IEnumerable<int> GetNeighbors(string node) => GetNeighbors(_nodes.IndexOf(_nodes.Where(n => n.Name == node).First()));
 
             public (double Total, List<int> Path) GetPath(int start, int end)
             {
@@ -122,20 +119,20 @@ public static partial class Math
 
                 return (weights[path.Last()], path);
             }
-            public (double Total, List<int> Path) GetPath(Node start, Node end) => GetPath(Nodes.IndexOf(start), Nodes.IndexOf(end));
-            public (double Total, List<int> Path) GetPath(string start, string end) => GetPath(Nodes.IndexOf(Nodes.Where(node => node.Name == start).First()), Nodes.IndexOf(Nodes.Where(node => node.Name == end).First()));
+            public (double Total, List<int> Path) GetPath(Node start, Node end) => GetPath(_nodes.IndexOf(start), _nodes.IndexOf(end));
+            public (double Total, List<int> Path) GetPath(string start, string end) => GetPath(_nodes.IndexOf(_nodes.Where(node => node.Name == start).First()), _nodes.IndexOf(_nodes.Where(node => node.Name == end).First()));
 
             private void Dijkstra(int start, List<double> weights, List<int>? prevNodes)
             {
                 int u;
 
-                List<int> Q = new(0.Repeat(Nodes.Count).Cast<int>().ToArray());
-                for (int i = 0; i < Nodes.Count; i++)
+                List<int> Q = new(0.Repeat(_nodes.Count).Cast<int>().ToArray());
+                for (int i = 0; i < _nodes.Count; i++)
                 {
                     Q[i] = i;
                 }
 
-                for (int i = 0; i < Nodes.Count; i++)
+                for (int i = 0; i < _nodes.Count; i++)
                 {
                     weights.Insert(i, int.MaxValue);
                 }
@@ -143,7 +140,7 @@ public static partial class Math
 
                 if (prevNodes is not null)
                 {
-                    for (int i = 0; i < Nodes.Count; i++)
+                    for (int i = 0; i < _nodes.Count; i++)
                     {
                         prevNodes.Insert(i, -1);
                     }
@@ -173,7 +170,7 @@ public static partial class Math
                     {
                         if (Q.Contains(v))
                         {
-                            double alt = weights[u] + Grid[u][v];
+                            double alt = weights[u] + _grid[u][v];
                             if (alt < weights[v])
                             {
                                 weights[v] = alt;
@@ -186,17 +183,99 @@ public static partial class Math
                     }
                 }
             }
+            public (double Total, List<int> Path) TravellingSalesman(int start, bool returnHome)
+            {
+                static bool findNextPermutation(List<int> data)
+                {
+                    if (data.Count < 2)
+                    {
+                        return false;
+                    }
+                    int last = data.Count - 2;
+
+                    while (last >= 0)
+                    {
+                        if (data[last] < data[last + 1])
+                        {
+                            break;
+                        }
+                        last--;
+                    }
+
+                    if (last < 0)
+                    {
+                        return false;
+                    }
+                    int next = data.Count - 1;
+
+                    for (int i = data.Count - 1; i > last; i--)
+                    {
+                        if (data[i] > data[last])
+                        {
+                            next = i;
+                            break;
+                        }
+                    }
+
+                    (data[next], data[last]) = (data[last], data[next]);
+                    data.Reverse(last + 1, (data.Count - 1) - (last + 1) + 1);
+
+                    return true;
+                }
+
+                List<int> nodes = Enumerable.Range(0, _nodes.Count).ToList();
+                if (!returnHome)
+                {
+                    nodes.Remove(start);
+                }
+
+                List<int> visitednodes = new();
+                double min = int.MaxValue;
+                do
+                {
+                    double current = 0;
+                    int k = start;
+
+                    for (int i = 0; i < nodes.Count; i++)
+                    {
+                        current += _grid[k][nodes[i]];
+                        k = nodes[i];
+                    }
+
+                    current += _grid[k][start];
+                    if (current < min)
+                    {
+                        min = current;
+                        visitednodes = nodes.ToList();
+                        visitednodes.Insert(0, start);
+                    }
+                } while (findNextPermutation(nodes));
+
+                return (min, visitednodes);
+            }
+            public (double Total, List<int> Path) TravellingSalesman(Node start, bool returnHome) => TravellingSalesman(_nodes.IndexOf(start), returnHome);
+            public (double Total, List<int> Path) TravellingSalesman(string start, bool returnHome) => TravellingSalesman(_nodes.IndexOf(_nodes.Where(node => node.Name == start).First()), returnHome);
 
             // https://www.geeksforgeeks.org/traveling-salesman-problem-tsp-implementation/
 
             public (double Total, List<int> Path) Bus()
             {
-                return (0, new());
+                List<(double, List<int>)> possible = new();
+                for (int i = 0; i < _nodes.Count; i++)
+                {
+                    possible.Add(TravellingSalesman(i, false));
+                }
+                return possible.MinBy(possible => possible.Item1);
             }
 
             public (double Total, List<int> Path) Ring()
             {
-                return (0, new());
+                List<(double, List<int>)> possible = new();
+                for (int i = 0; i < _nodes.Count; i++)
+                {
+                    possible.Add(TravellingSalesman(i, false));
+                }
+                return possible.MinBy(possible => possible.Item1);
             }
 
             public double Star(int start)
@@ -206,13 +285,13 @@ public static partial class Math
 
                 return weights.Sum();
             }
-            public double Star(Node start) => Star(Nodes.IndexOf(start));
-            public double Star(string start) => Star(Nodes.IndexOf(Nodes.Where(node => node.Name == start).First()));
+            public double Star(Node start) => Star(_nodes.IndexOf(start));
+            public double Star(string start) => Star(_nodes.IndexOf(_nodes.Where(node => node.Name == start).First()));
 
             public double FullMesh()
             {
                 double total = 0;
-                for (int i = 0; i < Nodes.Count; i++)
+                for (int i = 0; i < _nodes.Count; i++)
                 {
                     List<double> weights = new();
                     Dijkstra(i, weights, null);
