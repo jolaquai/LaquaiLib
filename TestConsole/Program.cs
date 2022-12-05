@@ -1,32 +1,41 @@
-﻿using LaquaiLib;
+﻿using System.Runtime.InteropServices;
 
-using static LaquaiLib.Miscellaneous;
-using static LaquaiLib.Math.Topology;
+using LaquaiLib;
 using LaquaiLib.ScreenCapture;
+
+using static LaquaiLib.Math.Topology;
+using static LaquaiLib.Miscellaneous;
 
 namespace TestConsole;
 
 public class Program
 {
-    public static void Main()
+    enum MouseEvent : uint
     {
-        ScreenCapture capture = new();
-        capture.Captured += (sender, e) =>
+        MOUSEEVENTF_LEFTDOWN = 0x02,
+        MOUSEEVENTF_LEFTUP = 0x04,
+        MOUSEEVENTF_RIGHTDOWN = 0x08,
+        MOUSEEVENTF_RIGHTUP = 0x10
+    }
+
+    public async static Task Main()
+    {
+
+
+        while (false)
         {
-            string formatString = @"HH\:mm\:ss.ffffff";
-            Logger.WriteInfo(
-                "Capture created at: " + e.CaptureTime.ToString(formatString),
-                "Event received at: " + DateTime.Now.ToString(formatString),
-                "Bitmap size: " + e.Bitmap.Size.ToString()
-            );
-            Console.WriteLine();
-        };
+            
+        }
 
-        DateTime start = DateTime.Now;
-        capture.Start();
-
-        SpinWait.SpinUntil(() => (DateTime.Now - start).TotalSeconds > 5000);
-        capture.Stop();
+        await Task.Run(() =>
+        {
+            while (true)
+            {
+                Console.Title = $"{System.Math.Round(GC.GetTotalMemory(false) / System.Math.Pow(1024, 2), 3)} MB";
+                Thread.Sleep(100);
+                GC.Collect(0);
+            }
+        });
     }
 
     public static void NodeGridTest()
@@ -39,7 +48,7 @@ public class Program
         );
 
         grid.SetWeight("A", "B", 10);
-        grid.SetWeight("A", "C",  5);
+        grid.SetWeight("A", "C", 5);
         grid.SetWeight("A", "D", 20);
 
         grid.SetWeight("B", "C", 25);

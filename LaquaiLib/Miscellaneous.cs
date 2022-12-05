@@ -10,7 +10,7 @@ public static class Miscellaneous
 {
     public class Logger
     {
-        private const string FormatString = @"MM-dd-yyyy HH-mm-ss";
+        public static string FormatString { get; set; } = @"MM-dd-yyyy HH:mm:ss.fffffff";
 
         internal enum LogEntryType
         {
