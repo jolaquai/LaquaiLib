@@ -14,30 +14,42 @@ public static class Miscellaneous
 
         internal enum LogEntryType
         {
-            Info =             0b0000010,
-            SoftWarn =         0b0000100,
-            Warn =             0b0001000,
-            Error =            0b0010000,
-            Fail =             0b0010000,
-            Success =          0b0100000,
-            Custom =           0b1000000,
-            FollowUp =         0b0000001,
-            FollowUpInfo =     Info | FollowUp,
+            Info = 0b0000010,
+            SoftWarn = 0b0000100,
+            Warn = 0b0001000,
+            Error = 0b0010000,
+            Fail = 0b0010000,
+            Success = 0b0100000,
+            Custom = 0b1000000,
+            FollowUp = 0b0000001,
+            FollowUpInfo = Info | FollowUp,
             FollowUpSoftWarn = SoftWarn | FollowUp,
-            FollowUpWarn =     Warn | FollowUp,
-            FollowUpError =    Error | FollowUp,
-            FollowUpFail =     Fail | FollowUp,
-            FollowUpSuccess =  Success | FollowUp,
+            FollowUpWarn = Warn | FollowUp,
+            FollowUpError = Error | FollowUp,
+            FollowUpFail = Fail | FollowUp,
+            FollowUpSuccess = Success | FollowUp,
         }
 
         private List<LogEntry> Entries { get; } = new();
 
         internal class LogEntry
         {
-            internal DateTime DateTime { get; init; }
-            internal LogEntryType LogEntryTypes { get; init; }
-            internal string? Tag { get; init; }
-            internal object[] Logged { get; init; }
+            internal DateTime DateTime
+            {
+                get; init;
+            }
+            internal LogEntryType LogEntryTypes
+            {
+                get; init;
+            }
+            internal string? Tag
+            {
+                get; init;
+            }
+            internal object[] Logged
+            {
+                get; init;
+            }
 
             internal LogEntry(DateTime dateTime, LogEntryType logEntryTypes, object[] logged)
             {
@@ -84,7 +96,7 @@ public static class Miscellaneous
                 }
                 else if ((LogEntryTypes & LogEntryType.Custom) == LogEntryType.Custom)
                 {
-                    str += Tag.Length switch
+                    str += Tag!.Length switch
                     {
                         4 => $"[{Tag}] ",
                         2 => $"[ {Tag} ] "
@@ -155,41 +167,166 @@ public static class Miscellaneous
         }
 
         /// <summary>
-        /// Reads a line of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+        /// Reads lines of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
         /// </summary>
+        /// <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
         /// <param name="promptlines">The lines of the prompt to display.</param>
         /// <param name="inputDelimiter">The input delimiter to display.</param>
         /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-        /// <returns>A string containing the line read from standard input.</returns>
-        public static string Read(IEnumerable<string>? promptlines, string inputDelimiter, Func<string, bool> validator)
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(IEnumerable<string> promptlines, string inputDelimiter, Func<string, bool> validator)
         {
             string now = DateTime.Now.ToString(FormatString);
+            List<string> returnList = new();
             string str = "";
             string ret = "";
-            if (promptlines is not null)
+            if (promptlines is not null && promptlines.Any() && !promptlines.All(x => x == ""))
             {
-                if (promptlines.Any() && !promptlines.Any(x => x == ""))
+                foreach (string promptline in promptlines)
                 {
-                    foreach (string promptline in promptlines)
+                    str = $"[{now}][READ] {promptline}";
+                    Console.WriteLine(str);
+                }
+                while (true)
+                {
+                    Console.Write(inputDelimiter.PadLeft(str.Length - (promptlines.Any() ? promptlines.Last() : "").Length));
+                    ret = Console.ReadLine() ?? "";
+                    if (validator(ret))
                     {
-                        str = $"[{now}][READ] {promptline}";
-                        Console.WriteLine(str);
+                        returnList.Add(ret);
                     }
-                    while (ret == "" || !validator(ret))
+                    else
                     {
-                        Console.Write(" ".Repeat(str.Length - (promptlines.Any() ? promptlines.Last() : "").Length - inputDelimiter.Length) + inputDelimiter);
-                        ret = Console.ReadLine() ?? "";
+                        //WriteInfo("Input terminated");
+                        return returnList.Select();
                     }
                 }
             }
             else
             {
                 str = $"[{now}][READ] " + inputDelimiter;
-                while (ret == "" || !validator(ret))
+                while (true)
                 {
                     Console.Write(str);
                     ret = Console.ReadLine() ?? "";
+                    if (validator(ret))
+                    {
+                        returnList.Add(ret);
+                    }
+                    else
+                    {
+                        //WriteInfo("Input terminated");
+                        return returnList.Select();
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+        /// </summary>
+        /// <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+        /// <param name="prompt">The prompt to display.</param>
+        /// <param name="inputDelimiter">The input delimiter to display.</param>
+        /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(string prompt, string inputDelimiter, Func<string, bool> validator) => ReadMultiple(new List<string>() { prompt }, inputDelimiter, validator);
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/> and a specified <paramref name="inputDelimiter" /> until blank input is received.
+        /// </summary>
+        /// <param name="promptlines">The lines of the prompt to display.</param>
+        /// <param name="inputDelimiter">The input delimiter to display.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(IEnumerable<string> promptlines, string inputDelimiter) => ReadMultiple(promptlines, inputDelimiter, x => x != "");
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with a specified <paramref name="prompt"/> and a specified <paramref name="inputDelimiter" /> until blank input is received.
+        /// </summary>
+        /// <param name="prompt">The prompt to display.</param>
+        /// <param name="inputDelimiter">The input delimiter to display.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(string prompt, string inputDelimiter) => ReadMultiple(new List<string>() { prompt }, inputDelimiter, x => x != "");
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+        /// </summary>
+        /// <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+        /// <param name="prompt">The prompt to display.</param>
+        /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(string prompt, Func<string, bool> validator) => ReadMultiple(new List<string>() { prompt }, ">> ", validator);
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+        /// </summary>
+        /// <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+        /// <param name="promptlines">The lines of the prompt to display.</param>
+        /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(IEnumerable<string> promptlines, Func<string, bool> validator) => ReadMultiple(promptlines, ">> ", validator);
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting any non-blank input.
+        /// </summary>
+        /// <param name="promptlines">The lines of the prompt to display.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(IEnumerable<string> promptlines) => ReadMultiple(promptlines, ">> ", x => x != "");
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with no prompt and the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+        /// </summary>
+        /// <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+        /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(Func<string, bool> validator) => ReadMultiple(new List<string>(), ">> ", validator);
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with a specified <paramref name="prompt"/> and the default input delimiter until blank input is received.
+        /// </summary>
+        /// <param name="prompt">The prompt to display.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple(string prompt) => ReadMultiple(new List<string>() { prompt }, ">> ", x => x != "");
+
+        /// <summary>
+        /// Reads lines of input from the <see cref="Console"/> with no prompt and the default input delimiter until blank input is received.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
+        public static IEnumerable<string> ReadMultiple() => ReadMultiple(new List<string>(), ">> ", x => x != "");
+
+        /// <summary>
+        /// Reads a line of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+        /// </summary>
+        /// <param name="promptlines">The lines of the prompt to display.</param>
+        /// <param name="inputDelimiter">The input delimiter to display.</param>
+        /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+        /// <returns>A string containing the line read from standard input.</returns>
+        public static string Read(IEnumerable<string> promptlines, string inputDelimiter, Func<string, bool> validator)
+        {
+            string now = DateTime.Now.ToString(FormatString);
+            string str = "";
+            string ret = "";
+            if (promptlines is not null && promptlines.Any() && !promptlines.All(x => x == ""))
+            {
+                foreach (string promptline in promptlines)
+                {
+                    str = $"[{now}][READ] {promptline}";
+                    Console.WriteLine(str);
+                }
+                do
+                {
+                    Console.Write(inputDelimiter.PadLeft(str.Length - (promptlines.Any() ? promptlines.Last() : "").Length));
+                    ret = Console.ReadLine() ?? "";
+                } while (!validator(ret));
+            }
+            else
+            {
+                str = $"[{now}][READ] " + inputDelimiter;
+                do
+                {
+                    Console.Write(str);
+                    ret = Console.ReadLine() ?? "";
+                } while (!validator(ret));
             }
 
             return ret;
@@ -210,7 +347,7 @@ public static class Miscellaneous
         /// <param name="promptlines">The lines of the prompt to display.</param>
         /// <param name="inputDelimiter">The input delimiter to display.</param>
         /// <returns>A string containing the line read from standard input.</returns>
-        public static string Read(IEnumerable<string>? promptlines, string inputDelimiter) => Read(promptlines, inputDelimiter, x => x != "");
+        public static string Read(IEnumerable<string> promptlines, string inputDelimiter) => Read(promptlines, inputDelimiter, x => x != "");
 
         /// <summary>
         /// Reads a line of input from the <see cref="Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting any non-blank input.
@@ -221,7 +358,7 @@ public static class Miscellaneous
         public static string Read(string prompt, string inputDelimiter) => Read(new List<string>() { prompt }, inputDelimiter, x => x != "");
 
         /// <summary>
-        /// Reads a line of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting any non-blank input. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+        /// Reads a line of input from the <see cref="Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting any non-blank input. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
         /// </summary>
         /// <param name="prompt">The prompt to display.</param>
         /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
@@ -234,14 +371,14 @@ public static class Miscellaneous
         /// <param name="promptlines">The lines of the prompt to display.</param>
         /// <param name="validator">A validator function to test whether the collected input should be accepted.</param>
         /// <returns>A string containing the line read from standard input.</returns>
-        public static string Read(IEnumerable<string>? promptlines, Func<string, bool> validator) => Read(promptlines, ">> ", validator);
+        public static string Read(IEnumerable<string> promptlines, Func<string, bool> validator) => Read(promptlines, ">> ", validator);
 
         /// <summary>
         /// Reads a line of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting any non-blank input.
         /// </summary>
         /// <param name="promptlines">The lines of the prompt to display.</param>
         /// <returns>A string containing the line read from standard input.</returns>
-        public static string Read(IEnumerable<string>? promptlines) => Read(promptlines, ">> ", x => x != "");
+        public static string Read(IEnumerable<string> promptlines) => Read(promptlines, ">> ", x => x != "");
 
         /// <summary>
         /// Reads a line of input from the <see cref="Console"/> with no prompt, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function.

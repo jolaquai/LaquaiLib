@@ -1,7 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-using LaquaiLib;
-using LaquaiLib.ScreenCapture;
+﻿using LaquaiLib;
 
 using static LaquaiLib.Math.Topology;
 using static LaquaiLib.Miscellaneous;
@@ -10,30 +7,78 @@ namespace TestConsole;
 
 public class Program
 {
-    enum MouseEvent : uint
+    public static void Main()
     {
-        MOUSEEVENTF_LEFTDOWN = 0x02,
-        MOUSEEVENTF_LEFTUP = 0x04,
-        MOUSEEVENTF_RIGHTDOWN = 0x08,
-        MOUSEEVENTF_RIGHTUP = 0x10
+        
     }
 
-    public async static Task Main()
+    public async static Task asd()
     {
+        Dictionary<string, List<string>> groups = new()
+        {
+            {
+                "Predator",
+                new()
+                {
+                    "Predator",
+                    "Predator 2",
+                    "Predators",
+                    "The Predator",
+                    "Prey"
+                }
+            },
+            {
+                "Alien",
+                new()
+                {
+                    "Prometheus",
+                    "Alien: Covenant",
+                    "Alien",
+                    "Aliens",
+                    "Alien 3",
+                    "Alien Resurrection"
+                }
+            },
+            {
+                "Alien vs. Predator",
+                new()
+                {
+                    "Alien vs. Predator",
+                    "Alien vs. Predator - Requiem"
+                }
+            }
+        };
+        Console.WriteLine(string.Join("\r\n\r\n", groups.Select(kv =>
+        {
+            return $"""
+                   [{kv.Key.ToUpper()}]
+                   {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.PadRight(kv.Value.Select(movie => movie.Length).Max() + 4)}S"))}
+                   """;
+        }
+        )));
 
+        return;
 
         while (false)
         {
-            
+
         }
 
         await Task.Run(() =>
         {
             while (true)
             {
-                Console.Title = $"{System.Math.Round(GC.GetTotalMemory(false) / System.Math.Pow(1024, 2), 3)} MB";
+                long mem = GC.GetTotalMemory(false);
+                double log = System.Math.Floor(System.Math.Log(mem, 1024));
+                Console.Title = $"{System.Math.Round((double)(mem / System.Math.Pow(1024, log)), 3)} {log switch
+                {
+                    0 => "B",
+                    1 => "KB",
+                    2 => "MB",
+                    3 => "GB",
+                    _ => "??"
+                }}";
                 Thread.Sleep(100);
-                GC.Collect(0);
             }
         });
     }

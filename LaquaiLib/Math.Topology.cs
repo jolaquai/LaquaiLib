@@ -6,7 +6,10 @@ public static partial class Math
     {
         public class Node
         {
-            public string Name { get; init; }
+            public string Name
+            {
+                get; init;
+            }
 
             public Node(string name) => Name = name;
 
@@ -59,7 +62,6 @@ public static partial class Math
                     }
                 }
             }
-
             public NodeGrid(IEnumerable<Node> nodes)
             {
                 _nodes = nodes.ToList();
@@ -82,7 +84,6 @@ public static partial class Math
                     _grid[node2][node1] = weight;
                 }
             }
-
             public void SetWeight(Node node1, Node node2, double weight, bool bidirectional = true) => SetWeight(_nodes.IndexOf(node1), _nodes.IndexOf(node2), weight, bidirectional);
             public void SetWeight(string node1, string node2, double weight, bool bidirectional = true) => SetWeight(_nodes.IndexOf(_nodes.Where(node => node.Name == node1).First()), _nodes.IndexOf(_nodes.Where(node => node.Name == node2).First()), weight, bidirectional);
 
@@ -183,6 +184,7 @@ public static partial class Math
                     }
                 }
             }
+
             public (double Total, List<int> Path) TravellingSalesman(int start, bool returnHome)
             {
                 static bool findNextPermutation(List<int> data)
@@ -288,7 +290,7 @@ public static partial class Math
             public double Star(Node start) => Star(_nodes.IndexOf(start));
             public double Star(string start) => Star(_nodes.IndexOf(_nodes.Where(node => node.Name == start).First()));
 
-            public double FullMesh()
+            public (double Total, int CableCount) FullMesh()
             {
                 double total = 0;
                 for (int i = 0; i < _nodes.Count; i++)
@@ -300,7 +302,28 @@ public static partial class Math
 
                     total += weights.Sum();
                 }
-                return total;
+                return (total, CablesFromNodes(_nodes.Count));
+            }
+
+            public static int CablesFromNodes(int nodes) => nodes * (nodes - 1) / 2;
+
+            public static int NodesFromCables(int cables)
+            {
+                try
+                {
+                    return (int)((1 + System.Math.Sqrt(1 + 8 * cables)) / 2);
+                }
+                catch
+                {
+                    try
+                    {
+                        return (int)((1 - System.Math.Sqrt(1 + 8 * cables)) / 2);
+                    }
+                    catch
+                    {
+                        return -1;
+                    }
+                }
             }
         }
     }
