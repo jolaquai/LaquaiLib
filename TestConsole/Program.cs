@@ -1,4 +1,6 @@
-﻿using LaquaiLib;
+﻿using System.IO;
+
+using LaquaiLib;
 
 using static LaquaiLib.Math.Topology;
 using static LaquaiLib.Miscellaneous;
@@ -54,8 +56,7 @@ public class Program
                    [{kv.Key.ToUpper()}]
                    {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.PadRight(kv.Value.Select(movie => movie.Length).Max() + 4)}S"))}
                    """;
-        }
-        )));
+        })));
 
         return;
 
