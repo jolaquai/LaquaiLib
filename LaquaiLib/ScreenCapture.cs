@@ -1,19 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Printing;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-
-using Microsoft.Win32;
 
 using Timer = System.Threading.Timer;
 
@@ -59,10 +45,12 @@ namespace LaquaiLib.ScreenCapture
             }
         }
 
+        private static readonly double[] _resolutionScales = MonitorEnum.EnumerateScales();
+
         /// <summary>
-        /// The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set, such as when capturing a monitor or when using 
+        /// The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set.
         /// </summary>
-        public static double[] ResolutionScales => MonitorEnum.EnumerateScales();
+        public static double[] ResolutionScales => _resolutionScales;
 
         /// <summary>
         /// <para>Captures a region of the screen.</para>
@@ -153,8 +141,7 @@ namespace LaquaiLib.ScreenCapture
         }
 
         /// <summary>
-        /// <para>Occurs when this <see cref="ScreenCapture"/> captures the configured region.</para>
-        /// <para>Is not raised if <see cref="Predicate"/> returns <c>false</c>.</para>
+        /// Occurs when this <see cref="ScreenCapture"/> captures the configured region, but only if <see cref="Predicate"/> is satisfied.
         /// </summary>
         public event EventHandler<ScreenCaptureEventArgs>? Captured;
 
