@@ -7,12 +7,12 @@ using Timer = System.Threading.Timer;
 
 namespace LaquaiLib.ScreenCapture
 {
-    public class ScreenCapture
+    public partial class ScreenCapture
     {
-        private class MonitorEnum
+        private partial class MonitorEnum
         {
-            [DllImport("shcore.dll")]
-            static extern nint GetScaleFactorForMonitor([In] nint hmonitor, [Out] out nint deviceScaleFactor);
+            [LibraryImport("shcore.dll")]
+            private static partial nint GetScaleFactorForMonitor(nint hmonitor, out nint deviceScaleFactor);
 
             [StructLayout(LayoutKind.Sequential)]
             private struct Rect
@@ -25,8 +25,9 @@ namespace LaquaiLib.ScreenCapture
 
             delegate bool MonitorEnumProc(IntPtr hDesktop, IntPtr hdc, ref Rect pRect, int dwData);
 
-            [DllImport("user32.dll")]
-            static extern bool EnumDisplayMonitors(nint hdc, nint lpRect, MonitorEnumProc callback, int dwData);
+            [LibraryImport("user32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            private static partial bool EnumDisplayMonitors(nint hdc, nint lpRect, MonitorEnumProc callback, int dwData);
 
             public static double[] EnumerateScales()
             {
