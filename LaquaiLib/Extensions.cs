@@ -2,7 +2,7 @@
 using System.Windows.Interop;
 using System.Windows.Media;
 
-namespace LaquaiLib;
+namespace LaquaiLib.Extensions;
 
 public static class IEnumerableExtensions
 {
@@ -41,6 +41,13 @@ public static class ArrayExtensions
 
 public static class DictionaryExtensions
 {
+    /// <summary>
+    /// Creates an inverted <see cref="Dictionary{TKey, TValue}"/>, where the original keys are now the values and vice versa.
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
     public static Dictionary<TValue, TKey> Invert<TKey, TValue>(this Dictionary<TKey, TValue> source)
         where TKey : notnull
         where TValue : notnull
@@ -60,17 +67,39 @@ public static class DictionaryExtensions
 public static class StreamExtensions
 {
     /// <summary>
-    /// Reads all bytes available until the end of the stream.
+    /// Reads all characters from the current position to the end of the stream.
     /// </summary>
-    /// <param name="source"></param>
-    /// <returns></returns>
-    public static IEnumerable<byte> ReadToEnd(this Stream source)
+    /// <returns>The rest of the stream as a String, from the current position to the end.</returns>
+    public static string ReadToEnd(this Stream stream)
     {
-        int read = -2;
-        while (read != -1)
+        using (StreamReader sr = new(stream))
         {
-            read = source.ReadByte();
-            yield return (byte)read;
+            return sr.ReadToEnd();
+        }
+    }
+
+    /// <summary>
+    /// Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous read operation.</returns>
+    public static async Task<string> ReadToEndAsync(this Stream stream)
+    {
+        using (StreamReader sr = new(stream))
+        {
+            return await sr.ReadToEndAsync();
+        }
+    }
+
+    /// <summary>
+    /// Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
+    /// </summary>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous read operation.</returns>
+    public static async Task<string> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken)
+    {
+        using (StreamReader sr = new(stream))
+        {
+            return await sr.ReadToEndAsync(cancellationToken);
         }
     }
 }
@@ -85,9 +114,9 @@ public static class IconExtensions
     public static ImageSource ToImageSource(this Icon icon) => Imaging.CreateBitmapSourceFromHIcon(icon.Handle, System.Windows.Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
 }
 
-public static class ObjectExtensions
+public static class GenericExtensions
 {
-    public static IEnumerable<object> Repeat(this object source, int count)
+    public static IEnumerable<T> Repeat<T>(this T source, int count)
     {
         for (int i = 0; i < count; i++)
         {

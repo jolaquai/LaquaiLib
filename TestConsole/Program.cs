@@ -11,7 +11,27 @@ public class Program
 {
     public static void Main()
     {
-        
+        Logger.WriteAsTable(new List<List<string>>()
+        {
+            new()
+            {
+                "Test",
+                "with",
+                "rows",
+                "that"
+            },
+            new()
+            {
+                "contain",
+                "non-equal"
+            },
+            new()
+            {
+                "amounts",
+                "of",
+                "values"
+            }
+        }, Logger.TableInputMode.Columns);
     }
 
     public async static Task asd()
@@ -87,10 +107,10 @@ public class Program
     public static void NodeGridTest()
     {
         NodeGrid grid = new(
-            new Node("A"),
-            new Node("B"),
-            new Node("C"),
-            new Node("D")
+            new("A"),
+            new("B"),
+            new("C"),
+            new("D")
         );
 
         grid.SetWeight("A", "B", 10);

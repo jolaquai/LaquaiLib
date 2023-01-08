@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib;
+﻿using LaquaiLib.Extensions;
+
+namespace LaquaiLib;
 
 public static partial class Math
 {

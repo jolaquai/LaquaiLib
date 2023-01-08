@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using LaquaiLib.Extensions;
+
+using System.CodeDom;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace LaquaiLib;
@@ -12,16 +15,17 @@ public static class Miscellaneous
     {
         public static string FormatString { get; set; } = @"MM-dd-yyyy HH:mm:ss.fffffff";
 
+        [Flags]
         internal enum LogEntryType
         {
-            Info = 0b0000010,
-            SoftWarn = 0b0000100,
-            Warn = 0b0001000,
-            Error = 0b0010000,
-            Fail = 0b0010000,
-            Success = 0b0100000,
-            Custom = 0b1000000,
-            FollowUp = 0b0000001,
+            Info = 0b000_0010,
+            SoftWarn = 0b000_0100,
+            Warn = 0b000_1000,
+            Error = 0b001_0000,
+            Fail = 0b001_0000,
+            Success = 0b010_0000,
+            Custom = 0b100_0000,
+            FollowUp = 0b000_0001,
             FollowUpInfo = Info | FollowUp,
             FollowUpSoftWarn = SoftWarn | FollowUp,
             FollowUpWarn = Warn | FollowUp,
@@ -74,27 +78,27 @@ public static class Miscellaneous
             public override string ToString()
             {
                 string str = $"[{DateTime:dd-MM-yyyy HH-mm-ss}]";
-                if ((LogEntryTypes & LogEntryType.FollowUp) == LogEntryType.FollowUp)
+                if (LogEntryTypes.HasFlag(LogEntryType.FollowUp))
                 {
                     str += "[ -> ] ";
                 }
-                else if ((LogEntryTypes & LogEntryType.Info) == LogEntryType.Info)
+                else if (LogEntryTypes.HasFlag(LogEntryType.Info))
                 {
                     str += "[INFO] ";
                 }
-                else if ((LogEntryTypes & LogEntryType.SoftWarn) == LogEntryType.SoftWarn)
+                else if (LogEntryTypes.HasFlag(LogEntryType.SoftWarn))
                 {
                     str += "[SWRN] ";
                 }
-                else if ((LogEntryTypes & LogEntryType.Warn) == LogEntryType.Warn)
+                else if (LogEntryTypes.HasFlag(LogEntryType.Warn))
                 {
                     str += "[WARN] ";
                 }
-                else if ((LogEntryTypes & LogEntryType.Error) == LogEntryType.Error)
+                else if (LogEntryTypes.HasFlag(LogEntryType.Error))
                 {
                     str += "[FAIL] ";
                 }
-                else if ((LogEntryTypes & LogEntryType.Custom) == LogEntryType.Custom)
+                else if (LogEntryTypes.HasFlag(LogEntryType.Custom))
                 {
                     str += Tag!.Length switch
                     {
@@ -403,7 +407,8 @@ public static class Miscellaneous
         /// <summary>
         /// Writes a log line with custom attributes to the console.
         /// </summary>
-        /// <param name="tag">The 0, 2 or 4-length tag to apply to the line. 2-length tags are padded with spaces. An empty string (0-length tag) means the tag is omitted entirely.</param>
+        /// <param name="tag">The 0, 2 or 4-length tag to apply to the line. 2-length tags are padded with a space on either side. An empty string (0-length tag) means the tag is omitted entirely.</param>
+        /// <param name="detailed">Whether to show extensive information about how this method was called in addition to the objects to log.</param>
         /// <param name="color">The <see cref="ConsoleColor"/> to apply to the line.</param>
         /// <param name="towrite">The object(s) to log.</param>
         /// <exception cref="ArgumentException" />
@@ -436,101 +441,141 @@ public static class Miscellaneous
             }
             Console.ResetColor();
         }
-        public static void WriteSuccess(params object[] towrite)
+
+        /// <summary>
+        /// Writes log lines to the <see cref="Console"/> as "success" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteSuccess(params object[] towrite) => WriteCustom("SUCC", false, ConsoleColor.Green, towrite);
+        /// <summary>
+        /// Writes log lines to the console as follow-up information to "success" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteFollowUpSuccess(params object[] towrite) => WriteCustom("->", false, ConsoleColor.Green, towrite);
+
+        /// <summary>
+        /// Writes log lines to the <see cref="Console"/> as general "information" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteInfo(params object[] towrite) => WriteCustom("INFO", false, ConsoleColor.White, towrite);
+        /// <summary>
+        /// Writes log lines to the console as follow-up information to general "information" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteFollowUpInfo(params object[] towrite) => WriteCustom("->", false, ConsoleColor.White, towrite);
+
+        /// <summary>
+        /// Writes log lines to the <see cref="Console"/> as "warning" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteWarn(params object[] towrite) => WriteCustom("WARN", false, ConsoleColor.DarkYellow, towrite);
+        /// <summary>
+        /// Writes log lines to the console as follow-up information to "warning" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteFollowUpWarn(params object[] towrite) => WriteCustom("->", false, ConsoleColor.DarkYellow, towrite);
+
+        /// <summary>
+        /// Writes log lines to the <see cref="Console"/> as "soft warning" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteSoftWarn(params object[] towrite) => WriteCustom("SWRN", false, ConsoleColor.Yellow, towrite);
+        /// <summary>
+        /// Writes log lines to the console as follow-up information to "soft warning" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteFollowUpSoftWarn(params object[] towrite) => WriteCustom("->", false, ConsoleColor.Yellow, towrite);
+
+        /// <summary>
+        /// Writes log lines to the <see cref="Console"/> as "failure" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteFail(params object[] towrite) => WriteCustom("FAIL", false, ConsoleColor.Red, towrite);
+        /// <summary>
+        /// Writes log lines to the console as follow-up information to "failure" messages.
+        /// </summary>
+        /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
+        public static void WriteFollowUpFail(params object[] towrite) => WriteCustom("->", false, ConsoleColor.Red, towrite);
+
+        public enum TableInputMode
         {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.Green;
-            foreach (object thing in towrite)
-            {
-                Console.WriteLine($"[{now}][SUCC] {thing}");
-            }
-            Console.ResetColor();
+            /// <summary>
+            /// Indicates that the associated value contains rows of data.
+            /// </summary>
+            Rows,
+            /// <summary>
+            /// Indicates that the associated value contains columns of data.
+            /// </summary>
+            Columns
         }
-        public static void WriteFollowUpSuccess(params object[] towrite)
+
+        /// <summary>
+        /// Writes an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/> of <see cref="object"/> to the <see cref="Console"/> by formatting the contained values to look like a table using the specified <paramref name="tableInputMode"/>.
+        /// </summary>
+        /// <param name="input">The collections of values to write.</param>
+        /// <param name="tableInputMode">How the <paramref name="input"/> value is to be interpreted as indicated by a <see cref="TableInputMode"/> value.</param>
+        public static void WriteAsTable(IEnumerable<IEnumerable<object>> input, TableInputMode tableInputMode)
         {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.Green;
-            foreach (object thing in towrite)
+            #region Enumerate and invert input data ("columns") to use as "rows"
+            int maxInnerEnumerableCount = input.Max(innerEnumerable => innerEnumerable.Count());
+
+            // Enumerate input into a List<List<string>> while ensuring that every row and column has an equal Count
+            List<List<string>> original = input.Select(innerEnumerable =>
             {
-                Console.WriteLine($"[{now}][ -> ] {thing}");
-            }
-            Console.ResetColor();
-        }
-        public static void WriteInfo(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            foreach (object thing in towrite)
+                List<object> existingInner = innerEnumerable.ToList();
+
+                List<string> newInner = new();
+                for (int i = 0; i < maxInnerEnumerableCount; i++)
+                {
+                    newInner.Add(
+                        i < existingInner.Count
+                        ? existingInner[i] is null || existingInner[i].ToString() is null ? "<null>" : existingInner[i].ToString()!
+                        : ""
+                    );
+                }
+                return newInner;
+            }).ToList();
+
+            // Invert columns to use as rows
+            List<List<string>> inverted =
+                Enumerable.Range(0, maxInnerEnumerableCount)
+                          .Select(i => new List<string>())
+                          .ToList();
+
+            foreach (List<string> innerEnumerable in original)
             {
-                Console.WriteLine($"[{now}][INFO] {thing}");
+                for (int i = 0; i < maxInnerEnumerableCount; i++)
+                {
+                    inverted[i].Add(i < innerEnumerable.Count ? innerEnumerable[i] : "");
+                }
             }
-        }
-        public static void WriteFollowUpInfo(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            foreach (object thing in towrite)
+            #endregion
+
+            // Output
+            if (tableInputMode == TableInputMode.Rows)
             {
-                Console.WriteLine($"[{now}][ -> ] {thing}");
+                // Determine the needed width of each column
+                List<int> columnWidths = inverted.Select(innerEnumerable => innerEnumerable.Max(str => str.Length)).ToList();
+                foreach (List<string> column in original)
+                {
+                    Console.WriteLine(string.Join(" | ", column.Select((cell, i) => cell.PadRight(columnWidths[i]))));
+                }
             }
-        }
-        public static void WriteWarn(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            foreach (object thing in towrite)
+            else
             {
-                Console.WriteLine($"[{now}][WARN] {thing}");
+                // Determine the needed width of each column
+                List<int> columnWidths = original.Select(innerEnumerable => innerEnumerable.Max(str => str.Length)).ToList();
+                foreach (List<string> row in inverted)
+                {
+                    Console.WriteLine(string.Join(" | ", row.Select((cell, i) => cell.PadRight(columnWidths[i]))));
+                }
             }
-            Console.ResetColor();
         }
-        public static void WriteFollowUpWarn(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            foreach (object thing in towrite)
-            {
-                Console.WriteLine($"[{now}][ -> ] {thing}");
-            }
-            Console.ResetColor();
-        }
-        public static void WriteSoftWarn(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            foreach (object thing in towrite)
-            {
-                Console.WriteLine($"[{now}][SWRN] {thing}");
-            }
-            Console.ResetColor();
-        }
-        public static void WriteFollowUpSoftWarn(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            foreach (object thing in towrite)
-            {
-                Console.WriteLine($"[{now}][ -> ] {thing}");
-            }
-            Console.ResetColor();
-        }
-        public static void WriteFail(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.Red;
-            foreach (object thing in towrite)
-            {
-                Console.WriteLine($"[{now}][FAIL] {thing}");
-            }
-            Console.ResetColor();
-        }
-        public static void WriteFollowUpFail(params object[] towrite)
-        {
-            string now = DateTime.Now.ToString(FormatString);
-            Console.ForegroundColor = ConsoleColor.Red;
-            foreach (object thing in towrite)
-            {
-                Console.WriteLine($"[{now}][ -> ] {thing}");
-            }
-            Console.ResetColor();
-        }
+
+        /// <summary>
+        /// Writes an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/> of <see cref="object"/> to the <see cref="Console"/> by formatting the contained values to look like a table, interpreted as rows of values.
+        /// </summary>
+        /// <param name="input">The collections of values to write.</param>
+        public static void WriteAsTable(IEnumerable<IEnumerable<object>> input) => WriteAsTable(input, TableInputMode.Rows);
     }
 }

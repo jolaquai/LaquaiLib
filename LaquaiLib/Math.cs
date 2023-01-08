@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using LaquaiLib.Extensions;
 
 namespace LaquaiLib;
 
@@ -29,33 +29,64 @@ public static partial class Math
         return 1;
     }
 
-    public static double RoundToMultiple(double n, double m) => System.Math.Round(n / m) * m;
+    /// <summary>
+    /// Rounds a <paramref name="number"/> to the nearest multiple of a given number <paramref name="multiple"/>.
+    /// </summary>
+    /// <param name="number">The number to round.</param>
+    /// <param name="multiple">The number a multiple of which <paramref name="number"/> is to be rounded to.</param>
+    /// <returns><paramref name="number"/> rounded to a multiple of <paramref name="multiple"/>.</returns>
+    public static double RoundToMultiple(double number, double multiple = 1) => System.Math.Round(number / multiple) * multiple;
 
-    public static Func<double, double> SmoothFunctions(Func<double, double> f, Func<double, double> g, double xStart, double xEnd)
+    /// <summary>
+    /// Smooths two functions over a given interval using a custom smoothing function.
+    /// </summary>
+    /// <param name="f">The first function to use when constructing the output function.</param>
+    /// <param name="g">The second function to use when constructing the output function.</param>
+    /// <param name="smoothFunc">The custom smoothing function to use.</param>
+    /// <param name="xStart">The start of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+    /// <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+    /// <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of <paramref name="smoothFunc"/> that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
+    /// <exception cref="ArgumentException"><paramref name="xStart"/> was greater than <paramref name="xEnd"/>.</exception>
+    public static Func<double, double> SmoothFunctions(Func<double, double> f, Func<double, double> g, Func<double, double> smoothFunc, double xStart = 0, double xEnd = 1)
     {
-        double smoothf(double x)
+        if (xEnd < xStart)
         {
-            if (x > xEnd)
-            {
-                return 1;
-            }
-            else if (x < xStart)
-            {
-                return 0;
-            }
-            else
-            {
-                return System.Math.Pow(x - xStart, 2) / (System.Math.Pow(x - xStart, 2) + System.Math.Pow(xEnd - x, 2));
-            }
+            throw new ArgumentException("Smoothing end value must be greater than start value.", nameof(xEnd));
         }
 
-        return new Func<double, double>(p => (smoothf(p) * f(p)) + (smoothf(xEnd - p) + g(p)));
+        return p => (smoothFunc(p) * f(p)) + (smoothFunc(xEnd - p) + g(p));
+    }
+
+    /// <summary>
+    /// Smooths two functions over a given interval.
+    /// </summary>
+    /// <param name="f">The first function to use when constructing the output function.</param>
+    /// <param name="g">The second function to use when constructing the output function.</param>
+    /// <param name="xStart">The start of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+    /// <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+    /// <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of a smoothing function that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static Func<double, double> SmoothFunctions(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => SmoothFunctions(f, g,x => x > xEnd ? 1 : (x < xStart ? 0 : System.Math.Pow(x - xStart, 2) / (System.Math.Pow(x - xStart, 2) + System.Math.Pow(xEnd - x, 2))), xStart, xEnd);
+
+    /// <summary>
+    /// Computes the factorial of any number using the <see cref="Gamma"/> function.
+    /// </summary>
+    /// <param name="x">The number to calculate the factorial of. May be non-integral.</param>
+    /// <returns></returns>
+    public static double Factorial(double x)
+    {
+        if ((int)x == x)
+        {
+            return (int)System.Math.Exp(Gamma.Log(x + 1));
+        }
+
+        return System.Math.Exp(Gamma.Log(x + 1));
     }
 
     public static class Trigonometry
     {
         public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double rCos, double resolution) => (new Func<double, double>(d => rSin * System.Math.Sin((d / resolution) * (2 * System.Math.PI)) + x), new Func<double, double>(d => rCos * -System.Math.Cos((d / resolution) * (2 * System.Math.PI)) + y));
-        
+
         public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double resolution) => EllipseAround(x, y, rSin, rSin, resolution);
 
         public static (double X, double Y) PointInCircle(double x, double y, double r)
@@ -67,7 +98,7 @@ public static partial class Math
             double pX = 0;
             double pY = 0;
             double d = r + 1;
-            
+
             while (System.Math.Abs(d) > r)
             {
                 pX = tX + ran.Next(0, (int)(2 * r));
@@ -146,323 +177,33 @@ public static partial class Math
 
     }
 
-    public static class VectorGeometry
+    private static class Gamma
     {
-        public class Vector : IEnumerable, IEnumerator
+        private static readonly double[] Coefficients = new double[]
         {
-            public int Dimension { get; }
+            76.18009172947146,
+            -86.50532032941677,
+            24.01409824083091,
+            -1.231739572450155,
+            0.1208650973866179e-2,
+            -0.5395239384953e-5
+        };
 
-            private List<double> Coordinates { get; set; } = new();
-            public double this[int i]
-            {
-                get => Coordinates[i];
-                set => Coordinates[i] = value;
-            }
-
-            private int _current = -1;
-            public object Current => Coordinates[_current];
-
-            public Vector(params double[] args)
-            {
-                if (args.Length < 2)
-                {
-                    throw new ArgumentException($"Cannot construct {typeof(Vector)} from {args.Length} parameters, expected 2 or more.");
-                }
-
-                foreach (double co in args)
-                {
-                    Coordinates.Add(co);
-                }
-            }
-
-            /// <summary>
-            /// Scalar product
-            /// </summary>
-            public static double operator *(Vector a, Vector b)
-            {
-                int hDim = new List<int>() { a.Dimension, b.Dimension }.Max();
-
-                return Sum(
-                    1,
-                    hDim,
-                    i => (a.Dimension < (int)i ? a[(int)i] : 0) * (b.Dimension < (int)i ? b[(int)i] : 0)
-                );
-            }
-
-            public static Vector operator *(Vector a, double n) => new(a.Coordinates.Select(co => co * n).ToArray());
-
-            /// <summary>
-            /// Vector product
-            /// </summary>
-            /// <param name="a"></param>
-            /// <param name="b"></param>
-            /// <returns></returns>
-            public static Vector operator ^(Vector a, Vector b)
-            {
-                if (a.Dimension == 1)
-                {
-                    a = new(a[0], 0, 0);
-                }
-                else if (a.Dimension == 2)
-                {
-                    a = new(a[0], a[1], 0);
-                }
-                else if (a.Dimension > 3)
-                {
-                    throw new ArgumentException($"Invalid {typeof(Vector)} {nameof(a)}. Vector products are only defined in three-dimensional space.", nameof(a));
-                }
-
-                if (a.Dimension == 1)
-                {
-                    b = new(b[0], 0, 0);
-                }
-                else if (a.Dimension == 2)
-                {
-                    b = new(b[0], b[1], 0);
-                }
-                else if (a.Dimension > 3)
-                {
-                    throw new ArgumentException($"Invalid {typeof(Vector)} {nameof(b)}. Vector products are only defined in three-dimensional space.", nameof(b));
-                }
-
-                return new(
-                    (a[2] * b[1]) - (a[3] * b[2]),
-                    (a[3] * b[1]) - (a[1] * b[3]),
-                    (a[1] * b[2]) - (a[2] * b[1])
-                );
-            }
-
-            public static Vector operator +(Vector a, Vector b)
-            {
-                List<double> newcoords = new();
-                for (int i = 1; i <= new List<Vector>() { a, b }.Select(v => v.Dimension).Max(); i++)
-                {
-                    newcoords.Add((a.Dimension < i ? a[i] : 0) + (b.Dimension < i ? b[i] : 0));
-                }
-                return new(newcoords.ToArray());
-            }
-            
-            public static Vector operator -(Vector a)
-            {
-                List<double> newcoords = new();
-                for (int i = 0; i < a.Dimension; i++)
-                {
-                    newcoords.Add(-a[i]);
-                }
-                return new(newcoords.ToArray());
-            }
-
-            public static Vector operator -(Vector a, Vector b) => a + (-b);
-
-            public static bool operator ==(Vector a, Vector b)
-            {
-                if (a.Dimension != b.Dimension)
-                {
-                    return false;
-                }
-                else
-                {
-                    for (int i = 0; i < a.Dimension; i++)
-                    {
-                        if (a[i] != b[i])
-                        {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            }
-            
-            public static bool operator !=(Vector a, Vector b) => !(a == b);
-
-            public double Abs() => Sum(1, Dimension, n => System.Math.Pow(this[(int)n], 2));
-
-            public Vector Simplify() => new(Coordinates.Select(co => co / GCD(Coordinates.Select(x => (int)x).ToArray())).ToArray());
-
-            public IEnumerator GetEnumerator() => this;
-
-            public bool MoveNext()
-            {
-                if (_current >= Dimension)
-                {
-                    _current++;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            public void Reset() => _current = -1;
-
-            public override bool Equals(object? obj)
-            {
-                if (ReferenceEquals(this, obj))
-                {
-                    return true;
-                }
-                if (obj is null)
-                {
-                    return false;
-                }
-
-                return this == (Vector)obj;
-            }
-
-            public override int GetHashCode() => HashCode.Combine(Dimension, Coordinates, _current, Current);
-        }
-
-        public static Vector NullVector(int d) => new(0d.Repeat(d).Select(obj => (double)obj).ToArray());
-
-        public static double IntersectAngle(Vector dv1, Vector dv2)
+        public static double Log(double x)
         {
-            if (dv1.Dimension != 3)
+            if (x <= 0)
             {
-                throw new ArgumentException($"Intersect angle of non-three-dimensional {typeof(Vector)}s.", nameof(dv1));
+                throw new ArgumentOutOfRangeException(nameof(x), "x must be greater than 0.");
             }
-            if (dv2.Dimension != 3)
+            double y = x;
+            double t = (x + 5.5);
+            t -= (x + 0.5) * System.Math.Log(t);
+            double sum = 1.000000000190015;
+            for (int i = 0; i < 6; i++)
             {
-                throw new ArgumentException($"Intersect angle of non-three-dimensional {typeof(Vector)}s.", nameof(dv2));
+                sum += Coefficients[i] / ++y;
             }
-
-            dv1 = dv1.Simplify();
-            dv2 = dv2.Simplify();
-            return System.Math.Acos(System.Math.Abs(dv1 * dv2) / (dv1.Abs() * dv2.Abs()));
-        }
-
-        public static double IntersectAngleLinePlane(Vector dv, Vector pv1, Vector pv2) => IntersectAngleLinePlane(dv, pv1 ^ pv2);
-        public static double IntersectAngleLinePlane(Vector dv, Vector nv)
-        {
-            if (dv.Dimension != 3)
-            {
-                throw new ArgumentException($"Intersect angle of non-three-dimensional {typeof(Vector)}s.", nameof(dv));
-            }
-
-            dv = dv.Simplify();
-            nv = nv.Simplify();
-            return (System.Math.PI / 2) - System.Math.Asin(System.Math.Abs(dv * nv) / (dv.Abs() * nv.Abs()));
-        }
-
-        public static Dictionary<string, Tuple<double, double, double>> PlaneIntersections(Vector pv, Vector dv)
-        {
-            if (pv.Dimension != 3)
-            {
-                throw new ArgumentException($"Intersect angle of non-three-dimensional {typeof(Vector)}s.", nameof(pv));
-            }
-            if (dv.Dimension != 3)
-            {
-                throw new ArgumentException($"Intersect angle of non-three-dimensional {typeof(Vector)}s.", nameof(dv));
-            }
-
-            Dictionary<string, Tuple<double, double, double>> intersects = new();
-
-            // If a coordinate in the direction Vector is `0`, the line defined by the vectors cannot intersect with the plane that is missing that coordinate as the two run parallel to each other, i.e.
-            // - `dv.v1 = 0` -> `line ∉ x2x3`
-            // - `dv.v2 = 0` -> `line ∉ x1x3`
-            // - `dv.v3 = 0` -> `line ∉ x1x2`
-            List<int> possibleIntersections = new() { 1, 2, 3 };
-            for (int i = 0; i < dv.Dimension; i++)
-            {
-                if (dv[i] == 0)
-                {
-                    possibleIntersections.Remove(i);
-                }
-            }
-
-            // The entire idea of using a loop like this was absolutely disgusting to come up with, understand and then actually write
-            // The actual solution, as in, the code, is    B E A U T I F U L, but that's about it
-            // AAAAND it works so I reeeeaaaally don't care :3
-            foreach (int searchx in possibleIntersections)
-            {
-                List<int> baseN = new() { 1, 2, 3 };
-                baseN.Remove(searchx);
-
-                double lambda = 0;
-                double v = pv[searchx];
-                if (v != 0)
-                {
-                    lambda += (v > 0 ? -v : v);
-                }
-
-                try
-                {
-                    lambda /= dv[searchx];
-                }
-                catch
-                {
-                    intersects[$"x{baseN[0]}x{baseN[1]}"] = null;
-                }
-
-                List<double> outlist = new() { 0d, 0d, 0d };
-                outlist[baseN[0]] = pv[baseN[0]] + (dv[baseN[0]] * lambda);
-                outlist[baseN[1]] = pv[baseN[1]] + (dv[baseN[1]] * lambda);
-
-                intersects[$"x{baseN[0]}x{baseN[1]}"] = new(outlist[0], outlist[1], outlist[2]);
-            }
-            return intersects;
-        }
-
-        public static bool LinearDependence(params Vector[] vectors)
-        {
-            int hdim = vectors.Select(v => v.Dimension).Max();
-            for (int i = 0; i < vectors.Length; i++)
-            {
-                if (vectors[i].Dimension < hdim)
-                {
-                    List<double> coords = new();
-                    for (int j = 0; i < hdim; j++)
-                    {
-                        try
-                        {
-                            coords.Add(vectors[i][j]);
-                        }
-                        catch
-                        {
-                            coords.Add(0);
-                        }
-                    }
-                    vectors[i] = new(coords.ToArray());
-                }
-            }
-
-            foreach (Vector v in vectors)
-            {
-                if (v == NullVector(hdim))
-                {
-                    return true;
-                }
-            }
-
-            for (int i = 0; i < vectors.Length; i++)
-            {
-                vectors[i].Simplify();
-            }
-
-            switch (vectors.Length)
-            {
-                case 2:
-                    bool r = vectors[0] == vectors[1];
-                    if (r)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return Miscellaneous.Equal(vectors[0][0] / vectors[1][0],
-                                                   vectors[0][1] / vectors[1][1],
-                                                   vectors[0][2] / vectors[1][2]);
-                    }
-                case 3:
-                    // Triple product == 0 => linear dependence
-                    return (vectors[0] * (vectors[1] ^ vectors[2])) == 0;
-                    // Can also be determined using the determinant of a matrix created from the three vectors:
-                    // return
-                case 4:
-                    return true;
-                default:
-                    throw new ArgumentException($"Cannot determine linear dependence of {vectors.Length} vectors.", nameof(vectors));
-            }
+            return -t + System.Math.Log(2.5066282746310005 * sum / x);
         }
     }
 }
