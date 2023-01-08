@@ -129,7 +129,7 @@ public static partial class Math
             {
                 int u;
 
-                List<int> Q = new(0.Repeat(_nodes.Count).Cast<int>().ToArray());
+                List<int> Q = Enumerable.Repeat(0, _nodes.Count).ToList();
                 for (int i = 0; i < _nodes.Count; i++)
                 {
                     Q[i] = i;

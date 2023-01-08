@@ -75,11 +75,14 @@ namespace LaquaiLib.ScreenCapture
         /// <para>Captures a region of the screen.</para>
         /// <para>Position coordinates of the passed <see cref="Rectangle"/> are not corrected using <see cref="ResolutionScales"/>.</para>
         /// </summary>
+        /// <param name="region">The region to capture.</param>
+        /// <returns>A <see cref="Bitmap"/> object containing the capture created from the given region.</returns>
         public static Bitmap Capture(Rectangle region) => Capture(region.Left, region.Top, region.Right, region.Bottom);
 
         /// <summary>
         /// Captures the entire primary screen.
         /// </summary>
+        /// <returns>A <see cref="Bitmap"/> object containing the capture created from the primary screen.</returns>
         public static Bitmap Capture()
         {
             Rectangle primary = Screen.PrimaryScreen!.Bounds;
@@ -99,7 +102,7 @@ namespace LaquaiLib.ScreenCapture
         /// <returns>The path to saved <see cref="Bitmap"/>.</returns>
         public static string TestRegion(int x1, int y1, int x2, int y2)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath)!, $"testregion_{x1}_{y1}_{x2}_{y2}.bmp");
+            string path = Path.Combine(Path.GetTempPath(), $"testregion_{x1}_{y1}_{x2}_{y2}.bmp");
             Bitmap desktop = Capture();
             Color highlight = Color.FromArgb(0xFF, 0x00, 0x00);
             for (int y = y1; y <= y2; y++)
