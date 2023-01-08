@@ -537,10 +537,7 @@ public static class Miscellaneous
             }).ToList();
 
             // Invert columns to use as rows
-            List<List<string>> inverted =
-                Enumerable.Range(0, maxInnerEnumerableCount)
-                          .Select(i => new List<string>())
-                          .ToList();
+            List<List<string>> inverted = Enumerable.Range(0, maxInnerEnumerableCount).Select(i => new List<string>()).ToList();
 
             foreach (List<string> innerEnumerable in original)
             {
