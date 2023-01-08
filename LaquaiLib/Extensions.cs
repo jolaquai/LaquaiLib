@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace LaquaiLib.Extensions;
 
-public static class IEnumerableExtensions
+public static class IEnumerableTExtensions
 {
     public static string Join<T>(this IEnumerable<T> source) => source.Aggregate("", (seed, item) => seed += item!.ToString());
 
@@ -72,10 +72,8 @@ public static class StreamExtensions
     /// <returns>The rest of the stream as a String, from the current position to the end.</returns>
     public static string ReadToEnd(this Stream stream)
     {
-        using (StreamReader sr = new(stream))
-        {
-            return sr.ReadToEnd();
-        }
+        using StreamReader sr = new(stream);
+        return sr.ReadToEnd();
     }
 
     /// <summary>
@@ -84,10 +82,8 @@ public static class StreamExtensions
     /// <returns>A task that represents the asynchronous read operation.</returns>
     public static async Task<string> ReadToEndAsync(this Stream stream)
     {
-        using (StreamReader sr = new(stream))
-        {
-            return await sr.ReadToEndAsync();
-        }
+        using StreamReader sr = new(stream);
+        return await sr.ReadToEndAsync();
     }
 
     /// <summary>
@@ -97,10 +93,8 @@ public static class StreamExtensions
     /// <returns>A task that represents the asynchronous read operation.</returns>
     public static async Task<string> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken)
     {
-        using (StreamReader sr = new(stream))
-        {
-            return await sr.ReadToEndAsync(cancellationToken);
-        }
+        using StreamReader sr = new(stream);
+        return await sr.ReadToEndAsync(cancellationToken);
     }
 }
 
@@ -116,13 +110,7 @@ public static class IconExtensions
 
 public static class GenericExtensions
 {
-    public static IEnumerable<T> Repeat<T>(this T source, int count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            yield return source;
-        }
-    }
+
 }
 
 public static class StringExtensions
@@ -144,15 +132,7 @@ public static class StringExtensions
         return ret;
     }
 
-    public static string Repeat(this string source, int times)
-    {
-        string repeat = "";
-        for (int i = 0; i < times; i++)
-        {
-            repeat += source;
-        }
-        return repeat;
-    }
+    public static string Repeat(this string source, int times) => string.Join("", Enumerable.Repeat(source, times));
 
     public static string Replace(this string source, IEnumerable<string> finds, string replace)
     {
