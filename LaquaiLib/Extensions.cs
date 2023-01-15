@@ -6,37 +6,52 @@ namespace LaquaiLib.Extensions;
 
 public static class IEnumerableTExtensions
 {
-    public static string Join<T>(this IEnumerable<T> source) => source.Aggregate("", (seed, item) => seed += item!.ToString());
-
-    public static string Join<T>(this IEnumerable<T> source, string separator) => source.Aggregate("", (seed, item) => seed += item!.ToString() + separator, seed => seed[..^separator.Length]);
-
     public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source.Select(item => item);
 
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+    /// <summary>
+    /// Returns the first element from a sequence and removes it from the source sequence.
+    /// </summary>
+    /// <typeparam name="T">The type of objects to enumerate.</typeparam>
+    /// <returns>An object of type  that contains the specified range of elements from the source sequence.</returns>
+    public static T Consume<T>(this IEnumerable<T> source)
     {
-        Random ran = new();
-        List<T> input = source.ToList();
-        List<int> indicesLeft = LaquaiLib.Range(source.Count() - 1).ToList();
-        while (indicesLeft.Any())
-        {
-            int r = ran.Next(indicesLeft.Count);
-            int index = indicesLeft[r];
-            indicesLeft.RemoveAt(r);
-            yield return input[index];
-        }
+        T extracted = source.First();
+        List<T> newList = source.ToList();
+        newList.Remove(extracted);
+        source = newList;
+        return extracted;
     }
 
-    public static IEnumerable<T> FromTo<T>(this IEnumerable<T> source, int from, int to) => source.Where((_, i) => i >= from && i <= to);
+    /// <summary>
+    /// Returns a specified number of contiguous elements from the start of a sequence and removes them from the source sequence.
+    /// </summary>
+    /// <typeparam name="T">The type of objects to enumerate.</typeparam>
+    /// <param name="count">The number of elements to return.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that contains the specified number of elements from the start of the input sequence.</returns>
+    public static IEnumerable<T> Consume<T>(this IEnumerable<T> source, int count)
+    {
+        IEnumerable<T> extracted = source.Take(count);
+        source = source.Except(extracted);
+        return extracted;
+    }
+
+    /// <summary>
+    /// Returns a specified range of contiguous elements from a sequence and removes them from the source sequence.
+    /// </summary>
+    /// <typeparam name="T">The type of objects to enumerate.</typeparam>
+    /// <param name="range">The range of elements to return, which has start and end indexes either from the beginning or the end of the sequence.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that contains the specified range of elements from the source sequence.</returns>
+    public static IEnumerable<T> Consume<T>(this IEnumerable<T> source, Range range)
+    {
+        IEnumerable<T> extracted = source.Take(range);
+        source = source.Except(extracted);
+        return extracted;
+    }
 }
 
 public static class IEnumerableBoolExtensions
 {
     public static bool All(this IEnumerable<bool> source) => source.All(x => x);
-}
-
-public static class ArrayExtensions
-{
-    public static void Swap<T>(this T[] source, int i, int j) => (source[j], source[i]) = (source[i], source[j]);
 }
 
 public static class DictionaryExtensions
@@ -115,23 +130,6 @@ public static class GenericExtensions
 
 public static class StringExtensions
 {
-    public static IEnumerable<char> SplitEach(this string source) => source.Select();
-
-    public static string Shift(this string source)
-    {
-        string input = source;
-        string ret = source + "\r\n";
-        int i = 1;
-        while (i < source.Length)
-        {
-            char[] split = input.SplitEach().ToArray();
-            input = split.FromTo(1, split.Length).Join() + split[0];
-            ret += input + "\r\n";
-            i++;
-        }
-        return ret;
-    }
-
     public static string Repeat(this string source, int times) => string.Join("", Enumerable.Repeat(source, times));
 
     public static string Replace(this string source, IEnumerable<string> finds, string replace)
@@ -144,6 +142,11 @@ public static class StringExtensions
         return input;
     }
 
+    /// <summary>
+    /// Reports the zero-based indices of all occurrences of the specified Unicode character in this string.
+    /// </summary>
+    /// <param name="search">A Unicode character to seek.</param>
+    /// <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOf(this string source, char search)
     {
         int find = source.IndexOf(search);
@@ -154,6 +157,27 @@ public static class StringExtensions
         }
     }
 
+    /// <summary>
+    /// Reports the zero-based indices of all occurrences of the specified Unicode character in this string. The search starts at a specified character position.
+    /// </summary>
+    /// <param name="search">A Unicode character to seek.</param>
+    /// <param name="startIndex">The search starting position.</param>
+    /// <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
+    public static IEnumerable<int> IndicesOf(this string source, char search, int startIndex)
+    {
+        int find = source.IndexOf(search, startIndex);
+        while (find != -1)
+        {
+            yield return find;
+            find = source.IndexOf(search, find + 1);
+        }
+    }
+
+    /// <summary>
+    /// Reports the zero-based indices of all occurrences of the specified string in this instance.
+    /// </summary>
+    /// <param name="search">The string to seek.</param>
+    /// <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOf(this string source, string search)
     {
         int find = source.IndexOf(search);
@@ -164,26 +188,56 @@ public static class StringExtensions
         }
     }
 
-    public static IEnumerable<int> IndexOfAny(this string source, IEnumerable<string> searches)
+    /// <summary>
+    /// Reports the zero-based indices of all occurrences of the specified string in this instance. The search starts at a specified character position.
+    /// </summary>
+    /// <param name="search">The string to seek.</param>
+    /// <param name="startIndex">The search starting position.</param>
+    /// <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
+    public static IEnumerable<int> IndicesOf(this string source, string search, int startIndex)
     {
-        List<int> indices = new();
-        foreach (string search in searches)
+        int find = source.IndexOf(search, startIndex);
+        while (find != -1)
         {
-            indices.Add(source.IndexOf(search));
+            yield return find;
+            find = source.IndexOf(search, find + 1);
         }
-        return indices.Distinct().Order();
     }
 
-    public static IEnumerable<int> IndexOfAny(this string source, IEnumerable<string> searches, int startIndex)
+    /// <summary>
+    /// Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings.
+    /// </summary>
+    /// <param name="searches">A sequence of strings to seek.</param>
+    /// <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
+    public static int IndexOfAny(this string source, IEnumerable<string> searches)
     {
-        List<int> indices = new();
         foreach (string search in searches)
         {
-            indices.Add(source.IndexOf(search, startIndex));
+            return source.IndexOf(search);
         }
-        return indices.Distinct().Order();
+        return -1;
     }
 
+    /// <summary>
+    /// Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
+    /// </summary>
+    /// <param name="searches">A sequence of strings to seek.</param>
+    /// <param name="startIndex">The search starting position.</param>
+    /// <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
+    public static int IndexOfAny(this string source, IEnumerable<string> searches, int startIndex)
+    {
+        foreach (string search in searches)
+        {
+            return source.IndexOf(search, startIndex);
+        }
+        return -1;
+    }
+
+    /// <summary>
+    /// Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters.
+    /// </summary>
+    /// <param name="searches">A sequence of strings to seek.</param>
+    /// <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
     public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<char> searches)
     {
         List<IEnumerable<int>> indexLists = new();
@@ -194,12 +248,49 @@ public static class StringExtensions
         return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
     }
 
+    /// <summary>
+    /// Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters. The search starts at a specified character position.
+    /// </summary>
+    /// <param name="searches">A sequence of strings to seek.</param>
+    /// <param name="startIndex">The search starting position.</param>
+    /// <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
+    public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<char> searches, int startIndex)
+    {
+        List<IEnumerable<int>> indexLists = new();
+        foreach (char search in searches)
+        {
+            indexLists.Add(source.IndicesOf(search, startIndex));
+        }
+        return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+    }
+
+    /// <summary>
+    /// Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings.
+    /// </summary>
+    /// <param name="searches">A sequence of strings to seek.</param>
+    /// <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
     public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<string> searches)
     {
         List<IEnumerable<int>> indexLists = new();
         foreach (string search in searches)
         {
             indexLists.Add(source.IndicesOf(search));
+        }
+        return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+    }
+
+    /// <summary>
+    /// Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
+    /// </summary>
+    /// <param name="searches">A sequence of strings to seek.</param>
+    /// <param name="startIndex">The search starting position.</param>
+    /// <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
+    public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<string> searches, int startIndex)
+    {
+        List<IEnumerable<int>> indexLists = new();
+        foreach (string search in searches)
+        {
+            indexLists.Add(source.IndicesOf(search, startIndex));
         }
         return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
     }

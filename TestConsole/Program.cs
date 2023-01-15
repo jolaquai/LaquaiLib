@@ -1,6 +1,9 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 
 using LaquaiLib;
+using LaquaiLib.Extensions;
+using LaquaiLib.ScreenCapture;
 
 using static LaquaiLib.Math.Topology;
 using static LaquaiLib.Miscellaneous;
@@ -11,72 +14,42 @@ public class Program
 {
     public static void Main()
     {
-        Logger.WriteAsTable(new List<List<string>>()
-        {
-            new()
-            {
-                "Test",
-                "with",
-                "rows",
-                "that"
-            },
-            new()
-            {
-                "contain",
-                "non-equal"
-            },
-            new()
-            {
-                "amounts",
-                "of",
-                "values"
-            }
-        }, Logger.TableInputMode.Columns);
+        Console.WriteLine();
     }
 
     public async static Task asd()
     {
-        Dictionary<string, List<string>> groups = new()
+        Dictionary<string, Dictionary<string, bool>> groups = new()
         {
             {
                 "Predator",
                 new()
                 {
-                    "Predator",
-                    "Predator 2",
-                    "Predators",
-                    "The Predator",
-                    "Prey"
+                    { "Predator", false },
+                    { "Predator 2", false },
+                    { "Predators", false },
+                    { "The Predator", false },
+                    { "Prey", false }
                 }
             },
             {
                 "Alien",
                 new()
                 {
-                    "Prometheus",
-                    "Alien: Covenant",
-                    "Alien",
-                    "Aliens",
-                    "Alien 3",
-                    "Alien Resurrection"
-                }
-            },
-            {
-                "Alien vs. Predator",
-                new()
-                {
-                    "Alien vs. Predator",
-                    "Alien vs. Predator - Requiem"
+                    { "Prometheus", false },
+                    { "Alien: Covenant", false },
+                    { "Alien", false },
+                    { "Aliens", false },
+                    { "Alien 3", false },
+                    { "Alien Resurrection", false }
                 }
             }
         };
-        Console.WriteLine(string.Join("\r\n\r\n", groups.Select(kv =>
-        {
-            return $"""
-                   [{kv.Key.ToUpper()}]
-                   {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.PadRight(kv.Value.Select(movie => movie.Length).Max() + 4)}S"))}
-                   """;
-        })));
+        Console.WriteLine(string.Join("\r\n\r\n", groups.Select(kv => $"""
+            [{kv.Key} ({kv.Value.Count})]
+            {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.Key.PadRight(kv.Value.Select(movie => movie.Key.Length).Max() + 4)}{(movie.Value ? "✓" : "X")}"))}
+            """
+        )));
 
         return;
 

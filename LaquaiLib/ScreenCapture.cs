@@ -90,7 +90,7 @@ namespace LaquaiLib.ScreenCapture
         }
 
         /// <summary>
-        /// Creates a test image to show which region the passed coordinates would capture. The red rectangle painted onto the created capture <see cref="Bitmap"/> shows this region. A singular blue pixel shows the center of this region.
+        /// Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <c>false</c>, a red rectangle is painted onto the created capture <see cref="Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
         /// </summary>
         /// <remarks>
         /// <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
@@ -99,24 +99,34 @@ namespace LaquaiLib.ScreenCapture
         /// <param name="y1">The y-coordinate of the top-left point of the region.</param>
         /// <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
         /// <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+        /// <param name="extract">Whether to only write the pixels inside the region to the output image.</param>
         /// <returns>The path to saved <see cref="Bitmap"/>.</returns>
-        public static string TestRegion(int x1, int y1, int x2, int y2)
+        public static string TestRegion(int x1, int y1, int x2, int y2, bool extract = false)
         {
-            string path = Path.Combine(Path.GetTempPath(), $"testregion_{x1}_{y1}_{x2}_{y2}.bmp");
+            string path = Path.Combine(Path.GetTempPath(), $"testregion_{x1}_{y1}_{x2}_{y2}_{new Random().Next(10000)}.bmp");
             Bitmap desktop = Capture();
-            Color highlight = Color.FromArgb(0xFF, 0x00, 0x00);
-            for (int y = y1; y <= y2; y++)
+            if (extract)
             {
-                desktop.SetPixel(x1, y, highlight);
-                desktop.SetPixel(x2, y, highlight);
-            }
-            for (int x = x1; x <= x2; x++)
-            {
-                desktop.SetPixel(x, y1, highlight);
-                desktop.SetPixel(x, y2, highlight);
-            }
+                desktop = desktop.Clone(new(x1, y1, x2 - x1, y2 - y1), desktop.PixelFormat);
 
-            desktop.SetPixel((x1 + x2) / 2, (y1 + y2) / 2, Color.FromArgb(0x00, 0x00, 0xFF));
+                desktop.SetPixel(desktop.Width / 2, desktop.Height / 2, Color.FromArgb(0x00, 0x00, 0xFF));
+            }
+            else
+            {
+                Color highlight = Color.FromArgb(0xFF, 0x00, 0x00);
+                for (int y = y1; y <= y2; y++)
+                {
+                    desktop.SetPixel(x1, y, highlight);
+                    desktop.SetPixel(x2, y, highlight);
+                }
+                for (int x = x1; x <= x2; x++)
+                {
+                    desktop.SetPixel(x, y1, highlight);
+                    desktop.SetPixel(x, y2, highlight);
+                }
+
+                desktop.SetPixel((x1 + x2) / 2, (y1 + y2) / 2, Color.FromArgb(0x00, 0x00, 0xFF));
+            }
 
             desktop.Save(path, System.Drawing.Imaging.ImageFormat.Bmp);
 
@@ -135,7 +145,7 @@ namespace LaquaiLib.ScreenCapture
             x2 = scaleDown ? (int)(x2 / ResolutionScales[monitor]) : (int)(x2 * ResolutionScales[monitor]);
             y2 = scaleDown ? (int)(y2 / ResolutionScales[monitor]) : (int)(y2 * ResolutionScales[monitor]);
         }
-        
+
         public static void ScaleCoordinates(int monitor, bool scaleDown, ref Rectangle rect)
         {
             rect.X = scaleDown ? (int)(rect.X / ResolutionScales[monitor]) : (int)(rect.X * ResolutionScales[monitor]);
@@ -152,7 +162,10 @@ namespace LaquaiLib.ScreenCapture
         /// <summary>
         /// The predicate that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.
         /// </summary>
-        public Func<bool> Predicate { get; set; }
+        public Func<bool> Predicate
+        {
+            get; set;
+        }
 
         /// <summary>
         /// The <see cref="System.Threading.Timer"/> that controls when captures are made.
@@ -166,7 +179,10 @@ namespace LaquaiLib.ScreenCapture
         /// <summary>
         /// The region this <see cref="ScreenCapture"/> captures.
         /// </summary>
-        public Rectangle Region { get; private set; }
+        public Rectangle Region
+        {
+            get; private set;
+        }
         /// <summary>
         /// Whether the configured capture <see cref="Region"/> is the entire primary screen.
         /// </summary>
@@ -310,7 +326,7 @@ namespace LaquaiLib.ScreenCapture
                 if (src.IsCapturing && src.Predicate())
                 {
                     DateTime captureTime = DateTime.Now;
-                    RaiseEvent(new(ScreenCapture.Capture(), captureTime));
+                    RaiseEvent(new(Capture(), captureTime));
                 }
             }, this, Timeout.Infinite, 50);
         }

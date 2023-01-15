@@ -106,13 +106,13 @@ public static class Miscellaneous
                         2 => $"[ {Tag} ] "
                     };
                 }
-                return Logged.Select(obj => str + obj.ToString()).Join("\r\n").Trim();
+                return string.Join(Environment.NewLine, Logged.Select(obj => str + obj.ToString())).Trim();
             }
         }
 
         public string this[int i] => Entries[i].ToString().Trim();
 
-        public override string ToString() => Entries.Select(entry => entry).Join("\r\n").Trim();
+        public override string ToString() => string.Join(Environment.NewLine, Entries.Select(entry => entry)).Trim();
 
         public int LogCustom(string tag, params object[] towrite)
         {
@@ -510,11 +510,12 @@ public static class Miscellaneous
         }
 
         /// <summary>
-        /// Writes an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/> of <see cref="object"/> to the <see cref="Console"/> by formatting the contained values to look like a table using the specified <paramref name="tableInputMode"/>.
+        /// Writes an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> to the <see cref="Console"/> by formatting the contained values to look like a table using the specified <paramref name="tableInputMode"/>.
         /// </summary>
         /// <param name="input">The collections of values to write.</param>
         /// <param name="tableInputMode">How the <paramref name="input"/> value is to be interpreted as indicated by a <see cref="TableInputMode"/> value.</param>
-        public static void WriteAsTable(IEnumerable<IEnumerable<object>> input, TableInputMode tableInputMode)
+        public static void WriteAsTable<T>(IEnumerable<IEnumerable<T>> input, TableInputMode tableInputMode = TableInputMode.Rows)
+            where T : notnull
         {
             #region Enumerate and invert input data ("columns") to use as "rows"
             int maxInnerEnumerableCount = input.Max(innerEnumerable => innerEnumerable.Count());
@@ -522,7 +523,7 @@ public static class Miscellaneous
             // Enumerate input into a List<List<string>> while ensuring that every row and column has an equal Count
             List<List<string>> original = input.Select(innerEnumerable =>
             {
-                List<object> existingInner = innerEnumerable.ToList();
+                List<T> existingInner = innerEnumerable.ToList();
 
                 List<string> newInner = new();
                 for (int i = 0; i < maxInnerEnumerableCount; i++)
@@ -568,11 +569,5 @@ public static class Miscellaneous
                 }
             }
         }
-
-        /// <summary>
-        /// Writes an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/> of <see cref="object"/> to the <see cref="Console"/> by formatting the contained values to look like a table, interpreted as rows of values.
-        /// </summary>
-        /// <param name="input">The collections of values to write.</param>
-        public static void WriteAsTable(IEnumerable<IEnumerable<object>> input) => WriteAsTable(input, TableInputMode.Rows);
     }
 }
