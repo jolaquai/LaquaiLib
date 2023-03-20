@@ -1,25 +1,22 @@
-﻿using System.Diagnostics;
-using System.IO;
-
-using LaquaiLib;
+﻿using LaquaiLib;
 using LaquaiLib.Extensions;
-using LaquaiLib.ScreenCapture;
 
-using static LaquaiLib.Math.Topology;
 using static LaquaiLib.Miscellaneous;
+using static LaquaiLib.RandomMath.Topology;
 
 namespace TestConsole;
 
 public class Program
 {
+    [STAThread] // Needed for Clipboard operations
     public static void Main()
     {
-        Console.WriteLine();
+        Clipboard.Clear();
     }
 
     public async static Task asd()
     {
-        Dictionary<string, Dictionary<string, bool>> groups = new()
+        Dictionary<string, Dictionary<string, object>> groups = new()
         {
             {
                 "Predator",
@@ -43,11 +40,19 @@ public class Program
                     { "Alien 3", false },
                     { "Alien Resurrection", false }
                 }
+            },
+            {
+                "Series",
+                new()
+                {
+                    { "Jojo", "S2E7" },
+                    { "Initial D", "S5E8" }
+                }
             }
         };
         Console.WriteLine(string.Join("\r\n\r\n", groups.Select(kv => $"""
             [{kv.Key} ({kv.Value.Count})]
-            {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.Key.PadRight(kv.Value.Select(movie => movie.Key.Length).Max() + 4)}{(movie.Value ? "✓" : "X")}"))}
+            {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.Key.PadRight(kv.Value.Select(movie => movie.Key.Length).Max() + 4)}{(movie.Value is bool boolean ? (boolean ? "✓" : "X") : movie.Value)}"))}
             """
         )));
 
@@ -63,8 +68,8 @@ public class Program
             while (true)
             {
                 long mem = GC.GetTotalMemory(false);
-                double log = System.Math.Floor(System.Math.Log(mem, 1024));
-                Console.Title = $"{System.Math.Round((double)(mem / System.Math.Pow(1024, log)), 3)} {log switch
+                double log = Math.Floor(Math.Log(mem, 1024));
+                Console.Title = $"{Math.Round((double)(mem / Math.Pow(1024, log)), 3)} {log switch
                 {
                     0 => "B",
                     1 => "KB",

@@ -1,0 +1,743 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LaquaiLib</name>
+    </assembly>
+    <members>
+        <member name="T:LaquaiLib.ScreenCapture.ScreenCapture">
+            <summary>
+            Wraps some screenshot functionality from <see cref="T:System.Drawing.Bitmap"/> and <see cref="T:System.Drawing.Graphics"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales">
+            <summary>
+            The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Capture(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            <para>Captures a region of the screen.</para>
+            <para>Passed coordinates are not corrected using <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/>.</para>
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <returns>The <see cref="T:System.Drawing.Bitmap"/> created by capturing the region.</returns>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Capture(System.Drawing.Rectangle)">
+            <summary>
+            <para>Captures a region of the screen.</para>
+            <para>Position coordinates of the passed <see cref="T:System.Drawing.Rectangle"/> are not corrected using <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/>.</para>
+            </summary>
+            <param name="region">The region to capture.</param>
+            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the given region.</returns>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Capture">
+            <summary>
+            Captures the entire primary screen.
+            </summary>
+            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the primary screen.</returns>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.TestRegion(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <c>false</c>, a red rectangle is painted onto the created capture <see cref="T:System.Drawing.Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
+            </summary>
+            <remarks>
+            <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
+            </remarks>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <param name="extract">Whether to only write the pixels inside the region to the output image.</param>
+            <returns>The path to saved <see cref="T:System.Drawing.Bitmap"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@)">
+            <summary>
+            Scales the passed coordinates using the <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="x">The <c>x</c>-coordinate to scale.</param>
+            <param name="y">The <c>y</c>-coordinate to scale.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+            Scales the passed coordinates using the <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="x1">The <c>x</c>-coordinate of the top-left point to scale.</param>
+            <param name="y1">The <c>y</c>-coordinate of the top-left point to scale.</param>
+            <param name="x2">The <c>x</c>-coordinate of the bottom-right point to scale.</param>
+            <param name="y2">The <c>y</c>-coordinate of the bottom-right point to scale.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Drawing.Rectangle@)">
+            <summary>
+            Scales the passed <see cref="T:System.Drawing.Rectangle"/> using the <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="rect">The <see cref="T:System.Drawing.Rectangle"/> to scale.</param>
+        </member>
+        <member name="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured">
+            <summary>
+            Occurs when this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures the configured region, but only if <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> is satisfied.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate">
+            <summary>
+            The predicate that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.ScreenCapture.ScreenCapture.Timer">
+            <summary>
+            The <see cref="T:System.Threading.Timer"/> that controls when captures are made.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.IsCapturing">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> is currently creating captures and may raise the <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.Region">
+            <summary>
+            The region this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.IsCaptureRegionScreen">
+            <summary>
+            Whether the configured capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> is the entire primary screen.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Start">
+            <summary>
+            Causes this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> to create captures and raise the <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Stop">
+            <summary>
+            Causes this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> to no longer create captures and raise the <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the entire primary screen and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Drawing.Rectangle)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="region">The region this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Drawing.Rectangle,System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="region">The region this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> created from a series of passed coordinates and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to a specific screen and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="monitor">The number of the monitor to capture.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32,System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="monitor">The number of the monitor to capture.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.InitTimer">
+            <summary>
+            Initializes the <see cref="F:LaquaiLib.ScreenCapture.ScreenCapture.Timer"/> that controls when captures are made.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.RaiseEvent(LaquaiLib.ScreenCapture.ScreenCaptureEventArgs)">
+            <summary>
+            Event raise wrapper.
+            </summary>
+            <param name="e">The <see cref="T:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs"/> passed when raising the event.</param>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Finalize">
+            <summary>
+            Destructor. Ensures that the <see cref="F:LaquaiLib.ScreenCapture.ScreenCapture.Timer"/> no longer causes captures to be made when this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> dies.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs">
+            <summary>
+            Event args that are passed when raising a <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs.Bitmap">
+            <summary>
+            The created <see cref="T:System.Drawing.Bitmap"/> capture.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs.CaptureTime">
+            <summary>
+            When the capture was created.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs.#ctor(System.Drawing.Bitmap,System.DateTime)">
+            <summary>
+            Instantiates <see cref="T:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+            </summary>
+            <param name="bitmap"></param>
+            <param name="timestamp"></param>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="T:System.Windows.Threading.Dispatcher"/> of your main <see cref="T:System.Windows.Window"/>, otherwise the animation will not work.
+            </summary>
+            <param name="value">The value to animate progress towards.</param>
+            <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
+            <param name="cancellationToken">An optional <see cref="T:System.Threading.CancellationToken"/> that may be used to request cancellation of the asynchronous animation operation.</param>
+        </member>
+        <member name="T:LaquaiLib.Constants">
+            <summary>
+            Provides a number of constants.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Constants.Numbers">
+            <summary>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Int32"/> containing the numbers <c>0</c> through <c>9</c>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Constants.LettersUppercase">
+            <summary>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the uppercase letters <c>A</c> through <c>Z</c>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Constants.LettersLowercase">
+            <summary>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>a</c> through <c>z</c>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Constants.GreekLettersUppercase">
+            <summary>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the uppercase letters <c>Α</c> through <c>Ω</c>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Constants.GreekLettersLowercase">
+            <summary>
+            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>α</c> through <c>ω</c>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Invert``2(System.Collections.Generic.Dictionary{``0,``1})">
+            <summary>
+            Creates an inverted <see cref="T:System.Collections.Generic.Dictionary`2"/>, where the original keys are now the values and vice versa.
+            </summary>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="TValue"></typeparam>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IconExtensions.ToImageSource(System.Drawing.Icon)">
+            <summary>
+            Converts an icon to an <see cref="T:System.Windows.Media.ImageSource"/> object.
+            </summary>
+            <param name="icon"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEnd(System.IO.Stream)">
+            <summary>
+            Reads all characters from the current position to the end of the stream.
+            </summary>
+            <returns>The rest of the stream as a String, from the current position to the end.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream)">
+            <summary>
+            Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
+            </summary>
+            <returns>A task that represents the asynchronous read operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
+            </summary>
+            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            <returns>A task that represents the asynchronous read operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.Char)">
+            <summary>
+            Reports the zero-based indices of all occurrences of the specified Unicode character in this string.
+            </summary>
+            <param name="search">A Unicode character to seek.</param>
+            <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.Char,System.Int32)">
+            <summary>
+            Reports the zero-based indices of all occurrences of the specified Unicode character in this string. The search starts at a specified character position.
+            </summary>
+            <param name="search">A Unicode character to seek.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.String)">
+            <summary>
+            Reports the zero-based indices of all occurrences of the specified string in this instance.
+            </summary>
+            <param name="search">The string to seek.</param>
+            <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.String,System.Int32)">
+            <summary>
+            Reports the zero-based indices of all occurrences of the specified string in this instance. The search starts at a specified character position.
+            </summary>
+            <param name="search">The string to seek.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings.
+            </summary>
+            <param name="searches">A sequence of strings to seek.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+            <summary>
+            Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
+            </summary>
+            <param name="searches">A sequence of strings to seek.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+            <summary>
+            Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters.
+            </summary>
+            <param name="searches">A sequence of strings to seek.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+            <summary>
+            Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters. The search starts at a specified character position.
+            </summary>
+            <param name="searches">A sequence of strings to seek.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings.
+            </summary>
+            <param name="searches">A sequence of strings to seek.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+            <summary>
+            Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
+            </summary>
+            <param name="searches">A sequence of strings to seek.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.String})">
+            <summary>
+            Applies a <paramref name="transform"/> function to each line of a string.
+            </summary>
+            <param name="transform">The function used to transform each line of the input string.</param>
+            <returns>The transformed string.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.Int32,System.String})">
+            <summary>
+            Applies a <paramref name="transform"/> function to each line of a string, incorporating each line's index in the function.
+            </summary>
+            <param name="transform">The function used to transform each line of the input string.</param>
+            <returns>The transformed string.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.String},System.Func{System.String,System.Boolean})">
+            <summary>
+            Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
+            </summary>
+            <param name="transform">The function used to transform each line of the input string.</param>
+            <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.Int32,System.String},System.Func{System.String,System.Int32,System.Boolean})">
+            <summary>
+            Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>, incorporating each line's index in the functions. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
+            </summary>
+            <param name="transform">The function used to transform each line of the input string.</param>
+            <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            </summary>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            </summary>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <param name="prompt">The prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/> and a specified <paramref name="inputDelimiter" /> until blank input is received.
+            </summary>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.String)">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/> and a specified <paramref name="inputDelimiter" /> until blank input is received.
+            </summary>
+            <param name="prompt">The prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            </summary>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <param name="prompt">The prompt to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            </summary>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting any non-blank input.
+            </summary>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with no prompt and the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            </summary>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String)">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/> and the default input delimiter until blank input is received.
+            </summary>
+            <param name="prompt">The prompt to display.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple">
+            <summary>
+            Reads lines of input from the <see cref="T:System.Console"/> with no prompt and the default input delimiter until blank input is received.
+            </summary>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            </summary>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            </summary>
+            <param name="prompt">The prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting any non-blank input.
+            </summary>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.String)">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting any non-blank input.
+            </summary>
+            <param name="prompt">The prompt to display.</param>
+            <param name="inputDelimiter">The input delimiter to display.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting any non-blank input. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            </summary>
+            <param name="prompt">The prompt to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            </summary>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting any non-blank input.
+            </summary>
+            <param name="promptlines">The lines of the prompt to display.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Func{System.String,System.Boolean})">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with no prompt, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function.
+            </summary>
+            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String)">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting any non-blank input.
+            </summary>
+            <param name="prompt">The prompt to display.</param>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.Read">
+            <summary>
+            Reads a line of input from the <see cref="T:System.Console"/> with no prompt, the default input delimiter and accepting any non-blank input.
+            </summary>
+            <returns>A string containing the line read from standard input.</returns>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteCustom(System.String,System.Boolean,System.ConsoleColor,System.Object[])">
+            <summary>
+            Writes a log line with custom attributes to the console.
+            </summary>
+            <param name="tag">The 0, 2 or 4-length tag to apply to the line. 2-length tags are padded with a space on either side. An empty string (0-length tag) means the tag is omitted entirely.</param>
+            <param name="detailed">Whether to show extensive information about how this method was called in addition to the objects to log.</param>
+            <param name="color">The <see cref="T:System.ConsoleColor"/> to apply to the line.</param>
+            <param name="towrite">The object(s) to log.</param>
+            <exception cref="T:System.ArgumentException" />
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteSuccess(System.Object[])">
+            <summary>
+            Writes log lines to the <see cref="T:System.Console"/> as "success" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpSuccess(System.Object[])">
+            <summary>
+            Writes log lines to the console as follow-up information to "success" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteInfo(System.Object[])">
+            <summary>
+            Writes log lines to the <see cref="T:System.Console"/> as general "information" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpInfo(System.Object[])">
+            <summary>
+            Writes log lines to the console as follow-up information to general "information" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteWarn(System.Object[])">
+            <summary>
+            Writes log lines to the <see cref="T:System.Console"/> as "warning" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpWarn(System.Object[])">
+            <summary>
+            Writes log lines to the console as follow-up information to "warning" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteSoftWarn(System.Object[])">
+            <summary>
+            Writes log lines to the <see cref="T:System.Console"/> as "soft warning" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpSoftWarn(System.Object[])">
+            <summary>
+            Writes log lines to the console as follow-up information to "soft warning" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFail(System.Object[])">
+            <summary>
+            Writes log lines to the <see cref="T:System.Console"/> as "failure" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpFail(System.Object[])">
+            <summary>
+            Writes log lines to the console as follow-up information to "failure" messages.
+            </summary>
+            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
+        </member>
+        <member name="F:LaquaiLib.Miscellaneous.Logger.TableInputMode.Rows">
+            <summary>
+            Indicates that the associated value contains rows of data.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Miscellaneous.Logger.TableInputMode.Columns">
+            <summary>
+            Indicates that the associated value contains columns of data.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteAsTable``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}},LaquaiLib.Miscellaneous.Logger.TableInputMode)">
+            <summary>
+            Writes an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> to the <see cref="T:System.Console"/> by formatting the contained values to look like a table using the specified <paramref name="tableInputMode"/>.
+            </summary>
+            <param name="input">The collections of values to write.</param>
+            <param name="tableInputMode">How the <paramref name="input"/> value is to be interpreted as indicated by a <see cref="T:LaquaiLib.Miscellaneous.Logger.TableInputMode"/> value.</param>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.Sum(System.Double,System.Double,System.Func{System.Double,System.Double})">
+            <summary>
+            Calculates the sum of a series of output values of a function.
+            </summary>
+            <param name="x">The </param>
+            <param name="n"></param>
+            <param name="fn"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.RoundToMultiple(System.Double,System.Double)">
+            <summary>
+            Rounds a <paramref name="number"/> to the nearest multiple of a given number <paramref name="multiple"/>.
+            </summary>
+            <param name="number">The number to round.</param>
+            <param name="multiple">The number a multiple of which <paramref name="number"/> is to be rounded to.</param>
+            <returns><paramref name="number"/> rounded to a multiple of <paramref name="multiple"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.SmoothFunctions(System.Func{System.Double,System.Double},System.Func{System.Double,System.Double},System.Func{System.Double,System.Double},System.Double,System.Double)">
+            <summary>
+            Smooths two functions over a given interval using a custom smoothing function.
+            </summary>
+            <param name="f">The first function to use when constructing the output function.</param>
+            <param name="g">The second function to use when constructing the output function.</param>
+            <param name="smoothFunc">The custom smoothing function to use.</param>
+            <param name="xStart">The start of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+            <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+            <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of <paramref name="smoothFunc"/> that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
+            <exception cref="T:System.ArgumentException"><paramref name="xStart"/> was greater than <paramref name="xEnd"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.SmoothFunctions(System.Func{System.Double,System.Double},System.Func{System.Double,System.Double},System.Double,System.Double)">
+            <summary>
+            Smooths two functions over a given interval.
+            </summary>
+            <param name="f">The first function to use when constructing the output function.</param>
+            <param name="g">The second function to use when constructing the output function.</param>
+            <param name="xStart">The start of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+            <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
+            <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of a smoothing function that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.Factorial(System.Double)">
+            <summary>
+            Computes the factorial of any number using the <see cref="T:LaquaiLib.RandomMath.Gamma"/> function.
+            </summary>
+            <param name="x">The number to calculate the factorial of. May be non-integral.</param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.Trigonometry.EllipseAround(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Returns the <c>sin</c> and <c>cos</c> functions that, together, trace an ellipse with specified sine and cosine radii and a given smoothness around a point.
+            </summary>
+            <param name="x">The <c>x</c>-coordinate of the point to trace the ellipse around.</param>
+            <param name="y">The <c>y</c>-coordinate of the point to trace the ellipse around.</param>
+            <param name="rSin">The "horizontal" radius of the ellipse. If equal to <paramref name="rCos"/>, the ellipse is a circle.</param>
+            <param name="rCos">The "vertical" radius of the ellipse. If equal to <paramref name="rSin"/>, the ellipse is a circle.</param>
+            <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
+            <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an ellipse with the specified radii <paramref name="rSin"/> and <paramref name="rCos"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
+        </member>
+        <member name="T:LaquaiLib.RandomMath.Stochastics">
+            <summary>
+            Provides static methods for calculating probabilities and other stochastic functions.
+            </summary>
+        </member>
+        <member name="T:LyricsDisplay.Util.TempFile">
+            <summary>
+            Represents a temporary file that is automatically deleted when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LyricsDisplay.Util.TempFile.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LyricsDisplay.Util.TempFile"/> with a fully random file name and extension as assigned by the OS.
+            </summary>
+        </member>
+        <member name="M:LyricsDisplay.Util.TempFile.#ctor(System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LyricsDisplay.Util.TempFile"/> with a fully random file name as assigned by the OS, and changes its extension to the one specified file extension.
+            </summary>
+            <param name="fileExtension">The file extension for this <see cref="T:LyricsDisplay.Util.TempFile"/>.</param>
+        </member>
+        <member name="M:LyricsDisplay.Util.TempFile.#ctor(System.String,System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LyricsDisplay.Util.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LyricsDisplay.Util.TempFile"/> is disposed.
+            </summary>
+            <param name="path">The path to the file to wrap with this <see cref="T:LyricsDisplay.Util.TempFile"/>.</param>
+            <param name="fileExtension">The file extension for this <see cref="T:LyricsDisplay.Util.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is not altered.</param>
+            <exception cref="T:System.ObjectDisposedException"></exception>
+        </member>
+        <member name="P:LyricsDisplay.Util.TempFile.Path">
+            <summary>
+            The path to the file this <see cref="T:LyricsDisplay.Util.TempFile"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LyricsDisplay.Util.TempFile.Stream">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:LyricsDisplay.Util.TempFile.Dispose">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

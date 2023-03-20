@@ -2,7 +2,7 @@
 
 namespace LaquaiLib;
 
-public static partial class Math
+public static partial class RandomMath
 {
     public static class Topology
     {
@@ -313,13 +313,13 @@ public static partial class Math
             {
                 try
                 {
-                    return (int)((1 + System.Math.Sqrt(1 + 8 * cables)) / 2);
+                    return (int)((1 + Math.Sqrt(1 + 8 * cables)) / 2);
                 }
                 catch
                 {
                     try
                     {
-                        return (int)((1 - System.Math.Sqrt(1 + 8 * cables)) / 2);
+                        return (int)((1 - Math.Sqrt(1 + 8 * cables)) / 2);
                     }
                     catch
                     {

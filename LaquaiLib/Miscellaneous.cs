@@ -1,8 +1,6 @@
 ﻿using LaquaiLib.Extensions;
 
-using System.CodeDom;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace LaquaiLib;
 
@@ -25,16 +23,10 @@ public static class Miscellaneous
             Fail = 0b001_0000,
             Success = 0b010_0000,
             Custom = 0b100_0000,
-            FollowUp = 0b000_0001,
-            FollowUpInfo = Info | FollowUp,
-            FollowUpSoftWarn = SoftWarn | FollowUp,
-            FollowUpWarn = Warn | FollowUp,
-            FollowUpError = Error | FollowUp,
-            FollowUpFail = Fail | FollowUp,
-            FollowUpSuccess = Success | FollowUp,
+            FollowUp = 0b000_0001
         }
 
-        private List<LogEntry> Entries { get; } = new();
+        private readonly List<LogEntry> Entries = new();
 
         internal class LogEntry
         {
@@ -126,7 +118,7 @@ public static class Miscellaneous
         }
         public int LogFollowUpFail(params object[] towrite)
         {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUpFail, towrite));
+            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.Fail, towrite));
             return Entries.Count;
         }
         public int LogInfo(params object[] towrite)
@@ -146,7 +138,7 @@ public static class Miscellaneous
         }
         public int LogFollowUpSoftWarn(params object[] towrite)
         {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUpSoftWarn, towrite));
+            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.SoftWarn, towrite));
             return Entries.Count;
         }
         public int LogSuccess(params object[] towrite)
@@ -156,7 +148,7 @@ public static class Miscellaneous
         }
         public int LogFollowUpSuccess(params object[] towrite)
         {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUpSuccess, towrite));
+            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.Success, towrite));
             return Entries.Count;
         }
         public int LogWarn(params object[] towrite)
@@ -166,7 +158,7 @@ public static class Miscellaneous
         }
         public int LogFollowUpWarn(params object[] towrite)
         {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUpWarn, towrite));
+            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.Warn, towrite));
             return Entries.Count;
         }
 
