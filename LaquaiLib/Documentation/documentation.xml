@@ -223,6 +223,218 @@
             <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
             <param name="cancellationToken">An optional <see cref="T:System.Threading.CancellationToken"/> that may be used to request cancellation of the asynchronous animation operation.</param>
         </member>
+        <member name="T:LaquaiLib.Util.TempAlloc">
+            <summary>
+            Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> with the given size.
+            <param name="bytes">The amount of bytes to allocate.</param>
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.Type)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to allocate memory for.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.IntPtr,System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> as a wrapper around existing allocated memory.
+            </summary>
+            <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Util.TempAlloc"/>.</param>
+            <param name="size">The size of the memory region at <paramref name="address"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.TempAlloc.Address">
+            <summary>
+            The address of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.TempAlloc.Size">
+            <summary>
+            The size of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps in bytes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.TempAlloc.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Util.TempAlloc"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Reallocate(System.Int32)">
+            <summary>
+            Resizes the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
+            </summary>
+            <param name="bytes">The new size of the memory region in bytes.</param>
+            <returns>A value indicating whether the <see cref="P:LaquaiLib.Util.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps has changed. If <c>true</c>, reading from any previous addresses is considered undefined behavior.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.TempArray`1">
+            <summary>
+            Represents a temporary array of <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> with the given size.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(`0[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> as a wrapper around the specified array of <typeparamref name="T"/>.
+            </summary>
+            <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="T:LaquaiLib.Util.TempArray`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(`0,System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
+            </summary>
+            <param name="value">The value to initialize all elements with.</param>
+            <param name="size">The size of the array to create.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.Array">
+            <summary>
+            The array of <typeparamref name="T"/> this <see cref="T:LaquaiLib.Util.TempArray`1"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Util.TempArray`1"/> has been disposed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.IsFixedSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.IsReadOnly">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.IsSynchronized">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.SyncRoot">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Util.TempArray`1.Item(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Equals(System.Object,System.Collections.IEqualityComparer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.GetHashCode(System.Collections.IEqualityComparer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.CompareTo(System.Object,System.Collections.IComparer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Add(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Contains(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.IndexOf(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Insert(System.Int32,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Remove(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.RemoveAt(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.CopyTo(System.Array,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Clone">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.TempDir">
+            <summary>
+            Represents a temporary directory that is automatically deleted when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempDir.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempDir"/> with a fully random name.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempDir.#ctor(System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempDir"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Util.TempDir"/> is disposed.
+            </summary>
+            <param name="path">The path to the directory to wrap with this <see cref="T:LaquaiLib.Util.TempDir"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.TempDir.Path">
+            <summary>
+            The path to the file this <see cref="T:LaquaiLib.Util.TempDir"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.TempDir.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Util.TempDir"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempDir.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.TempFile">
+            <summary>
+            Represents a temporary file that is automatically deleted when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempFile.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with a fully random file name and extension as assigned by the OS.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempFile.#ctor(System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with a fully random file name as assigned by the OS, and changes its extension to the one specified file extension.
+            </summary>
+            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Util.TempFile"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TempFile.#ctor(System.String,System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Util.TempFile"/> is disposed.
+            </summary>
+            <param name="path">The path to the file to wrap with this <see cref="T:LaquaiLib.Util.TempFile"/>.</param>
+            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Util.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is not altered.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.TempFile.Path">
+            <summary>
+            The path to the file this <see cref="T:LaquaiLib.Util.TempFile"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.TempFile.Stream">
+            <summary>
+            The <see cref="T:System.IO.FileStream"/> for the file this <see cref="T:LaquaiLib.Util.TempFile"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.TempFile.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Util.TempFile"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempFile.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="T:LaquaiLib.Constants">
             <summary>
             Provides a number of constants.
@@ -264,7 +476,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IconExtensions.ToImageSource(System.Drawing.Icon)">
             <summary>
-            Converts an icon to an <see cref="T:System.Windows.Media.ImageSource"/> object.
+            Converts this <see cref="T:System.Drawing.Icon"/> instance to an <see cref="T:System.Windows.Media.ImageSource"/>.
             </summary>
             <param name="icon"></param>
             <returns></returns>
@@ -392,6 +604,23 @@
             <param name="transform">The function used to transform each line of the input string.</param>
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.LaquaiLib.Range(System.Double,System.Double,System.Double)">
+            <summary>
+            Compiles an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Double"/>s from <paramref name="start"/> to <paramref name="stop"/> with a step width of <paramref name="step"/>.
+            </summary>
+            <param name="start">The start of the range.</param>
+            <param name="stop">The end of the range.</param>
+            <param name="step">The step width of the range.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Double"/> as described.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="step"/> is 0.</exception>
+        </member>
+        <member name="M:LaquaiLib.LaquaiLib.Equal(System.Object[])">
+            <summary>
+            Determines if all passed <paramref name="objects"/> are equal to each other.
+            </summary>
+            <param name="objects">The objects to compare.</param>
+            <returns>A value indicating whether all passed <paramref name="objects"/> are equal to each other.</returns>
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.String,System.Func{System.String,System.Boolean})">
             <summary>
@@ -701,43 +930,6 @@
             <summary>
             Provides static methods for calculating probabilities and other stochastic functions.
             </summary>
-        </member>
-        <member name="T:LyricsDisplay.Util.TempFile">
-            <summary>
-            Represents a temporary file that is automatically deleted when its wrapper object is disposed.
-            </summary>
-        </member>
-        <member name="M:LyricsDisplay.Util.TempFile.#ctor">
-            <summary>
-            Instantiates a new <see cref="T:LyricsDisplay.Util.TempFile"/> with a fully random file name and extension as assigned by the OS.
-            </summary>
-        </member>
-        <member name="M:LyricsDisplay.Util.TempFile.#ctor(System.String)">
-            <summary>
-            Instantiates a new <see cref="T:LyricsDisplay.Util.TempFile"/> with a fully random file name as assigned by the OS, and changes its extension to the one specified file extension.
-            </summary>
-            <param name="fileExtension">The file extension for this <see cref="T:LyricsDisplay.Util.TempFile"/>.</param>
-        </member>
-        <member name="M:LyricsDisplay.Util.TempFile.#ctor(System.String,System.String)">
-            <summary>
-            Instantiates a new <see cref="T:LyricsDisplay.Util.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LyricsDisplay.Util.TempFile"/> is disposed.
-            </summary>
-            <param name="path">The path to the file to wrap with this <see cref="T:LyricsDisplay.Util.TempFile"/>.</param>
-            <param name="fileExtension">The file extension for this <see cref="T:LyricsDisplay.Util.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is not altered.</param>
-            <exception cref="T:System.ObjectDisposedException"></exception>
-        </member>
-        <member name="P:LyricsDisplay.Util.TempFile.Path">
-            <summary>
-            The path to the file this <see cref="T:LyricsDisplay.Util.TempFile"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LyricsDisplay.Util.TempFile.Stream">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:LyricsDisplay.Util.TempFile.Dispose">
-            <inheritdoc/>
         </member>
     </members>
 </doc>
