@@ -10,12 +10,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F41FA87E-E2AE-4897-992D-C818BE4F92AB}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWpf", "TestWpf\TestWpf.csproj", "{8B971275-9527-448A-A4DA-C698BC079C78}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5FD0CC75-1479-451C-8AD4-E2BABF4CABFD} = {5FD0CC75-1479-451C-8AD4-E2BABF4CABFD}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
