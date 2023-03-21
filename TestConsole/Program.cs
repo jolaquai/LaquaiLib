@@ -1,5 +1,9 @@
-﻿using LaquaiLib;
+﻿using System.IO;
+using System.Runtime.InteropServices;
+
 using LaquaiLib.Extensions;
+
+using LaquaiLib.Util;
 
 using static LaquaiLib.Miscellaneous;
 using static LaquaiLib.RandomMath.Topology;
@@ -11,7 +15,7 @@ public class Program
     [STAThread] // Needed for Clipboard operations
     public static void Main()
     {
-        Clipboard.Clear();
+        
     }
 
     public async static Task asd()
