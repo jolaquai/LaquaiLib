@@ -277,16 +277,19 @@
             Represents a temporary array of <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(System.Int32)">
+        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> with the given size.
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> with the given size. It is automatically rented from and returned to <see cref="P:System.Buffers.ArrayPool`1.Shared"/> upon disposal of this <see cref="T:LaquaiLib.Util.TempArray`1"/>, unless <c>false</c> is explicitly passed for <paramref name="allowPooledArray"/>.
             </summary>
+            <param name="capacity">The capacity of the array to create.</param>
+            <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>. If <c>false</c>, a new array will be created instead.</param>
         </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(`0[])">
+        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(`0[],System.Buffers.ArrayPool{`0})">
             <summary>
             Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> as a wrapper around the specified array of <typeparamref name="T"/>.
             </summary>
             <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="T:LaquaiLib.Util.TempArray`1"/>.</param>
+            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> to return the array to when this <see cref="T:LaquaiLib.Util.TempArray`1"/> is disposed. May be <c>null</c> to indicate that the passed <paramref name="array"/> is not from any <see cref="T:System.Buffers.ArrayPool`1"/>.</param>
         </member>
         <member name="M:LaquaiLib.Util.TempArray`1.#ctor(`0,System.Int32)">
             <summary>
@@ -356,6 +359,16 @@
         <member name="M:LaquaiLib.Util.TempArray`1.CopyTo(System.Array,System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.CopyTo(LaquaiLib.Util.TempArray{`0},System.Int32)">
+            <summary>
+            Copies the elements of this <see cref="T:LaquaiLib.Util.TempArray`1"/> to another <see cref="T:LaquaiLib.Util.TempArray`1"/>, starting at a particular index.
+            </summary>
+            <param name="tempArray">The <see cref="T:LaquaiLib.Util.TempArray`1"/> that is the destination of the elements copied from this <see cref="T:LaquaiLib.Util.TempArray`1"/>.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="tempArray"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="tempArray"/> is multi-dimensional, the number of elements in this <see cref="T:LaquaiLib.Util.TempArray`1"/> is greater than the available space from <paramref name="index"/> to the end of the destination <see cref="T:LaquaiLib.Util.TempArray`1"/> or the type of the source <see cref="T:LaquaiLib.Util.TempArray`1"/> cannot be cast automatically to the type of the destination <see cref="T:LaquaiLib.Util.TempArray`1"/>.</exception>
+        </member>
         <member name="M:LaquaiLib.Util.TempArray`1.GetEnumerator">
             <inheritdoc/>
         </member>
@@ -401,12 +414,12 @@
         </member>
         <member name="M:LaquaiLib.Util.TempFile.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with a fully random file name and extension as assigned by the OS.
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with the file name and extension being assigned by the OS. It is usually a <see cref="T:System.Guid"/> with the extension <c>.tmp</c>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.TempFile.#ctor(System.String)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with a fully random file name as assigned by the OS, and changes its extension to the one specified file extension.
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with the file name being assigned by the OS (it is usually a <see cref="T:System.Guid"/>), and changes its extension to the one specified.
             </summary>
             <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Util.TempFile"/>.</param>
         </member>
@@ -415,7 +428,7 @@
             Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Util.TempFile"/> is disposed.
             </summary>
             <param name="path">The path to the file to wrap with this <see cref="T:LaquaiLib.Util.TempFile"/>.</param>
-            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Util.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is not altered.</param>
+            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Util.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is kept.</param>
         </member>
         <member name="P:LaquaiLib.Util.TempFile.Path">
             <summary>

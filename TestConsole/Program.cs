@@ -11,7 +11,7 @@ public class Program
     [STAThread] // Needed for Clipboard operations
     public static void Main()
     {
-        
+
     }
 
     public async static Task asd()
