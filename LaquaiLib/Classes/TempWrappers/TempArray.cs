@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections;
 using System.IO;
 
@@ -10,20 +11,25 @@ namespace LaquaiLib.Util;
 public class TempArray<T> : ICloneable, IList, IStructuralComparable, IStructuralEquatable, IDisposable
 {
     /// <summary>
-    /// Instantiates a new <see cref="TempArray{T}"/> with the given size.
+    /// Instantiates a new <see cref="TempArray{T}"/> with the given size. It is automatically rented from and returned to <see cref="ArrayPool{T}.Shared"/> upon disposal of this <see cref="TempArray{T}"/>.
     /// </summary>
     public TempArray(int capacity)
     {
-        _array = new T[capacity];
+        _array = ArrayPool<T>.Shared.Rent(capacity);
+        _pool = ArrayPool<T>.Shared;
+        _isPooledInstance = _pool is not null;
     }
 
     /// <summary>
     /// Instantiates a new <see cref="TempArray{T}"/> as a wrapper around the specified array of <typeparamref name="T"/>.
     /// </summary>
     /// <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="TempArray{T}"/>.</param>
-    public TempArray(T[] array)
+    /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to return the array to when this <see cref="TempArray{T}"/> is disposed. May be <c>null</c> to indicate that the passed <paramref name="array"/> is not from any <see cref="ArrayPool{T}"/>.
+    public TempArray(T[] array, ArrayPool<T>? arrayPool = null)
     {
         _array = array;
+        _pool = arrayPool;
+        _isPooledInstance = _pool is not null;
     }
 
     /// <summary>
@@ -41,6 +47,8 @@ public class TempArray<T> : ICloneable, IList, IStructuralComparable, IStructura
     }
 
     private T[] _array;
+    private bool _isPooledInstance;
+    private ArrayPool<T>? _pool;
 
     /// <summary>
     /// The array of <typeparamref name="T"/> this <see cref="TempArray{T}"/> wraps.
@@ -49,6 +57,14 @@ public class TempArray<T> : ICloneable, IList, IStructuralComparable, IStructura
         get {
             ObjectDisposedException.ThrowIf(_array is null, _array);
             return _array;
+        }
+        set {
+            ArgumentNullException.ThrowIfNull(value);
+            if (_isPooledInstance)
+            {
+                throw new NotSupportedException($"Pooled array instances may not be directly overwritten.");
+            }
+            _array = value;
         }
     }
     /// <summary>
@@ -107,7 +123,7 @@ public class TempArray<T> : ICloneable, IList, IStructuralComparable, IStructura
                     IDisposable disposable = _array[i] as IDisposable;
                     disposable?.Dispose();
                 }
-                _array = null;
+                _pool.Return(_array);
                 GC.Collect();
             }
         }
