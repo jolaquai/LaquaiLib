@@ -1,5 +1,8 @@
 ﻿namespace LaquaiLib.Extensions;
 
+/// <summary>
+/// Provides extension methods for the <see cref="string"/> and <see cref="Span{T}"/> of <see cref="char"/> Types.
+/// </summary>
 public static class StringSpanExtensions
 {
     public static string Repeat(this string source, int times) => string.Join("", Enumerable.Repeat(source, times));

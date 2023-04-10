@@ -4,6 +4,131 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
+        <member name="T:LaquaiLib.Classes.ConsoleQueue">
+            <summary>
+            Represents a (thread-safe) wrapper around the <see cref="T:System.Console"/>. It is used to postpone blocking console output until after any expensive computations are completed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Classes.ConsoleQueue.ConsoleLock">
+            <summary>
+            The <see cref="T:System.Object"/> used to lock when attempting to write to the <see cref="T:System.Console"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.ConsoleQueue.Enqueue(System.Object)">
+            <summary>
+            Adds an object to the end of the internal queue.
+            </summary>
+            <param name="obj">The object to eventually output to the <see cref="T:System.Console"/>.</param>
+            <returns>The index of the position in the internal queue at which <paramref name="obj"/> is.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.ConsoleQueue.Flush">
+            <summary>
+            Flushes all contents of the internal queue into the <see cref="T:System.Console"/>. This operation blocks until all objects in the internal queue have been output.
+            </summary>
+            <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1">
+            <summary>
+            Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.Capacity">
+            <summary>
+            The capacity of this <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.#ctor">
+            <summary>
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> with the default maximum capacity.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
+            </summary>
+            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>'s items from.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> with the given maximum <paramref name="capacity"/>.
+            </summary>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.Enqueue(`0)">
+            <summary>
+            Forcibly adds an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>, discarding the oldest item if the collection is at maximum capacity.
+            </summary>
+            <param name="item">The item to add to the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.TryEnqueue(`0)">
+            <summary>
+            Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
+            </summary>
+            <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>.</param>
+            <returns>A value indicating whether the collection was modified; <c>true</c> if <paramref name="item"/> could be added, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.Reduce(System.Int32)">
+            <summary>
+            Removes items from the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
+            </summary>
+            <param name="length">The number of items to remain in the collection.</param>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.LimitedQueue`1">
+            <summary>
+            Represents a <see cref="T:System.Collections.Generic.Queue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Classes.Collections.LimitedQueue`1.Capacity">
+            <summary>
+            The capacity of this <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.#ctor">
+            <summary>
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> with the default maximum capacity.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
+            </summary>
+            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>'s items from.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> with the given maximum <paramref name="capacity"/>.
+            </summary>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.Enqueue(`0)">
+            <summary>
+            Forcibly adds an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>, discarding the oldest item if the collection is at maximum capacity.
+            </summary>
+            <param name="item">The item to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.TryEnqueue(`0)">
+            <summary>
+            Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
+            </summary>
+            <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>.</param>
+            <returns>A value indicating whether the collection was modified; <c>true</c> if <paramref name="item"/> could be added, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.Reduce(System.Int32)">
+            <summary>
+            Removes items from the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
+            </summary>
+            <param name="length">The number of items to remain in the collection.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="T:System.Windows.Threading.Dispatcher"/> of your main <see cref="T:System.Windows.Window"/>, otherwise the animation will not work.
+            </summary>
+            <param name="value">The value to animate progress towards.</param>
+            <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
+            <param name="cancellationToken">An optional <see cref="T:System.Threading.CancellationToken"/> that may be used to request cancellation of the asynchronous animation operation.</param>
+        </member>
         <member name="T:LaquaiLib.ScreenCapture.ScreenCapture">
             <summary>
             Wraps some screenshot functionality from <see cref="T:System.Drawing.Bitmap"/> and <see cref="T:System.Drawing.Graphics"/>.
@@ -214,14 +339,6 @@
             </summary>
             <param name="bitmap"></param>
             <param name="timestamp"></param>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int64,System.Threading.CancellationToken)">
-            <summary>
-            Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="T:System.Windows.Threading.Dispatcher"/> of your main <see cref="T:System.Windows.Window"/>, otherwise the animation will not work.
-            </summary>
-            <param name="value">The value to animate progress towards.</param>
-            <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
-            <param name="cancellationToken">An optional <see cref="T:System.Threading.CancellationToken"/> that may be used to request cancellation of the asynchronous animation operation.</param>
         </member>
         <member name="T:LaquaiLib.Util.TempAlloc">
             <summary>
@@ -478,6 +595,50 @@
             An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>α</c> through <c>ω</c>.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Extensions.ConcurrentQueueExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(System.Collections.Concurrent.ConcurrentQueue{``0},``0,``0[])">
+            <summary>
+            Adds items to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from <paramref name="items"/> to.</param>
+            <param name="item">The first item to add to <paramref name="queue"/>.</param>
+            <param name="items">Any more items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(System.Collections.Concurrent.ConcurrentQueue{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds items from a collection to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
+            <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue{``0},``0,``0[])">
+            <summary>
+            Adds items to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from <paramref name="items"/> to.</param>
+            <param name="item">The first item to add to <paramref name="queue"/>.</param>
+            <param name="items">Any more items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds items from a collection to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
+            <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="T:LaquaiLib.Extensions.DictionaryExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.Dictionary`2"/> Type.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Invert``2(System.Collections.Generic.Dictionary{``0,``1})">
             <summary>
             Creates an inverted <see cref="T:System.Collections.Generic.Dictionary`2"/>, where the original keys are now the values and vice versa.
@@ -487,12 +648,71 @@
             <param name="source"></param>
             <returns></returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.IconExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Drawing.Icon"/> Type.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Extensions.IconExtensions.ToImageSource(System.Drawing.Icon)">
             <summary>
             Converts this <see cref="T:System.Drawing.Icon"/> instance to an <see cref="T:System.Windows.Media.ImageSource"/>.
             </summary>
             <param name="icon"></param>
             <returns></returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IEnumerableBoolExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Boolean"/> Type.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IEnumerableExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> Type.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Extensions.QueueExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.Queue`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(System.Collections.Generic.Queue{``0},``0,``0[])">
+            <summary>
+            Adds items to the end of the <see cref="T:System.Collections.Generic.Queue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Generic.Queue`1"/> instance to add the items from <paramref name="items"/> to.</param>
+            <param name="item">The first item to add to <paramref name="queue"/>.</param>
+            <param name="items">Any more items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(System.Collections.Generic.Queue{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds items from a collection to the end of the <see cref="T:System.Collections.Generic.Queue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Generic.Queue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
+            <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedQueue{``0},``0,``0[])">
+            <summary>
+            Adds items to the end of the <see cref="T:System.Collections.Generic.Queue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Generic.Queue`1"/> instance to add the items from <paramref name="items"/> to.</param>
+            <param name="item">The first item to add to <paramref name="queue"/>.</param>
+            <param name="items">Any more items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedQueue{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Adds items from a collection to the end of the <see cref="T:System.Collections.Generic.Queue`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the collection.</typeparam>
+            <param name="queue">The <see cref="T:System.Collections.Generic.Queue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
+            <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="T:LaquaiLib.Extensions.StreamExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.IO.Stream"/> Type.
+            </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEnd(System.IO.Stream)">
             <summary>
@@ -512,6 +732,11 @@
             </summary>
             <param name="cancellationToken">The token to monitor for cancellation requests.</param>
             <returns>A task that represents the asynchronous read operation.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.StringSpanExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.String"/> and <see cref="T:System.Span`1"/> of <see cref="T:System.Char"/> Types.
+            </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.Char)">
             <summary>
@@ -617,6 +842,18 @@
             <param name="transform">The function used to transform each line of the input string.</param>
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.XmlWriterExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Xml.XmlWriter"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.XmlWriterExtensions.WriteXNode(System.Xml.XmlWriter,System.Xml.Linq.XNode)">
+            <summary>
+            Writes the specified <paramref name="xNode"/> to this <see cref="T:System.Xml.XmlWriter"/>.
+            </summary>
+            <param name="xmlWriter">The <see cref="T:System.Xml.XmlWriter"/> instance to write <paramref name="xNode"/> to.</param>
+            <param name="xNode">The <see cref="T:System.Xml.Linq.XNode"/> to serialize and write to <paramref name="xmlWriter"/>.</param>
         </member>
         <member name="M:LaquaiLib.LaquaiLib.Range(System.Double,System.Double,System.Double)">
             <summary>
@@ -942,6 +1179,21 @@
         <member name="T:LaquaiLib.RandomMath.Stochastics">
             <summary>
             Provides static methods for calculating probabilities and other stochastic functions.
+            </summary>
+        </member>
+        <member name="T:System.Xml.Linq.XRepetition">
+            <summary>
+            Represents an <see cref="P:System.Xml.Linq.XRepetition.XElement"/> that is repeated a certain number of times.
+            </summary>
+        </member>
+        <member name="P:System.Xml.Linq.XRepetition.Count">
+            <summary>
+            The number of times this element is repeated when it is serialized to XML. If left unchanged, this is <c>1</c>.
+            </summary>
+        </member>
+        <member name="P:System.Xml.Linq.XRepetition.XElement">
+            <summary>
+            The <see cref="T:System.Xml.Linq.XElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.
             </summary>
         </member>
     </members>

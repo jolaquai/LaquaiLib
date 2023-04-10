@@ -54,7 +54,7 @@ public class TaskbarProgress
                     throw new InvalidOperationException("Cannot set taskbar progress information when calling from a non-WPF context (calling context's window handle was 0).");
                 }
             }
-            catch (ArgumentException argumentException)
+            catch (ArgumentException)
             {
                 throw new InvalidOperationException("Cannot set taskbar progress information when calling from a non-WPF context (calling context's window handle was 0).");
             }

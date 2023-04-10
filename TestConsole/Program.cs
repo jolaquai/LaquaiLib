@@ -1,8 +1,7 @@
-﻿using LaquaiLib.Extensions;
-using LaquaiLib.Util;
+﻿using System.Xml;
+using System.Xml.Linq;
 
-using static LaquaiLib.Miscellaneous;
-using static LaquaiLib.RandomMath.Topology;
+using LaquaiLib.Extensions;
 
 namespace TestConsole;
 
@@ -11,10 +10,16 @@ public class Program
     [STAThread] // Needed for Clipboard operations
     public static void Main()
     {
-
+        using (var vxw = XmlWriter.Create(@"C:\test.xml"))
+        {
+            vxw.WriteStartDocument();
+            vxw.WriteXNode(new XElement("Root", new XRepetition(new XElement("Test", "Hallo"), 5)));
+            vxw.Flush();
+        }
+        XElement.Load(@"C:\test.xml").Save(@"C:\test.xml");
     }
 
-    public async static Task asd()
+    public static async Task Asd()
     {
         Dictionary<string, Dictionary<string, object>> groups = new()
         {
@@ -67,8 +72,8 @@ public class Program
         {
             while (true)
             {
-                long mem = GC.GetTotalMemory(false);
-                double log = Math.Floor(Math.Log(mem, 1024));
+                var mem = GC.GetTotalMemory(false);
+                var log = Math.Floor(Math.Log(mem, 1024));
                 Console.Title = $"{Math.Round((double)(mem / Math.Pow(1024, log)), 3)} {log switch
                 {
                     0 => "B",
@@ -80,29 +85,5 @@ public class Program
                 Thread.Sleep(100);
             }
         });
-    }
-
-    public static void NodeGridTest()
-    {
-        NodeGrid grid = new(
-            new("A"),
-            new("B"),
-            new("C"),
-            new("D")
-        );
-
-        grid.SetWeight("A", "B", 10);
-        grid.SetWeight("A", "C", 5);
-        grid.SetWeight("A", "D", 20);
-
-        grid.SetWeight("B", "C", 25);
-
-        grid.SetWeight("C", "D", 30);
-
-        (double Total, List<int> Path) = grid.Ring();
-        Logger.WriteInfo(
-            "Ring: " + Total,
-            "Path: " + string.Join(", ", Path.Select(n => grid.Nodes[n].Name))
-        );
     }
 }

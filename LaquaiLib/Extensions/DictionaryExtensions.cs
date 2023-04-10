@@ -1,5 +1,8 @@
 ﻿namespace LaquaiLib.Extensions;
 
+/// <summary>
+/// Provides extension methods for the <see cref="Dictionary{TKey, TValue}"/> Type.
+/// </summary>
 public static class DictionaryExtensions
 {
     /// <summary>

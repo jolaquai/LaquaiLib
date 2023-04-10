@@ -3,6 +3,9 @@ using System.Windows.Media;
 
 namespace LaquaiLib.Extensions;
 
+/// <summary>
+/// Provides extension methods for the <see cref="Icon"/> Type.
+/// </summary>
 public static class IconExtensions
 {
     /// <summary>

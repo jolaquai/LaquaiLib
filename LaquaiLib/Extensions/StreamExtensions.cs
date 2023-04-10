@@ -2,6 +2,9 @@
 
 namespace LaquaiLib.Extensions;
 
+/// <summary>
+/// Provides extension methods for the <see cref="Stream"/> Type.
+/// </summary>
 public static class StreamExtensions
 {
     /// <summary>
