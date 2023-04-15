@@ -1,31 +1,50 @@
-﻿using System.Xml;
-using System.Xml.Linq;
-
-using LaquaiLib.Extensions;
+﻿using LaquaiLib.Extensions;
 
 namespace TestConsole;
 
 public class Program
 {
     [STAThread] // Needed for Clipboard operations
-    public static void Main()
+    public static async Task Main()
     {
-        using (var vxw = XmlWriter.Create(@"C:\test.xml"))
-        {
-            vxw.WriteStartDocument();
-            vxw.WriteXNode(new XElement("Root", new XRepetition(new XElement("Test", "Hallo"), 5)));
-            vxw.Flush();
-        }
-        XElement.Load(@"C:\test.xml").Save(@"C:\test.xml");
+        
     }
+
+    public static async Task TypeWrite(string text, int delay = 40)
+    {
+        foreach (var c in text)
+        {
+            Console.Write(c);
+            await Task.Delay(delay + (c.IsVowel() ? 60 : 0));
+        }
+    }
+    public static async Task TypeWriteLine(string text, int delay = 20) => await TypeWrite(text + "\r\n", delay);
 
     public static async Task Asd()
     {
-        Dictionary<string, Dictionary<string, object>> groups = new()
+        new Task(() =>
+        {
+            while (true)
+            {
+                var mem = GC.GetTotalMemory(false);
+                var log = (int)Math.Log(mem, 1024);
+                Console.Title = $"{Math.Round(mem / Math.Pow(1024, log), 3)} {log switch
+                {
+                    0 => "B",
+                    1 => "KB",
+                    2 => "MB",
+                    3 => "GB",
+                    _ => "??"
+                }}";
+                Thread.Sleep(100);
+            }
+        }).Start();
+
+        var groups = new Dictionary<string, Dictionary<string, object>>()
         {
             {
                 "Predator",
-                new()
+                new Dictionary<string, object>()
                 {
                     { "Predator", false },
                     { "Predator 2", false },
@@ -36,7 +55,7 @@ public class Program
             },
             {
                 "Alien",
-                new()
+                new Dictionary<string, object>()
                 {
                     { "Prometheus", false },
                     { "Alien: Covenant", false },
@@ -47,8 +66,17 @@ public class Program
                 }
             },
             {
+                "Other movies",
+                new Dictionary<string, object>()
+                {
+                    { "The Banker", false },
+                    { "Manchester by the Sea", false },
+                    { "You People", false }
+                }
+            },
+            {
                 "Series",
-                new()
+                new Dictionary<string, object>()
                 {
                     { "Jojo", "S2E7" },
                     { "Initial D", "S5E8" }
@@ -56,34 +84,9 @@ public class Program
             }
         };
         Console.WriteLine(string.Join("\r\n\r\n", groups.Select(kv => $"""
-            [{kv.Key} ({kv.Value.Count})]
-            {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.Key.PadRight(kv.Value.Select(movie => movie.Key.Length).Max() + 4)}{(movie.Value is bool boolean ? (boolean ? "✓" : "X") : movie.Value)}"))}
+            [{kv.Key} ({kv.Value.Where(kv => kv.Value is false).Count()}/{kv.Value.Count})]
+            {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.Key.PadRight(kv.Value.Select(movie => movie.Key.Length).Max() + 4)}{(movie.Value is bool b ? (b ? "✓" : "X") : movie.Value)}"))}
             """
         )));
-
-        return;
-
-        while (false)
-        {
-
-        }
-
-        await Task.Run(() =>
-        {
-            while (true)
-            {
-                var mem = GC.GetTotalMemory(false);
-                var log = Math.Floor(Math.Log(mem, 1024));
-                Console.Title = $"{Math.Round((double)(mem / Math.Pow(1024, log)), 3)} {log switch
-                {
-                    0 => "B",
-                    1 => "KB",
-                    2 => "MB",
-                    3 => "GB",
-                    _ => "??"
-                }}";
-                Thread.Sleep(100);
-            }
-        });
     }
 }

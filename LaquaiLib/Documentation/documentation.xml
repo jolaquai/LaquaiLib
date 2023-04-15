@@ -595,6 +595,25 @@
             An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>α</c> through <c>ω</c>.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Extensions.CharExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Char"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.CharExtensions.IsVowel(System.Char)">
+            <summary>
+            Determines if a specified <see cref="T:System.Char"/> is a vowel (including 'y').
+            </summary>
+            <param name="character">The <see cref="T:System.Char"/> to check.</param>
+            <returns><c>true</c> if <paramref name="character"/> is a vowel, otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.CharExtensions.IsConsonant(System.Char)">
+            <summary>
+            Determines if a specified <see cref="T:System.Char"/> is a consonant.
+            </summary>
+            <param name="character">The <see cref="T:System.Char"/> to check.</param>
+            <returns><c>true</c> if <paramref name="character"/> is a consonant, otherwise, <c>false</c>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.ConcurrentQueueExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> Type.
@@ -1183,7 +1202,7 @@
         </member>
         <member name="T:System.Xml.Linq.XRepetition">
             <summary>
-            Represents an <see cref="P:System.Xml.Linq.XRepetition.XElement"/> that is repeated a certain number of times.
+            Represents an <see cref="T:System.Xml.Linq.XElement"/> that is repeated a certain number of times.
             </summary>
         </member>
         <member name="P:System.Xml.Linq.XRepetition.Count">
@@ -1195,6 +1214,75 @@
             <summary>
             The <see cref="T:System.Xml.Linq.XElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.
             </summary>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XElement,System.Int32)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XElement"/> and the number of times it is to be repeated.
+            </summary>
+            <param name="other">The <see cref="T:System.Xml.Linq.XElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
+            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Int32)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/> and the number of times it is to be repeated.
+            </summary>
+            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XStreamingElement,System.Int32)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XStreamingElement"/> and the number of times it is to be repeated.
+            </summary>
+            <param name="other">The <see cref="T:System.Xml.Linq.XStreamingElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
+            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object,System.Int32)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/>, a content <see cref="T:System.Object"/> and the number of times it is to be repeated.
+            </summary>
+            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+            <param name="content">The content of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object[],System.Int32)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/>, an <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s and the number of times it is to be repeated.
+            </summary>
+            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+            <param name="content">An <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object[])">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/> and an <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s.
+            </summary>
+            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+            <param name="content">An <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XElement)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XElement"/>.
+            </summary>
+            <param name="other">The <see cref="T:System.Xml.Linq.XElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/>.
+            </summary>
+            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/> and a content <see cref="T:System.Object"/>.
+            </summary>
+            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+            <param name="content">The content of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
+        </member>
+        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XStreamingElement)">
+            <summary>
+            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XStreamingElement"/>.
+            </summary>
+            <param name="other">The <see cref="T:System.Xml.Linq.XStreamingElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
         </member>
     </members>
 </doc>
