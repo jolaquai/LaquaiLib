@@ -27,6 +27,35 @@
             </summary>
             <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
         </member>
+        <member name="T:LaquaiLib.Classes.ObservableCollectionFast`1">
+            <summary>
+            Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
+            </summary>
+            <typeparam name="T">The Type of the elements in the collection.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified collection.
+            </summary>
+            <param name="collection">The collection from which the elements are copied.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor(System.Collections.Generic.List{`0})">
+            <summary>
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified list.
+            </summary>
+            <param name="list">The list from which the elements are copied.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the elements of the specified collection to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            </summary>
+            <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
+        </member>
         <member name="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
@@ -828,6 +857,36 @@
             <param name="source">The input sequence.</param>
             <param name="random">The <see cref="T:System.Random"/> instance to use for shuffling.</param>
             <returns>A shuffled sequence of the elements in the input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Performs the specified <paramref name="action"/> on each element of the source collection.
+            </summary>
+            <typeparam name="T">The Type of the elements in the collection.</typeparam>
+            <param name="source">The source collection to iterate over.</param>
+            <param name="action">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
+            <summary>
+            Performs the specified <paramref name="action"/> on each element of the source collection, incorporating each element's index in the <see cref="T:System.Action`2"/>.
+            </summary>
+            <typeparam name="T">The Type of the elements in the collection.</typeparam>
+            <param name="source">The source collection to iterate over.</param>
+            <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableIDisposableExtensions.Dispose(System.Collections.Generic.IEnumerable{System.IDisposable})">
+            <summary>
+            Disposes all elements in this sequence of <see cref="T:System.IDisposable"/> objects.
+            </summary>
+            <param name="disposables">The sequence of <see cref="T:System.IDisposable"/> objects to dispose.</param>
+            <remarks>
+            If any of the <see cref="M:System.IDisposable.Dispose"/> calls throw an exception, the exceptions are collected and rethrown as an <see cref="T:System.AggregateException"/> after all <see cref="M:System.IDisposable.Dispose"/> calls have been made.
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.QueueExtensions">
             <summary>

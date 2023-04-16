@@ -1,4 +1,7 @@
-﻿using LaquaiLib.Extensions;
+﻿using System.Security.Cryptography;
+using System.Text;
+
+using LaquaiLib.Extensions;
 
 namespace TestConsole;
 
