@@ -69,5 +69,4 @@ public static class IEnumerableExtensions
             action(element, c++);
         }
     }
-
 }

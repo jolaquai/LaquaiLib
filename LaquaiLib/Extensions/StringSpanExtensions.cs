@@ -350,7 +350,7 @@ public static class StringSpanExtensions
         var index = -1;
         var minIndex = int.MaxValue;
 
-        foreach (var c in source.Substring(startIndex))
+        foreach (var c in source[startIndex..])
         {
             if (!excepts.Contains(c))
             {
@@ -384,7 +384,7 @@ public static class StringSpanExtensions
                     continue;
                 }
 
-                if (source.Substring(i).StartsWith(except))
+                if (source[i..].StartsWith(except))
                 {
                     foundExcept = true;
                     break;
@@ -424,7 +424,7 @@ public static class StringSpanExtensions
                     continue;
                 }
 
-                if (source.Substring(i).StartsWith(except))
+                if (source[i..].StartsWith(except))
                 {
                     foundExcept = true;
                     break;
@@ -439,7 +439,6 @@ public static class StringSpanExtensions
 
         return -1;
     }
-
 
     /// <summary>
     /// Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string.
