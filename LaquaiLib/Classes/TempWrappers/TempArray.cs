@@ -50,7 +50,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     public TempArray(T value, int size)
     {
         _array = new T[size];
-        for (int i = 0; i < size; i++)
+        for (var i = 0; i < size; i++)
         {
             _array[i] = value;
         }
@@ -138,9 +138,9 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
         {
             if (_array is not null)
             {
-                for (int i = 0; i < _array.Length; i++)
+                for (var i = 0; i < _array.Length; i++)
                 {
-                    IDisposable disposable = _array[i] as IDisposable;
+                    var disposable = _array[i] as IDisposable;
                     disposable?.Dispose();
                 }
                 if (_isPooledInstance)
@@ -152,6 +152,9 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
         }
     }
 
+    /// <summary>
+    /// Finalizes this <see cref="TempArray{T}"/>.
+    /// </summary>
     ~TempArray()
     {
         Dispose(false);

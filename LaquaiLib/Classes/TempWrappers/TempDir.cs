@@ -59,6 +59,9 @@ public class TempDir : IDisposable
         }
     }
 
+    /// <summary>
+    /// Finalizes this <see cref="TempDir"/>.
+    /// </summary>
     ~TempDir()
     {
         Dispose(false);

@@ -17,7 +17,7 @@ public static class QueueExtensions
     public static void Enqueue<T>(this Queue<T> queue, T item, params T[] items)
     {
         queue.Enqueue(item);
-        foreach (T i in items)
+        foreach (var i in items)
         {
             queue.Enqueue(i);
         }
@@ -31,7 +31,7 @@ public static class QueueExtensions
     /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
     public static void Enqueue<T>(this Queue<T> queue, IEnumerable<T> collection)
     {
-        foreach (T item in collection)
+        foreach (var item in collection)
         {
             queue.Enqueue(item);
         }
@@ -47,7 +47,7 @@ public static class QueueExtensions
     public static void Enqueue<T>(this LimitedQueue<T> queue, T item, params T[] items)
     {
         queue.Enqueue(item);
-        foreach (T i in items)
+        foreach (var i in items)
         {
             queue.Enqueue(i);
         }
@@ -61,7 +61,7 @@ public static class QueueExtensions
     /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
     public static void Enqueue<T>(this LimitedQueue<T> queue, IEnumerable<T> collection)
     {
-        foreach (T item in collection)
+        foreach (var item in collection)
         {
             queue.Enqueue(item);
         }

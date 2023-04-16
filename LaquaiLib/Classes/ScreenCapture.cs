@@ -37,7 +37,7 @@ public partial class ScreenCapture
             List<double> scales = new();
             bool Callback(IntPtr hDesktop, IntPtr hdc, ref Rect pRect, int dwData)
             {
-                GetScaleFactorForMonitor(hDesktop, out nint scale);
+                GetScaleFactorForMonitor(hDesktop, out var scale);
                 scales.Add(Math.Round(scale / 100d / 0.25) * 0.25);
                 // scales.Add(scale / 100d);
 
@@ -69,7 +69,7 @@ public partial class ScreenCapture
     {
         Rectangle region = new(x1, y1, x2 - x1, y2 - y1);
         Bitmap capture = new(region.Width, region.Height);
-        Graphics cg = Graphics.FromImage(capture);
+        var cg = Graphics.FromImage(capture);
         cg.CopyFromScreen(region.Left, region.Top, 0, 0, region.Size);
         return capture;
     }
@@ -88,7 +88,7 @@ public partial class ScreenCapture
     /// <returns>A <see cref="Bitmap"/> object containing the capture created from the primary screen.</returns>
     public static Bitmap Capture()
     {
-        Rectangle primary = Screen.PrimaryScreen!.Bounds;
+        var primary = Screen.PrimaryScreen!.Bounds;
         return Capture(primary.Left, primary.Top, (int)(primary.Right * ResolutionScales[0]), (int)(primary.Bottom * ResolutionScales[0]));
     }
 
@@ -106,8 +106,8 @@ public partial class ScreenCapture
     /// <returns>The path to saved <see cref="Bitmap"/>.</returns>
     public static string TestRegion(int x1, int y1, int x2, int y2, bool extract = false)
     {
-        string path = Path.Combine(Path.GetTempPath(), $"testregion_{x1}_{y1}_{x2}_{y2}_{new Random().Next(10000)}.bmp");
-        Bitmap desktop = Capture();
+        var path = Path.Combine(Path.GetTempPath(), $"testregion_{x1}_{y1}_{x2}_{y2}_{new Random().Next(10000)}.bmp");
+        var desktop = Capture();
         if (extract)
         {
             desktop = desktop.Clone(new(x1, y1, x2 - x1, y2 - y1), desktop.PixelFormat);
@@ -116,13 +116,13 @@ public partial class ScreenCapture
         }
         else
         {
-            Color highlight = Color.FromArgb(0xFF, 0x00, 0x00);
-            for (int y = y1; y <= y2; y++)
+            var highlight = Color.FromArgb(0xFF, 0x00, 0x00);
+            for (var y = y1; y <= y2; y++)
             {
                 desktop.SetPixel(x1, y, highlight);
                 desktop.SetPixel(x2, y, highlight);
             }
-            for (int x = x1; x <= x2; x++)
+            for (var x = x1; x <= x2; x++)
             {
                 desktop.SetPixel(x, y1, highlight);
                 desktop.SetPixel(x, y2, highlight);
@@ -208,7 +208,7 @@ public partial class ScreenCapture
     /// </summary>
     public bool IsCaptureRegionScreen {
         get {
-            Rectangle rect = Screen.PrimaryScreen!.Bounds;
+            var rect = Screen.PrimaryScreen!.Bounds;
             return new Rectangle((int)(rect.Left * ResolutionScales[0]), (int)(rect.Top * ResolutionScales[0]), (int)(rect.Right * ResolutionScales[0]), (int)(rect.Bottom * ResolutionScales[0])) == Region;
         }
     }
@@ -238,7 +238,7 @@ public partial class ScreenCapture
     /// </summary>
     public ScreenCapture()
     {
-        Rectangle rect = Screen.PrimaryScreen!.Bounds;
+        var rect = Screen.PrimaryScreen!.Bounds;
         ScaleCoordinates(Screen.AllScreens.ToList().IndexOf(Screen.PrimaryScreen), false, ref rect);
         Predicate = () => true;
         InitTimer();
@@ -250,7 +250,7 @@ public partial class ScreenCapture
     /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
     public ScreenCapture(Func<bool> predicate)
     {
-        Rectangle rect = Screen.PrimaryScreen!.Bounds;
+        var rect = Screen.PrimaryScreen!.Bounds;
         ScaleCoordinates(Screen.AllScreens.ToList().IndexOf(Screen.PrimaryScreen), false, ref rect);
         Predicate = predicate;
         InitTimer();
@@ -314,7 +314,7 @@ public partial class ScreenCapture
     /// <param name="monitor">The number of the monitor to capture.</param>
     public ScreenCapture(int monitor)
     {
-        Rectangle rect = Screen.AllScreens[monitor].Bounds;
+        var rect = Screen.AllScreens[monitor].Bounds;
         ScaleCoordinates(monitor, false, ref rect);
         Predicate = () => true;
         InitTimer();
@@ -327,7 +327,7 @@ public partial class ScreenCapture
     /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
     public ScreenCapture(int monitor, Func<bool> predicate)
     {
-        Rectangle rect = Screen.AllScreens[monitor].Bounds;
+        var rect = Screen.AllScreens[monitor].Bounds;
         ScaleCoordinates(monitor, false, ref rect);
         Predicate = predicate;
         InitTimer();
@@ -340,10 +340,10 @@ public partial class ScreenCapture
     {
         Timer = new(info =>
         {
-            ScreenCapture src = (ScreenCapture)info!;
+            var src = (ScreenCapture)info!;
             if (src.IsCapturing && src.Predicate())
             {
-                DateTime captureTime = DateTime.Now;
+                var captureTime = DateTime.Now;
                 RaiseEvent(new(Capture(), captureTime));
             }
         }, this, Timeout.Infinite, 50);
@@ -355,7 +355,7 @@ public partial class ScreenCapture
     /// <param name="e">The <see cref="ScreenCaptureEventArgs"/> passed when raising the event.</param>
     protected virtual void RaiseEvent(ScreenCaptureEventArgs e)
     {
-        EventHandler<ScreenCaptureEventArgs> @event = Captured!;
+        var @event = Captured!;
         @event?.Invoke(this, e);
     }
 

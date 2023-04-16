@@ -86,6 +86,9 @@ public class TempFile : IDisposable
         }
     }
 
+    /// <summary>
+    /// Finalizes this <see cref="TempFile"/>.
+    /// </summary>
     ~TempFile()
     {
         Dispose(false);

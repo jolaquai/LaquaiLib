@@ -31,10 +31,10 @@ public static class ConsoleQueue
     /// <returns>The number of objects written to the <see cref="Console"/>.</returns>
     public static int Flush()
     {
-        int cnt = _queue.Count;
+        var cnt = _queue.Count;
         lock (ConsoleLock)
         {
-            foreach (object obj in _queue)
+            foreach (var obj in _queue)
             {
                 Console.WriteLine(obj);
             }

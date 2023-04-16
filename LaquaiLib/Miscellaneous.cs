@@ -69,7 +69,7 @@ public static class Miscellaneous
 
             public override string ToString()
             {
-                string str = $"[{DateTime:dd-MM-yyyy HH-mm-ss}]";
+                var str = $"[{DateTime:dd-MM-yyyy HH-mm-ss}]";
                 if (LogEntryTypes.HasFlag(LogEntryType.FollowUp))
                 {
                     str += "[ -> ] ";
@@ -172,13 +172,13 @@ public static class Miscellaneous
         /// <returns>An <see cref="IEnumerable{T}"/> of type <see cref="string"/> containing the lines read from standard input or null if no input was provided.</returns>
         public static IEnumerable<string> ReadMultiple(IEnumerable<string> promptlines, string inputDelimiter, Func<string, bool> validator)
         {
-            string now = DateTime.Now.ToString(FormatString);
+            var now = DateTime.Now.ToString(FormatString);
             List<string> returnList = new();
-            string str = "";
-            string ret = "";
+            var str = "";
+            var ret = "";
             if (promptlines is not null && promptlines.Any() && !promptlines.All(x => x == ""))
             {
-                foreach (string promptline in promptlines)
+                foreach (var promptline in promptlines)
                 {
                     str = $"[{now}][READ] {promptline}";
                     Console.WriteLine(str);
@@ -299,12 +299,12 @@ public static class Miscellaneous
         /// <returns>A string containing the line read from standard input.</returns>
         public static string Read(IEnumerable<string> promptlines, string inputDelimiter, Func<string, bool> validator)
         {
-            string now = DateTime.Now.ToString(FormatString);
-            string str = "";
-            string ret = "";
+            var now = DateTime.Now.ToString(FormatString);
+            var str = "";
+            var ret = "";
             if (promptlines is not null && promptlines.Any() && !promptlines.All(x => x == ""))
             {
-                foreach (string promptline in promptlines)
+                foreach (var promptline in promptlines)
                 {
                     str = $"[{now}][READ] {promptline}";
                     Console.WriteLine(str);
@@ -413,7 +413,7 @@ public static class Miscellaneous
 
             tag = tag.Replace(new List<string> { "\r", "\n" }, "");
 
-            string now = DateTime.Now.ToString(FormatString);
+            var now = DateTime.Now.ToString(FormatString);
             Console.ForegroundColor = color;
             if (detailed)
             {
@@ -426,7 +426,7 @@ public static class Miscellaneous
             }
             else
             {
-                foreach (object thing in towrite)
+                foreach (var thing in towrite)
                 {
                     Console.WriteLine($"[{now}]{(tag.Length == 0 ? "" : (tag.Length == 2 ? $"[ {tag} ]" : $"[{tag}]"))} {thing}");
                 }
@@ -510,15 +510,15 @@ public static class Miscellaneous
             where T : notnull
         {
             #region Enumerate and invert input data ("columns") to use as "rows"
-            int maxInnerEnumerableCount = input.Max(innerEnumerable => innerEnumerable.Count());
+            var maxInnerEnumerableCount = input.Max(innerEnumerable => innerEnumerable.Count());
 
             // Enumerate input into a List<List<string>> while ensuring that every row and column has an equal Count
-            List<List<string>> original = input.Select(innerEnumerable =>
+            var original = input.Select(innerEnumerable =>
             {
-                List<T> existingInner = innerEnumerable.ToList();
+                var existingInner = innerEnumerable.ToList();
 
                 List<string> newInner = new();
-                for (int i = 0; i < maxInnerEnumerableCount; i++)
+                for (var i = 0; i < maxInnerEnumerableCount; i++)
                 {
                     newInner.Add(
                         i < existingInner.Count
@@ -530,11 +530,11 @@ public static class Miscellaneous
             }).ToList();
 
             // Invert columns to use as rows
-            List<List<string>> inverted = Enumerable.Range(0, maxInnerEnumerableCount).Select(i => new List<string>()).ToList();
+            var inverted = Enumerable.Range(0, maxInnerEnumerableCount).Select(i => new List<string>()).ToList();
 
-            foreach (List<string> innerEnumerable in original)
+            foreach (var innerEnumerable in original)
             {
-                for (int i = 0; i < maxInnerEnumerableCount; i++)
+                for (var i = 0; i < maxInnerEnumerableCount; i++)
                 {
                     inverted[i].Add(i < innerEnumerable.Count ? innerEnumerable[i] : "");
                 }
@@ -545,8 +545,8 @@ public static class Miscellaneous
             if (tableInputMode == TableInputMode.Rows)
             {
                 // Determine the needed width of each column
-                List<int> columnWidths = inverted.Select(innerEnumerable => innerEnumerable.Max(str => str.Length)).ToList();
-                foreach (List<string> column in original)
+                var columnWidths = inverted.Select(innerEnumerable => innerEnumerable.Max(str => str.Length)).ToList();
+                foreach (var column in original)
                 {
                     Console.WriteLine(string.Join(" | ", column.Select((cell, i) => cell.PadRight(columnWidths[i]))));
                 }
@@ -554,8 +554,8 @@ public static class Miscellaneous
             else
             {
                 // Determine the needed width of each column
-                List<int> columnWidths = original.Select(innerEnumerable => innerEnumerable.Max(str => str.Length)).ToList();
-                foreach (List<string> row in inverted)
+                var columnWidths = original.Select(innerEnumerable => innerEnumerable.Max(str => str.Length)).ToList();
+                foreach (var row in inverted)
                 {
                     Console.WriteLine(string.Join(" | ", row.Select((cell, i) => cell.PadRight(columnWidths[i]))));
                 }

@@ -30,6 +30,7 @@ public static class StreamExtensions
     /// <summary>
     /// Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
     /// </summary>
+    /// <param name="stream"></param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous read operation.</returns>
     public static async Task<string> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken)

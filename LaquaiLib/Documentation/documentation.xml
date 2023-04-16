@@ -121,13 +121,97 @@
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
         </member>
+        <member name="T:LaquaiLib.Classes.TaskbarProgress">
+            <summary>
+            Represents a handler for a progress display on the current window's taskbar icon.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.#ctor(System.Windows.Window)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+            </summary>
+            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetInstance(System.Windows.Window)">
+            <summary>
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+            </summary>
+            <remarks>
+            The application calling this method or using its return value must own the specified <paramref name="window"/>.
+            </remarks>
+            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+            <returns>A <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetInstance(System.IntPtr)">
+            <summary>
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to a <see cref="T:System.Windows.Window"/> identified by its <paramref name="pointer"/>.
+            </summary>
+            <remarks>
+            The application calling this method or using its return value must own the <see cref="T:System.Windows.Window"/> pointed to by <paramref name="pointer"/>.
+            </remarks>
+            <param name="pointer">The pointer to the <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+            <returns>A <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetInstance">
+            <summary>
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to the <see cref="T:System.Windows.Window"/> of the calling process.
+            </summary>
+            <returns>A <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the calling context's window handle was 0. Usually occurs when this method is called from a non-WPF context.</exception>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.ResetInstance">
+            <summary>
+            Resets the state of the taskbar progress bar and the <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance that is kept internally. Only one <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance may exist at a time.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.SetState(System.Windows.Shell.TaskbarItemProgressState)">
+            <summary>
+            Sets the state of the taskbar progress visual.
+            </summary>
+            <param name="state">The new state of the taskbar progress visual.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressState"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.SetValue(System.Int32)">
+            <summary>
+            Sets a new value for the taskbar progress bar.
+            </summary>
+            <param name="percent">The new value for the taskbar progress bar. Must be between 0 and 100. Values outside this range are clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.SetValue(System.Double)">
+            <summary>
+            Sets a new value for the taskbar progress bar.
+            </summary>
+            <param name="value">The new value for the taskbar progress bar. Must be between 0 and 1. Values outside this range are clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.IncreaseValue(System.Double)">
+            <summary>
+            Increases the value of the taskbar progress bar by a specified amount.
+            </summary>
+            <param name="value">The amount to increase the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.DecreaseValue(System.Double)">
+            <summary>
+            Decreases the value of the taskbar progress bar by a specified amount.
+            </summary>
+            <param name="value">The amount to decrease the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
         <member name="M:LaquaiLib.Classes.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int64,System.Threading.CancellationToken)">
             <summary>
             Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="T:System.Windows.Threading.Dispatcher"/> of your main <see cref="T:System.Windows.Window"/>, otherwise the animation will not work.
             </summary>
             <param name="value">The value to animate progress towards.</param>
             <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
-            <param name="cancellationToken">An optional <see cref="T:System.Threading.CancellationToken"/> that may be used to request cancellation of the asynchronous animation operation.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that is monitored for cancellation requests.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetValue">
+            <summary>
+            Gets the current value of the taskbar progress bar.
+            </summary>
+            <returns>The current value of the taskbar progress bar.</returns>
         </member>
         <member name="T:LaquaiLib.ScreenCapture.ScreenCapture">
             <summary>
@@ -386,6 +470,11 @@
             <param name="bytes">The new size of the memory region in bytes.</param>
             <returns>A value indicating whether the <see cref="P:LaquaiLib.Util.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps has changed. If <c>true</c>, reading from any previous addresses is considered undefined behavior.</returns>
         </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Util.TempAlloc"/>.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Util.TempAlloc.Dispose">
             <inheritdoc/>
         </member>
@@ -492,6 +581,11 @@
         <member name="M:LaquaiLib.Util.TempArray`1.Clone">
             <inheritdoc/>
         </member>
+        <member name="M:LaquaiLib.Util.TempArray`1.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Util.TempArray`1"/>.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Util.TempArray`1.Dispose">
             <inheritdoc/>
         </member>
@@ -519,6 +613,11 @@
         <member name="P:LaquaiLib.Util.TempDir.IsDisposed">
             <summary>
             Whether this <see cref="T:LaquaiLib.Util.TempDir"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempDir.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Util.TempDir"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.TempDir.Dispose">
@@ -560,6 +659,11 @@
         <member name="P:LaquaiLib.Util.TempFile.IsDisposed">
             <summary>
             Whether this <see cref="T:LaquaiLib.Util.TempFile"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempFile.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Util.TempFile"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.TempFile.Dispose">
@@ -689,6 +793,42 @@
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> Type.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Select``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Selects each element in the input sequence without transformation.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that contains each element in the input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectMany``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+            Selects all elements of nested sequences of the same type <typeparamref name="T"/> in <paramref name="source"/> and flattens them into a single sequence without transformation.
+            </summary>
+            <typeparam name="T">The type of the elements in the sequence.</typeparam>
+            <param name="source">The sequence of nested sequences to flatten.</param>
+            <returns>A sequence that contains all the elements of the nested sequences.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Shuffles the elements in the input sequence.
+            </summary>
+            <remarks>
+            If the calling code already has an instance of <see cref="T:System.Random"/>, it should use the <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)"/> overload.
+            </remarks>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>A shuffled sequence of the elements in the input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)">
+            <summary>
+            Shuffles the elements in the input sequence, using a specified <see cref="T:System.Random"/> instance.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="random">The <see cref="T:System.Random"/> instance to use for shuffling.</param>
+            <returns>A shuffled sequence of the elements in the input sequence.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.QueueExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.Queue`1"/> Type.
@@ -749,6 +889,7 @@
             <summary>
             Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
             </summary>
+            <param name="stream"></param>
             <param name="cancellationToken">The token to monitor for cancellation requests.</param>
             <returns>A task that represents the asynchronous read operation.</returns>
         </member>
@@ -757,10 +898,37 @@
             Provides extension methods for the <see cref="T:System.String"/> and <see cref="T:System.Span`1"/> of <see cref="T:System.Char"/> Types.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.Repeat(System.String,System.Int32)">
+            <summary>
+            Constructs a new string from this string repeated <paramref name="count"/> times.
+            </summary>
+            <param name="source">The string to repeat.</param>
+            <param name="count">The number of times to repeat <paramref name="source"/>.</param>
+            <returns>A string consisting of <paramref name="source"/> repeated <paramref name="count"/> times.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.Replace(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Creates a new string from this string with all occurrences of the strings in <paramref name="finds"/> replaced with <paramref name="replace"/>.
+            </summary>
+            <param name="source">The string to perform replacements in.</param>
+            <param name="finds">A collection of strings to search for in <paramref name="source"/>.</param>
+            <param name="replace">The replacement for occurrences of strings in <paramref name="finds"/>.</param>
+            <returns>A string as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ReplaceExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            Creates a new string from this string with all occurrences of any string that is not contained in <paramref name="except"/> replaced with <paramref name="replace"/>.
+            </summary>
+            <param name="source">The string to perform replacements in.</param>
+            <param name="except">A collection of strings to except from replacement in <paramref name="source"/>.</param>
+            <param name="replace">The replacement for occurrences of strings that are not in <paramref name="except"/>.</param>
+            <returns>A string as described.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.Char)">
             <summary>
             Reports the zero-based indices of all occurrences of the specified Unicode character in this string.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="search">A Unicode character to seek.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
         </member>
@@ -768,6 +936,7 @@
             <summary>
             Reports the zero-based indices of all occurrences of the specified Unicode character in this string. The search starts at a specified character position.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="search">A Unicode character to seek.</param>
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
@@ -776,6 +945,7 @@
             <summary>
             Reports the zero-based indices of all occurrences of the specified string in this instance.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="search">The string to seek.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
         </member>
@@ -783,6 +953,7 @@
             <summary>
             Reports the zero-based indices of all occurrences of the specified string in this instance. The search starts at a specified character position.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="search">The string to seek.</param>
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
@@ -791,6 +962,7 @@
             <summary>
             Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
         </member>
@@ -798,6 +970,7 @@
             <summary>
             Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
@@ -806,6 +979,7 @@
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
         </member>
@@ -813,6 +987,7 @@
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters. The search starts at a specified character position.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
@@ -821,6 +996,7 @@
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
         </member>
@@ -828,14 +1004,118 @@
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.Char)">
+            <summary>
+            Reports the zero-based indices of all occurrences of Unicode characters other than the one specified in this string.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="except">A Unicode character to except.</param>
+            <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.Char,System.Int32)">
+            <summary>
+            Reports the zero-based indices of all occurrences of Unicode characters other than the one specified in this string. The search starts at a specified character position.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="except">A Unicode character to except.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.String)">
+            <summary>
+            Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="except">A string containing Unicode character to except.</param>
+            <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.String,System.Int32)">
+            <summary>
+            Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string. The search starts at a specified character position.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="except">A string containing Unicode character to except.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+            <summary>
+            Reports the zero-based index of the first occurrence of a character other than the ones specified in this string.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of characters to except.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+            <summary>
+            Reports the zero-based index of the first occurrence of a character other than the ones specified in this string. The search starts at a specified character position.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of characters to except.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Reports the zero-based index of the first occurrence of a string (or single character) other than the ones specified in this string.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of strings to except.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any string other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+            <summary>
+            Reports the zero-based index of the first occurrence of a string (or single character) other than the ones specified in this string. The search starts at a specified character position.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of strings to except.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any string other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+            <summary>
+            Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of characters to except.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+            <summary>
+            Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string. The search starts at a specified character position.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of characters to except.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of characters to except.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+            <summary>
+            Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string. The search starts at a specified character position.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="excepts">A sequence of characters to except.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.String})">
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="transform">The function used to transform each line of the input string.</param>
             <returns>The transformed string.</returns>
         </member>
@@ -843,6 +1123,7 @@
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string, incorporating each line's index in the function.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="transform">The function used to transform each line of the input string.</param>
             <returns>The transformed string.</returns>
         </member>
@@ -850,6 +1131,7 @@
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="transform">The function used to transform each line of the input string.</param>
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>
@@ -858,6 +1140,7 @@
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>, incorporating each line's index in the functions. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
             </summary>
+            <param name="source">The string to search.</param>
             <param name="transform">The function used to transform each line of the input string.</param>
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>

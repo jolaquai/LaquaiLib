@@ -5,9 +5,9 @@ namespace TestConsole;
 public class Program
 {
     [STAThread] // Needed for Clipboard operations
-    public static async Task Main()
+    public static void Main()
     {
-        
+
     }
 
     public static async Task TypeWrite(string text, int delay = 40)

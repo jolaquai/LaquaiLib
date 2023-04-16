@@ -27,7 +27,7 @@ public class LaquaiLib
             step = -step;
         }
 
-        double current = start - step;
+        var current = start - step;
         while (step > 0 ? current + step <= stop : current + step >= stop)
         {
             yield return current += step;

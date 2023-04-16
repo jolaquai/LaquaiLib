@@ -22,7 +22,7 @@ public static partial class RandomMath
         {
             return nums[0];
         }
-        List<int> numbers = nums.Select(Math.Abs).ToList();
+        var numbers = nums.Select(Math.Abs).ToList();
         if (numbers.Any(n => n == 1))
         {
             return 1;
@@ -110,12 +110,12 @@ public static partial class RandomMath
         public static (double X, double Y) PointInCircle(double x, double y, double r)
         {
             Random ran = new();
-            double tX = x - r;
-            double tY = y - r;
+            var tX = x - r;
+            var tY = y - r;
 
             double pX = 0;
             double pY = 0;
-            double d = r + 1;
+            var d = r + 1;
 
             while (Math.Abs(d) > r)
             {
@@ -137,7 +137,7 @@ public static partial class RandomMath
                 n /= 2;
             }
 
-            for (int i = 3; i <= Math.Sqrt(n); i += 2)
+            for (var i = 3; i <= Math.Sqrt(n); i += 2)
             {
                 while (n % i == 0)
                 {
@@ -154,12 +154,12 @@ public static partial class RandomMath
 
         public static IEnumerable<int> Coprimes(int n)
         {
-            IEnumerable<int> primes = PrimeFactors(n);
+            var primes = PrimeFactors(n);
 
             var outcp = LaquaiLib.Range(1, n, 1).Select(x => (int)x).ToList();
-            foreach (int pk in primes)
+            foreach (var pk in primes)
             {
-                foreach (int searchx in LaquaiLib.Range(1, n - 1, 1).Select(x => (int)x))
+                foreach (var searchx in LaquaiLib.Range(1, n - 1, 1).Select(x => (int)x))
                 {
                     if (pk * searchx > n)
                     {
@@ -195,11 +195,11 @@ public static partial class RandomMath
             {
                 throw new ArgumentOutOfRangeException(nameof(x), "x must be greater than 0.");
             }
-            double y = x;
-            double t = (x + 5.5);
+            var y = x;
+            var t = (x + 5.5);
             t -= (x + 0.5) * Math.Log(t);
-            double sum = 1.000000000190015;
-            for (int i = 0; i < 6; i++)
+            var sum = 1.000000000190015;
+            for (var i = 0; i < 6; i++)
             {
                 sum += Coefficients[i] / ++y;
             }

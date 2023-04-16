@@ -74,7 +74,7 @@ public class TempAlloc : IDisposable
     {
         ObjectDisposedException.ThrowIf(_address == nint.Zero && _size == -1, _address);
 
-        nint newAddress = Marshal.ReAllocHGlobal(_address, bytes);
+        var newAddress = Marshal.ReAllocHGlobal(_address, bytes);
         _size = bytes;
         if (newAddress != _address)
         {
@@ -95,6 +95,9 @@ public class TempAlloc : IDisposable
         _size = -1;
     }
 
+    /// <summary>
+    /// Finalizes this <see cref="TempAlloc"/>.
+    /// </summary>
     ~TempAlloc()
     {
         Dispose(false);

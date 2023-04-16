@@ -45,7 +45,7 @@ public static partial class RandomMath
             public NodeGrid(params Node[] nodes)
             {
                 _nodes = nodes.ToList();
-                foreach (Node node in _nodes)
+                foreach (var node in _nodes)
                 {
                     List<Node> remaining = new(_nodes);
                     remaining.Remove(node);
@@ -55,10 +55,10 @@ public static partial class RandomMath
                     }
                 }
 
-                for (int i = 0; i < _nodes.Count; i++)
+                for (var i = 0; i < _nodes.Count; i++)
                 {
                     _grid.Add(new());
-                    for (int j = 0; j < _nodes.Count; j++)
+                    for (var j = 0; j < _nodes.Count; j++)
                     {
                         _grid[i].Add(0);
                     }
@@ -68,10 +68,10 @@ public static partial class RandomMath
             {
                 _nodes = nodes.ToList();
 
-                for (int i = 0; i < _nodes.Count; i++)
+                for (var i = 0; i < _nodes.Count; i++)
                 {
                     _grid.Add(new());
-                    for (int j = 0; j < _nodes.Count; j++)
+                    for (var j = 0; j < _nodes.Count; j++)
                     {
                         _grid[i].Add(0);
                     }
@@ -111,7 +111,7 @@ public static partial class RandomMath
                     throw new Exception($"Dijkstra algorithm failed to return valid lists.");
                 }
 
-                int u = end;
+                var u = end;
                 path.Insert(0, u);
 
                 while (prevNodes[u] != -1)
@@ -129,13 +129,13 @@ public static partial class RandomMath
             {
                 int u;
 
-                List<int> Q = Enumerable.Repeat(0, _nodes.Count).ToList();
-                for (int i = 0; i < _nodes.Count; i++)
+                var Q = Enumerable.Repeat(0, _nodes.Count).ToList();
+                for (var i = 0; i < _nodes.Count; i++)
                 {
                     Q[i] = i;
                 }
 
-                for (int i = 0; i < _nodes.Count; i++)
+                for (var i = 0; i < _nodes.Count; i++)
                 {
                     weights.Insert(i, int.MaxValue);
                 }
@@ -143,7 +143,7 @@ public static partial class RandomMath
 
                 if (prevNodes is not null)
                 {
-                    for (int i = 0; i < _nodes.Count; i++)
+                    for (var i = 0; i < _nodes.Count; i++)
                     {
                         prevNodes.Insert(i, -1);
                     }
@@ -153,7 +153,7 @@ public static partial class RandomMath
                 {
                     u = int.MaxValue;
 
-                    foreach (int v in Q)
+                    foreach (var v in Q)
                     {
                         if (weights[v] < u)
                         {
@@ -163,17 +163,17 @@ public static partial class RandomMath
 
                     Q.RemoveAt(Q.LastIndexOf(u));
 
-                    List<int> neighbors = GetNeighbors(u).ToList();
+                    var neighbors = GetNeighbors(u).ToList();
                     if (neighbors.Count == 0)
                     {
                         throw new Exception($"Start node {u} has no neighbor nodes.");
                     }
 
-                    foreach (int v in neighbors)
+                    foreach (var v in neighbors)
                     {
                         if (Q.Contains(v))
                         {
-                            double alt = weights[u] + _grid[u][v];
+                            var alt = weights[u] + _grid[u][v];
                             if (alt < weights[v])
                             {
                                 weights[v] = alt;
@@ -195,7 +195,7 @@ public static partial class RandomMath
                     {
                         return false;
                     }
-                    int last = data.Count - 2;
+                    var last = data.Count - 2;
 
                     while (last >= 0)
                     {
@@ -210,9 +210,9 @@ public static partial class RandomMath
                     {
                         return false;
                     }
-                    int next = data.Count - 1;
+                    var next = data.Count - 1;
 
-                    for (int i = data.Count - 1; i > last; i--)
+                    for (var i = data.Count - 1; i > last; i--)
                     {
                         if (data[i] > data[last])
                         {
@@ -227,7 +227,7 @@ public static partial class RandomMath
                     return true;
                 }
 
-                List<int> nodes = Enumerable.Range(0, _nodes.Count).ToList();
+                var nodes = Enumerable.Range(0, _nodes.Count).ToList();
                 if (!returnHome)
                 {
                     nodes.Remove(start);
@@ -238,9 +238,9 @@ public static partial class RandomMath
                 do
                 {
                     double current = 0;
-                    int k = start;
+                    var k = start;
 
-                    for (int i = 0; i < nodes.Count; i++)
+                    for (var i = 0; i < nodes.Count; i++)
                     {
                         current += _grid[k][nodes[i]];
                         k = nodes[i];
@@ -265,7 +265,7 @@ public static partial class RandomMath
             public (double Total, List<int> Path) Bus()
             {
                 List<(double, List<int>)> possible = new();
-                for (int i = 0; i < _nodes.Count; i++)
+                for (var i = 0; i < _nodes.Count; i++)
                 {
                     possible.Add(TravellingSalesman(i, false));
                 }
@@ -275,7 +275,7 @@ public static partial class RandomMath
             public (double Total, List<int> Path) Ring()
             {
                 List<(double, List<int>)> possible = new();
-                for (int i = 0; i < _nodes.Count; i++)
+                for (var i = 0; i < _nodes.Count; i++)
                 {
                     possible.Add(TravellingSalesman(i, false));
                 }
@@ -295,7 +295,7 @@ public static partial class RandomMath
             public (double Total, int CableCount) FullMesh()
             {
                 double total = 0;
-                for (int i = 0; i < _nodes.Count; i++)
+                for (var i = 0; i < _nodes.Count; i++)
                 {
                     List<double> weights = new();
                     Dijkstra(i, weights, null);
