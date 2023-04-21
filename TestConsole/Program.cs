@@ -1,26 +1,20 @@
-﻿using LaquaiLib.Extensions;
+﻿using System.Security.Cryptography;
+
+using LaquaiLib.Extensions;
+
+using MathNet.Numerics.Random;
 
 namespace TestConsole;
 
 public class Program
 {
     [STAThread] // Needed for Clipboard operations
-    public static void Main()
+    public static async Task Main()
     {
-
+        
     }
 
-    public static async Task TypeWrite(string text, int delay = 40)
-    {
-        foreach (var c in text)
-        {
-            Console.Write(c);
-            await Task.Delay(delay + (c.IsVowel() ? 60 : 0));
-        }
-    }
-    public static async Task TypeWriteLine(string text, int delay = 20) => await TypeWrite(text + "\r\n", delay);
-
-    public static async Task Asd()
+    public static void Asd()
     {
         new Task(() =>
         {

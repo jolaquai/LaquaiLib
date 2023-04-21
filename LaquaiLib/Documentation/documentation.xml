@@ -800,6 +800,19 @@
             <param name="source"></param>
             <returns></returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.HashAlgorithmExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Security.Cryptography.HashAlgorithm"/> and derived Types.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.HashAlgorithmExtensions.ComputeHash(System.Security.Cryptography.HashAlgorithm,System.String)">
+            <summary>
+            Hashes the specified string using the specified <see cref="T:System.Security.Cryptography.HashAlgorithm"/> and returns the result as a hexadecimal string.
+            </summary>
+            <param name="algorithm">The <see cref="T:System.Security.Cryptography.HashAlgorithm"/>-derived Type to use.</param>
+            <param name="toHash">The string to hash.</param>
+            <returns>The hash of the specified string as a hexadecimal string.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.IconExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Drawing.Icon"/> Type.
@@ -1204,6 +1217,26 @@
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.XElementExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Xml.Linq.XElement"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.XElementExtensions.Siblings(System.Xml.Linq.XElement)">
+            <summary>
+            Returns a collection of the sibling elements of this node, in document order.
+            </summary>
+            <param name="source">The <see cref="T:System.Xml.Linq.XElement"/> to get the siblings of.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Xml.Linq.XElement"/> containing the sibling elements of this node, in document order.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.XElementExtensions.Siblings(System.Xml.Linq.XElement,System.Xml.Linq.XName)">
+            <summary>
+            Returns a collection of the sibling elements of this node, in document order. Only elements that have a matching <see cref="T:System.Xml.Linq.XName"/> are included in the collection.
+            </summary>
+            <param name="source">The <see cref="T:System.Xml.Linq.XElement"/> to get the siblings of.</param>
+            <param name="name">The <see cref="T:System.Xml.Linq.XName"/> to match.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Xml.Linq.XElement"/> containing the sibling elements of this node, in document order. Only elements that have a matching <see cref="T:System.Xml.Linq.XName"/> are included in the collection.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.XmlWriterExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Xml.XmlWriter"/> Type.
@@ -1215,6 +1248,18 @@
             </summary>
             <param name="xmlWriter">The <see cref="T:System.Xml.XmlWriter"/> instance to write <paramref name="xNode"/> to.</param>
             <param name="xNode">The <see cref="T:System.Xml.Linq.XNode"/> to serialize and write to <paramref name="xmlWriter"/>.</param>
+        </member>
+        <member name="T:LaquaiLib.Extensions.XNodeExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Xml.Linq.XNode"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.XNodeExtensions.SiblingNodes(System.Xml.Linq.XNode)">
+            <summary>
+            Returns a collection of the sibling nodes of this node, in document order.
+            </summary>
+            <param name="source">The <see cref="T:System.Xml.Linq.XNode"/> to get the siblings of.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Xml.Linq.XNode"/> containing the sibling nodes of this node, in document order.</returns>
         </member>
         <member name="M:LaquaiLib.LaquaiLib.Range(System.Double,System.Double,System.Double)">
             <summary>
