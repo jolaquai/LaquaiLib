@@ -1,5 +1,8 @@
 ﻿namespace LaquaiLib;
 
+/// <summary>
+/// Entry point for the library.
+/// </summary>
 public class LaquaiLib
 {
     /// <summary>

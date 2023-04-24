@@ -4,163 +4,20 @@ using System.Diagnostics;
 
 namespace LaquaiLib;
 
-#pragma warning disable CA1069 // Enums values should not be duplicated
-#pragma warning disable CS8509 // The switch expression does not handle all possible values of its input type (it is not exhaustive).
-
+/// <summary>
+/// Contains miscellaneous classes and methods.
+/// </summary>
 public static class Miscellaneous
 {
-    public class Logger
+    /// <summary>
+    /// Represents a rudimentary static logger that writes to the <see cref="Console"/>.
+    /// </summary>
+    public static class Logger
     {
-        public static string FormatString { get; set; } = @"MM-dd-yyyy HH:mm:ss.fffffff";
-
-        [Flags]
-        internal enum LogEntryType
-        {
-            Info = 0b000_0010,
-            SoftWarn = 0b000_0100,
-            Warn = 0b000_1000,
-            Error = 0b001_0000,
-            Fail = 0b001_0000,
-            Success = 0b010_0000,
-            Custom = 0b100_0000,
-            FollowUp = 0b000_0001
-        }
-
-        private readonly List<LogEntry> Entries = new();
-
-        internal class LogEntry
-        {
-            internal DateTime DateTime
-            {
-                get; init;
-            }
-            internal LogEntryType LogEntryTypes
-            {
-                get; init;
-            }
-            internal string? Tag
-            {
-                get; init;
-            }
-            internal object[] Logged
-            {
-                get; init;
-            }
-
-            internal LogEntry(DateTime dateTime, LogEntryType logEntryTypes, object[] logged)
-            {
-                DateTime = dateTime;
-                LogEntryTypes = logEntryTypes;
-                Logged = logged;
-            }
-
-            internal LogEntry(DateTime dateTime, string tag, object[] logged)
-            {
-                if (tag.Length is not 2 or 4)
-                {
-                    throw new ArgumentException($"Cannot insert {nameof(tag)}s with lengths other than 2 or 4.", nameof(tag));
-                }
-
-                DateTime = dateTime;
-                LogEntryTypes = LogEntryType.Custom;
-                Tag = tag;
-                Logged = logged;
-            }
-
-            public override string ToString()
-            {
-                var str = $"[{DateTime:dd-MM-yyyy HH-mm-ss}]";
-                if (LogEntryTypes.HasFlag(LogEntryType.FollowUp))
-                {
-                    str += "[ -> ] ";
-                }
-                else if (LogEntryTypes.HasFlag(LogEntryType.Info))
-                {
-                    str += "[INFO] ";
-                }
-                else if (LogEntryTypes.HasFlag(LogEntryType.SoftWarn))
-                {
-                    str += "[SWRN] ";
-                }
-                else if (LogEntryTypes.HasFlag(LogEntryType.Warn))
-                {
-                    str += "[WARN] ";
-                }
-                else if (LogEntryTypes.HasFlag(LogEntryType.Error))
-                {
-                    str += "[FAIL] ";
-                }
-                else if (LogEntryTypes.HasFlag(LogEntryType.Custom))
-                {
-                    str += Tag!.Length switch
-                    {
-                        4 => $"[{Tag}] ",
-                        2 => $"[ {Tag} ] "
-                    };
-                }
-                return string.Join(Environment.NewLine, Logged.Select(obj => str + obj.ToString())).Trim();
-            }
-        }
-
-        public string this[int i] => Entries[i].ToString().Trim();
-
-        public override string ToString() => string.Join(Environment.NewLine, Entries.Select(entry => entry)).Trim();
-
-        public int LogCustom(string tag, params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, tag, towrite));
-            return Entries.Count;
-        }
-        public int LogFail(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.Fail, towrite));
-            return Entries.Count;
-        }
-        public int LogFollowUpFail(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.Fail, towrite));
-            return Entries.Count;
-        }
-        public int LogInfo(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.Info, towrite));
-            return Entries.Count;
-        }
-        public int LogFollowUpInfo(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp, towrite));
-            return Entries.Count;
-        }
-        public int LogSoftWarn(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.SoftWarn, towrite));
-            return Entries.Count;
-        }
-        public int LogFollowUpSoftWarn(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.SoftWarn, towrite));
-            return Entries.Count;
-        }
-        public int LogSuccess(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.Success, towrite));
-            return Entries.Count;
-        }
-        public int LogFollowUpSuccess(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.Success, towrite));
-            return Entries.Count;
-        }
-        public int LogWarn(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.Warn, towrite));
-            return Entries.Count;
-        }
-        public int LogFollowUpWarn(params object[] towrite)
-        {
-            Entries.Add(new(DateTime.Now, LogEntryType.FollowUp | LogEntryType.Warn, towrite));
-            return Entries.Count;
-        }
+        /// <summary>
+        /// A <see cref="DateTime"/> format string used to format the timestamp in the console output.
+        /// </summary>
+        public static string FormatString { get; set; } = @"yyyy-MM-dd HH:mm:ss.fffffff";
 
         /// <summary>
         /// Reads lines of input from the <see cref="Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.

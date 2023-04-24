@@ -13,7 +13,7 @@ public static class IEnumerableTaskExtensions
     public static void Start(this IEnumerable<Task> tasks) => tasks.ForEach(t => t.Start());
 
     /// <summary>
-    /// Starts all the tasks in this collection of <see cref="Task"/>s and returns a <see cref="Task"/> that represents the completion of all of them.
+    /// Starts all the tasks in this collection of <see cref="Task"/>s and returns a <see cref="Task"/> that represents their completion.
     /// </summary>
     /// <param name="tasks">The <see cref="IEnumerable{T}"/> of <see cref="Task"/> that contains the <see cref="Task"/>s that are to be started.</param>
     /// <returns>A <see cref="Task"/> that completes when all of the <see cref="Task"/>s in this collection have completed.</returns>

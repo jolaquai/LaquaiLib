@@ -1,8 +1,4 @@
-﻿using System.Security.Cryptography;
-
-using LaquaiLib.Extensions;
-
-using MathNet.Numerics.Random;
+﻿using LaquaiLib.Extensions;
 
 namespace TestConsole;
 
@@ -16,7 +12,7 @@ public class Program
 
     public static void Asd()
     {
-        new Task(() =>
+        Task.Factory.StartNew(() =>
         {
             while (true)
             {
@@ -32,7 +28,7 @@ public class Program
                 }}";
                 Thread.Sleep(100);
             }
-        }).Start();
+        });
 
         var groups = new Dictionary<string, Dictionary<string, object>>()
         {
@@ -78,7 +74,7 @@ public class Program
             }
         };
         Console.WriteLine(string.Join("\r\n\r\n", groups.Select(kv => $"""
-            [{kv.Key} ({kv.Value.Where(kv => kv.Value is false).Count()}/{kv.Value.Count})]
+            [{kv.Key} ({kv.Value.Count(kv => kv.Value is not false)}/{kv.Value.Count})]
             {string.Join("\r\n", kv.Value.Select((movie, i) => $"{i + 1:D2} {movie.Key.PadRight(kv.Value.Select(movie => movie.Key.Length).Max() + 4)}{(movie.Value is bool b ? (b ? "✓" : "X") : movie.Value)}"))}
             """
         )));
