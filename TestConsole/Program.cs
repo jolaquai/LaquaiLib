@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
+using System.Text;
 
 using LaquaiLib.Classes.Streams;
 using LaquaiLib.Extensions;
@@ -11,9 +12,16 @@ public class Program
     [STAThread] // Needed for Clipboard operations
     public static void Main()
     {
-        using (var ms = new MultiStream(typeof(MemoryStream), 5)
+        using (var ms = new MultiStream(typeof(FileStream), 5, i =>
         {
-
+            return new object[]
+            {
+                Path.Combine(Path.GetTempPath(), $"multistream_test_{i}.txt"),
+                FileMode.Create
+            };
+        }))
+        {
+            ms.WriteLine("testing");
         }
     }
 

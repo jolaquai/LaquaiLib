@@ -155,6 +155,186 @@
             Represents a <see cref="T:System.IO.Stream"/> that can be either a <see cref="T:System.IO.MemoryStream"/> or a <see cref="T:System.IO.FileStream"/>, depending on the size of the data expected to be written to it.
             </summary>
         </member>
+        <member name="F:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff">
+            <summary>
+            The number of bytes at which the stream will switch from a <see cref="T:System.IO.MemoryStream"/> to a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> with the given expected payload size.
+            </summary>
+            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="F:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="T:System.IO.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.CanRead">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.CanSeek">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.CanWrite">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Length">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Position">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.Flush">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.SetLength(System.Int64)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged and optionally the managed resources used by this <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> instance.
+            </summary>
+            <param name="disposing">Whether to release the managed resources used by this <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> instance.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> instance, releasing any unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.Dispose">
+            <summary>
+            Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> instance.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Streams.MultiStream">
+            <summary>
+            Represents a wrapper for multiple <see cref="T:System.IO.Stream"/> instances to be written to as one.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.#ctor(System.IO.Stream[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
+            </summary>
+            <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.#ctor(System.Collections.Generic.IEnumerable{System.IO.Stream})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
+            </summary>
+            <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.#ctor(System.Type,System.Int32,System.Object[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> with the given number of <see cref="T:System.IO.Stream"/>s.
+            </summary>
+            <param name="streamType">The type of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
+            <param name="count">The number of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
+            <param name="constructorParameters">A collection of parameters to pass to the constructor of the given <paramref name="streamType"/>. If no constructor with the passed parameter types exists, instantiation is attempted with the parameterless constructor.</param>
+            <exception cref="T:System.ArgumentException">Thrown if the supplied <paramref name="streamType"/> does not inherit from <see cref="T:System.IO.Stream"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.#ctor(System.Type,System.Int32,System.Func{System.Int32,System.Object[]})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> with the given number of <see cref="T:System.IO.Stream"/>s.
+            </summary>
+            <param name="streamType">The type of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
+            <param name="count">The number of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
+            <param name="constructorParameterFactory">A <see cref="T:System.Func`2"/> that takes an <see cref="T:System.Int32"/> and returns a collection of parameters to pass to the constructor of the given <paramref name="streamType"/>. If no constructor with the passed parameter types exists, instantiation is attempted with the parameterless constructor.</param>
+            <exception cref="T:System.ArgumentException">Thrown if the supplied <paramref name="streamType"/> does not inherit from <see cref="T:System.IO.Stream"/>.</exception>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MultiStream.CanRead">
+            <summary>
+            A value that indicates whether all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance can be read from.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MultiStream.CanSeek">
+            <summary>
+            A value that indicates whether all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance can be seeked.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MultiStream.CanWrite">
+            <summary>
+            A value that indicates whether all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance can be written to.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MultiStream.Lengths">
+            <summary>
+            A collection of <see cref="T:System.Int64"/>s that indicate the lengths of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MultiStream.Positions">
+            <summary>
+            A collection of <see cref="T:System.Int64"/>s taht indicate the current positions of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Flush">
+            <summary>
+            Flushes all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Seeks all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
+            </summary>
+            <param name="offset">The offset to seek by.</param>
+            <param name="origin">A <see cref="T:System.IO.SeekOrigin"/> value that indicates the reference point used to obtain the new position.</param>
+            <returns>A collection of <see cref="T:System.Int64"/>s that indicate the new positions of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.SetLengths(System.Int64)">
+            <summary>
+            Sets a new length for all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
+            </summary>
+            <param name="value">The new length for the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes a sequence of bytes to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance and advances the current position within the <see cref="T:System.IO.Stream"/>s by the number of <see cref="T:System.Byte"/>s written.
+            </summary>
+            <param name="buffer">The buffer containing the data to write.</param>
+            <param name="offset">The offset in the buffer at which to begin writing.</param>
+            <param name="count">The number of <see cref="T:System.Byte"/>s to write.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Write(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Writes a sequence of bytes to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance and advances the current position within the <see cref="T:System.IO.Stream"/>s by the number of <see cref="T:System.Byte"/>s written.
+            </summary>
+            <param name="buffer">A region of memory to copy to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Write(System.String,System.Text.Encoding)">
+            <summary>
+            Writes <paramref name="text"/> to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance using the given <paramref name="encoding"/>.
+            </summary>
+            <param name="text">The text to write.</param>
+            <param name="encoding">The <see cref="T:System.Text.Encoding"/> to use to obtain the <see cref="T:System.Byte"/>s of the characters.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.WriteLine(System.String,System.Text.Encoding)">
+            <summary>
+            Writes <paramref name="text"/>, followed by the current line terminator to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance using the given <paramref name="encoding"/>.
+            </summary>
+            <param name="text">The text to write.</param>
+            <param name="encoding">The <see cref="T:System.Text.Encoding"/> to use to obtain the <see cref="T:System.Byte"/>s of the characters.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged and optionally the managed resources used by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
+            </summary>
+            <param name="disposing">Whether to release the managed resources used by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance, releasing any unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MultiStream.Dispose">
+            <summary>
+            Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Classes.TaskbarProgress">
             <summary>
             Represents a handler for a progress display on the current window's taskbar icon.

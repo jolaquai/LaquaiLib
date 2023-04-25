@@ -64,13 +64,12 @@ public class MultiStream : IDisposable
         }
     }
 
-    // TODO: Implement with Func<int, object?[]?> constructorParameterFactory
     /// <summary>
     /// Instantiates a new <see cref="MultiStream"/> with the given number of <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streamType">The type of <see cref="Stream"/>s to instantiate.</param>
     /// <param name="count">The number of <see cref="Stream"/>s to instantiate.</param>
-    /// <param name="constructorParameterFactory"></param>
+    /// <param name="constructorParameterFactory">A <see cref="Func{T, TResult}"/> that takes an <see cref="int"/> and returns a collection of parameters to pass to the constructor of the given <paramref name="streamType"/>. If no constructor with the passed parameter types exists, instantiation is attempted with the parameterless constructor.</param>
     /// <exception cref="ArgumentException">Thrown if the supplied <paramref name="streamType"/> does not inherit from <see cref="Stream"/>.</exception>
     public MultiStream(Type streamType, int count, Func<int, object?[]?> constructorParameterFactory)
     {
@@ -79,36 +78,21 @@ public class MultiStream : IDisposable
             throw new ArgumentException($"The given type '{streamType.Name}' must inherit from '{nameof(Stream)}'.", nameof(streamType));
         }
 
-        if (streamType.IsAssignableTo(typeof(MemoryStream)))
-        {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new MemoryStream()).ToList();
-        }
-        else if (streamType.IsAssignableTo(typeof(FileStream)))
-        {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose)).ToList();
-        }
-        else if (constructorParameters.Length > 1)
-        {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)).ToList();
-        }
-        else
-        {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)).ToList();
-        }
+        _streams = Enumerable.Range(0, count).Select(i => (Stream)Activator.CreateInstance(streamType, constructorParameterFactory(i))).ToList();
     }
 
     /// <summary>
-    /// A collection of values that indicate whether the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be read from.
+    /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be read from.
     /// </summary>
-    public bool[] CanRead => _streams.Select(stream => stream.CanRead).ToArray();
+    public bool CanRead => _streams.Select(stream => stream.CanRead).All();
     /// <summary>
-    /// A collection of values that indicate whether the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be seeked.
+    /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be seeked.
     /// </summary>
-    public bool[] CanSeek => _streams.Select(stream => stream.CanSeek).ToArray();
+    public bool CanSeek => _streams.Select(stream => stream.CanSeek).All();
     /// <summary>
-    /// A collection of values that indicate whether the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be written to.
+    /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be written to.
     /// </summary>
-    public bool[] CanWrite => _streams.Select(stream => stream.CanWrite).ToArray();
+    public bool CanWrite => _streams.Select(stream => stream.CanWrite).All();
     /// <summary>
     /// A collection of <see cref="long"/>s that indicate the lengths of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
@@ -160,7 +144,13 @@ public class MultiStream : IDisposable
     /// </summary>
     /// <param name="text">The text to write.</param>
     /// <param name="encoding">The <see cref="Encoding"/> to use to obtain the <see cref="byte"/>s of the characters.</param>
-    public void Write(string text, Encoding encoding) => _streams.ForEach(stream => stream.Write(encoding.GetBytes(text)));
+    public void Write(string text, Encoding? encoding = null) => _streams.ForEach(stream => stream.Write((encoding ?? Encoding.Default).GetBytes(text)));
+    /// <summary>
+    /// Writes <paramref name="text"/>, followed by the current line terminator to all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance using the given <paramref name="encoding"/>.
+    /// </summary>
+    /// <param name="text">The text to write.</param>
+    /// <param name="encoding">The <see cref="Encoding"/> to use to obtain the <see cref="byte"/>s of the characters.</param>
+    public void WriteLine(string text, Encoding? encoding = null) => _streams.ForEach(stream => stream.Write((encoding ?? Encoding.Default).GetBytes(text + Environment.NewLine)));
 
     #region Dispose pattern
     private bool _disposed;
