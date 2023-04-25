@@ -1,13 +1,20 @@
-﻿using LaquaiLib.Extensions;
+﻿using System.IO;
+using System.Reflection;
+
+using LaquaiLib.Classes.Streams;
+using LaquaiLib.Extensions;
 
 namespace TestConsole;
 
 public class Program
 {
     [STAThread] // Needed for Clipboard operations
-    public static async Task Main()
+    public static void Main()
     {
-        
+        using (var ms = new MultiStream(typeof(MemoryStream), 5)
+        {
+
+        }
     }
 
     public static void Asd()

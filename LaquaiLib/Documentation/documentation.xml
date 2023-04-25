@@ -150,6 +150,11 @@
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
         </member>
+        <member name="T:LaquaiLib.Classes.Streams.MemoryOrFileStream">
+            <summary>
+            Represents a <see cref="T:System.IO.Stream"/> that can be either a <see cref="T:System.IO.MemoryStream"/> or a <see cref="T:System.IO.FileStream"/>, depending on the size of the data expected to be written to it.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Classes.TaskbarProgress">
             <summary>
             Represents a handler for a progress display on the current window's taskbar icon.
@@ -498,7 +503,7 @@
         </member>
         <member name="P:LaquaiLib.Util.TempAlloc.Bits">
             <summary>
-            The size of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps in bytes.
+            The size of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps in bits.
             </summary>
         </member>
         <member name="P:LaquaiLib.Util.TempAlloc.Data">
@@ -547,10 +552,12 @@
         </member>
         <member name="M:LaquaiLib.Util.TempAlloc.Cast``1(System.Int32,System.Int32)">
             <summary>
-            Attempts to cast the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to the given <see cref="T:System.Type"/>.
+            Attempts to cast the content of a slice of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to the given <see cref="T:System.Type"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
-            <returns>The entire contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
+            <param name="offset">The offset at which to start the slice.</param>
+            <param name="length">The length of the slice.</param>
+            <returns>The contents of the slice of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Util.TempAlloc.Clear">
             <summary>
