@@ -65,7 +65,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// </summary>
     public T[] Array {
         get {
-            ObjectDisposedException.ThrowIf(_array is null, _array);
+            ObjectDisposedException.ThrowIf(IsDisposed, _array);
             return _array;
         }
         set {

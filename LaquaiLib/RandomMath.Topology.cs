@@ -93,7 +93,7 @@ public static partial class RandomMath
             public double GetWeight(Node node1, Node node2) => GetWeight(_nodes.IndexOf(node1), _nodes.IndexOf(node2));
             public double GetWeight(string node1, string node2) => GetWeight(_nodes.IndexOf(_nodes.Where(node => node.Name == node1).First()), _nodes.IndexOf(_nodes.Where(node => node.Name == node2).First()));
 
-            public IEnumerable<int> GetNeighbors(int node) => _nodes.Where(n => _grid[node][_nodes.IndexOf(n)] > 0 || _grid[node][_nodes.IndexOf(n)] > 0).Select(n => _nodes.IndexOf(n));
+            public IEnumerable<int> GetNeighbors(int node) => _nodes.Where(n => _grid[node][_nodes.IndexOf(n)] > 0).Select(n => _nodes.IndexOf(n));
             public IEnumerable<int> GetNeighbors(Node node) => GetNeighbors(_nodes.IndexOf(node));
             public IEnumerable<int> GetNeighbors(string node) => GetNeighbors(_nodes.IndexOf(_nodes.Where(n => n.Name == node).First()));
 

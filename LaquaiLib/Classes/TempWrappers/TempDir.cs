@@ -33,16 +33,17 @@ public class TempDir : IDisposable
     /// </summary>
     public string Path {
         get {
-            ObjectDisposedException.ThrowIf(string.IsNullOrWhiteSpace(_path), _path);
+            ObjectDisposedException.ThrowIf(IsDisposed, _path);
             return _path;
         }
     }
+
+    #region Dispose pattern
     /// <summary>
     /// Whether this <see cref="TempDir"/> has been disposed.
     /// </summary>
     public bool IsDisposed => string.IsNullOrWhiteSpace(_path);
 
-    #region Dispose pattern
     private void Dispose(bool disposing)
     {
         if (disposing)
@@ -72,6 +73,6 @@ public class TempDir : IDisposable
     {
         GC.SuppressFinalize(this);
         Dispose(true);
-    } 
+    }
     #endregion
 }

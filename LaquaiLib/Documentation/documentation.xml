@@ -241,6 +241,22 @@
         <member name="M:LaquaiLib.Classes.Streams.MultiStream.#ctor(System.Type,System.Int32,System.Func{System.Int32,System.Object[]})">
             <summary>
             Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> with the given number of <see cref="T:System.IO.Stream"/>s.
+            <example>
+            For example, to create a <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> with 5 <see cref="T:System.IO.FileStream"/> instances that point to temporary files, use this constructor and something along the lines of:
+            <code>
+            using (var ms = new MultiStream(typeof(FileStream), 5, i =>
+            {
+                return new object[]
+                {
+                    Path.Combine(Path.GetTempPath(), $"multistream_test_{i}.txt"),
+                    FileMode.Create
+                };
+            }))
+            {
+                // ...
+            }
+            </code>
+            </example>
             </summary>
             <param name="streamType">The type of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
             <param name="count">The number of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
@@ -645,13 +661,13 @@
         </member>
         <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> with the given size.
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> with the given size as represented by a 32-bit integer.
             </summary>
             <param name="bytes">The amount of bytes to allocate.</param>
         </member>
         <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> with the given size, optionally clearing any previous data.
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
             </summary>
             <param name="bytes">The amount of bytes to allocate.</param>
             <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
@@ -670,6 +686,41 @@
             <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Util.TempAlloc"/>.</param>
             <param name="size">The size of the memory region at <paramref name="address"/>.</param>
             <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Create``1">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(System.Int32,System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
+            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(``0)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for the
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> of the <paramref name="value"/> to allocate memory for.</typeparam>
+            <param name="value">A value of type <typeparamref name="T"/> to allocate memory for. The existing value is copied to the newly allocated memory region.</param>
         </member>
         <member name="P:LaquaiLib.Util.TempAlloc.Address">
             <summary>
@@ -691,30 +742,10 @@
             A <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> that represents the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Util.TempAlloc.Item(System.Int32)">
-            <summary>
-            Gets or sets a byte of data at the given index in the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
-            </summary>
-            <param name="i">The index of the byte to get or set.</param>
-            <returns>The byte at the given index.</returns>
-        </member>
         <member name="P:LaquaiLib.Util.TempAlloc.IsDisposed">
             <summary>
             Whether this <see cref="T:LaquaiLib.Util.TempAlloc"/> has been disposed.
             </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Create``1">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(System.Boolean)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
         </member>
         <member name="M:LaquaiLib.Util.TempAlloc.Reallocate(System.Int32)">
             <summary>
@@ -723,16 +754,16 @@
             <param name="bytes">The new size of the memory region in bytes.</param>
             <returns>A value indicating whether the <see cref="P:LaquaiLib.Util.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps has changed. If <c>true</c>, reading from any previous addresses is considered undefined behavior.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Cast``1">
+        <member name="M:LaquaiLib.Util.TempAlloc.As``1">
             <summary>
-            Attempts to cast the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to the given <see cref="T:System.Type"/>.
+            Attempts to cast the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
             <returns>The entire contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Cast``1(System.Int32,System.Int32)">
+        <member name="M:LaquaiLib.Util.TempAlloc.As``1(System.Int32,System.Int32)">
             <summary>
-            Attempts to cast the content of a slice of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to the given <see cref="T:System.Type"/>.
+            Attempts to cast the content of a slice of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
             <param name="offset">The offset at which to start the slice.</param>
@@ -741,8 +772,60 @@
         </member>
         <member name="M:LaquaiLib.Util.TempAlloc.Clear">
             <summary>
-            Clears the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
+            Clears the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps (sets all bytes to zero).
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.Replace(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Searches for the first occurrence of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps and replaces it with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
+            </summary>
+            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Util.TempAlloc.Data"/>.</param>
+            <param name="replacement">The sequence of bytes to replace the first occurrence of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
+            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
+            <para/><list type="bullet">
+            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
+                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
+            </list>
+            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
+                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
+            </list>
+            </list>
+            </param>
+            <returns>A value that indicates whether a replacement was made.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.ReplaceAll(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Searches for all occurrences of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps and replaces them with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
+            </summary>
+            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Util.TempAlloc.Data"/>.</param>
+            <param name="replacement">The sequence of bytes to replace the occurrences of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
+            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
+            <para/><list type="bullet">
+            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
+                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
+            </list>
+            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
+                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
+            </list>
+            </list>
+            </param>
+            <returns>The number of replacements made.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.ToHexString">
+            <summary>
+            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to a <see cref="T:System.String"/> of hexadecimal characters, grouped into 4-byte words.
+            </summary>
+            <returns>The string as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.ToBinaryString">
+            <summary>
+            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to a <see cref="T:System.String"/> of binary characters, grouped into 32-bit words.
+            </summary>
+            <returns>The string as described.</returns>
         </member>
         <member name="M:LaquaiLib.Util.TempAlloc.Finalize">
             <summary>
@@ -971,6 +1054,32 @@
         <member name="F:LaquaiLib.Constants.GreekLettersLowercase">
             <summary>
             An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>α</c> through <c>ω</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Convert">
+            <summary>
+            Provides methods to convert between data types.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Convert.ToHexString(System.Byte[])">
+            <summary>
+            Converts an array of <see cref="T:System.Byte"/>s to its equivalent string representation that is encoded with uppercase hex characters.
+            </summary>
+            <param name="bytes">The <see cref="T:System.Byte"/> array to convert.</param>
+            <returns>The string as described.</returns>
+            <remarks>This method uses the internal <see cref="M:System.Convert.ToHexString(System.Byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Convert.ToHexString(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Converts a <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> to its equivalent string representation that is encoded with uppercase hex characters.
+            </summary>
+            <param name="bytes">The <see cref="T:System.Byte"/> span to convert.</param>
+            <returns>The string as described.</returns>
+            <remarks>This method uses the internal <see cref="M:System.Convert.ToHexString(System.Byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
+        </member>
+        <member name="T:LaquaiLib.Extensions.AssemblyExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Reflection.Assembly"/> Type.
             </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.CharExtensions">
@@ -1212,6 +1321,11 @@
             <param name="queue">The <see cref="T:System.Collections.Generic.Queue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
             <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         </member>
+        <member name="T:LaquaiLib.Extensions.SpanExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Span`1"/> Type.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Extensions.StreamExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.IO.Stream"/> Type.
@@ -1237,12 +1351,12 @@
             <param name="cancellationToken">The token to monitor for cancellation requests.</param>
             <returns>A task that represents the asynchronous read operation.</returns>
         </member>
-        <member name="T:LaquaiLib.Extensions.StringSpanExtensions">
+        <member name="T:LaquaiLib.Extensions.StringExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.String"/> and <see cref="T:System.Span`1"/> of <see cref="T:System.Char"/> Types.
+            Provides extension methods for the <see cref="T:System.String"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.Repeat(System.String,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Repeat(System.String,System.Int32)">
             <summary>
             Constructs a new string from this string repeated <paramref name="count"/> times.
             </summary>
@@ -1250,7 +1364,7 @@
             <param name="count">The number of times to repeat <paramref name="source"/>.</param>
             <returns>A string consisting of <paramref name="source"/> repeated <paramref name="count"/> times.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.Replace(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Replace(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
             <summary>
             Creates a new string from this string with all occurrences of the strings in <paramref name="finds"/> replaced with <paramref name="replace"/>.
             </summary>
@@ -1259,7 +1373,7 @@
             <param name="replace">The replacement for occurrences of strings in <paramref name="finds"/>.</param>
             <returns>A string as described.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ReplaceExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ReplaceExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
             <summary>
             Creates a new string from this string with all occurrences of any string that is not contained in <paramref name="except"/> replaced with <paramref name="replace"/>.
             </summary>
@@ -1268,7 +1382,7 @@
             <param name="replace">The replacement for occurrences of strings that are not in <paramref name="except"/>.</param>
             <returns>A string as described.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.Char)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOf(System.String,System.Char)">
             <summary>
             Reports the zero-based indices of all occurrences of the specified Unicode character in this string.
             </summary>
@@ -1276,7 +1390,7 @@
             <param name="search">A Unicode character to seek.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.Char,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOf(System.String,System.Char,System.Int32)">
             <summary>
             Reports the zero-based indices of all occurrences of the specified Unicode character in this string. The search starts at a specified character position.
             </summary>
@@ -1285,7 +1399,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.String)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOf(System.String,System.String)">
             <summary>
             Reports the zero-based indices of all occurrences of the specified string in this instance.
             </summary>
@@ -1293,7 +1407,7 @@
             <param name="search">The string to seek.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOf(System.String,System.String,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOf(System.String,System.String,System.Int32)">
             <summary>
             Reports the zero-based indices of all occurrences of the specified string in this instance. The search starts at a specified character position.
             </summary>
@@ -1302,7 +1416,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings.
             </summary>
@@ -1310,7 +1424,7 @@
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
             <summary>
             Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
             </summary>
@@ -1319,7 +1433,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char})">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters.
             </summary>
@@ -1327,7 +1441,7 @@
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters. The search starts at a specified character position.
             </summary>
@@ -1336,7 +1450,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings.
             </summary>
@@ -1344,7 +1458,7 @@
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
             </summary>
@@ -1353,7 +1467,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.Char)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfExcept(System.String,System.Char)">
             <summary>
             Reports the zero-based indices of all occurrences of Unicode characters other than the one specified in this string.
             </summary>
@@ -1361,7 +1475,7 @@
             <param name="except">A Unicode character to except.</param>
             <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.Char,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfExcept(System.String,System.Char,System.Int32)">
             <summary>
             Reports the zero-based indices of all occurrences of Unicode characters other than the one specified in this string. The search starts at a specified character position.
             </summary>
@@ -1370,7 +1484,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.String)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfExcept(System.String,System.String)">
             <summary>
             Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string.
             </summary>
@@ -1378,7 +1492,7 @@
             <param name="except">A string containing Unicode character to except.</param>
             <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfExcept(System.String,System.String,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfExcept(System.String,System.String,System.Int32)">
             <summary>
             Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string. The search starts at a specified character position.
             </summary>
@@ -1387,7 +1501,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
             <summary>
             Reports the zero-based index of the first occurrence of a character other than the ones specified in this string.
             </summary>
@@ -1395,7 +1509,7 @@
             <param name="excepts">A sequence of characters to except.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
             <summary>
             Reports the zero-based index of the first occurrence of a character other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -1404,7 +1518,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Reports the zero-based index of the first occurrence of a string (or single character) other than the ones specified in this string.
             </summary>
@@ -1412,7 +1526,7 @@
             <param name="excepts">A sequence of strings to except.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any string other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
             <summary>
             Reports the zero-based index of the first occurrence of a string (or single character) other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -1421,7 +1535,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any string other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
             <summary>
             Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string.
             </summary>
@@ -1429,7 +1543,7 @@
             <param name="excepts">A sequence of characters to except.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
             <summary>
             Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -1438,7 +1552,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string.
             </summary>
@@ -1446,7 +1560,7 @@
             <param name="excepts">A sequence of characters to except.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
             <summary>
             Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -1455,7 +1569,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Func{System.String,System.String})">
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string.
             </summary>
@@ -1463,7 +1577,7 @@
             <param name="transform">The function used to transform each line of the input string.</param>
             <returns>The transformed string.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.Int32,System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Func{System.String,System.Int32,System.String})">
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string, incorporating each line's index in the function.
             </summary>
@@ -1471,7 +1585,7 @@
             <param name="transform">The function used to transform each line of the input string.</param>
             <returns>The transformed string.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.String},System.Func{System.String,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Func{System.String,System.String},System.Func{System.String,System.Boolean})">
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
             </summary>
@@ -1480,7 +1594,7 @@
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringSpanExtensions.ForEachLine(System.String,System.Func{System.String,System.Int32,System.String},System.Func{System.String,System.Int32,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Func{System.String,System.Int32,System.String},System.Func{System.String,System.Int32,System.Boolean})">
             <summary>
             Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>, incorporating each line's index in the functions. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
             </summary>
@@ -1837,22 +1951,13 @@
             </summary>
             <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
         </member>
-        <member name="F:LaquaiLib.Miscellaneous.Logger.TableInputMode.Rows">
+        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteAsTable``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}},System.Boolean)">
             <summary>
-            Indicates that the associated value contains rows of data.
+            Writes an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> to the <see cref="T:System.Console"/> by formatting the contained values to look like a table using the specified <paramref name="inputIsColumns"/>.
             </summary>
-        </member>
-        <member name="F:LaquaiLib.Miscellaneous.Logger.TableInputMode.Columns">
-            <summary>
-            Indicates that the associated value contains columns of data.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteAsTable``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}},LaquaiLib.Miscellaneous.Logger.TableInputMode)">
-            <summary>
-            Writes an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> to the <see cref="T:System.Console"/> by formatting the contained values to look like a table using the specified <paramref name="tableInputMode"/>.
-            </summary>
+            <typeparam name="T">The type of the values in the input collections.</typeparam>
             <param name="input">The collections of values to write.</param>
-            <param name="tableInputMode">How the <paramref name="input"/> value is to be interpreted as indicated by a <see cref="T:LaquaiLib.Miscellaneous.Logger.TableInputMode"/> value.</param>
+            <param name="inputIsColumns">Whether the <paramref name="input"/> consists of columns to be printed instead of rows.</param>
         </member>
         <member name="M:LaquaiLib.RandomMath.Sum(System.Double,System.Double,System.Func{System.Double,System.Double})">
             <summary>
@@ -1893,13 +1998,6 @@
             <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
             <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of a smoothing function that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
             <exception cref="T:System.ArgumentException"></exception>
-        </member>
-        <member name="M:LaquaiLib.RandomMath.Factorial(System.Double)">
-            <summary>
-            Computes the factorial of any number using the <see cref="T:LaquaiLib.RandomMath.Gamma"/> function.
-            </summary>
-            <param name="x">The number to calculate the factorial of. May be non-integral.</param>
-            <returns></returns>
         </member>
         <member name="M:LaquaiLib.RandomMath.Trigonometry.EllipseAround(System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>

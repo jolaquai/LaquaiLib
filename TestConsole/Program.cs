@@ -1,9 +1,6 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Text;
+﻿using System.Text;
 
-using LaquaiLib.Classes.Streams;
-using LaquaiLib.Extensions;
+using LaquaiLib.Util;
 
 namespace TestConsole;
 
@@ -12,36 +9,44 @@ public class Program
     [STAThread] // Needed for Clipboard operations
     public static void Main()
     {
-        using (var ms = new MultiStream(typeof(FileStream), 5, i =>
+        Task.Factory.StartNew(async () =>
         {
-            return new object[]
+            while (true)
             {
-                Path.Combine(Path.GetTempPath(), $"multistream_test_{i}.txt"),
-                FileMode.Create
-            };
-        }))
+                Console.Title = $"{GC.GetTotalMemory(false) / 1024d / 1024d:0.000} MB";
+                await Task.Delay(100);
+                GC.Collect(0);
+            }
+        });
+
+        var test = "testing my string replacements";
+        using (var alloc = TempAlloc.Create<byte>(count: test.Length, true))
         {
-            ms.WriteLine("testing");
+            // start init: copy the string's bytes into alloc
+            var data = alloc.Data;
+            var stringBytes = Encoding.Default.GetBytes(test);
+            for (var i = 0; i < stringBytes.Length; i++)
+            {
+                data[i] = stringBytes[i];
+            }
+            // end init
+
+            var bytes = new ReadOnlySpan<byte>(new char[] { 's' }.Select(c => (byte)c).ToArray());
+            Console.WriteLine($"Replacements made: {alloc.ReplaceAll(bytes, ReadOnlySpan<byte>.Empty, true)}");
+            Console.WriteLine(alloc.As<string>());
+            Console.WriteLine(alloc.Size);
         }
     }
 
     public static void Asd()
     {
-        Task.Factory.StartNew(() =>
+        Task.Factory.StartNew(async () =>
         {
             while (true)
             {
-                var mem = GC.GetTotalMemory(false);
-                var log = (int)Math.Log(mem, 1024);
-                Console.Title = $"{Math.Round(mem / Math.Pow(1024, log), 3)} {log switch
-                {
-                    0 => "B",
-                    1 => "KB",
-                    2 => "MB",
-                    3 => "GB",
-                    _ => "??"
-                }}";
-                Thread.Sleep(100);
+                Console.Title = $"{GC.GetTotalMemory(false) / 1024d / 1024d:0.000} MB";
+                await Task.Delay(100);
+                GC.Collect(0);
             }
         });
 

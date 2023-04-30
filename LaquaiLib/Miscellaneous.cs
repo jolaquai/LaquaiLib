@@ -1,6 +1,7 @@
 ﻿using LaquaiLib.Extensions;
 
 using System.Diagnostics;
+using System.Reflection;
 
 namespace LaquaiLib;
 
@@ -276,7 +277,7 @@ public static class Miscellaneous
             {
                 Console.WriteLine($"""
                                   [{now}]{(tag.Length == 0 ? "" : (tag.Length == 2 ? $"[ {tag} ]" : $"[{tag}]"))}
-                                      From: {(new StackFrame(1).GetMethod() is not null ? new StackFrame(1).GetMethod().Name + "()" : "")}
+                                      From: {(new StackFrame(1).GetMethod() is MethodBase methodBase ? methodBase.Name + "()" : "")}
                                       Content:
                                   {string.Join(Environment.NewLine, towrite.Select(obj => "        " + obj.ToString())).ForEachLine(line => "        " + line, line => !line.StartsWith("        "))}
                                   """);
@@ -346,27 +347,17 @@ public static class Miscellaneous
         /// <param name="towrite">The objects to write to the <see cref="Console"/>.</param>
         public static void WriteFollowUpFail(params object[] towrite) => WriteCustom("->", false, ConsoleColor.Red, towrite);
 
-        public enum TableInputMode
-        {
-            /// <summary>
-            /// Indicates that the associated value contains rows of data.
-            /// </summary>
-            Rows,
-            /// <summary>
-            /// Indicates that the associated value contains columns of data.
-            /// </summary>
-            Columns
-        }
-
         /// <summary>
-        /// Writes an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> to the <see cref="Console"/> by formatting the contained values to look like a table using the specified <paramref name="tableInputMode"/>.
+        /// Writes an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> to the <see cref="Console"/> by formatting the contained values to look like a table using the specified <paramref name="inputIsColumns"/>.
         /// </summary>
+        /// <typeparam name="T">The type of the values in the input collections.</typeparam>
         /// <param name="input">The collections of values to write.</param>
-        /// <param name="tableInputMode">How the <paramref name="input"/> value is to be interpreted as indicated by a <see cref="TableInputMode"/> value.</param>
-        public static void WriteAsTable<T>(IEnumerable<IEnumerable<T>> input, TableInputMode tableInputMode = TableInputMode.Rows)
+        /// <param name="inputIsColumns">Whether the <paramref name="input"/> consists of columns to be printed instead of rows.</param>
+        public static void WriteAsTable<T>(IEnumerable<IEnumerable<T>> input, bool inputIsColumns = false)
             where T : notnull
         {
             #region Enumerate and invert input data ("columns") to use as "rows"
+            // We need both the original and the inverted data anyway
             var maxInnerEnumerableCount = input.Max(innerEnumerable => innerEnumerable.Count());
 
             // Enumerate input into a List<List<string>> while ensuring that every row and column has an equal Count
@@ -399,7 +390,7 @@ public static class Miscellaneous
             #endregion
 
             // Output
-            if (tableInputMode == TableInputMode.Rows)
+            if (!inputIsColumns)
             {
                 // Determine the needed width of each column
                 var columnWidths = inverted.Select(innerEnumerable => innerEnumerable.Max(str => str.Length)).ToList();

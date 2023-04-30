@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using System.Text;
 
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-
 using LaquaiLib.Extensions;
 
 namespace LaquaiLib.Classes.Streams;
@@ -54,18 +52,37 @@ public class MultiStream : IDisposable
         {
             _streams = Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose)).ToList();
         }
-        else if (constructorParameters.Length > 1)
+        else if (constructorParameters is not null)
         {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)).ToList();
-        }
-        else
-        {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)).ToList();
+            if (constructorParameters.Length > 1)
+            {
+                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)).ToList();
+            }
+            else
+            {
+                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)).ToList();
+            }
         }
     }
 
     /// <summary>
     /// Instantiates a new <see cref="MultiStream"/> with the given number of <see cref="Stream"/>s.
+    /// <example>
+    /// For example, to create a <see cref="MultiStream"/> with 5 <see cref="FileStream"/> instances that point to temporary files, use this constructor and something along the lines of:
+    /// <code>
+    /// using (var ms = new MultiStream(typeof(FileStream), 5, i =>
+    /// {
+    ///     return new object[]
+    ///     {
+    ///         Path.Combine(Path.GetTempPath(), $"multistream_test_{i}.txt"),
+    ///         FileMode.Create
+    ///     };
+    /// }))
+    /// {
+    ///     // ...
+    /// }
+    /// </code>
+    /// </example>
     /// </summary>
     /// <param name="streamType">The type of <see cref="Stream"/>s to instantiate.</param>
     /// <param name="count">The number of <see cref="Stream"/>s to instantiate.</param>

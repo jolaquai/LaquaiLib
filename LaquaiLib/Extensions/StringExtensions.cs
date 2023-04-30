@@ -1,13 +1,11 @@
 ﻿using System.Text;
 
-using DocumentFormat.OpenXml.Drawing;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="string"/> and <see cref="Span{T}"/> of <see cref="char"/> Types.
+/// Provides extension methods for the <see cref="string"/> Type.
 /// </summary>
-public static class StringSpanExtensions
+public static class StringExtensions
 {
     /// <summary>
     /// Constructs a new string from this string repeated <paramref name="count"/> times.

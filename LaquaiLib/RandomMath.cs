@@ -75,22 +75,7 @@ public static partial class RandomMath
     /// <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
     /// <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of a smoothing function that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static Func<double, double> SmoothFunctions(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => SmoothFunctions(f, g,x => x > xEnd ? 1 : (x < xStart ? 0 : Math.Pow(x - xStart, 2) / (Math.Pow(x - xStart, 2) + Math.Pow(xEnd - x, 2))), xStart, xEnd);
-
-    /// <summary>
-    /// Computes the factorial of any number using the <see cref="Gamma"/> function.
-    /// </summary>
-    /// <param name="x">The number to calculate the factorial of. May be non-integral.</param>
-    /// <returns></returns>
-    public static double Factorial(double x)
-    {
-        if ((int)x == x)
-        {
-            return (int)Math.Exp(Gamma.Log(x + 1));
-        }
-
-        return Math.Exp(Gamma.Log(x + 1));
-    }
+    public static Func<double, double> SmoothFunctions(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => SmoothFunctions(f, g, x => x > xEnd ? 1 : (x < xStart ? 0 : Math.Pow(x - xStart, 2) / (Math.Pow(x - xStart, 2) + Math.Pow(xEnd - x, 2))), xStart, xEnd);
 
     public static class Trigonometry
     {
@@ -106,104 +91,5 @@ public static partial class RandomMath
         public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double rCos, double resolution = 360) => (new Func<double, double>(d => rSin * Math.Sin((d / resolution) * (2 * Math.PI)) + x), new Func<double, double>(d => rCos * -Math.Cos((d / resolution) * (2 * Math.PI)) + y));
 
         public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double radius, double resolution) => EllipseAround(x, y, radius, radius, resolution = 360);
-
-        public static (double X, double Y) PointInCircle(double x, double y, double r)
-        {
-            Random ran = new();
-            var tX = x - r;
-            var tY = y - r;
-
-            double pX = 0;
-            double pY = 0;
-            var d = r + 1;
-
-            while (Math.Abs(d) > r)
-            {
-                pX = tX + ran.Next(0, (int)(2 * r));
-                pY = tY + ran.Next(0, (int)(2 * r));
-                d = Math.Sqrt(Math.Pow(x - pX, 2) + Math.Pow(y - pY, 2));
-            }
-            return (pX, pY);
-        }
-    }
-
-    public static class Miscellaneous
-    {
-        public static IEnumerable<int> PrimeFactors(int n)
-        {
-            while (n % 2 == 0)
-            {
-                yield return 2;
-                n /= 2;
-            }
-
-            for (var i = 3; i <= Math.Sqrt(n); i += 2)
-            {
-                while (n % i == 0)
-                {
-                    yield return i;
-                    n /= i;
-                }
-            }
-
-            if (n > 2)
-            {
-                yield return n;
-            }
-        }
-
-        public static IEnumerable<int> Coprimes(int n)
-        {
-            var primes = PrimeFactors(n);
-
-            var outcp = LaquaiLib.Range(1, n, 1).Select(x => (int)x).ToList();
-            foreach (var pk in primes)
-            {
-                foreach (var searchx in LaquaiLib.Range(1, n - 1, 1).Select(x => (int)x))
-                {
-                    if (pk * searchx > n)
-                    {
-                        break;
-                    }
-                    outcp.RemoveAll(x => x == pk * searchx);
-                }
-            }
-            return outcp.Select();
-        }
-    }
-
-    public static class Geometry
-    {
-
-    }
-
-    private static class Gamma
-    {
-        private static readonly double[] Coefficients = new double[]
-        {
-            76.18009172947146,
-            -86.50532032941677,
-            24.01409824083091,
-            -1.231739572450155,
-            0.1208650973866179e-2,
-            -0.5395239384953e-5
-        };
-
-        public static double Log(double x)
-        {
-            if (x <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(x), "x must be greater than 0.");
-            }
-            var y = x;
-            var t = (x + 5.5);
-            t -= (x + 0.5) * Math.Log(t);
-            var sum = 1.000000000190015;
-            for (var i = 0; i < 6; i++)
-            {
-                sum += Coefficients[i] / ++y;
-            }
-            return -t + Math.Log(2.5066282746310005 * sum / x);
-        }
     }
 }
