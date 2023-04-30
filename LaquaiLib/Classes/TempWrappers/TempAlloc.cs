@@ -463,5 +463,14 @@ public unsafe class TempAlloc : IDisposable
         GC.SuppressFinalize(this);
         Dispose(true);
     }
+
+    /// <summary>
+    /// In addition to performing application-defined tasks associated with freeing, releasing, or resetting unmanaged resources, clears the entire contents of the memory region this <see cref="TempAlloc"/> wraps (sets all bytes to zero).
+    /// </summary>
+    public void DisposeSecure()
+    {
+        Clear();
+        Dispose();
+    }
     #endregion
 }
