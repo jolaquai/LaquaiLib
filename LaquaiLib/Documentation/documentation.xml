@@ -835,6 +835,11 @@
         <member name="M:LaquaiLib.Util.TempAlloc.Dispose">
             <inheritdoc/>
         </member>
+        <member name="M:LaquaiLib.Util.TempAlloc.DisposeSecure">
+            <summary>
+            In addition to performing application-defined tasks associated with freeing, releasing, or resetting unmanaged resources, clears the entire contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps (sets all bytes to zero).
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Util.TempArray`1">
             <summary>
             Represents a temporary array of <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.

@@ -361,3 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/TestConsole/TestConsole.csproj
+/TestWpf/TestWpf.csproj
+/TestConsole/Program.cs
+/TestWpf/MainWindow.xaml
+/TestWpf/AssemblyInfo.cs
+/TestWpf/App.xaml
+/TestWpf/MainWindow.xaml.cs
+/TestWpf/App.xaml.cs
