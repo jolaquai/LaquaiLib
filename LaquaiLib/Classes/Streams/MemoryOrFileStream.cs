@@ -11,9 +11,19 @@ public class MemoryOrFileStream : Stream
     /// <summary>
     /// The number of bytes at which the stream will switch from a <see cref="MemoryStream"/> to a <see cref="FileStream"/>.
     /// </summary>
-    public static int Cutoff = 512 * 1024 * 1024; // 512 MB
+    public static int Cutoff = 32 * 1024 * 1024; // 32 MB
 
     private Stream _stream;
+
+    /// <summary>
+    /// The wrapped <see cref="Stream"/>.
+    /// </summary>
+    public Stream Stream => _stream;
+
+    /// <summary>
+    /// The actual <see cref="Type"/> of the wrapped <see cref="Stream"/>, either <see cref="MemoryStream"/> or <see cref="FileStream"/>.
+    /// </summary>
+    public Type StreamType => _stream.GetType();
 
     /// <summary>
     /// Instantiates a new <see cref="MemoryOrFileStream"/> with the given expected payload size.
@@ -22,7 +32,7 @@ public class MemoryOrFileStream : Stream
     public MemoryOrFileStream(int payloadSize)
     {
         _stream = payloadSize >= Cutoff
-            ? new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose | FileOptions.Asynchronous)
+            ? new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.Asynchronous)
             : new MemoryStream(payloadSize);
     }
 
