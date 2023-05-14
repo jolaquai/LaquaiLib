@@ -152,7 +152,7 @@
         </member>
         <member name="T:LaquaiLib.Classes.Streams.MemoryOrFileStream">
             <summary>
-            Represents a <see cref="T:System.IO.Stream"/> that can be either a <see cref="T:System.IO.MemoryStream"/> or a <see cref="T:System.IO.FileStream"/>, depending on the size of the data expected to be written to it.
+            Represents a <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream"/> that can be either a <see cref="T:System.IO.MemoryStream"/> or a <see cref="T:System.IO.FileStream"/>, depending on the size of the data expected to be written to it.
             </summary>
         </member>
         <member name="F:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff">
@@ -160,11 +160,21 @@
             The number of bytes at which the stream will switch from a <see cref="T:System.IO.MemoryStream"/> to a <see cref="T:System.IO.FileStream"/>.
             </summary>
         </member>
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream">
+            <summary>
+            The wrapped <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.StreamType">
+            <summary>
+            The actual <see cref="T:System.Type"/> of the wrapped <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream"/>, either <see cref="T:System.IO.MemoryStream"/> or <see cref="T:System.IO.FileStream"/>.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.#ctor(System.Int32)">
             <summary>
             Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> with the given expected payload size.
             </summary>
-            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="F:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="T:System.IO.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
+            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="F:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
         </member>
         <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.CanRead">
             <inheritdoc/>
@@ -1159,6 +1169,15 @@
             <param name="source">The original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
             <returns>A new <see cref="T:System.Collections.Generic.Dictionary`2"/> where the keys are the values of the original <see cref="T:System.Collections.Generic.Dictionary`2"/> and vice versa.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.InvertContentAware``2(System.Collections.Generic.Dictionary{``0,``1})">
+            <summary>
+            Creates a content-aware inverse <see cref="T:System.Collections.Generic.Dictionary`2"/> where the original keys are now values grouped by the original values.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <param name="source">The original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
+            <returns>An inverted <see cref="T:System.Collections.Generic.Dictionary`2"/> as described.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Clone``2(System.Collections.Generic.Dictionary{``0,``1})">
             <summary>
             Creates a shallow copy of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.
@@ -1286,6 +1305,60 @@
             </summary>
             <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when all of the <see cref="T:System.Threading.Tasks.Task"/>s in this collection have completed.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.MethodInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Reflection.MethodInfo"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsGetterOrSetter(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is a property getter or setter.
+            </summary>
+            <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns>A value indicating whether the method is a property getter or setter.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsGetter(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is a property getter.
+            </summary>
+            <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns>A value indicating whether the method is a property getter.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsSetter(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is a property setter.
+            </summary>
+            <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns>A value indicating whether the method is a property setter.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsAdderOrRemover(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is an event subscription adder or remover.
+            </summary>
+            <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns>A value indicating whether the method is an event subscription adder or remover.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsAdder(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is an event subscription adder.
+            </summary>
+            <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns>A value indicating whether the method is an event subscription adder.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsRemover(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is an event subscription remover.
+            </summary>
+            <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns>A value indicating whether the method is an event subscription remover.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsAccessor(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is an accessor (includes property getters/setters and event subscription adders/removers).
+            </summary>
+            <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns>A value indicating whether the method is an accessor.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.QueueExtensions">
             <summary>
@@ -1645,6 +1718,23 @@
             <param name="type">The type to get the constructable inheriting types for.</param>
             <returns>A collection of all types that inherit from the supplied type and contain public constructors.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.GetInstanceValues(System.Type,System.Object,System.Boolean)">
+            <summary>
+            Compiles a <see cref="T:System.Collections.Generic.Dictionary`2"/> of all instance fields and properties of the supplied type from the given object, optionally calling all parameterless methods that do not return void.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> the <see cref="T:System.Reflection.FieldInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/> and <see cref="T:System.Reflection.MethodInfo"/> instances are to be reflected from.</param>
+            <param name="obj">The object to use to collect the values from.</param>
+            <param name="callMethods">Whether to call all parameterless methods that do not return void instead of adding all method names to the output dictionary. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
+            <returns>The <see cref="T:System.Collections.Generic.Dictionary`2"/> as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.GetStaticValues(System.Type,System.Boolean)">
+            <summary>
+            Compiles a <see cref="T:System.Collections.Generic.Dictionary`2"/> of all static fields and properties of the supplied type, optionally calling all parameterless methods that do not return void.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> the <see cref="T:System.Reflection.FieldInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/> and <see cref="T:System.Reflection.MethodInfo"/> instances are to be reflected from.</param>
+            <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
+            <returns>The <see cref="T:System.Collections.Generic.Dictionary`2"/> as described.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>

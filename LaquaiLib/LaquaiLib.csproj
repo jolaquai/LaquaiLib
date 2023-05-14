@@ -10,25 +10,13 @@
 		<Version>$(AssemblyVersion)</Version>
 		<AssemblyVersion>1.0.2</AssemblyVersion>
 		<FileVersion>1.0.2</FileVersion>
-		<DocumentationFile>Documentation/documentation.xml</DocumentationFile>
+		<DocumentationFile>LaquaiLib.Documentation.xml</DocumentationFile>
 		<AnalysisLevel>preview-all</AnalysisLevel>
 		<AnalysisMode>all</AnalysisMode>
 		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DebugType>portable</DebugType>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-	  <DebugType>portable</DebugType>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DebugType>portable</DebugType>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+	
+	<PropertyGroup>
 	  <DebugType>portable</DebugType>
 	</PropertyGroup>
 
@@ -50,6 +38,10 @@
 		<Reference Include="office">
 			<HintPath>C:\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\OFFICE.DLL</HintPath>
 		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Extensions\WPF\" />
 	</ItemGroup>
 
 </Project>

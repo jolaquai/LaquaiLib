@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 
 namespace LaquaiLib.Extensions;
 
@@ -86,4 +87,98 @@ public static class TypeExtensions
         }
     }
     #endregion
+
+    /// <summary>
+    /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all instance fields and properties of the supplied type from the given object, optionally calling all parameterless methods that do not return void.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
+    /// <param name="obj">The object to use to collect the values from.</param>
+    /// <param name="callMethods">Whether to call all parameterless methods that do not return void instead of adding all method names to the output dictionary. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
+    /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
+    public static Dictionary<string, object> GetInstanceValues(this Type type, object obj, bool callMethods = false)
+    {
+        var dict = new Dictionary<string, object>();
+        var members = type.GetMembers();
+
+        foreach (var memberInfo in members.Where(member => member.MemberType is MemberTypes.Field
+            or MemberTypes.Property
+            or MemberTypes.Method))
+        {
+            switch (memberInfo.MemberType)
+            {
+                case MemberTypes.Field:
+                    var fieldInfo = (FieldInfo)memberInfo;
+                    dict.Add(fieldInfo.Name, fieldInfo.GetValue(obj));
+                    break;
+                case MemberTypes.Property:
+                    var propertyInfo = (PropertyInfo)memberInfo;
+                    dict.Add(propertyInfo.Name, propertyInfo.GetValue(obj));
+                    break;
+                case MemberTypes.Method:
+                    var methodInfo = (MethodInfo)memberInfo;
+                    if (callMethods)
+                    {
+                        if (methodInfo.ReturnType != typeof(void))
+                        {
+                            dict.Add(methodInfo.Name, methodInfo.Invoke(obj, null));
+                        }
+                    }
+                    else
+                    {
+                        dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(paramInfo => $"{paramInfo.ParameterType.FullName} {paramInfo.Name}"))}", null);
+                    }
+                    break;
+            }
+        }
+
+        return dict;
+    }
+
+    /// <summary>
+    /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all static fields and properties of the supplied type, optionally calling all parameterless methods that do not return void.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
+    /// <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
+    /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
+    public static Dictionary<string, object> GetStaticValues(this Type type, bool callMethods = false)
+    {
+        var dict = new Dictionary<string, object>();
+        var members = type.GetMembers(BindingFlags.Public | BindingFlags.Static);
+
+        foreach (var memberInfo in members.Where(member => member.MemberType is MemberTypes.Field
+            or MemberTypes.Property
+            or MemberTypes.Method))
+        {
+            switch (memberInfo.MemberType)
+            {
+                case MemberTypes.Field:
+                    var fieldInfo = (FieldInfo)memberInfo;
+                    dict.Add(fieldInfo.Name, fieldInfo.GetValue(null));
+                    break;
+                case MemberTypes.Property:
+                    var propertyInfo = (PropertyInfo)memberInfo;
+                    dict.Add(propertyInfo.Name, propertyInfo.GetValue(null));
+                    break;
+                case MemberTypes.Method:
+                    var methodInfo = (MethodInfo)memberInfo;
+                    if (!methodInfo.IsAccessor())
+                    {
+                        if (callMethods)
+                        {
+                            if (methodInfo.ReturnType != typeof(void))
+                            {
+                                dict.Add(methodInfo.Name, methodInfo.Invoke(null, null));
+                            }
+                        }
+                        else
+                        {
+                            dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(paramInfo => $"{paramInfo.ParameterType.FullName} {paramInfo.Name}"))})", null);
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return dict;
+    }
 }
