@@ -2054,14 +2054,35 @@
             <param name="input">The collections of values to write.</param>
             <param name="inputIsColumns">Whether the <paramref name="input"/> consists of columns to be printed instead of rows.</param>
         </member>
+        <member name="T:LaquaiLib.RandomMath">
+            <summary>
+            Contains methods for various mathematical operations.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.RandomMath.Sum(System.Double,System.Double,System.Func{System.Double,System.Double})">
             <summary>
             Calculates the sum of a series of output values of a function.
             </summary>
-            <param name="x">The </param>
-            <param name="n"></param>
-            <param name="fn"></param>
-            <returns></returns>
+            <param name="x">The first input value to the function.</param>
+            <param name="n">The last input value to the function.</param>
+            <param name="fn">The function that calculates the output values given the input values.</param>
+            <returns>The sum of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.Product(System.Double,System.Double,System.Func{System.Double,System.Double})">
+            <summary>
+            Calculates the product of a series of output values of a function.
+            </summary>
+            <param name="x">The first input value to the function.</param>
+            <param name="n">The last input value to the function.</param>
+            <param name="fn">The function that calculates the output values given the input values.</param>
+            <returns>The product of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.RandomMath.GCD(System.Int32[])">
+            <summary>
+            Calculates the greatest common divisor of a series of numbers.
+            </summary>
+            <param name="numbers">The numbers to calculate the GCD of.</param>
+            <returns>The GCD of the given <paramref name="numbers"/>.</returns>
         </member>
         <member name="M:LaquaiLib.RandomMath.RoundToMultiple(System.Double,System.Double)">
             <summary>
@@ -2094,21 +2115,31 @@
             <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of a smoothing function that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
             <exception cref="T:System.ArgumentException"></exception>
         </member>
+        <member name="T:LaquaiLib.RandomMath.Trigonometry">
+            <summary>
+            Contains methods that use trigonometric functions.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.RandomMath.Trigonometry.EllipseAround(System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>
             Returns the <c>sin</c> and <c>cos</c> functions that, together, trace an ellipse with specified sine and cosine radii and a given smoothness around a point.
             </summary>
             <param name="x">The <c>x</c>-coordinate of the point to trace the ellipse around.</param>
             <param name="y">The <c>y</c>-coordinate of the point to trace the ellipse around.</param>
-            <param name="rSin">The "horizontal" radius of the ellipse. If equal to <paramref name="rCos"/>, the ellipse is a circle.</param>
-            <param name="rCos">The "vertical" radius of the ellipse. If equal to <paramref name="rSin"/>, the ellipse is a circle.</param>
+            <param name="rSin">The "horizontal" radius of the ellipse. If equal to <paramref name="rCos"/>, the ellipse is a circle. In that case, use <see cref="M:LaquaiLib.RandomMath.Trigonometry.EllipseAround(System.Double,System.Double,System.Double,System.Double)"/> instead.</param>
+            <param name="rCos">The "vertical" radius of the ellipse. If equal to <paramref name="rSin"/>, the ellipse is a circle. In that case, use <see cref="M:LaquaiLib.RandomMath.Trigonometry.EllipseAround(System.Double,System.Double,System.Double,System.Double)"/> instead.</param>
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an ellipse with the specified radii <paramref name="rSin"/> and <paramref name="rCos"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         </member>
-        <member name="T:LaquaiLib.RandomMath.Stochastics">
+        <member name="M:LaquaiLib.RandomMath.Trigonometry.EllipseAround(System.Double,System.Double,System.Double,System.Double)">
             <summary>
-            Provides static methods for calculating probabilities and other stochastic functions.
+            Returns the <c>sin</c> and <c>cos</c> functions that, together, trace a circle with specified radius and a given smoothness around a point.
             </summary>
+            <param name="x">The <c>x</c>-coordinate of the point to trace the circle around.</param>
+            <param name="y">The <c>y</c>-coordinate of the point to trace the circle around.</param>
+            <param name="radius">The radius of the circle.</param>
+            <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
+            <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         </member>
         <member name="T:System.Xml.Linq.XRepetition">
             <summary>
