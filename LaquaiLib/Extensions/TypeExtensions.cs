@@ -95,9 +95,9 @@ public static class TypeExtensions
     /// <param name="obj">The object to use to collect the values from.</param>
     /// <param name="callMethods">Whether to call all parameterless methods that do not return void instead of adding all method names to the output dictionary. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
     /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
-    public static Dictionary<string, object> GetInstanceValues(this Type type, object obj, bool callMethods = false)
+    public static Dictionary<string, object?> GetInstanceValues(this Type type, object obj, bool callMethods = false)
     {
-        var dict = new Dictionary<string, object>();
+        var dict = new Dictionary<string, object?>();
         var members = type.GetMembers();
 
         foreach (var memberInfo in members.Where(member => member.MemberType is MemberTypes.Field
@@ -140,9 +140,9 @@ public static class TypeExtensions
     /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
     /// <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
     /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
-    public static Dictionary<string, object> GetStaticValues(this Type type, bool callMethods = false)
+    public static Dictionary<string, object?> GetStaticValues(this Type type, bool callMethods = false)
     {
-        var dict = new Dictionary<string, object>();
+        var dict = new Dictionary<string, object?>();
         var members = type.GetMembers(BindingFlags.Public | BindingFlags.Static);
 
         foreach (var memberInfo in members.Where(member => member.MemberType is MemberTypes.Field

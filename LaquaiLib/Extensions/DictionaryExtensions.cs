@@ -32,6 +32,8 @@ public static class DictionaryExtensions
     /// <param name="source">The original <see cref="Dictionary{TKey, TValue}"/>.</param>
     /// <returns>An inverted <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
     public static Dictionary<TValue, IEnumerable<TKey>> InvertContentAware<TKey, TValue>(this Dictionary<TKey, TValue> source)
+        where TKey : notnull
+        where TValue : notnull
     {
         var result = new Dictionary<TValue, IEnumerable<TKey>>();
 

@@ -13,7 +13,7 @@ public class MemoryOrFileStream : Stream
     /// </summary>
     public static int Cutoff = 32 * 1024 * 1024; // 32 MB
 
-    private Stream _stream;
+    private readonly Stream _stream;
 
     /// <summary>
     /// The wrapped <see cref="Stream"/>.

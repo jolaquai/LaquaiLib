@@ -25,7 +25,7 @@ public class TempFile : IDisposable
     /// </summary>
     /// <param name="path">The path to the file to wrap with this <see cref="TempFile"/>.</param>
     /// <param name="fileExtension">The file extension for this <see cref="TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is kept.</param>
-    public TempFile(string path, string fileExtension)
+    public TempFile(string path, string? fileExtension)
     {
         if (string.IsNullOrWhiteSpace(fileExtension))
         {
@@ -38,16 +38,16 @@ public class TempFile : IDisposable
         _stream = new(_path, FileMode.OpenOrCreate);
     }
 
-    private string _path;
-    private FileStream _stream;
+    private string? _path;
+    private FileStream? _stream;
 
     /// <summary>
     /// The path to the file this <see cref="TempFile"/> wraps.
     /// </summary>
     public string Path {
         get {
-            ObjectDisposedException.ThrowIf(IsDisposed, _path);
-            return _path;
+            ObjectDisposedException.ThrowIf(IsDisposed, _path!);
+            return _path!;
         }
     }
     /// <summary>
@@ -55,8 +55,8 @@ public class TempFile : IDisposable
     /// </summary>
     public FileStream Stream {
         get {
-            ObjectDisposedException.ThrowIf(IsDisposed, _stream);
-            return _stream;
+            ObjectDisposedException.ThrowIf(IsDisposed, _stream!);
+            return _stream!;
         }
     }
 

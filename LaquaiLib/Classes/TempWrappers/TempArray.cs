@@ -56,17 +56,17 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
         }
     }
 
-    private T[] _array;
-    private bool _isPooledInstance;
-    private ArrayPool<T>? _pool;
+    private T[]? _array;
+    private readonly bool _isPooledInstance;
+    private readonly ArrayPool<T>? _pool;
 
     /// <summary>
     /// The array of <typeparamref name="T"/> this <see cref="TempArray{T}"/> wraps.
     /// </summary>
     public T[] Array {
         get {
-            ObjectDisposedException.ThrowIf(IsDisposed, _array);
-            return _array;
+            ObjectDisposedException.ThrowIf(IsDisposed, _array!);
+            return _array!;
         }
         set {
             ArgumentNullException.ThrowIfNull(value);
@@ -84,39 +84,39 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     public bool IsDisposed => _array is null;
 
     /// <inheritdoc/>
-    public bool IsFixedSize => _array.IsFixedSize;
+    public bool IsFixedSize => _array!.IsFixedSize;
     /// <inheritdoc/>
-    public bool IsReadOnly => _array.IsReadOnly;
+    public bool IsReadOnly => _array!.IsReadOnly;
     /// <inheritdoc/>
-    public int Count => ((ICollection)_array).Count;
+    public int Count => ((ICollection)_array!).Count;
     /// <inheritdoc/>
-    public bool IsSynchronized => _array.IsSynchronized;
+    public bool IsSynchronized => _array!.IsSynchronized;
     /// <inheritdoc/>
-    public object SyncRoot => _array.SyncRoot;
+    public object SyncRoot => _array!.SyncRoot;
     /// <inheritdoc/>
-    public T? this[int index] { get => (T?)((IList)_array)[index]; set => ((IList)_array)[index] = value; }
+    public T? this[int index] { get => (T?)((IList)_array!)[index]; set => ((IList)_array!)[index] = value; }
     /// <inheritdoc/>
-    public bool Equals(object? other, IEqualityComparer comparer) => ((IStructuralEquatable)_array).Equals(other, comparer);
+    public bool Equals(object? other, IEqualityComparer comparer) => ((IStructuralEquatable)_array!).Equals(other, comparer);
     /// <inheritdoc/>
-    public int GetHashCode(IEqualityComparer comparer) => ((IStructuralEquatable)_array).GetHashCode(comparer);
+    public int GetHashCode(IEqualityComparer comparer) => ((IStructuralEquatable)_array!).GetHashCode(comparer);
     /// <inheritdoc/>
-    public int CompareTo(object? other, IComparer comparer) => ((IStructuralComparable)_array).CompareTo(other, comparer);
+    public int CompareTo(object? other, IComparer comparer) => ((IStructuralComparable)_array!).CompareTo(other, comparer);
     /// <inheritdoc/>
-    public int Add(object? value) => ((IList)_array).Add(value);
+    public int Add(object? value) => ((IList)_array!).Add(value);
     /// <inheritdoc/>
-    public void Clear() => ((IList)_array).Clear();
+    public void Clear() => ((IList)_array!).Clear();
     /// <inheritdoc/>
-    public bool Contains(object? value) => ((IList)_array).Contains(value);
+    public bool Contains(object? value) => ((IList)_array!).Contains(value);
     /// <inheritdoc/>
-    public int IndexOf(object? value) => ((IList)_array).IndexOf(value);
+    public int IndexOf(object? value) => ((IList)_array!).IndexOf(value);
     /// <inheritdoc/>
-    public void Insert(int index, object? value) => ((IList)_array).Insert(index, value);
+    public void Insert(int index, object? value) => ((IList)_array!).Insert(index, value);
     /// <inheritdoc/>
-    public void Remove(object? value) => ((IList)_array).Remove(value);
+    public void Remove(object? value) => ((IList)_array!).Remove(value);
     /// <inheritdoc/>
-    public void RemoveAt(int index) => ((IList)_array).RemoveAt(index);
+    public void RemoveAt(int index) => ((IList)_array!).RemoveAt(index);
     /// <inheritdoc/>
-    public void CopyTo(Array array, int index) => _array.CopyTo(array, index);
+    public void CopyTo(Array array, int index) => _array!.CopyTo(array, index);
     /// <summary>
     /// Copies the elements of this <see cref="TempArray{T}"/> to another <see cref="TempArray{T}"/>, starting at a particular index.
     /// </summary>
@@ -125,11 +125,11 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="tempArray"/> is <c>null</c>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is less than zero.</exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="tempArray"/> is multi-dimensional, the number of elements in this <see cref="TempArray{T}"/> is greater than the available space from <paramref name="index"/> to the end of the destination <see cref="TempArray{T}"/> or the type of the source <see cref="TempArray{T}"/> cannot be cast automatically to the type of the destination <see cref="TempArray{T}"/>.</exception>
-    public void CopyTo(TempArray<T> tempArray, int index) => _array.CopyTo(tempArray._array, index);
+    public void CopyTo(TempArray<T> tempArray, int index) => _array!.CopyTo(tempArray._array!, index);
     /// <inheritdoc/>
-    public IEnumerator GetEnumerator() => _array.GetEnumerator();
+    public IEnumerator GetEnumerator() => _array!.GetEnumerator();
     /// <inheritdoc/>
-    public object Clone() => _array.Clone();
+    public object Clone() => _array!.Clone();
 
     #region Dispose pattern
     private void Dispose(bool disposing)
@@ -145,7 +145,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
                 }
                 if (_isPooledInstance)
                 {
-                    _pool.Return(_array, true);
+                    _pool!.Return(_array, true);
                 }
                 _array = null;
             }

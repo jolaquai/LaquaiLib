@@ -26,15 +26,15 @@ public class TempDir : IDisposable
         }
     }
 
-    private string _path;
+    private string? _path;
 
     /// <summary>
     /// The path to the file this <see cref="TempDir"/> wraps.
     /// </summary>
     public string Path {
         get {
-            ObjectDisposedException.ThrowIf(IsDisposed, _path);
-            return _path;
+            ObjectDisposedException.ThrowIf(IsDisposed, _path!);
+            return _path!;
         }
     }
 

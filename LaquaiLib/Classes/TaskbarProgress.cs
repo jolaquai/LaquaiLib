@@ -11,9 +11,9 @@ namespace LaquaiLib.Classes;
 /// </summary>
 public class TaskbarProgress
 {
-    private static TaskbarProgress _instance;
+    private static TaskbarProgress? _instance;
 
-    private TaskbarItemInfo _taskbar;
+    private readonly TaskbarItemInfo? _taskbar;
 
     /// <summary>
     /// Instantiates a new <see cref="TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
@@ -21,7 +21,7 @@ public class TaskbarProgress
     /// <param name="window">The <see cref="Window"/> the taskbar icon of which is to display progress.</param>
     internal TaskbarProgress(Window window)
     {
-        window.TaskbarItemInfo ??= new();
+        window.TaskbarItemInfo ??= new TaskbarItemInfo();
         _taskbar = window.TaskbarItemInfo;
 
         _taskbar.ProgressState = TaskbarItemProgressState.Normal;
@@ -38,7 +38,7 @@ public class TaskbarProgress
     /// <returns>A <see cref="TaskbarProgress"/> instance.</returns>
     public static TaskbarProgress GetInstance(Window window)
     {
-        _instance ??= new(window);
+        _instance ??= new TaskbarProgress(window);
         return _instance;
     }
 
@@ -54,7 +54,7 @@ public class TaskbarProgress
     {
         if (HwndSource.FromHwnd(pointer).RootVisual is Window target)
         {
-            _instance ??= new(target);
+            _instance ??= new TaskbarProgress(target);
             return _instance;
         }
         else
@@ -76,7 +76,7 @@ public class TaskbarProgress
             {
                 if (HwndSource.FromHwnd(Process.GetCurrentProcess().MainWindowHandle).RootVisual is Window target)
                 {
-                    _instance ??= new(target);
+                    _instance ??= new TaskbarProgress(target);
                 }
                 else
                 {
@@ -96,8 +96,8 @@ public class TaskbarProgress
     /// </summary>
     public static void ResetInstance()
     {
-        _instance.SetValue(1d);
-        _instance.SetState(TaskbarItemProgressState.None);
+        _instance?.SetValue(1d);
+        _instance?.SetState(TaskbarItemProgressState.None);
 
         _instance = null;
     }
@@ -109,7 +109,7 @@ public class TaskbarProgress
     /// <returns>The value of the <see cref="TaskbarItemInfo.ProgressState"/> property after the attempted set operation.</returns>
     public TaskbarItemProgressState SetState(TaskbarItemProgressState state)
     {
-        _taskbar.ProgressState = state;
+        _taskbar!.ProgressState = state;
         return _taskbar.ProgressState;
     }
     /// <summary>
@@ -119,15 +119,7 @@ public class TaskbarProgress
     /// <returns>The value of the <see cref="TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
     public double SetValue(int percent)
     {
-        if (percent < 0)
-        {
-            percent = 0;
-        }
-        else if (percent > 100)
-        {
-            percent = 100;
-        }
-        _taskbar.ProgressValue = percent / 100d;
+        _taskbar!.ProgressValue = int.Clamp(percent, 0, 100) / 100d;
         return _taskbar.ProgressValue;
     }
     /// <summary>
@@ -137,17 +129,7 @@ public class TaskbarProgress
     /// <returns>The value of the <see cref="TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
     public double SetValue(double value)
     {
-        if (value < 0)
-        {
-            _taskbar.ProgressValue = 0;
-            return _taskbar.ProgressValue;
-        }
-        else if (value > 1)
-        {
-            _taskbar.ProgressValue = 1;
-            return _taskbar.ProgressValue;
-        }
-        _taskbar.ProgressValue = value;
+        _taskbar!.ProgressValue = double.Clamp(value, 0, 1);
         return _taskbar.ProgressValue;
     }
     /// <summary>
@@ -157,17 +139,7 @@ public class TaskbarProgress
     /// <returns>The value of the <see cref="TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
     public double IncreaseValue(double value)
     {
-        if (_taskbar.ProgressValue + value < 0)
-        {
-            _taskbar.ProgressValue = 0;
-            return _taskbar.ProgressValue;
-        }
-        else if (_taskbar.ProgressValue + value > 1)
-        {
-            _taskbar.ProgressValue = 1;
-            return _taskbar.ProgressValue;
-        }
-        _taskbar.ProgressValue += value;
+        _taskbar!.ProgressValue = double.Clamp(_taskbar.ProgressValue + value, 0, 1);
         return _taskbar.ProgressValue;
     }
     /// <summary>
@@ -177,17 +149,7 @@ public class TaskbarProgress
     /// <returns>The value of the <see cref="TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
     public double DecreaseValue(double value)
     {
-        if (_taskbar.ProgressValue - value < 0)
-        {
-            _taskbar.ProgressValue = 0;
-            return _taskbar.ProgressValue;
-        }
-        else if (_taskbar.ProgressValue - value > 1)
-        {
-            _taskbar.ProgressValue = 1;
-            return _taskbar.ProgressValue;
-        }
-        _taskbar.ProgressValue -= value;
+        _taskbar!.ProgressValue = double.Clamp(_taskbar.ProgressValue - value, 0, 1);
         return _taskbar.ProgressValue;
     }
 
@@ -207,7 +169,7 @@ public class TaskbarProgress
 
         timeSpan -= 200;
 
-        _taskbar.ProgressState = TaskbarItemProgressState.Normal;
+        _taskbar!.ProgressState = TaskbarItemProgressState.Normal;
 
         var diff = value - (double)_taskbar.ProgressValue;
         var step = diff / 100;
@@ -225,5 +187,5 @@ public class TaskbarProgress
     /// Gets the current value of the taskbar progress bar.
     /// </summary>
     /// <returns>The current value of the taskbar progress bar.</returns>
-    public double GetValue() => _taskbar.ProgressValue;
+    public double GetValue() => _taskbar!.ProgressValue;
 }

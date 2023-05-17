@@ -230,7 +230,7 @@ public unsafe class TempAlloc : IDisposable
                 }
 
                 // Convert the pointer to a pointer to the target type, and dereference it to get a reference to the instance.
-                return Marshal.PtrToStructure<T>((nint)bytePtr);
+                return Marshal.PtrToStructure<T>((nint)bytePtr)!;
             }
         }
         catch (Exception inner)

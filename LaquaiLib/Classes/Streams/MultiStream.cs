@@ -10,7 +10,7 @@ namespace LaquaiLib.Classes.Streams;
 /// </summary>
 public class MultiStream : IDisposable
 {
-    private List<Stream> _streams;
+    private readonly List<Stream> _streams;
 
     /// <summary>
     /// Instantiates a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
@@ -56,12 +56,16 @@ public class MultiStream : IDisposable
         {
             if (constructorParameters.Length > 1)
             {
-                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)).ToList();
+                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)!).ToList()!;
             }
             else
             {
-                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)).ToList();
+                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList()!;
             }
+        }
+        else
+        {
+            throw new ArgumentException($"The given type '{streamType.Name}' could not be instantiated. The call was invalid.", nameof(streamType));
         }
     }
 
@@ -95,7 +99,7 @@ public class MultiStream : IDisposable
             throw new ArgumentException($"The given type '{streamType.Name}' must inherit from '{nameof(Stream)}'.", nameof(streamType));
         }
 
-        _streams = Enumerable.Range(0, count).Select(i => (Stream)Activator.CreateInstance(streamType, constructorParameterFactory(i))).ToList();
+        _streams = Enumerable.Range(0, count).Select(i => (Stream)Activator.CreateInstance(streamType, constructorParameterFactory(i))!).ToList()!;
     }
 
     /// <summary>

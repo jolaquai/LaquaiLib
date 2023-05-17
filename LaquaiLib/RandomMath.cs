@@ -1,36 +1,49 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-
-using LaquaiLib.Extensions;
+﻿using LaquaiLib.Extensions;
 
 namespace LaquaiLib;
 
+/// <summary>
+/// Contains methods for various mathematical operations.
+/// </summary>
 public static partial class RandomMath
 {
     /// <summary>
     /// Calculates the sum of a series of output values of a function.
     /// </summary>
-    /// <param name="x">The </param>
-    /// <param name="n"></param>
-    /// <param name="fn"></param>
-    /// <returns></returns>
+    /// <param name="x">The first input value to the function.</param>
+    /// <param name="n">The last input value to the function.</param>
+    /// <param name="fn">The function that calculates the output values given the input values.</param>
+    /// <returns>The sum of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
     public static double Sum(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Select(fn).Sum();
+    /// <summary>
+    /// Calculates the product of a series of output values of a function.
+    /// </summary>
+    /// <param name="x">The first input value to the function.</param>
+    /// <param name="n">The last input value to the function.</param>
+    /// <param name="fn">The function that calculates the output values given the input values.</param>
+    /// <returns>The product of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
     public static double Product(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Select(fn).Aggregate(1d, (seed, res) => seed *= res);
 
-    public static int GCD(params int[] nums)
+    /// <summary>
+    /// Calculates the greatest common divisor of a series of numbers.
+    /// </summary>
+    /// <param name="numbers">The numbers to calculate the GCD of.</param>
+    /// <returns>The GCD of the given <paramref name="numbers"/>.</returns>
+    public static int GCD(params int[] numbers)
     {
-        if (nums.Length == 1)
+        if (numbers.Length == 1)
         {
-            return nums[0];
+            return numbers[0];
         }
-        var numbers = nums.Select(Math.Abs).ToList();
-        if (numbers.Any(n => n == 1))
+        var _numbers = numbers.Select(Math.Abs).ToList();
+        if (_numbers.Any(n => n == 1))
         {
             return 1;
         }
 
-        foreach (int g in LaquaiLib.Range(numbers.Max(), 2))
+        foreach (var g in LaquaiLib.Range(_numbers.Max(), 2).Select(n => (int)n))
         {
-            if (numbers.Select(n => n % g == 0).All())
+            if (_numbers.Select(n => n % g == 0).All())
             {
                 return g;
             }
@@ -77,6 +90,9 @@ public static partial class RandomMath
     /// <exception cref="ArgumentException"></exception>
     public static Func<double, double> SmoothFunctions(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => SmoothFunctions(f, g, x => x > xEnd ? 1 : (x < xStart ? 0 : Math.Pow(x - xStart, 2) / (Math.Pow(x - xStart, 2) + Math.Pow(xEnd - x, 2))), xStart, xEnd);
 
+    /// <summary>
+    /// Contains methods that use trigonometric functions.
+    /// </summary>
     public static class Trigonometry
     {
         /// <summary>
@@ -84,12 +100,20 @@ public static partial class RandomMath
         /// </summary>
         /// <param name="x">The <c>x</c>-coordinate of the point to trace the ellipse around.</param>
         /// <param name="y">The <c>y</c>-coordinate of the point to trace the ellipse around.</param>
-        /// <param name="rSin">The "horizontal" radius of the ellipse. If equal to <paramref name="rCos"/>, the ellipse is a circle.</param>
-        /// <param name="rCos">The "vertical" radius of the ellipse. If equal to <paramref name="rSin"/>, the ellipse is a circle.</param>
+        /// <param name="rSin">The "horizontal" radius of the ellipse. If equal to <paramref name="rCos"/>, the ellipse is a circle. In that case, use <see cref="EllipseAround(double, double, double, double)"/> instead.</param>
+        /// <param name="rCos">The "vertical" radius of the ellipse. If equal to <paramref name="rSin"/>, the ellipse is a circle. In that case, use <see cref="EllipseAround(double, double, double, double)"/> instead.</param>
         /// <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
         /// <returns>A <see cref="Tuple{T1, T2}"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an ellipse with the specified radii <paramref name="rSin"/> and <paramref name="rCos"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double rCos, double resolution = 360) => (new Func<double, double>(d => rSin * Math.Sin((d / resolution) * (2 * Math.PI)) + x), new Func<double, double>(d => rCos * -Math.Cos((d / resolution) * (2 * Math.PI)) + y));
 
-        public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double radius, double resolution) => EllipseAround(x, y, radius, radius, resolution = 360);
+        /// <summary>
+        /// Returns the <c>sin</c> and <c>cos</c> functions that, together, trace a circle with specified radius and a given smoothness around a point.
+        /// </summary>
+        /// <param name="x">The <c>x</c>-coordinate of the point to trace the circle around.</param>
+        /// <param name="y">The <c>y</c>-coordinate of the point to trace the circle around.</param>
+        /// <param name="radius">The radius of the circle.</param>
+        /// <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
+        /// <returns>A <see cref="Tuple{T1, T2}"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
+        public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double radius, double resolution = 360) => EllipseAround(x, y, radius, radius, resolution);
     }
 }

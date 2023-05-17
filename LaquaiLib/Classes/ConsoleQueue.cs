@@ -14,6 +14,8 @@ public static class ConsoleQueue
 
     private static ConcurrentQueue<object> _queue = new ConcurrentQueue<object>();
 
+    public static ConcurrentQueue<object> Queue { get => _queue; set => _queue = value; }
+
     /// <summary>
     /// Adds an object to the end of the internal queue.
     /// </summary>
@@ -21,8 +23,8 @@ public static class ConsoleQueue
     /// <returns>The index of the position in the internal queue at which <paramref name="obj"/> is.</returns>
     public static int Enqueue(object obj)
     {
-        _queue.Enqueue(obj);
-        return _queue.Count;
+        Queue.Enqueue(obj);
+        return Queue.Count;
     }
 
     /// <summary>
@@ -31,15 +33,15 @@ public static class ConsoleQueue
     /// <returns>The number of objects written to the <see cref="Console"/>.</returns>
     public static int Flush()
     {
-        var cnt = _queue.Count;
+        var cnt = Queue.Count;
         lock (ConsoleLock)
         {
-            foreach (var obj in _queue)
+            foreach (var obj in Queue)
             {
                 Console.WriteLine(obj);
             }
         }
-        _queue.Clear();
+        Queue.Clear();
         return cnt;
     }
 }
