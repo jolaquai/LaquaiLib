@@ -52,7 +52,7 @@ public static class Miscellaneous
                     else
                     {
                         //WriteInfo("Input terminated");
-                        return returnList.Select();
+                        return returnList;
                     }
                 }
             }
@@ -70,7 +70,7 @@ public static class Miscellaneous
                     else
                     {
                         //WriteInfo("Input terminated");
-                        return returnList.Select();
+                        return returnList;
                     }
                 }
             }

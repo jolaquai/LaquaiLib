@@ -9,9 +9,14 @@
             Represents a (thread-safe) wrapper around the <see cref="T:System.Console"/>. It is used to postpone blocking console output until after any expensive computations are completed.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Classes.ConsoleQueue.ConsoleLock">
+        <member name="F:LaquaiLib.Classes.ConsoleQueue.consoleLock">
             <summary>
             The <see cref="T:System.Object"/> used to lock when attempting to write to the <see cref="T:System.Console"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.ConsoleQueue.Queue">
+            <summary>
+            The internal queue of objects to eventually output to the <see cref="T:System.Console"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Classes.ConsoleQueue.Enqueue(System.Object)">
@@ -24,6 +29,12 @@
         <member name="M:LaquaiLib.Classes.ConsoleQueue.Flush">
             <summary>
             Flushes all contents of the internal queue into the <see cref="T:System.Console"/>. This operation blocks until all objects in the internal queue have been output.
+            </summary>
+            <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.ConsoleQueue.Flush``1(System.Func{System.Object,``0})">
+            <summary>
+            Flushes all contents of the internal queue into the <see cref="T:System.Console"/> after invoking a transform function on them. This operation blocks until all objects in the internal queue have been output.
             </summary>
             <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
         </member>
@@ -44,11 +55,25 @@
             </summary>
             <param name="collection">The collection from which the elements are copied.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor(System.Collections.Generic.List{`0})">
+        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor(`0[])">
             <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified list.
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains the specified items and has a capacity equal to the number of items.
             </summary>
-            <param name="list">The list from which the elements are copied.</param>
+            <param name="items">The items for the list to contain.</param>
+        </member>
+        <member name="P:LaquaiLib.Classes.ObservableCollectionFast`1.Item(System.Index)">
+            <summary>
+            Gets or sets the element at the specified <paramref name="index"/>.
+            </summary>
+            <param name="index">An <see cref="T:System.Index"/> instance that identifies the location of the element to get or set.</param>
+            <returns>The element at the specified <paramref name="index"/>.</returns>
+        </member>
+        <member name="P:LaquaiLib.Classes.ObservableCollectionFast`1.Item(System.Range)">
+            <summary>
+            Gets or sets elements within the specified <paramref name="range"/>.
+            </summary>
+            <param name="range">The <see cref="T:System.Range"/> in which to get or set elements.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
             <summary>
@@ -149,6 +174,49 @@
             Removes items from the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.WishList`1">
+            <summary>
+            Represents a strongly typed list of objects that can be accessed by index. Provides methods to search, sort, and manipulate lists and generally everything a <see cref="T:System.Collections.Generic.List`1"/> can do plus everything you ever wished it could.
+            </summary>
+            <typeparam name="T">The Type of the elements in the list.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that is empty and has the default capacity.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that contains elements copied from the specified collection and has sufficient capacity to accommodate the number of elements copied.
+            </summary>
+            <param name="collection">The collection to copy items from.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that is empty and has the specified initial capacity.
+            </summary>
+            <param name="capacity">The initial capacity of the list.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor(`0[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that contains the specified items and has a capacity equal to the number of items.
+            </summary>
+            <param name="items">The items for the list to contain.</param>
+        </member>
+        <member name="P:LaquaiLib.Classes.Collections.WishList`1.Item(System.Index)">
+            <summary>
+            Gets or sets the element at the specified <paramref name="index"/>.
+            </summary>
+            <param name="index">An <see cref="T:System.Index"/> instance that identifies the location of the element to get or set.</param>
+            <returns>The element at the specified <paramref name="index"/>.</returns>
+        </member>
+        <member name="P:LaquaiLib.Classes.Collections.WishList`1.Item(System.Range)">
+            <summary>
+            Gets or sets elements within the specified <paramref name="range"/>.
+            </summary>
+            <param name="range">The <see cref="T:System.Range"/> in which to get or set elements.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
         </member>
         <member name="T:LaquaiLib.Classes.Streams.MemoryOrFileStream">
             <summary>
@@ -1071,12 +1139,17 @@
             An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>α</c> through <c>ω</c>.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Convert">
+        <member name="T:LaquaiLib.Extensions.AssemblyExtensions">
             <summary>
-            Provides methods to convert between data types.
+            Provides extension methods for the <see cref="T:System.Reflection.Assembly"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Convert.ToHexString(System.Byte[])">
+        <member name="T:LaquaiLib.Extensions.ByteArrayExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Array"/> of <see cref="T:System.Char"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ByteArrayExtensions.ToHexString(System.Byte[])">
             <summary>
             Converts an array of <see cref="T:System.Byte"/>s to its equivalent string representation that is encoded with uppercase hex characters.
             </summary>
@@ -1084,18 +1157,13 @@
             <returns>The string as described.</returns>
             <remarks>This method uses the internal <see cref="M:System.Convert.ToHexString(System.Byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
         </member>
-        <member name="M:LaquaiLib.Convert.ToHexString(System.ReadOnlySpan{System.Byte})">
+        <member name="M:LaquaiLib.Extensions.ByteArrayExtensions.ToHexString(System.ReadOnlySpan{System.Byte})">
             <summary>
             Converts a <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> to its equivalent string representation that is encoded with uppercase hex characters.
             </summary>
             <param name="bytes">The <see cref="T:System.Byte"/> span to convert.</param>
             <returns>The string as described.</returns>
             <remarks>This method uses the internal <see cref="M:System.Convert.ToHexString(System.Byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
-        </member>
-        <member name="T:LaquaiLib.Extensions.AssemblyExtensions">
-            <summary>
-            Provides extension methods for the <see cref="T:System.Reflection.Assembly"/> Type.
-            </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.CharExtensions">
             <summary>
@@ -1231,7 +1299,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectMany``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}})">
             <summary>
-            Selects all elements of nested sequences of the same type <typeparamref name="T"/> in <paramref name="source"/> and flattens them into a single sequence without transformation.
+            Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
             </summary>
             <typeparam name="T">The type of the elements in the sequence.</typeparam>
             <param name="source">The sequence of nested sequences to flatten.</param>
@@ -1273,6 +1341,32 @@
             <param name="source">The source collection to iterate over.</param>
             <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Invokes the specified <paramref name="function"/> on each element of the source collection.
+            </summary>
+            <typeparam name="TSource">The Type of the elements in the collection.</typeparam>
+            <typeparam name="TResult">The Type of the elements that <paramref name="function"/> produces.</typeparam>
+            <param name="source">The source collection to iterate over.</param>
+            <param name="function">The function to invoke on each element of the source collection. It is passed each element in the source collection.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
+            <summary>
+            Invokes the specified <paramref name="function"/> on each element of the source collection, incorporating each element's index in the <see cref="T:System.Func`3"/>.
+            </summary>
+            <typeparam name="TSource">The Type of the elements in the collection.</typeparam>
+            <typeparam name="TResult">The Type of the elements that <paramref name="function"/> produces.</typeparam>
+            <param name="source">The source collection to iterate over.</param>
+            <param name="function">The function to invoke on each element of the source collection. It is passed each element and its index in the source collection.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetRange``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
+            <summary>
+            Extracts a range of elements from this collection.
+            </summary>
+            <typeparam name="T">The Type of the elements in the collection.</typeparam>
+            <param name="source">The collection to extract elements from.</param>
+            <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be extracted are located in the <paramref name="source"/>.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
@@ -1299,12 +1393,41 @@
             <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
             <remarks>Note that this does not await any of the <see cref="T:System.Threading.Tasks.Task"/>s, they are merely started. The calling code is expected to await the availability of and process their results.</remarks>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableTaskExtensions.StartWait(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableTaskExtensions.StartAsync(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
             <summary>
             Starts all the tasks in this collection of <see cref="T:System.Threading.Tasks.Task"/>s and returns a <see cref="T:System.Threading.Tasks.Task"/> that represents their completion.
             </summary>
             <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when all of the <see cref="T:System.Threading.Tasks.Task"/>s in this collection have completed.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.ListTExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.List`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListTExtensions.Remove``1(System.Collections.Generic.List{``0},System.Index)">
+            <summary>
+            Removes the element at the specified <paramref name="index"/> from this <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
+            <param name="index">An <see cref="T:System.Index"/> instance that indicates where the item to be removed is located in the <paramref name="list"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListTExtensions.RemoveRange``1(System.Collections.Generic.List{``0},System.Range)">
+            <summary>
+            Removes elements in a specified <paramref name="range"/> from this <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
+            <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be removed are located in the <paramref name="list"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListTExtensions.GetRange``1(System.Collections.Generic.List{``0},System.Range)">
+            <summary>
+            Extracts a range of elements from this <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+            <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to extract elements from.</param>
+            <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be extracted are located in the <paramref name="list"/>.</param>
         </member>
         <member name="T:LaquaiLib.Extensions.MethodInfoExtensions">
             <summary>
@@ -1411,23 +1534,18 @@
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEnd(System.IO.Stream)">
             <summary>
-            Reads all characters from the current position to the end of the stream.
+            Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> and advances the position within it to the end.
             </summary>
-            <returns>The rest of the stream as a String, from the current position to the end.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream)">
-            <summary>
-            Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
-            </summary>
-            <returns>A task that represents the asynchronous read operation.</returns>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The bytes of the rest of the <see cref="T:System.IO.Stream"/>, from its current position to the end.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Threading.CancellationToken)">
             <summary>
-            Reads all characters from the current position to the end of the stream asynchronously and returns them as one string.
+            Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> asynchronously, optionally monitoring a <paramref name="cancellationToken"/> for cancellation requests, and advances the position within it to the end.
             </summary>
-            <param name="stream"></param>
-            <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-            <returns>A task that represents the asynchronous read operation.</returns>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous read operation and proxies for the read bytes.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.StringExtensions">
             <summary>
@@ -1451,6 +1569,23 @@
             <param name="replace">The replacement for occurrences of strings in <paramref name="finds"/>.</param>
             <returns>A string as described.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.RegexReplace(System.String,System.String,System.String)">
+            <summary>
+            Replaces all matches of a regex <paramref name="pattern"/> in this <see cref="T:System.String"/> with a <paramref name="replacement"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to search.</param>
+            <param name="pattern">The pattern to search for.</param>
+            <param name="replacement">The <see cref="T:System.String"/> to replace matches with.</param>
+            <returns>A new string with all matches of <paramref name="pattern"/> replaced with <paramref name="replacement"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Match(System.String,System.String)">
+            <summary>
+            Searches the specified input string for occurrences of a specified regex pattern.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to search.</param>
+            <param name="pattern">The pattern to search for.</param>
+            <returns>The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> instance returned my <see cref="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)"/></returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.ReplaceExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
             <summary>
             Creates a new string from this string with all occurrences of any string that is not contained in <paramref name="except"/> replaced with <paramref name="replace"/>.
@@ -1459,6 +1594,40 @@
             <param name="except">A collection of strings to except from replacement in <paramref name="source"/>.</param>
             <param name="replace">The replacement for occurrences of strings that are not in <paramref name="except"/>.</param>
             <returns>A string as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.Char[])">
+            <summary>
+            Removes all occurrences of the specified <see cref="T:System.Char"/>s from this <see cref="T:System.String"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to modify.</param>
+            <param name="remove">The <see cref="T:System.Char"/>s to remove.</param>
+            <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.Int32,System.Char[])">
+            <summary>
+            Removes all occurrences of the specified <see cref="T:System.Char"/>s from this <see cref="T:System.String"/> starting at the specified index.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to modify.</param>
+            <param name="startIndex">The zero-based index at which to begin removing <see cref="T:System.Char"/>s.</param>
+            <param name="remove">The <see cref="T:System.Char"/>s to remove.</param>
+            <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.String[])">
+            <summary>
+            Removes all occurrences of the specified <see cref="T:System.String"/>s from this <see cref="T:System.String"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to modify.</param>
+            <param name="remove">The <see cref="T:System.String"/>s to remove.</param>
+            <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.Int32,System.String[])">
+            <summary>
+            Removes all occurrences of the specified <see cref="T:System.String"/>s from this <see cref="T:System.String"/> starting at the specified index.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to modify.</param>
+            <param name="startIndex">The zero-based index at which to begin removing <see cref="T:System.String"/>s.</param>
+            <param name="remove">The <see cref="T:System.String"/>s to remove.</param>
+            <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOf(System.String,System.Char)">
             <summary>
@@ -1680,6 +1849,15 @@
             <param name="transform">The function used to transform each line of the input string.</param>
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.GetSimilarity(System.String,System.String,System.StringComparer)">
+            <summary>
+            Computes a value that indicates the similarity between two strings. "Similarity" is defined as the number of characters that are the same in both strings, divided by the length of the longer string. As such, the value returned by this method is always between <c>0</c> (the strings are have no characters in common) and <c>1</c> (the strings are equal), inclusive.
+            </summary>
+            <param name="first">The first <see cref="T:System.String"/> to use for the comparison.</param>
+            <param name="second">The second <see cref="T:System.String"/> to use for the comparison.</param>
+            <param name="stringComparer">A <see cref="T:System.StringComparer"/> instance to use when comparing the <see cref="T:System.String"/>s. Defaults to <see cref="P:System.StringComparer.OrdinalIgnoreCase"/>.</param>
+            <returns>The computed similarity as described.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.TypeExtensions">
             <summary>
@@ -2140,6 +2318,58 @@
             <param name="radius">The radius of the circle.</param>
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
+        </member>
+        <member name="T:LaquaiLib.WPF.ValueConverters.BoolInverterConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that inverts a <see cref="T:System.Boolean"/> value.ss
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WPF.ValueConverters.BoolInverterConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts a <see cref="T:System.Boolean"/> value to its inverse.
+            </summary>
+            <param name="value">The input bool value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns>The inverse of the input <paramref name="value"/>.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the input <paramref name="value"/> is not a <see cref="T:System.Boolean"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.WPF.ValueConverters.BoolInverterConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts an "inverse" <see cref="T:System.Boolean"/> value to its original value.
+            </summary>
+            <param name="value">The input bool value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns>The inverse of the input <paramref name="value"/>.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the input <paramref name="value"/> is not a <see cref="T:System.Boolean"/>.</exception>
+        </member>
+        <member name="T:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that returns a <see cref="T:System.Boolean"/> value depending on whether the given input is null.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts a given <paramref name="value"/> to a <see cref="T:System.Boolean"/> value depending on whether is is <c>null</c>.
+            </summary>
+            <param name="value">The input value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns><c>true</c> if the given input <paramref name="value"/> is not null, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            [Unsupported] Converts a previously converted <paramref name="value"/> back to its original value. This method unconditionally throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="value">The input value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns><c>true</c> if the given input <paramref name="value"/> is not null, otherwise <c>false</c>.</returns>
         </member>
         <member name="T:System.Xml.Linq.XRepetition">
             <summary>

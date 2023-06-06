@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LaquaiLib.Extensions;
 
@@ -22,7 +23,7 @@ public static class StringExtensions
     /// <param name="finds">A collection of strings to search for in <paramref name="source"/>.</param>
     /// <param name="replace">The replacement for occurrences of strings in <paramref name="finds"/>.</param>
     /// <returns>A string as described.</returns>
-    public static string Replace(this string source, IEnumerable<string> finds, string replace)
+    public static string Replace(this string source, IEnumerable<string> finds, string replace = "")
     {
         var input = source;
         foreach (var find in finds)
@@ -31,6 +32,23 @@ public static class StringExtensions
         }
         return input;
     }
+
+    /// <summary>
+    /// Replaces all matches of a regex <paramref name="pattern"/> in this <see cref="string"/> with a <paramref name="replacement"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to search.</param>
+    /// <param name="pattern">The pattern to search for.</param>
+    /// <param name="replacement">The <see cref="string"/> to replace matches with.</param>
+    /// <returns>A new string with all matches of <paramref name="pattern"/> replaced with <paramref name="replacement"/>.</returns>
+    public static string RegexReplace(this string source, string pattern, string replacement = "") => Regex.Replace(source, pattern, replacement);
+    
+    /// <summary>
+    /// Searches the specified input string for occurrences of a specified regex pattern.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to search.</param>
+    /// <param name="pattern">The pattern to search for.</param>
+    /// <returns>The <see cref="System.Text.RegularExpressions.MatchCollection"/> instance returned my <see cref="Regex.Matches(string, string)"/></returns>
+    public static MatchCollection Match(this string source, string pattern) => Regex.Matches(source, pattern);
 
     /// <summary>
     /// Creates a new string from this string with all occurrences of any string that is not contained in <paramref name="except"/> replaced with <paramref name="replace"/>.
@@ -65,6 +83,50 @@ public static class StringExtensions
 
         return result.ToString();
     }
+
+    #region (Actually useful) Remove methods / overloads
+    /// <summary>
+    /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to modify.</param>
+    /// <param name="remove">The <see cref="char"/>s to remove.</param>
+    /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+    public static string Remove(this string source, params char[] remove) => string.Concat(source.Except(remove));
+
+    /// <summary>
+    /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/> starting at the specified index.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to modify.</param>
+    /// <param name="startIndex">The zero-based index at which to begin removing <see cref="char"/>s.</param>
+    /// <param name="remove">The <see cref="char"/>s to remove.</param>
+    /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+    public static string Remove(this string source, int startIndex, params char[] remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
+
+    /// <summary>
+    /// Removes all occurrences of the specified <see cref="string"/>s from this <see cref="string"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to modify.</param>
+    /// <param name="remove">The <see cref="string"/>s to remove.</param>
+    /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+    public static string Remove(this string source, params string[] remove)
+    {
+        var ret = source;
+        foreach (var r in remove)
+        {
+            ret = ret.Replace(r, "");
+        }
+        return ret;
+    }
+
+    /// <summary>
+    /// Removes all occurrences of the specified <see cref="string"/>s from this <see cref="string"/> starting at the specified index.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to modify.</param>
+    /// <param name="startIndex">The zero-based index at which to begin removing <see cref="string"/>s.</param>
+    /// <param name="remove">The <see cref="string"/>s to remove.</param>
+    /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+    public static string Remove(this string source, int startIndex, params string[] remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
+    #endregion
 
     #region IndexOf... methods
     /// <summary>
@@ -177,7 +239,7 @@ public static class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search));
         }
-        return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
     }
 
     /// <summary>
@@ -194,7 +256,7 @@ public static class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search, startIndex));
         }
-        return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
     }
 
     /// <summary>
@@ -210,7 +272,7 @@ public static class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search));
         }
-        return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
     }
 
     /// <summary>
@@ -227,7 +289,7 @@ public static class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search, startIndex));
         }
-        return indexLists.Aggregate(new List<int>().Select(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
     }
     #endregion
 
@@ -517,6 +579,7 @@ public static class StringExtensions
     }
     #endregion
 
+    #region Line transformation methods
     /// <summary>
     /// Applies a <paramref name="transform"/> function to each line of a string.
     /// </summary>
@@ -547,4 +610,36 @@ public static class StringExtensions
     /// <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
     /// <returns></returns>
     public static string ForEachLine(this string source, Func<string, int, string> transform, Func<string, int, bool> predicate) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select((line, index) => predicate(line, index) ? transform(line, index) : line));
+    #endregion
+
+    #region String similarity
+    /// <summary>
+    /// Computes a value that indicates the similarity between two strings. "Similarity" is defined as the number of characters that are the same in both strings, divided by the length of the longer string. As such, the value returned by this method is always between <c>0</c> (the strings are have no characters in common) and <c>1</c> (the strings are equal), inclusive.
+    /// </summary>
+    /// <param name="first">The first <see cref="string"/> to use for the comparison.</param>
+    /// <param name="second">The second <see cref="string"/> to use for the comparison.</param>
+    /// <param name="stringComparer">A <see cref="StringComparer"/> instance to use when comparing the <see cref="string"/>s. Defaults to <see cref="StringComparer.OrdinalIgnoreCase"/>.</param>
+    /// <returns>The computed similarity as described.</returns>
+    public static double GetSimilarity(this string first, string second, StringComparer? stringComparer = null)
+    {
+        ArgumentNullException.ThrowIfNull(second);
+
+        if (!first.Intersect(second).Any()
+            || string.IsNullOrEmpty(first)
+            || string.IsNullOrEmpty(second))
+        {
+            return 0;
+        }
+
+        stringComparer ??= StringComparer.OrdinalIgnoreCase;
+
+        if (stringComparer.Compare(first, second) == 0)
+        {
+            return 1;
+        }
+
+        _ = first.Select(c => c.ToString()).Intersect(second.Select(c => c.ToString()), stringComparer);
+        return (double)first.Select(c => c.ToString()).Intersect(second.Select(c => c.ToString()), stringComparer).Count() / new List<string>() { first, second }.Max(str => str.Length);
+    }
+    #endregion
 }

@@ -17,7 +17,7 @@ public static class IEnumerableTaskExtensions
     /// </summary>
     /// <param name="tasks">The <see cref="IEnumerable{T}"/> of <see cref="Task"/> that contains the <see cref="Task"/>s that are to be started.</param>
     /// <returns>A <see cref="Task"/> that completes when all of the <see cref="Task"/>s in this collection have completed.</returns>
-    public static Task StartWait(this IEnumerable<Task> tasks)
+    public static Task StartAsync(this IEnumerable<Task> tasks)
     {
         tasks.Start();
         return Task.WhenAll(tasks);
