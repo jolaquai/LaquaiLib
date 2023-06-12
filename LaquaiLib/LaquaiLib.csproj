@@ -8,21 +8,30 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Version>$(AssemblyVersion)</Version>
+		<PackageVersion>1.0.6</PackageVersion>
+		<FileVersion>$(PackageVersion)</FileVersion>
 		<AssemblyVersion>$(FileVersion)</AssemblyVersion>
-		<FileVersion>1.0.3</FileVersion>
+		<Version>$(AssemblyVersion)</Version>
 		<DocumentationFile>LaquaiLib.Documentation.xml</DocumentationFile>
 		<AnalysisLevel>preview-all</AnalysisLevel>
 		<AnalysisMode>all</AnalysisMode>
 		<Platforms>AnyCPU;x64;x86</Platforms>
+		<LangVersion>preview</LangVersion>
+
+		<Optimize>False</Optimize>
+		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<DebugType>embedded</DebugType>
+		<Title>LaquaiLib</Title>
+		<Authors>Joshua Laquai</Authors>
+		<Description>Personal library.</Description>
+		<Copyright>(C) Joshua Laquai 20xx</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="DocumentFormat.OpenXml" Version="3.0.0-ci0083" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
 		<!--<PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.3.2" />-->
 		<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.6.0" />
@@ -30,6 +39,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.6.0" />
 		<PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
 		<PackageReference Include="System.Composition.AttributedModel" Version="7.0.0" />
+		<PackageReference Include="System.Management" Version="7.0.1" />
 		<PackageReference Include="UnicodeInformation" Version="2.7.1" />
 	</ItemGroup>
 

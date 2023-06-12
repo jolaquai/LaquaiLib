@@ -41,7 +41,7 @@ public static class StringExtensions
     /// <param name="replacement">The <see cref="string"/> to replace matches with.</param>
     /// <returns>A new string with all matches of <paramref name="pattern"/> replaced with <paramref name="replacement"/>.</returns>
     public static string RegexReplace(this string source, string pattern, string replacement = "") => Regex.Replace(source, pattern, replacement);
-    
+
     /// <summary>
     /// Searches the specified input string for occurrences of a specified regex pattern.
     /// </summary>
@@ -302,14 +302,12 @@ public static class StringExtensions
     /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOfExcept(this string source, char except)
     {
-        var find = source.IndexOf(except);
-        while (find != -1)
+        for (var i = 0; i < source.Length; i++)
         {
-            if (source[find] != except)
+            if (source[i] != except)
             {
-                yield return find;
+                yield return i;
             }
-            find = source.IndexOf(except, find + 1);
         }
     }
 
@@ -322,14 +320,12 @@ public static class StringExtensions
     /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOfExcept(this string source, char except, int startIndex)
     {
-        var find = source.IndexOf(except, startIndex);
-        while (find != -1)
+        for (var i = startIndex; i < source.Length; i++)
         {
-            if (source[find] != except)
+            if (source[i] != except)
             {
-                yield return find;
+                yield return i;
             }
-            find = source.IndexOf(except, find + 1);
         }
     }
 
@@ -341,14 +337,14 @@ public static class StringExtensions
     /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOfExcept(this string source, string except)
     {
-        var find = source.IndexOf(except);
-        while (find != -1)
+        var exceptSet = new HashSet<char>(except);
+
+        for (var i = 0; i < source.Length; i++)
         {
-            if (!except.Contains(source[find]))
+            if (!exceptSet.Contains(source[i]))
             {
-                yield return find;
+                yield return i;
             }
-            find = source.IndexOf(except, find + 1);
         }
     }
 
@@ -361,14 +357,14 @@ public static class StringExtensions
     /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOfExcept(this string source, string except, int startIndex)
     {
-        var find = source.IndexOf(except, startIndex);
-        while (find != -1)
+        var exceptSet = new HashSet<char>(except);
+
+        for (var i = startIndex; i < source.Length; i++)
         {
-            if (!except.Contains(source[find]))
+            if (!exceptSet.Contains(source[i]))
             {
-                yield return find;
+                yield return i;
             }
-            find = source.IndexOf(except, find + 1);
         }
     }
 
