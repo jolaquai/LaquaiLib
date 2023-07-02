@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace LaquaiLib.Classes;
+namespace LaquaiLib.Classes.Collections;
 
 /// <summary>
 /// Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.

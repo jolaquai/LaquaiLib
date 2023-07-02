@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using System.Collections.Immutable;
+
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IEnumerable{T}"/> Type.
@@ -114,5 +116,31 @@ public static class IEnumerableExtensions
         {
             yield return source.ElementAt(i);
         }
+    }
+
+    /// <summary>
+    /// Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the objects to compare.</typeparam>
+    /// <param name="source">The collection that contains the items to compare. An exception is thrown if the collection is empty.</param>
+    /// <returns><c>true</c> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <c>false</c>.</returns>
+
+    public static bool AllEqual<T>(this IEnumerable<T> source)
+    {
+        if (!source.Any())
+        {
+            throw new ArgumentException("The passed collection must not be empty.", nameof(source));
+        }
+        if (source.Count() == 1)
+        {
+            return true;
+        }
+
+        if (source.Any(o => o is null))
+        {
+            return source.All(o => o is null);
+        }
+        var first = source.First();
+        return source.Skip(1).All(item => item.Equals(first));
     }
 }

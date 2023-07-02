@@ -5,19 +5,19 @@ namespace LaquaiLib.Util;
 /// <summary>
 /// Represents a temporary directory that is automatically deleted when its wrapper object is disposed.
 /// </summary>
-public class TempDir : IDisposable
+public class TempDirectory : IDisposable
 {
     /// <summary>
-    /// Instantiates a new <see cref="TempDir"/> with a fully random name.
+    /// Instantiates a new <see cref="TempDirectory"/> with a fully random name.
     /// </summary>
-    public TempDir()
+    public TempDirectory()
         : this(System.IO.Path.Combine(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString())) { }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempDir"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="TempDir"/> is disposed.
+    /// Instantiates a new <see cref="TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="TempDirectory"/> is disposed.
     /// </summary>
-    /// <param name="path">The path to the directory to wrap with this <see cref="TempDir"/>.</param>
-    public TempDir(string path)
+    /// <param name="path">The path to the directory to wrap with this <see cref="TempDirectory"/>.</param>
+    public TempDirectory(string path)
     {
         _path = path;
         if (!Directory.Exists(_path))
@@ -29,7 +29,7 @@ public class TempDir : IDisposable
     private string? _path;
 
     /// <summary>
-    /// The path to the file this <see cref="TempDir"/> wraps.
+    /// The path to the file this <see cref="TempDirectory"/> wraps.
     /// </summary>
     public string Path {
         get {
@@ -40,7 +40,7 @@ public class TempDir : IDisposable
 
     #region Dispose pattern
     /// <summary>
-    /// Whether this <see cref="TempDir"/> has been disposed.
+    /// Whether this <see cref="TempDirectory"/> has been disposed.
     /// </summary>
     public bool IsDisposed => string.IsNullOrWhiteSpace(_path);
 
@@ -61,9 +61,9 @@ public class TempDir : IDisposable
     }
 
     /// <summary>
-    /// Finalizes this <see cref="TempDir"/>.
+    /// Finalizes this <see cref="TempDirectory"/>.
     /// </summary>
-    ~TempDir()
+    ~TempDirectory()
     {
         Dispose(false);
     }

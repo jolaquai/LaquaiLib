@@ -36,11 +36,4 @@ public class LaquaiLib
             yield return current += step;
         }
     }
-
-    /// <summary>
-    /// Determines if all passed <paramref name="objects"/> are equal to each other.
-    /// </summary>
-    /// <param name="objects">The objects to compare.</param>
-    /// <returns>A value indicating whether all passed <paramref name="objects"/> are equal to each other.</returns>
-    public static bool Equal(params object[] objects) => objects.Length >= 2 && objects.Skip(1).All(obj => obj.Equals(objects.First()));
 }

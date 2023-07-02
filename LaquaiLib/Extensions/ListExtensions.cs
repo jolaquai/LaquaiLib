@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides extension methods for the <see cref="List{T}"/> Type.
 /// </summary>
-public static class ListTExtensions
+public static class ListExtensions
 {
     /// <summary>
     /// Removes the element at the specified <paramref name="index"/> from this <see cref="List{T}"/>.

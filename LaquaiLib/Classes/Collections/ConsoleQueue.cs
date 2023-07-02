@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
+using System.Text;
 
-namespace LaquaiLib.Classes;
+namespace LaquaiLib.Classes.Collections;
 
 /// <summary>
 /// Represents a (thread-safe) wrapper around the <see cref="Console"/>. It is used to postpone blocking console output until after any expensive computations are completed.
@@ -35,12 +36,14 @@ public static class ConsoleQueue
     public static int Flush()
     {
         var cnt = Queue.Count;
+        var sb = new StringBuilder();
+        while (Queue.TryDequeue(out var obj))
+        {
+            sb.AppendLine(obj.ToString());
+        }
         lock (consoleLock)
         {
-            while (Queue.TryDequeue(out var obj))
-            {
-                Console.WriteLine(obj);
-            }
+            Console.WriteLine(sb.ToString());
         }
         Queue.Clear();
         return cnt;
@@ -53,13 +56,16 @@ public static class ConsoleQueue
     public static int Flush<T>(Func<object, T> transform)
     {
         var cnt = Queue.Count;
+        var sb = new StringBuilder();
+        while (Queue.TryDequeue(out var obj))
+        {
+            sb.AppendLine(transform(obj).ToString());
+        }
         lock (consoleLock)
         {
-            while (Queue.TryDequeue(out var obj))
-            {
-                Console.WriteLine(transform(obj));
-            }
+            Console.WriteLine(sb.ToString());
         }
+        Queue.Clear();
         return cnt;
     }
 }

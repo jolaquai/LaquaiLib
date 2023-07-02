@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace LaquaiLib.Classes;
+namespace LaquaiLib.Classes.Collections;
 
 /// <summary>
 /// Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique. Enumeration is supported in the forward direction using standard <see cref="IEnumerable{T}"/> methods. For reverse enumeration, use <see cref="GetReverseEnumerator"/>.

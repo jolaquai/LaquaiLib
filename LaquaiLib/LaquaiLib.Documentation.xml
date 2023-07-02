@@ -4,228 +4,304 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
-        <member name="T:LaquaiLib.Classes.ConsoleQueue">
+        <member name="T:LaquaiLib.Classes.Collections.BinaryTree`1">
+            <summary>
+            Represents a binary tree, that is, a tree data structure in which each node has at most two children.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node">
+            <summary>
+            Represents a node in a binary tree.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Collections.BinaryTree`1.Node.Left">
+            <summary>
+            The left child of this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/>. May be <c>null</c> if this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/> has no left child.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Collections.BinaryTree`1.Node.Right">
+            <summary>
+            The right child of this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/>. May be <c>null</c> if this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/> has no right child.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ConsoleQueue">
             <summary>
             Represents a (thread-safe) wrapper around the <see cref="T:System.Console"/>. It is used to postpone blocking console output until after any expensive computations are completed.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Classes.ConsoleQueue.consoleLock">
+        <member name="F:LaquaiLib.Classes.Collections.ConsoleQueue.consoleLock">
             <summary>
             The <see cref="T:System.Object"/> used to lock when attempting to write to the <see cref="T:System.Console"/>.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Classes.ConsoleQueue.Queue">
+        <member name="P:LaquaiLib.Classes.Collections.ConsoleQueue.Queue">
             <summary>
             The internal queue of objects to eventually output to the <see cref="T:System.Console"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Classes.ConsoleQueue.Enqueue(System.Object)">
+        <member name="M:LaquaiLib.Classes.Collections.ConsoleQueue.Enqueue(System.Object)">
             <summary>
             Adds an object to the end of the internal queue.
             </summary>
             <param name="obj">The object to eventually output to the <see cref="T:System.Console"/>.</param>
             <returns>The index of the position in the internal queue at which <paramref name="obj"/> is.</returns>
         </member>
-        <member name="M:LaquaiLib.Classes.ConsoleQueue.Flush">
+        <member name="M:LaquaiLib.Classes.Collections.ConsoleQueue.Flush">
             <summary>
             Flushes all contents of the internal queue into the <see cref="T:System.Console"/>. This operation blocks until all objects in the internal queue have been output.
             </summary>
             <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Classes.ConsoleQueue.Flush``1(System.Func{System.Object,``0})">
+        <member name="M:LaquaiLib.Classes.Collections.ConsoleQueue.Flush``1(System.Func{System.Object,``0})">
             <summary>
             Flushes all contents of the internal queue into the <see cref="T:System.Console"/> after invoking a transform function on them. This operation blocks until all objects in the internal queue have been output.
             </summary>
             <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
         </member>
-        <member name="T:LaquaiLib.Classes.ObservableCollectionFast`1">
-            <summary>
-            Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
-            </summary>
-            <typeparam name="T">The Type of the elements in the collection.</typeparam>
-        </member>
-        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor">
-            <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified collection.
-            </summary>
-            <param name="collection">The collection from which the elements are copied.</param>
-        </member>
-        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.#ctor(`0[])">
-            <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains the specified items and has a capacity equal to the number of items.
-            </summary>
-            <param name="items">The items for the list to contain.</param>
-        </member>
-        <member name="P:LaquaiLib.Classes.ObservableCollectionFast`1.Item(System.Index)">
-            <summary>
-            Gets or sets the element at the specified <paramref name="index"/>.
-            </summary>
-            <param name="index">An <see cref="T:System.Index"/> instance that identifies the location of the element to get or set.</param>
-            <returns>The element at the specified <paramref name="index"/>.</returns>
-        </member>
-        <member name="P:LaquaiLib.Classes.ObservableCollectionFast`1.Item(System.Range)">
-            <summary>
-            Gets or sets elements within the specified <paramref name="range"/>.
-            </summary>
-            <param name="range">The <see cref="T:System.Range"/> in which to get or set elements.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.ObservableCollectionFast`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Adds the elements of the specified collection to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
-            </summary>
-            <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
-        </member>
-        <member name="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1">
+        <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
             </summary>
             <typeparam name="T">The Type of the items in the collection.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.Capacity">
+        <member name="P:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.Capacity">
             <summary>
-            The capacity of this <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>.
+            The capacity of this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.#ctor">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> with the default maximum capacity.
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the default maximum capacity.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
             </summary>
-            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>'s items from.</param>
+            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.#ctor(System.Int32)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.Int32)">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> with the given maximum <paramref name="capacity"/>.
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the given maximum <paramref name="capacity"/>.
             </summary>
-            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.Enqueue(`0)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.Enqueue(`0)">
             <summary>
-            Forcibly adds an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>, discarding the oldest item if the collection is at maximum capacity.
+            Forcibly adds an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>, discarding the oldest item if the collection is at maximum capacity.
             </summary>
-            <param name="item">The item to add to the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>.</param>
+            <param name="item">The item to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.TryEnqueue(`0)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.TryEnqueue(`0)">
             <summary>
-            Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
+            Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
             </summary>
-            <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>.</param>
+            <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>.</param>
             <returns>A value indicating whether the collection was modified; <c>true</c> if <paramref name="item"/> could be added, <c>false</c> otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1.Reduce(System.Int32)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.Reduce(System.Int32)">
             <summary>
-            Removes items from the <see cref="T:LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
+            Removes items from the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
         </member>
-        <member name="T:LaquaiLib.Classes.Collections.LimitedQueue`1">
+        <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Generic.Queue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
             </summary>
             <typeparam name="T">The Type of the items in the collection.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Classes.Collections.LimitedQueue`1.Capacity">
+        <member name="P:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.Capacity">
             <summary>
-            The capacity of this <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>.
+            The capacity of this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.#ctor">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.#ctor">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> with the default maximum capacity.
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the default maximum capacity.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
             </summary>
-            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>'s items from.</param>
+            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.#ctor(System.Int32)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.Int32)">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> with the given maximum <paramref name="capacity"/>.
+            Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the given maximum <paramref name="capacity"/>.
             </summary>
-            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.Enqueue(`0)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.Enqueue(`0)">
             <summary>
-            Forcibly adds an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>, discarding the oldest item if the collection is at maximum capacity.
+            Forcibly adds an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>, discarding the oldest item if the collection is at maximum capacity.
             </summary>
-            <param name="item">The item to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>.</param>
+            <param name="item">The item to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.TryEnqueue(`0)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.TryEnqueue(`0)">
             <summary>
-            Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
+            Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
             </summary>
-            <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>.</param>
+            <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>.</param>
             <returns>A value indicating whether the collection was modified; <c>true</c> if <paramref name="item"/> could be added, <c>false</c> otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.LimitedQueue`1.Reduce(System.Int32)">
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.Reduce(System.Int32)">
             <summary>
-            Removes items from the <see cref="T:LaquaiLib.Classes.Collections.LimitedQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
+            Removes items from the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
         </member>
-        <member name="T:LaquaiLib.Classes.Collections.WishList`1">
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1">
             <summary>
-            Represents a strongly typed list of objects that can be accessed by index. Provides methods to search, sort, and manipulate lists and generally everything a <see cref="T:System.Collections.Generic.List`1"/> can do plus everything you ever wished it could.
+            Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
             </summary>
-            <typeparam name="T">The Type of the elements in the list.</typeparam>
+            <typeparam name="T">The Type of the elements in the collection.</typeparam>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor">
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that is empty and has the default capacity.
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that contains elements copied from the specified collection and has sufficient capacity to accommodate the number of elements copied.
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified collection.
             </summary>
-            <param name="collection">The collection to copy items from.</param>
+            <param name="collection">The collection from which the elements are copied.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor(System.Int32)">
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.#ctor(`0[])">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that is empty and has the specified initial capacity.
-            </summary>
-            <param name="capacity">The initial capacity of the list.</param>
-        </member>
-        <member name="M:LaquaiLib.Classes.Collections.WishList`1.#ctor(`0[])">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.WishList`1"/> that contains the specified items and has a capacity equal to the number of items.
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains the specified items and has a capacity equal to the number of items.
             </summary>
             <param name="items">The items for the list to contain.</param>
         </member>
-        <member name="P:LaquaiLib.Classes.Collections.WishList`1.Item(System.Index)">
+        <member name="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Item(System.Index)">
             <summary>
             Gets or sets the element at the specified <paramref name="index"/>.
             </summary>
             <param name="index">An <see cref="T:System.Index"/> instance that identifies the location of the element to get or set.</param>
             <returns>The element at the specified <paramref name="index"/>.</returns>
         </member>
-        <member name="P:LaquaiLib.Classes.Collections.WishList`1.Item(System.Range)">
+        <member name="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Item(System.Range)">
             <summary>
             Gets or sets elements within the specified <paramref name="range"/>.
             </summary>
             <param name="range">The <see cref="T:System.Range"/> in which to get or set elements.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds the elements of the specified collection to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            </summary>
+            <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.TwoWayLookup`2">
+            <summary>
+            Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique. Enumeration is supported in the forward direction using standard <see cref="T:System.Collections.Generic.IEnumerable`1"/> methods. For reverse enumeration, use <see cref="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetReverseEnumerator"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.Add(`0,`1)">
+            <summary>
+            Adds a new entry to the lookup table. An exception is thrown if either the key or the value already exists.
+            </summary>
+            <param name="key">The key of the entry.</param>
+            <param name="value">The value of the entry.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryAdd(`0,`1)">
+            <summary>
+            Attempts to add a new entry to the lookup table.
+            </summary>
+            <param name="key">The key of the entry.</param>
+            <param name="value">The value of the entry.</param>
+            <returns><c>true</c> if the key-value pair could be added, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetForward(`0)">
+            <summary>
+            Retrieves an entry from the lookup table by its key. An exception is thrown if there is no entry with the given key.
+            </summary>
+            <param name="key">The key of the entry.</param>
+            <returns>The value associated with the given key.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetReverse(`1)">
+            <summary>
+            Retrieves an entry from the lookup table by its value. An exception is thrown if there is no entry with the given value.
+            </summary>
+            <param name="value">The value of the entry.</param>
+            <returns>The key associated with the given value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryGetForward(`0,`1@)">
+            <summary>
+            Attempts to retrieve an entry from the lookup table by its key.
+            </summary>
+            <param name="key">The key of the entry.</param>
+            <param name="value">An <c>out</c> <typeparamref name="T2"/> variable that receives the retrieved value.</param>
+            <returns><c>true</c> if there was a value associated with the key, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryGetReverse(`1,`0@)">
+            <summary>
+            Attempts to retrieve an entry from the lookup table by its value.
+            </summary>
+            <param name="value">The value of the entry.</param>
+            <param name="key">An <c>out</c> <typeparamref name="T1"/> variable that receives the retrieved key.</param>
+            <returns><c>true</c> if there was a key associated with the value, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.RemoveForward(`0)">
+            <summary>
+            Removes an entry from the lookup table by its key. An exception is thrown if there is no entry with the given key.
+            </summary>
+            <param name="key">The key of the entry.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.RemoveReverse(`1)">
+            <summary>
+            Removes an entry from the lookup table by its value. An exception is thrown if there is no entry with the given value.
+            </summary>
+            <param name="value">The value of the entry.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryRemoveForward(`0)">
+            <summary>
+            Attempts to remove an entry from the lookup table by its key.
+            </summary>
+            <param name="key">The key of the entry.</param>
+            <returns><c>true</c> if there was a value associated with the key that could be removed, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryGetReverse(`1)">
+            <summary>
+            Attempts to remove an entry from the lookup table by its value.
+            </summary>
+            <param name="value">The value of the entry.</param>
+            <returns><c>true</c> if there was a key associated with the value that could be removed, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetReverseEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the reverse collection.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the reverse collection.</returns>
         </member>
         <member name="T:LaquaiLib.Classes.Streams.MemoryOrFileStream">
             <summary>
             Represents a <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream"/> that can be either a <see cref="T:System.IO.MemoryStream"/> or a <see cref="T:System.IO.FileStream"/>, depending on the size of the data expected to be written to it.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff">
+        <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff">
             <summary>
             The number of bytes at which the stream will switch from a <see cref="T:System.IO.MemoryStream"/> to a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <remarks>
+            You may freely change this value at runtime. Its initial value is 1/64th of the total physical memory of the system (e.g., if your system has 32 GB of total physical memory, this will initially have the value <c>32768 / 64 = 512 MB</c>). If an exception is thrown during retrieval of the total physical memory, the value will default to 64 MB.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.ResetCutoff">
+            <summary>
+            Resets the <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/> to the initial value. See the documentation of <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/> for more information.
+            </summary>
+            <returns>The new value of <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Streams.MemoryOrFileStream.#cctor">
+            <summary>
+            Initializes the <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> Type.
             </summary>
         </member>
         <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream">
@@ -242,7 +318,7 @@
             <summary>
             Instantiates a new <see cref="T:LaquaiLib.Classes.Streams.MemoryOrFileStream"/> with the given expected payload size.
             </summary>
-            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="F:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
+            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
         </member>
         <member name="P:LaquaiLib.Classes.Streams.MemoryOrFileStream.CanRead">
             <inheritdoc/>
@@ -1029,38 +1105,38 @@
         <member name="M:LaquaiLib.Util.TempArray`1.Dispose">
             <inheritdoc/>
         </member>
-        <member name="T:LaquaiLib.Util.TempDir">
+        <member name="T:LaquaiLib.Util.TempDirectory">
             <summary>
             Represents a temporary directory that is automatically deleted when its wrapper object is disposed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.TempDir.#ctor">
+        <member name="M:LaquaiLib.Util.TempDirectory.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempDir"/> with a fully random name.
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempDirectory"/> with a fully random name.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.TempDir.#ctor(System.String)">
+        <member name="M:LaquaiLib.Util.TempDirectory.#ctor(System.String)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempDir"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Util.TempDir"/> is disposed.
+            Instantiates a new <see cref="T:LaquaiLib.Util.TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Util.TempDirectory"/> is disposed.
             </summary>
-            <param name="path">The path to the directory to wrap with this <see cref="T:LaquaiLib.Util.TempDir"/>.</param>
+            <param name="path">The path to the directory to wrap with this <see cref="T:LaquaiLib.Util.TempDirectory"/>.</param>
         </member>
-        <member name="P:LaquaiLib.Util.TempDir.Path">
+        <member name="P:LaquaiLib.Util.TempDirectory.Path">
             <summary>
-            The path to the file this <see cref="T:LaquaiLib.Util.TempDir"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempDir.IsDisposed">
-            <summary>
-            Whether this <see cref="T:LaquaiLib.Util.TempDir"/> has been disposed.
+            The path to the file this <see cref="T:LaquaiLib.Util.TempDirectory"/> wraps.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.TempDir.Finalize">
+        <member name="P:LaquaiLib.Util.TempDirectory.IsDisposed">
             <summary>
-            Finalizes this <see cref="T:LaquaiLib.Util.TempDir"/>.
+            Whether this <see cref="T:LaquaiLib.Util.TempDirectory"/> has been disposed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.TempDir.Dispose">
+        <member name="M:LaquaiLib.Util.TempDirectory.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Util.TempDirectory"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TempDirectory.Dispose">
             <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.TempFile">
@@ -1171,11 +1247,11 @@
         </member>
         <member name="M:LaquaiLib.Extensions.ArrayExtensions.AsEnumerable``1(System.Array)">
             <summary>
-            Uses the default order to transform the <see cref="T:System.Array"/> of <typeparamref name="T"/> to an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>.
+            Uses the default order to transform the <see cref="T:System.Array"/> of <typeparamref name="T"/> to an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>. This allows using Linq methods on multi-dimensional <see cref="T:System.Array"/>s.
             </summary>
             <typeparam name="T">The type of the items in the array.</typeparam>
-            <param name="source">The <see cref="T:System.Array"/></param>
-            <returns></returns>
+            <param name="source">The <see cref="T:System.Array"/> to transform.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that contains the transformed elements from the input sequence.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.AssemblyExtensions">
             <summary>
@@ -1222,6 +1298,18 @@
             <param name="character">The <see cref="T:System.Char"/> to check.</param>
             <returns><c>true</c> if <paramref name="character"/> is a consonant, otherwise, <c>false</c>.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.ColorExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:System.Drawing.Color"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ColorExtensions.AsHtml(System.Drawing.Color)">
+            <summary>
+            Formats the <see cref="T:System.Drawing.Color"/> as a HTML color string.
+            </summary>
+            <param name="color">The <see cref="T:System.Drawing.Color"/> to format.</param>
+            <returns>The HTML color string.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.ConcurrentQueueExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> Type.
@@ -1244,7 +1332,7 @@
             <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
             <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue{``0},``0,``0[])">
+        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue{``0},``0,``0[])">
             <summary>
             Adds items to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
             </summary>
@@ -1253,7 +1341,7 @@
             <param name="item">The first item to add to <paramref name="queue"/>.</param>
             <param name="items">Any more items to add to <paramref name="queue"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.Concurrent.LimitedConcurrentQueue{``0},System.Collections.Generic.IEnumerable{``0})">
+        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Adds items from a collection to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
             </summary>
@@ -1292,6 +1380,18 @@
             <typeparam name="TValue">They Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
             <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to clone.</param>
             <returns>A shallow copy of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.EnumExtensions">
+            <summary>
+            Provides Extension Methods for <see cref="T:System.Enum"/> Types.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.EnumExtensions.GetDescription(System.Enum)">
+            <summary>
+            Returns the <see cref="P:System.ComponentModel.DescriptionAttribute.Description"/> for the given <see cref="T:System.Enum"/> value. If the value is not decorated with a <see cref="T:System.ComponentModel.DescriptionAttribute"/>, the default <see cref="T:System.String"/> representation of the value is returned.
+            </summary>
+            <param name="any">The <see cref="T:System.Enum"/> value to retrieve the description for.</param>
+            <returns>The value of the <see cref="P:System.ComponentModel.DescriptionAttribute.Description"/> for the given <see cref="T:System.Enum"/> value or its default <see cref="T:System.String"/> representation.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.HashAlgorithmExtensions">
             <summary>
@@ -1404,6 +1504,14 @@
             <typeparam name="T">The Type of the elements in the collection.</typeparam>
             <param name="source">The collection to extract elements from.</param>
             <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be extracted are located in the <paramref name="source"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AllEqual``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>.
+            </summary>
+            <typeparam name="T">The Type of the objects to compare.</typeparam>
+            <param name="source">The collection that contains the items to compare. An exception is thrown if the collection is empty.</param>
+            <returns><c>true</c> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <c>false</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
@@ -1543,7 +1651,7 @@
             <param name="queue">The <see cref="T:System.Collections.Generic.Queue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
             <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedQueue{``0},``0,``0[])">
+        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue{``0},``0,``0[])">
             <summary>
             Adds items to the end of the <see cref="T:System.Collections.Generic.Queue`1"/>.
             </summary>
@@ -1552,7 +1660,7 @@
             <param name="item">The first item to add to <paramref name="queue"/>.</param>
             <param name="items">Any more items to add to <paramref name="queue"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedQueue{``0},System.Collections.Generic.IEnumerable{``0})">
+        <member name="M:LaquaiLib.Extensions.QueueExtensions.Enqueue``1(LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Adds items from a collection to the end of the <see cref="T:System.Collections.Generic.Queue`1"/>.
             </summary>
@@ -1897,6 +2005,32 @@
             <param name="stringComparer">A <see cref="T:System.StringComparer"/> instance to use when comparing the <see cref="T:System.String"/>s. Defaults to <see cref="P:System.StringComparer.OrdinalIgnoreCase"/>.</param>
             <returns>The computed similarity as described.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.ThirdParty.HtmlAgilityPackExtensions.HtmlDocumentExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:HtmlAgilityPack.HtmlDocument"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ThirdParty.HtmlAgilityPackExtensions.HtmlDocumentExtensions.CreateElement(HtmlAgilityPack.HtmlDocument,System.String,System.Action{HtmlAgilityPack.HtmlNode})">
+            <summary>
+            Creates an <see cref="T:HtmlAgilityPack.HtmlNode"/> using this <see cref="T:HtmlAgilityPack.HtmlDocument"/>, the new node's <paramref name="name"/> and a <paramref name="config"/> <see cref="T:System.Action`1"/> that may configure it.
+            </summary>
+            <param name="htmlDoc">The <see cref="T:HtmlAgilityPack.HtmlDocument"/> to associate with the new node.</param>
+            <param name="name">The element name of the new node.</param>
+            <param name="config">An <see cref="T:System.Action`1"/> that may configure the new node.</param>
+            <returns>A reference to the created node.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.ThirdParty.HtmlAgilityPackExtensions.HtmlNodeExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:HtmlAgilityPack.HtmlNode"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ThirdParty.HtmlAgilityPackExtensions.HtmlNodeExtensions.AppendChildren(HtmlAgilityPack.HtmlNode,HtmlAgilityPack.HtmlNode[])">
+            <summary>
+            Adds child nodes to the <see cref="T:HtmlAgilityPack.HtmlNode"/>.
+            </summary>
+            <param name="node">The <see cref="T:HtmlAgilityPack.HtmlNode"/>to add child nodes to.</param>
+            <param name="children">The child nodes to add to the <paramref name="node"/>.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.TypeExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Type"/> Type.
@@ -2010,13 +2144,6 @@
             <param name="step">The step width of the range.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Double"/> as described.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="step"/> is 0.</exception>
-        </member>
-        <member name="M:LaquaiLib.LaquaiLib.Equal(System.Object[])">
-            <summary>
-            Determines if all passed <paramref name="objects"/> are equal to each other.
-            </summary>
-            <param name="objects">The objects to compare.</param>
-            <returns>A value indicating whether all passed <paramref name="objects"/> are equal to each other.</returns>
         </member>
         <member name="T:LaquaiLib.Miscellaneous">
             <summary>

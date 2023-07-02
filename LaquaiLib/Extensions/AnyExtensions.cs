@@ -45,14 +45,14 @@ public static class AnyExtensions
     /// <returns><c>true</c> if all the results produced by <paramref name="transform"/> are all equal, otherwise <c>false</c>.</returns>
     public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, params T[] other)
     {
-        if (source is null || other.Any(o => o is null))
-        {
-            return source is null && other.All(o => o is null);
-        }
-
+        ArgumentNullException.ThrowIfNull(other);
         if (other.Length == 0)
         {
             throw new ArgumentException("Cannot compare to an empty array.", nameof(other));
+        }
+        if (source is null || other.Any(o => o is null))
+        {
+            return source is null && other.All(o => o is null);
         }
 
         var src = transform(source);
