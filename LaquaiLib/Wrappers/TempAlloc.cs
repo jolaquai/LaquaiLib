@@ -1,10 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 
-using Microsoft.Office.Interop.Word;
-
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.

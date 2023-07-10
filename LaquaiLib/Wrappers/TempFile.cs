@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Represents a temporary file that is automatically deleted when its wrapper object is disposed.

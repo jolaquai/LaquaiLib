@@ -5,7 +5,7 @@ using Timer = System.Threading.Timer;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-namespace LaquaiLib.ScreenCapture;
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Wraps some screenshot functionality from <see cref="Bitmap"/> and <see cref="Graphics"/>.
@@ -26,7 +26,7 @@ public partial class ScreenCapture
             public int bottom;
         }
 
-        delegate bool MonitorEnumProc(IntPtr hDesktop, IntPtr hdc, ref Rect pRect, int dwData);
+        private delegate bool MonitorEnumProc(nint hDesktop, nint hdc, ref Rect pRect, int dwData);
 
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -35,7 +35,7 @@ public partial class ScreenCapture
         public static double[] EnumerateScales()
         {
             List<double> scales = new();
-            bool Callback(IntPtr hDesktop, IntPtr hdc, ref Rect pRect, int dwData)
+            bool Callback(nint hDesktop, nint hdc, ref Rect pRect, int dwData)
             {
                 GetScaleFactorForMonitor(hDesktop, out var scale);
                 scales.Add(Math.Round(scale / 100d / 0.25) * 0.25);
@@ -366,29 +366,29 @@ public partial class ScreenCapture
     {
         Stop();
     }
-}
 
-/// <summary>
-/// Event args that are passed when raising a <see cref="ScreenCapture.Captured"/> event.
-/// </summary>
-public class ScreenCaptureEventArgs : EventArgs
-{
     /// <summary>
-    /// The created <see cref="System.Drawing.Bitmap"/> capture.
+    /// Event args that are passed when raising a <see cref="ScreenCapture.Captured"/> event.
     /// </summary>
-    public Bitmap Bitmap { get; init; }
-    /// <summary>
-    /// When the capture was created.
-    /// </summary>
-    public DateTime CaptureTime { get; init; }
-    /// <summary>
-    /// Instantiates <see cref="ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
-    /// </summary>
-    /// <param name="bitmap"></param>
-    /// <param name="timestamp"></param>
-    public ScreenCaptureEventArgs(Bitmap bitmap, DateTime timestamp)
+    public class ScreenCaptureEventArgs : EventArgs
     {
-        Bitmap = bitmap;
-        CaptureTime = timestamp;
+        /// <summary>
+        /// The created <see cref="System.Drawing.Bitmap"/> capture.
+        /// </summary>
+        public Bitmap Bitmap { get; init; }
+        /// <summary>
+        /// When the capture was created.
+        /// </summary>
+        public DateTime CaptureTime { get; init; }
+        /// <summary>
+        /// Instantiates <see cref="ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <param name="timestamp"></param>
+        public ScreenCaptureEventArgs(Bitmap bitmap, DateTime timestamp)
+        {
+            Bitmap = bitmap;
+            CaptureTime = timestamp;
+        }
     }
 }

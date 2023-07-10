@@ -6,7 +6,7 @@ using System.Reflection;
 namespace LaquaiLib;
 
 /// <summary>
-/// Contains miscellaneous classes and methods.
+/// Contains miscellaneous and methods.
 /// </summary>
 public static class Miscellaneous
 {

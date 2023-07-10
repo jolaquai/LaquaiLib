@@ -124,7 +124,6 @@ public static class IEnumerableExtensions
     /// <typeparam name="T">The Type of the objects to compare.</typeparam>
     /// <param name="source">The collection that contains the items to compare. An exception is thrown if the collection is empty.</param>
     /// <returns><c>true</c> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <c>false</c>.</returns>
-
     public static bool AllEqual<T>(this IEnumerable<T> source)
     {
         if (!source.Any())
@@ -142,5 +141,27 @@ public static class IEnumerableExtensions
         }
         var first = source.First();
         return source.Skip(1).All(item => item.Equals(first));
+    }
+
+    /// <summary>
+    /// Produces the set difference of two sequences according to a specified key selector function.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the elements of the input sequences.</typeparam>
+    /// <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
+    /// <param name="source">The first sequence to compare.</param>
+    /// <param name="other">The second sequence to compare.</param>
+    /// <param name="keySelector">The <see cref="Func{T, TResult}"/> that is passed each element of the source sequence and returns the key to use for comparison.</param>
+    /// <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
+    /// <remarks>Basically just another <see cref="Enumerable.ExceptBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TKey}, Func{TSource, TKey})"/> overload that... actually makes sense.</remarks>
+    public static IEnumerable<TSource> ExceptBy<TSource, TKey>(this IEnumerable<TSource> source, IEnumerable<TSource> other, Func<TSource, TKey> keySelector)
+    {
+        var keys = new HashSet<TKey>(other.Select(keySelector));
+        foreach (var element in source)
+        {
+            if (keys.Add(keySelector(element)))
+            {
+                yield return element;
+            }
+        }
     }
 }

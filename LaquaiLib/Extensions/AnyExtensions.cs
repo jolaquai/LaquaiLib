@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides Extension Methods for all Types.
@@ -64,6 +66,17 @@ public static class AnyExtensions
             }
         }
         return true;
+    }
+
+    /// <summary>
+    /// Checks whether a given input object is <c>null</c>. If not, it is marked to the compiler as non-<c>null</c> for the remainder of the scope.
+    /// </summary>
+    /// <typeparam name="T">The Type of the input object.</typeparam>
+    /// <param name="source">The input object.</param>
+    /// <returns><c>true</c> if <paramref name="source"/> is <c>null</c>, otherwise <c>false</c>.</returns>
+    public static bool IsNull<T>([NotNullWhen(false)] this T source)
+    {
+        return source is null;
     }
 }
 

@@ -195,25 +195,127 @@
             </summary>
             <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
         </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddSilent(`0)">
+            <summary>
+            Silently adds an element to the end of this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="item">The item to add to the end of this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RemoveRange(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Removes all occurrences of the specified items from the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            </summary>
+            <param name="collection">A sequence of values to remove from this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RemoveSilent(`0)">
+            <summary>
+            Silently removes an element from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="item">The item to remove from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RemoveSilent(System.Func{`0,System.Boolean})">
+            <summary>
+            Silently removes all elements from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> as dictated by a <paramref name="selector"/> <see cref="T:System.Func`2"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="selector">A <see cref="T:System.Func`2"/> that determines whether an element should be removed.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Remove(`0)">
+            <summary>
+            Removes an element from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            </summary>
+            <param name="item">The item to remove from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Remove(System.Func{`0,System.Boolean})">
+            <summary>
+            Removes all elements from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> as dictated by a <paramref name="selector"/> <see cref="T:System.Func`2"/>.
+            </summary>
+            <param name="selector">A <see cref="T:System.Func`2"/> that determines whether an element should be removed.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RaiseCollectionChanged">
+            <summary>
+            Raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> by <see cref="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddSilent(`0)"/> will not be propagated to observers until this method is called.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PreCollectionChangedNotification">
+            <summary>
+            Encapsulates a method that is called before a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised for this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PreCollectionChanged">
+            <summary>
+            Occurs before a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PostCollectionChangedNotification">
+            <summary>
+            Encapsulates a method that is called after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised for this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It should not modify the collection as any changes are not propagated to observers.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PostCollectionChanged">
+            <summary>
+            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as any changes are not propagated to observers.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <inheritdoc/>
+        </member>
         <member name="T:LaquaiLib.Classes.Collections.TwoWayLookup`2">
             <summary>
             Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique. Enumeration is supported in the forward direction using standard <see cref="T:System.Collections.Generic.IEnumerable`1"/> methods. For reverse enumeration, use <see cref="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetReverseEnumerator"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.Add(`0,`1)">
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.AddForward(`0,`1)">
             <summary>
-            Adds a new entry to the lookup table. An exception is thrown if either the key or the value already exists.
+            Adds a new entry to the lookup table by the first type parameter <typeparamref name="T1"/>. An exception is thrown if either the key or the value already exists.
             </summary>
             <param name="key">The key of the entry.</param>
             <param name="value">The value of the entry.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryAdd(`0,`1)">
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.AddReverse(`1,`0)">
             <summary>
-            Attempts to add a new entry to the lookup table.
+            Adds a new entry to the lookup table by the second type parameter <typeparamref name="T2"/>. An exception is thrown if either the key or the value already exists.
+            </summary>
+            <param name="key">The key of the entry.</param>
+            <param name="value">The value of the entry.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryAddForward(`0,`1)">
+            <summary>
+            Attempts to add a new entry to the lookup table by the first type parameter <typeparamref name="T1"/>.
             </summary>
             <param name="key">The key of the entry.</param>
             <param name="value">The value of the entry.</param>
             <returns><c>true</c> if the key-value pair could be added, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryAddReverse(`1,`0)">
+            <summary>
+            Attempts to add a new entry to the lookup table by the second type parameter <typeparamref name="T2"/>.
+            </summary>
+            <param name="key">The key of the entry.</param>
+            <param name="value">The value of the entry.</param>
+            <returns><c>true</c> if the key-value pair could be added, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.Add``2(``0,``1)">
+            <summary>
+            Adds a new entry to the lookup table. An exception is thrown if either the key or the value already exists or if the type parameters do not match <typeparamref name="T1"/> and <typeparamref name="T2"/>.
+            </summary>
+            <typeparam name="TFirst">The type of the key.</typeparam>
+            <typeparam name="TSecond">The type of the value.</typeparam>
+            <param name="key">The key of the entry.</param>
+            <param name="value">The value of the entry.</param>
+            <remarks>For the love of all things holy, avoid using this method. The 9000 generic type parameters make it a nightmare to use and slow as all hell.</remarks>
+            <exception cref="T:System.ArgumentException">Thrown if the types <typeparamref name="TFirst"/> and <typeparamref name="TSecond"/> do not match the <see cref="T:LaquaiLib.Classes.Collections.TwoWayLookup`2"/>'s type parameters in any order.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if the type <typeparamref name="TFirst"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if the type <typeparamref name="TSecond"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryAdd``2(``0,``1)">
+            <summary>
+            Attempts to add a new entry to the lookup table.
+            </summary>
+            <typeparam name="TFirst">The type of the key.</typeparam>
+            <typeparam name="TSecond">The type of the value.</typeparam>
+            <param name="key">The key of the entry.</param>
+            <param name="value">The value of the entry.</param>
+            <remarks>For the love of all things holy, avoid using this method. The 9000 generic type parameters make it a nightmare to use and slow as all hell. Not just that, but the fact that this is specifically designed to fail silently without any indication of what's wrong, possibly with the type parameters, makes it even worse.</remarks>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetForward(`0)">
             <summary>
@@ -264,7 +366,7 @@
             <param name="key">The key of the entry.</param>
             <returns><c>true</c> if there was a value associated with the key that could be removed, otherwise <c>false</c>.</returns>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryGetReverse(`1)">
+        <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryRemoveReverse(`1)">
             <summary>
             Attempts to remove an entry from the lookup table by its value.
             </summary>
@@ -505,686 +607,6 @@
             Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Classes.TaskbarProgress">
-            <summary>
-            Represents a handler for a progress display on the current window's taskbar icon.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.#ctor(System.Windows.Window)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
-            </summary>
-            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetInstance(System.Windows.Window)">
-            <summary>
-            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
-            </summary>
-            <remarks>
-            The application calling this method or using its return value must own the specified <paramref name="window"/>.
-            </remarks>
-            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
-            <returns>A <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetInstance(System.IntPtr)">
-            <summary>
-            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to a <see cref="T:System.Windows.Window"/> identified by its <paramref name="pointer"/>.
-            </summary>
-            <remarks>
-            The application calling this method or using its return value must own the <see cref="T:System.Windows.Window"/> pointed to by <paramref name="pointer"/>.
-            </remarks>
-            <param name="pointer">The pointer to the <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
-            <returns>A <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetInstance">
-            <summary>
-            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> with reference to the <see cref="T:System.Windows.Window"/> of the calling process.
-            </summary>
-            <returns>A <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the calling context's window handle was 0. Usually occurs when this method is called from a non-WPF context.</exception>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.ResetInstance">
-            <summary>
-            Resets the state of the taskbar progress bar and the <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance that is kept internally. Only one <see cref="T:LaquaiLib.Classes.TaskbarProgress"/> instance may exist at a time.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.SetState(System.Windows.Shell.TaskbarItemProgressState)">
-            <summary>
-            Sets the state of the taskbar progress visual.
-            </summary>
-            <param name="state">The new state of the taskbar progress visual.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressState"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.SetValue(System.Int32)">
-            <summary>
-            Sets a new value for the taskbar progress bar.
-            </summary>
-            <param name="percent">The new value for the taskbar progress bar. Must be between 0 and 100. Values outside this range are clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.SetValue(System.Double)">
-            <summary>
-            Sets a new value for the taskbar progress bar.
-            </summary>
-            <param name="value">The new value for the taskbar progress bar. Must be between 0 and 1. Values outside this range are clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.IncreaseValue(System.Double)">
-            <summary>
-            Increases the value of the taskbar progress bar by a specified amount.
-            </summary>
-            <param name="value">The amount to increase the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.DecreaseValue(System.Double)">
-            <summary>
-            Decreases the value of the taskbar progress bar by a specified amount.
-            </summary>
-            <param name="value">The amount to decrease the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int64,System.Threading.CancellationToken)">
-            <summary>
-            Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="T:System.Windows.Threading.Dispatcher"/> of your main <see cref="T:System.Windows.Window"/>, otherwise the animation will not work.
-            </summary>
-            <param name="value">The value to animate progress towards.</param>
-            <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
-            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that is monitored for cancellation requests.</param>
-        </member>
-        <member name="M:LaquaiLib.Classes.TaskbarProgress.GetValue">
-            <summary>
-            Gets the current value of the taskbar progress bar.
-            </summary>
-            <returns>The current value of the taskbar progress bar.</returns>
-        </member>
-        <member name="T:LaquaiLib.ScreenCapture.ScreenCapture">
-            <summary>
-            Wraps some screenshot functionality from <see cref="T:System.Drawing.Bitmap"/> and <see cref="T:System.Drawing.Graphics"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales">
-            <summary>
-            The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Capture(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            <para>Captures a region of the screen.</para>
-            <para>Passed coordinates are not corrected using <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/>.</para>
-            </summary>
-            <param name="x1">The x-coordinate of the top-left point of the region.</param>
-            <param name="y1">The y-coordinate of the top-left point of the region.</param>
-            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
-            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
-            <returns>The <see cref="T:System.Drawing.Bitmap"/> created by capturing the region.</returns>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Capture(System.Drawing.Rectangle)">
-            <summary>
-            <para>Captures a region of the screen.</para>
-            <para>Position coordinates of the passed <see cref="T:System.Drawing.Rectangle"/> are not corrected using <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/>.</para>
-            </summary>
-            <param name="region">The region to capture.</param>
-            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the given region.</returns>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Capture">
-            <summary>
-            Captures the entire primary screen.
-            </summary>
-            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the primary screen.</returns>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.TestRegion(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
-            <summary>
-            Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <c>false</c>, a red rectangle is painted onto the created capture <see cref="T:System.Drawing.Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
-            </summary>
-            <remarks>
-            <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
-            </remarks>
-            <param name="x1">The x-coordinate of the top-left point of the region.</param>
-            <param name="y1">The y-coordinate of the top-left point of the region.</param>
-            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
-            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
-            <param name="extract">Whether to only write the pixels inside the region to the output image.</param>
-            <returns>The path to saved <see cref="T:System.Drawing.Bitmap"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@)">
-            <summary>
-            Scales the passed coordinates using the <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/> to monitor coordinates.
-            </summary>
-            <param name="monitor">The monitor to scale the coordinates for.</param>
-            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
-            <param name="x">The <c>x</c>-coordinate to scale.</param>
-            <param name="y">The <c>y</c>-coordinate to scale.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
-            <summary>
-            Scales the passed coordinates using the <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/> to monitor coordinates.
-            </summary>
-            <param name="monitor">The monitor to scale the coordinates for.</param>
-            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
-            <param name="x1">The <c>x</c>-coordinate of the top-left point to scale.</param>
-            <param name="y1">The <c>y</c>-coordinate of the top-left point to scale.</param>
-            <param name="x2">The <c>x</c>-coordinate of the bottom-right point to scale.</param>
-            <param name="y2">The <c>y</c>-coordinate of the bottom-right point to scale.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Drawing.Rectangle@)">
-            <summary>
-            Scales the passed <see cref="T:System.Drawing.Rectangle"/> using the <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.ResolutionScales"/> to monitor coordinates.
-            </summary>
-            <param name="monitor">The monitor to scale the coordinates for.</param>
-            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
-            <param name="rect">The <see cref="T:System.Drawing.Rectangle"/> to scale.</param>
-        </member>
-        <member name="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured">
-            <summary>
-            Occurs when this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures the configured region, but only if <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> is satisfied.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate">
-            <summary>
-            The predicate that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.ScreenCapture.ScreenCapture.Timer">
-            <summary>
-            The <see cref="T:System.Threading.Timer"/> that controls when captures are made.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.IsCapturing">
-            <summary>
-            Whether this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> is currently creating captures and may raise the <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.Region">
-            <summary>
-            The region this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.ScreenCapture.ScreenCapture.IsCaptureRegionScreen">
-            <summary>
-            Whether the configured capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> is the entire primary screen.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Start">
-            <summary>
-            Causes this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> to create captures and raise the <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Stop">
-            <summary>
-            Causes this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> to no longer create captures and raise the <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the entire primary screen and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Func{System.Boolean})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
-            </summary>
-            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Drawing.Rectangle)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
-            </summary>
-            <param name="region">The region this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Drawing.Rectangle,System.Func{System.Boolean})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
-            </summary>
-            <param name="region">The region this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> captures.</param>
-            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> created from a series of passed coordinates and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
-            </summary>
-            <param name="x1">The x-coordinate of the top-left point of the region.</param>
-            <param name="y1">The y-coordinate of the top-left point of the region.</param>
-            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
-            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Boolean})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
-            </summary>
-            <param name="x1">The x-coordinate of the top-left point of the region.</param>
-            <param name="y1">The y-coordinate of the top-left point of the region.</param>
-            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
-            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
-            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to a specific screen and a <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that allows all created captures.
-            </summary>
-            <param name="monitor">The number of the monitor to capture.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.#ctor(System.Int32,System.Func{System.Boolean})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
-            </summary>
-            <param name="monitor">The number of the monitor to capture.</param>
-            <param name="predicate">The <see cref="P:LaquaiLib.ScreenCapture.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.InitTimer">
-            <summary>
-            Initializes the <see cref="F:LaquaiLib.ScreenCapture.ScreenCapture.Timer"/> that controls when captures are made.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.RaiseEvent(LaquaiLib.ScreenCapture.ScreenCaptureEventArgs)">
-            <summary>
-            Event raise wrapper.
-            </summary>
-            <param name="e">The <see cref="T:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs"/> passed when raising the event.</param>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCapture.Finalize">
-            <summary>
-            Destructor. Ensures that the <see cref="F:LaquaiLib.ScreenCapture.ScreenCapture.Timer"/> no longer causes captures to be made when this <see cref="T:LaquaiLib.ScreenCapture.ScreenCapture"/> dies.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs">
-            <summary>
-            Event args that are passed when raising a <see cref="E:LaquaiLib.ScreenCapture.ScreenCapture.Captured"/> event.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs.Bitmap">
-            <summary>
-            The created <see cref="T:System.Drawing.Bitmap"/> capture.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs.CaptureTime">
-            <summary>
-            When the capture was created.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs.#ctor(System.Drawing.Bitmap,System.DateTime)">
-            <summary>
-            Instantiates <see cref="T:LaquaiLib.ScreenCapture.ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
-            </summary>
-            <param name="bitmap"></param>
-            <param name="timestamp"></param>
-        </member>
-        <member name="T:LaquaiLib.Util.TempAlloc">
-            <summary>
-            Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.Int32)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> with the given size as represented by a 32-bit integer.
-            </summary>
-            <param name="bytes">The amount of bytes to allocate.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.Int32,System.Boolean)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
-            </summary>
-            <param name="bytes">The amount of bytes to allocate.</param>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.IntPtr,System.Int32)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> as a wrapper around existing allocated memory.
-            </summary>
-            <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Util.TempAlloc"/>.</param>
-            <param name="size">The size of the memory region at <paramref name="address"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.#ctor(System.IntPtr,System.Int32,System.Boolean)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> as a wrapper around existing allocated memory.
-            </summary>
-            <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Util.TempAlloc"/>.</param>
-            <param name="size">The size of the memory region at <paramref name="address"/>.</param>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Create``1">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(System.Boolean)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(System.Int32)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(System.Int32,System.Boolean)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Create``1(``0)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempAlloc"/> for the
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> of the <paramref name="value"/> to allocate memory for.</typeparam>
-            <param name="value">A value of type <typeparamref name="T"/> to allocate memory for. The existing value is copied to the newly allocated memory region.</param>
-        </member>
-        <member name="P:LaquaiLib.Util.TempAlloc.Address">
-            <summary>
-            The address of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempAlloc.Size">
-            <summary>
-            The size of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps in bytes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempAlloc.Bits">
-            <summary>
-            The size of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps in bits.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempAlloc.Data">
-            <summary>
-            A <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> that represents the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempAlloc.IsDisposed">
-            <summary>
-            Whether this <see cref="T:LaquaiLib.Util.TempAlloc"/> has been disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Reallocate(System.Int32)">
-            <summary>
-            Resizes the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps.
-            </summary>
-            <param name="bytes">The new size of the memory region in bytes.</param>
-            <returns>A value indicating whether the <see cref="P:LaquaiLib.Util.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps has changed. If <c>true</c>, reading from any previous addresses is considered undefined behavior.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.As``1">
-            <summary>
-            Attempts to cast the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
-            <returns>The entire contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.As``1(System.Int32,System.Int32)">
-            <summary>
-            Attempts to cast the content of a slice of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
-            <param name="offset">The offset at which to start the slice.</param>
-            <param name="length">The length of the slice.</param>
-            <returns>The contents of the slice of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Clear">
-            <summary>
-            Clears the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps (sets all bytes to zero).
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Replace(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
-            <summary>
-            Searches for the first occurrence of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps and replaces it with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
-            </summary>
-            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Util.TempAlloc.Data"/>.</param>
-            <param name="replacement">The sequence of bytes to replace the first occurrence of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
-            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
-            <para/><list type="bullet">
-            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
-                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
-            </list>
-            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
-                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
-            </list>
-            </list>
-            </param>
-            <returns>A value that indicates whether a replacement was made.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.ReplaceAll(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
-            <summary>
-            Searches for all occurrences of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps and replaces them with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
-            </summary>
-            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Util.TempAlloc.Data"/>.</param>
-            <param name="replacement">The sequence of bytes to replace the occurrences of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
-            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
-            <para/><list type="bullet">
-            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
-                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
-            </list>
-            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
-                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
-            </list>
-            </list>
-            </param>
-            <returns>The number of replacements made.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.ToHexString">
-            <summary>
-            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to a <see cref="T:System.String"/> of hexadecimal characters, grouped into 4-byte words.
-            </summary>
-            <returns>The string as described.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.ToBinaryString">
-            <summary>
-            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps to a <see cref="T:System.String"/> of binary characters, grouped into 32-bit words.
-            </summary>
-            <returns>The string as described.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Finalize">
-            <summary>
-            Finalizes this <see cref="T:LaquaiLib.Util.TempAlloc"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempAlloc.DisposeSecure">
-            <summary>
-            In addition to performing application-defined tasks associated with freeing, releasing, or resetting unmanaged resources, clears the entire contents of the memory region this <see cref="T:LaquaiLib.Util.TempAlloc"/> wraps (sets all bytes to zero).
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.TempArray`1">
-            <summary>
-            Represents a temporary array of <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(System.Int32,System.Boolean)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> with the given size. It is automatically rented from and returned to <see cref="P:System.Buffers.ArrayPool`1.Shared"/> upon disposal of this <see cref="T:LaquaiLib.Util.TempArray`1"/>, unless <c>false</c> is explicitly passed for <paramref name="allowPooledArray"/>.
-            </summary>
-            <param name="capacity">The capacity of the array to create.</param>
-            <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>. If <c>false</c>, a new array will be created instead.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(`0[],System.Buffers.ArrayPool{`0})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> as a wrapper around the specified array of <typeparamref name="T"/>.
-            </summary>
-            <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="T:LaquaiLib.Util.TempArray`1"/>.</param>
-            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> to return the array to when this <see cref="T:LaquaiLib.Util.TempArray`1"/> is disposed. May be <c>null</c> to indicate that the passed <paramref name="array"/> is not from any <see cref="T:System.Buffers.ArrayPool`1"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.#ctor(`0,System.Int32)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempArray`1"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
-            </summary>
-            <param name="value">The value to initialize all elements with.</param>
-            <param name="size">The size of the array to create.</param>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.Array">
-            <summary>
-            The array of <typeparamref name="T"/> this <see cref="T:LaquaiLib.Util.TempArray`1"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.IsDisposed">
-            <summary>
-            Whether this <see cref="T:LaquaiLib.Util.TempArray`1"/> has been disposed.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.IsFixedSize">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.IsReadOnly">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.Count">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.IsSynchronized">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.SyncRoot">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Util.TempArray`1.Item(System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Equals(System.Object,System.Collections.IEqualityComparer)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.GetHashCode(System.Collections.IEqualityComparer)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.CompareTo(System.Object,System.Collections.IComparer)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Add(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Clear">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Contains(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.IndexOf(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Insert(System.Int32,System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Remove(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.RemoveAt(System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.CopyTo(System.Array,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.CopyTo(LaquaiLib.Util.TempArray{`0},System.Int32)">
-            <summary>
-            Copies the elements of this <see cref="T:LaquaiLib.Util.TempArray`1"/> to another <see cref="T:LaquaiLib.Util.TempArray`1"/>, starting at a particular index.
-            </summary>
-            <param name="tempArray">The <see cref="T:LaquaiLib.Util.TempArray`1"/> that is the destination of the elements copied from this <see cref="T:LaquaiLib.Util.TempArray`1"/>.</param>
-            <param name="index">The zero-based index in array at which copying begins.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="tempArray"/> is <c>null</c>.</exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is less than zero.</exception>
-            <exception cref="T:System.ArgumentException">Thrown if <paramref name="tempArray"/> is multi-dimensional, the number of elements in this <see cref="T:LaquaiLib.Util.TempArray`1"/> is greater than the available space from <paramref name="index"/> to the end of the destination <see cref="T:LaquaiLib.Util.TempArray`1"/> or the type of the source <see cref="T:LaquaiLib.Util.TempArray`1"/> cannot be cast automatically to the type of the destination <see cref="T:LaquaiLib.Util.TempArray`1"/>.</exception>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Clone">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Finalize">
-            <summary>
-            Finalizes this <see cref="T:LaquaiLib.Util.TempArray`1"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempArray`1.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Util.TempDirectory">
-            <summary>
-            Represents a temporary directory that is automatically deleted when its wrapper object is disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempDirectory.#ctor">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempDirectory"/> with a fully random name.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempDirectory.#ctor(System.String)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Util.TempDirectory"/> is disposed.
-            </summary>
-            <param name="path">The path to the directory to wrap with this <see cref="T:LaquaiLib.Util.TempDirectory"/>.</param>
-        </member>
-        <member name="P:LaquaiLib.Util.TempDirectory.Path">
-            <summary>
-            The path to the file this <see cref="T:LaquaiLib.Util.TempDirectory"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempDirectory.IsDisposed">
-            <summary>
-            Whether this <see cref="T:LaquaiLib.Util.TempDirectory"/> has been disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempDirectory.Finalize">
-            <summary>
-            Finalizes this <see cref="T:LaquaiLib.Util.TempDirectory"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempDirectory.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Util.TempFile">
-            <summary>
-            Represents a temporary file that is automatically deleted when its wrapper object is disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempFile.#ctor">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with the file name and extension being assigned by the OS. It is usually a <see cref="T:System.Guid"/> with the extension <c>.tmp</c>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempFile.#ctor(System.String)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> with the file name being assigned by the OS (it is usually a <see cref="T:System.Guid"/>), and changes its extension to the one specified.
-            </summary>
-            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Util.TempFile"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.TempFile.#ctor(System.String,System.String)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Util.TempFile"/> is disposed.
-            </summary>
-            <param name="path">The path to the file to wrap with this <see cref="T:LaquaiLib.Util.TempFile"/>.</param>
-            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Util.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is kept.</param>
-        </member>
-        <member name="P:LaquaiLib.Util.TempFile.Path">
-            <summary>
-            The path to the file this <see cref="T:LaquaiLib.Util.TempFile"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempFile.Stream">
-            <summary>
-            The <see cref="T:System.IO.FileStream"/> for the file this <see cref="T:LaquaiLib.Util.TempFile"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.TempFile.IsDisposed">
-            <summary>
-            Whether this <see cref="T:LaquaiLib.Util.TempFile"/> has been disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempFile.Finalize">
-            <summary>
-            Finalizes this <see cref="T:LaquaiLib.Util.TempFile"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.TempFile.Dispose">
-            <inheritdoc/>
-        </member>
         <member name="T:LaquaiLib.Constants">
             <summary>
             Provides a number of constants.
@@ -1239,6 +661,14 @@
             <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
             <param name="other">The remaining objects to use for the comparison..</param>
             <returns><c>true</c> if all the results produced by <paramref name="transform"/> are all equal, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.IsNull``1(``0)">
+            <summary>
+            Checks whether a given input object is <c>null</c>. If not, it is marked to the compiler as non-<c>null</c> for the remainder of the scope.
+            </summary>
+            <typeparam name="T">The Type of the input object.</typeparam>
+            <param name="source">The input object.</param>
+            <returns><c>true</c> if <paramref name="source"/> is <c>null</c>, otherwise <c>false</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensions">
             <summary>
@@ -1349,6 +779,11 @@
             <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
             <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         </member>
+        <member name="T:LaquaiLib.Extensions.DelegateExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Delegate"/> Type.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Extensions.DictionaryExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.Dictionary`2"/> Type.
@@ -1409,6 +844,30 @@
             </summary>
             <param name="icon"></param>
             <returns></returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IDataObjectExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Windows.Forms.IDataObject"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IDataObjectExtensions.TryGetData(System.Windows.Forms.IDataObject,System.String,System.Object@)">
+            <summary>
+            Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="T:System.Windows.Forms.IDataObject"/>.
+            </summary>
+            <param name="dataObject">The <see cref="T:System.Windows.Forms.IDataObject"/> to retrieve the data from.</param>
+            <param name="format">The format of the data to retrieve.</param>
+            <param name="data">A <c>ref <see cref="T:System.Object"/>?</c> variable that receives the data if the retrieval was successful.</param>
+            <returns><c>true</c> if the retrieval was successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IDataObjectExtensions.TryGetData``1(System.Windows.Forms.IDataObject,System.String,``0@)">
+            <summary>
+            Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="T:System.Windows.Forms.IDataObject"/>.
+            </summary>
+            <typeparam name="T">The actual type of which the data is expected to be.</typeparam>
+            <param name="dataObject">The <see cref="T:System.Windows.Forms.IDataObject"/> to retrieve the data from.</param>
+            <param name="format">The format of the data to retrieve.</param>
+            <param name="data">A <c>ref <typeparamref name="T"/>?</c> variable that receives the data if the retrieval was successful.</param>
+            <returns><c>true</c> if the retrieval was successful, otherwise <c>false</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableBoolExtensions">
             <summary>
@@ -1513,6 +972,18 @@
             <param name="source">The collection that contains the items to compare. An exception is thrown if the collection is empty.</param>
             <returns><c>true</c> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <c>false</c>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Produces the set difference of two sequences according to a specified key selector function.
+            </summary>
+            <typeparam name="TSource">The type of the elements of the input sequences.</typeparam>
+            <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
+            <param name="source">The first sequence to compare.</param>
+            <param name="other">The second sequence to compare.</param>
+            <param name="keySelector">The <see cref="T:System.Func`2"/> that is passed each element of the source sequence and returns the key to use for comparison.</param>
+            <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
+            <remarks>Basically just another <see cref="M:System.Linq.Enumerable.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1})"/> overload that... actually makes sense.</remarks>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
@@ -1546,12 +1017,12 @@
             <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when all of the <see cref="T:System.Threading.Tasks.Task"/>s in this collection have completed.</returns>
         </member>
-        <member name="T:LaquaiLib.Extensions.ListTExtensions">
+        <member name="T:LaquaiLib.Extensions.ListExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.List`1"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.ListTExtensions.Remove``1(System.Collections.Generic.List{``0},System.Index)">
+        <member name="M:LaquaiLib.Extensions.ListExtensions.Remove``1(System.Collections.Generic.List{``0},System.Index)">
             <summary>
             Removes the element at the specified <paramref name="index"/> from this <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
@@ -1559,7 +1030,7 @@
             <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
             <param name="index">An <see cref="T:System.Index"/> instance that indicates where the item to be removed is located in the <paramref name="list"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.ListTExtensions.RemoveRange``1(System.Collections.Generic.List{``0},System.Range)">
+        <member name="M:LaquaiLib.Extensions.ListExtensions.RemoveRange``1(System.Collections.Generic.List{``0},System.Range)">
             <summary>
             Removes elements in a specified <paramref name="range"/> from this <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
@@ -1567,7 +1038,7 @@
             <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
             <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be removed are located in the <paramref name="list"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.ListTExtensions.GetRange``1(System.Collections.Generic.List{``0},System.Range)">
+        <member name="M:LaquaiLib.Extensions.ListExtensions.GetRange``1(System.Collections.Generic.List{``0},System.Range)">
             <summary>
             Extracts a range of elements from this <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
@@ -2147,7 +1618,7 @@
         </member>
         <member name="T:LaquaiLib.Miscellaneous">
             <summary>
-            Contains miscellaneous classes and methods.
+            Contains miscellaneous and methods.
             </summary>
         </member>
         <member name="T:LaquaiLib.Miscellaneous.Logger">
@@ -2484,6 +1955,452 @@
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         </member>
+        <member name="T:LaquaiLib.Util.Processes">
+            <summary>
+            Provides methods and events for working with processes.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Processes.GetAllProcesses">
+            <summary>
+            Returns a sequence of all processes running on the local computer.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.Processes.ProcessStarted">
+            <summary>
+            Occurs for each process that is started on the local computer.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.Processes.ProcessStopped">
+            <summary>
+            Occurs for each process that is stopped on the local computer.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Processes.Clear">
+            <summary>
+            Removes all entries in the invocation lists of the events defined in <see cref="T:LaquaiLib.Util.Processes"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Processes.Start">
+            <summary>
+            Starts raising the events defined in <see cref="T:LaquaiLib.Util.Processes"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Processes.Stop">
+            <summary>
+            Stops raising the events defined in <see cref="T:LaquaiLib.Util.Processes"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Processes.ConditionalRaiseEvents(System.Object)">
+            <summary>
+            Raises the events defined in <see cref="T:LaquaiLib.Util.Processes"/> if their conditions are met.
+            </summary>
+            <param name="state">Unused / ignored unconditionally.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.ScreenCapture">
+            <summary>
+            Wraps some screenshot functionality from <see cref="T:System.Drawing.Bitmap"/> and <see cref="T:System.Drawing.Graphics"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.ResolutionScales">
+            <summary>
+            The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            <para>Captures a region of the screen.</para>
+            <para>Passed coordinates are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.</para>
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <returns>The <see cref="T:System.Drawing.Bitmap"/> created by capturing the region.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.Drawing.Rectangle)">
+            <summary>
+            <para>Captures a region of the screen.</para>
+            <para>Position coordinates of the passed <see cref="T:System.Drawing.Rectangle"/> are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.</para>
+            </summary>
+            <param name="region">The region to capture.</param>
+            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the given region.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture">
+            <summary>
+            Captures the entire primary screen.
+            </summary>
+            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the primary screen.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.TestRegion(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <c>false</c>, a red rectangle is painted onto the created capture <see cref="T:System.Drawing.Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
+            </summary>
+            <remarks>
+            <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
+            </remarks>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <param name="extract">Whether to only write the pixels inside the region to the output image.</param>
+            <returns>The path to saved <see cref="T:System.Drawing.Bitmap"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@)">
+            <summary>
+            Scales the passed coordinates using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="x">The <c>x</c>-coordinate to scale.</param>
+            <param name="y">The <c>y</c>-coordinate to scale.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+            Scales the passed coordinates using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="x1">The <c>x</c>-coordinate of the top-left point to scale.</param>
+            <param name="y1">The <c>y</c>-coordinate of the top-left point to scale.</param>
+            <param name="x2">The <c>x</c>-coordinate of the bottom-right point to scale.</param>
+            <param name="y2">The <c>y</c>-coordinate of the bottom-right point to scale.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Drawing.Rectangle@)">
+            <summary>
+            Scales the passed <see cref="T:System.Drawing.Rectangle"/> using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="rect">The <see cref="T:System.Drawing.Rectangle"/> to scale.</param>
+        </member>
+        <member name="E:LaquaiLib.Util.ScreenCapture.Captured">
+            <summary>
+            Occurs when this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures the configured region, but only if <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> is satisfied.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.Predicate">
+            <summary>
+            The predicate that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.ScreenCapture.Timer">
+            <summary>
+            The <see cref="T:System.Threading.Timer"/> that controls when captures are made.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.IsCapturing">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Util.ScreenCapture"/> is currently creating captures and may raise the <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.Region">
+            <summary>
+            The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.IsCaptureRegionScreen">
+            <summary>
+            Whether the configured capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> is the entire primary screen.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Start">
+            <summary>
+            Causes this <see cref="T:LaquaiLib.Util.ScreenCapture"/> to create captures and raise the <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Stop">
+            <summary>
+            Causes this <see cref="T:LaquaiLib.Util.ScreenCapture"/> to no longer create captures and raise the <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Drawing.Rectangle)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="region">The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Drawing.Rectangle,System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="region">The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="monitor">The number of the monitor to capture.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Func{System.Boolean})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="monitor">The number of the monitor to capture.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.InitTimer">
+            <summary>
+            Initializes the <see cref="F:LaquaiLib.Util.ScreenCapture.Timer"/> that controls when captures are made.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.RaiseEvent(LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs)">
+            <summary>
+            Event raise wrapper.
+            </summary>
+            <param name="e">The <see cref="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs"/> passed when raising the event.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Finalize">
+            <summary>
+            Destructor. Ensures that the <see cref="F:LaquaiLib.Util.ScreenCapture.Timer"/> no longer causes captures to be made when this <see cref="T:LaquaiLib.Util.ScreenCapture"/> dies.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs">
+            <summary>
+            Event args that are passed when raising a <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs.Bitmap">
+            <summary>
+            The created <see cref="T:System.Drawing.Bitmap"/> capture.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs.CaptureTime">
+            <summary>
+            When the capture was created.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs.#ctor(System.Drawing.Bitmap,System.DateTime)">
+            <summary>
+            Instantiates <see cref="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+            </summary>
+            <param name="bitmap"></param>
+            <param name="timestamp"></param>
+        </member>
+        <member name="T:LaquaiLib.Util.TaskbarProgress">
+            <summary>
+            Represents a handler for a progress display on the current window's taskbar icon.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.#ctor(System.Windows.Window)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+            </summary>
+            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.GetInstance(System.Windows.Window)">
+            <summary>
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+            </summary>
+            <remarks>
+            The application calling this method or using its return value must own the specified <paramref name="window"/>.
+            </remarks>
+            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+            <returns>A <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.GetInstance(System.IntPtr)">
+            <summary>
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a <see cref="T:System.Windows.Window"/> identified by its <paramref name="pointer"/>.
+            </summary>
+            <remarks>
+            The application calling this method or using its return value must own the <see cref="T:System.Windows.Window"/> pointed to by <paramref name="pointer"/>.
+            </remarks>
+            <param name="pointer">The pointer to the <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+            <returns>A <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.GetInstance">
+            <summary>
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to the <see cref="T:System.Windows.Window"/> of the calling process.
+            </summary>
+            <returns>A <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the calling context's window handle was 0. Usually occurs when this method is called from a non-WPF context.</exception>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.ResetInstance">
+            <summary>
+            Resets the state of the taskbar progress bar and the <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance that is kept internally. Only one <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance may exist at a time.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.SetState(System.Windows.Shell.TaskbarItemProgressState)">
+            <summary>
+            Sets the state of the taskbar progress visual.
+            </summary>
+            <param name="state">The new state of the taskbar progress visual.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressState"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.SetValue(System.Int32)">
+            <summary>
+            Sets a new value for the taskbar progress bar.
+            </summary>
+            <param name="percent">The new value for the taskbar progress bar. Must be between 0 and 100. Values outside this range are clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.SetValue(System.Double)">
+            <summary>
+            Sets a new value for the taskbar progress bar.
+            </summary>
+            <param name="value">The new value for the taskbar progress bar. Must be between 0 and 1. Values outside this range are clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.IncreaseValue(System.Double)">
+            <summary>
+            Increases the value of the taskbar progress bar by a specified amount.
+            </summary>
+            <param name="value">The amount to increase the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.DecreaseValue(System.Double)">
+            <summary>
+            Decreases the value of the taskbar progress bar by a specified amount.
+            </summary>
+            <param name="value">The amount to decrease the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int64,System.Threading.CancellationToken)">
+            <summary>
+            Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="T:System.Windows.Threading.Dispatcher"/> of your main <see cref="T:System.Windows.Window"/>, otherwise the animation will not work.
+            </summary>
+            <param name="value">The value to animate progress towards.</param>
+            <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that is monitored for cancellation requests.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.TaskbarProgress.GetValue">
+            <summary>
+            Gets the current value of the taskbar progress bar.
+            </summary>
+            <returns>The current value of the taskbar progress bar.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.Windows">
+            <summary>
+            Provides methods and events for working with windows.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Windows.EnumWindowsProc">
+            <summary>
+            Encapsulates a method that is called for each top-level window that is enumerated using <see cref="M:LaquaiLib.Util.Windows.EnumWindows(LaquaiLib.Util.Windows.EnumWindowsProc,System.IntPtr)"/>.
+            </summary>
+            <param name="hWnd">The handle of the window.</param>
+            <param name="lParam">An application-defined value given in <see cref="M:LaquaiLib.Util.Windows.EnumWindows(LaquaiLib.Util.Windows.EnumWindowsProc,System.IntPtr)"/>.</param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.GetActiveWindowHandle">
+            <summary>
+            Retrieves the handle of the currently active window.
+            </summary>
+            <returns>The handle of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.GetActiveWindowTitle">
+            <summary>
+            Retrieves the title of the currently active window.
+            </summary>
+            <returns>The title of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.GetActiveWindowPid">
+            <summary>
+            Retrieves the PID of the process that owns the currently active window.
+            </summary>
+            <returns>The PID of the process that owns the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.GetWindowHandle(System.String)">
+            <summary>
+            Retrieves the handle of the first window that matches the specified <paramref name="title"/>.
+            </summary>
+            <param name="title">The title of the window to find.</param>
+            <returns>The HWND of the first window that matches the specified <paramref name="title"/> or <c>null</c> if no window matches the specified <paramref name="title"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.GetAllWindowTitles(System.Collections.Generic.ICollection{System.String})">
+            <summary>
+            Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.String"/> with the titles of all top-level windows.
+            </summary>
+            <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.String"/> to place the window titles into.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.GetAllWindowHandles(System.Collections.Generic.ICollection{System.IntPtr})">
+            <summary>
+            Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IntPtr"/> with the handles of all top-level windows.
+            </summary>
+            <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IntPtr"/> to place the window handles into.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.GetAllWindows(System.Collections.Generic.IDictionary{System.IntPtr,System.String})">
+            <summary>
+            Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.IDictionary`2"/> of <see cref="T:System.IntPtr"/> and <see cref="T:System.String"/> with the handles and titles of all top-level windows.
+            </summary>
+            <param name="existing">The <see cref="T:System.Collections.Generic.IDictionary`2"/> of <see cref="T:System.IntPtr"/> and <see cref="T:System.String"/> to place the window handle-title pairs into.</param>
+        </member>
+        <member name="E:LaquaiLib.Util.Windows.ActiveWindowChanged">
+            <summary>
+            Occurs when the active window changes.
+            </summary>
+            <remarks>Before a delegate is added to this event's invocation list, the current active window is stored internally to prevent immediately having the event fire.</remarks>
+        </member>
+        <member name="E:LaquaiLib.Util.Windows.WindowCreated">
+            <summary>
+            Occurs when a new window is created / opened.
+            </summary>
+            <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
+        </member>
+        <member name="E:LaquaiLib.Util.Windows.WindowDestroyed">
+            <summary>
+            Occurs when a window is destroyed / closed.
+            </summary>
+            <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
+        </member>
+        <member name="T:LaquaiLib.Util.Windows.WindowEvent">
+            <summary>
+            Encapsulates a method that is called when a window event defined in <see cref="T:LaquaiLib.Util.Windows"/> occurs.
+            </summary>
+            <param name="handle">The handle of the window. If <c>null</c>, the handle could not be obtained.</param>
+            <param name="title">The title of the window. If <c>null</c>, the title could not be obtained.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.Clear">
+            <summary>
+            Removes all entries in the invocation lists of the events defined in <see cref="T:LaquaiLib.Util.Windows"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.Start">
+            <summary>
+            Starts raising the events defined in <see cref="T:LaquaiLib.Util.Windows"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.Stop">
+            <summary>
+            Stops raising the events defined in <see cref="T:LaquaiLib.Util.Windows"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Windows.ConditionalRaiseEvents(System.Object)">
+            <summary>
+            Raises the events defined in <see cref="T:LaquaiLib.Util.Windows"/> if their conditions are met.
+            </summary>
+            <param name="state">Unused / ignored unconditionally.</param>
+        </member>
         <member name="T:LaquaiLib.WPF.ValueConverters.BoolInverterConverter">
             <summary>
             Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that inverts a <see cref="T:System.Boolean"/> value.ss
@@ -2535,6 +2452,485 @@
             <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
             <param name="culture">Which culture to use when converting / formatting the value.</param>
             <returns><c>true</c> if the given input <paramref name="value"/> is not null, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.TempAlloc">
+            <summary>
+            Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer.
+            </summary>
+            <param name="bytes">The amount of bytes to allocate.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
+            </summary>
+            <param name="bytes">The amount of bytes to allocate.</param>
+            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.IntPtr,System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
+            </summary>
+            <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/>.</param>
+            <param name="size">The size of the memory region at <paramref name="address"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.IntPtr,System.Int32,System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
+            </summary>
+            <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/>.</param>
+            <param name="size">The size of the memory region at <paramref name="address"/>.</param>
+            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32,System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
+            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
+            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(``0)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for the
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> of the <paramref name="value"/> to allocate memory for.</typeparam>
+            <param name="value">A value of type <typeparamref name="T"/> to allocate memory for. The existing value is copied to the newly allocated memory region.</param>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.Address">
+            <summary>
+            The address of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.Size">
+            <summary>
+            The size of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps in bytes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.Bits">
+            <summary>
+            The size of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps in bits.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.Data">
+            <summary>
+            A <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> that represents the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Reallocate(System.Int32)">
+            <summary>
+            Resizes the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
+            </summary>
+            <param name="bytes">The new size of the memory region in bytes.</param>
+            <returns>A value indicating whether the <see cref="P:LaquaiLib.Wrappers.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps has changed. If <c>true</c>, reading from any previous addresses is considered undefined behavior.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.As``1">
+            <summary>
+            Attempts to cast the contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
+            <returns>The entire contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.As``1(System.Int32,System.Int32)">
+            <summary>
+            Attempts to cast the content of a slice of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
+            <param name="offset">The offset at which to start the slice.</param>
+            <param name="length">The length of the slice.</param>
+            <returns>The contents of the slice of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Clear">
+            <summary>
+            Clears the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps (sets all bytes to zero).
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Replace(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Searches for the first occurrence of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps and replaces it with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
+            </summary>
+            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Wrappers.TempAlloc.Data"/>.</param>
+            <param name="replacement">The sequence of bytes to replace the first occurrence of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
+            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
+            <para/><list type="bullet">
+            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
+                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
+            </list>
+            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
+                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
+            </list>
+            </list>
+            </param>
+            <returns>A value that indicates whether a replacement was made.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.ReplaceAll(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Searches for all occurrences of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps and replaces them with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
+            </summary>
+            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Wrappers.TempAlloc.Data"/>.</param>
+            <param name="replacement">The sequence of bytes to replace the occurrences of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
+            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
+            <para/><list type="bullet">
+            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
+                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
+            </list>
+            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
+                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
+                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
+            </list>
+            </list>
+            </param>
+            <returns>The number of replacements made.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.ToHexString">
+            <summary>
+            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to a <see cref="T:System.String"/> of hexadecimal characters, grouped into 4-byte words.
+            </summary>
+            <returns>The string as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.ToBinaryString">
+            <summary>
+            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to a <see cref="T:System.String"/> of binary characters, grouped into 32-bit words.
+            </summary>
+            <returns>The string as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.DisposeSecure">
+            <summary>
+            In addition to performing application-defined tasks associated with freeing, releasing, or resetting unmanaged resources, clears the entire contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps (sets all bytes to zero).
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.TempArray`1">
+            <summary>
+            Represents a temporary array of <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given size. It is automatically rented from and returned to <see cref="P:System.Buffers.ArrayPool`1.Shared"/> upon disposal of this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>, unless <c>false</c> is explicitly passed for <paramref name="allowPooledArray"/>.
+            </summary>
+            <param name="capacity">The capacity of the array to create.</param>
+            <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>. If <c>false</c>, a new array will be created instead.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(`0[],System.Buffers.ArrayPool{`0})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> as a wrapper around the specified array of <typeparamref name="T"/>.
+            </summary>
+            <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.</param>
+            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> to return the array to when this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> is disposed. May be <c>null</c> to indicate that the passed <paramref name="array"/> is not from any <see cref="T:System.Buffers.ArrayPool`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(`0,System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
+            </summary>
+            <param name="value">The value to initialize all elements with.</param>
+            <param name="size">The size of the array to create.</param>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.Array">
+            <summary>
+            The array of <typeparamref name="T"/> this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> has been disposed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.IsFixedSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.IsReadOnly">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.Count">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.IsSynchronized">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.SyncRoot">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempArray`1.Item(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Equals(System.Object,System.Collections.IEqualityComparer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.GetHashCode(System.Collections.IEqualityComparer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.CompareTo(System.Object,System.Collections.IComparer)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Add(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Contains(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.IndexOf(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Insert(System.Int32,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Remove(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.RemoveAt(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.CopyTo(System.Array,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.CopyTo(LaquaiLib.Wrappers.TempArray{`0},System.Int32)">
+            <summary>
+            Copies the elements of this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> to another <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>, starting at a particular index.
+            </summary>
+            <param name="tempArray">The <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> that is the destination of the elements copied from this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="tempArray"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is less than zero.</exception>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="tempArray"/> is multi-dimensional, the number of elements in this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> is greater than the available space from <paramref name="index"/> to the end of the destination <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> or the type of the source <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> cannot be cast automatically to the type of the destination <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Clone">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempArray`1.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.TempDirectory">
+            <summary>
+            Represents a temporary directory that is automatically deleted when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempDirectory.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> with a fully random name.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempDirectory.#ctor(System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> is disposed.
+            </summary>
+            <param name="path">The path to the directory to wrap with this <see cref="T:LaquaiLib.Wrappers.TempDirectory"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempDirectory.Path">
+            <summary>
+            The path to the file this <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempDirectory.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempDirectory.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Wrappers.TempDirectory"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempDirectory.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.TempFile">
+            <summary>
+            Represents a temporary file that is automatically deleted when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempFile.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> with the file name and extension being assigned by the OS. It is usually a <see cref="T:System.Guid"/> with the extension <c>.tmp</c>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempFile.#ctor(System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> with the file name being assigned by the OS (it is usually a <see cref="T:System.Guid"/>), and changes its extension to the one specified.
+            </summary>
+            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Wrappers.TempFile"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempFile.#ctor(System.String,System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Wrappers.TempFile"/> is disposed.
+            </summary>
+            <param name="path">The path to the file to wrap with this <see cref="T:LaquaiLib.Wrappers.TempFile"/>.</param>
+            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Wrappers.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is kept.</param>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempFile.Path">
+            <summary>
+            The path to the file this <see cref="T:LaquaiLib.Wrappers.TempFile"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempFile.Stream">
+            <summary>
+            The <see cref="T:System.IO.FileStream"/> for the file this <see cref="T:LaquaiLib.Wrappers.TempFile"/> wraps.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempFile.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Wrappers.TempFile"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempFile.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Wrappers.TempFile"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempFile.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:System.Runtime.InteropServices.GCHandle`1">
+            <summary>
+            Provides a way to access a managed instance of <typeparamref name="T"/> from unmanaged memory.
+            </summary>
+            <typeparam name="T">The type of the object to be referenced.</typeparam>
+        </member>
+        <member name="P:System.Runtime.InteropServices.GCHandle`1.Handle">
+            <summary>
+            The wrapped untyped <see cref="T:System.Runtime.InteropServices.GCHandle"/>.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.InteropServices.GCHandle`1.Target">
+            <summary>
+            Gets the object of type <typeparamref name="T"/> this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> represents.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the handle has been disposed.</exception>
+        </member>
+        <member name="P:System.Runtime.InteropServices.GCHandle`1.IsAllocated">
+            <inheritdoc cref="P:System.Runtime.InteropServices.GCHandle.IsAllocated"/>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.#ctor(`0)">
+            <summary>
+            Instantiates a new <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> that represents the specified instance of <typeparamref name="T"/>.
+            </summary>
+            <param name="value">The object to be referenced.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.#ctor(`0,System.Runtime.InteropServices.GCHandleType)">
+            <summary>
+            Instantiates a new <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> that represents the specified instance of <typeparamref name="T"/>.
+            </summary>
+            <param name="value">The object to be referenced.</param>
+            <param name="type">The <see cref="T:System.Runtime.InteropServices.GCHandleType"/> of the object to be referenced.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.#ctor(System.Nullable{System.IntPtr})">
+            <summary>
+            Instantiates a new <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> from a handle to a managed object.
+            </summary>
+            <param name="ptr">The handle to a managed object.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.#ctor(System.Runtime.InteropServices.GCHandle)">
+            <summary>
+            Instantiates a new <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> typed <typeparamref name="T"/> from an existing untyped handle to a managed object.
+            </summary>
+            <param name="handle">The existing untyped handle to a managed object.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.AddrOfPinnedObject(System.Runtime.InteropServices.GCHandle{`0})">
+            <inheritdoc cref="M:System.Runtime.InteropServices.GCHandle.AddrOfPinnedObject"/>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.op_Implicit(System.Runtime.InteropServices.GCHandle{`0})~System.Runtime.InteropServices.GCHandle">
+            <summary>
+            Returns the untyped <see cref="T:System.Runtime.InteropServices.GCHandle"/> a typed <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> represents.
+            </summary>
+            <param name="handle">The <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to convert.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.op_Equality(System.Runtime.InteropServices.GCHandle{`0},System.Runtime.InteropServices.GCHandle{`0})">
+            <summary>
+            Returns a value indicating whether two typed <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instances are equal.
+            </summary>
+            <param name="left">The first <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
+            <param name="right">The second <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
+            <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> are equal, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.op_Inequality(System.Runtime.InteropServices.GCHandle{`0},System.Runtime.InteropServices.GCHandle{`0})">
+            <summary>
+            Returns a value indicating whether two typed <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instances are unequal.
+            </summary>
+            <param name="left">The first <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
+            <param name="right">The second <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
+            <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> are unequal, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.op_Explicit(System.Runtime.InteropServices.GCHandle{`0})~System.IntPtr">
+            <summary>
+            Returns the internal integer representation of the wrapped <see cref="P:System.Runtime.InteropServices.GCHandle`1.Handle"/>.
+            </summary>
+            <param name="handle">The <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to convert.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.op_Explicit(System.Runtime.InteropServices.GCHandle{`0})~System.Nullable{System.IntPtr}">
+            <summary>
+            Returns the internal integer representation of the wrapped <see cref="P:System.Runtime.InteropServices.GCHandle`1.Handle"/>.
+            </summary>
+            <param name="handle">The <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to convert.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.Dispose(System.Boolean)">
+            <summary>
+            Releases the unmanaged and optionally the managed resources used by this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instance.
+            </summary>
+            <param name="disposing">Whether to release the managed resources used by this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instance.</param>
+        </member>
+        <member name="M:System.Runtime.InteropServices.GCHandle`1.Dispose">
+            <summary>
+            Releases the managed and unmanaged resources used by this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instance.
+            </summary>
         </member>
         <member name="T:System.Xml.Linq.XRepetition">
             <summary>

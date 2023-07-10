@@ -3,7 +3,7 @@ using System.Buffers;
 using System.Collections;
 using System.IO;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Represents a temporary array of <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.
