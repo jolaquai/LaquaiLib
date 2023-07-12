@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -16,7 +16,12 @@ public static class Windows
     private static List<string> previousWindowList = new List<string>();
     private static string? previousActiveWindowTitle = GetActiveWindowTitle();
     private static nint? previousActiveWindowHandle = GetActiveWindowHandle();
-    private static readonly object _syncRoot = new object();
+    private static DateTime lastActiveWindowChange = DateTime.MinValue;
+
+    /// <summary>
+    /// The <see cref="object"/> that is locked on when modifying collections in any of the "GetAll..." methods in <see cref="Windows"/>. <b>Callers should lock on this when accessing these collections as well, otherwise, exceptions may be thrown during enumeration.</b>
+    /// </summary>
+    private static object SyncRoot { get; } = new object();
 
     static Windows()
     {
@@ -24,14 +29,19 @@ public static class Windows
     }
 
     [DllImport("user32.dll")]
+    [return: MaybeNull]
     private static extern nint GetForegroundWindow();
     [DllImport("user32.dll")]
+    [return: MaybeNull]
     private static extern int GetWindowText(nint hWnd, StringBuilder text, int count);
     [DllImport("user32.dll")]
+    [return: MaybeNull]
     private static extern int GetWindowThreadProcessId(nint hWnd, out int lpdwProcessId);
     [DllImport("user32.dll")]
+    [return: MaybeNull]
     private static extern bool EnumWindows(EnumWindowsProc enumProc, nint lParam);
     [DllImport("user32.dll")]
+    [return: MaybeNull]
     private static extern nint FindWindowA(string lpClassName, string lpWindowName);
 
     /// <summary>
@@ -42,6 +52,7 @@ public static class Windows
     /// <returns></returns>
     public delegate bool EnumWindowsProc(nint hWnd, nint lParam);
 
+    [return: MaybeNull]
     private static string? GetWindowText(nint hWnd)
     {
         const int nChars = 256;
@@ -53,6 +64,7 @@ public static class Windows
     /// Retrieves the handle of the currently active window.
     /// </summary>
     /// <returns>The handle of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+    [return: MaybeNull]
     public static nint? GetActiveWindowHandle()
     {
         if (GetForegroundWindow() is nint handle)
@@ -65,6 +77,7 @@ public static class Windows
     /// Retrieves the title of the currently active window.
     /// </summary>
     /// <returns>The title of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+    [return: MaybeNull]
     public static string? GetActiveWindowTitle()
     {
         if (GetForegroundWindow() is nint handle)
@@ -77,6 +90,7 @@ public static class Windows
     /// Retrieves the PID of the process that owns the currently active window.
     /// </summary>
     /// <returns>The PID of the process that owns the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+    [return: MaybeNull]
     public static int? GetActiveWindowPid()
     {
         if (GetForegroundWindow() is nint handle)
@@ -90,6 +104,7 @@ public static class Windows
     /// </summary>
     /// <param name="title">The title of the window to find.</param>
     /// <returns>The HWND of the first window that matches the specified <paramref name="title"/> or <c>null</c> if no window matches the specified <paramref name="title"/>.</returns>
+    [return: MaybeNull]
     public static nint? GetWindowHandle(string title)
     {
         return FindWindowA(null, title);
@@ -99,23 +114,27 @@ public static class Windows
     /// Replaces the contents of the given <paramref name="existing"/> <see cref="ICollection{T}"/> of <see cref="string"/> with the titles of all top-level windows.
     /// </summary>
     /// <param name="existing">The <see cref="ICollection{T}"/> of <see cref="string"/> to place the window titles into.</param>
+    /// <remarks>For the entire duration of this method, </remarks>
     public static void GetAllWindowTitles(ICollection<string> existing)
     {
-        // That... might be a bit oversized
-        var windows = new ArrayList();
-        using (var handle = new GCHandle<ArrayList>(windows))
+        lock (SyncRoot)
         {
-            EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
-        }
+            var windows = new ArrayList();
 
-        existing.Clear();
-        foreach (var handle in windows.Cast<nint>())
-        {
-            if (handle != nint.Zero
-                && GetWindowText(handle) is string title)
+            using (var handle = new GCHandle<ArrayList>(windows))
             {
-                // title must be non-null, otherwise ignore the window
-                existing.Add(title);
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+            }
+
+            existing.Clear();
+            foreach (var handle in windows.Cast<nint>())
+            {
+                if (handle != nint.Zero
+                    && GetWindowText(handle) is string title)
+                {
+                    // title must be non-null, otherwise ignore the window
+                    existing.Add(title);
+                }
             }
         }
     }
@@ -125,19 +144,21 @@ public static class Windows
     /// <param name="existing">The <see cref="ICollection{T}"/> of <see cref="nint"/> to place the window handles into.</param>
     public static void GetAllWindowHandles(ICollection<nint> existing)
     {
-        // That... might be a bit oversized
-        var windows = new ArrayList();
-        using (var handle = new GCHandle<ArrayList>(windows))
+        lock (SyncRoot)
         {
-            EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
-        }
-
-        existing.Clear();
-        foreach (var handle in windows.Cast<nint>())
-        {
-            if (handle != nint.Zero)
+            var windows = new ArrayList();
+            using (var handle = new GCHandle<ArrayList>(windows))
             {
-                existing.Add(handle);
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+            }
+
+            existing.Clear();
+            foreach (var handle in windows.Cast<nint>())
+            {
+                if (handle != nint.Zero)
+                {
+                    existing.Add(handle);
+                }
             }
         }
     }
@@ -147,20 +168,22 @@ public static class Windows
     /// <param name="existing">The <see cref="IDictionary{TKey, TValue}"/> of <see cref="nint"/> and <see cref="string"/> to place the window handle-title pairs into.</param>
     public static void GetAllWindows(IDictionary<nint, string> existing)
     {
-        // That... might be a bit oversized
-        var windows = new ArrayList();
-        using (var handle = new GCHandle<ArrayList>(windows))
+        lock (SyncRoot)
         {
-            EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
-        }
-
-        existing.Clear();
-        foreach (var handle in windows.Cast<nint>())
-        {
-            if (handle != nint.Zero
-                && GetWindowText(handle) is string title)
+            var windows = new ArrayList();
+            using (var handle = new GCHandle<ArrayList>(windows))
             {
-                existing.Add(handle, title);
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+            }
+
+            existing.Clear();
+            foreach (var handle in windows.Cast<nint>())
+            {
+                if (handle != nint.Zero
+                    && GetWindowText(handle) is string title)
+                {
+                    existing.Add(handle, title);
+                }
             }
         }
     }
@@ -198,7 +221,7 @@ public static class Windows
     /// <remarks>Before a delegate is added to this event's invocation list, the current active window is stored internally to prevent immediately having the event fire.</remarks>
     public static event WindowEvent? ActiveWindowChanged {
         add {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 if (GetActiveWindowTitle() is string currentTitle
                     && GetActiveWindowHandle() is nint currentHandle)
@@ -210,7 +233,7 @@ public static class Windows
             }
         }
         remove {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 activeWindowChanged -= value;
             }
@@ -222,14 +245,14 @@ public static class Windows
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
     public static event WindowEvent? WindowCreated {
         add {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 GetAllWindowTitles(previousWindowList);
                 windowCreated += value;
             }
         }
         remove {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 windowCreated -= value;
             }
@@ -241,14 +264,14 @@ public static class Windows
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
     public static event WindowEvent? WindowDestroyed {
         add {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 GetAllWindowTitles(previousWindowList);
                 windowDestroyed += value;
             }
         }
         remove {
-            lock (_syncRoot)
+            lock (SyncRoot)
             {
                 windowDestroyed -= value;
             }
@@ -293,14 +316,17 @@ public static class Windows
     private static void ConditionalRaiseEvents(object? state)
     {
         // The title AND handle must be different to avoid raising the event for the same window infinitely often if just the title changes
+        var now = DateTime.Now;
         if (GetActiveWindowTitle() is string currentTitle
             && GetActiveWindowHandle() is nint currentHandle
             && currentTitle != previousActiveWindowTitle
-            && currentHandle != previousActiveWindowHandle)
+            && currentHandle != previousActiveWindowHandle
+            && now - lastActiveWindowChange > TimeSpan.FromMilliseconds(25))
         {
             activeWindowChanged?.Invoke(GetWindowHandle(currentTitle), currentTitle);
             previousActiveWindowTitle = currentTitle;
             previousActiveWindowHandle = currentHandle;
+            lastActiveWindowChange = now;
         }
 
         if (windowCreated is not null || windowDestroyed is not null)
