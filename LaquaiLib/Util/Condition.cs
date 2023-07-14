@@ -13,6 +13,11 @@ public readonly struct Condition
     /// Returns a cached <see cref="Condition"/> representing <c>false</c>.
     /// </summary>
     public static Condition False { get; } = new Condition(false);
+
+    /// <summary>
+    /// The actual <see cref="bool"/> value this <see cref="Condition"/> represents.
+    /// </summary>
+    public readonly bool Value { get; }
     
     /// <summary>
     /// Instantiates a new <see cref="Condition"/>. Its default state is representative of <c>false</c>.
