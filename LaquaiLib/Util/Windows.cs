@@ -114,7 +114,7 @@ public static class Windows
     /// Replaces the contents of the given <paramref name="existing"/> <see cref="ICollection{T}"/> of <see cref="string"/> with the titles of all top-level windows.
     /// </summary>
     /// <param name="existing">The <see cref="ICollection{T}"/> of <see cref="string"/> to place the window titles into.</param>
-    /// <remarks>For the entire duration of this method, </remarks>
+    /// <remarks>For the entire duration of this method, a lock on <see cref="SyncRoot"/> is held.</remarks>
     public static void GetAllWindowTitles(ICollection<string> existing)
     {
         lock (SyncRoot)
@@ -142,6 +142,7 @@ public static class Windows
     /// Replaces the contents of the given <paramref name="existing"/> <see cref="ICollection{T}"/> of <see cref="nint"/> with the handles of all top-level windows.
     /// </summary>
     /// <param name="existing">The <see cref="ICollection{T}"/> of <see cref="nint"/> to place the window handles into.</param>
+    /// <remarks>For the entire duration of this method, a lock on <see cref="SyncRoot"/> is held.</remarks>
     public static void GetAllWindowHandles(ICollection<nint> existing)
     {
         lock (SyncRoot)
@@ -166,6 +167,7 @@ public static class Windows
     /// Replaces the contents of the given <paramref name="existing"/> <see cref="IDictionary{TKey, TValue}"/> of <see cref="nint"/> and <see cref="string"/> with the handles and titles of all top-level windows.
     /// </summary>
     /// <param name="existing">The <see cref="IDictionary{TKey, TValue}"/> of <see cref="nint"/> and <see cref="string"/> to place the window handle-title pairs into.</param>
+    /// <remarks>For the entire duration of this method, a lock on <see cref="SyncRoot"/> is held.</remarks>
     public static void GetAllWindows(IDictionary<nint, string> existing)
     {
         lock (SyncRoot)

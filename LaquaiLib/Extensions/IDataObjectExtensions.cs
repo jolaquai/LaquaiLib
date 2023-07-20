@@ -19,11 +19,11 @@ public static class IDataObjectExtensions
     /// <param name="format">The format of the data to retrieve.</param>
     /// <param name="data">A <c>ref <see cref="object"/>?</c> variable that receives the data if the retrieval was successful.</param>
     /// <returns><c>true</c> if the retrieval was successful, otherwise <c>false</c>.</returns>
-    public static bool TryGetData(this IDataObject dataObject, string format, [NotNullWhen(true)] out object? data)
+    public static bool TryGetData(this IDataObject dataObject, string format, [NotNullWhen(true)] out object data)
     {
         if (dataObject.GetDataPresent(format))
         {
-            data = dataObject.GetData(format);
+            data = dataObject.GetData(format)!;
             return true;
         }
         else

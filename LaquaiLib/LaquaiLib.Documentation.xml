@@ -302,7 +302,7 @@
             <typeparam name="TSecond">The type of the value.</typeparam>
             <param name="key">The key of the entry.</param>
             <param name="value">The value of the entry.</param>
-            <remarks>For the love of all things holy, avoid using this method. The 9000 generic type parameters make it a nightmare to use and slow as all hell.</remarks>
+            <remarks>For the love of all things holy, avoid using this method. The 9000 generic type parameters make it a nightmare to use and slow as all hell. Additionally, it's incredibly inefficient because values of the generic types of this method cannot be directly cast to the generic types of the <see cref="T:LaquaiLib.Classes.Collections.TwoWayLookup`2"/>.</remarks>
             <exception cref="T:System.ArgumentException">Thrown if the types <typeparamref name="TFirst"/> and <typeparamref name="TSecond"/> do not match the <see cref="T:LaquaiLib.Classes.Collections.TwoWayLookup`2"/>'s type parameters in any order.</exception>
             <exception cref="T:System.ArgumentException">Thrown if the type <typeparamref name="TFirst"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
             <exception cref="T:System.ArgumentException">Thrown if the type <typeparamref name="TSecond"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
@@ -833,6 +833,19 @@
             Provides extension methods for the <see cref="T:System.Security.Cryptography.HashAlgorithm"/> and derived Types.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Extensions.ICollectionExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.ICollection`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ICollectionExtensions.KeepOnly``1(System.Collections.Generic.ICollection{``0},System.Predicate{``0})">
+            <summary>
+            Replaces the contents of this <see cref="T:System.Collections.Generic.ICollection`1"/> with only the elements that match the given <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.ICollection`1"/>.</typeparam>
+            <param name="collection">The <see cref="T:System.Collections.Generic.ICollection`1"/> to be modified.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the elements to keep.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.IconExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Drawing.Icon"/> Type.
@@ -984,6 +997,26 @@
             <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
             <remarks>Basically just another <see cref="M:System.Linq.Enumerable.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1})"/> overload that... actually makes sense.</remarks>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ModeBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Determines the mode of a sequence of values from a given key extracted from each value; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
+            </summary>
+            <typeparam name="TSource">The Type of the elements in <paramref name="source"/>.</typeparam>
+            <typeparam name="TSelect">The Type of the elements <paramref name="selector"/> produces.</typeparam>
+            <param name="source">The sequence of values to determine the mode of.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of <paramref name="source"/> and produces a value that is used to determine the mode of <paramref name="source"/>.</param>
+            <returns>The mode of <paramref name="source"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Mode``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines the mode of a sequence of values; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
+            </summary>
+            <typeparam name="T">The Type of the elements in <paramref name="source"/>.</typeparam>
+            <param name="source">The sequence of values to determine the mode of.</param>
+            <returns>The mode of <paramref name="source"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
@@ -1046,6 +1079,14 @@
             <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to extract elements from.</param>
             <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be extracted are located in the <paramref name="list"/>.</param>
         </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.KeepOnly``1(System.Collections.Generic.List{``0},System.Predicate{``0})">
+            <summary>
+            Removes all elements from this <see cref="T:System.Collections.Generic.List`1"/> that match the conditions defined by the specified <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the elements to keep.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.MethodInfoExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Reflection.MethodInfo"/> Type.
@@ -1099,6 +1140,29 @@
             </summary>
             <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
             <returns>A value indicating whether the method is an accessor.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.ObjectExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:System.Object"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ObjectExtensions.Cast``1(System.Object)">
+            <summary>
+            Casts an <see cref="T:System.Object"/> to <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to cast <paramref name="obj"/> to.</typeparam>
+            <param name="obj">The <see cref="T:System.Object"/> to cast.</param>
+            <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/>.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="obj"/> is <c>null</c>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ObjectExtensions.As``1(System.Object)">
+            <summary>
+            Safely casts an <see cref="T:System.Object"/> to <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> to cast <paramref name="obj"/> to.</typeparam>
+            <param name="obj">The <see cref="T:System.Object"/> to cast.</param>
+            <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/> or <c>null</c> if the cast failed.</returns>
+            <remarks>Contrary to <see cref="M:LaquaiLib.Extensions.ObjectExtensions.Cast``1(System.Object)"/>, this method never throws an exception.</remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.QueueExtensions">
             <summary>
@@ -1540,6 +1604,13 @@
             <returns>A collection of all types that inherit from the supplied type and contain public constructors.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
         </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.GetDefault(System.Type)">
+            <summary>
+            Returns the default value for the supplied type.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to get the default value for.</param>
+            <returns>The default value for the supplied type.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.GetInstanceValues(System.Type,System.Object,System.Boolean)">
             <summary>
             Compiles a <see cref="T:System.Collections.Generic.Dictionary`2"/> of all instance fields and properties of the supplied type from the given object, optionally calling all parameterless methods that do not return void.
@@ -1556,6 +1627,54 @@
             <param name="type">The <see cref="T:System.Type"/> the <see cref="T:System.Reflection.FieldInfo"/>, <see cref="T:System.Reflection.PropertyInfo"/> and <see cref="T:System.Reflection.MethodInfo"/> instances are to be reflected from.</param>
             <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
             <returns>The <see cref="T:System.Collections.Generic.Dictionary`2"/> as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.CanCastTo(System.Type,System.Type)">
+            <summary>
+            Determines whether an instance of this <see cref="T:System.Type"/> can be cast to the given <paramref name="other"/> <see cref="T:System.Type"/>.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> of the instance to be cast.</param>
+            <param name="other">The <see cref="T:System.Type"/> to cast to.</param>
+            <returns><c>true</c> if an instance of <paramref name="type"/> can be cast to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.CanCastFrom(System.Type,System.Type)">
+            <summary>
+            Determines whether an instance of the given <paramref name="type"/> can be cast to this <see cref="T:System.Type"/>.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to cast to.</param>
+            <param name="other">The <see cref="T:System.Type"/> of the instance to be cast.</param>
+            <returns><c>true</c> if an instance of <paramref name="other"/> can be cast to <paramref name="type"/>, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.HasNarrowingConversion(System.Type,System.Type)">
+            <summary>
+            Determines if there exists a narrowing conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to check.</param>
+            <param name="other">The <see cref="T:System.Type"/> to check against.</param>
+            <returns><c>true</c> if there exists a narrowing conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.HasConsistentWideningConversion(System.Type,System.Type)">
+            <summary>
+            Determines if there exists a consistent widening conversion (that is, a conversion that is guaranteed to not lose any information) from this <see cref="T:System.Type"/> to <paramref name="other"/>.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to check.</param>
+            <param name="other">The <see cref="T:System.Type"/> to check against.</param>
+            <returns><c>true</c> if there exists a consistent widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.HasLossyWideningConversion(System.Type,System.Type)">
+            <summary>
+            Determines if there exists a lossy widening conversion (that is, a conversion that may lose information) from this <see cref="T:System.Type"/> to <paramref name="other"/>.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to check.</param>
+            <param name="other">The <see cref="T:System.Type"/> to check against.</param>
+            <returns><c>true</c> if there exists a lossy widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.HasWideningConversion(System.Type,System.Type)">
+            <summary>
+            Determines if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to check.</param>
+            <param name="other">The <see cref="T:System.Type"/> to check against.</param>
+            <returns><c>true</c> if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
@@ -1955,6 +2074,230 @@
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         </member>
+        <member name="T:LaquaiLib.Util.Condition">
+            <summary>
+            Represents a <see cref="T:System.Boolean"/> value that can be chained with other <see cref="T:LaquaiLib.Util.Condition"/>s.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Condition.True">
+            <summary>
+            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <c>true</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Condition.False">
+            <summary>
+            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <c>false</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Condition.Value">
+            <summary>
+            The actual <see cref="T:System.Boolean"/> value this <see cref="T:LaquaiLib.Util.Condition"/> represents.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.Condition"/>. Its default state is representative of <c>false</c>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.#ctor(System.Boolean)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.Condition"/> representing the given <paramref name="value"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.Boolean"/> value this <see cref="T:LaquaiLib.Util.Condition"/> should represent.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.op_Implicit(LaquaiLib.Util.Condition)~System.Boolean">
+            <summary>
+            Converts a <see cref="T:LaquaiLib.Util.Condition"/> to a <see cref="T:System.Boolean"/>.
+            </summary>
+            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to convert.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.op_Implicit(System.Boolean)~LaquaiLib.Util.Condition">
+            <summary>
+            Converts a <see cref="T:System.Boolean"/> to a <see cref="T:LaquaiLib.Util.Condition"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.Boolean"/> to convert.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.And(LaquaiLib.Util.Condition)">
+            <summary>
+            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with another <see cref="T:LaquaiLib.Util.Condition"/> using logical AND..
+            </summary>
+            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to chain with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical AND.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.And(LaquaiLib.Util.Condition[])">
+            <summary>
+            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with other <see cref="T:LaquaiLib.Util.Condition"/>s using logical AND.
+            </summary>
+            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to chain with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical AND.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.Or(LaquaiLib.Util.Condition)">
+            <summary>
+            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with another <see cref="T:LaquaiLib.Util.Condition"/> using logical OR.
+            </summary>
+            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to chain with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical OR.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.Or(LaquaiLib.Util.Condition[])">
+            <summary>
+            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with other <see cref="T:LaquaiLib.Util.Condition"/>s using logical OR.
+            </summary>
+            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to chain with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical OR.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.Not">
+            <summary>
+            Inverts the current <see cref="T:LaquaiLib.Util.Condition"/> using logical NOT.
+            </summary>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical NOT.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.Xor(LaquaiLib.Util.Condition[])">
+            <summary>
+            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with other <see cref="T:LaquaiLib.Util.Condition"/>s using logical XOR.
+            </summary>
+            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to chain with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical XOR.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.Is(LaquaiLib.Util.Condition)">
+            <summary>
+            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is equal to the given <paramref name="condition"/>.
+            </summary>
+            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to check for equality.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the equality check.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.Are(LaquaiLib.Util.Condition[])">
+            <summary>
+            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is equal to all of the given <paramref name="conditions"/>.
+            </summary>
+            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for equality.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the equality check.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.Any(LaquaiLib.Util.Condition[])">
+            <summary>
+            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is equal to any of the given <paramref name="conditions"/>.
+            </summary>
+            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for equality.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the equality check.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.IsNot(LaquaiLib.Util.Condition)">
+            <summary>
+            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is not equal to the given <paramref name="condition"/>.
+            </summary>
+            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to check for inequality.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.AreNot(LaquaiLib.Util.Condition[])">
+            <summary>
+            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is not equal to all of the given <paramref name="conditions"/>.
+            </summary>
+            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for inequality.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Condition.AnyNot(LaquaiLib.Util.Condition[])">
+            <summary>
+            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is not equal to any of the given <paramref name="conditions"/>.
+            </summary>
+            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for inequality.</param>
+            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.Drives">
+            <summary>
+            Provides methods and events for working with drives.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Drives.SyncRoot">
+            <summary>
+            The <see cref="T:System.Object"/> that is locked on when modifying collections in any of the "GetAll..." methods in <see cref="T:LaquaiLib.Util.Drives"/>. <b>Callers should lock on this when accessing these collections as well, otherwise, exceptions may be thrown during enumeration.</b>
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Drives.GetAllDrives(System.Collections.Generic.ICollection{System.IO.DriveInfo})">
+            <summary>
+            Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IO.DriveInfo"/> with <see cref="T:System.IO.DriveInfo"/> instances representing all drives on the system.
+            </summary>
+            <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IO.DriveInfo"/> to place the <see cref="T:System.IO.DriveInfo"/>s into.</param>
+            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Drives.SyncRoot"/> is held.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.Drives.GetAllCdDrives(System.Collections.Generic.ICollection{System.IO.DriveInfo})">
+            <summary>
+            Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IO.DriveInfo"/> with <see cref="T:System.IO.DriveInfo"/> instances representing all CD-ROM drives on the system.
+            </summary>
+            <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IO.DriveInfo"/> to place the CD-ROM drives' <see cref="T:System.IO.DriveInfo"/>s into.</param>
+            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Drives.SyncRoot"/> is held.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.Drives.GetAllRemovableDrives(System.Collections.Generic.ICollection{System.IO.DriveInfo})">
+            <summary>
+            Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IO.DriveInfo"/> with <see cref="T:System.IO.DriveInfo"/> instances representing all removable drives on the system.
+            </summary>
+            <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IO.DriveInfo"/> to place the removable drives' <see cref="T:System.IO.DriveInfo"/>s into.</param>
+            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Drives.SyncRoot"/> is held.</remarks>
+        </member>
+        <member name="E:LaquaiLib.Util.Drives.DriveConnected">
+            <summary>
+            Occurs when a drive is connected to the system.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.Drives.DriveDisconnected">
+            <summary>
+            Occurs when a drive is disconnected from the system.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.Drives.RemovableDriveConnected">
+            <summary>
+            Occurs when a removable drive (such as a USB drive) is connected to the system.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.Drives.RemovableDriveDisconnected">
+            <summary>
+            Occurs when a removable drive (such as a USB drive) is disconnected from the system.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.Drives.DiscInserted">
+            <summary>
+            Occurs when a disc is inserted into a drive.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.Drives.DiscEjected">
+            <summary>
+            Occurs when a disc is ejected from a drive.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Drives.Clear">
+            <summary>
+            Removes all entries in the invocation lists of the events defined in <see cref="T:LaquaiLib.Util.Drives"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Drives.Start">
+            <summary>
+            Starts raising the events defined in <see cref="T:LaquaiLib.Util.Drives"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Drives.Stop">
+            <summary>
+            Stops raising the events defined in <see cref="T:LaquaiLib.Util.Drives"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Drives.ConditionalRaiseEvents(System.Object)">
+            <summary>
+            Raises the events defined in <see cref="T:LaquaiLib.Util.Drives"/> if their conditions are met.
+            </summary>
+            <param name="state">Unused / ignored unconditionally.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.MemoryManager">
+            <summary>
+            Provides methods and events for managing memory and working with the Garbage Collector (<see cref="T:System.GC"/>).
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.MemoryManager.SetMemoryLimit(System.UInt64)">
+            <summary>
+            Sets a new memory limit for the application.
+            </summary>
+            <param name="limit">A 64-bit unsigned integer that represents the new memory limit in bytes.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.MemoryManager.GetMemoryLimit">
+            <summary>
+            Gets the current memory limit for the application in bytes.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Util.Processes">
             <summary>
             Provides methods and events for working with processes.
@@ -2299,9 +2642,29 @@
             </summary>
             <returns>The current value of the taskbar progress bar.</returns>
         </member>
+        <member name="T:LaquaiLib.Util.ThrowHelper">
+            <summary>
+            Provides methods which help to throw exceptions.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnFirstOffender``2(System.Func{``1,System.Object[]},System.Predicate{``1},``1[])">
+            <summary>
+            Throws an instance of the given exception type <typeparamref name="TException"/> on the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="TException">The <see cref="T:System.Type"/> of the exception to throw.</typeparam>
+            <typeparam name="TTest">The <see cref="T:System.Type"/> of the items to test.</typeparam>
+            <param name="constructorParamFactory">A <see cref="T:System.Func`2"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="T:System.Array"/> of nullable <see cref="T:System.Object"/>s (or <c>null</c>) which is passed to the constructor of the exception to throw. If it returns <c>null</c>, the exception type's parameterless constructor is invoked.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> the items must pass.</param>
+            <param name="items">The items to test.</param>
+        </member>
         <member name="T:LaquaiLib.Util.Windows">
             <summary>
             Provides methods and events for working with windows.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Windows.SyncRoot">
+            <summary>
+            The <see cref="T:System.Object"/> that is locked on when modifying collections in any of the "GetAll..." methods in <see cref="T:LaquaiLib.Util.Windows"/>. <b>Callers should lock on this when accessing these collections as well, otherwise, exceptions may be thrown during enumeration.</b>
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.Windows.EnumWindowsProc">
@@ -2342,18 +2705,21 @@
             Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.String"/> with the titles of all top-level windows.
             </summary>
             <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.String"/> to place the window titles into.</param>
+            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Windows.SyncRoot"/> is held.</remarks>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetAllWindowHandles(System.Collections.Generic.ICollection{System.IntPtr})">
             <summary>
             Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IntPtr"/> with the handles of all top-level windows.
             </summary>
             <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IntPtr"/> to place the window handles into.</param>
+            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Windows.SyncRoot"/> is held.</remarks>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetAllWindows(System.Collections.Generic.IDictionary{System.IntPtr,System.String})">
             <summary>
             Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.IDictionary`2"/> of <see cref="T:System.IntPtr"/> and <see cref="T:System.String"/> with the handles and titles of all top-level windows.
             </summary>
             <param name="existing">The <see cref="T:System.Collections.Generic.IDictionary`2"/> of <see cref="T:System.IntPtr"/> and <see cref="T:System.String"/> to place the window handle-title pairs into.</param>
+            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Windows.SyncRoot"/> is held.</remarks>
         </member>
         <member name="E:LaquaiLib.Util.Windows.ActiveWindowChanged">
             <summary>

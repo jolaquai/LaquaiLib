@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
+using LaquaiLib.Extensions;
+
 namespace LaquaiLib.Classes.Collections;
 
 /// <summary>
@@ -80,46 +82,46 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// <typeparam name="TSecond">The type of the value.</typeparam>
     /// <param name="key">The key of the entry.</param>
     /// <param name="value">The value of the entry.</param>
-    /// <remarks>For the love of all things holy, avoid using this method. The 9000 generic type parameters make it a nightmare to use and slow as all hell.</remarks>
+    /// <remarks>For the love of all things holy, avoid using this method. The 9000 generic type parameters make it a nightmare to use and slow as all hell. Additionally, it's incredibly inefficient because values of the generic types of this method cannot be directly cast to the generic types of the <see cref="TwoWayLookup{T1, T2}"/>.</remarks>
     /// <exception cref="ArgumentException">Thrown if the types <typeparamref name="TFirst"/> and <typeparamref name="TSecond"/> do not match the <see cref="TwoWayLookup{T1, T2}"/>'s type parameters in any order.</exception>
     /// <exception cref="ArgumentException">Thrown if the type <typeparamref name="TFirst"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
     /// <exception cref="ArgumentException">Thrown if the type <typeparamref name="TSecond"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
     public void Add<TFirst, TSecond>(TFirst key, TSecond value)
     {
         // Dynamically choose the correct method to call based on the type parameters
-        if (typeof(TFirst) is T1)
+        if (typeof(TFirst).CanCastTo(typeof(T1)))
         {
-            if (typeof(TSecond) is T2)
+            if (typeof(TSecond).CanCastTo(typeof(T2)))
             {
-                AddForward((T1)(object)key, (T2)(object)value);
+                AddForward(key.Cast<T1>(), value.Cast<T2>());
             }
-            else if (typeof(TSecond) is T1)
+            else if (typeof(TSecond).CanCastTo(typeof(T1)))
             {
-                throw new ArgumentException($"Since type of parameter '{nameof(key)}' '{typeof(TFirst).FullName}' matches the first type parameter of the TwoWayLookup '{typeof(T1).FullName}' and the second ('{typeof(T2).FullName}') is different from the first, the type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' must not also match the first type parameter of the TwoWayLookup.", nameof(value));
+                throw new ArgumentException($"Since type of parameter '{nameof(key)}' '{typeof(TFirst).FullName}' is assignable to the first type parameter of the TwoWayLookup '{typeof(T1).FullName}' and the second ('{typeof(T2).FullName}') is different from the first, the type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' must not also be assignable to the first type parameter of the TwoWayLookup.", nameof(value));
             }
             else
             {
-                throw new ArgumentException($"Type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' does not match either type parameter of the TwoWayLookup ('{typeof(T1).FullName}' or '{typeof(T2).FullName}')", nameof(value));
+                throw new ArgumentException($"Type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' is not assignable to either type parameter of the TwoWayLookup ('{typeof(T1).FullName}' or '{typeof(T2).FullName}')", nameof(value));
             }
         }
-        else if (typeof(TFirst) is T2)
+        else if (typeof(TFirst).CanCastTo(typeof(T2)))
         {
-            if (typeof(TSecond) is T1)
+            if (typeof(TSecond).CanCastTo(typeof(T1)))
             {
-                AddReverse((T2)(object)key, (T1)(object)value);
+                AddReverse(key.Cast<T2>(), value.Cast<T1>());
             }
-            else if (typeof(TSecond) is T2)
+            else if (typeof(TSecond).CanCastTo(typeof(T2)))
             {
-                throw new ArgumentException($"Since type of parameter '{nameof(key)}' '{typeof(TFirst).FullName}' matches the second type parameter of the TwoWayLookup '{typeof(T2).FullName}' and the first ('{typeof(T1).FullName}') is different from the second, the type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' must not also match the second type parameter of the TwoWayLookup.", nameof(value));
+                throw new ArgumentException($"Since type of parameter '{nameof(key)}' '{typeof(TFirst).FullName}' is assignable to the second type parameter of the TwoWayLookup '{typeof(T2).FullName}' and the first ('{typeof(T1).FullName}') is different from the second, the type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' must not also be assignable to the second type parameter of the TwoWayLookup.", nameof(value));
             }
             else
             {
-                throw new ArgumentException($"Type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' does not match either type parameter of the TwoWayLookup ('{typeof(T1).FullName}' or '{typeof(T2).FullName}')", nameof(value));
+                throw new ArgumentException($"Type of parameter '{nameof(value)}' '{typeof(TSecond).FullName}' is not assignable to either type parameter of the TwoWayLookup ('{typeof(T1).FullName}' or '{typeof(T2).FullName}')", nameof(value));
             }
         }
         else
         {
-            throw new ArgumentException($"Type of parameter '{nameof(key)}' '{typeof(TFirst).FullName}' does not match either type parameter of the TwoWayLookup ('{typeof(T1).FullName}' or '{typeof(T2).FullName}')", nameof(key));
+            throw new ArgumentException($"Type of parameter '{nameof(key)}' '{typeof(TFirst).FullName}' is not assignable to either type parameter of the TwoWayLookup ('{typeof(T1).FullName}' or '{typeof(T2).FullName}')", nameof(key));
         }
     }
 

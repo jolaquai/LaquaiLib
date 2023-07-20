@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 
 namespace LaquaiLib.Extensions;
 
@@ -163,5 +164,74 @@ public static class IEnumerableExtensions
                 yield return element;
             }
         }
+    }
+
+    private class ModeModel<TSource, TSelect>
+    {
+        public TSource OriginalValue { get; set; }
+        public TSelect SelectedValue { get; set; }
+        public int CountBySelect { get; set; }
+    }
+
+    /// <summary>
+    /// Determines the mode of a sequence of values from a given key extracted from each value; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
+    /// </summary>
+    /// <typeparam name="TSource">The Type of the elements in <paramref name="source"/>.</typeparam>
+    /// <typeparam name="TSelect">The Type of the elements <paramref name="selector"/> produces.</typeparam>
+    /// <param name="source">The sequence of values to determine the mode of.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of <paramref name="source"/> and produces a value that is used to determine the mode of <paramref name="source"/>.</param>
+    /// <returns>The mode of <paramref name="source"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
+    public static TSource ModeBy<TSource, TSelect>(this IEnumerable<TSource> source, Func<TSource, TSelect> selector)
+    {
+        ArgumentNullException.ThrowIfNull(source, nameof(source));
+        if (!source.Any())
+        {
+            throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source));
+        }
+
+        var models = new List<ModeModel<TSource, TSelect>>();
+
+        foreach (var item in source)
+        {
+            var selected = selector(item);
+            var model = models.FirstOrDefault(m => m.SelectedValue.Equals(selected));
+            if (model is null)
+            {
+                models.Add(new ModeModel<TSource, TSelect>
+                {
+                    OriginalValue = item,
+                    SelectedValue = selected,
+                    CountBySelect = 1
+                });
+            }
+            else
+            {
+                model.CountBySelect++;
+            }
+        }
+
+        return models.OrderByDescending(m => m.CountBySelect).First().OriginalValue;
+    }
+
+    /// <summary>
+    /// Determines the mode of a sequence of values; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in <paramref name="source"/>.</typeparam>
+    /// <param name="source">The sequence of values to determine the mode of.</param>
+    /// <returns>The mode of <paramref name="source"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
+    public static T Mode<T>(this IEnumerable<T> source)
+    {
+        ArgumentNullException.ThrowIfNull(source, nameof(source));
+        if (!source.Any())
+        {
+            throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source));
+        }
+
+        return source.Select(item => new KeyValuePair<T, int>(item, source.Count(i => i.Equals(item))))
+                     .OrderByDescending(kvp => kvp.Value)
+                     .First()
+                     .Key;
     }
 }

@@ -35,4 +35,12 @@ public static class ListExtensions
             yield return list[i];
         }
     }
+
+    /// <summary>
+    /// Removes all elements from this <see cref="List{T}"/> that match the conditions defined by the specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
+    /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> delegate that defines the conditions of the elements to keep.</param>
+    public static void KeepOnly<T>(this List<T> list, Predicate<T> predicate) => list.RemoveAll(item => !predicate(item));
 }
