@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using LaquaiLib.Extensions;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>

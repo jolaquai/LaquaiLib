@@ -709,6 +709,18 @@
             <returns>The string as described.</returns>
             <remarks>This method uses the internal <see cref="M:System.Convert.ToHexString(System.Byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
         </member>
+        <member name="T:LaquaiLib.Extensions.CaptureExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Text.RegularExpressions.Capture"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.CaptureExtensions.GetSource(System.Text.RegularExpressions.Capture)">
+            <summary>
+            Retrieves the original <see cref="T:System.String"/> that was matched by a <see cref="T:System.Text.RegularExpressions.Regex"/> instance to produce this <paramref name="capture"/>.
+            </summary>
+            <param name="capture">The <see cref="T:System.Text.RegularExpressions.Capture"/> instance to retrieve the original <see cref="T:System.String"/> from.</param>
+            <returns>The original <see cref="T:System.String"/> that was matched by a <see cref="T:System.Text.RegularExpressions.Regex"/> instance to produce this <paramref name="capture"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.CharExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Char"/> Type.
@@ -827,6 +839,29 @@
             </summary>
             <param name="any">The <see cref="T:System.Enum"/> value to retrieve the description for.</param>
             <returns>The value of the <see cref="P:System.ComponentModel.DescriptionAttribute.Description"/> for the given <see cref="T:System.Enum"/> value or its default <see cref="T:System.String"/> representation.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.FieldInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Reflection.FieldInfo"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.FieldInfoExtensions.GetValue``1(System.Reflection.FieldInfo,System.Object)">
+            <summary>
+            Retrieves the value of the field represented by this <paramref name="fieldInfo"/> from the given <paramref name="obj"/>ect typed as <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
+            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance representing the field to retrieve the value of.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="fieldInfo"/> represents a field that is static.</param>
+            <returns>The value of the field represented by this <paramref name="fieldInfo"/> typed as <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.FieldInfoExtensions.GetValueOrDefault``1(System.Reflection.FieldInfo,System.Object)">
+            <summary>
+            Attempts to retrieve the value of the field represented by this <paramref name="fieldInfo"/> from the given <paramref name="obj"/>ect typed as <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
+            <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance representing the field to retrieve the value of.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="fieldInfo"/> represents a field that is static.</param>
+            <returns>The value of the field represented by this <paramref name="fieldInfo"/> typed as <typeparamref name="T"/> if the field exists and its could be cast to <typeparamref name="T"/>, otherwise <c>default</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.HashAlgorithmExtensions">
             <summary>
@@ -1087,6 +1122,18 @@
             <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the elements to keep.</param>
         </member>
+        <member name="T:LaquaiLib.Extensions.MatchExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Text.RegularExpressions.Match"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MatchExtensions.GetRegex(System.Text.RegularExpressions.Match)">
+            <summary>
+            Retrieves the <see cref="T:System.Text.RegularExpressions.Regex"/> instance that was used to create this <see cref="T:System.Text.RegularExpressions.Match"/>.
+            </summary>
+            <param name="match">The <see cref="T:System.Text.RegularExpressions.Match"/> instance to retrieve the <see cref="T:System.Text.RegularExpressions.Regex"/> instance from.</param>
+            <returns>The <see cref="T:System.Text.RegularExpressions.Regex"/> instance that was used to create this <see cref="T:System.Text.RegularExpressions.Match"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.MethodInfoExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Reflection.MethodInfo"/> Type.
@@ -1157,12 +1204,35 @@
         </member>
         <member name="M:LaquaiLib.Extensions.ObjectExtensions.As``1(System.Object)">
             <summary>
-            Safely casts an <see cref="T:System.Object"/> to <typeparamref name="T"/>.
+            Safely casts an <see cref="T:System.Object"/> to <typeparamref name="T"/> using <c>as</c>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to cast <paramref name="obj"/> to.</typeparam>
             <param name="obj">The <see cref="T:System.Object"/> to cast.</param>
             <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/> or <c>null</c> if the cast failed.</returns>
             <remarks>Contrary to <see cref="M:LaquaiLib.Extensions.ObjectExtensions.Cast``1(System.Object)"/>, this method never throws an exception.</remarks>
+        </member>
+        <member name="T:LaquaiLib.Extensions.PropertyInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Reflection.PropertyInfo"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PropertyInfoExtensions.GetValue``1(System.Reflection.PropertyInfo,System.Object)">
+            <summary>
+            Retrieves the value of the property represented by this <paramref name="propertyInfo"/> from the given <paramref name="obj"/>ect typed as <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
+            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance representing the property to retrieve the value of.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="propertyInfo"/> represents a property that is static.</param>
+            <returns>The value of the property represented by this <paramref name="propertyInfo"/> typed as <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PropertyInfoExtensions.GetValueOrDefault``1(System.Reflection.PropertyInfo,System.Object)">
+            <summary>
+            Attempts to retrieve the value of the property represented by this <paramref name="propertyInfo"/> from the given <paramref name="obj"/>ect typed as <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
+            <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance representing the property to retrieve the value of.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="propertyInfo"/> represents a property that is static.</param>
+            <returns>The value of the property represented by this <paramref name="propertyInfo"/> typed as <typeparamref name="T"/> if the property exists and its could be cast to <typeparamref name="T"/>, otherwise <c>default</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.QueueExtensions">
             <summary>
@@ -2656,6 +2726,274 @@
             <param name="constructorParamFactory">A <see cref="T:System.Func`2"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="T:System.Array"/> of nullable <see cref="T:System.Object"/>s (or <c>null</c>) which is passed to the constructor of the exception to throw. If it returns <c>null</c>, the exception type's parameterless constructor is invoked.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> the items must pass.</param>
             <param name="items">The items to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnFirstOffender``2(``0,System.Predicate{``1},``1[])">
+            <summary>
+            Throws the specified <paramref name="exception"/> of type <typeparamref name="TException"/> on the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="TException">The <see cref="T:System.Type"/> of the exception to throw.</typeparam>
+            <typeparam name="TTest">The <see cref="T:System.Type"/> of the items to test.</typeparam>
+            <param name="exception">The <see cref="T:System.Exception"/> to throw.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> the items must pass.</param>
+            <param name="items">The items to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">The <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj4">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+            <param name="arg4">The name of the fourth argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj4">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj5">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+            <param name="arg4">The name of the fourth argument to test.</param>
+            <param name="arg5">The name of the fifth argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj4">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj5">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj6">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+            <param name="arg4">The name of the fourth argument to test.</param>
+            <param name="arg5">The name of the fifth argument to test.</param>
+            <param name="arg6">The name of the sixth argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj4">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj5">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj6">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj7">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+            <param name="arg4">The name of the fourth argument to test.</param>
+            <param name="arg5">The name of the fifth argument to test.</param>
+            <param name="arg6">The name of the sixth argument to test.</param>
+            <param name="arg7">The name of the seventh argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj4">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj5">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj6">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj7">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj8">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+            <param name="arg4">The name of the fourth argument to test.</param>
+            <param name="arg5">The name of the fifth argument to test.</param>
+            <param name="arg6">The name of the sixth argument to test.</param>
+            <param name="arg7">The name of the seventh argument to test.</param>
+            <param name="arg8">The name of the eighth argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj4">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj5">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj6">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj7">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj8">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj9">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+            <param name="arg4">The name of the fourth argument to test.</param>
+            <param name="arg5">The name of the fifth argument to test.</param>
+            <param name="arg6">The name of the sixth argument to test.</param>
+            <param name="arg7">The name of the seventh argument to test.</param>
+            <param name="arg8">The name of the eighth argument to test.</param>
+            <param name="arg9">The name of the ninth argument to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            </summary>
+            <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj3">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj4">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj5">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj6">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj7">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj8">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj9">An <see cref="T:System.Object"/> to test.</param>
+            <param name="obj10">An <see cref="T:System.Object"/> to test.</param>
+            <param name="arg1">The name of the first argument to test.</param>
+            <param name="arg2">The name of the second argument to test.</param>
+            <param name="arg3">The name of the third argument to test.</param>
+            <param name="arg4">The name of the fourth argument to test.</param>
+            <param name="arg5">The name of the fifth argument to test.</param>
+            <param name="arg6">The name of the sixth argument to test.</param>
+            <param name="arg7">The name of the seventh argument to test.</param>
+            <param name="arg8">The name of the eighth argument to test.</param>
+            <param name="arg9">The name of the ninth argument to test.</param>
+            <param name="arg10">The name of the tenth argument to test.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.Try">
+            <summary>
+            Provides static methods that wrap <c>try-catch</c> blocks.
+            </summary>
+            <remarks>All methods in this class explicitly allow <c>null</c> returns.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.ExecuteOrDefault``1(``0,System.Func{``0})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning <paramref name="defaultValue"/>.
+            </summary>
+            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
+            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
+            <param name="defaultValue">The value to return if <paramref name="method"/> fails.</param>
+            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise <typeparamref name="T"/>'s <c>default</c> value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.ExecuteOrDefault``1(System.Func{``0},System.Func{``0})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            </summary>
+            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
+            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
+            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.First``1(System.Collections.Generic.IEnumerable{System.Func{``0}})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates its return value if it succeeds, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by the <paramref name="methods"/>.
+            </summary>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="methods">The methods to try.</param>
+            <returns>The value of the first method that doesn't throw an exception.</returns>
+            <exception cref="T:System.AggregateException">Thrown if all methods throw an exception.</exception>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.First``1(System.Func{``0}[])">
+            <inheritdoc cref="M:LaquaiLib.Util.Try.First``1(System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.First``1(System.Action{``0},``0[])">
+            <inheritdoc cref="M:LaquaiLib.Util.Try.First``1(System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.First``1(System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by <paramref name="test"/>.
+            </summary>
+            <typeparam name="T">The Type of the items to test.</typeparam>
+            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
+            <param name="items">The items to test.</param>
+            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Collections.Generic.IEnumerable{System.Func{``0}})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first succeeds, otherwise returning <paramref name="defaultValue"/>.
+            </summary>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="defaultValue">The default value to return if all methods throw an exception.</param>
+            <param name="methods">The methods to try.</param>
+            <returns>The first value returned by a method that doesn't throw an exception, or the default value if all methods throw an exception.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Func{``0}[])">
+            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Func{``0}[])">
+            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Collections.Generic.IEnumerable{System.Func{``0}})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first one that succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            </summary>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="methods"/> throw an exception. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
+            <param name="methods">The methods to try.</param>
+            <returns>The first value returned by a method that doesn't throw an exception, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Action{``0},``0[])">
+            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning <paramref name="defaultValue"/>.
+            </summary>
+            <typeparam name="T">The Type of the items to test.</typeparam>
+            <param name="defaultValue">The default value to return if all items throw an exception.</param>
+            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
+            <param name="items">The items to test.</param>
+            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise <paramref name="defaultValue"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},``0[])">
+            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            </summary>
+            <typeparam name="T">The Type of the items to test.</typeparam>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="items"/> cause an exception in <paramref name="test"/>. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
+            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
+            <param name="items">The items to test.</param>
+            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Util.Windows">
             <summary>

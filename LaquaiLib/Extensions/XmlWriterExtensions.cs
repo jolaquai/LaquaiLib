@@ -1,8 +1,6 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
 
-using DocumentFormat.OpenXml.Bibliography;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>

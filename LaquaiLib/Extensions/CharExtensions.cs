@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace LaquaiLib.Extensions;
+﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="char"/> Type.

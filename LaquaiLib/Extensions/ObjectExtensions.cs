@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using LaquaiLib.Util;
+
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides Extension Methods for the <see cref="object"/> Type.
@@ -14,13 +16,15 @@ public static class ObjectExtensions
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is <c>null</c>.</exception>
     public static T Cast<T>(this object? obj)
     {
-        // TODO: System.InvalidCastException: 'Unable to cast object of type 'System.Int32' to type 'System.Int64'.'
         ArgumentNullException.ThrowIfNull(obj);
-        return (T)obj;
+        return Try.First(
+            () => (T)obj,
+            () => (T)Convert.ChangeType(obj, typeof(T))!
+        );
     }
-
+    
     /// <summary>
-    /// Safely casts an <see cref="object"/> to <typeparamref name="T"/>.
+    /// Safely casts an <see cref="object"/> to <typeparamref name="T"/> using <c>as</c>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to cast <paramref name="obj"/> to.</typeparam>
     /// <param name="obj">The <see cref="object"/> to cast.</param>

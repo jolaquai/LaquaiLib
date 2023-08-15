@@ -1,7 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Linq;
-
-namespace LaquaiLib.Extensions;
+﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IEnumerable{T}"/> Type.
