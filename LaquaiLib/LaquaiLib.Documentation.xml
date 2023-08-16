@@ -1746,6 +1746,120 @@
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
             <returns><c>true</c> if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar">
+            <summary>
+            Represents a progress bar that indicates the progress or status of a process.
+            </summary>
+            <summary>
+            ProgressBar
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation">
+            <summary>
+            Identifies the style and orientation of the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation.Horizontal">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is oriented horizontally.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation.Vertical">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is oriented vertically.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation.Circular">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is oriented circularly.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MaximumProperty">
+            <summary>
+            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MaximumProperty"/> dependency property.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MinimumProperty">
+            <summary>
+            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MinimumProperty"/> dependency property.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.ValueProperty">
+            <summary>
+            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.ValueProperty"/> dependency property.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.StepProperty">
+            <summary>
+            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.StepProperty"/> dependency property.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.BarOrientationProperty">
+            <summary>
+            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.BarOrientationProperty"/> dependency property.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.IsReverseProperty">
+            <summary>
+            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.IsReverseProperty"/> dependency property.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Minimum">
+            <summary>
+            The minimum value this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> can have.
+            When <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Value"/> equals this value, the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is empty.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Maximum">
+            <summary>
+            The maximum value this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> can have.
+            When <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Value"/> equals this value, the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is full.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Value">
+            <summary>
+            The current value of this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
+            Values outside the range of <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Minimum"/> and <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Maximum"/> are clamped to said range.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Step">
+            <summary>
+            The current value of this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.BarOrientation">
+            <summary>
+            The orientation and style of this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.IsReverse">
+            <summary>
+            Whether the progress bar is displayed in reverse, irrespective of its <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.#ctor(System.Double)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> with the specified inclusive <paramref name="maximum"/> value.
+            </summary>
+            <param name="maximum">The inclusive maximum value the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> may assume.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.#ctor(System.Double,System.Double)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> with the specified inclusive <paramref name="minimum"/> and <paramref name="maximum"/> values.
+            </summary>
+            <param name="minimum">The inclusive minimum value the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> may assume.</param>
+            <param name="maximum">The inclusive maximum value the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> may assume.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Xml.Linq.XElement"/> Type.
