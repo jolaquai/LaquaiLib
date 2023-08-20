@@ -131,6 +131,27 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     }
 
     /// <summary>
+    /// Silently clears this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
+    /// </summary>
+    public void ClearSilent()
+    {
+        Items.Clear();
+    }
+
+    /// <summary>
+    /// Resets this <see cref="ObservableCollection{T}"/> by clearing and re-filling it using the specified <paramref name="collection"/>.
+    /// </summary>
+    /// <param name="collection">The collection to fill this <see cref="ObservableCollection{T}"/> with.</param>
+    /// <remarks>
+    /// The clearing operation itself is silent, but the re-filling operation is not; that is, observers of the <see cref="ObservableCollection{T}"/> will only be notified AFTER the re-filling operation is complete.
+    /// </remarks>
+    public void Reset(IEnumerable<T> collection)
+    {
+        ClearSilent();
+        AddRange(collection);
+    }
+
+    /// <summary>
     /// Removes an element from this <see cref="ObservableCollection{T}"/>.
     /// </summary>
     /// <param name="item">The item to remove from this <see cref="ObservableCollection{T}"/>.</param>
@@ -151,7 +172,7 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     }
 
     /// <summary>
-    /// Raises a <see cref="NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="ObservableCollection{T}"/> by <see cref="AddSilent(T)"/> will not be propagated to observers until this method is called.
+    /// Raises a <see cref="NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="ObservableCollection{T}"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
     /// </summary>
     public void RaiseCollectionChanged()
     {
