@@ -15,16 +15,18 @@ public readonly struct GCHandle<T> : IDisposable
     /// <summary>
     /// Gets the object of type <typeparamref name="T"/> this <see cref="GCHandle{T}"/> represents.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if the handle has been disposed.</exception>
-    public T Target {
-        get {
+    /// <exception cref="ObjectDisposedException">Thrown if the handle has been disposed.</exception>
+    public T Target
+    {
+        get
+        {
             if (Handle.IsAllocated)
             {
                 return (T)Handle.Target!;
             }
             else
             {
-                throw new InvalidOperationException("The handle is disposed.");
+                throw new ObjectDisposedException("The handle is disposed.");
             }
         }
     }

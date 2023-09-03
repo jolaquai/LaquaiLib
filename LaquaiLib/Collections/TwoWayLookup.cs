@@ -5,7 +5,9 @@ using LaquaiLib.Extensions;
 namespace LaquaiLib.Classes.Collections;
 
 /// <summary>
-/// Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique. Enumeration is supported in the forward direction using standard <see cref="IEnumerable{T}"/> methods. For reverse enumeration, use <see cref="GetReverseEnumerator"/>.
+/// Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique.
+/// Automatic enumeration is supported in the forward direction using standard <see cref="IEnumerable{T}"/> methods.
+/// For (manual-only) reverse enumeration, use <see cref="GetReverseEnumerator"/>.
 /// </summary>
 public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     where T1 : notnull

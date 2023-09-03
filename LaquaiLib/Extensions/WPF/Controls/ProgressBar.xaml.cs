@@ -178,21 +178,25 @@ public partial class ProgressBar : UserControl
         get => (bool)GetValue(IsReverseProperty);
         set => SetValue(IsReverseProperty, value);
     }
+    /// <inheritdoc/>
     public Styles BarStyle
     {
         get => (Styles)GetValue(BarStyleProperty);
         set => SetValue(BarStyleProperty, value);
     }
+    /// <inheritdoc/>
     public States BarState
     {
         get => (States)GetValue(BarStateProperty);
         set => SetValue(BarStateProperty, value);
     }
+    /// <inheritdoc/>
     public Brush PrimaryColor
     {
         get => (Brush)GetValue(PrimaryColorProperty);
         set => SetValue(PrimaryColorProperty, value);
     }
+    /// <inheritdoc/>
     public Brush SecondaryColor
     {
         get => (Brush)GetValue(SecondaryColorProperty);

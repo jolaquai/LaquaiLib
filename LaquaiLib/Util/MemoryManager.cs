@@ -23,8 +23,9 @@ public static class MemoryManager
     /// </summary>
     public static ulong GetMemoryLimit() => (ulong)AppContext.GetData("GCHeapHardLimit");
 
+    /// <inheritdoc/>
     public static void e()
     {
-
+        GCHandle
     }
 }

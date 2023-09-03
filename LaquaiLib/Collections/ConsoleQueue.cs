@@ -26,7 +26,7 @@ public static class ConsoleQueue
     public static int Enqueue(object obj)
     {
         Queue.Enqueue(obj);
-        return Queue.Count;
+        return Queue.Count - 1;
     }
 
     /// <summary>
