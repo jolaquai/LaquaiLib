@@ -10,6 +10,8 @@ namespace LaquaiLib.Classes.Collections;
 public class ObservableCollectionFast<T> : ObservableCollection<T>
 {
     #region Fields / Properties
+    private bool isSilenced;
+
     private bool keepOrdered;
     /// <summary>
     /// Whether the <see cref="ObservableCollection{T}"/> should keep itself ordered. When this is <see langword="true"/>, whenever the collection is modified in a way that raises a <see cref="NotifyCollectionChangedAction"/> event, it is sorted using <see cref="Comparer"/>.
@@ -87,7 +89,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
             IndexGet?.Invoke(index.GetOffset(Count));
             return base[index];
         }
-
         set
         {
             IndexSet?.Invoke(index.GetOffset(Count));
@@ -139,6 +140,31 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
         }
     }
     #endregion
+
+    /// <summary>
+    /// Silences the <see cref="ObservableCollection{T}"/>. Changes made to the <see cref="ObservableCollection{T}"/> are not propagated to observers, not even using <see cref="RaiseCollectionChanged(NotifyCollectionChangedEventArgs?)"/>.
+    /// </summary>
+    public void Silence()
+    {
+        isSilenced = true;
+    }
+    /// <summary>
+    /// Executes the specified <paramref name="action"/>. For its entire context, the <see cref="ObservableCollection{T}"/> is silenced.
+    /// </summary>
+    /// <param name="action">The <see cref="Action"/> to execute.</param>
+    public void Silence(Action action)
+    {
+        Silence();
+        action();
+        Unsilence();
+    }
+    /// <summary>
+    /// Unsilences the <see cref="ObservableCollection{T}"/>. Changes made to the <see cref="ObservableCollection{T}"/> are propagated to observers as normal.
+    /// </summary>
+    public void Unsilence()
+    {
+        isSilenced = false;
+    }
 
     /// <summary>
     /// Orders the elements in the <see cref="ObservableCollection{T}"/> using the <see cref="Comparer"/> or the default <see cref="Comparer{T}"/> if <see cref="Comparer"/> is <see langword="null"/>.
@@ -297,10 +323,12 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
 
     /// <summary>
     /// Raises a <see cref="NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="ObservableCollection{T}"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
+    /// <paramref name="e"/>The <see cref="NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="NotifyCollectionChangedEventArgs"/> with <see cref="NotifyCollectionChangedAction.Reset"/> will be passed.
     /// </summary>
-    public void RaiseCollectionChanged()
+    public void RaiseCollectionChanged(NotifyCollectionChangedEventArgs? e = null)
     {
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        e ??= new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+        OnCollectionChanged(e);
     }
 
     /// <summary>
@@ -316,17 +344,9 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// </summary>
     public delegate void PostCollectionChangedNotification();
     /// <summary>
-    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It may still modify the collection.
+    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes 
     /// </summary>
     public event PostCollectionChangedNotification PostCollectionChanged;
-    /// <summary>
-    /// Encapsulates a method that is called after a <see cref="NotifyCollectionChangedAction"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It should not modify the collection as any changes are not propagated to observers.
-    /// </summary>
-    public delegate void SilentPostCollectionChangedNotification();
-    /// <summary>
-    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as any changes are not propagated to observers.
-    /// </summary>
-    public event SilentPostCollectionChangedNotification SilentPostCollectionChanged;
 
     /// <summary>
     /// Encapsulates a method that is called before a <see cref="NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
@@ -424,9 +444,10 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
         PreCollectionChanged?.Invoke();
-        base.OnCollectionChanged(e);
+        if (!isSilenced)
+        {
+            base.OnCollectionChanged(e);
+        }
         PostCollectionChanged?.Invoke();
-        base.OnCollectionChanged(e);
-        SilentPostCollectionChanged?.Invoke();
     }
 }
