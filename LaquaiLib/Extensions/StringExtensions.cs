@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace LaquaiLib.Extensions;
@@ -34,21 +35,19 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Replaces all matches of a regex <paramref name="pattern"/> in this <see cref="string"/> with a <paramref name="replacement"/>.
-    /// </summary>
-    /// <param name="source">The <see cref="string"/> to search.</param>
-    /// <param name="pattern">The pattern to search for.</param>
-    /// <param name="replacement">The <see cref="string"/> to replace matches with.</param>
-    /// <returns>A new string with all matches of <paramref name="pattern"/> replaced with <paramref name="replacement"/>.</returns>
-    public static string RegexReplace(this string source, string pattern, string replacement = "") => Regex.Replace(source, pattern, replacement);
-
-    /// <summary>
     /// Searches the specified input string for occurrences of a specified regex pattern.
     /// </summary>
     /// <param name="source">The <see cref="string"/> to search.</param>
     /// <param name="pattern">The pattern to search for.</param>
-    /// <returns>The <see cref="System.Text.RegularExpressions.MatchCollection"/> instance returned my <see cref="Regex.Matches(string, string)"/></returns>
+    /// <returns>The <see cref="MatchCollection"/> instance returned by <see cref="Regex.Matches(string, string)"/></returns>
     public static MatchCollection Match(this string source, string pattern) => Regex.Matches(source, pattern);
+    /// <summary>
+    /// Searches the specified input string for occurrences of a specified regex pattern represented by a <see cref="Regex"/> instance.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to search.</param>
+    /// <param name="regex">The pattern to search for.</param>
+    /// <returns>The <see cref="MatchCollection"/> instance returned by <see cref="Regex.Matches(string, string)"/></returns>
+    public static MatchCollection Match(this string source, Regex regex) => regex.Matches(source);
 
     /// <summary>
     /// Creates a new string from this string with all occurrences of any string that is not contained in <paramref name="except"/> replaced with <paramref name="replace"/>.
@@ -84,6 +83,36 @@ public static class StringExtensions
         return result.ToString();
     }
 
+    /// <summary>
+    /// Converts the specified input string to sentence case (that is, the first character is capitalized and all other characters are lower case).
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to convert.</param>
+    /// <returns><paramref name="source"/> in sentence case.</returns>
+    public static string ToSentence(this string source)
+    {
+        var lower = source.ToLowerInvariant();
+        return char.ToUpperInvariant(lower[0]) + lower[1..];
+    }
+    /// <summary>
+    /// Converts the specified input string to title case according to the rules of the current culture.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to convert.</param>
+    /// <returns><paramref name="source"/> in title case.</returns>
+    public static string ToTitle(this string source) => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(source);
+    /// <summary>
+    /// Converts the specified input string to title case according to the rules of the specified <paramref name="culture"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to convert.</param>
+    /// <param name="culture">The <see cref="CultureInfo"/> to use for casing rules.</param>
+    /// <returns><paramref name="source"/> in title case according to <paramref name="culture"/>.</returns>
+    public static string ToTitle(this string source, CultureInfo culture) => culture.TextInfo.ToTitleCase(source);
+    /// <summary>
+    /// Converts the specified input string to title case according to the rules of the invariant culture.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to convert.</param>
+    /// <returns><paramref name="source"/> in title case according to the invariant culture.</returns>
+    public static string ToTitleInvariant(this string source) => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(source);
+
     #region (Actually useful) Remove methods / overloads
     /// <summary>
     /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/>.
@@ -91,7 +120,14 @@ public static class StringExtensions
     /// <param name="source">The <see cref="string"/> to modify.</param>
     /// <param name="remove">The <see cref="char"/>s to remove.</param>
     /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
-    public static string Remove(this string source, params char[] remove) => string.Concat(source.Except(remove));
+    public static string Remove(this string source, params char[] remove) => Remove(source, (IEnumerable<char>)remove);
+    /// <summary>
+    /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="string"/> to modify.</param>
+    /// <param name="remove">The <see cref="char"/>s to remove.</param>
+    /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+    public static string Remove(this string source, IEnumerable<char> remove) => string.Concat(source.Except(remove));
 
     /// <summary>
     /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/> starting at the specified index.

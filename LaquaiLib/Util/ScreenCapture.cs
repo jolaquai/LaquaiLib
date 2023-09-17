@@ -368,7 +368,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Event args that are passed when raising a <see cref="ScreenCapture.Captured"/> event.
+    /// Event args that are passed when raising a <see cref="Captured"/> event.
     /// </summary>
     public class ScreenCaptureEventArgs : EventArgs
     {

@@ -12,7 +12,7 @@ public static class ByteArrayExtensions
     /// </summary>
     /// <param name="bytes">The <see cref="byte"/> array to convert.</param>
     /// <returns>The string as described.</returns>
-    /// <remarks>This method uses the internal <see cref="System.Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
+    /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
     public static string ToHexString(this byte[] bytes)
     {
         var sb = new StringBuilder();
@@ -25,7 +25,7 @@ public static class ByteArrayExtensions
     /// </summary>
     /// <param name="bytes">The <see cref="byte"/> span to convert.</param>
     /// <returns>The string as described.</returns>
-    /// <remarks>This method uses the internal <see cref="System.Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
+    /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
     public static string ToHexString(this ReadOnlySpan<byte> bytes)
     {
         var sb = new StringBuilder();
