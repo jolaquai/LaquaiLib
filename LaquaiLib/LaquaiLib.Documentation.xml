@@ -4,26 +4,6 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
-        <member name="T:LaquaiLib.Classes.Collections.BinaryTree`1">
-            <summary>
-            Represents a binary tree, that is, a tree data structure in which each node has at most two children.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node">
-            <summary>
-            Represents a node in a binary tree.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Classes.Collections.BinaryTree`1.Node.Left">
-            <summary>
-            The left child of this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/>. May be <c>null</c> if this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/> has no left child.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Classes.Collections.BinaryTree`1.Node.Right">
-            <summary>
-            The right child of this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/>. May be <c>null</c> if this <see cref="T:LaquaiLib.Classes.Collections.BinaryTree`1.Node"/> has no right child.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Classes.Collections.ConsoleQueue">
             <summary>
             Represents a (thread-safe) wrapper around the <see cref="T:System.Console"/>. It is used to postpone blocking console output until after any expensive computations are completed.
@@ -158,6 +138,19 @@
             </summary>
             <typeparam name="T">The Type of the elements in the collection.</typeparam>
         </member>
+        <member name="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.KeepOrdered">
+            <summary>
+            Whether the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> should keep itself ordered. When this is <see langword="true"/>, whenever the collection is modified in a way that raises a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event, it is sorted using <see cref="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Comparer"/>.
+            Assigning a new <see cref="T:System.Boolean"/> value will cause the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> to be sorted using the currently set <see cref="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Comparer"/> immediately. This also raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Comparer">
+            <summary>
+            The <see cref="T:System.Collections.Generic.IComparer`1"/> used to compare elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> if <see cref="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.KeepOrdered"/> is <see langword="true"/>.
+            <para/>
+            <para/>Assigning a new <see cref="T:System.Collections.Generic.IComparer`1"/> will cause the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> to be sorted using the new <see cref="T:System.Collections.Generic.IComparer`1"/> immediately. This also raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.#ctor">
             <summary>
             Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
@@ -189,11 +182,54 @@
             <param name="range">The <see cref="T:System.Range"/> in which to get or set elements.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
         </member>
+        <member name="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Item(System.Int32,System.Int32)">
+            <summary>
+            Gets or sets elements within a range as specified by <paramref name="index"/> and <paramref name="count"/>.
+            </summary>
+            <param name="index">The zero-based starting index of the range of elements to get or set.</param>
+            <param name="count">The number of elements to get or set.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Silence">
+            <summary>
+            Silences the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. Changes made to the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> are not propagated to observers, not even using <see cref="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Silence(System.Action)">
+            <summary>
+            Executes the specified <paramref name="action"/>. For its entire context, the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> is silenced.
+            </summary>
+            <param name="action">The <see cref="T:System.Action"/> to execute.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Unsilence">
+            <summary>
+            Unsilences the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. Changes made to the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> are propagated to observers as normal.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Sort">
+            <summary>
+            Orders the elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> using the <see cref="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Comparer"/> or the default <see cref="T:System.Collections.Generic.Comparer`1"/> if <see cref="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Comparer"/> is <see langword="null"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.SortSilent">
+            <summary>
+            Silently orders the elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> using the <see cref="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Comparer"/> or the default <see cref="T:System.Collections.Generic.Comparer`1"/> if <see cref="P:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Comparer"/> is <see langword="null"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event to be fired.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddRangeSilent(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Silently adds the elements of the specified collection to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
+        </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Adds the elements of the specified collection to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             </summary>
             <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Add(`0)">
+            <inheritdoc cref="M:System.Collections.Generic.ICollection`1.Add(`0)"/>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddSilent(`0)">
             <summary>
@@ -215,9 +251,23 @@
         </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RemoveSilent(System.Func{`0,System.Boolean})">
             <summary>
-            Silently removes all elements from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> as dictated by a <paramref name="selector"/> <see cref="T:System.Func`2"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            Silently removes all elements from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> as dictated by a <paramref name="selector"/> <see cref="T:System.Func`2"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove"/> event to be fired.
             </summary>
             <param name="selector">A <see cref="T:System.Func`2"/> that determines whether an element should be removed.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.ClearSilent">
+            <summary>
+            Silently clears this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event to be fired.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Reset(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Resets this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> by clearing it (silently) and re-filling it using the specified <paramref name="collection"/>.
+            </summary>
+            <param name="collection">The collection to fill this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> with.</param>
+            <remarks>
+            The clearing operation itself is silent, but the re-filling operation is not; that is, observers of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> will only be notified AFTER the re-filling operation is complete.
+            </remarks>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Remove(`0)">
             <summary>
@@ -231,9 +281,10 @@
             </summary>
             <param name="selector">A <see cref="T:System.Func`2"/> that determines whether an element should be removed.</param>
         </member>
-        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RaiseCollectionChanged">
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <summary>
-            Raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> by <see cref="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddSilent(`0)"/> will not be propagated to observers until this method is called.
+            Raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
+            <paramref name="e"/>The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> with <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> will be passed.
             </summary>
         </member>
         <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PreCollectionChangedNotification">
@@ -248,12 +299,123 @@
         </member>
         <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PostCollectionChangedNotification">
             <summary>
-            Encapsulates a method that is called after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised for this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It should not modify the collection as any changes are not propagated to observers.
+            Encapsulates a method that is called after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised for this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may still modify the collection.
             </summary>
         </member>
         <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PostCollectionChanged">
             <summary>
-            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as any changes are not propagated to observers.
+            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes 
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddedNotification">
+            <summary>
+            Encapsulates a method that is called before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            </summary>
+            <param name="item">The item to be added.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Added">
+            <summary>
+            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event is raised. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RemovedNotification">
+            <summary>
+            Encapsulates a method that is called before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove"/> event is raised for this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            </summary>
+            <param name="item">The item to be removed.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Removed">
+            <summary>
+            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove"/> event is raised. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeAddedNotification">
+            <summary>
+            Encapsulates a method that is called before multiple items are added to this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            </summary>
+            <param name="items">The items to be added.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeAdded">
+            <summary>
+            Occurs before multiple items are added to this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeRemovedNotification">
+            <summary>
+            Encapsulates a method that is called before multiple items are removed from this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            </summary>
+            <param name="items">The items to be removed.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeRemoved">
+            <summary>
+            Occurs before multiple items are removed from this <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.IndexGetNotification">
+            <summary>
+            Encapsulates a method that is called when an item located at an individual index is accessed. It may modify the collection.
+            </summary>
+            <param name="index">The index of the item to be accessed.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.IndexGet">
+            <summary>
+            Occurs when an item located at an individual index is accessed. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.IndexSetNotification">
+            <summary>
+            The event that is raised when an item located at an individual index is set. It may modify the collection.
+            </summary>
+            <param name="index">The index of the item to be set.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.IndexSet">
+            <summary>
+            Occurs when an item located at an individual index is set. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeGetNotification">
+            <summary>
+            Encapsulates a method that is called when multiple items in a specific range are accessed. It may modify the collection.
+            </summary>
+            <param name="index">The zero-based starting index of the range of items to be accessed.</param>
+            <param name="count">The number of items to be accessed.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeGet">
+            <summary>
+            Occurs when multiple items in a specific range are accessed. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeSetNotification">
+            <summary>
+            Encapsulates a method that is called when multiple items in a specific range are set. It may modify the collection.
+            </summary>
+            <param name="index">The zero-based starting index of the range of items to be set.</param>
+            <param name="count">The number of items to be set.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.RangeSet">
+            <summary>
+            Occurs when multiple items in a specific range are set. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.ResetNotification">
+            <summary>
+            Encapsulates a method that is called when the collection is reset by clearing it and refilling it. It may modify the collection.
+            </summary>
+            <param name="newContents">The new contents of the collection.</param>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Refill">
+            <summary>
+            Occurs when the collection is reset by clearing it and refilling it. It may modify the collection.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.ClearNotification">
+            <summary>
+            Encapsulates a method that is called when the collection is reset by clearing it. It may modify the collection.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.Empty">
+            <summary>
+            Occurs when the collection is reset by clearing it. It may modify the collection.
             </summary>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
@@ -261,7 +423,9 @@
         </member>
         <member name="T:LaquaiLib.Classes.Collections.TwoWayLookup`2">
             <summary>
-            Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique. Enumeration is supported in the forward direction using standard <see cref="T:System.Collections.Generic.IEnumerable`1"/> methods. For reverse enumeration, use <see cref="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetReverseEnumerator"/>.
+            Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique.
+            Automatic enumeration is supported in the forward direction using standard <see cref="T:System.Collections.Generic.IEnumerable`1"/> methods.
+            For (manual-only) reverse enumeration, use <see cref="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetReverseEnumerator"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.AddForward(`0,`1)">
@@ -607,36 +771,6 @@
             Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Constants">
-            <summary>
-            Provides a number of constants.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Constants.Numbers">
-            <summary>
-            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Int32"/> containing the numbers <c>0</c> through <c>9</c>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Constants.LettersUppercase">
-            <summary>
-            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the uppercase letters <c>A</c> through <c>Z</c>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Constants.LettersLowercase">
-            <summary>
-            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>a</c> through <c>z</c>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Constants.GreekLettersUppercase">
-            <summary>
-            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the uppercase letters <c>Α</c> through <c>Ω</c>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Constants.GreekLettersLowercase">
-            <summary>
-            An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Char"/> containing the lowercase letters <c>α</c> through <c>ω</c>.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Extensions.AnyExtensions">
             <summary>
             Provides Extension Methods for all Types.
@@ -708,6 +842,20 @@
             <param name="bytes">The <see cref="T:System.Byte"/> span to convert.</param>
             <returns>The string as described.</returns>
             <remarks>This method uses the internal <see cref="M:System.Convert.ToHexString(System.Byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ByteArrayExtensions.AsMemoryStream(System.Byte[])">
+            <summary>
+            Creates a (non-resizable!) <see cref="T:System.IO.MemoryStream"/> from the given <see cref="T:System.Byte"/> array.
+            </summary>
+            <param name="bytes">The <see cref="T:System.Byte"/> array to create the <see cref="T:System.IO.MemoryStream"/> from.</param>
+            <returns>The created <see cref="T:System.IO.MemoryStream"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ByteArrayExtensions.ToMemoryStream(System.Byte[])">
+            <summary>
+            Creates a <see cref="T:System.IO.MemoryStream"/> from the given <see cref="T:System.Byte"/> array. Its <see cref="P:System.IO.Stream.Position"/> upon return is set to the <see cref="P:System.Array.Length"/> of <paramref name="bytes"/>, i.e. it is not sought to the beginning.
+            </summary>
+            <param name="bytes">The <see cref="T:System.Byte"/> array to write into the new <see cref="T:System.IO.MemoryStream"/>.</param>
+            <returns>The created <see cref="T:System.IO.MemoryStream"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.CaptureExtensions">
             <summary>
@@ -827,6 +975,60 @@
             <typeparam name="TValue">They Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
             <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to clone.</param>
             <returns>A shallow copy of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.DispatcherObjectExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Windows.Threading.DispatcherObject"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Action)">
+            <summary>
+            Invokes the specified <paramref name="action"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="action"/>.</param>
+            <param name="action">The <see cref="T:System.Action"/> to invoke.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Delegate,System.Object[])">
+            <summary>
+            Invokes the specified <paramref name="method"/> with the given <paramref name="arguments"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="method"/>.</param>
+            <param name="method">The <see cref="T:System.Delegate"/> to invoke.</param>
+            <param name="arguments">The arguments to pass to the <paramref name="method"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DispatcherObjectExtensions.Dispatch``1(System.Windows.Threading.DispatcherObject,System.Func{``0})">
+            <summary>
+            Invokes the specified <paramref name="func"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <typeparam name="T">The type of the result returned by the <paramref name="func"/>.</typeparam>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="func"/>.</param>
+            <param name="func">The <see cref="T:System.Func`1"/> to invoke.</param>
+            <returns>The result returned by the <paramref name="func"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Action)">
+            <summary>
+            Asynchronously invokes the specified <paramref name="action"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="action"/>.</param>
+            <param name="action">The <see cref="T:System.Action"/> to invoke.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="asyncDelegate"/>.</param>
+            <param name="asyncDelegate">The <see cref="T:System.Func`1"/> to invoke.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> returned by the <paramref name="asyncDelegate"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DispatcherObjectExtensions.DispatchAsync``1(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <typeparam name="T">The type of the result returned by the <paramref name="asyncDelegate"/>.</typeparam>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="asyncDelegate"/>.</param>
+            <param name="asyncDelegate">The <see cref="T:System.Func`1"/> to invoke.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> returned by the <paramref name="asyncDelegate"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.EnumExtensions">
             <summary>
@@ -1320,22 +1522,21 @@
             <param name="replace">The replacement for occurrences of strings in <paramref name="finds"/>.</param>
             <returns>A string as described.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.RegexReplace(System.String,System.String,System.String)">
-            <summary>
-            Replaces all matches of a regex <paramref name="pattern"/> in this <see cref="T:System.String"/> with a <paramref name="replacement"/>.
-            </summary>
-            <param name="source">The <see cref="T:System.String"/> to search.</param>
-            <param name="pattern">The pattern to search for.</param>
-            <param name="replacement">The <see cref="T:System.String"/> to replace matches with.</param>
-            <returns>A new string with all matches of <paramref name="pattern"/> replaced with <paramref name="replacement"/>.</returns>
-        </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.Match(System.String,System.String)">
             <summary>
             Searches the specified input string for occurrences of a specified regex pattern.
             </summary>
             <param name="source">The <see cref="T:System.String"/> to search.</param>
             <param name="pattern">The pattern to search for.</param>
-            <returns>The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> instance returned my <see cref="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)"/></returns>
+            <returns>The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> instance returned by <see cref="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)"/></returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Match(System.String,System.Text.RegularExpressions.Regex)">
+            <summary>
+            Searches the specified input string for occurrences of a specified regex pattern represented by a <see cref="T:System.Text.RegularExpressions.Regex"/> instance.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to search.</param>
+            <param name="regex">The pattern to search for.</param>
+            <returns>The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> instance returned by <see cref="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)"/></returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.ReplaceExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
             <summary>
@@ -1346,7 +1547,44 @@
             <param name="replace">The replacement for occurrences of strings that are not in <paramref name="except"/>.</param>
             <returns>A string as described.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ToSentence(System.String)">
+            <summary>
+            Converts the specified input string to sentence case (that is, the first character is capitalized and all other characters are lower case).
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to convert.</param>
+            <returns><paramref name="source"/> in sentence case.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ToTitle(System.String)">
+            <summary>
+            Converts the specified input string to title case according to the rules of the current culture.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to convert.</param>
+            <returns><paramref name="source"/> in title case.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ToTitle(System.String,System.Globalization.CultureInfo)">
+            <summary>
+            Converts the specified input string to title case according to the rules of the specified <paramref name="culture"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to convert.</param>
+            <param name="culture">The <see cref="T:System.Globalization.CultureInfo"/> to use for casing rules.</param>
+            <returns><paramref name="source"/> in title case according to <paramref name="culture"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ToTitleInvariant(System.String)">
+            <summary>
+            Converts the specified input string to title case according to the rules of the invariant culture.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to convert.</param>
+            <returns><paramref name="source"/> in title case according to the invariant culture.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.Char[])">
+            <summary>
+            Removes all occurrences of the specified <see cref="T:System.Char"/>s from this <see cref="T:System.String"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.String"/> to modify.</param>
+            <param name="remove">The <see cref="T:System.Char"/>s to remove.</param>
+            <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.Collections.Generic.IEnumerable{System.Char})">
             <summary>
             Removes all occurrences of the specified <see cref="T:System.Char"/>s from this <see cref="T:System.String"/>.
             </summary>
@@ -1746,120 +1984,6 @@
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
             <returns><c>true</c> if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
         </member>
-        <member name="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar">
-            <summary>
-            Represents a progress bar that indicates the progress or status of a process.
-            </summary>
-            <summary>
-            ProgressBar
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation">
-            <summary>
-            Identifies the style and orientation of the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation.Horizontal">
-            <summary>
-            Indicates that the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is oriented horizontally.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation.Vertical">
-            <summary>
-            Indicates that the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is oriented vertically.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation.Circular">
-            <summary>
-            Indicates that the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is oriented circularly.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MaximumProperty">
-            <summary>
-            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MaximumProperty"/> dependency property.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MinimumProperty">
-            <summary>
-            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.MinimumProperty"/> dependency property.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.ValueProperty">
-            <summary>
-            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.ValueProperty"/> dependency property.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.StepProperty">
-            <summary>
-            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.StepProperty"/> dependency property.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.BarOrientationProperty">
-            <summary>
-            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.BarOrientationProperty"/> dependency property.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.IsReverseProperty">
-            <summary>
-            Identifies the <see cref="F:LaquaiLib.Extensions.WPF.Controls.ProgressBar.IsReverseProperty"/> dependency property.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Minimum">
-            <summary>
-            The minimum value this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> can have.
-            When <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Value"/> equals this value, the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is empty.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Maximum">
-            <summary>
-            The maximum value this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> can have.
-            When <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Value"/> equals this value, the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> is full.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Value">
-            <summary>
-            The current value of this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
-            Values outside the range of <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Minimum"/> and <see cref="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Maximum"/> are clamped to said range.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Step">
-            <summary>
-            The current value of this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.BarOrientation">
-            <summary>
-            The orientation and style of this <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Extensions.WPF.Controls.ProgressBar.IsReverse">
-            <summary>
-            Whether the progress bar is displayed in reverse, irrespective of its <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar.Orientation"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.#ctor">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.#ctor(System.Double)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> with the specified inclusive <paramref name="maximum"/> value.
-            </summary>
-            <param name="maximum">The inclusive maximum value the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> may assume.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.#ctor(System.Double,System.Double)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> with the specified inclusive <paramref name="minimum"/> and <paramref name="maximum"/> values.
-            </summary>
-            <param name="minimum">The inclusive minimum value the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> may assume.</param>
-            <param name="maximum">The inclusive maximum value the <see cref="T:LaquaiLib.Extensions.WPF.Controls.ProgressBar"/> may assume.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.WPF.Controls.ProgressBar.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Xml.Linq.XElement"/> Type.
@@ -1879,18 +2003,6 @@
             <param name="source">The <see cref="T:System.Xml.Linq.XElement"/> to get the siblings of.</param>
             <param name="name">The <see cref="T:System.Xml.Linq.XName"/> to match.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Xml.Linq.XElement"/> containing the sibling elements of this node, in document order. Only elements that have a matching <see cref="T:System.Xml.Linq.XName"/> are included in the collection.</returns>
-        </member>
-        <member name="T:LaquaiLib.Extensions.XmlWriterExtensions">
-            <summary>
-            Provides extension methods for the <see cref="T:System.Xml.XmlWriter"/> Type.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.XmlWriterExtensions.WriteXNode(System.Xml.XmlWriter,System.Xml.Linq.XNode)">
-            <summary>
-            Writes the specified <paramref name="xNode"/> to this <see cref="T:System.Xml.XmlWriter"/>.
-            </summary>
-            <param name="xmlWriter">The <see cref="T:System.Xml.XmlWriter"/> instance to write <paramref name="xNode"/> to.</param>
-            <param name="xNode">The <see cref="T:System.Xml.Linq.XNode"/> to serialize and write to <paramref name="xmlWriter"/>.</param>
         </member>
         <member name="T:LaquaiLib.Extensions.XNodeExtensions">
             <summary>
@@ -2466,6 +2578,77 @@
             </summary>
             <param name="state">Unused / ignored unconditionally.</param>
         </member>
+        <member name="T:LaquaiLib.Util.ExtendedBackgroundWorker">
+            <summary>
+            Extends the base functionality of the <see cref="T:System.ComponentModel.BackgroundWorker"/> type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Delegate)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started.
+            </summary>
+            <param name="work">A <see cref="T:System.Delegate"/> that encapsulates a method that is executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Delegate,System.Object[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started, passing the specified <paramref name="args"/> as parameters.
+            </summary>
+            <param name="work">A <see cref="T:System.Delegate"/> that encapsulates a method that is executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with the specified <paramref name="args"/> is used.</param>
+            <param name="args">The arguments to pass to the <paramref name="work"/> delegate or <see langword="null"/> if the delegate does not take any arguments.</param>
+            <remarks>This constructor forces wrapping of the passed <paramref name="work"/> delegate in a <see cref="T:System.ComponentModel.DoWorkEventHandler"/> delegate, even if it is already explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/>. Use the <see cref="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Delegate)"/> constructor to avoid this.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Delegate[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
+            </summary>
+            <param name="work">The <see cref="T:System.Delegate"/>s that encapsulate methods that are executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Collections.Generic.IEnumerable{System.Delegate},System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
+            </summary>
+            <param name="work">The <see cref="T:System.Delegate"/>s that encapsulate methods that are executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
+            <param name="args">The arguments to pass to the <paramref name="work"/> delegates or <see langword="null"/> if the delegates do not take any arguments.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.ExtendedBackgroundWorker.Progress">
+            <summary>
+            The last reported progress of the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.OnProgressChanged(System.ComponentModel.ProgressChangedEventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerStartedEventHandler">
+            <summary>
+            Represents a method that is invoked when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerCancelledEventHandler">
+            <summary>
+            Represents a method that is invoked when cancellation of the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is requested.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerStarted">
+            <summary>
+            Occurs when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerCancelled">
+            <summary>
+            Occurs when cancellation of the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is requested.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.OnDoWork(System.ComponentModel.DoWorkEventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.CancelAsync">
+            <inheritdoc cref="M:System.ComponentModel.BackgroundWorker.CancelAsync"/>
+        </member>
         <member name="T:LaquaiLib.Util.MemoryManager">
             <summary>
             Provides methods and events for managing memory and working with the Garbage Collector (<see cref="T:System.GC"/>).
@@ -2479,8 +2662,184 @@
         </member>
         <member name="M:LaquaiLib.Util.MemoryManager.GetMemoryLimit">
             <summary>
-            Gets the current memory limit for the application in bytes.
+            Gets the current memory limit for the application in bytes or <c>0</c> if no limit is set or the value could not be retrieved.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.MemoryManager.e">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.ObservableValue`1">
+            <summary>
+            Represents a value that can be observed for and notifies its observers about changes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ObservableValue`1.Value">
+            <summary>
+            The current value.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ObservableValue`1.Comparer">
+            <summary>
+            The <see cref="T:System.Collections.Generic.IComparer`1"/> to use when comparing instances of this type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.#ctor">
+            <summary>
+            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> and sets the value to the default for this type. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event is raised.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.#ctor(`0)">
+            <summary>
+            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event is raised.
+            </summary>
+            <param name="value">The initial value.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.ObservableValue`1.ValueChangedEventHandler">
+            <summary>
+            Represents a method that is called when the value changes.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.ObservableValue`1.ValueChanged">
+            <summary>
+            Occurs when the value changes.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ObservableValue`1.ValueReadEventHandler">
+            <summary>
+            Represents a method that is called when the value is read.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.ObservableValue`1.ValueRead">
+            <summary>
+            Occurs when the value is read.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.Set(`0)">
+            <summary>
+            Sets the value.
+            </summary>
+            <param name="newValue">The new value to set.</param>
+            <returns>The new value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.SetSilent(`0)">
+            <summary>
+            Sets the value without raising a <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event.
+            </summary>
+            <param name="newValue">The new value to set.</param>
+            <returns>The new value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.HasValue">
+            <summary>
+            Determines if a value has been set.
+            </summary>
+            <returns><see langword="true"/> if a value has been set, otherwise <see langword="false"/>.</returns>
+            <remarks>A value has been "set" if the current value is non-<see langword="null"/>. This also counts for primitive types.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.Query">
+            <summary>
+            Queries the value.
+            </summary>
+            <returns>The current value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.QuerySilent">
+            <summary>
+            Queries the value without raising a <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueRead"/> event.
+            </summary>
+            <returns>The current value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.CompareTo(LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.Equals(LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.CompareTo(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.Equals(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.Clone">
+            <summary>
+            Creates a copy of this <see cref="T:LaquaiLib.Util.ObservableValue`1"/> with the same initial value as this one's current value.
+            </summary>
+            <returns>The copy instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_Implicit(LaquaiLib.Util.ObservableValue{`0})~`0">
+            <summary>
+            Converts the given <see cref="T:LaquaiLib.Util.ObservableValue`1"/> to its underlying value.
+            </summary>
+            <param name="value">The <see cref="T:LaquaiLib.Util.ObservableValue`1"/> to convert.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_Explicit(`0)~LaquaiLib.Util.ObservableValue{`0}">
+            <summary>
+            Makes the given value observable.
+            </summary>
+            <param name="value">The value to instantiate an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_Equality(LaquaiLib.Util.ObservableValue{`0},LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_Inequality(LaquaiLib.Util.ObservableValue{`0},LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_LessThan(LaquaiLib.Util.ObservableValue{`0},LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_LessThanOrEqual(LaquaiLib.Util.ObservableValue{`0},LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_GreaterThan(LaquaiLib.Util.ObservableValue{`0},LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.op_GreaterThanOrEqual(LaquaiLib.Util.ObservableValue{`0},LaquaiLib.Util.ObservableValue{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.ValueReadEventArgs`1">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueRead"/> event.
+            </summary>
+            <typeparam name="T">The type of the value.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Util.ValueReadEventArgs`1.Value">
+            <summary>
+            The value the reader received.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ValueReadEventArgs`1.#ctor(`0)">
+            <summary>
+            Instantiates new <see cref="T:LaquaiLib.Util.ValueReadEventArgs`1"/> with the given value.
+            </summary>
+            <param name="value">The value the reader received.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.ValueChangedEventArgs`1">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event.
+            </summary>
+            <typeparam name="T">The type of the value.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Util.ValueChangedEventArgs`1.OldValue">
+            <summary>
+            The value before the change.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ValueChangedEventArgs`1.NewValue">
+            <summary>
+            The value after the change.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ValueChangedEventArgs`1.#ctor(`0,`0)">
+            <summary>
+            Instantiates new <see cref="T:LaquaiLib.Util.ValueChangedEventArgs`1"/> with the given values.
+            </summary>
+            <param name="oldValue">The value before the change.</param>
+            <param name="newValue">The value after the change.</param>
         </member>
         <member name="T:LaquaiLib.Util.Processes">
             <summary>
@@ -3219,6 +3578,1039 @@
             </summary>
             <param name="state">Unused / ignored unconditionally.</param>
         </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.Directory">
+            <summary>
+            Implements the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IDirectory"/> interface for use in the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.CreateDirectory(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.CreateDirectory(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.CreateSymbolicLink(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.CreateSymbolicLink(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.Delete(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Delete(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.Delete(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.Directory.Delete(System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateDirectories(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateDirectories(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFiles(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFiles(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFiles(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFileSystemEntries(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFileSystemEntries(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.EnumerateFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.Exists(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Exists(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetCreationTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetCreationTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetCreationTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetCreationTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetCurrentDirectory">
+            <inheritdoc cref="M:System.IO.Directory.GetCurrentDirectory" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetDirectories(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetDirectories(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetDirectoryRoot(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectoryRoot(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFiles(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFiles(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFiles(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFileSystemEntries(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFileSystemEntries(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetLastAccessTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastAccessTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastAccessTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetLastWriteTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastWriteTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastWriteTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetLogicalDrives">
+            <inheritdoc cref="M:System.IO.Directory.GetLogicalDrives" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.GetParent(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetParent(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.Move(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Move(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.ResolveLinkTarget(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.Directory.ResolveLinkTarget(System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetCreationTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetCreationTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.SetCurrentDirectory(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.SetCurrentDirectory(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastAccessTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastAccessTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastWriteTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Directory.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastWriteTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.File">
+            <summary>
+            Implements the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFile"/> interface for use in the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc cref="M:System.IO.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllText(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.AppendAllText(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllText(System.String,System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.AppendAllText(System.String,System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.AppendText(System.String)">
+            <inheritdoc cref="M:System.IO.File.AppendText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Copy(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Copy(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Copy(System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Copy(System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Create(System.String)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Create(System.String,System.Int32)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String,System.Int32)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Create(System.String,System.Int32,System.IO.FileOptions)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String,System.Int32,System.IO.FileOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.CreateSymbolicLink(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.CreateSymbolicLink(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.CreateText(System.String)">
+            <inheritdoc cref="M:System.IO.File.CreateText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Decrypt(System.String)">
+            <inheritdoc cref="M:System.IO.File.Decrypt(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Delete(System.String)">
+            <inheritdoc cref="M:System.IO.File.Delete(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Encrypt(System.String)">
+            <inheritdoc cref="M:System.IO.File.Encrypt(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Exists(System.String)">
+            <inheritdoc cref="M:System.IO.File.Exists(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.GetAttributes(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetAttributes(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.GetCreationTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetCreationTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.GetCreationTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetCreationTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.GetLastAccessTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastAccessTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastAccessTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.GetLastWriteTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastWriteTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastWriteTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Move(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Move(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Move(System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Move(System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Open(System.String,System.IO.FileMode)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Open(System.String,System.IO.FileStreamOptions)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileStreamOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.OpenHandle(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.IO.FileOptions,System.Int64)">
+            <inheritdoc cref="M:System.IO.File.OpenHandle(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.IO.FileOptions,System.Int64)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.OpenRead(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenRead(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.OpenText(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.OpenWrite(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenWrite(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllBytes(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllBytes(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllLines(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLines(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllLines(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLines(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllText(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllText(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadAllText(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllTextAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllTextAsync(System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadLines(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadLines(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ReadLines(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadLines(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Replace(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Replace(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.Replace(System.String,System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Replace(System.String,System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.ResolveLinkTarget(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.ResolveLinkTarget(System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.SetAttributes(System.String,System.IO.FileAttributes)">
+            <inheritdoc cref="M:System.IO.File.SetAttributes(System.String,System.IO.FileAttributes)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetCreationTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetCreationTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastAccessTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastAccessTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastWriteTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastWriteTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllBytes(System.String,System.Byte[])">
+            <inheritdoc cref="M:System.IO.File.WriteAllBytes(System.String,System.Byte[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllLines(System.String,System.String[])">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.String[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllLines(System.String,System.String[],System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.String[],System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllText(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.WriteAllText(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllText(System.String,System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllText(System.String,System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.File.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.FileSystemProxy">
+            <summary>
+            Implements the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy"/> interface, which allows direct file system access from a Blazor WebAssembly application by proxying functionality from <see cref="N:System.IO"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.WasmServices.FileSystemProxy.FileSystemProxy.File">
+            <summary>
+            Gets an <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFile"/> implementation that proxies functionality from <see cref="T:System.IO.File"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.WasmServices.FileSystemProxy.FileSystemProxy.Directory">
+            <summary>
+            Gets an <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IDirectory"/> implementation that proxies functionality from <see cref="T:System.IO.Directory"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.WasmServices.FileSystemProxy.FileSystemProxy.Path">
+            <summary>
+            Gets an <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IPath"/> implementation that proxies functionality from <see cref="T:System.IO.Path"/>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.IDirectory">
+            <summary>
+            Exposes access to the <see cref="T:System.IO.Directory"/> class by proxy in a Blazor WebAssembly application.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.CreateDirectory(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.CreateDirectory(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.CreateSymbolicLink(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.CreateSymbolicLink(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.Delete(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Delete(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.Delete(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.Directory.Delete(System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateDirectories(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateDirectories(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateDirectories(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFiles(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFiles(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFiles(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFiles(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFileSystemEntries(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFileSystemEntries(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.EnumerateFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.EnumerateFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.Exists(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Exists(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetCreationTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetCreationTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetCreationTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetCreationTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetCurrentDirectory">
+            <inheritdoc cref="M:System.IO.Directory.GetCurrentDirectory" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetDirectories(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetDirectories(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetDirectories(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetDirectories(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectories(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetDirectoryRoot(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetDirectoryRoot(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFiles(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFiles(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFiles(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFiles(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.GetFiles(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFileSystemEntries(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFileSystemEntries(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFileSystemEntries(System.String,System.String,System.IO.SearchOption)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String,System.IO.SearchOption)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)">
+            <inheritdoc cref="M:System.IO.Directory.GetFileSystemEntries(System.String,System.String,System.IO.EnumerationOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetLastAccessTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastAccessTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastAccessTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetLastWriteTime(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastWriteTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetLastWriteTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetLogicalDrives">
+            <inheritdoc cref="M:System.IO.Directory.GetLogicalDrives" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.GetParent(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.GetParent(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.Move(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Directory.Move(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.ResolveLinkTarget(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.Directory.ResolveLinkTarget(System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetCreationTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetCreationTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.SetCurrentDirectory(System.String)">
+            <inheritdoc cref="M:System.IO.Directory.SetCurrentDirectory(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastAccessTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastAccessTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastWriteTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IDirectory.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.Directory.SetLastWriteTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.IFile">
+            <summary>
+            Exposes access to the <see cref="T:System.IO.File"/> class by proxy in a Blazor WebAssembly application.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc cref="M:System.IO.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.AppendAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllText(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.AppendAllText(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllText(System.String,System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.AppendAllText(System.String,System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllTextAsync(System.String,System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.AppendAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.AppendText(System.String)">
+            <inheritdoc cref="M:System.IO.File.AppendText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Copy(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Copy(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Copy(System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Copy(System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Create(System.String)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Create(System.String,System.Int32)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String,System.Int32)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Create(System.String,System.Int32,System.IO.FileOptions)">
+            <inheritdoc cref="M:System.IO.File.Create(System.String,System.Int32,System.IO.FileOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.CreateSymbolicLink(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.CreateSymbolicLink(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.CreateText(System.String)">
+            <inheritdoc cref="M:System.IO.File.CreateText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Decrypt(System.String)">
+            <inheritdoc cref="M:System.IO.File.Decrypt(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Delete(System.String)">
+            <inheritdoc cref="M:System.IO.File.Delete(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Encrypt(System.String)">
+            <inheritdoc cref="M:System.IO.File.Encrypt(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Exists(System.String)">
+            <inheritdoc cref="M:System.IO.File.Exists(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.GetAttributes(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetAttributes(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.GetCreationTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetCreationTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.GetCreationTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetCreationTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.GetLastAccessTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastAccessTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.GetLastAccessTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastAccessTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.GetLastWriteTime(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastWriteTime(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.GetLastWriteTimeUtc(System.String)">
+            <inheritdoc cref="M:System.IO.File.GetLastWriteTimeUtc(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Move(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Move(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Move(System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Move(System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Open(System.String,System.IO.FileMode)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Open(System.String,System.IO.FileStreamOptions)">
+            <inheritdoc cref="M:System.IO.File.Open(System.String,System.IO.FileStreamOptions)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.OpenHandle(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.IO.FileOptions,System.Int64)">
+            <inheritdoc cref="M:System.IO.File.OpenHandle(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.IO.FileOptions,System.Int64)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.OpenRead(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenRead(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.OpenText(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.OpenWrite(System.String)">
+            <inheritdoc cref="M:System.IO.File.OpenWrite(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllBytes(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllBytes(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllBytesAsync(System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllLines(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLines(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllLines(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLines(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLinesAsync(System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllLinesAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllText(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadAllText(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllText(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadAllText(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllTextAsync(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllTextAsync(System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.ReadAllTextAsync(System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadLines(System.String)">
+            <inheritdoc cref="M:System.IO.File.ReadLines(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ReadLines(System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.ReadLines(System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Replace(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.Replace(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.Replace(System.String,System.String,System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.Replace(System.String,System.String,System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.ResolveLinkTarget(System.String,System.Boolean)">
+            <inheritdoc cref="M:System.IO.File.ResolveLinkTarget(System.String,System.Boolean)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.SetAttributes(System.String,System.IO.FileAttributes)">
+            <inheritdoc cref="M:System.IO.File.SetAttributes(System.String,System.IO.FileAttributes)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.SetCreationTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetCreationTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.SetCreationTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetCreationTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.SetLastAccessTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastAccessTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.SetLastAccessTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastAccessTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.SetLastWriteTime(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastWriteTime(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.SetLastWriteTimeUtc(System.String,System.DateTime)">
+            <inheritdoc cref="M:System.IO.File.SetLastWriteTimeUtc(System.String,System.DateTime)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllBytes(System.String,System.Byte[])">
+            <inheritdoc cref="M:System.IO.File.WriteAllBytes(System.String,System.Byte[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllBytesAsync(System.String,System.Byte[],System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllLines(System.String,System.String[])">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.String[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllLines(System.String,System.String[],System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.String[],System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLines(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllLinesAsync(System.String,System.Collections.Generic.IEnumerable{System.String},System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllText(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.File.WriteAllText(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllText(System.String,System.String,System.Text.Encoding)">
+            <inheritdoc cref="M:System.IO.File.WriteAllText(System.String,System.String,System.Text.Encoding)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllTextAsync(System.String,System.String,System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IFile.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.File.WriteAllTextAsync(System.String,System.String,System.Text.Encoding,System.Threading.CancellationToken)" />
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy">
+            <summary>
+            Exposes access to the file system by proxy in a Blazor WebAssembly application.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.IPath">
+            <summary>
+            Exposes access to the <see cref="T:System.IO.Path"/> class by proxy in a Blazor WebAssembly application.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.ChangeExtension(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.ChangeExtension(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Combine(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Combine(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Combine(System.String,System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Combine(System.String[])">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.EndsInDirectorySeparator(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.EndsInDirectorySeparator(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.EndsInDirectorySeparator(System.String)">
+            <inheritdoc cref="M:System.IO.Path.EndsInDirectorySeparator(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetDirectoryName(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetDirectoryName(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetDirectoryName(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetDirectoryName(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetExtension(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetExtension(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetExtension(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetFileName(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFileName(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetFileName(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetFileName(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetFileNameWithoutExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFileNameWithoutExtension(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetFileNameWithoutExtension(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetFileNameWithoutExtension(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetFullPath(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFullPath(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetFullPath(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFullPath(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetInvalidFileNameChars">
+            <inheritdoc cref="M:System.IO.Path.GetInvalidFileNameChars" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetInvalidPathChars">
+            <inheritdoc cref="M:System.IO.Path.GetInvalidPathChars" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetPathRoot(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetPathRoot(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetPathRoot(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetPathRoot(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetRandomFileName">
+            <inheritdoc cref="M:System.IO.Path.GetRandomFileName" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetRelativePath(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetRelativePath(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetTempFileName">
+            <inheritdoc cref="M:System.IO.Path.GetTempFileName" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.GetTempPath">
+            <inheritdoc cref="M:System.IO.Path.GetTempPath" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.HasExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.HasExtension(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.HasExtension(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.HasExtension(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.IsPathFullyQualified(System.String)">
+            <inheritdoc cref="M:System.IO.Path.IsPathFullyQualified(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.IsPathFullyQualified(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.IsPathFullyQualified(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.IsPathRooted(System.String)">
+            <inheritdoc cref="M:System.IO.Path.IsPathRooted(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.IsPathRooted(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.IsPathRooted(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Join(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Join(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Join(System.String,System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.Join(System.String[])">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.TrimEndingDirectorySeparator(System.String)">
+            <inheritdoc cref="M:System.IO.Path.TrimEndingDirectorySeparator(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.TrimEndingDirectorySeparator(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.TrimEndingDirectorySeparator(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)">
+            <inheritdoc cref="M:System.IO.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IPath.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)">
+            <inheritdoc cref="M:System.IO.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)" />
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.IServiceCollectionExtensions">
+            <summary>
+            Provides extensions methods for types implementing <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.IServiceCollectionExtensions.AddFileSystemProxy(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy"/> and its dependencies to the <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> as singletons.
+            </summary>
+            <param name="services">The <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> to add the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy"/> and its dependencies to.</param>
+            <returns>A reference to this instance after the operation has completed.</returns>
+        </member>
+        <member name="T:LaquaiLib.WasmServices.FileSystemProxy.Path">
+            <summary>
+            Implements the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IPath"/> interface for use in the <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.ChangeExtension(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.ChangeExtension(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Combine(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Combine(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Combine(System.String,System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String,System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Combine(System.String[])">
+            <inheritdoc cref="M:System.IO.Path.Combine(System.String[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.EndsInDirectorySeparator(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.EndsInDirectorySeparator(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.EndsInDirectorySeparator(System.String)">
+            <inheritdoc cref="M:System.IO.Path.EndsInDirectorySeparator(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetDirectoryName(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetDirectoryName(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetDirectoryName(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetDirectoryName(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetExtension(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetExtension(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetExtension(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetFileName(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFileName(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetFileName(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetFileName(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetFileNameWithoutExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFileNameWithoutExtension(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetFileNameWithoutExtension(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetFileNameWithoutExtension(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetFullPath(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFullPath(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetFullPath(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetFullPath(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetInvalidFileNameChars">
+            <inheritdoc cref="M:System.IO.Path.GetInvalidFileNameChars" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetInvalidPathChars">
+            <inheritdoc cref="M:System.IO.Path.GetInvalidPathChars" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetPathRoot(System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetPathRoot(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetPathRoot(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.GetPathRoot(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetRandomFileName">
+            <inheritdoc cref="M:System.IO.Path.GetRandomFileName" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetRelativePath(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.GetRelativePath(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetTempFileName">
+            <inheritdoc cref="M:System.IO.Path.GetTempFileName" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.GetTempPath">
+            <inheritdoc cref="M:System.IO.Path.GetTempPath" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.HasExtension(System.String)">
+            <inheritdoc cref="M:System.IO.Path.HasExtension(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.HasExtension(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.HasExtension(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.IsPathFullyQualified(System.String)">
+            <inheritdoc cref="M:System.IO.Path.IsPathFullyQualified(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.IsPathFullyQualified(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.IsPathFullyQualified(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.IsPathRooted(System.String)">
+            <inheritdoc cref="M:System.IO.Path.IsPathRooted(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.IsPathRooted(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.IsPathRooted(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.Join(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Join(System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Join(System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Join(System.String,System.String,System.String,System.String)">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String,System.String,System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.Join(System.String[])">
+            <inheritdoc cref="M:System.IO.Path.Join(System.String[])" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.TrimEndingDirectorySeparator(System.String)">
+            <inheritdoc cref="M:System.IO.Path.TrimEndingDirectorySeparator(System.String)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.TrimEndingDirectorySeparator(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:System.IO.Path.TrimEndingDirectorySeparator(System.ReadOnlySpan{System.Char})" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)">
+            <inheritdoc cref="M:System.IO.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)" />
+        </member>
+        <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)">
+            <inheritdoc cref="M:System.IO.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)" />
+        </member>
         <member name="T:LaquaiLib.WPF.ValueConverters.BoolInverterConverter">
             <summary>
             Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that inverts a <see cref="T:System.Boolean"/> value.ss
@@ -3663,7 +5055,7 @@
             <summary>
             Gets the object of type <typeparamref name="T"/> this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> represents.
             </summary>
-            <exception cref="T:System.InvalidOperationException">Thrown if the handle has been disposed.</exception>
+            <exception cref="T:System.ObjectDisposedException">Thrown if the handle has been disposed.</exception>
         </member>
         <member name="P:System.Runtime.InteropServices.GCHandle`1.IsAllocated">
             <inheritdoc cref="P:System.Runtime.InteropServices.GCHandle.IsAllocated"/>
@@ -3749,90 +5141,6 @@
             <summary>
             Releases the managed and unmanaged resources used by this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instance.
             </summary>
-        </member>
-        <member name="T:System.Xml.Linq.XRepetition">
-            <summary>
-            Represents an <see cref="T:System.Xml.Linq.XElement"/> that is repeated a certain number of times.
-            </summary>
-        </member>
-        <member name="P:System.Xml.Linq.XRepetition.Count">
-            <summary>
-            The number of times this element is repeated when it is serialized to XML. If left unchanged, this is <c>1</c>.
-            </summary>
-        </member>
-        <member name="P:System.Xml.Linq.XRepetition.XElement">
-            <summary>
-            The <see cref="T:System.Xml.Linq.XElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.
-            </summary>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XElement,System.Int32)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XElement"/> and the number of times it is to be repeated.
-            </summary>
-            <param name="other">The <see cref="T:System.Xml.Linq.XElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
-            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Int32)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/> and the number of times it is to be repeated.
-            </summary>
-            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XStreamingElement,System.Int32)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XStreamingElement"/> and the number of times it is to be repeated.
-            </summary>
-            <param name="other">The <see cref="T:System.Xml.Linq.XStreamingElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
-            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object,System.Int32)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/>, a content <see cref="T:System.Object"/> and the number of times it is to be repeated.
-            </summary>
-            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-            <param name="content">The content of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object[],System.Int32)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/>, an <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s and the number of times it is to be repeated.
-            </summary>
-            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-            <param name="content">An <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-            <param name="count">The number of times this element is repeated when it is serialized to XML.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object[])">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/> and an <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s.
-            </summary>
-            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-            <param name="content">An <see cref="T:System.Array"/> of content <see cref="T:System.Object"/>s of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XElement)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XElement"/>.
-            </summary>
-            <param name="other">The <see cref="T:System.Xml.Linq.XElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/>.
-            </summary>
-            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XName,System.Object)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an <see cref="T:System.Xml.Linq.XName"/> and a content <see cref="T:System.Object"/>.
-            </summary>
-            <param name="name">An <see cref="T:System.Xml.Linq.XName"/> instance that represents the name of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-            <param name="content">The content of the <see cref="T:System.Xml.Linq.XElement"/>.</param>
-        </member>
-        <member name="M:System.Xml.Linq.XRepetition.#ctor(System.Xml.Linq.XStreamingElement)">
-            <summary>
-            Instantiates an <see cref="T:System.Xml.Linq.XRepetition"/> from an existing <see cref="T:System.Xml.Linq.XStreamingElement"/>.
-            </summary>
-            <param name="other">The <see cref="T:System.Xml.Linq.XStreamingElement"/> this <see cref="T:System.Xml.Linq.XRepetition"/> wraps.</param>
         </member>
     </members>
 </doc>

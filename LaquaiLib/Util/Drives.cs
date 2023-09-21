@@ -20,7 +20,7 @@ public static class Drives
     /// <summary>
     /// The <see cref="object"/> that is locked on when modifying collections in any of the "GetAll..." methods in <see cref="Drives"/>. <b>Callers should lock on this when accessing these collections as well, otherwise, exceptions may be thrown during enumeration.</b>
     /// </summary>
-    private static object SyncRoot { get; } = new object();
+    public static object SyncRoot { get; } = new object();
 
     static Drives()
     {

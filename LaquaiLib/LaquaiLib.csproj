@@ -18,6 +18,8 @@
 		<Platforms>AnyCPU;x64;x86</Platforms>
 		<LangVersion>preview</LangVersion>
 
+		<!--<EnablePreviewFeatures>True</EnablePreviewFeatures>-->
+
 		<Optimize>False</Optimize>
 		<DebugType>embedded</DebugType>
 	</PropertyGroup>

@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Util;
+﻿using System.Collections.Specialized;
+
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Represents a value that can be observed for and notifies its observers about changes.

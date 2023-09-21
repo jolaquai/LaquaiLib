@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 
 namespace LaquaiLib.Extensions;
 
@@ -19,7 +20,6 @@ public static class ByteArrayExtensions
         System.Convert.ToHexString(bytes).Reverse().Chunk(2).ForEach(chars => sb.Append(chars.Reverse().ToArray()));
         return sb.ToString().Trim();
     }
-
     /// <summary>
     /// Converts a <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> to its equivalent string representation that is encoded with uppercase hex characters.
     /// </summary>
@@ -31,5 +31,23 @@ public static class ByteArrayExtensions
         var sb = new StringBuilder();
         System.Convert.ToHexString(bytes).Reverse().Chunk(2).ForEach(chars => sb.Append(chars.Reverse().ToArray()));
         return sb.ToString().Trim();
+    }
+
+    /// <summary>
+    /// Creates a (non-resizable!) <see cref="MemoryStream"/> from the given <see cref="byte"/> array.
+    /// </summary>
+    /// <param name="bytes">The <see cref="byte"/> array to create the <see cref="MemoryStream"/> from.</param>
+    /// <returns>The created <see cref="MemoryStream"/>.</returns>
+    public static MemoryStream AsMemoryStream(this byte[] bytes) => new MemoryStream(bytes);
+    /// <summary>
+    /// Creates a <see cref="MemoryStream"/> from the given <see cref="byte"/> array. Its <see cref="Stream.Position"/> upon return is set to the <see cref="Array.Length"/> of <paramref name="bytes"/>, i.e. it is not sought to the beginning.
+    /// </summary>
+    /// <param name="bytes">The <see cref="byte"/> array to write into the new <see cref="MemoryStream"/>.</param>
+    /// <returns>The created <see cref="MemoryStream"/>.</returns>
+    public static MemoryStream ToMemoryStream(this byte[] bytes)
+    {
+        var ms = new MemoryStream(bytes.Length + 1);
+        ms.Write(bytes, 0, bytes.Length);
+        return ms;
     }
 }
