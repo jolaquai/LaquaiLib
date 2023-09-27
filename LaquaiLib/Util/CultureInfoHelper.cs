@@ -53,7 +53,7 @@ public static class CultureInfoHelper
     /// <returns>A <see cref="CultureInfo"/> instance that matches the given data, or <see langword="null"/> if no match was found.</returns>
     /// <remarks>
     /// <list type="bullet">
-    /// <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="CultureInfo"/> for <c>en-US</c> and not <c>chr-US</c>) cannot be taken into account.
+    /// <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="CultureInfo"/> for <c>en-US</c> and not <c>chr-US</c>) cannot be taken into account. As such, you may use <see cref="Overrides"/> to manually cater to preferences within your application.
     /// </list>
     /// </remarks>
     public static CultureInfo? ResolveData(string? cultureName)
