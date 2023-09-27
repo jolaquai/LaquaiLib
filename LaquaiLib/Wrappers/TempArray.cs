@@ -9,10 +9,10 @@ namespace LaquaiLib.Wrappers;
 public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquatable, IDisposable
 {
     /// <summary>
-    /// Instantiates a new <see cref="TempArray{T}"/> with the given size. It is automatically rented from and returned to <see cref="ArrayPool{T}.Shared"/> upon disposal of this <see cref="TempArray{T}"/>, unless <c>false</c> is explicitly passed for <paramref name="allowPooledArray"/>.
+    /// Instantiates a new <see cref="TempArray{T}"/> with the given size. It is automatically rented from and returned to <see cref="ArrayPool{T}.Shared"/> upon disposal of this <see cref="TempArray{T}"/>, unless <see langword="false"/> is explicitly passed for <paramref name="allowPooledArray"/>.
     /// </summary>
     /// <param name="capacity">The capacity of the array to create.</param>
-    /// <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="ArrayPool{T}.Shared"/>. If <c>false</c>, a new array will be created instead.</param>
+    /// <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="ArrayPool{T}.Shared"/>. If <see langword="false"/>, a new array will be created instead.</param>
     public TempArray(int capacity, bool allowPooledArray = true)
     {
         if (allowPooledArray)
@@ -32,7 +32,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// Instantiates a new <see cref="TempArray{T}"/> as a wrapper around the specified array of <typeparamref name="T"/>.
     /// </summary>
     /// <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="TempArray{T}"/>.</param>
-    /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to return the array to when this <see cref="TempArray{T}"/> is disposed. May be <c>null</c> to indicate that the passed <paramref name="array"/> is not from any <see cref="ArrayPool{T}"/>.</param>
+    /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to return the array to when this <see cref="TempArray{T}"/> is disposed. May be <see langword="null"/> to indicate that the passed <paramref name="array"/> is not from any <see cref="ArrayPool{T}"/>.</param>
     public TempArray(T[] array, ArrayPool<T>? arrayPool = null)
     {
         _array = array;
@@ -120,7 +120,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// </summary>
     /// <param name="tempArray">The <see cref="TempArray{T}"/> that is the destination of the elements copied from this <see cref="TempArray{T}"/>.</param>
     /// <param name="index">The zero-based index in array at which copying begins.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="tempArray"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="tempArray"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is less than zero.</exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="tempArray"/> is multi-dimensional, the number of elements in this <see cref="TempArray{T}"/> is greater than the available space from <paramref name="index"/> to the end of the destination <see cref="TempArray{T}"/> or the type of the source <see cref="TempArray{T}"/> cannot be cast automatically to the type of the destination <see cref="TempArray{T}"/>.</exception>
     public void CopyTo(TempArray<T> tempArray, int index) => _array!.CopyTo(tempArray._array!, index);

@@ -91,6 +91,29 @@ public static class TypeExtensions
     #endregion
 
     /// <summary>
+    /// Attempts to instantiate a new object of the supplied <paramref name="type"/> using the given <paramref name="parameters"/>.
+    /// </summary>
+    /// <param name="type">A <see cref="Type"/> instance representing the type to instantiate.</param>
+    /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
+    /// <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
+    public static object? New(this Type type, params object?[]? parameters)
+    {
+        try
+        {
+            if (parameters is null)
+            {
+                return Activator.CreateInstance(type);
+            }
+            var types = parameters.Select(obj => obj?.GetType()).ToArray();
+            return type.GetConstructor(types).New(parameters);
+        }
+        catch
+        {
+            return default;
+        }
+    }
+
+    /// <summary>
     /// Returns the default value for the supplied type.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to get the default value for.</param>
@@ -196,7 +219,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type">The <see cref="Type"/> of the instance to be cast.</param>
     /// <param name="other">The <see cref="Type"/> to cast to.</param>
-    /// <returns><c>true</c> if an instance of <paramref name="type"/> can be cast to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if an instance of <paramref name="type"/> can be cast to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool CanCastTo(this Type type, Type other)
     {
         try
@@ -233,7 +256,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to cast to.</param>
     /// <param name="other">The <see cref="Type"/> of the instance to be cast.</param>
-    /// <returns><c>true</c> if an instance of <paramref name="other"/> can be cast to <paramref name="type"/>, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if an instance of <paramref name="other"/> can be cast to <paramref name="type"/>, otherwise <see langword="false"/>.</returns>
     public static bool CanCastFrom(this Type type, Type other) => CanCastTo(other, type);
 
     private static ImmutableDictionary<TypeCode, TypeCode[]> _narrowingConversions = new Dictionary<TypeCode, TypeCode[]>()
@@ -294,7 +317,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to check.</param>
     /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><c>true</c> if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool HasNarrowingConversion(this Type type, Type other)
     {
         var (first, second) = GetSaneTypeCodes(type, other);
@@ -315,7 +338,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to check.</param>
     /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><c>true</c> if there exists a consistent widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there exists a consistent widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool HasConsistentWideningConversion(this Type type, Type other)
     {
         var (first, second) = GetSaneTypeCodes(type, other);
@@ -336,7 +359,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to check.</param>
     /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><c>true</c> if there exists a lossy widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there exists a lossy widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool HasLossyWideningConversion(this Type type, Type other)
     {
         var (first, second) = GetSaneTypeCodes(type, other);
@@ -357,6 +380,6 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to check.</param>
     /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><c>true</c> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool HasWideningConversion(this Type type, Type other) => type.HasConsistentWideningConversion(other) || type.HasLossyWideningConversion(other);
 }

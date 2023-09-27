@@ -93,7 +93,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <c>false</c>, a red rectangle is painted onto the created capture <see cref="Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
+    /// Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <see langword="false"/>, a red rectangle is painted onto the created capture <see cref="Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
     /// </summary>
     /// <remarks>
     /// <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
@@ -140,7 +140,7 @@ public partial class ScreenCapture
     /// Scales the passed coordinates using the <see cref="ResolutionScales"/> to monitor coordinates.
     /// </summary>
     /// <param name="monitor">The monitor to scale the coordinates for.</param>
-    /// <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+    /// <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
     /// <param name="x">The <c>x</c>-coordinate to scale.</param>
     /// <param name="y">The <c>y</c>-coordinate to scale.</param>
     public static void ScaleCoordinates(int monitor, bool scaleDown, ref int x, ref int y)
@@ -153,7 +153,7 @@ public partial class ScreenCapture
     /// Scales the passed coordinates using the <see cref="ResolutionScales"/> to monitor coordinates.
     /// </summary>
     /// <param name="monitor">The monitor to scale the coordinates for.</param>
-    /// <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+    /// <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
     /// <param name="x1">The <c>x</c>-coordinate of the top-left point to scale.</param>
     /// <param name="y1">The <c>y</c>-coordinate of the top-left point to scale.</param>
     /// <param name="x2">The <c>x</c>-coordinate of the bottom-right point to scale.</param>
@@ -170,7 +170,7 @@ public partial class ScreenCapture
     /// Scales the passed <see cref="Rectangle"/> using the <see cref="ResolutionScales"/> to monitor coordinates.
     /// </summary>
     /// <param name="monitor">The monitor to scale the coordinates for.</param>
-    /// <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+    /// <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
     /// <param name="rect">The <see cref="Rectangle"/> to scale.</param>
     public static void ScaleCoordinates(int monitor, bool scaleDown, ref Rectangle rect)
     {
@@ -186,7 +186,7 @@ public partial class ScreenCapture
     public event EventHandler<ScreenCaptureEventArgs>? Captured;
 
     /// <summary>
-    /// The predicate that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.
+    /// The predicate that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.
     /// </summary>
     public Func<bool> Predicate { get; set; }
 
@@ -247,7 +247,7 @@ public partial class ScreenCapture
     /// <summary>
     /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
     /// </summary>
-    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
     public ScreenCapture(Func<bool> predicate)
     {
         var rect = Screen.PrimaryScreen!.Bounds;
@@ -271,7 +271,7 @@ public partial class ScreenCapture
     /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
     /// </summary>
     /// <param name="region">The region this <see cref="ScreenCapture"/> captures.</param>
-    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
     public ScreenCapture(Rectangle region, Func<bool> predicate)
     {
         Region = region;
@@ -300,7 +300,7 @@ public partial class ScreenCapture
     /// <param name="y1">The y-coordinate of the top-left point of the region.</param>
     /// <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
     /// <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
-    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
     public ScreenCapture(int x1, int y1, int x2, int y2, Func<bool> predicate)
     {
         Region = new(x1, y1, x2 - x1, y2 - y1);
@@ -324,7 +324,7 @@ public partial class ScreenCapture
     /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
     /// </summary>
     /// <param name="monitor">The number of the monitor to capture.</param>
-    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+    /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
     public ScreenCapture(int monitor, Func<bool> predicate)
     {
         var rect = Screen.AllScreens[monitor].Bounds;

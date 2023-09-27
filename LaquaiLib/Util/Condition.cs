@@ -6,11 +6,11 @@
 public readonly struct Condition
 {
     /// <summary>
-    /// Returns a cached <see cref="Condition"/> representing <c>true</c>.
+    /// Returns a cached <see cref="Condition"/> representing <see langword="true"/>.
     /// </summary>
     public static Condition True { get; } = new Condition(true);
     /// <summary>
-    /// Returns a cached <see cref="Condition"/> representing <c>false</c>.
+    /// Returns a cached <see cref="Condition"/> representing <see langword="false"/>.
     /// </summary>
     public static Condition False { get; } = new Condition(false);
 
@@ -20,7 +20,7 @@ public readonly struct Condition
     public readonly bool Value { get; }
     
     /// <summary>
-    /// Instantiates a new <see cref="Condition"/>. Its default state is representative of <c>false</c>.
+    /// Instantiates a new <see cref="Condition"/>. Its default state is representative of <see langword="false"/>.
     /// </summary>
     public Condition() : this(false)
     {

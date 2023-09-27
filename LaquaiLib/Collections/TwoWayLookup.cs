@@ -43,7 +43,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// </summary>
     /// <param name="key">The key of the entry.</param>
     /// <param name="value">The value of the entry.</param>
-    /// <returns><c>true</c> if the key-value pair could be added, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if the key-value pair could be added, otherwise <see langword="false"/>.</returns>
     public bool TryAddForward(T1 key, T2 value)
     {
         try
@@ -62,7 +62,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// </summary>
     /// <param name="key">The key of the entry.</param>
     /// <param name="value">The value of the entry.</param>
-    /// <returns><c>true</c> if the key-value pair could be added, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if the key-value pair could be added, otherwise <see langword="false"/>.</returns>
     public bool TryAddReverse(T2 key, T1 value)
     {
         try
@@ -205,7 +205,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// </summary>
     /// <param name="key">The key of the entry.</param>
     /// <param name="value">An <c>out</c> <typeparamref name="T2"/> variable that receives the retrieved value.</param>
-    /// <returns><c>true</c> if there was a value associated with the key, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there was a value associated with the key, otherwise <see langword="false"/>.</returns>
     public bool TryGetForward(T1 key, out T2 value)
     {
         try
@@ -225,7 +225,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// </summary>
     /// <param name="value">The value of the entry.</param>
     /// <param name="key">An <c>out</c> <typeparamref name="T1"/> variable that receives the retrieved key.</param>
-    /// <returns><c>true</c> if there was a key associated with the value, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there was a key associated with the value, otherwise <see langword="false"/>.</returns>
     public bool TryGetReverse(T2 value, out T1 key)
     {
         try
@@ -266,7 +266,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// Attempts to remove an entry from the lookup table by its key.
     /// </summary>
     /// <param name="key">The key of the entry.</param>
-    /// <returns><c>true</c> if there was a value associated with the key that could be removed, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there was a value associated with the key that could be removed, otherwise <see langword="false"/>.</returns>
     public bool TryRemoveForward(T1 key)
     {
         try
@@ -284,7 +284,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// Attempts to remove an entry from the lookup table by its value.
     /// </summary>
     /// <param name="value">The value of the entry.</param>
-    /// <returns><c>true</c> if there was a key associated with the value that could be removed, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if there was a key associated with the value that could be removed, otherwise <see langword="false"/>.</returns>
     public bool TryRemoveReverse(T2 value)
     {
         try

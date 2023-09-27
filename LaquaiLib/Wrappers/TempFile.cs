@@ -24,7 +24,7 @@ public class TempFile : IDisposable
     /// Instantiates a new <see cref="TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="TempFile"/> is disposed.
     /// </summary>
     /// <param name="path">The path to the file to wrap with this <see cref="TempFile"/>.</param>
-    /// <param name="fileExtension">The file extension for this <see cref="TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is kept.</param>
+    /// <param name="fileExtension">The file extension for this <see cref="TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <see langword="null"/> or white space, the existing extension in <paramref name="path"/> is kept.</param>
     public TempFile(string path, string? fileExtension)
     {
         if (string.IsNullOrWhiteSpace(fileExtension))

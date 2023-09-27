@@ -63,7 +63,7 @@ public static class Windows
     /// <summary>
     /// Retrieves the handle of the currently active window.
     /// </summary>
-    /// <returns>The handle of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+    /// <returns>The handle of the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
     [return: MaybeNull]
     public static nint? GetActiveWindowHandle()
     {
@@ -76,7 +76,7 @@ public static class Windows
     /// <summary>
     /// Retrieves the title of the currently active window.
     /// </summary>
-    /// <returns>The title of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+    /// <returns>The title of the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
     [return: MaybeNull]
     public static string? GetActiveWindowTitle()
     {
@@ -89,7 +89,7 @@ public static class Windows
     /// <summary>
     /// Retrieves the PID of the process that owns the currently active window.
     /// </summary>
-    /// <returns>The PID of the process that owns the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+    /// <returns>The PID of the process that owns the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
     [return: MaybeNull]
     public static int? GetActiveWindowPid()
     {
@@ -103,7 +103,7 @@ public static class Windows
     /// Retrieves the handle of the first window that matches the specified <paramref name="title"/>.
     /// </summary>
     /// <param name="title">The title of the window to find.</param>
-    /// <returns>The HWND of the first window that matches the specified <paramref name="title"/> or <c>null</c> if no window matches the specified <paramref name="title"/>.</returns>
+    /// <returns>The HWND of the first window that matches the specified <paramref name="title"/> or <see langword="null"/> if no window matches the specified <paramref name="title"/>.</returns>
     [return: MaybeNull]
     public static nint? GetWindowHandle(string title)
     {
@@ -283,8 +283,8 @@ public static class Windows
     /// <summary>
     /// Encapsulates a method that is called when a window event defined in <see cref="Windows"/> occurs.
     /// </summary>
-    /// <param name="handle">The handle of the window. If <c>null</c>, the handle could not be obtained.</param>
-    /// <param name="title">The title of the window. If <c>null</c>, the title could not be obtained.</param>
+    /// <param name="handle">The handle of the window. If <see langword="null"/>, the handle could not be obtained.</param>
+    /// <param name="title">The title of the window. If <see langword="null"/>, the title could not be obtained.</param>
     public delegate void WindowEvent(nint? handle, string? title);
 
     /// <summary>

@@ -83,14 +83,14 @@ public readonly struct GCHandle<T> : IDisposable
     /// </summary>
     /// <param name="left">The first <see cref="GCHandle{T}"/> to compare.</param>
     /// <param name="right">The second <see cref="GCHandle{T}"/> to compare.</param>
-    /// <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> are equal, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are equal, otherwise <see langword="false"/>.</returns>
     public static bool operator ==(GCHandle<T> left, GCHandle<T> right) => left.Handle == right.Handle;
     /// <summary>
     /// Returns a value indicating whether two typed <see cref="GCHandle{T}"/> instances are unequal.
     /// </summary>
     /// <param name="left">The first <see cref="GCHandle{T}"/> to compare.</param>
     /// <param name="right">The second <see cref="GCHandle{T}"/> to compare.</param>
-    /// <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> are unequal, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are unequal, otherwise <see langword="false"/>.</returns>
     public static bool operator !=(GCHandle<T> left, GCHandle<T> right) => !(left.Handle == right.Handle);
     /// <summary>
     /// Returns the internal integer representation of the wrapped <see cref="Handle"/>.

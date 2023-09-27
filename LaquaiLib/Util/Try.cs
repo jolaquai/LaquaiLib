@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides static methods that wrap <c>try-catch</c> blocks.
 /// </summary>
-/// <remarks>All methods in this class explicitly allow <c>null</c> returns.</remarks>
+/// <remarks>All methods in this class explicitly allow <see langword="null"/> returns.</remarks>
 public static class Try
 {
     // Variant 1 groups operate directly with methods

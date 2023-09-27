@@ -176,7 +176,7 @@ public unsafe class TempAlloc : IDisposable
     /// Resizes the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
     /// <param name="bytes">The new size of the memory region in bytes.</param>
-    /// <returns>A value indicating whether the <see cref="Address"/> of the memory region this <see cref="TempAlloc"/> wraps has changed. If <c>true</c>, reading from any previous addresses is considered undefined behavior.</returns>
+    /// <returns>A value indicating whether the <see cref="Address"/> of the memory region this <see cref="TempAlloc"/> wraps has changed. If <see langword="true"/>, reading from any previous addresses is considered undefined behavior.</returns>
     public bool Reallocate(int bytes)
     {
         ObjectDisposedException.ThrowIf(_address == nint.Zero && _size == -1, _address);

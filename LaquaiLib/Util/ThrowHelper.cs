@@ -15,7 +15,7 @@ public static class ThrowHelper
     /// </summary>
     /// <typeparam name="TException">The <see cref="Type"/> of the exception to throw.</typeparam>
     /// <typeparam name="TTest">The <see cref="Type"/> of the items to test.</typeparam>
-    /// <param name="constructorParamFactory">A <see cref="Func{T, TResult}"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="Array"/> of nullable <see cref="object"/>s (or <c>null</c>) which is passed to the constructor of the exception to throw. If it returns <c>null</c>, the exception type's parameterless constructor is invoked.</param>
+    /// <param name="constructorParamFactory">A <see cref="Func{T, TResult}"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="Array"/> of nullable <see cref="object"/>s (or <see langword="null"/>) which is passed to the constructor of the exception to throw. If it returns <see langword="null"/>, the exception type's parameterless constructor is invoked.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> the items must pass.</param>
     /// <param name="items">The items to test.</param>
     public static void ThrowOnFirstOffender<TException, TTest>(Func<TTest, object?[]?> constructorParamFactory, Predicate<TTest> predicate, params TTest[] items)
@@ -60,7 +60,7 @@ public static class ThrowHelper
 
     #region ThrowOnNull overloads
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">The <see cref="object"/> to test.</param>
     /// <param name="arg1">The name of the argument to test.</param>
@@ -71,7 +71,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj1, arg1);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -87,7 +87,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj2, arg2);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -108,7 +108,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj3, arg3);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -134,7 +134,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj4, arg4);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -165,7 +165,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj5, arg5);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -201,7 +201,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj6, arg6);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -242,7 +242,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj7, arg7);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -288,7 +288,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj8, arg8);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>
@@ -339,7 +339,7 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj9, arg9);
     }
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>
     /// <param name="obj1">An <see cref="object"/> to test.</param>
     /// <param name="obj2">An <see cref="object"/> to test.</param>

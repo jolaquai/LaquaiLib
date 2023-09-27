@@ -60,7 +60,7 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
     /// Attempts to add an item to the end of the <see cref="LimitedConcurrentQueue{T}"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
     /// </summary>
     /// <param name="item">The object to add to the <see cref="LimitedConcurrentQueue{T}"/>.</param>
-    /// <returns>A value indicating whether the collection was modified; <c>true</c> if <paramref name="item"/> could be added, <c>false</c> otherwise.</returns>
+    /// <returns>A value indicating whether the collection was modified; <see langword="true"/> if <paramref name="item"/> could be added, <see langword="false"/> otherwise.</returns>
     public bool TryEnqueue(T item)
     {
         if (Count <= Capacity)

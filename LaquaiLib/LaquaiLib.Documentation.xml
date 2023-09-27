@@ -77,7 +77,7 @@
             Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
             </summary>
             <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>.</param>
-            <returns>A value indicating whether the collection was modified; <c>true</c> if <paramref name="item"/> could be added, <c>false</c> otherwise.</returns>
+            <returns>A value indicating whether the collection was modified; <see langword="true"/> if <paramref name="item"/> could be added, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.Reduce(System.Int32)">
             <summary>
@@ -124,7 +124,7 @@
             Attempts to add an item to the end of the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>. If this would cause the oldest item to be discarded because the collection is at capacity, the collection remains unchanged.
             </summary>
             <param name="item">The object to add to the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>.</param>
-            <returns>A value indicating whether the collection was modified; <c>true</c> if <paramref name="item"/> could be added, <c>false</c> otherwise.</returns>
+            <returns>A value indicating whether the collection was modified; <see langword="true"/> if <paramref name="item"/> could be added, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.Reduce(System.Int32)">
             <summary>
@@ -448,7 +448,7 @@
             </summary>
             <param name="key">The key of the entry.</param>
             <param name="value">The value of the entry.</param>
-            <returns><c>true</c> if the key-value pair could be added, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if the key-value pair could be added, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryAddReverse(`1,`0)">
             <summary>
@@ -456,7 +456,7 @@
             </summary>
             <param name="key">The key of the entry.</param>
             <param name="value">The value of the entry.</param>
-            <returns><c>true</c> if the key-value pair could be added, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if the key-value pair could be added, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.Add``2(``0,``1)">
             <summary>
@@ -501,7 +501,7 @@
             </summary>
             <param name="key">The key of the entry.</param>
             <param name="value">An <c>out</c> <typeparamref name="T2"/> variable that receives the retrieved value.</param>
-            <returns><c>true</c> if there was a value associated with the key, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there was a value associated with the key, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryGetReverse(`1,`0@)">
             <summary>
@@ -509,7 +509,7 @@
             </summary>
             <param name="value">The value of the entry.</param>
             <param name="key">An <c>out</c> <typeparamref name="T1"/> variable that receives the retrieved key.</param>
-            <returns><c>true</c> if there was a key associated with the value, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there was a key associated with the value, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.RemoveForward(`0)">
             <summary>
@@ -528,14 +528,14 @@
             Attempts to remove an entry from the lookup table by its key.
             </summary>
             <param name="key">The key of the entry.</param>
-            <returns><c>true</c> if there was a value associated with the key that could be removed, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there was a value associated with the key that could be removed, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.TryRemoveReverse(`1)">
             <summary>
             Attempts to remove an entry from the lookup table by its value.
             </summary>
             <param name="value">The value of the entry.</param>
-            <returns><c>true</c> if there was a key associated with the value that could be removed, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there was a key associated with the value that could be removed, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.TwoWayLookup`2.GetEnumerator">
             <inheritdoc/>
@@ -778,31 +778,31 @@
         </member>
         <member name="M:LaquaiLib.Extensions.AnyExtensions.AllEqual``1(``0,``0[])">
             <summary>
-            Checks whether a number of objects are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>.
+            Checks whether a number of objects are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
             </summary>
             <typeparam name="T">The Type of the objects to compare.</typeparam>
             <param name="source">The first object to use for the comparison.</param>
             <param name="other">The remaining objects to use for the comparison.</param>
-            <returns><c>true</c> if all passed objects are equal, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.AnyExtensions.EqualBy``2(``0,System.Func{``0,``1},``0[])">
             <summary>
-            Invokes a <paramref name="transform"/> function on a <paramref name="source"/> and any <paramref name="other"/> objects and checks whether the results are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>. In this case, <paramref name="transform"/> is never invoked.
+            Invokes a <paramref name="transform"/> function on a <paramref name="source"/> and any <paramref name="other"/> objects and checks whether the results are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>. In this case, <paramref name="transform"/> is never invoked.
             </summary>
             <typeparam name="T">The Type of the input objects.</typeparam>
             <typeparam name="TCompare">The Type of the results <paramref name="transform"/> yields.</typeparam>
             <param name="source">The first object to use for the comparison..</param>
             <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
             <param name="other">The remaining objects to use for the comparison..</param>
-            <returns><c>true</c> if all the results produced by <paramref name="transform"/> are all equal, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.AnyExtensions.IsNull``1(``0)">
             <summary>
-            Checks whether a given input object is <c>null</c>. If not, it is marked to the compiler as non-<c>null</c> for the remainder of the scope.
+            Checks whether a given input object is <see langword="null"/>. If not, it is marked to the compiler as non-<see langword="null"/> for the remainder of the scope.
             </summary>
             <typeparam name="T">The Type of the input object.</typeparam>
             <param name="source">The input object.</param>
-            <returns><c>true</c> if <paramref name="source"/> is <c>null</c>, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if <paramref name="source"/> is <see langword="null"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensions">
             <summary>
@@ -879,14 +879,14 @@
             Determines if a specified <see cref="T:System.Char"/> is a vowel (including 'y').
             </summary>
             <param name="character">The <see cref="T:System.Char"/> to check.</param>
-            <returns><c>true</c> if <paramref name="character"/> is a vowel, otherwise, <c>false</c>.</returns>
+            <returns><see langword="true"/> if <paramref name="character"/> is a vowel, otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.CharExtensions.IsConsonant(System.Char)">
             <summary>
             Determines if a specified <see cref="T:System.Char"/> is a consonant.
             </summary>
             <param name="character">The <see cref="T:System.Char"/> to check.</param>
-            <returns><c>true</c> if <paramref name="character"/> is a consonant, otherwise, <c>false</c>.</returns>
+            <returns><see langword="true"/> if <paramref name="character"/> is a consonant, otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ColorExtensions">
             <summary>
@@ -938,6 +938,28 @@
             <typeparam name="T">The Type of the items in the collection.</typeparam>
             <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
             <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="T:LaquaiLib.Extensions.ConstructorInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Reflection.ConstructorInfo"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ConstructorInfoExtensions.New(System.Reflection.ConstructorInfo,System.Object[])">
+            <summary>
+            Attempts to instantiate a new object of the type <paramref name="constructorInfo"/> belongs to, using the given <paramref name="parameters"/>.
+            </summary>
+            <param name="constructorInfo">The <see cref="T:System.Reflection.ConstructorInfo"/> that identifies a constructor of the type to instantiate.</param>
+            <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> if the constructor has no parameters.</param>
+            <returns>An instance of the type <paramref name="constructorInfo"/> belongs to, or <see langword="null"/> if the constructor could not be invoked.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ConstructorInfoExtensions.New``1(System.Reflection.ConstructorInfo,System.Object[])">
+            <summary>
+            Attempts to instantiate a new object of the type <paramref name="constructorInfo"/> belongs to, using the given <paramref name="parameters"/> and returns it cast to <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type to cast the new instance to.</typeparam>
+            <param name="constructorInfo">The <see cref="T:System.Reflection.ConstructorInfo"/> that identifies a constructor of the type to instantiate.</param>
+            <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> if the constructor has no parameters. May be <see langword="null"/> if the constructor has no parameters.</param>
+            <returns>An instance of <typeparamref name="T"/>, or <see langword="null"/> if the constructor could not be invoked.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.DelegateExtensions">
             <summary>
@@ -1053,7 +1075,7 @@
             </summary>
             <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
             <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance representing the field to retrieve the value of.</param>
-            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="fieldInfo"/> represents a field that is static.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <see langword="null"/> if <paramref name="fieldInfo"/> represents a field that is static.</param>
             <returns>The value of the field represented by this <paramref name="fieldInfo"/> typed as <typeparamref name="T"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.FieldInfoExtensions.GetValueOrDefault``1(System.Reflection.FieldInfo,System.Object)">
@@ -1062,7 +1084,7 @@
             </summary>
             <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
             <param name="fieldInfo">The <see cref="T:System.Reflection.FieldInfo"/> instance representing the field to retrieve the value of.</param>
-            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="fieldInfo"/> represents a field that is static.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <see langword="null"/> if <paramref name="fieldInfo"/> represents a field that is static.</param>
             <returns>The value of the field represented by this <paramref name="fieldInfo"/> typed as <typeparamref name="T"/> if the field exists and its could be cast to <typeparamref name="T"/>, otherwise <c>default</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.HashAlgorithmExtensions">
@@ -1107,7 +1129,7 @@
             <param name="dataObject">The <see cref="T:System.Windows.Forms.IDataObject"/> to retrieve the data from.</param>
             <param name="format">The format of the data to retrieve.</param>
             <param name="data">A <c>ref <see cref="T:System.Object"/>?</c> variable that receives the data if the retrieval was successful.</param>
-            <returns><c>true</c> if the retrieval was successful, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IDataObjectExtensions.TryGetData``1(System.Windows.Forms.IDataObject,System.String,``0@)">
             <summary>
@@ -1117,7 +1139,7 @@
             <param name="dataObject">The <see cref="T:System.Windows.Forms.IDataObject"/> to retrieve the data from.</param>
             <param name="format">The format of the data to retrieve.</param>
             <param name="data">A <c>ref <typeparamref name="T"/>?</c> variable that receives the data if the retrieval was successful.</param>
-            <returns><c>true</c> if the retrieval was successful, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableBoolExtensions">
             <summary>
@@ -1216,11 +1238,11 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AllEqual``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
-            Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>.
+            Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
             </summary>
             <typeparam name="T">The Type of the objects to compare.</typeparam>
             <param name="source">The collection that contains the items to compare. An exception is thrown if the collection is empty.</param>
-            <returns><c>true</c> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
             <summary>
@@ -1286,6 +1308,29 @@
             </summary>
             <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when all of the <see cref="T:System.Threading.Tasks.Task"/>s in this collection have completed.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IGroupingExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Linq.IGrouping`2"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IGroupingExtensions.ToListDictionary``2(System.Collections.Generic.IEnumerable{System.Linq.IGrouping{``0,``1}})">
+            <summary>
+            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s as <see cref="T:System.Collections.Generic.List`1"/>s.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TElement">The Type of the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
+            <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IGroupingExtensions.ToArrayDictionary``2(System.Collections.Generic.IEnumerable{System.Linq.IGrouping{``0,``1}})">
+            <summary>
+            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s as <see cref="T:System.Array"/>s.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TElement">The Type of the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
+            <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ListExtensions">
             <summary>
@@ -1402,7 +1447,7 @@
             <typeparam name="T">The <see cref="T:System.Type"/> to cast <paramref name="obj"/> to.</typeparam>
             <param name="obj">The <see cref="T:System.Object"/> to cast.</param>
             <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/>.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="obj"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="obj"/> is <see langword="null"/>.</exception>
         </member>
         <member name="M:LaquaiLib.Extensions.ObjectExtensions.As``1(System.Object)">
             <summary>
@@ -1410,7 +1455,7 @@
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to cast <paramref name="obj"/> to.</typeparam>
             <param name="obj">The <see cref="T:System.Object"/> to cast.</param>
-            <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/> or <c>null</c> if the cast failed.</returns>
+            <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/> or <see langword="null"/> if the cast failed.</returns>
             <remarks>Contrary to <see cref="M:LaquaiLib.Extensions.ObjectExtensions.Cast``1(System.Object)"/>, this method never throws an exception.</remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.PropertyInfoExtensions">
@@ -1424,7 +1469,7 @@
             </summary>
             <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
             <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance representing the property to retrieve the value of.</param>
-            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="propertyInfo"/> represents a property that is static.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <see langword="null"/> if <paramref name="propertyInfo"/> represents a property that is static.</param>
             <returns>The value of the property represented by this <paramref name="propertyInfo"/> typed as <typeparamref name="T"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.PropertyInfoExtensions.GetValueOrDefault``1(System.Reflection.PropertyInfo,System.Object)">
@@ -1433,7 +1478,7 @@
             </summary>
             <typeparam name="T">The Type to attempt to convert the retrieved value to.</typeparam>
             <param name="propertyInfo">The <see cref="T:System.Reflection.PropertyInfo"/> instance representing the property to retrieve the value of.</param>
-            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <c>null</c> if <paramref name="propertyInfo"/> represents a property that is static.</param>
+            <param name="obj">The <see cref="T:System.Object"/> instance to retrieve the value from. May be <see langword="null"/> if <paramref name="propertyInfo"/> represents a property that is static.</param>
             <returns>The value of the property represented by this <paramref name="propertyInfo"/> typed as <typeparamref name="T"/> if the property exists and its could be cast to <typeparamref name="T"/>, otherwise <c>default</c>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.QueueExtensions">
@@ -1912,6 +1957,14 @@
             <returns>A collection of all types that inherit from the supplied type and contain public constructors.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
         </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.New(System.Type,System.Object[])">
+            <summary>
+            Attempts to instantiate a new object of the supplied <paramref name="type"/> using the given <paramref name="parameters"/>.
+            </summary>
+            <param name="type">A <see cref="T:System.Type"/> instance representing the type to instantiate.</param>
+            <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
+            <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.GetDefault(System.Type)">
             <summary>
             Returns the default value for the supplied type.
@@ -1942,7 +1995,7 @@
             </summary>
             <param name="type">The <see cref="T:System.Type"/> of the instance to be cast.</param>
             <param name="other">The <see cref="T:System.Type"/> to cast to.</param>
-            <returns><c>true</c> if an instance of <paramref name="type"/> can be cast to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if an instance of <paramref name="type"/> can be cast to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.CanCastFrom(System.Type,System.Type)">
             <summary>
@@ -1950,7 +2003,7 @@
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to cast to.</param>
             <param name="other">The <see cref="T:System.Type"/> of the instance to be cast.</param>
-            <returns><c>true</c> if an instance of <paramref name="other"/> can be cast to <paramref name="type"/>, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if an instance of <paramref name="other"/> can be cast to <paramref name="type"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.HasNarrowingConversion(System.Type,System.Type)">
             <summary>
@@ -1958,7 +2011,7 @@
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to check.</param>
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
-            <returns><c>true</c> if there exists a narrowing conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there exists a narrowing conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.HasConsistentWideningConversion(System.Type,System.Type)">
             <summary>
@@ -1966,7 +2019,7 @@
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to check.</param>
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
-            <returns><c>true</c> if there exists a consistent widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there exists a consistent widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.HasLossyWideningConversion(System.Type,System.Type)">
             <summary>
@@ -1974,7 +2027,7 @@
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to check.</param>
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
-            <returns><c>true</c> if there exists a lossy widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there exists a lossy widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.HasWideningConversion(System.Type,System.Type)">
             <summary>
@@ -1982,7 +2035,7 @@
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to check.</param>
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
-            <returns><c>true</c> if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
@@ -2041,16 +2094,21 @@
             Represents a rudimentary static logger that writes to the <see cref="T:System.Console"/>.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Miscellaneous.Logger.FormatString">
+        <member name="P:LaquaiLib.Miscellaneous.Logger.DateTimeFormat">
             <summary>
-            A <see cref="T:System.DateTime"/> format string used to format the timestamp in the console output.
+            A <see cref="T:System.DateTime"/> format string used to format timestamps in the console output.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Miscellaneous.Logger.TimeSpanFormat">
+            <summary>
+            A <see cref="T:System.TimeSpan"/> format string used to format <see cref="T:System.TimeSpan"/>s in the console output.
             </summary>
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.String,System.Func{System.String,System.Boolean})">
             <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
             </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
             <param name="promptlines">The lines of the prompt to display.</param>
             <param name="inputDelimiter">The input delimiter to display.</param>
             <param name="validator">A validator function to test whether the collected input should be accepted.</param>
@@ -2058,9 +2116,9 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.String,System.Func{System.String,System.Boolean})">
             <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
             </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
             <param name="prompt">The prompt to display.</param>
             <param name="inputDelimiter">The input delimiter to display.</param>
             <param name="validator">A validator function to test whether the collected input should be accepted.</param>
@@ -2084,18 +2142,18 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.Func{System.String,System.Boolean})">
             <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
             </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
             <param name="prompt">The prompt to display.</param>
             <param name="validator">A validator function to test whether the collected input should be accepted.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.Func{System.String,System.Boolean})">
             <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
             </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
             <param name="promptlines">The lines of the prompt to display.</param>
             <param name="validator">A validator function to test whether the collected input should be accepted.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
@@ -2109,9 +2167,9 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Func{System.String,System.Boolean})">
             <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with no prompt and the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <c>false</c> for the first time.
+            Reads lines of input from the <see cref="T:System.Console"/> with no prompt and the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
             </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <c>false</c> at some point. If it doesn't, this method will never return.</remarks>
+            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
             <param name="validator">A validator function to test whether the collected input should be accepted.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
         </member>
@@ -2130,7 +2188,7 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.String,System.Func{System.String,System.Boolean})">
             <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
             </summary>
             <param name="promptlines">The lines of the prompt to display.</param>
             <param name="inputDelimiter">The input delimiter to display.</param>
@@ -2139,7 +2197,7 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.String,System.Func{System.String,System.Boolean})">
             <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
             </summary>
             <param name="prompt">The prompt to display.</param>
             <param name="inputDelimiter">The input delimiter to display.</param>
@@ -2164,7 +2222,7 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.Func{System.String,System.Boolean})">
             <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting any non-blank input. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting any non-blank input. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
             </summary>
             <param name="prompt">The prompt to display.</param>
             <param name="validator">A validator function to test whether the collected input should be accepted.</param>
@@ -2172,7 +2230,7 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.Func{System.String,System.Boolean})">
             <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <c>false</c>, the prompt is repeatedly displayed until accepted input is received.
+            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
             </summary>
             <param name="promptlines">The lines of the prompt to display.</param>
             <param name="validator">A validator function to test whether the collected input should be accepted.</param>
@@ -2377,12 +2435,12 @@
         </member>
         <member name="P:LaquaiLib.Util.Condition.True">
             <summary>
-            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <c>true</c>.
+            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <see langword="true"/>.
             </summary>
         </member>
         <member name="P:LaquaiLib.Util.Condition.False">
             <summary>
-            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <c>false</c>.
+            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <see langword="false"/>.
             </summary>
         </member>
         <member name="P:LaquaiLib.Util.Condition.Value">
@@ -2392,7 +2450,7 @@
         </member>
         <member name="M:LaquaiLib.Util.Condition.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.Condition"/>. Its default state is representative of <c>false</c>.
+            Instantiates a new <see cref="T:LaquaiLib.Util.Condition"/>. Its default state is representative of <see langword="false"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.Condition.#ctor(System.Boolean)">
@@ -2495,6 +2553,40 @@
             </summary>
             <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for inequality.</param>
             <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.CultureInfoHelper">
+            <summary>
+            Provides helper methods for <see cref="T:System.Globalization.CultureInfo"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.CultureInfoHelper.SimilarityThreshold">
+            <summary>
+            The similarity threshold for <see cref="T:System.Globalization.CultureInfo"/> names (used for <see cref="M:LaquaiLib.Util.CultureInfoHelper.ResolveData(System.String)"/>). If the similarity of a <see cref="T:System.Globalization.CultureInfo"/> name to the given data is greater than or equal to this value, the <see cref="T:System.Globalization.CultureInfo"/> is considered a match.
+            </summary>
+            <remarks>
+            The default value for this property is <c>0.7</c>.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.CultureInfoHelper.ResolveData(System.String)">
+            <summary>
+            Resolves a <see cref="T:System.Globalization.CultureInfo"/> from data in a <see cref="T:System.String"/>. See the parameter documentation for more information.
+            </summary>
+            <param name="cultureName">
+            The data to analyze and resolve to a <see cref="T:System.Globalization.CultureInfo"/>. The following formats are supported:
+            <list type="bullet">
+            <item/>A standard <see cref="T:System.Globalization.CultureInfo"/> identifier in <c>languagecode2-country/regioncode2</c> format (<see cref="P:System.Globalization.CultureInfo.Name"/>), e.g. <c>en-US</c>.
+            <item/>A standard (generic) <see cref="T:System.Globalization.CultureInfo"/> identifier in <c>languagecode2</c> format (<see cref="P:System.Globalization.CultureInfo.TwoLetterISOLanguageName"/>), e.g. <c>en</c>.
+            <item/>One of the following special values: <see langword="null"/>, <see cref="F:System.String.Empty"/>, whitespace-only, <c>Invariant</c> (which all resolve to <see cref="P:System.Globalization.CultureInfo.InvariantCulture"/>), <c>Current</c> (which resolves to <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/>), <c>UI</c> (which resolves to <see cref="P:System.Globalization.CultureInfo.CurrentUICulture"/>).
+            <item/>One of the generic culture identifiers that are returned by <see cref="P:System.Globalization.CultureInfo.ThreeLetterISOLanguageName"/>.
+            <item/>One of the specific culture identifiers that are returned by <see cref="P:System.Globalization.CultureInfo.DisplayName"/>, <see cref="P:System.Globalization.CultureInfo.EnglishName"/>, <see cref="P:System.Globalization.CultureInfo.NativeName"/> or <see cref="P:System.Globalization.CultureInfo.ThreeLetterWindowsLanguageName"/>, or a partial match of one of these (however, exact matches are always higher priority and, as such, evaluated first).
+            </list>
+            </param>
+            <returns>A <see cref="T:System.Globalization.CultureInfo"/> instance that matches the given data, or <see langword="null"/> if no match was found.</returns>
+            <remarks>
+            <list type="bullet">
+            <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="T:System.Globalization.CultureInfo"/> for <c>en-US</c> and not <c>chr</c>
+            </list>
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Util.Drives">
             <summary>
@@ -2919,7 +3011,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.TestRegion(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
             <summary>
-            Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <c>false</c>, a red rectangle is painted onto the created capture <see cref="T:System.Drawing.Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
+            Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <see langword="false"/>, a red rectangle is painted onto the created capture <see cref="T:System.Drawing.Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
             </summary>
             <remarks>
             <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
@@ -2936,7 +3028,7 @@
             Scales the passed coordinates using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
             </summary>
             <param name="monitor">The monitor to scale the coordinates for.</param>
-            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
             <param name="x">The <c>x</c>-coordinate to scale.</param>
             <param name="y">The <c>y</c>-coordinate to scale.</param>
         </member>
@@ -2945,7 +3037,7 @@
             Scales the passed coordinates using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
             </summary>
             <param name="monitor">The monitor to scale the coordinates for.</param>
-            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
             <param name="x1">The <c>x</c>-coordinate of the top-left point to scale.</param>
             <param name="y1">The <c>y</c>-coordinate of the top-left point to scale.</param>
             <param name="x2">The <c>x</c>-coordinate of the bottom-right point to scale.</param>
@@ -2956,7 +3048,7 @@
             Scales the passed <see cref="T:System.Drawing.Rectangle"/> using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
             </summary>
             <param name="monitor">The monitor to scale the coordinates for.</param>
-            <param name="scaleDown">Whether to scale down (<c>true</c>) or up (<c>false</c>).</param>
+            <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
             <param name="rect">The <see cref="T:System.Drawing.Rectangle"/> to scale.</param>
         </member>
         <member name="E:LaquaiLib.Util.ScreenCapture.Captured">
@@ -2966,7 +3058,7 @@
         </member>
         <member name="P:LaquaiLib.Util.ScreenCapture.Predicate">
             <summary>
-            The predicate that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.
+            The predicate that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.
             </summary>
         </member>
         <member name="F:LaquaiLib.Util.ScreenCapture.Timer">
@@ -3008,7 +3100,7 @@
             <summary>
             Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
             </summary>
-            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Drawing.Rectangle)">
             <summary>
@@ -3021,7 +3113,7 @@
             Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
             </summary>
             <param name="region">The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.</param>
-            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
@@ -3040,7 +3132,7 @@
             <param name="y1">The y-coordinate of the top-left point of the region.</param>
             <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
             <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
-            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32)">
             <summary>
@@ -3053,7 +3145,7 @@
             Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
             </summary>
             <param name="monitor">The number of the monitor to capture.</param>
-            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <c>false</c>, the capture is discarded.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.InitTimer">
             <summary>
@@ -3196,7 +3288,7 @@
             </summary>
             <typeparam name="TException">The <see cref="T:System.Type"/> of the exception to throw.</typeparam>
             <typeparam name="TTest">The <see cref="T:System.Type"/> of the items to test.</typeparam>
-            <param name="constructorParamFactory">A <see cref="T:System.Func`2"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="T:System.Array"/> of nullable <see cref="T:System.Object"/>s (or <c>null</c>) which is passed to the constructor of the exception to throw. If it returns <c>null</c>, the exception type's parameterless constructor is invoked.</param>
+            <param name="constructorParamFactory">A <see cref="T:System.Func`2"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="T:System.Array"/> of nullable <see cref="T:System.Object"/>s (or <see langword="null"/>) which is passed to the constructor of the exception to throw. If it returns <see langword="null"/>, the exception type's parameterless constructor is invoked.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> the items must pass.</param>
             <param name="items">The items to test.</param>
         </member>
@@ -3212,14 +3304,14 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">The <see cref="T:System.Object"/> to test.</param>
             <param name="arg1">The name of the argument to test.</param>
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3228,7 +3320,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3239,7 +3331,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3252,7 +3344,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3267,7 +3359,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3284,7 +3376,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3303,7 +3395,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3324,7 +3416,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3347,7 +3439,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.Object,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
             <summary>
-            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <c>null</c>. This method has overloads for up to 10 arguments.
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
             </summary>
             <param name="obj1">An <see cref="T:System.Object"/> to test.</param>
             <param name="obj2">An <see cref="T:System.Object"/> to test.</param>
@@ -3374,7 +3466,7 @@
             <summary>
             Provides static methods that wrap <c>try-catch</c> blocks.
             </summary>
-            <remarks>All methods in this class explicitly allow <c>null</c> returns.</remarks>
+            <remarks>All methods in this class explicitly allow <see langword="null"/> returns.</remarks>
         </member>
         <member name="M:LaquaiLib.Util.Try.ExecuteOrDefault``1(``0,System.Func{``0})">
             <summary>
@@ -3490,26 +3582,26 @@
             <summary>
             Retrieves the handle of the currently active window.
             </summary>
-            <returns>The handle of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+            <returns>The handle of the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetActiveWindowTitle">
             <summary>
             Retrieves the title of the currently active window.
             </summary>
-            <returns>The title of the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+            <returns>The title of the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetActiveWindowPid">
             <summary>
             Retrieves the PID of the process that owns the currently active window.
             </summary>
-            <returns>The PID of the process that owns the currently active window or <c>null</c> if no window is active or the retrieval failed.</returns>
+            <returns>The PID of the process that owns the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetWindowHandle(System.String)">
             <summary>
             Retrieves the handle of the first window that matches the specified <paramref name="title"/>.
             </summary>
             <param name="title">The title of the window to find.</param>
-            <returns>The HWND of the first window that matches the specified <paramref name="title"/> or <c>null</c> if no window matches the specified <paramref name="title"/>.</returns>
+            <returns>The HWND of the first window that matches the specified <paramref name="title"/> or <see langword="null"/> if no window matches the specified <paramref name="title"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetAllWindowTitles(System.Collections.Generic.ICollection{System.String})">
             <summary>
@@ -3554,8 +3646,8 @@
             <summary>
             Encapsulates a method that is called when a window event defined in <see cref="T:LaquaiLib.Util.Windows"/> occurs.
             </summary>
-            <param name="handle">The handle of the window. If <c>null</c>, the handle could not be obtained.</param>
-            <param name="title">The title of the window. If <c>null</c>, the title could not be obtained.</param>
+            <param name="handle">The handle of the window. If <see langword="null"/>, the handle could not be obtained.</param>
+            <param name="title">The title of the window. If <see langword="null"/>, the title could not be obtained.</param>
         </member>
         <member name="M:LaquaiLib.Util.Windows.Clear">
             <summary>
@@ -4645,13 +4737,13 @@
         </member>
         <member name="M:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
-            Converts a given <paramref name="value"/> to a <see cref="T:System.Boolean"/> value depending on whether is is <c>null</c>.
+            Converts a given <paramref name="value"/> to a <see cref="T:System.Boolean"/> value depending on whether is is <see langword="null"/>.
             </summary>
             <param name="value">The input value.</param>
             <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
             <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
             <param name="culture">Which culture to use when converting / formatting the value.</param>
-            <returns><c>true</c> if the given input <paramref name="value"/> is not null, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
@@ -4661,7 +4753,7 @@
             <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
             <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
             <param name="culture">Which culture to use when converting / formatting the value.</param>
-            <returns><c>true</c> if the given input <paramref name="value"/> is not null, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Wrappers.TempAlloc">
             <summary>
@@ -4761,7 +4853,7 @@
             Resizes the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
             </summary>
             <param name="bytes">The new size of the memory region in bytes.</param>
-            <returns>A value indicating whether the <see cref="P:LaquaiLib.Wrappers.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps has changed. If <c>true</c>, reading from any previous addresses is considered undefined behavior.</returns>
+            <returns>A value indicating whether the <see cref="P:LaquaiLib.Wrappers.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps has changed. If <see langword="true"/>, reading from any previous addresses is considered undefined behavior.</returns>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.As``1">
             <summary>
@@ -4856,17 +4948,17 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given size. It is automatically rented from and returned to <see cref="P:System.Buffers.ArrayPool`1.Shared"/> upon disposal of this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>, unless <c>false</c> is explicitly passed for <paramref name="allowPooledArray"/>.
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given size. It is automatically rented from and returned to <see cref="P:System.Buffers.ArrayPool`1.Shared"/> upon disposal of this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>, unless <see langword="false"/> is explicitly passed for <paramref name="allowPooledArray"/>.
             </summary>
             <param name="capacity">The capacity of the array to create.</param>
-            <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>. If <c>false</c>, a new array will be created instead.</param>
+            <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>. If <see langword="false"/>, a new array will be created instead.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(`0[],System.Buffers.ArrayPool{`0})">
             <summary>
             Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> as a wrapper around the specified array of <typeparamref name="T"/>.
             </summary>
             <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.</param>
-            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> to return the array to when this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> is disposed. May be <c>null</c> to indicate that the passed <paramref name="array"/> is not from any <see cref="T:System.Buffers.ArrayPool`1"/>.</param>
+            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> to return the array to when this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> is disposed. May be <see langword="null"/> to indicate that the passed <paramref name="array"/> is not from any <see cref="T:System.Buffers.ArrayPool`1"/>.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(`0,System.Int32)">
             <summary>
@@ -4942,7 +5034,7 @@
             </summary>
             <param name="tempArray">The <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> that is the destination of the elements copied from this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.</param>
             <param name="index">The zero-based index in array at which copying begins.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="tempArray"/> is <c>null</c>.</exception>
+            <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="tempArray"/> is <see langword="null"/>.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="index"/> is less than zero.</exception>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="tempArray"/> is multi-dimensional, the number of elements in this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> is greater than the available space from <paramref name="index"/> to the end of the destination <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> or the type of the source <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> cannot be cast automatically to the type of the destination <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.</exception>
         </member>
@@ -5015,7 +5107,7 @@
             Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Wrappers.TempFile"/> is disposed.
             </summary>
             <param name="path">The path to the file to wrap with this <see cref="T:LaquaiLib.Wrappers.TempFile"/>.</param>
-            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Wrappers.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <c>null</c> or white space, the existing extension in <paramref name="path"/> is kept.</param>
+            <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Wrappers.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <see langword="null"/> or white space, the existing extension in <paramref name="path"/> is kept.</param>
         </member>
         <member name="P:LaquaiLib.Wrappers.TempFile.Path">
             <summary>
@@ -5038,6 +5130,35 @@
             </summary>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempFile.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.TempObject`1">
+            <summary>
+            Represents a temporary instance of type <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempObject`1.Value">
+            <summary>
+            The instance of <typeparamref name="T"/> wrapped by this <see cref="T:LaquaiLib.Wrappers.TempObject`1"/> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempObject`1.#ctor(System.Object[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempObject`1"/>.
+            </summary>
+            <param name="parameters">The parameters to use to find a constructor for <typeparamref name="T"/>. If <see langword="null"/> or <c>0</c>-length, the parameterless constructor is used.</param>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempObject`1.IsDisposed">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Wrappers.TempObject`1"/> has been disposed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempObject`1.Finalize">
+            <summary>
+            Finalizes this <see cref="T:LaquaiLib.Wrappers.TempObject`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempObject`1.Dispose">
             <inheritdoc/>
         </member>
         <member name="T:System.Runtime.InteropServices.GCHandle`1">
@@ -5100,7 +5221,7 @@
             </summary>
             <param name="left">The first <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
             <param name="right">The second <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
-            <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> are equal, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are equal, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:System.Runtime.InteropServices.GCHandle`1.op_Inequality(System.Runtime.InteropServices.GCHandle{`0},System.Runtime.InteropServices.GCHandle{`0})">
             <summary>
@@ -5108,7 +5229,7 @@
             </summary>
             <param name="left">The first <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
             <param name="right">The second <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> to compare.</param>
-            <returns><c>true</c> if <paramref name="left"/> and <paramref name="right"/> are unequal, otherwise <c>false</c>.</returns>
+            <returns><see langword="true"/> if <paramref name="left"/> and <paramref name="right"/> are unequal, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:System.Runtime.InteropServices.GCHandle`1.op_Explicit(System.Runtime.InteropServices.GCHandle{`0})~System.IntPtr">
             <summary>

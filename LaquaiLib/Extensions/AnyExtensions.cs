@@ -8,12 +8,12 @@ namespace LaquaiLib.Extensions;
 public static class AnyExtensions
 {
     /// <summary>
-    /// Checks whether a number of objects are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>.
+    /// Checks whether a number of objects are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the objects to compare.</typeparam>
     /// <param name="source">The first object to use for the comparison.</param>
     /// <param name="other">The remaining objects to use for the comparison.</param>
-    /// <returns><c>true</c> if all passed objects are equal, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
     public static bool AllEqual<T>(this T source, params T[] other)
     {
         if (source is null || other.Any(o => o is null))
@@ -37,14 +37,14 @@ public static class AnyExtensions
     }
 
     /// <summary>
-    /// Invokes a <paramref name="transform"/> function on a <paramref name="source"/> and any <paramref name="other"/> objects and checks whether the results are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>. In this case, <paramref name="transform"/> is never invoked.
+    /// Invokes a <paramref name="transform"/> function on a <paramref name="source"/> and any <paramref name="other"/> objects and checks whether the results are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>. In this case, <paramref name="transform"/> is never invoked.
     /// </summary>
     /// <typeparam name="T">The Type of the input objects.</typeparam>
     /// <typeparam name="TCompare">The Type of the results <paramref name="transform"/> yields.</typeparam>
     /// <param name="source">The first object to use for the comparison..</param>
     /// <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
     /// <param name="other">The remaining objects to use for the comparison..</param>
-    /// <returns><c>true</c> if all the results produced by <paramref name="transform"/> are all equal, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
     public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, params T[] other)
     {
         ArgumentNullException.ThrowIfNull(other);
@@ -69,11 +69,11 @@ public static class AnyExtensions
     }
 
     /// <summary>
-    /// Checks whether a given input object is <c>null</c>. If not, it is marked to the compiler as non-<c>null</c> for the remainder of the scope.
+    /// Checks whether a given input object is <see langword="null"/>. If not, it is marked to the compiler as non-<see langword="null"/> for the remainder of the scope.
     /// </summary>
     /// <typeparam name="T">The Type of the input object.</typeparam>
     /// <param name="source">The input object.</param>
-    /// <returns><c>true</c> if <paramref name="source"/> is <c>null</c>, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if <paramref name="source"/> is <see langword="null"/>, otherwise <see langword="false"/>.</returns>
     public static bool IsNull<T>([NotNullWhen(false)] this T source)
     {
         return source is null;

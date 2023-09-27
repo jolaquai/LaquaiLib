@@ -26,7 +26,7 @@ public class MemoryOrFileStream : Stream, IDisposable
         {
             using (var computerSystem = new ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem"))
             {
-                foreach (var obj in computerSystem.Get().Cast<ManagementObject>())
+                foreach (var obj in computerSystem.Get())
                 {
                     return Cutoff = Convert.ToInt32(obj["TotalPhysicalMemory"]) / 64;
                 }
@@ -73,7 +73,8 @@ public class MemoryOrFileStream : Stream, IDisposable
     /// <inheritdoc/>
     public override long Length => Stream.Length;
     /// <inheritdoc/>
-    public override long Position {
+    public override long Position
+    {
         get => Stream.Position;
         set => Stream.Position = value;
     }

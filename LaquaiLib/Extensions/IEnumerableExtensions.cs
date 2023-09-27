@@ -117,11 +117,11 @@ public static class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <c>null</c>, all others must also be <c>null</c>.
+    /// Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the objects to compare.</typeparam>
     /// <param name="source">The collection that contains the items to compare. An exception is thrown if the collection is empty.</param>
-    /// <returns><c>true</c> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <see langword="false"/>.</returns>
     public static bool AllEqual<T>(this IEnumerable<T> source)
     {
         if (!source.Any())
