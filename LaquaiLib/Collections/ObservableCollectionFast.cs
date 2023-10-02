@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Classes.Collections;
 
@@ -7,6 +8,7 @@ namespace LaquaiLib.Classes.Collections;
 /// Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
 /// </summary>
 /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
+[CollectionBuilder(typeof(ObservableCollectionFastBuilder), nameof(ObservableCollectionFastBuilder.Create))]
 public class ObservableCollectionFast<T> : ObservableCollection<T>
 {
     #region Fields / Properties
@@ -57,7 +59,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     public ObservableCollectionFast() : base()
     {
     }
-
     /// <summary>
     /// Instantiates a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified collection.
     /// </summary>
@@ -65,7 +66,13 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     public ObservableCollectionFast(IEnumerable<T> collection) : base(collection)
     {
     }
-
+    /// <summary>
+    /// Instantiates a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified span.
+    /// </summary>
+    /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> from which the elements are copied.</param>
+    public ObservableCollectionFast(ReadOnlySpan<T> span) : base(span.ToArray())
+    {
+    }
     /// <summary>
     /// Instantiates a new <see cref="ObservableCollection{T}"/> that contains the specified items and has a capacity equal to the number of items.
     /// </summary>
@@ -450,4 +457,19 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
         }
         PostCollectionChanged?.Invoke();
     }
+}
+
+/// <summary>
+/// Provides a builder for <see cref="ObservableCollectionFast{T}"/>s.
+/// </summary>
+public static class ObservableCollectionFastBuilder
+{
+    /// <summary>
+    /// Builds a <see cref="ObservableCollectionFast{T}"/> from the passed <paramref name="span"/>.
+    /// Used to allow <see cref="ObservableCollectionFast{T}"/> to be created from collection literals.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the span.</typeparam>
+    /// <param name="span">The span to copy the new <see cref="ObservableCollectionFast{T}"/>'s items from.</param>
+    /// <returns>A new <see cref="ObservableCollectionFast{T}"/> with the items from <paramref name="span"/>.</returns>
+    public static ObservableCollectionFast<T> Create<T>(ReadOnlySpan<T> span) => new ObservableCollectionFast<T>(span);
 }

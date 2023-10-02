@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media.Animation;
 using System.Windows.Shell;
 using System.Windows.Threading;
 
@@ -154,32 +155,27 @@ public class TaskbarProgress
     }
 
     /// <summary>
-    /// Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="Dispatcher"/> of your main <see cref="Window"/>, otherwise the animation will not work.
+    /// Animates towards a specified progress <paramref name="target"/> within a specified <paramref name="duration"/>.
     /// </summary>
-    /// <param name="value">The value to animate progress towards.</param>
-    /// <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
-    /// <param name="cancellationToken">A <see cref="CancellationToken"/> that is monitored for cancellation requests.</param>
-    public async Task AnimateToValueAsync(double value, long timeSpan, CancellationToken cancellationToken = default)
+    /// <param name="target">The value to animate progress towards.</param>
+    /// <param name="duration">The amount of time for the animation to take in milliseconds. It may not be possible to obey this (exactly) in all cases.</param>
+    /// <param name="steps">The number of steps to take to reach the target value. This is ignored if greater than <paramref name="duration"/>.</param>
+    /// <returns>A <see cref="Task"/> that completes when the animation has finished.</returns>
+    public async Task AnimateToValueAsync(double target, int duration, int steps)
     {
-        if (timeSpan <= 200)
+        var from = _taskbar!.ProgressValue;
+        var to = double.Clamp(target, 0, 1);
+
+        // Can't use any of the animation classes because the animation just never starts
+        steps = steps > duration ? duration : steps;
+        var diff = (to - from) / steps;
+        var wait = int.Clamp(duration / steps, 1, int.MaxValue);
+
+        for (var i = 0; i < steps; i++)
         {
-            SetValue(value);
-            return;
-        }
-
-        timeSpan -= 200;
-
-        _taskbar!.ProgressState = TaskbarItemProgressState.Normal;
-
-        var diff = value - (double)_taskbar.ProgressValue;
-        var step = diff / 100;
-        var delay = Math.Abs((int)(timeSpan / 100));
-
-        while (diff > 0 ? _taskbar.ProgressValue < value : _taskbar.ProgressValue > value)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            _taskbar.ProgressValue += step;
-            await Task.Delay(delay, cancellationToken);
+            _taskbar.ProgressValue += diff;
+            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.Render);
+            await Task.Delay(wait);
         }
     }
 

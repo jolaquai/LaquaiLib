@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Classes.Collections.LimitedCollections;
 
@@ -6,6 +7,7 @@ namespace LaquaiLib.Classes.Collections.LimitedCollections;
 /// Represents a <see cref="ConcurrentQueue{T}"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
 /// </summary>
 /// <typeparam name="T">The Type of the items in the collection.</typeparam>
+[CollectionBuilder(typeof(LimitedConcurrentQueueBuilder), nameof(LimitedConcurrentQueueBuilder.Create))]
 public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
 {
     private int _capacity = int.MaxValue;
@@ -13,9 +15,11 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
     /// <summary>
     /// The capacity of this <see cref="LimitedConcurrentQueue{T}"/>.
     /// </summary>
-    public int Capacity {
+    public int Capacity
+    {
         get => _capacity;
-        set {
+        set
+        {
             if (value < _capacity)
             {
                 Reduce(value);
@@ -33,13 +37,45 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
     /// </summary>
     /// <param name="collection">The collection to copy the new <see cref="LimitedConcurrentQueue{T}"/>'s items from.</param>
     public LimitedConcurrentQueue(IEnumerable<T> collection) : base(collection) { }
-
+    /// <summary>
+    /// Instantiates a new <see cref="LimitedConcurrentQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
+    /// </summary>
+    /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> to copy the new <see cref="LimitedConcurrentQueue{T}"/>'s items from.</param>
+    public LimitedConcurrentQueue(ReadOnlySpan<T> span) : base(span.ToArray()) { }
     /// <summary>
     /// Instantiates a new empty <see cref="LimitedConcurrentQueue{T}"/> with the given maximum <paramref name="capacity"/>.
     /// </summary>
     /// <param name="capacity">The maximum number of items this <see cref="LimitedConcurrentQueue{T}"/> can hold before discarding the oldest value.</param>
     public LimitedConcurrentQueue(int capacity)
     {
+        Capacity = capacity;
+    }
+    /// <summary>
+    /// Instantiates a new <see cref="LimitedConcurrentQueue{T}"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+    /// </summary>
+    /// <param name="collection">The collection to copy the new <see cref="LimitedConcurrentQueue{T}"/>'s items from.</param>
+    /// <param name="capacity">The maximum number of items this <see cref="LimitedConcurrentQueue{T}"/> can hold before discarding the oldest value.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="collection"/>.</exception>
+    public LimitedConcurrentQueue(IEnumerable<T> collection, int capacity) : base(collection)
+    {
+        if (capacity < collection.Count())
+        {
+            throw new ArgumentException($"The passed initial {nameof(capacity)} may not be smaller than the number of items in the passed {nameof(collection)}.", nameof(capacity));
+        }
+        Capacity = capacity;
+    }
+    /// <summary>
+    /// Instantiates a new <see cref="LimitedConcurrentQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+    /// </summary>
+    /// <param name="span">The span to copy the new <see cref="LimitedConcurrentQueue{T}"/>'s items from.</param>
+    /// <param name="capacity">The maximum number of items this <see cref="LimitedConcurrentQueue{T}"/> can hold before discarding the oldest value.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="span"/>.</exception>
+    public LimitedConcurrentQueue(ReadOnlySpan<T> span, int capacity) : base(span.ToArray())
+    {
+        if (capacity < span.Length)
+        {
+            throw new ArgumentException($"The passed initial {nameof(capacity)} may not be smaller than the number of items in the passed {nameof(span)}.", nameof(capacity));
+        }
         Capacity = capacity;
     }
 
@@ -82,4 +118,19 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
             TryDequeue(out _);
         }
     }
+}
+
+/// <summary>
+/// Provides a builder for <see cref="LimitedConcurrentQueue{T}"/>s.
+/// </summary>
+public static class LimitedConcurrentQueueBuilder
+{
+    /// <summary>
+    /// Builds a <see cref="LimitedConcurrentQueue{T}"/> from the passed <paramref name="span"/>.
+    /// Used to allow <see cref="LimitedConcurrentQueue{T}"/> to be created from collection literals.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the span.</typeparam>
+    /// <param name="span">The span to copy the new <see cref="LimitedConcurrentQueue{T}"/>'s items from.</param>
+    /// <returns>A new <see cref="LimitedConcurrentQueue{T}"/> with the items from <paramref name="span"/>.</returns>
+    public static LimitedConcurrentQueue<T> Create<T>(ReadOnlySpan<T> span) => new LimitedConcurrentQueue<T>(span);
 }

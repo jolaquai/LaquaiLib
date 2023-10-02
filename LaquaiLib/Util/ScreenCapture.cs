@@ -49,16 +49,13 @@ public partial class ScreenCapture
         }
     }
 
-    private static readonly double[] _resolutionScales = MonitorEnum.EnumerateScales();
-
     /// <summary>
     /// The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set.
     /// </summary>
-    public static double[] ResolutionScales => _resolutionScales;
+    public static double[] ResolutionScales { get; } = MonitorEnum.EnumerateScales();
 
     /// <summary>
-    /// <para>Captures a region of the screen.</para>
-    /// <para>Passed coordinates are not corrected using <see cref="ResolutionScales"/>.</para>
+    /// Captures a region of the screen. Passed coordinates are not corrected using <see cref="ResolutionScales"/>.
     /// </summary>
     /// <param name="x1">The x-coordinate of the top-left point of the region.</param>
     /// <param name="y1">The y-coordinate of the top-left point of the region.</param>
@@ -75,8 +72,8 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// <para>Captures a region of the screen.</para>
-    /// <para>Position coordinates of the passed <see cref="Rectangle"/> are not corrected using <see cref="ResolutionScales"/>.</para>
+    /// Captures a region of the screen.
+    /// Position coordinates of the passed <see cref="Rectangle"/> are not corrected using <see cref="ResolutionScales"/>.
     /// </summary>
     /// <param name="region">The region to capture.</param>
     /// <returns>A <see cref="Bitmap"/> object containing the capture created from the given region.</returns>
@@ -96,7 +93,7 @@ public partial class ScreenCapture
     /// Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <see langword="false"/>, a red rectangle is painted onto the created capture <see cref="Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
     /// </summary>
     /// <remarks>
-    /// <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
+    /// The blue center pixel may be off-center if the chosen region has even width and/or height.
     /// </remarks>
     /// <param name="x1">The x-coordinate of the top-left point of the region.</param>
     /// <param name="y1">The y-coordinate of the top-left point of the region.</param>

@@ -47,7 +47,7 @@ public readonly struct Condition
     public static implicit operator Condition(bool value) => value ? True : False;
 
     /// <summary>
-    /// Chains the current <see cref="Condition"/> with another <see cref="Condition"/> using logical AND..
+    /// Chains the current <see cref="Condition"/> with another <see cref="Condition"/> using logical AND.
     /// </summary>
     /// <param name="condition">The <see cref="Condition"/> to chain with.</param>
     /// <returns>A new <see cref="Condition"/> representing the result of the logical AND.</returns>

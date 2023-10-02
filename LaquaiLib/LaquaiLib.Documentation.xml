@@ -60,11 +60,33 @@
             </summary>
             <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
         </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.ReadOnlySpan{`0})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
+            </summary>
+            <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
+        </member>
         <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.Int32)">
             <summary>
             Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the given maximum <paramref name="capacity"/>.
             </summary>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            </summary>
+            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="collection"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.ReadOnlySpan{`0},System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            </summary>
+            <param name="span">The span to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="span"/>.</exception>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1.Enqueue(`0)">
             <summary>
@@ -84,6 +106,20 @@
             Removes items from the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueueBuilder">
+            <summary>
+            Provides a builder for <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>s.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueueBuilder.Create``1(System.ReadOnlySpan{``0})">
+            <summary>
+            Builds a <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> from the passed <paramref name="span"/>.
+            Used to allow <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> to be created from collection literals.
+            </summary>
+            <typeparam name="T">The Type of the items in the span.</typeparam>
+            <param name="span">The span to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
+            <returns>A new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from <paramref name="span"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1">
             <summary>
@@ -107,11 +143,33 @@
             </summary>
             <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
         </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.ReadOnlySpan{`0})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
+            </summary>
+            <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
+        </member>
         <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.Int32)">
             <summary>
             Instantiates a new empty <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the given maximum <paramref name="capacity"/>.
             </summary>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            </summary>
+            <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="collection"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.ReadOnlySpan{`0},System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            </summary>
+            <param name="span">The span to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
+            <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="span"/>.</exception>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1.Enqueue(`0)">
             <summary>
@@ -131,6 +189,20 @@
             Removes items from the <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>, discarding the oldest items until the passed <paramref name="length"/> is reached.
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueueBuilder">
+            <summary>
+            Provides a builder for <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>s.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueueBuilder.Create``1(System.ReadOnlySpan{``0})">
+            <summary>
+            Builds a <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> from the passed <paramref name="span"/>.
+            Used to allow <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> to be created from collection literals.
+            </summary>
+            <typeparam name="T">The Type of the items in the span.</typeparam>
+            <param name="span">The span to copy the new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
+            <returns>A new <see cref="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedQueue`1"/> with the items from <paramref name="span"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1">
             <summary>
@@ -161,6 +233,12 @@
             Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified collection.
             </summary>
             <param name="collection">The collection from which the elements are copied.</param>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.#ctor(System.ReadOnlySpan{`0})">
+            <summary>
+            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified span.
+            </summary>
+            <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> from which the elements are copied.</param>
         </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.#ctor(`0[])">
             <summary>
@@ -420,6 +498,20 @@
         </member>
         <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFastBuilder">
+            <summary>
+            Provides a builder for <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>s.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Classes.Collections.ObservableCollectionFastBuilder.Create``1(System.ReadOnlySpan{``0})">
+            <summary>
+            Builds a <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/> from the passed <paramref name="span"/>.
+            Used to allow <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/> to be created from collection literals.
+            </summary>
+            <typeparam name="T">The Type of the items in the span.</typeparam>
+            <param name="span">The span to copy the new <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/>'s items from.</param>
+            <returns>A new <see cref="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1"/> with the items from <paramref name="span"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Classes.Collections.TwoWayLookup`2">
             <summary>
@@ -2473,7 +2565,7 @@
         </member>
         <member name="M:LaquaiLib.Util.Condition.And(LaquaiLib.Util.Condition)">
             <summary>
-            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with another <see cref="T:LaquaiLib.Util.Condition"/> using logical AND..
+            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with another <see cref="T:LaquaiLib.Util.Condition"/> using logical AND.
             </summary>
             <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to chain with.</param>
             <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical AND.</returns>
@@ -2567,6 +2659,14 @@
             The default value for this property is <c>0.7</c>.
             </remarks>
         </member>
+        <member name="P:LaquaiLib.Util.CultureInfoHelper.Overrides">
+            <summary>
+            A <see cref="T:System.Collections.Generic.Dictionary`2"/> of <see cref="T:System.Globalization.CultureInfo"/> mapping overrides. When a <see cref="T:System.Globalization.CultureInfo"/> is resolved using <see cref="M:LaquaiLib.Util.CultureInfoHelper.ResolveData(System.String)"/>, before any other matching is done, the input to the method is checked against this <see cref="T:System.Collections.Generic.Dictionary`2"/>. If a match is found, the <see cref="T:System.Globalization.CultureInfo"/> from the <see cref="P:System.Collections.Generic.KeyValuePair`2.Value"/> is returned.
+            </summary>
+            <remarks>
+            Contrary to all other matching, this matching is case-sensitive. If an override is added for, for example, <c>"united states"</c> with a value of <c>"en-US"</c>, the inputs <c>"United states"</c>, <c>"united States"</c>, <c>"United States"</c> or <c>"UNITED STATES"</c> will not match the override.
+            </remarks>
+        </member>
         <member name="M:LaquaiLib.Util.CultureInfoHelper.ResolveData(System.String)">
             <summary>
             Resolves a <see cref="T:System.Globalization.CultureInfo"/> from data in a <see cref="T:System.String"/>. See the parameter documentation for more information.
@@ -2584,7 +2684,7 @@
             <returns>A <see cref="T:System.Globalization.CultureInfo"/> instance that matches the given data, or <see langword="null"/> if no match was found.</returns>
             <remarks>
             <list type="bullet">
-            <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="T:System.Globalization.CultureInfo"/> for <c>en-US</c> and not <c>chr</c>
+            <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="T:System.Globalization.CultureInfo"/> for <c>en-US</c> and not <c>chr-US</c>) cannot be taken into account. As such, you may use <see cref="P:LaquaiLib.Util.CultureInfoHelper.Overrides"/> to manually cater to preferences within your application.
             </list>
             </remarks>
         </member>
@@ -2986,8 +3086,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
-            <para>Captures a region of the screen.</para>
-            <para>Passed coordinates are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.</para>
+            Captures a region of the screen. Passed coordinates are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.
             </summary>
             <param name="x1">The x-coordinate of the top-left point of the region.</param>
             <param name="y1">The y-coordinate of the top-left point of the region.</param>
@@ -2997,8 +3096,8 @@
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.Drawing.Rectangle)">
             <summary>
-            <para>Captures a region of the screen.</para>
-            <para>Position coordinates of the passed <see cref="T:System.Drawing.Rectangle"/> are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.</para>
+            Captures a region of the screen.
+            Position coordinates of the passed <see cref="T:System.Drawing.Rectangle"/> are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.
             </summary>
             <param name="region">The region to capture.</param>
             <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the given region.</returns>
@@ -3014,7 +3113,7 @@
             Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <see langword="false"/>, a red rectangle is painted onto the created capture <see cref="T:System.Drawing.Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
             </summary>
             <remarks>
-            <para>The blue center pixel may be off-center if the chosen region has even width and/or height.</para>
+            The blue center pixel may be off-center if the chosen region has even width and/or height.
             </remarks>
             <param name="x1">The x-coordinate of the top-left point of the region.</param>
             <param name="y1">The y-coordinate of the top-left point of the region.</param>
@@ -3263,13 +3362,14 @@
             <param name="value">The amount to decrease the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
             <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int64,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Util.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int32,System.Int32)">
             <summary>
-            Animates towards a specified progress <paramref name="value"/> within a specified <paramref name="timeSpan"/>. Must be called from the UI thread or the <see cref="T:System.Windows.Threading.Dispatcher"/> of your main <see cref="T:System.Windows.Window"/>, otherwise the animation will not work.
+            Animates towards a specified progress <paramref name="target"/> within a specified <paramref name="duration"/>.
             </summary>
-            <param name="value">The value to animate progress towards.</param>
-            <param name="timeSpan">The amount of time for the animation to take in milliseconds. It may not be possible to obey this in all cases.</param>
-            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that is monitored for cancellation requests.</param>
+            <param name="target">The value to animate progress towards.</param>
+            <param name="duration">The amount of time for the animation to take in milliseconds. It may not be possible to obey this (exactly) in all cases.</param>
+            <param name="steps">The number of steps to take to reach the target value. This is ignored if greater than <paramref name="duration"/>.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when the animation has finished.</returns>
         </member>
         <member name="M:LaquaiLib.Util.TaskbarProgress.GetValue">
             <summary>
