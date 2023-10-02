@@ -231,4 +231,35 @@ public static class IEnumerableExtensions
                      .First()
                      .Key;
     }
+
+    /// <summary>
+    /// Samples a specified number of elements from the input sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence to sample.</param>
+    /// <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
+    /// <returns>The sampled elements.</returns>
+    public static IEnumerable<T> Sample<T>(this IEnumerable<T> source, int itemCount = -1)
+    {
+        return source.Shuffle()
+                     .Take(itemCount > 0 ? itemCount : source.Count() / 100);
+    }
+
+    /// <summary>
+    /// Samples a specified number of elements from the input sequence, ensuring that the sampled elements remain in the same order as they were in the input sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence to sample.</param>
+    /// <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
+    /// <returns>The sampled elements.</returns>
+    public static IEnumerable<T> OrderedSample<T>(this IEnumerable<T> source, int itemCount = -1)
+    {
+        var random = new Random();
+        var sourceCount = source.Count();
+        itemCount = itemCount > 0 ? itemCount : sourceCount / 100;
+        var chunkSize = sourceCount / itemCount;
+
+        return source.Chunk(chunkSize)
+                     .Select(chunk => chunk[random.Next(0, chunk.Length)]);
+    }
 }

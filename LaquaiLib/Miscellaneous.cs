@@ -7,12 +7,12 @@ using System.Reflection;
 namespace LaquaiLib;
 
 /// <summary>
-/// Contains miscellaneous and methods.
+/// Contains miscellaneous members.
 /// </summary>
 public static class Miscellaneous
 {
     /// <summary>
-    /// Represents a rudimentary static logger that writes to the <see cref="Console"/>.
+    /// Contains methods that can be used to work a rudimentary static logger that writes to the <see cref="Console"/>.
     /// </summary>
     public static class Logger
     {

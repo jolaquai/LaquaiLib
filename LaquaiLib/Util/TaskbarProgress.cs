@@ -1,9 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Animation;
 using System.Windows.Shell;
 using System.Windows.Threading;
+
+using LaquaiLib.Extensions;
 
 namespace LaquaiLib.Util;
 
@@ -161,22 +164,35 @@ public class TaskbarProgress
     /// <param name="duration">The amount of time for the animation to take in milliseconds. It may not be possible to obey this (exactly) in all cases.</param>
     /// <param name="steps">The number of steps to take to reach the target value. This is ignored if greater than <paramref name="duration"/>.</param>
     /// <returns>A <see cref="Task"/> that completes when the animation has finished.</returns>
-    public async Task AnimateToValueAsync(double target, int duration, int steps)
+    public async Task AnimateToValueAsync(double target, int duration, int steps = 100)
     {
         var from = _taskbar!.ProgressValue;
         var to = double.Clamp(target, 0, 1);
 
         // Can't use any of the animation classes because the animation just never starts
         steps = steps > duration ? duration : steps;
-        var diff = (to - from) / steps;
-        var wait = int.Clamp(duration / steps, 1, int.MaxValue);
+        var wait = TimeSpan.FromMilliseconds(duration) / steps;
 
-        for (var i = 0; i < steps; i++)
+        static double RoundToMultiple(double value, double multiple) => Math.Round(value / multiple) * multiple;
+
+        var values =
+            LaquaiLib.Range(from, to, (to - from) / steps)
+                     .Select(d => RoundToMultiple(d, 0.05))
+                     .ToArray();
+        // Consolidate the values
+        List<KeyValuePair<double, TimeSpan>> sequence = [];
+        foreach (var value in values.Distinct())
         {
-            _taskbar.ProgressValue += diff;
-            Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.Render);
-            await Task.Delay(wait);
+            sequence.Add(new KeyValuePair<double, TimeSpan>(value, wait * values.Count(d => d == value)));
         }
+
+        foreach (var (value, time) in sequence)
+        {
+            _taskbar.ProgressValue = value;
+            await Task.Delay(time);
+        }
+
+        _taskbar!.ProgressValue = to;
     }
 
     /// <summary>

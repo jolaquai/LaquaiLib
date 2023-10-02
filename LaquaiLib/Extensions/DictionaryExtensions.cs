@@ -35,17 +35,15 @@ public static class DictionaryExtensions
         where TKey : notnull
         where TValue : notnull
     {
-        var result = new Dictionary<TValue, IEnumerable<TKey>>();
-
-        foreach (var kv in source)
-        {
-            if (!result.ContainsKey(kv.Value))
+        var grouping = source.GroupBy(kv => kv.Value);
+        var result = grouping.Aggregate(
+            new Dictionary<TValue, IEnumerable<TKey>>(),
+            (acc, grouping) =>
             {
-                result[kv.Value] = new List<TKey>();
+                acc.Add(grouping.Key, grouping.Select(x => x.Key));
+                return acc;
             }
-
-            ((List<TKey>)result[kv.Value]).Add(kv.Key);
-        }
+        );
 
         return result;
     }
@@ -58,5 +56,5 @@ public static class DictionaryExtensions
     /// <param name="source">The <see cref="Dictionary{TKey, TValue}"/> to clone.</param>
     /// <returns>A shallow copy of the <see cref="Dictionary{TKey, TValue}"/>.</returns>
     public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this Dictionary<TKey, TValue> source)
-        where TKey : notnull => source.ToDictionary(kv => kv.Key, kv => kv.Value);
+        where TKey : notnull => source.ToDictionary();
 }
