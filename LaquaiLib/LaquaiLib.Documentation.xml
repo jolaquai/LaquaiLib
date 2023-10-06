@@ -1647,6 +1647,14 @@
             <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
             <returns>The bytes of the rest of the <see cref="T:System.IO.Stream"/>, from its current position to the end.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEnd(System.IO.Stream,System.Span{System.Byte})">
+            <summary>
+            Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> into the specified <paramref name="span"/> and advances the position within it to the end.
+            </summary>
+            <param name="stream"></param>
+            <param name="span"></param>
+            <returns></returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Threading.CancellationToken)">
             <summary>
             Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> asynchronously, optionally monitoring a <paramref name="cancellationToken"/> for cancellation requests, and advances the position within it to the end.
@@ -2187,6 +2195,12 @@
         <member name="M:LaquaiLib.LaquaiLib.Range``1(``0,``0,``0)">
             <summary>
             Compiles an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>s from <paramref name="start"/> to <paramref name="stop"/> with a step width of <paramref name="step"/>.
+            To use this method:
+            <list type="bullet">
+            <item/><typeparamref name="T"/> must be a <see langword="struct"/>.
+            <item/><typeparamref name="T"/> must implement: <c>IAdditionOperators&lt;T, T, T&gt;, IUnaryNegationOperators&lt;T, T&gt;, ISubtractionOperators&lt;T, T, T&gt;, IComparisonOperators&lt;T, T, bool&gt;</c>.
+            <item/>The <see langword="default"/> of <typeparamref name="T"/> should represent a value equivalent to <c>0</c>.
+            </list>
             </summary>
             <param name="start">The start of the range.</param>
             <param name="stop">The end of the range.</param>
@@ -2694,32 +2708,32 @@
             <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for inequality.</param>
             <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
         </member>
-        <member name="T:LaquaiLib.Util.CultureInfoHelper">
+        <member name="T:LaquaiLib.Util.CultureHelper">
             <summary>
-            Provides helper methods for <see cref="T:System.Globalization.CultureInfo"/>.
+            Provides helper methods for <see cref="T:System.Globalization.CultureInfo"/>, <see cref="T:System.TimeZoneInfo"/> and related types.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Util.CultureInfoHelper.SimilarityThreshold">
+        <member name="P:LaquaiLib.Util.CultureHelper.SimilarityThreshold">
             <summary>
-            The similarity threshold for <see cref="T:System.Globalization.CultureInfo"/> names (used for <see cref="M:LaquaiLib.Util.CultureInfoHelper.ResolveData(System.String)"/>). If the similarity of a <see cref="T:System.Globalization.CultureInfo"/> name to the given data is greater than or equal to this value, the <see cref="T:System.Globalization.CultureInfo"/> is considered a match.
+            The similarity threshold for <see cref="T:System.Globalization.CultureInfo"/> names (used for <see cref="M:LaquaiLib.Util.CultureHelper.ResolveToCultureInfo(System.String)"/> and <see cref="M:LaquaiLib.Util.CultureHelper.ResolveToTimeZoneInfo(System.String)"/>). If the similarity of a <see cref="T:System.Globalization.CultureInfo"/> name to the given data is greater than or equal to this value, the <see cref="T:System.Globalization.CultureInfo"/> is considered a match.
             </summary>
             <remarks>
             The default value for this property is <c>0.7</c>.
             </remarks>
         </member>
-        <member name="P:LaquaiLib.Util.CultureInfoHelper.Overrides">
+        <member name="P:LaquaiLib.Util.CultureHelper.CultureInfoOverrides">
             <summary>
-            A <see cref="T:System.Collections.Generic.Dictionary`2"/> of <see cref="T:System.Globalization.CultureInfo"/> mapping overrides. When a <see cref="T:System.Globalization.CultureInfo"/> is resolved using <see cref="M:LaquaiLib.Util.CultureInfoHelper.ResolveData(System.String)"/>, before any other matching is done, the input to the method is checked against this <see cref="T:System.Collections.Generic.Dictionary`2"/>. If a match is found, the <see cref="T:System.Globalization.CultureInfo"/> from the <see cref="P:System.Collections.Generic.KeyValuePair`2.Value"/> is returned.
+            A <see cref="T:System.Collections.Generic.Dictionary`2"/> of <see cref="T:System.Globalization.CultureInfo"/> mapping overrides. When a <see cref="T:System.Globalization.CultureInfo"/> is resolved using <see cref="M:LaquaiLib.Util.CultureHelper.ResolveToCultureInfo(System.String)"/>, before any other matching is done, the input to the method is checked against this <see cref="T:System.Collections.Generic.Dictionary`2"/>. If a match is found, the <see cref="T:System.Globalization.CultureInfo"/> from the <see cref="P:System.Collections.Generic.KeyValuePair`2.Value"/> is returned.
             </summary>
             <remarks>
             Contrary to all other matching, this matching is case-sensitive. If an override is added for, for example, <c>"united states"</c> with a value of <c>"en-US"</c>, the inputs <c>"United states"</c>, <c>"united States"</c>, <c>"United States"</c> or <c>"UNITED STATES"</c> will not match the override.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.Util.CultureInfoHelper.ResolveData(System.String)">
+        <member name="M:LaquaiLib.Util.CultureHelper.ResolveToCultureInfo(System.String)">
             <summary>
             Resolves a <see cref="T:System.Globalization.CultureInfo"/> from data in a <see cref="T:System.String"/>. See the parameter documentation for more information.
             </summary>
-            <param name="cultureName">
+            <param name="data">
             The data to analyze and resolve to a <see cref="T:System.Globalization.CultureInfo"/>. The following formats are supported:
             <list type="bullet">
             <item/>A standard <see cref="T:System.Globalization.CultureInfo"/> identifier in <c>languagecode2-country/regioncode2</c> format (<see cref="P:System.Globalization.CultureInfo.Name"/>), e.g. <c>en-US</c>.
@@ -2732,8 +2746,33 @@
             <returns>A <see cref="T:System.Globalization.CultureInfo"/> instance that matches the given data, or <see langword="null"/> if no match was found.</returns>
             <remarks>
             <list type="bullet">
-            <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="T:System.Globalization.CultureInfo"/> for <c>en-US</c> and not <c>chr-US</c>) cannot be taken into account. As such, you may use <see cref="P:LaquaiLib.Util.CultureInfoHelper.Overrides"/> to manually cater to preferences within your application.
+            <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="T:System.Globalization.CultureInfo"/> for <c>en-US</c> and not <c>chr-US</c>) cannot be taken into account. As such, you may use <see cref="P:LaquaiLib.Util.CultureHelper.CultureInfoOverrides"/> to manually cater to preferences within your application.
             </list>
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.CultureHelper.ResolveToTimeZoneInfo(System.String)">
+            <summary>
+            Resolves a <see cref="T:System.TimeZoneInfo"/> from data in a <see cref="T:System.String"/>. See the parameter documentation for more information.
+            </summary>
+            <param name="data">
+            The data to analyze and resolve to a <see cref="T:System.TimeZoneInfo"/>. The following formats are supported:
+            <list type="bullet">
+            <item/>A <see cref="T:System.TimeZoneInfo"/>'s <see cref="P:System.TimeZoneInfo.Id"/>, <see cref="P:System.TimeZoneInfo.DisplayName"/>, <see cref="P:System.TimeZoneInfo.StandardName"/> or <see cref="P:System.TimeZoneInfo.DaylightName"/>, or a partial match of one of these (however, exact matches are always higher priority and, as such, evaluated first).
+            <item/>One of the following special values: <see langword="null"/>, <see cref="F:System.String.Empty"/>, whitespace-only, <c>Utc</c> (which all resolve to <see cref="P:System.TimeZoneInfo.Utc"/>), <c>Current</c> or <c>Local</c> (which resolve to <see cref="P:System.TimeZoneInfo.Local"/>).
+            </list>
+            </param>
+            <returns>A <see cref="T:System.TimeZoneInfo"/> instance that matches the given data, or <see langword="null"/> if no match was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.CultureHelper.GetSimilarityCleanerRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>[^a-zà-ÿ ]</code><br/>
+            Options:<br/>
+            <code>RegexOptions.IgnoreCase | RegexOptions.Compiled</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match a character in the set [^ A-Za-z\u00C0-\u00D6\u00D8-\u00DE\u00E0-\u00FF\u0130\u0178\u212A\u212B].<br/>
+            </code>
             </remarks>
         </member>
         <member name="T:LaquaiLib.Util.Drives">
@@ -5410,6 +5449,45 @@
             <summary>
             Releases the managed and unmanaged resources used by this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instance.
             </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the GetSimilarityCleanerRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_nonAscii_50A2FEBC473A6B0B5F0FE032BEE21E08D03E2A7E307FCFCA8245C63F441BF02F">
+            <summary>Supports searching for characters in or not in " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿİŸKÅ".</summary>
         </member>
     </members>
 </doc>
