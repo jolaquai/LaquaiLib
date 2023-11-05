@@ -70,7 +70,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
             ArgumentNullException.ThrowIfNull(value);
             if (_isPooledInstance)
             {
-                throw new NotSupportedException($"Pooled array instances may not be directly overwritten.");
+                throw new NotSupportedException("Pooled array instances may not be directly overwritten.");
             }
             _array = value;
         }

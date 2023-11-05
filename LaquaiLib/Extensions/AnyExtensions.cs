@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using LaquaiLib.Util;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -78,5 +80,23 @@ public static class AnyExtensions
     {
         return source is null;
     }
-}
 
+    /// <summary>
+    /// Creates a new <see cref="ObservableValue{T}"/> from the given value by cloning <paramref name="value"/>. As such, <typeparamref name="T"/> must implement <see cref="ICloneable"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the value to create an <see cref="ObservableValue{T}"/> from.</typeparam>
+    /// <param name="value">The value to create an <see cref="ObservableValue{T}"/> from.</param>
+    /// <returns>An <see cref="ObservableValue{T}"/> wrapping a copy of the given value.</returns>
+    public static ObservableValue<T> CreateObservable<T>(this T value) where T : ICloneable => new ObservableValue<T>((T)value.Clone());
+    /// <summary>
+    /// Creates a new <see cref="ObservableValue{T}"/> as a wrapper around the given value.
+    /// </summary>
+    /// <typeparam name="T">The Type of the value to create an <see cref="ObservableValue{T}"/> from.</typeparam>
+    /// <param name="value">The value to create an <see cref="ObservableValue{T}"/> from.</param>
+    /// <returns>An <see cref="ObservableValue{T}"/> wrapping the given value.</returns>
+    /// <remarks>
+    /// If <typeparamref name="T"/> is a <see langword="struct"/>, this method behaves like <see cref="CreateObservable{T}(T)"/>.
+    /// If <typeparamref name="T"/> is a <see langword="class"/>, <paramref name="value"/> is referenced instead.
+    /// </remarks>
+    public static ObservableValue<T> AsObservable<T>(this T value) => new ObservableValue<T>(value);
+}

@@ -4,40 +4,6 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
-        <member name="T:LaquaiLib.Classes.Collections.ConsoleQueue">
-            <summary>
-            Represents a (thread-safe) wrapper around the <see cref="T:System.Console"/>. It is used to postpone blocking console output until after any expensive computations are completed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Classes.Collections.ConsoleQueue.consoleLock">
-            <summary>
-            The <see cref="T:System.Object"/> used to lock when attempting to write to the <see cref="T:System.Console"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Classes.Collections.ConsoleQueue.Queue">
-            <summary>
-            The internal queue of objects to eventually output to the <see cref="T:System.Console"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Classes.Collections.ConsoleQueue.Enqueue(System.Object)">
-            <summary>
-            Adds an object to the end of the internal queue.
-            </summary>
-            <param name="obj">The object to eventually output to the <see cref="T:System.Console"/>.</param>
-            <returns>The index of the position in the internal queue at which <paramref name="obj"/> is.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.Collections.ConsoleQueue.Flush">
-            <summary>
-            Flushes all contents of the internal queue into the <see cref="T:System.Console"/>. This operation blocks until all objects in the internal queue have been output.
-            </summary>
-            <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Classes.Collections.ConsoleQueue.Flush``1(System.Func{System.Object,``0})">
-            <summary>
-            Flushes all contents of the internal queue into the <see cref="T:System.Console"/> after invoking a transform function on them. This operation blocks until all objects in the internal queue have been output.
-            </summary>
-            <returns>The number of objects written to the <see cref="T:System.Console"/>.</returns>
-        </member>
         <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
@@ -896,6 +862,26 @@
             <param name="source">The input object.</param>
             <returns><see langword="true"/> if <paramref name="source"/> is <see langword="null"/>, otherwise <see langword="false"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.CreateObservable``1(``0)">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from the given value by cloning <paramref name="value"/>. As such, <typeparamref name="T"/> must implement <see cref="T:System.ICloneable"/>.
+            </summary>
+            <typeparam name="T">The Type of the value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</typeparam>
+            <param name="value">The value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</param>
+            <returns>An <see cref="T:LaquaiLib.Util.ObservableValue`1"/> wrapping a copy of the given value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.AsObservable``1(``0)">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Util.ObservableValue`1"/> as a wrapper around the given value.
+            </summary>
+            <typeparam name="T">The Type of the value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</typeparam>
+            <param name="value">The value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</param>
+            <returns>An <see cref="T:LaquaiLib.Util.ObservableValue`1"/> wrapping the given value.</returns>
+            <remarks>
+            If <typeparamref name="T"/> is a <see langword="struct"/>, this method behaves like <see cref="M:LaquaiLib.Extensions.AnyExtensions.CreateObservable``1(``0)"/>.
+            If <typeparamref name="T"/> is a <see langword="class"/>, <paramref name="value"/> is referenced instead.
+            </remarks>
+        </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensions">
             <summary>
             Provides Extension Methods for <see cref="T:System.Array"/> Types.
@@ -991,6 +977,19 @@
             </summary>
             <param name="color">The <see cref="T:System.Drawing.Color"/> to format.</param>
             <returns>The HTML color string.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.ComparisonExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:System.Comparison`1"/> <see langword="delegate"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ComparisonExtensions.AsComparer``1(System.Comparison{``0})">
+            <summary>
+            Creates an <see cref="T:System.Collections.Generic.IComparer`1"/> instance from the specified <see cref="T:System.Comparison`1"/> <see langword="delegate"/>.
+            </summary>
+            <typeparam name="T">The Type of the objects to compare.</typeparam>
+            <param name="comparison">The <see cref="T:System.Comparison`1"/> <see langword="delegate"/> to convert.</param>
+            <returns>The <see cref="T:System.Collections.Generic.IComparer`1"/> instance.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ConcurrentQueueExtensions">
             <summary>
@@ -1651,9 +1650,8 @@
             <summary>
             Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> into the specified <paramref name="span"/> and advances the position within it to the end.
             </summary>
-            <param name="stream"></param>
-            <param name="span"></param>
-            <returns></returns>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="span">The <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> to read into.</param>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Threading.CancellationToken)">
             <summary>
@@ -2240,260 +2238,8 @@
         </member>
         <member name="T:LaquaiLib.Miscellaneous">
             <summary>
-            Contains miscellaneous members.
+            Contains miscellaneous functionality.
             </summary>
-        </member>
-        <member name="T:LaquaiLib.Miscellaneous.Logger">
-            <summary>
-            Contains methods that can be used to work a rudimentary static logger that writes to the <see cref="T:System.Console"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Miscellaneous.Logger.DateTimeFormat">
-            <summary>
-            A <see cref="T:System.DateTime"/> format string used to format timestamps in the console output.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Miscellaneous.Logger.TimeSpanFormat">
-            <summary>
-            A <see cref="T:System.TimeSpan"/> format string used to format <see cref="T:System.TimeSpan"/>s in the console output.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.String,System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
-            </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.String,System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
-            </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
-            <param name="prompt">The prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.String)">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/> and a specified <paramref name="inputDelimiter" /> until blank input is received.
-            </summary>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.String)">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/> and a specified <paramref name="inputDelimiter" /> until blank input is received.
-            </summary>
-            <param name="prompt">The prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String,System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
-            </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
-            <param name="prompt">The prompt to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String},System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
-            </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting any non-blank input.
-            </summary>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with no prompt and the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. Input lines are collected until the <paramref name="validator"/> function returns <see langword="false"/> for the first time.
-            </summary>
-            <remarks>The calling code is responsible for defining a <paramref name="validator"/> function that returns <see langword="false"/> at some point. If it doesn't, this method will never return.</remarks>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple(System.String)">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/> and the default input delimiter until blank input is received.
-            </summary>
-            <param name="prompt">The prompt to display.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.ReadMultiple">
-            <summary>
-            Reads lines of input from the <see cref="T:System.Console"/> with no prompt and the default input delimiter until blank input is received.
-            </summary>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of type <see cref="T:System.String"/> containing the lines read from standard input or null if no input was provided.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.String,System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
-            </summary>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.String,System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
-            </summary>
-            <param name="prompt">The prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.String)">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, a specified <paramref name="inputDelimiter" /> and accepting any non-blank input.
-            </summary>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.String)">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, a specified <paramref name="inputDelimiter" /> and accepting any non-blank input.
-            </summary>
-            <param name="prompt">The prompt to display.</param>
-            <param name="inputDelimiter">The input delimiter to display.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String,System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting any non-blank input. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
-            </summary>
-            <param name="prompt">The prompt to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String},System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function. If the <paramref name="validator"/> function returns <see langword="false"/>, the prompt is repeatedly displayed until accepted input is received.
-            </summary>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with any number of specified <paramref name="promptlines"/>, the default input delimiter and accepting any non-blank input.
-            </summary>
-            <param name="promptlines">The lines of the prompt to display.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.Func{System.String,System.Boolean})">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with no prompt, the default input delimiter and accepting input that is accepted by a <paramref name="validator"/> function.
-            </summary>
-            <param name="validator">A validator function to test whether the collected input should be accepted.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read(System.String)">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with a specified <paramref name="prompt"/>, the default input delimiter and accepting any non-blank input.
-            </summary>
-            <param name="prompt">The prompt to display.</param>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.Read">
-            <summary>
-            Reads a line of input from the <see cref="T:System.Console"/> with no prompt, the default input delimiter and accepting any non-blank input.
-            </summary>
-            <returns>A string containing the line read from standard input.</returns>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteCustom(System.String,System.Boolean,System.ConsoleColor,System.Object[])">
-            <summary>
-            Writes a log line with custom attributes to the console.
-            </summary>
-            <param name="tag">The 0, 2 or 4-length tag to apply to the line. 2-length tags are padded with a space on either side. An empty string (0-length tag) means the tag is omitted entirely.</param>
-            <param name="detailed">Whether to show extensive information about how this method was called in addition to the objects to log.</param>
-            <param name="color">The <see cref="T:System.ConsoleColor"/> to apply to the line.</param>
-            <param name="towrite">The object(s) to log.</param>
-            <exception cref="T:System.ArgumentException" />
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteSuccess(System.Object[])">
-            <summary>
-            Writes log lines to the <see cref="T:System.Console"/> as "success" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpSuccess(System.Object[])">
-            <summary>
-            Writes log lines to the console as follow-up information to "success" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteInfo(System.Object[])">
-            <summary>
-            Writes log lines to the <see cref="T:System.Console"/> as general "information" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpInfo(System.Object[])">
-            <summary>
-            Writes log lines to the console as follow-up information to general "information" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteWarn(System.Object[])">
-            <summary>
-            Writes log lines to the <see cref="T:System.Console"/> as "warning" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpWarn(System.Object[])">
-            <summary>
-            Writes log lines to the console as follow-up information to "warning" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteSoftWarn(System.Object[])">
-            <summary>
-            Writes log lines to the <see cref="T:System.Console"/> as "soft warning" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpSoftWarn(System.Object[])">
-            <summary>
-            Writes log lines to the console as follow-up information to "soft warning" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFail(System.Object[])">
-            <summary>
-            Writes log lines to the <see cref="T:System.Console"/> as "failure" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteFollowUpFail(System.Object[])">
-            <summary>
-            Writes log lines to the console as follow-up information to "failure" messages.
-            </summary>
-            <param name="towrite">The objects to write to the <see cref="T:System.Console"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Miscellaneous.Logger.WriteAsTable``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}},System.Boolean)">
-            <summary>
-            Writes an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> to the <see cref="T:System.Console"/> by formatting the contained values to look like a table using the specified <paramref name="inputIsColumns"/>.
-            </summary>
-            <typeparam name="T">The type of the values in the input collections.</typeparam>
-            <param name="input">The collections of values to write.</param>
-            <param name="inputIsColumns">Whether the <paramref name="input"/> consists of columns to be printed instead of rows.</param>
         </member>
         <member name="T:LaquaiLib.RandomMath">
             <summary>
@@ -2527,7 +2273,7 @@
         </member>
         <member name="M:LaquaiLib.RandomMath.RoundToMultiple(System.Double,System.Double)">
             <summary>
-            Rounds a <paramref name="number"/> to the nearest multiple of a given number <paramref name="multiple"/>.
+            Rounds a <paramref name="number"/> to the nearest <paramref name="multiple"/> of a given number.
             </summary>
             <param name="number">The number to round.</param>
             <param name="multiple">The number a multiple of which <paramref name="number"/> is to be rounded to.</param>
@@ -2581,6 +2327,146 @@
             <param name="radius">The radius of the circle.</param>
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.AsyncLogger">
+            <summary>
+            Represents a logger that writes messages to the <see cref="T:System.Console"/> in a separate thread to avoid blocking operations on the main thread.
+            </summary>
+            <remarks>
+            This type is thread-safe.
+            </remarks>
+        </member>
+        <member name="P:LaquaiLib.Util.AsyncLogger.IsBackground">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:LaquaiLib.Util.AsyncLogger"/> should run in the background.
+            If <see langword="true"/>, the <see cref="T:LaquaiLib.Util.AsyncLogger"/> will exit when the parent thread exits.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.AsyncLogger.Initialize">
+            <summary>
+            Initializes the <see cref="T:LaquaiLib.Util.AsyncLogger"/>.
+            It exits when the parent thread (the thread calling this method) exits.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.AsyncLogger.Initialize(System.Threading.Thread)">
+            <summary>
+            Initializes the <see cref="T:LaquaiLib.Util.AsyncLogger"/> usnig the given <paramref name="thread"/> as its parent.
+            </summary>
+            <param name="thread">The thread to use as the parent thread. May be <see langword="null"/> to explicitly leave the <see cref="T:LaquaiLib.Util.AsyncLogger"/> running, even after all other threads have exited.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.AsyncLogger.QueueMessage(System.String,LaquaiLib.Util.MessageType)">
+            <summary>
+            Creates and queues a new <see cref="T:LaquaiLib.Util.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>. Its <see cref="P:LaquaiLib.Util.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
+            </summary>
+            <param name="message">The text of the message.</param>
+            <param name="type">The type of the message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.AsyncLogger.QueueMessage(System.String,System.DateTime,LaquaiLib.Util.MessageType)">
+            <summary>
+            Creates and queues a new <see cref="T:LaquaiLib.Util.LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
+            </summary>
+            <param name="message">The text of the message.</param>
+            <param name="timestamp">The timestamp of the message.</param>
+            <param name="type">The type of the message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.AsyncLogger.QueueMessage(LaquaiLib.Util.LoggerMessage)">
+            <summary>
+            Queues the given <paramref name="message"/>.
+            </summary>
+            <param name="message">The <see cref="T:LaquaiLib.Util.LoggerMessage"/> to queue.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.MessageType">
+            <summary>
+            Identifies the type of a <see cref="T:LaquaiLib.Util.LoggerMessage"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.MessageType.Info">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.LoggerMessage"/> is informational.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.MessageType.Warning">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.LoggerMessage"/> is a warning.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.MessageType.Error">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.LoggerMessage"/> is an error.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.MessageType.Success">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.LoggerMessage"/> is a success message.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.LoggerMessage">
+            <summary>
+            Represents an immutable message that can be queued for logging.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.LoggerMessage.Message">
+            <summary>
+            The text of the message.
+            If explicitly <see langword="null"/>, an empty line is written (i.e. without the default formatting including a timestamp).
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.LoggerMessage.Timestamp">
+            <summary>
+            The timestamp of the message.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.LoggerMessage.Type">
+            <summary>
+            The type of the message.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.#ctor(System.String)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.LoggerMessage"/> with the given <paramref name="message"/>.
+            The default <see cref="T:LaquaiLib.Util.MessageType"/> is <see cref="F:LaquaiLib.Util.MessageType.Info"/> and its <see cref="P:LaquaiLib.Util.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
+            </summary>
+            <param name="message">The text of the message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.#ctor(System.String,LaquaiLib.Util.MessageType)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>.
+            </summary>
+            <param name="message">The text of the message.</param>
+            <param name="type">The type of the message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.#ctor(System.String,System.DateTime,LaquaiLib.Util.MessageType)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.LoggerMessage"/> with the given data.
+            </summary>
+            <param name="message">The text of the message.</param>
+            <param name="timestamp">The timestamp of the message.</param>
+            <param name="type">The type of the message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.Equals(LaquaiLib.Util.LoggerMessage)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.op_Equality(LaquaiLib.Util.LoggerMessage,LaquaiLib.Util.LoggerMessage)">
+            <summary>
+            Indicates whether two <see cref="T:LaquaiLib.Util.LoggerMessage"/>s are equal.
+            </summary>
+            <param name="left">The first <see cref="T:LaquaiLib.Util.LoggerMessage"/>.</param>
+            <param name="right">The second <see cref="T:LaquaiLib.Util.LoggerMessage"/>.</param>
+            <returns><see langword="true"/> if the two <see cref="T:LaquaiLib.Util.LoggerMessage"/>s are equal, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.LoggerMessage.op_Inequality(LaquaiLib.Util.LoggerMessage,LaquaiLib.Util.LoggerMessage)">
+            <summary>
+            Indicates whether two <see cref="T:LaquaiLib.Util.LoggerMessage"/>s are not equal.
+            </summary>
+            <param name="left">The first <see cref="T:LaquaiLib.Util.LoggerMessage"/>.</param>
+            <param name="right">The second <see cref="T:LaquaiLib.Util.LoggerMessage"/>.</param>
+            <returns><see langword="true"/> if the two <see cref="T:LaquaiLib.Util.LoggerMessage"/>s are not equal, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Util.Condition">
             <summary>
@@ -2902,16 +2788,6 @@
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.OnProgressChanged(System.ComponentModel.ProgressChangedEventArgs)">
             <inheritdoc/>
         </member>
-        <member name="T:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerStartedEventHandler">
-            <summary>
-            Represents a method that is invoked when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerCancelledEventHandler">
-            <summary>
-            Represents a method that is invoked when cancellation of the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is requested.
-            </summary>
-        </member>
         <member name="E:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerStarted">
             <summary>
             Occurs when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started.
@@ -2964,34 +2840,36 @@
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.#ctor">
             <summary>
-            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> and sets the value to the default for this type. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event is raised.
+            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> and sets the value to the default for this type. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> event is raised.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.#ctor(`0)">
             <summary>
-            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event is raised.
+            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> event is raised.
             </summary>
             <param name="value">The initial value.</param>
-        </member>
-        <member name="T:LaquaiLib.Util.ObservableValue`1.ValueChangedEventHandler">
-            <summary>
-            Represents a method that is called when the value changes.
-            </summary>
         </member>
         <member name="E:LaquaiLib.Util.ObservableValue`1.ValueChanged">
             <summary>
             Occurs when the value changes.
             </summary>
+            <remarks>
+            Use this if you require access to the previous and the new value immediately upon change.
+            If you need just the notification <i>that</i> the value changed, use <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> instead.
+            </remarks>
         </member>
-        <member name="T:LaquaiLib.Util.ObservableValue`1.ValueReadEventHandler">
-            <summary>
-            Represents a method that is called when the value is read.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Util.ObservableValue`1.ValueRead">
+        <member name="E:LaquaiLib.Util.ObservableValue`1.PropertyRead">
             <summary>
             Occurs when the value is read.
             </summary>
+        </member>
+        <member name="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged">
+            <summary>
+            Occurs when the value changes.
+            </summary>
+            <remarks>
+            If you require access to the previous and the new value immediately upon change, use <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> instead.
+            </remarks>
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.Set(`0)">
             <summary>
@@ -3002,7 +2880,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.SetSilent(`0)">
             <summary>
-            Sets the value without raising a <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event.
+            Sets the value without raising a <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> event.
             </summary>
             <param name="newValue">The new value to set.</param>
             <returns>The new value.</returns>
@@ -3022,9 +2900,22 @@
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.QuerySilent">
             <summary>
-            Queries the value without raising a <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueRead"/> event.
+            Queries the value without raising a <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyRead"/> event.
             </summary>
             <returns>The current value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.RaiseValueRead(`0)">
+            <summary>
+            Raises the <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyRead"/> event.
+            </summary>
+            <param name="value">The value that was read.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ObservableValue`1.RaisePropertyChanged(`0,`0)">
+            <summary>
+            Raises the <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> and <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> events.
+            </summary>
+            <param name="oldValue">The value before the change.</param>
+            <param name="newValue">The value after the change.</param>
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.CompareTo(LaquaiLib.Util.ObservableValue{`0})">
             <inheritdoc/>
@@ -3038,7 +2929,7 @@
         <member name="M:LaquaiLib.Util.ObservableValue`1.Equals(`0)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Util.ObservableValue`1.Clone">
+        <member name="M:LaquaiLib.Util.ObservableValue`1.Copy(System.Boolean)">
             <summary>
             Creates a copy of this <see cref="T:LaquaiLib.Util.ObservableValue`1"/> with the same initial value as this one's current value.
             </summary>
@@ -3082,7 +2973,7 @@
         </member>
         <member name="T:LaquaiLib.Util.ValueReadEventArgs`1">
             <summary>
-            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueRead"/> event.
+            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyRead"/> event.
             </summary>
             <typeparam name="T">The type of the value.</typeparam>
         </member>
@@ -4941,6 +4832,101 @@
             <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
             <param name="culture">Which culture to use when converting / formatting the value.</param>
             <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.CollectionHashCode">
+            <summary>
+            Simplifies the creation of a hash code from a collection of objects.
+            With reference to the same objects, this class will always return exactly the same result as creating a <see cref="T:System.HashCode"/> and adding objects to it one by one.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Create(System.Object[])">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> and adds the given objects to the internal <see cref="T:System.HashCode"/>.
+            </summary>
+            <param name="parameters">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
+            <returns>The created <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.#ctor(System.Object[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> and adds the given objects to the internal <see cref="T:System.HashCode"/>.
+            </summary>
+            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.#ctor(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> and adds the given objects to the internal <see cref="T:System.HashCode"/>.
+            </summary>
+            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Add(System.Object)">
+            <summary>
+            Adds a single object to the internal <see cref="T:System.HashCode"/>.
+            </summary>
+            <param name="obj">The object to add to the internal <see cref="T:System.HashCode"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Object[])">
+            <summary>
+            Adds one or more objects to the internal <see cref="T:System.HashCode"/>.
+            </summary>
+            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Adds objects from a sequence to the internal <see cref="T:System.HashCode"/>.
+            </summary>
+            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.ToHashCode">
+            <summary>
+            Calculates the final hash code of this instance after consecutive <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.Add(System.Object)"/>, <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Collections.Generic.IEnumerable{System.Object})"/> or <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Collections.Generic.IEnumerable{System.Object})"/> calls.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Equals(System.Object)">
+            <summary>
+            Indicates whether this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance is equal to another <see cref="T:System.Object"/>.
+            </summary>
+            <param name="obj">The other <see cref="T:System.Object"/> instance.</param>
+            <returns><see langword="true"/> if this instance is equal to <paramref name="obj"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.GetHashCode">
+            <summary>
+            Computes the hash code of this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance. Since it represents its contained objects, it will always return the same result as <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.ToHashCode"/>.
+            </summary>
+            <returns>The result of <see cref="M:System.HashCode.ToHashCode"/> of the internal <see cref="T:System.HashCode"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.op_Equality(LaquaiLib.Wrappers.CollectionHashCode,LaquaiLib.Wrappers.CollectionHashCode)">
+            <summary>
+            Indicates whether two <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instances are equal.
+            </summary>
+            <param name="left">The first <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
+            <param name="right">The second <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
+            <returns><see langword="true"/> if <paramref name="left"/> is equal to <paramref name="right"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.op_Inequality(LaquaiLib.Wrappers.CollectionHashCode,LaquaiLib.Wrappers.CollectionHashCode)">
+            <summary>
+            Indicates whether two <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instances are not equal.
+            </summary>
+            <param name="left">The first <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
+            <param name="right">The second <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
+            <returns><see langword="true"/> if <paramref name="left"/> is not equal to <paramref name="right"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Equals(LaquaiLib.Wrappers.CollectionHashCode)">
+            <summary>
+            Indicates whether this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance is equal to another <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.
+            </summary>
+            <param name="other">The other <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
+            <returns><see langword="true"/> if this instance is equal to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Equals(System.Int32)">
+            <summary>
+            Indicates whether the hash code of this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance is equal to another hash code.
+            </summary>
+            <param name="hashCode">The other hash code.</param>
+            <returns><see langword="true"/> if this instance is equal to <paramref name="hashCode"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Wrappers.TempAlloc">
             <summary>

@@ -23,7 +23,7 @@ public partial class BoolInverterConverter : IValueConverter
         {
             return !b;
         }
-        throw new ArgumentException($"Input value was expected to be a '{typeof(bool).FullName}' value, received '{value.GetType().FullName}' instead.", nameof(value));
+        throw new ArgumentException($"Input value was expected to be a '{typeof(bool).FullName}' value, received '{value?.GetType().FullName ?? "null"}' instead.", nameof(value));
     }
 
     /// <summary>

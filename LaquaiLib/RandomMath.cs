@@ -7,7 +7,7 @@ namespace LaquaiLib;
 /// <summary>
 /// Contains methods for various mathematical operations.
 /// </summary>
-public static partial class RandomMath
+public static class RandomMath
 {
     /// <summary>
     /// Calculates the sum of a series of output values of a function.
@@ -54,12 +54,12 @@ public static partial class RandomMath
     }
 
     /// <summary>
-    /// Rounds a <paramref name="number"/> to the nearest multiple of a given number <paramref name="multiple"/>.
+    /// Rounds a <paramref name="number"/> to the nearest <paramref name="multiple"/> of a given number.
     /// </summary>
     /// <param name="number">The number to round.</param>
     /// <param name="multiple">The number a multiple of which <paramref name="number"/> is to be rounded to.</param>
     /// <returns><paramref name="number"/> rounded to a multiple of <paramref name="multiple"/>.</returns>
-    public static double RoundToMultiple(double number, double multiple = 1) => Math.Round(number / multiple) * multiple;
+    public static double RoundToMultiple(double number, double multiple = 1) => Math.Round(number * multiple) / multiple;
 
     /// <summary>
     /// Smooths two functions over a given interval using a custom smoothing function.

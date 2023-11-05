@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Util;
 
@@ -25,6 +26,10 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         {
             DoWork += doWork;
         }
+        else if (Unsafe.As<DoWorkEventHandler>(work) is DoWorkEventHandler _doWork)
+        {
+            DoWork += _doWork;
+        }
         else
         {
             DoWork += (sender, e) => work.DynamicInvoke(null);
@@ -46,11 +51,16 @@ public class ExtendedBackgroundWorker : BackgroundWorker
     /// <param name="work">The <see cref="Delegate"/>s that encapsulate methods that are executed when the <see cref="ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
     public ExtendedBackgroundWorker(params Delegate[] work) : this()
     {
+        ArgumentNullException.ThrowIfNull(work);
         foreach (var w in work)
         {
             if (w is DoWorkEventHandler doWork)
             {
                 DoWork += doWork;
+            }
+            else if (Unsafe.As<DoWorkEventHandler>(work) is DoWorkEventHandler _doWork)
+            {
+                DoWork += _doWork;
             }
             else
             {
@@ -79,47 +89,38 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         }
     }
 
-    private int progress;
     /// <summary>
     /// The last reported progress of the <see cref="ExtendedBackgroundWorker"/>.
     /// </summary>
-    public int Progress => progress;
+    public int Progress { get; private set; }
 
     /// <inheritdoc/>
     protected override void OnProgressChanged(ProgressChangedEventArgs e)
     {
-        progress = e.ProgressPercentage;
+        Progress = e.ProgressPercentage;
         base.OnProgressChanged(e);
     }
 
     /// <summary>
-    /// Represents a method that is invoked when the <see cref="ExtendedBackgroundWorker"/> is started.
-    /// </summary>
-    public delegate void WorkerStartedEventHandler(object sender, EventArgs e);
-    /// <summary>
-    /// Represents a method that is invoked when cancellation of the <see cref="ExtendedBackgroundWorker"/> is requested.
-    /// </summary>
-    public delegate void WorkerCancelledEventHandler(object sender, EventArgs e);
-    /// <summary>
     /// Occurs when the <see cref="ExtendedBackgroundWorker"/> is started.
     /// </summary>
-    public event WorkerStartedEventHandler WorkerStarted;
+    public event EventHandler WorkerStarted;
     /// <summary>
     /// Occurs when cancellation of the <see cref="ExtendedBackgroundWorker"/> is requested.
     /// </summary>
-    public event WorkerCancelledEventHandler WorkerCancelled;
+    public event EventHandler WorkerCancelled;
 
     /// <inheritdoc/>
     protected override void OnDoWork(DoWorkEventArgs e)
     {
-        WorkerStarted?.Invoke(this, new EventArgs());
+        WorkerStarted?.Invoke(this, EventArgs.Empty);
         base.OnDoWork(e);
     }
 
     /// <inheritdoc cref="BackgroundWorker.CancelAsync"/>
     public new void CancelAsync()
     {
-        WorkerCancelled?.Invoke(this, new EventArgs());
+        WorkerCancelled?.Invoke(this, EventArgs.Empty);
         base.CancelAsync();
     }
 }

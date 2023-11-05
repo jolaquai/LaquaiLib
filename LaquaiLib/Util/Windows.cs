@@ -10,7 +10,7 @@ namespace LaquaiLib.Util;
 /// <summary>
 /// Provides methods and events for working with windows.
 /// </summary>
-public static class Windows
+public static partial class Windows
 {
     private static readonly Timer _timer = new Timer(ConditionalRaiseEvents, null, Timeout.Infinite, 10);
     private static List<string> previousWindowList = new List<string>();
@@ -28,21 +28,21 @@ public static class Windows
         GetAllWindowTitles(previousWindowList);
     }
 
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll")]
     [return: MaybeNull]
-    private static extern nint GetForegroundWindow();
-    [DllImport("user32.dll")]
+    private static partial nint GetForegroundWindow();
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     [return: MaybeNull]
     private static extern int GetWindowText(nint hWnd, StringBuilder text, int count);
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll")]
     [return: MaybeNull]
-    private static extern int GetWindowThreadProcessId(nint hWnd, out int lpdwProcessId);
+    private static partial int GetWindowThreadProcessId(nint hWnd, out int lpdwProcessId);
     [DllImport("user32.dll")]
     [return: MaybeNull]
     private static extern bool EnumWindows(EnumWindowsProc enumProc, nint lParam);
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16)]
     [return: MaybeNull]
-    private static extern nint FindWindowA(string lpClassName, string lpWindowName);
+    private static partial nint FindWindowA(string lpClassName, string lpWindowName);
 
     /// <summary>
     /// Encapsulates a method that is called for each top-level window that is enumerated using <see cref="EnumWindows"/>.
@@ -67,11 +67,7 @@ public static class Windows
     [return: MaybeNull]
     public static nint? GetActiveWindowHandle()
     {
-        if (GetForegroundWindow() is nint handle)
-        {
-            return handle;
-        }
-        return null;
+        return GetForegroundWindow() is nint handle ? handle : null;
     }
     /// <summary>
     /// Retrieves the title of the currently active window.
@@ -80,11 +76,7 @@ public static class Windows
     [return: MaybeNull]
     public static string? GetActiveWindowTitle()
     {
-        if (GetForegroundWindow() is nint handle)
-        {
-            return GetWindowText(handle);
-        }
-        return null;
+        return GetForegroundWindow() is nint handle ? GetWindowText(handle) : null;
     }
     /// <summary>
     /// Retrieves the PID of the process that owns the currently active window.
@@ -93,11 +85,7 @@ public static class Windows
     [return: MaybeNull]
     public static int? GetActiveWindowPid()
     {
-        if (GetForegroundWindow() is nint handle)
-        {
-            return GetWindowThreadProcessId(handle, out var pid) > 0 ? pid : null;
-        }
-        return null;
+        return GetForegroundWindow() is nint handle ? GetWindowThreadProcessId(handle, out var pid) > 0 ? pid : null : (int?)null;
     }
     /// <summary>
     /// Retrieves the handle of the first window that matches the specified <paramref name="title"/>.
