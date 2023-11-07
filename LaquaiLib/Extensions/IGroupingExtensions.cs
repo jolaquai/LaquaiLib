@@ -6,7 +6,7 @@
 public static class IGroupingExtensions
 {
     /// <summary>
-    /// Constructs a <see cref="Dictionary{TKey, TValue}"/> from an <see cref="IEnumerable{T}"/> of <see cref="IGrouping{TKey, TElement}"/>. The keys of the dictionary are the <see cref="IGrouping{TKey, TElement}.Key"/>s of the <see cref="IGrouping{TKey, TElement}"/>s, and the values are the values of the <see cref="IGrouping{TKey, TElement}"/>s as <see cref="List{T}"/>s.
+    /// Constructs a <see cref="Dictionary{TKey, TValue}"/> from an <see cref="IEnumerable{T}"/> of <see cref="IGrouping{TKey, TElement}"/>. The keys of the dictionary are the <see cref="IGrouping{TKey, TElement}.Key"/>s of the <see cref="IGrouping{TKey, TElement}"/>s, and the values are the values of the <see cref="IGrouping{TKey, TElement}"/>s as <see cref="List{T}"/>s to allow for adding more values.
     /// </summary>
     /// <typeparam name="TKey">The Type of the keys of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
     /// <typeparam name="TElement">The Type of the values of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>

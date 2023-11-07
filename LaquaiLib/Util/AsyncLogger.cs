@@ -15,8 +15,9 @@ public static class AsyncLogger
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="AsyncLogger"/> should run in the background.
     /// If <see langword="true"/>, the <see cref="AsyncLogger"/> will exit when the parent thread exits.
+    /// By default, this is <see langword="true"/>.
     /// </summary>
-    public static bool IsBackground { get; set; }
+    public static bool IsBackground { get; set; } = true;
 
     private static bool initialized;
 
@@ -61,6 +62,8 @@ public static class AsyncLogger
                 };
                 Console.WriteLine($"[{msg.Timestamp:s}] {msg.Message}");
                 Console.ResetColor();
+
+                continue;
             }
             if (IsBackground && parent?.ThreadState.HasFlag(ThreadState.Stopped) == true)
             {

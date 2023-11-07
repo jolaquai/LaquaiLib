@@ -1385,6 +1385,16 @@
             <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
             <returns>The sampled elements.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SequenceEquivalent``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Determines if two sequences are equivalent, meaning they contain the same elements, regardless of order.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence to reference.</param>
+            <param name="other">The sequence to compare to.</param>
+            <param name="comparer">An instance of an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>-implementing Type that is used to compare the elements in the sequences. If not specified, the default comparer for <typeparamref name="T"/> is used.</param>
+            <returns><see langword="true"/> if the sequences are equivalent, otherwise <see langword="false"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
@@ -1425,7 +1435,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IGroupingExtensions.ToListDictionary``2(System.Collections.Generic.IEnumerable{System.Linq.IGrouping{``0,``1}})">
             <summary>
-            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s as <see cref="T:System.Collections.Generic.List`1"/>s.
+            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s as <see cref="T:System.Collections.Generic.List`1"/>s to allow for adding more values.
             </summary>
             <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
             <typeparam name="TElement">The Type of the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
@@ -2340,6 +2350,7 @@
             <summary>
             Gets or sets a value indicating whether the <see cref="T:LaquaiLib.Util.AsyncLogger"/> should run in the background.
             If <see langword="true"/>, the <see cref="T:LaquaiLib.Util.AsyncLogger"/> will exit when the parent thread exits.
+            By default, this is <see langword="true"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.AsyncLogger.Initialize">
@@ -4781,6 +4792,32 @@
         <member name="M:LaquaiLib.WasmServices.FileSystemProxy.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)">
             <inheritdoc cref="M:System.IO.Path.TryJoin(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char},System.Span{System.Char},System.Int32@)" />
         </member>
+        <member name="T:LaquaiLib.WPF.AsyncGetterWindow">
+            <summary>
+            Serves as a template for a window that may be used to get data from the user.
+            </summary>
+            <summary>
+            AsyncGetterWindow
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WPF.AsyncGetterWindow.GetValue``1(System.Object)">
+            <summary>
+            Transitions the window into a state where it is ready to respond to user actions and return a value.
+            Calling code should call this method until it returns a non-null value OR doing so raises a <see cref="T:System.Threading.Tasks.TaskCanceledException"/> (which happens when the user has closed the window without it being marked as ready to submit a value).
+            </summary>
+            <typeparam name="T">The type of the value to be returned.</typeparam>
+            <param name="state">Optional parameter(s) to be used by the window.</param>
+        </member>
+        <member name="M:LaquaiLib.WPF.AsyncGetterWindow.Button_Click">
+            <summary>
+            Template: Marks the window as ready to return a value, which is then returned by <see cref="M:LaquaiLib.WPF.AsyncGetterWindow.GetValue``1(System.Object)"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.WPF.AsyncGetterWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:LaquaiLib.WPF.ValueConverters.BoolInverterConverter">
             <summary>
             Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that inverts a <see cref="T:System.Boolean"/> value.ss
@@ -4808,22 +4845,23 @@
             <returns>The inverse of the input <paramref name="value"/>.</returns>
             <exception cref="T:System.ArgumentException">Thrown if the input <paramref name="value"/> is not a <see cref="T:System.Boolean"/>.</exception>
         </member>
-        <member name="T:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter">
+        <member name="T:LaquaiLib.WPF.ValueConverters.NullToBoolConverter">
             <summary>
-            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that returns a <see cref="T:System.Boolean"/> value depending on whether the given input is null.
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that returns a <see cref="T:System.Boolean"/> value depending on whether the given input is null. Passing <see langword="true"/> as the parameter inverts the result of the conversion.
             </summary>
         </member>
-        <member name="M:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+        <member name="M:LaquaiLib.WPF.ValueConverters.NullToBoolConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
-            Converts a given <paramref name="value"/> to a <see cref="T:System.Boolean"/> value depending on whether is is <see langword="null"/>.
+            Converts a given <paramref name="value"/> to a <see cref="T:System.Boolean"/>.
+            If <paramref name="parameter"/> is <see langword="true"/> or the string "true", the result of the conversion is precisely <c>value is not <see langword="null"/></c>, otherwise it is precisely <c>value is <see langword="null"/></c>.
             </summary>
             <param name="value">The input value.</param>
             <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
-            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="parameter">An additional parameter that, when equal to <see langword="true"/>, inverts the result of the conversion.</param>
             <param name="culture">Which culture to use when converting / formatting the value.</param>
             <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.WPF.ValueConverters.NotNullToBoolConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+        <member name="M:LaquaiLib.WPF.ValueConverters.NullToBoolConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
             [Unsupported] Converts a previously converted <paramref name="value"/> back to its original value. This method unconditionally throws a <see cref="T:System.NotSupportedException"/>.
             </summary>

@@ -1,4 +1,8 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using System.Collections.Immutable;
+
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IEnumerable{T}"/> Type.
@@ -221,15 +225,17 @@ public static class IEnumerableExtensions
     public static T Mode<T>(this IEnumerable<T> source)
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
-        if (!source.Any())
+
+        var enumerated = source as T[] ?? source.ToArray();
+        if (enumerated.Length == 0)
         {
             throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source));
         }
 
-        return source.Select(item => new KeyValuePair<T, int>(item, source.Count(i => i.Equals(item))))
-                     .OrderByDescending(kvp => kvp.Value)
-                     .First()
-                     .Key;
+        return enumerated.Select(item => new KeyValuePair<T, int>(item, source.Count(i => i.Equals(item))))
+                         .OrderByDescending(kvp => kvp.Value)
+                         .First()
+                         .Key;
     }
 
     /// <summary>
@@ -261,5 +267,36 @@ public static class IEnumerableExtensions
 
         return source.Chunk(chunkSize)
                      .Select(chunk => chunk[random.Next(0, chunk.Length)]);
+    }
+
+    /// <summary>
+    /// Determines if two sequences are equivalent, meaning they contain the same elements, regardless of order.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence to reference.</param>
+    /// <param name="other">The sequence to compare to.</param>
+    /// <param name="comparer">An instance of an <see cref="IEqualityComparer{T}"/>-implementing Type that is used to compare the elements in the sequences. If not specified, the default comparer for <typeparamref name="T"/> is used.</param>
+    /// <returns><see langword="true"/> if the sequences are equivalent, otherwise <see langword="false"/>.</returns>
+    public static bool SequenceEquivalent<T>(this IEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer = null)
+    {
+        comparer ??= EqualityComparer<T>.Default;
+
+        if (other is null && source is null)
+        {
+            return true;
+        }
+        if (other is null || source is null)
+        {
+            return false;
+        }
+
+        var sourceEnumerated = source as T[] ?? source.ToArray();
+        var otherEnumerated = other as T[] ?? other.ToArray();
+        if (sourceEnumerated.Length != otherEnumerated.Length)
+        {
+            return false;
+        }
+
+        return Array.TrueForAll(sourceEnumerated, item => otherEnumerated.Contains(item, comparer));
     }
 }
