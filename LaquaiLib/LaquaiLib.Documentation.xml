@@ -891,9 +891,55 @@
             <summary>
             Uses the default order to transform the <see cref="T:System.Array"/> of <typeparamref name="T"/> to an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>. This allows using Linq methods on multi-dimensional <see cref="T:System.Array"/>s.
             </summary>
-            <typeparam name="T">The type of the items in the array.</typeparam>
+            <typeparam name="T">The Type of the items in the array.</typeparam>
             <param name="source">The <see cref="T:System.Array"/> to transform.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that contains the transformed elements from the input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayAny``1(``0[],System.Predicate{``0})">
+            <summary>
+            Determines if any element of the <see cref="T:System.Array"/> matches the given <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="T">They Type of the items in the array.</typeparam>
+            <param name="source">The <see cref="T:System.Array"/> to check.</param>
+            <param name="predicate">A <see cref="T:System.Predicate`1"/> that checks each element for a condition.</param>
+            <returns><see langword="true"/> if any element matches the given <paramref name="predicate"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayContains``1(``0[],``0)">
+            <summary>
+            Determines if any element of the <see cref="T:System.Array"/> matches the given <paramref name="item"/>.
+            </summary>
+            <typeparam name="T">They Type of the items in the array.</typeparam>
+            <param name="source">The <see cref="T:System.Array"/> to check.</param>
+            <param name="item">The item to search for.</param>
+            <returns><see langword="true"/> if any element matches the given <paramref name="item"/>, otherwise <see langword="false"/>.</returns>"
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayAll``1(``0[],System.Predicate{``0})">
+            <summary>
+            Determines if all elements of the <see cref="T:System.Array"/> match the given <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the array.</typeparam>
+            <param name="source">The <see cref="T:System.Array"/> to check.</param>
+            <param name="predicate">A <see cref="T:System.Predicate`1"/> that checks each element for a condition.</param>
+            <returns><see langword="true"/> if all elements match the given <paramref name="predicate"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayWhere``1(``0[],System.Predicate{``0})">
+            <summary>
+            Filters the elements of the <see cref="T:System.Array"/> based on a <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the array.</typeparam>
+            <param name="source">The <see cref="T:System.Array"/> to filter.</param>
+            <param name="predicate">A <see cref="T:System.Predicate`1"/> that checks each element for a condition.</param>
+            <returns>A new <see cref="T:System.Array"/> of <typeparamref name="T"/> that contains all elements of the input sequence that satisfy the condition.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArraySelect``2(``0[],System.Func{``0,``1})">
+            <summary>
+            Projects each element of the <see cref="T:System.Array"/> into a new form.
+            </summary>
+            <typeparam name="TSource">The Type of the items in the array.</typeparam>
+            <typeparam name="TResult">The Type of the value returned by <paramref name="selector"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Array"/> to transform.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that transforms each element from <typeparamref name="TSource"/> to <typeparamref name="TResult"/>.</param>
+            <returns>A new <see cref="T:System.Array"/> of <typeparamref name="TResult"/> that contains the transformed elements from the input sequence.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.AssemblyExtensions">
             <summary>
@@ -2162,6 +2208,16 @@
             <param name="type">The <see cref="T:System.Type"/> to check.</param>
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
             <returns><see langword="true"/> if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.Reflect(System.Type,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Reflects the entirety of this <see cref="T:System.Type"/> and generates .NET 8.0 code that can be used to replicate it.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to reflect.</param>
+            <param name="namespace">The namespace to place the generated type(s) into. If <see langword="null"/> or empty, the namespace of the <paramref name="type"/> is used. If that also resolves to <see langword="null"/> or empty, the code is generated without a namespace declaration.</param>
+            <param name="inherited">Whether to generate code for all members <paramref name="type"/> inherits from its base types.</param>
+            <param name="deep">Whether to generate code for all <see cref="T:System.Type"/>s that are referenced by this <paramref name="type"/> in any way.</param>
+            <returns>A <see cref="T:System.String"/> containing the generated code.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>

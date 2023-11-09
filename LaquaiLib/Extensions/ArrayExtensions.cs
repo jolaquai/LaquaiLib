@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace LaquaiLib.Extensions;
+﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides Extension Methods for <see cref="Array"/> Types.
@@ -26,6 +24,14 @@ public static class ArrayExtensions
     /// <param name="predicate">A <see cref="Predicate{T}"/> that checks each element for a condition.</param>
     /// <returns><see langword="true"/> if any element matches the given <paramref name="predicate"/>, otherwise <see langword="false"/>.</returns>
     public static bool ArrayAny<T>(this T[] source, Predicate<T> predicate) => Array.Exists(source, x => predicate(x));
+    /// <summary>
+    /// Determines if any element of the <see cref="Array"/> matches the given <paramref name="item"/>.
+    /// </summary>
+    /// <typeparam name="T">They Type of the items in the array.</typeparam>
+    /// <param name="source">The <see cref="Array"/> to check.</param>
+    /// <param name="item">The item to search for.</param>
+    /// <returns><see langword="true"/> if any element matches the given <paramref name="item"/>, otherwise <see langword="false"/>.</returns>"
+    public static bool ArrayContains<T>(this T[] source, T item) => Array.Exists(source, x => x.Equals(item));
     /// <summary>
     /// Determines if all elements of the <see cref="Array"/> match the given <paramref name="predicate"/>.
     /// </summary>

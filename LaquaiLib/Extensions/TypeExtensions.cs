@@ -1,6 +1,9 @@
-﻿using System.Collections.Immutable;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Immutable;
+using System.IO;
 using System.Reflection;
 
+using LaquaiLib.Attributes;
 using LaquaiLib.Util;
 
 namespace LaquaiLib.Extensions;
@@ -382,4 +385,219 @@ public static class TypeExtensions
     /// <param name="other">The <see cref="Type"/> to check against.</param>
     /// <returns><see langword="true"/> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool HasWideningConversion(this Type type, Type other) => type.HasConsistentWideningConversion(other) || type.HasLossyWideningConversion(other);
+
+    /// <summary>
+    /// Reflects the entirety of this <see cref="Type"/> and generates .NET 8.0 code that can be used to replicate it.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to reflect.</param>
+    /// <param name="namespace">The namespace to place the generated type(s) into. If <see langword="null"/> or empty, the namespace of the <paramref name="type"/> is used. If that also resolves to <see langword="null"/> or empty, the code is generated without a namespace declaration.</param>
+    /// <param name="inherited">Whether to generate code for all members <paramref name="type"/> inherits from its base types.</param>
+    /// <param name="deep">Whether to generate code for all <see cref="Type"/>s that are referenced by this <paramref name="type"/> in any way.</param>
+    /// <returns>A <see cref="string"/> containing the generated code.</returns>
+    /// <remarks>
+    /// This method is not guaranteed to generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
+    /// <para/>This method respects the <see cref="DoNotReflectAttribute"/>. If <paramref name="type"/> itself, or <paramref name="deep"/> is <see langword="true"/> and any member (including <see cref="Type"/>s) referenced by this <paramref name="type"/>, is marked with this attribute, a <see cref="ReflectionException"/> is thrown.
+    /// </remarks>
+    public static string Reflect(this Type type, string? @namespace = null, bool inherited = true, bool deep = false)
+    {
+        var bindingFlags =
+            BindingFlags.Public
+            | BindingFlags.NonPublic
+            | BindingFlags.Instance
+            | BindingFlags.Static;
+        if (!inherited)
+        {
+            bindingFlags |= BindingFlags.DeclaredOnly;
+        }
+
+        ArgumentNullException.ThrowIfNull(type);
+        DoNotReflectAttribute.ThrowIfMarked(type.Assembly);
+
+        @namespace ??= type.Namespace;
+
+        using (var sw = new StringWriter())
+        {
+            using (var itw = new IndentedTextWriter(sw, "    "))
+            {
+                if (!string.IsNullOrWhiteSpace(@namespace))
+                {
+                    itw.WriteLine($"namespace {@namespace};");
+                }
+
+                itw.WriteLine($"public {(type.IsInterface ? "interface" : "class")} {type.Name}");
+
+                if (type.IsGenericType)
+                {
+                    itw.Write("<");
+                    itw.Write(string.Join(", ", type.GetGenericArguments().Select(t => t.Name)));
+                    itw.Write(">");
+                }
+
+                itw.WriteLine();
+                itw.WriteLine("{");
+
+                foreach (var field in type.GetFields(bindingFlags))
+                {
+                    DoNotReflectAttribute.ThrowIfMarked(field);
+                    itw.WriteLine($"    {field.GetAccessibility()} {field.FieldType.GetFriendlyName()} {field.Name};");
+                }
+
+                foreach (var property in type.GetProperties(bindingFlags))
+                {
+                    DoNotReflectAttribute.ThrowIfMarked(property);
+                    itw.WriteLine($"    {property.GetAccessibility()} {property.PropertyType.GetFriendlyName()} {property.Name} {{ {property.GetMethod?.GetAccessibility()}get; {property.SetMethod?.GetAccessibility()}set; }}");
+                }
+
+                foreach (var method in type.GetMethods(bindingFlags).ArrayWhere(m => !m.IsSpecialName))
+                {
+                    DoNotReflectAttribute.ThrowIfMarked(method);
+                    itw.WriteLine($"    {method.GetAccessibility()} {method.ReturnType.GetFriendlyName()} {method.Name}({string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.GetFriendlyName()} {p.Name}"))});");
+                }
+
+                if (deep)
+                {
+                    foreach (var nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
+                    {
+                        DoNotReflectAttribute.ThrowIfMarked(nestedType);
+
+                        itw.WriteLine();
+                        itw.WriteLine(nestedType.Reflect(@namespace, deep));
+                    }
+                }
+
+                itw.WriteLine("}");
+            }
+
+            return sw.ToString();
+        }
+    }
+
+    private static string GetLeastAccessibleModifier(IEnumerable<string> modifiers)
+    {
+        var modifiersEnumerated = modifiers.ToArray();
+        if (modifiersEnumerated.ArrayContains("private")) // same type only
+        {
+            return "private";
+        }
+        else if (modifiersEnumerated.ArrayContains("private protected")) // same type and derived types in same assembly
+        {
+            return "private protected";
+        }
+        else if (modifiersEnumerated.ArrayContains("protected")) // same type and derived types
+        {
+            return "protected";
+        }
+        else if (modifiersEnumerated.ArrayContains("internal")) // same assembly only
+        {
+            return "internal";
+        }
+        else if (modifiersEnumerated.ArrayContains("protected internal")) // same type and derived types OR same assembly
+        {
+            return "protected internal";
+        }
+        else // public
+        {
+            return "public";
+        }
+    }
+    private static string GetAccessibility(MethodBase methodBase)
+    {
+        return methodBase switch
+        {
+            { IsPublic: true } => "public",
+            { IsFamily: true } => "protected",
+            { IsAssembly: true } => "internal",
+            { IsPrivate: true } => "private",
+            { IsFamilyAndAssembly: true } => "private protected",
+            { IsFamilyOrAssembly: true } => "protected internal",
+            _ => "private"
+        };
+    }
+    private static string GetAccessibility(FieldInfo fieldInfo)
+    {
+        return fieldInfo switch
+        {
+            { IsPublic: true } => "public",
+            { IsFamily: true } => "protected",
+            { IsAssembly: true } => "internal",
+            { IsPrivate: true } => "private",
+            { IsFamilyAndAssembly: true } => "private protected",
+            { IsFamilyOrAssembly: true } => "protected internal",
+            _ => "private"
+        };
+    }
+    private static string GetAccessibility(Type type)
+    {
+        return type switch
+        {
+            { IsPublic: true } => "public",
+            { IsNestedPublic: true } => "public",
+            { IsNestedFamily: true } => "protected",
+            { IsNestedAssembly: true } => "internal",
+            { IsNestedPrivate: true } => "private",
+            { IsNestedFamANDAssem: true } => "private protected",
+            { IsNestedFamORAssem: true } => "protected internal",
+            _ => "private"
+        };
+    }
+
+    private static string GetAccessibility(this MemberInfo member)
+    {
+        ArgumentNullException.ThrowIfNull(member);
+        if (member is PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.CanRead && propertyInfo.GetGetMethod(true) is MethodBase getMethod)
+            {
+                return GetAccessibility(getMethod);
+            }
+            else if (propertyInfo.CanWrite && propertyInfo.GetSetMethod(true) is MethodBase setMethod)
+            {
+                return GetAccessibility(setMethod);
+            }
+            return "private";
+        }
+        else if (member is FieldInfo fieldInfo)
+        {
+            return GetAccessibility(fieldInfo);
+        }
+        else if (member is MethodBase methodBase)
+        {
+            return GetAccessibility(methodBase);
+        }
+        else if (member is EventInfo eventInfo)
+        {
+            var accessors = new List<string>();
+            if (eventInfo.GetAddMethod(true) is MethodBase addMethod)
+            {
+                accessors.Add(GetAccessibility(addMethod));
+            }
+            if (eventInfo.GetRemoveMethod(true) is MethodBase removeMethod)
+            {
+                accessors.Add(GetAccessibility(removeMethod));
+            }
+            if (eventInfo.GetRaiseMethod(true) is MethodBase raiseMethod)
+            {
+                accessors.Add(GetAccessibility(raiseMethod));
+            }
+            return GetLeastAccessibleModifier(accessors);
+        }
+        else if (member is Type type)
+        {
+            return GetAccessibility(type);
+        }
+        return "private";
+    }
+
+    private static string GetFriendlyName(this Type type)
+    {
+        if (type.IsGenericType)
+        {
+            var name = type.Name[..type.Name.IndexOf('`')];
+            var args = string.Join(", ", type.GetGenericArguments().Select(t => t.GetFriendlyName()));
+
+            return $"{name}<{args}>";
+        }
+
+        return type.Name;
+    }
 }
