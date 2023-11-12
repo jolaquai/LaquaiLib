@@ -4,6 +4,71 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
+        <member name="T:LaquaiLib.Attributes.DoNotReflectAttribute">
+            <summary>
+            Indicates to consumers that the attributed member should not be reflected (into).
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Attributes.DoNotReflectAttribute.ThrowIfMarked(System.Reflection.MemberInfo)">
+            <summary>
+            Throws a <see cref="T:LaquaiLib.Attributes.ReflectionException"/> if the given <paramref name="member"/> is marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>.
+            </summary>
+            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> to check.</param>
+        </member>
+        <member name="M:LaquaiLib.Attributes.DoNotReflectAttribute.ThrowIfMarked(System.Reflection.Assembly)">
+            <summary>
+            Throws a <see cref="T:LaquaiLib.Attributes.ReflectionException"/> if the given <paramref name="assembly"/> is marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>.
+            </summary>
+            <param name="assembly">The <see cref="T:System.Reflection.Assembly"/> to check.</param>
+        </member>
+        <member name="T:LaquaiLib.Attributes.ReflectionException">
+            <summary>
+            The <see cref="T:System.Exception"/> that is thrown when a member marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/> is attempted to be reflected (into).
+            </summary>
+            <remarks>
+            Consuming code bases implementing the Reflection-DoNotReflectAttribute system should also opt to throwing this exception when appropriate.
+            </remarks>
+        </member>
+        <member name="P:LaquaiLib.Attributes.ReflectionException.Type">
+            <summary>
+            The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Attributes.ReflectionException.Member">
+            <summary>
+            The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).
+            May be reference-equal to <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> if the member is a type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor">
+            <summary>
+            Throws a generic <see cref="T:LaquaiLib.Attributes.ReflectionException"/>. Used when an entire <see cref="T:System.Reflection.Assembly"/> is marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor(System.String,System.Type,System.Reflection.MemberInfo)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Attributes.ReflectionException"/> with the given message.
+            </summary>
+            <param name="message">The message of the exception.</param>
+            <param name="type">The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).</param>
+            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).</param>
+        </member>
+        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor(System.Type,System.Reflection.MemberInfo)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Attributes.ReflectionException"/> with the default message, the given <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> and <see cref="T:System.Reflection.MemberInfo"/>.
+            </summary>
+            <param name="type">The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).</param>
+            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).</param>
+        </member>
+        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor(System.String,System.Exception,System.Type,System.Reflection.MemberInfo)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Attributes.ReflectionException"/> with the given message and an <paramref name="innerException"/> that was the cause of this exception.
+            </summary>
+            <param name="message">The message of the exception.</param>
+            <param name="innerException">The <see cref="T:System.Exception"/> that was the cause of this exception.</param>
+            <param name="type">The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).</param>
+            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).</param>
+        </member>
         <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
@@ -1251,8 +1316,8 @@
             <summary>
             Converts this <see cref="T:System.Drawing.Icon"/> instance to an <see cref="T:System.Windows.Media.ImageSource"/>.
             </summary>
-            <param name="icon"></param>
-            <returns></returns>
+            <param name="icon">The <see cref="T:System.Drawing.Icon"/> instance to convert.</param>
+            <returns>The created <see cref="T:System.Windows.Media.ImageSource"/> instance.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IDataObjectExtensions">
             <summary>
@@ -1347,24 +1412,6 @@
             <param name="source">The source collection to iterate over.</param>
             <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <summary>
-            Invokes the specified <paramref name="function"/> on each element of the source collection.
-            </summary>
-            <typeparam name="TSource">The Type of the elements in the collection.</typeparam>
-            <typeparam name="TResult">The Type of the elements that <paramref name="function"/> produces.</typeparam>
-            <param name="source">The source collection to iterate over.</param>
-            <param name="function">The function to invoke on each element of the source collection. It is passed each element in the source collection.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <summary>
-            Invokes the specified <paramref name="function"/> on each element of the source collection, incorporating each element's index in the <see cref="T:System.Func`3"/>.
-            </summary>
-            <typeparam name="TSource">The Type of the elements in the collection.</typeparam>
-            <typeparam name="TResult">The Type of the elements that <paramref name="function"/> produces.</typeparam>
-            <param name="source">The source collection to iterate over.</param>
-            <param name="function">The function to invoke on each element of the source collection. It is passed each element and its index in the source collection.</param>
-        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetRange``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
             <summary>
             Extracts a range of elements from this collection.
@@ -1440,6 +1487,17 @@
             <param name="other">The sequence to compare to.</param>
             <param name="comparer">An instance of an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>-implementing Type that is used to compare the elements in the sequences. If not specified, the default comparer for <typeparamref name="T"/> is used.</param>
             <returns><see langword="true"/> if the sequences are equivalent, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ConditionalSelect``2(System.Collections.Generic.IEnumerable{``0},System.Predicate{``0},System.Func{``0,``1})">
+            <summary>
+            Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+            <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and produces a new value.</param>
+            <returns>The transformed elements.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
@@ -2218,6 +2276,10 @@
             <param name="inherited">Whether to generate code for all members <paramref name="type"/> inherits from its base types.</param>
             <param name="deep">Whether to generate code for all <see cref="T:System.Type"/>s that are referenced by this <paramref name="type"/> in any way.</param>
             <returns>A <see cref="T:System.String"/> containing the generated code.</returns>
+            <remarks>
+            This method is not guaranteed to generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
+            <para/>This method respects the <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>. If <paramref name="type"/> itself, or <paramref name="deep"/> is <see langword="true"/> and any member (including <see cref="T:System.Type"/>s) referenced by this <paramref name="type"/>, is marked with this attribute, a <see cref="T:LaquaiLib.Attributes.ReflectionException"/> is thrown.
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>

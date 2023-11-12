@@ -540,7 +540,6 @@ public static class TypeExtensions
             _ => "private"
         };
     }
-
     private static string GetAccessibility(this MemberInfo member)
     {
         ArgumentNullException.ThrowIfNull(member);
@@ -587,7 +586,6 @@ public static class TypeExtensions
         }
         return "private";
     }
-
     private static string GetFriendlyName(this Type type)
     {
         if (type.IsGenericType)

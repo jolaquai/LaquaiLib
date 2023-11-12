@@ -94,18 +94,12 @@ public static class StringExtensions
         return char.ToUpperInvariant(lower[0]) + lower[1..];
     }
     /// <summary>
-    /// Converts the specified input string to title case according to the rules of the current culture.
-    /// </summary>
-    /// <param name="source">The <see cref="string"/> to convert.</param>
-    /// <returns><paramref name="source"/> in title case.</returns>
-    public static string ToTitle(this string source) => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(source);
-    /// <summary>
     /// Converts the specified input string to title case according to the rules of the specified <paramref name="culture"/>.
     /// </summary>
     /// <param name="source">The <see cref="string"/> to convert.</param>
     /// <param name="culture">The <see cref="CultureInfo"/> to use for casing rules.</param>
     /// <returns><paramref name="source"/> in title case according to <paramref name="culture"/>.</returns>
-    public static string ToTitle(this string source, CultureInfo culture) => culture.TextInfo.ToTitleCase(source);
+    public static string ToTitle(this string source, CultureInfo? culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(source);
     /// <summary>
     /// Converts the specified input string to title case according to the rules of the invariant culture.
     /// </summary>

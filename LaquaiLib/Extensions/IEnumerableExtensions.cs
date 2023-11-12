@@ -75,37 +75,6 @@ public static class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Invokes the specified <paramref name="function"/> on each element of the source collection.
-    /// </summary>
-    /// <typeparam name="TSource">The Type of the elements in the collection.</typeparam>
-    /// <typeparam name="TResult">The Type of the elements that <paramref name="function"/> produces.</typeparam>
-    /// <param name="source">The source collection to iterate over.</param>
-    /// <param name="function">The function to invoke on each element of the source collection. It is passed each element in the source collection.</param>
-    public static IEnumerable<TResult> ForEach<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function)
-    {
-        foreach (var element in source)
-        {
-            yield return function(element);
-        }
-    }
-
-    /// <summary>
-    /// Invokes the specified <paramref name="function"/> on each element of the source collection, incorporating each element's index in the <see cref="Func{T1, T2, TResult}"/>.
-    /// </summary>
-    /// <typeparam name="TSource">The Type of the elements in the collection.</typeparam>
-    /// <typeparam name="TResult">The Type of the elements that <paramref name="function"/> produces.</typeparam>
-    /// <param name="source">The source collection to iterate over.</param>
-    /// <param name="function">The function to invoke on each element of the source collection. It is passed each element and its index in the source collection.</param>
-    public static IEnumerable<TResult> ForEach<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function)
-    {
-        var c = 0;
-        foreach (var element in source)
-        {
-            yield return function(element, c++);
-        }
-    }
-
-    /// <summary>
     /// Extracts a range of elements from this collection.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
@@ -185,8 +154,16 @@ public static class IEnumerableExtensions
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
     public static TSource ModeBy<TSource, TSelect>(this IEnumerable<TSource> source, Func<TSource, TSelect> selector)
     {
-        ArgumentNullException.ThrowIfNull(source, nameof(source));
-        if (!source.Any())
+        ArgumentNullException.ThrowIfNull(source);
+        
+        if (selector is null)
+        {
+            return source.Mode();
+        }
+
+        var enumerated = source as TSource[] ?? source.ToArray();
+
+        if (enumerated.Length != 0)
         {
             throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source));
         }
@@ -196,7 +173,7 @@ public static class IEnumerableExtensions
         foreach (var item in source)
         {
             var selected = selector(item);
-            var model = models.FirstOrDefault(m => m.SelectedValue.Equals(selected));
+            var model = models.Find(m => m.SelectedValue.Equals(selected));
             if (model is null)
             {
                 models.Add(new ModeModel<TSource, TSelect>
@@ -232,10 +209,11 @@ public static class IEnumerableExtensions
             throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source));
         }
 
-        return enumerated.Select(item => new KeyValuePair<T, int>(item, source.Count(i => i.Equals(item))))
-                         .OrderByDescending(kvp => kvp.Value)
+        return enumerated.Select(item => (Item: item,
+                                            Count: source.Count(i => i.Equals(item))))
+                         .OrderByDescending(kvp => kvp.Count)
                          .First()
-                         .Key;
+                         .Item;
     }
 
     /// <summary>
@@ -298,5 +276,25 @@ public static class IEnumerableExtensions
         }
 
         return Array.TrueForAll(sourceEnumerated, item => otherEnumerated.Contains(item, comparer));
+    }
+
+    /// <summary>
+    /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+    /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a new value.</param>
+    /// <returns>The transformed elements.</returns>
+    public static IEnumerable<TResult> ConditionalSelect<TSource, TResult>(this IEnumerable<TSource> source, Predicate<TSource> predicate, Func<TSource, TResult> selector)
+    {
+        foreach (var item in source)
+        {
+            if (predicate(item))
+            {
+                yield return selector(item);
+            }
+        }
     }
 }
