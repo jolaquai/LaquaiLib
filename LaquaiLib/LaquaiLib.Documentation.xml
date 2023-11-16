@@ -1829,13 +1829,6 @@
             <param name="source">The <see cref="T:System.String"/> to convert.</param>
             <returns><paramref name="source"/> in sentence case.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.ToTitle(System.String)">
-            <summary>
-            Converts the specified input string to title case according to the rules of the current culture.
-            </summary>
-            <param name="source">The <see cref="T:System.String"/> to convert.</param>
-            <returns><paramref name="source"/> in title case.</returns>
-        </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.ToTitle(System.String,System.Globalization.CultureInfo)">
             <summary>
             Converts the specified input string to title case according to the rules of the specified <paramref name="culture"/>.
