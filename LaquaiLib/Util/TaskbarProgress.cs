@@ -1,10 +1,7 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media.Animation;
 using System.Windows.Shell;
-using System.Windows.Threading;
 
 using LaquaiLib.Extensions;
 

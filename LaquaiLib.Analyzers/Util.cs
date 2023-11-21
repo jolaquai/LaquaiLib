@@ -14,5 +14,5 @@ internal static class Util
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns>A string representing the analyzer category.</returns>
-    internal static string GetAnalyzerCategory(Type type) => type.Namespace ?? typeof(Util).Namespace;
+    internal static string GetAnalyzerCategory(Type type) => type.Namespace;
 }

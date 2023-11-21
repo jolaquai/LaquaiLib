@@ -1,7 +1,5 @@
 ﻿using System.Collections.Immutable;
 
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -15,7 +13,7 @@ public static class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains each element in the input sequence.</returns>
-    public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source.Select(item => item);
+    public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source.ToArray();
 
     /// <summary>
     /// Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
@@ -136,6 +134,7 @@ public static class IEnumerableExtensions
         }
     }
 
+    #region Mode
     private class ModeModel<TSource, TSelect>
     {
         public TSource OriginalValue { get; set; }
@@ -155,7 +154,7 @@ public static class IEnumerableExtensions
     public static TSource ModeBy<TSource, TSelect>(this IEnumerable<TSource> source, Func<TSource, TSelect> selector)
     {
         ArgumentNullException.ThrowIfNull(source);
-        
+
         if (selector is null)
         {
             return source.Mode();
@@ -214,7 +213,8 @@ public static class IEnumerableExtensions
                          .OrderByDescending(kvp => kvp.Count)
                          .First()
                          .Item;
-    }
+    } 
+    #endregion
 
     /// <summary>
     /// Samples a specified number of elements from the input sequence.

@@ -4,71 +4,6 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
-        <member name="T:LaquaiLib.Attributes.DoNotReflectAttribute">
-            <summary>
-            Indicates to consumers that the attributed member should not be reflected (into).
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Attributes.DoNotReflectAttribute.ThrowIfMarked(System.Reflection.MemberInfo)">
-            <summary>
-            Throws a <see cref="T:LaquaiLib.Attributes.ReflectionException"/> if the given <paramref name="member"/> is marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>.
-            </summary>
-            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> to check.</param>
-        </member>
-        <member name="M:LaquaiLib.Attributes.DoNotReflectAttribute.ThrowIfMarked(System.Reflection.Assembly)">
-            <summary>
-            Throws a <see cref="T:LaquaiLib.Attributes.ReflectionException"/> if the given <paramref name="assembly"/> is marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>.
-            </summary>
-            <param name="assembly">The <see cref="T:System.Reflection.Assembly"/> to check.</param>
-        </member>
-        <member name="T:LaquaiLib.Attributes.ReflectionException">
-            <summary>
-            The <see cref="T:System.Exception"/> that is thrown when a member marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/> is attempted to be reflected (into).
-            </summary>
-            <remarks>
-            Consuming code bases implementing the Reflection-DoNotReflectAttribute system should also opt to throwing this exception when appropriate.
-            </remarks>
-        </member>
-        <member name="P:LaquaiLib.Attributes.ReflectionException.Type">
-            <summary>
-            The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Attributes.ReflectionException.Member">
-            <summary>
-            The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).
-            May be reference-equal to <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> if the member is a type.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor">
-            <summary>
-            Throws a generic <see cref="T:LaquaiLib.Attributes.ReflectionException"/>. Used when an entire <see cref="T:System.Reflection.Assembly"/> is marked with <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor(System.String,System.Type,System.Reflection.MemberInfo)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Attributes.ReflectionException"/> with the given message.
-            </summary>
-            <param name="message">The message of the exception.</param>
-            <param name="type">The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).</param>
-            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).</param>
-        </member>
-        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor(System.Type,System.Reflection.MemberInfo)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Attributes.ReflectionException"/> with the default message, the given <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> and <see cref="T:System.Reflection.MemberInfo"/>.
-            </summary>
-            <param name="type">The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).</param>
-            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).</param>
-        </member>
-        <member name="M:LaquaiLib.Attributes.ReflectionException.#ctor(System.String,System.Exception,System.Type,System.Reflection.MemberInfo)">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Attributes.ReflectionException"/> with the given message and an <paramref name="innerException"/> that was the cause of this exception.
-            </summary>
-            <param name="message">The message of the exception.</param>
-            <param name="innerException">The <see cref="T:System.Exception"/> that was the cause of this exception.</param>
-            <param name="type">The <see cref="P:LaquaiLib.Attributes.ReflectionException.Type"/> that was attempted to be reflected (into).</param>
-            <param name="member">The <see cref="T:System.Reflection.MemberInfo"/> representing the member that was attempted to be reflected (into).</param>
-        </member>
         <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
@@ -1555,6 +1490,16 @@
             <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
             <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IGroupingExtensions.ToDictionary``3(System.Collections.Generic.IEnumerable{System.Linq.IGrouping{``0,``2}})">
+            <summary>
+            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s as <typeparamref name="TCollection"/>s.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TCollection">The Type of the collections that will be used to store the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TElement">The Type of the values of the <typeparamref name="TCollection"/>s.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
+            <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.ListExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.List`1"/> Type.
@@ -2160,7 +2105,7 @@
             <summary>
             Returns a collection of all types that inherit from the supplied type.
             </summary>
-            <param name="type">The type to get the inheriting types for.</param>
+            <param name="type">The type to get the options.Inheriting types for.</param>
             <returns>A collection of all types that inherit from the supplied type.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
         </member>
@@ -2168,7 +2113,7 @@
             <summary>
             Returns a collection of all types that inherit from the supplied type and are not abstract.
             </summary>
-            <param name="type">The type to get the non-abstract inheriting types for.</param>
+            <param name="type">The type to get the non-abstract options.Inheriting types for.</param>
             <returns>A collection of all types that inherit from the supplied type and are not abstract.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
         </member>
@@ -2176,7 +2121,7 @@
             <summary>
             Returns a collection of all types that inherit from the supplied type and contain public constructors.
             </summary>
-            <param name="type">The type to get the constructable inheriting types for.</param>
+            <param name="type">The type to get the constructable options.Inheriting types for.</param>
             <returns>A collection of all types that inherit from the supplied type and contain public constructors.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
         </member>
@@ -2260,19 +2205,85 @@
             <param name="other">The <see cref="T:System.Type"/> to check against.</param>
             <returns><see langword="true"/> if there exists a widening conversion from this <see cref="T:System.Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.Reflect(System.Type,System.String,System.Boolean,System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.Reflect(System.Type,LaquaiLib.Extensions.ReflectionOptions)">
             <summary>
             Reflects the entirety of this <see cref="T:System.Type"/> and generates .NET 8.0 code that can be used to replicate it.
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to reflect.</param>
-            <param name="namespace">The namespace to place the generated type(s) into. If <see langword="null"/> or empty, the namespace of the <paramref name="type"/> is used. If that also resolves to <see langword="null"/> or empty, the code is generated without a namespace declaration.</param>
+            <param name="namespace">The namespace to place the generated type(s) into. If <see langword="null"/> or empty, the code is generated without a namespace declaration.</param>
+            <param name="options.Inheriting.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="T:System.NotImplementedException"/>s.</param>
             <param name="inherited">Whether to generate code for all members <paramref name="type"/> inherits from its base types.</param>
-            <param name="deep">Whether to generate code for all <see cref="T:System.Type"/>s that are referenced by this <paramref name="type"/> in any way.</param>
+            <param name="options.Deep.Deep">Whether to generate code for all <see cref="T:System.Type"/>s that are referenced by this <paramref name="type"/> in any way.</param>
             <returns>A <see cref="T:System.String"/> containing the generated code.</returns>
             <remarks>
             This method is not guaranteed to generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
-            <para/>This method respects the <see cref="T:LaquaiLib.Attributes.DoNotReflectAttribute"/>. If <paramref name="type"/> itself, or <paramref name="deep"/> is <see langword="true"/> and any member (including <see cref="T:System.Type"/>s) referenced by this <paramref name="type"/>, is marked with this attribute, a <see cref="T:LaquaiLib.Attributes.ReflectionException"/> is thrown.
             </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.FuncSignatureRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>&lt;.*?&gt;\\p{Ll}__(\\p{L}|\\p{Nd}|\\||_)+?_\\p{Nd}+?(?=\\(.*?\\))?</code><br/>
+            Options:<br/>
+            <code>RegexOptions.ExplicitCapture</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match '&lt;'.<br/>
+            ○ Match a character other than '\n' lazily any number of times.<br/>
+            ○ Match '&gt;'.<br/>
+            ○ Match a character in the set [\p{Ll}].<br/>
+            ○ Match the string "__".<br/>
+            ○ Match a character in the set [_|\p{L}\d] lazily at least once.<br/>
+            ○ Match '_'.<br/>
+            ○ Match a Unicode digit lazily at least once.<br/>
+            ○ Optional (greedy).<br/>
+                ○ Zero-width positive lookahead.<br/>
+                    ○ Match '('.<br/>
+                    ○ Match a character other than '\n' lazily any number of times.<br/>
+                    ○ Match ')'.<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:LaquaiLib.Extensions.ReflectionOptions">
+            <summary>
+            Represents a set of options for <see cref="M:LaquaiLib.Extensions.TypeExtensions.Reflect(System.Type,LaquaiLib.Extensions.ReflectionOptions)"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ReflectionOptions.Namespace">
+            <summary>
+            The namespace into which the generated type(s) should be placed. If <see langword="null"/> or empty, the code is generated without a namespace declaration.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ReflectionOptions.Inherit">
+            <summary>
+            Whether to make the generated type inherit from the <see cref="T:System.Type"/>.
+            <para/>If <see langword="false"/>, a private field of the original type is generated and all method calls are initially redirected to that field.
+            <para/>If <see langword="true"/>, the generated type inherits from <see cref="T:System.Type"/> and all method calls are initially redirected to <see langword="base"/>.
+            <para/>If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="T:System.NotImplementedException"/>s.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ReflectionOptions.Inherited">
+            <summary>
+            Whether to generate code for all members <see cref="T:System.Type"/> inherits from its base types. This defaults to <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ReflectionOptions.Deep">
+            <summary>
+            Whether to generate code for all <see cref="T:System.Type"/>s that the original type has nested within it.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ReflectionOptions.IgnoreInaccessible">
+            <summary>
+            Whether to ignore members which cannot be redirected to an instance of the original type (or to <see langword="base"/> when <see cref="P:LaquaiLib.Extensions.ReflectionOptions.Inherit"/> is <see langword="true"/>). Defaults to <see langword="true"/>.
+            <para/>This is ignored when <see cref="P:LaquaiLib.Extensions.ReflectionOptions.Inherit"/> is <see langword="null"/>.
+            </summary>
+            <remarks>
+            Setting this to <see langword="false"/> is helpful when you intend to supply custom implementations for inaccessible members, otherwise this will pollute your generated code with <see cref="T:System.NotImplementedException"/> (inside methods which potentially cannot be called from outside the generated type).
+            </remarks>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ReflectionOptions.Default">
+            <summary>
+            Returns a cached instance of <see cref="T:LaquaiLib.Extensions.ReflectionOptions"/> with the default behavior.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
@@ -5585,29 +5596,61 @@
             Releases the managed and unmanaged resources used by this <see cref="T:System.Runtime.InteropServices.GCHandle`1"/> instance.
             </summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0">
-            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the GetSimilarityCleanerRegex method.</summary>
+        <member name="T:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the FuncSignatureRegex method.</summary>
         </member>
-        <member name="F:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.Instance">
+        <member name="F:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.Instance">
             <summary>Cached, thread-safe singleton instance.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.#ctor">
+        <member name="M:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.#ctor">
             <summary>Initializes the instance.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory">
+        <member name="T:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.RunnerFactory">
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.CreateInstance">
+        <member name="M:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.Runner">
+        <member name="T:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.RunnerFactory.Runner">
             <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
             <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+        <member name="M:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the GetSimilarityCleanerRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.GetSimilarityCleanerRegex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
@@ -5620,6 +5663,15 @@
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
             <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(System.Int32[],System.Int32@,System.Int32@,System.Int32@)">
+            <summary>Pops 2 values from the backtracking stack.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32)">
+            <summary>Pushes 1 value onto the backtracking stack.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
+            <summary>Pushes 2 values onto the backtracking stack.</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_nonAscii_50A2FEBC473A6B0B5F0FE032BEE21E08D03E2A7E307FCFCA8245C63F441BF02F">
             <summary>Supports searching for characters in or not in " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿİŸKÅ".</summary>

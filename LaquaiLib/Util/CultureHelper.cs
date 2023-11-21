@@ -3,8 +3,6 @@ using System.Text.RegularExpressions;
 
 using LaquaiLib.Extensions;
 
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
 namespace LaquaiLib.Util;
 
 /// <summary>
