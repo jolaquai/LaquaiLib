@@ -412,7 +412,8 @@ public static partial class TypeExtensions
     /// <returns><see langword="true"/> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool HasWideningConversion(this Type type, Type other) => type.HasConsistentWideningConversion(other) || type.HasLossyWideningConversion(other);
 
-    // TODO: Reflect all inaccessible members if options.IgnoreInaccessible == false
+    // TODO: Exclude all members with weird names that match FuncSignatureRegex or similar
+    // (e.g. automatic private backing fields)
     /// <summary>
     /// Reflects the entirety of this <see cref="Type"/> and generates .NET 8.0 code that can be used to replicate it.
     /// </summary>
@@ -497,7 +498,7 @@ public static partial class TypeExtensions
                 foreach (var field in type.GetFields(bindingFlags))
                 {
                     var accessibility = field.GetAccessibility();
-                    if (!options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
+                    if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
                     {
                         continue;
                     }
@@ -520,7 +521,7 @@ public static partial class TypeExtensions
                 foreach (var property in type.GetProperties(bindingFlags))
                 {
                     var accessibility = property.GetAccessibility();
-                    if (!options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
+                    if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
                     {
                         continue;
                     }
