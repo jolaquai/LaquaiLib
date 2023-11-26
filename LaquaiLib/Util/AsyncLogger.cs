@@ -189,11 +189,9 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// <inheritdoc/>
     public override int GetHashCode()
     {
-        var hc = new CollectionHashCode()
-        {
-            Timestamp,
-            Type,
-        };
+        var hc = new HashCode();
+        hc.Add(Timestamp);
+        hc.Add(Type);
         if (Message is not null)
         {
             hc.Add(string.Empty);

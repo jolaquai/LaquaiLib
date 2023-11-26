@@ -2135,7 +2135,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.GetDefault(System.Type)">
             <summary>
-            Returns the default value for the supplied type.
+            Returns a (potentially boxed) instance of the default value for the supplied type.
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to get the default value for.</param>
             <returns>The default value for the supplied type.</returns>
@@ -2936,6 +2936,46 @@
         </member>
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.CancelAsync">
             <inheritdoc cref="M:System.ComponentModel.BackgroundWorker.CancelAsync"/>
+        </member>
+        <member name="T:LaquaiLib.Util.FileHelper">
+            <summary>
+            Provides methods and events for working with files and directories.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.FileHelper.MigrateDirectory(System.String,System.String,System.Boolean)">
+            <summary>
+            In parallel, migrates the contents of a directory from one location to another.
+            </summary>
+            <param name="source">The directory to move.</param>
+            <param name="to">The directory that becomes the new parent directory of <paramref name="source"/>.</param>
+            <param name="allowExisting">Whether to allow the destination directory to already exist and contain files.</param>
+            <remarks>
+            This method uses a custom paritioner that accounts for the size of the files in the directory.
+            </remarks>
+        </member>
+        <member name="T:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner">
+            <summary>
+            Represents a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> implementation that partitions files by their size.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner"/> instance.
+            </summary>
+            <param name="paths">The paths to the files to partition.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.GetPartitions(System.Int32)">
+            <summary>
+            Partitions the file set into <paramref name="partitionCount"/> partitions, accounting for the size of the files. The total size of the files in each partition is approximately equal, but the number of files in each partition may vary.
+            </summary>
+            <param name="partitionCount">The number of partitions to create.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IList`1"/> of <see cref="T:System.Collections.Generic.IEnumerator`1"/> instances that represent the partitions.</returns>
+        </member>
+        <member name="P:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.SupportsDynamicPartitions">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.GetDynamicPartitions">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.MemoryManager">
             <summary>
@@ -4992,101 +5032,6 @@
             <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
             <param name="culture">Which culture to use when converting / formatting the value.</param>
             <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Wrappers.CollectionHashCode">
-            <summary>
-            Simplifies the creation of a hash code from a collection of objects.
-            With reference to the same objects, this class will always return exactly the same result as creating a <see cref="T:System.HashCode"/> and adding objects to it one by one.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Create(System.Object[])">
-            <summary>
-            Creates a new <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> and adds the given objects to the internal <see cref="T:System.HashCode"/>.
-            </summary>
-            <param name="parameters">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
-            <returns>The created <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.#ctor(System.Object[])">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> and adds the given objects to the internal <see cref="T:System.HashCode"/>.
-            </summary>
-            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.#ctor(System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> and adds the given objects to the internal <see cref="T:System.HashCode"/>.
-            </summary>
-            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Add(System.Object)">
-            <summary>
-            Adds a single object to the internal <see cref="T:System.HashCode"/>.
-            </summary>
-            <param name="obj">The object to add to the internal <see cref="T:System.HashCode"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Object[])">
-            <summary>
-            Adds one or more objects to the internal <see cref="T:System.HashCode"/>.
-            </summary>
-            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Adds objects from a sequence to the internal <see cref="T:System.HashCode"/>.
-            </summary>
-            <param name="objects">The objects to add to the internal <see cref="T:System.HashCode"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.ToHashCode">
-            <summary>
-            Calculates the final hash code of this instance after consecutive <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.Add(System.Object)"/>, <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Collections.Generic.IEnumerable{System.Object})"/> or <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.AddRange(System.Collections.Generic.IEnumerable{System.Object})"/> calls.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Equals(System.Object)">
-            <summary>
-            Indicates whether this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance is equal to another <see cref="T:System.Object"/>.
-            </summary>
-            <param name="obj">The other <see cref="T:System.Object"/> instance.</param>
-            <returns><see langword="true"/> if this instance is equal to <paramref name="obj"/>, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.GetHashCode">
-            <summary>
-            Computes the hash code of this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance. Since it represents its contained objects, it will always return the same result as <see cref="M:LaquaiLib.Wrappers.CollectionHashCode.ToHashCode"/>.
-            </summary>
-            <returns>The result of <see cref="M:System.HashCode.ToHashCode"/> of the internal <see cref="T:System.HashCode"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.op_Equality(LaquaiLib.Wrappers.CollectionHashCode,LaquaiLib.Wrappers.CollectionHashCode)">
-            <summary>
-            Indicates whether two <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instances are equal.
-            </summary>
-            <param name="left">The first <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
-            <param name="right">The second <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
-            <returns><see langword="true"/> if <paramref name="left"/> is equal to <paramref name="right"/>, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.op_Inequality(LaquaiLib.Wrappers.CollectionHashCode,LaquaiLib.Wrappers.CollectionHashCode)">
-            <summary>
-            Indicates whether two <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instances are not equal.
-            </summary>
-            <param name="left">The first <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
-            <param name="right">The second <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
-            <returns><see langword="true"/> if <paramref name="left"/> is not equal to <paramref name="right"/>, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Equals(LaquaiLib.Wrappers.CollectionHashCode)">
-            <summary>
-            Indicates whether this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance is equal to another <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.
-            </summary>
-            <param name="other">The other <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance.</param>
-            <returns><see langword="true"/> if this instance is equal to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.CollectionHashCode.Equals(System.Int32)">
-            <summary>
-            Indicates whether the hash code of this <see cref="T:LaquaiLib.Wrappers.CollectionHashCode"/> instance is equal to another hash code.
-            </summary>
-            <param name="hashCode">The other hash code.</param>
-            <returns><see langword="true"/> if this instance is equal to <paramref name="hashCode"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Wrappers.TempAlloc">
             <summary>

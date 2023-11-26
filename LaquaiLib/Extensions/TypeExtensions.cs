@@ -121,7 +121,7 @@ public static partial class TypeExtensions
     }
 
     /// <summary>
-    /// Returns the default value for the supplied type.
+    /// Returns a (potentially boxed) instance of the default value for the supplied type.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to get the default value for.</param>
     /// <returns>The default value for the supplied type.</returns>
@@ -269,59 +269,61 @@ public static partial class TypeExtensions
     #region Mappings
     private static readonly FrozenDictionary<TypeCode, TypeCode[]> _narrowingConversions = new Dictionary<TypeCode, TypeCode[]>()
     {
-        { TypeCode.Byte, new TypeCode[] { TypeCode.SByte } },
-        { TypeCode.SByte, new TypeCode[] { TypeCode.Byte, TypeCode.UInt16, TypeCode.UInt32, TypeCode.UInt64 } },
-        { TypeCode.Int16, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.UInt16 } },
-        { TypeCode.UInt16, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16 } },
-        { TypeCode.Int32, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.UInt32 } },
-        { TypeCode.UInt32, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32 } },
-        { TypeCode.Int64, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64 } },
-        { TypeCode.UInt64, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.Int64 } },
-        { TypeCode.Decimal, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64, TypeCode.Int64 } },
-        { TypeCode.Single, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64, TypeCode.Int64 } },
-        { TypeCode.Double, new TypeCode[] { TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64, TypeCode.Int64 } }
+        [TypeCode.Byte] = [TypeCode.SByte],
+        [TypeCode.SByte] = [TypeCode.Byte, TypeCode.UInt16, TypeCode.UInt32, TypeCode.UInt64],
+        [TypeCode.Int16] = [TypeCode.Byte, TypeCode.SByte, TypeCode.UInt16],
+        [TypeCode.UInt16] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16],
+        [TypeCode.Int32] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.UInt32],
+        [TypeCode.UInt32] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32],
+        [TypeCode.Int64] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64],
+        [TypeCode.UInt64] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.Int64],
+        [TypeCode.Decimal] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64, TypeCode.Int64],
+        [TypeCode.Single] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64, TypeCode.Int64],
+        [TypeCode.Double] = [TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.UInt32, TypeCode.UInt64, TypeCode.Int64]
     }.ToFrozenDictionary();
 
     private static readonly FrozenDictionary<TypeCode, TypeCode[]> _consistentWideningConversions = new Dictionary<TypeCode, TypeCode[]>()
     {
-        { TypeCode.Byte, new TypeCode[] { TypeCode.UInt16, TypeCode.Int16, TypeCode.UInt32, TypeCode.Int32, TypeCode.UInt64, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal } },
-        { TypeCode.SByte, new TypeCode[] { TypeCode.Int16, TypeCode.Int32, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal } },
-        { TypeCode.Int16, new TypeCode[] { TypeCode.Int32, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal } },
-        { TypeCode.UInt16, new TypeCode[] { TypeCode.UInt32, TypeCode.Int32, TypeCode.UInt64, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal } },
-        { TypeCode.Char, new TypeCode[] { TypeCode.UInt16, TypeCode.UInt32, TypeCode.Int32, TypeCode.UInt64, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal } },
-        { TypeCode.Int32, new TypeCode[] { TypeCode.Int64, TypeCode.Double, TypeCode.Decimal } },
-        { TypeCode.UInt32, new TypeCode[] { TypeCode.Int64, TypeCode.UInt64, TypeCode.Double, TypeCode.Decimal } },
-        { TypeCode.Int64, new TypeCode[] { TypeCode.Decimal } },
-        { TypeCode.UInt64, new TypeCode[] { TypeCode.Decimal } },
-        { TypeCode.Single, new TypeCode[] { TypeCode.Double } }
+        [TypeCode.Byte] = [TypeCode.UInt16, TypeCode.Int16, TypeCode.UInt32, TypeCode.Int32, TypeCode.UInt64, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal],
+        [TypeCode.SByte] = [TypeCode.Int16, TypeCode.Int32, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal],
+        [TypeCode.Int16] = [TypeCode.Int32, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal],
+        [TypeCode.UInt16] = [TypeCode.UInt32, TypeCode.Int32, TypeCode.UInt64, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal],
+        [TypeCode.Char] = [TypeCode.UInt16, TypeCode.UInt32, TypeCode.Int32, TypeCode.UInt64, TypeCode.Int64, TypeCode.Single, TypeCode.Double, TypeCode.Decimal],
+        [TypeCode.Int32] = [TypeCode.Int64, TypeCode.Double, TypeCode.Decimal],
+        [TypeCode.UInt32] = [TypeCode.Int64, TypeCode.UInt64, TypeCode.Double, TypeCode.Decimal],
+        [TypeCode.Int64] = [TypeCode.Decimal],
+        [TypeCode.UInt64] = [TypeCode.Decimal],
+        [TypeCode.Single] = [TypeCode.Double]
     }.ToFrozenDictionary();
 
     private static readonly FrozenDictionary<TypeCode, TypeCode[]> _lossyWideningConversions = new Dictionary<TypeCode, TypeCode[]>()
     {
-        { TypeCode.Int32, new TypeCode[] { TypeCode.Single } },
-        { TypeCode.UInt32, new TypeCode[] { TypeCode.Single } },
-        { TypeCode.Int64, new TypeCode[] { TypeCode.Single, TypeCode.Double } },
-        { TypeCode.UInt64, new TypeCode[] { TypeCode.Single, TypeCode.Double } },
-        { TypeCode.Decimal, new TypeCode[] { TypeCode.Single, TypeCode.Double } }
+        [TypeCode.Int32] = [TypeCode.Single],
+        [TypeCode.UInt32] = [TypeCode.Single],
+        [TypeCode.Int64] = [TypeCode.Single, TypeCode.Double],
+        [TypeCode.UInt64] = [TypeCode.Single, TypeCode.Double],
+        [TypeCode.Decimal] = [TypeCode.Single, TypeCode.Double]
     }.ToFrozenDictionary();
 
     private static readonly FrozenDictionary<string, string> _typeKeywordMap = new Dictionary<string, string>()
     {
         { "System.Boolean", "bool" },
-        { "System.Byte", "byte" },
         { "System.Char", "char" },
-        { "System.Decimal", "decimal" },
-        { "System.Double", "double" },
+        { "System.SByte", "sbyte" },
+        { "System.Byte", "byte" },
         { "System.Int16", "short" },
         { "System.UInt16", "ushort" },
         { "System.Int32", "int" },
         { "System.UInt32", "uint" },
+        { "System.IntPtr", "nint" },
+        { "System.UIntPtr", "nuint" },
         { "System.Int64", "long" },
         { "System.UInt64", "ulong" },
-        { "System.Object", "object" },
-        { "System.SByte", "sbyte" },
         { "System.Single", "float" },
+        { "System.Double", "double" },
+        { "System.Decimal", "decimal" },
         { "System.String", "string" },
+        { "System.Object", "object" },
         { "System.Void", "void" }
     }.ToFrozenDictionary();
     #endregion
