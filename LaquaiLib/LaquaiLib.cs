@@ -22,7 +22,7 @@ public class LaquaiLib
     /// <returns>An <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> as described.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
     public static IEnumerable<T> Range<T>(T start, T stop, T step)
-        where T : struct, 
+        where T : struct,
                   IAdditionOperators<T, T, T>,
                   IUnaryNegationOperators<T, T>,
                   ISubtractionOperators<T, T, T>,

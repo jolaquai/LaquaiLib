@@ -285,7 +285,7 @@ public unsafe class TempAlloc : IDisposable
             return ReplaceShorter(search, replacement, shift);
         }
     }
-    
+
     /// <summary>
     /// Searches for all occurrences of a given <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> in the memory region this <see cref="TempAlloc"/> wraps and replaces them with memory represented by another <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/>.
     /// </summary>

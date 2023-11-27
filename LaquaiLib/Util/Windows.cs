@@ -13,7 +13,7 @@ namespace LaquaiLib.Util;
 public static partial class Windows
 {
     private static readonly Timer _timer = new Timer(ConditionalRaiseEvents, null, Timeout.Infinite, 10);
-    private static List<string> previousWindowList = new List<string>();
+    private static List<string> previousWindowList = [];
     private static string? previousActiveWindowTitle = GetActiveWindowTitle();
     private static nint? previousActiveWindowHandle = GetActiveWindowHandle();
     private static DateTime lastActiveWindowChange = DateTime.MinValue;
@@ -37,9 +37,10 @@ public static partial class Windows
     [LibraryImport("user32.dll")]
     [return: MaybeNull]
     private static partial int GetWindowThreadProcessId(nint hWnd, out int lpdwProcessId);
-    [DllImport("user32.dll")]
+    [LibraryImport("user32.dll")]
     [return: MaybeNull]
-    private static extern bool EnumWindows(EnumWindowsProc enumProc, nint lParam);
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool EnumWindows(EnumWindowsProc enumProc, nint lParam);
     [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16)]
     [return: MaybeNull]
     private static partial nint FindWindowA(string lpClassName, string lpWindowName);

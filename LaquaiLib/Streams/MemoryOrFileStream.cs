@@ -41,7 +41,10 @@ public class MemoryOrFileStream : Stream, IDisposable
     /// <summary>
     /// Initializes the <see cref="MemoryOrFileStream"/> Type.
     /// </summary>
-    static MemoryOrFileStream() => ResetCutoff();
+    static MemoryOrFileStream()
+    {
+        ResetCutoff();
+    }
 
     /// <summary>
     /// The wrapped <see cref="Stream"/>.

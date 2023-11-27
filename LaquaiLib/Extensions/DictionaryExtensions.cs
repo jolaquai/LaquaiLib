@@ -16,7 +16,7 @@ public static class DictionaryExtensions
         where TKey : notnull
         where TValue : notnull
     {
-        Dictionary<TValue, TKey> ret = new();
+        Dictionary<TValue, TKey> ret = [];
         foreach (var kv in source)
         {
             ret.Add(kv.Value, kv.Key);

@@ -18,7 +18,7 @@ public class MultiStream : IDisposable
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
     public MultiStream(params Stream[] streams)
     {
-        _streams = streams.ToList();
+        _streams = [.. streams];
     }
 
     /// <summary>

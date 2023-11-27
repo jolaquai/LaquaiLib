@@ -264,7 +264,7 @@ public static class StringExtensions
     /// <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
     public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<char> searches)
     {
-        List<IEnumerable<int>> indexLists = new();
+        List<IEnumerable<int>> indexLists = [];
         foreach (var search in searches)
         {
             indexLists.Add(source.IndicesOf(search));
@@ -281,7 +281,7 @@ public static class StringExtensions
     /// <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
     public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<char> searches, int startIndex)
     {
-        List<IEnumerable<int>> indexLists = new();
+        List<IEnumerable<int>> indexLists = [];
         foreach (var search in searches)
         {
             indexLists.Add(source.IndicesOf(search, startIndex));
@@ -297,7 +297,7 @@ public static class StringExtensions
     /// <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
     public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<string> searches)
     {
-        List<IEnumerable<int>> indexLists = new();
+        List<IEnumerable<int>> indexLists = [];
         foreach (var search in searches)
         {
             indexLists.Add(source.IndicesOf(search));
@@ -314,7 +314,7 @@ public static class StringExtensions
     /// <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
     public static IEnumerable<int> IndicesOfAny(this string source, IEnumerable<string> searches, int startIndex)
     {
-        List<IEnumerable<int>> indexLists = new();
+        List<IEnumerable<int>> indexLists = [];
         foreach (var search in searches)
         {
             indexLists.Add(source.IndicesOf(search, startIndex));

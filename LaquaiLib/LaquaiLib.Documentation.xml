@@ -348,7 +348,7 @@
         </member>
         <member name="E:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.PostCollectionChanged">
             <summary>
-            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes 
+            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes
             </summary>
         </member>
         <member name="T:LaquaiLib.Classes.Collections.ObservableCollectionFast`1.AddedNotification">
@@ -2942,39 +2942,45 @@
             Provides methods and events for working with files and directories.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.FileHelper.MigrateDirectory(System.String,System.String,System.Boolean)">
+        <member name="M:LaquaiLib.Util.FileHelper.MigrateDirectory(System.String,System.String,System.Boolean,System.Int32,System.Threading.CancellationToken)">
             <summary>
             In parallel, migrates the contents of a directory from one location to another.
             </summary>
             <param name="source">The directory to move.</param>
             <param name="to">The directory that becomes the new parent directory of <paramref name="source"/>.</param>
             <param name="allowExisting">Whether to allow the destination directory to already exist and contain files.</param>
+            <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <remarks>
-            This method uses a custom paritioner that accounts for the size of the files in the directory.
+            This method uses <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
             </remarks>
         </member>
-        <member name="T:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner">
+        <member name="T:LaquaiLib.Util.FileHelper.FileSizePartitioner">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> implementation that partitions files by their size.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner"/> instance.
+            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> instance using the specified file paths.
             </summary>
             <param name="paths">The paths to the files to partition.</param>
         </member>
-        <member name="M:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.GetPartitions(System.Int32)">
+        <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.IO.FileInfo})">
             <summary>
-            Partitions the file set into <paramref name="partitionCount"/> partitions, accounting for the size of the files. The total size of the files in each partition is approximately equal, but the number of files in each partition may vary.
+            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> instance using the specified <see cref="T:System.IO.FileInfo"/> instances.
+            </summary>
+            <param name="fileInfos">The <see cref="T:System.IO.FileInfo"/> instances to partition.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.GetPartitions(System.Int32)">
+            <summary>
+            Partitions the file set into at most <paramref name="partitionCount"/> partitions, accounting for the size of the files.
+            The total size of the files in each partition is approximately equal, but the number of files in each partition may vary.
             </summary>
             <param name="partitionCount">The number of partitions to create.</param>
             <returns>An <see cref="T:System.Collections.Generic.IList`1"/> of <see cref="T:System.Collections.Generic.IEnumerator`1"/> instances that represent the partitions.</returns>
         </member>
-        <member name="P:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.SupportsDynamicPartitions">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.FileHelper.FileSizeDynamicPartitioner.GetDynamicPartitions">
+        <member name="P:LaquaiLib.Util.FileHelper.FileSizePartitioner.SupportsDynamicPartitions">
             <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.MemoryManager">
@@ -2993,8 +2999,27 @@
             Gets the current memory limit for the application in bytes or <c>0</c> if no limit is set or the value could not be retrieved.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.MemoryManager.e">
-            <inheritdoc/>
+        <member name="M:LaquaiLib.Util.MemoryManager.GlobalMemoryStatusEx(LaquaiLib.Util.MemoryManager.MEMORYSTATUSEX@)">
+            <summary>
+            Retrieves information about the system's current usage of both physical and virtual memory using the <see cref="T:LaquaiLib.Util.MemoryManager.MEMORYSTATUSEX"/> <see langword="struct"/>.
+            </summary>
+            <param name="lpBuffer"></param>
+            <returns></returns>
+        </member>
+        <member name="F:LaquaiLib.Util.MemoryManager.BufferBytes">
+            <summary>
+            The number of bytes that must remain unallocated for the <see cref="M:LaquaiLib.Util.MemoryManager.CanAllocate(System.UInt64,System.Boolean)"/> method to return <see langword="true"/> for any given amount of <see cref="T:System.Byte"/>s.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.MemoryManager.CanAllocate(System.UInt64,System.Boolean)">
+            <summary>
+            Makes the <see cref="T:System.GC"/> aggressively collect garbage, then checks whether the specified amount of <paramref name="bytes"/> may be allocated in any way without causing an <see cref="T:System.OutOfMemoryException"/>.
+            </summary>
+            <param name="bytes">The amount of <see cref="T:System.Byte"/>s to allocate.</param>
+            <param name="allowAllocation">Whether to allow a temporary allocation of <paramref name="bytes"/> to check whether the allocation would succeed.</param>
+            <remarks>
+            If the primary method of using a P/Invoke call to <c>kernel32.dll/GlobalMemoryStatusEx</c> fails and <paramref name="allowAllocation"/> is <see langword="true"/>, a temporary allocation of <paramref name="bytes"/> is made to check whether the allocation would succeed. Otherwise, <see langword="false"/> is returned immediately.
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Util.ObservableValue`1">
             <summary>
@@ -3724,8 +3749,8 @@
             Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning <paramref name="defaultValue"/>.
             </summary>
             <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
             <param name="defaultValue">The value to return if <paramref name="method"/> fails.</param>
+            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
             <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise <typeparamref name="T"/>'s <c>default</c> value.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Try.ExecuteOrDefault``1(System.Func{``0},System.Func{``0})">

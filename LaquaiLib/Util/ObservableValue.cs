@@ -40,7 +40,7 @@ public class ObservableValue<T>
     /// </summary>
     public ObservableValue()
     {
-        this.value = default;
+        value = default;
     }
     /// <summary>
     /// Instantiates an <see cref="ObservableValue{T}"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="PropertyChanged"/> event is raised.
@@ -205,7 +205,7 @@ public class ObservableValue<T>
     public static bool operator <=(ObservableValue<T> left, ObservableValue<T> right) => left is null || left.CompareTo(right) <= 0;
 
     /// <inheritdoc/>
-    public static bool operator >(ObservableValue<T> left, ObservableValue<T> right) => left is not null && left.CompareTo(right) > 0;
+    public static bool operator >(ObservableValue<T> left, ObservableValue<T> right) => left?.CompareTo(right) > 0;
 
     /// <inheritdoc/>
     public static bool operator >=(ObservableValue<T> left, ObservableValue<T> right) => left is null ? right is null : left.CompareTo(right) >= 0;

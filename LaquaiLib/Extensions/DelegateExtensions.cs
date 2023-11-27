@@ -5,5 +5,5 @@
 /// </summary>
 public static class DelegateExtensions
 {
-    
+
 }

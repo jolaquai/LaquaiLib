@@ -351,7 +351,7 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// </summary>
     public delegate void PostCollectionChangedNotification();
     /// <summary>
-    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes 
+    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes
     /// </summary>
     public event PostCollectionChangedNotification PostCollectionChanged;
 

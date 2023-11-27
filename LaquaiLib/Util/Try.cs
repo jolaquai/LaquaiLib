@@ -20,8 +20,8 @@ public static class Try
     /// Attempts to execute the given parameterless <see cref="Func{TResult}"/> and propagates its return value if it succeeds, otherwise returning <paramref name="defaultValue"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-    /// <param name="method">The <see cref="Func{TResult}"/> to execute.</param>
     /// <param name="defaultValue">The value to return if <paramref name="method"/> fails.</param>
+    /// <param name="method">The <see cref="Func{TResult}"/> to execute.</param>
     /// <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise <typeparamref name="T"/>'s <c>default</c> value.</returns>
     public static T? ExecuteOrDefault<T>(T? defaultValue, Func<T?> method)
     {

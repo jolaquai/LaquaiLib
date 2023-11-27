@@ -28,7 +28,7 @@ public static partial class CultureHelper
     /// <remarks>
     /// Contrary to all other matching, this matching is case-sensitive. If an override is added for, for example, <c>"united states"</c> with a value of <c>"en-US"</c>, the inputs <c>"United states"</c>, <c>"united States"</c>, <c>"United States"</c> or <c>"UNITED STATES"</c> will not match the override.
     /// </remarks>
-    public static Dictionary<string, CultureInfo> CultureInfoOverrides { get; } = new Dictionary<string, CultureInfo>();
+    public static Dictionary<string, CultureInfo> CultureInfoOverrides { get; } = [];
 
     private static readonly Dictionary<string[], TimeZoneInfo> _timeZoneMap;
 
@@ -95,16 +95,16 @@ public static partial class CultureHelper
         // Try some shortcuts first before doing the heavy lifting of iterating through all cultures
         if (data.Length == 2 && _cultureMap.TryGetValue(data, out var twoLetterCultures))
         {
-            return twoLetterCultures.FirstOrDefault(ci => ci.TwoLetterISOLanguageName.Equals(data, StringComparison.OrdinalIgnoreCase));
+            return Array.Find(twoLetterCultures, ci => ci.TwoLetterISOLanguageName.Equals(data, StringComparison.OrdinalIgnoreCase));
         }
         if (data.Length == 5 && data[2] == '-' && _cultureMap.TryGetValue(data[..2], out var threeLetterCultures))
         {
-            if (threeLetterCultures.FirstOrDefault(ci => ci.Name.Equals(data, StringComparison.OrdinalIgnoreCase)) is CultureInfo exactMatch)
+            if (Array.Find(threeLetterCultures, ci => ci.Name.Equals(data, StringComparison.OrdinalIgnoreCase)) is CultureInfo exactMatch)
             {
                 return exactMatch;
             }
             // If there is no exact match, return the first culture that matches the language code and ignore the region code
-            return threeLetterCultures.FirstOrDefault(ci => ci.TwoLetterISOLanguageName.Equals(data[..2], StringComparison.OrdinalIgnoreCase));
+            return Array.Find(threeLetterCultures, ci => ci.TwoLetterISOLanguageName.Equals(data[..2], StringComparison.OrdinalIgnoreCase));
         }
 
         // If we didn't find a match yet, iterate through all cultures

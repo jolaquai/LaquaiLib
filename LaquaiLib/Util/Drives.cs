@@ -12,9 +12,9 @@ namespace LaquaiLib.Util;
 public static class Drives
 {
     private static readonly Timer _timer = new Timer(ConditionalRaiseEvents, null, Timeout.Infinite, 10);
-    private static List<DriveInfo> previousDriveList = new List<DriveInfo>();
-    private static List<DriveInfo> previousRemovableList = new List<DriveInfo>();
-    private static List<DriveInfo> previousReadyCdList = new List<DriveInfo>();
+    private static List<DriveInfo> previousDriveList = [];
+    private static List<DriveInfo> previousRemovableList = [];
+    private static List<DriveInfo> previousReadyCdList = [];
     private static DateTime lastCdDriveChange = DateTime.MinValue;
 
     /// <summary>

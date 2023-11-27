@@ -16,13 +16,12 @@ public static class ObjectExtensions
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> is <see langword="null"/>.</exception>
     public static T Cast<T>(this object? obj)
     {
-        ArgumentNullException.ThrowIfNull(obj);
         return Try.First(
             () => (T)obj,
             () => (T)Convert.ChangeType(obj, typeof(T))!
         );
     }
-    
+
     /// <summary>
     /// Safely casts an <see cref="object"/> to <typeparamref name="T"/> using <c>as</c>.
     /// </summary>

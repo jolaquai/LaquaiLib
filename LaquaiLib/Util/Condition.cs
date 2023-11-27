@@ -18,7 +18,7 @@ public readonly struct Condition
     /// The actual <see cref="bool"/> value this <see cref="Condition"/> represents.
     /// </summary>
     public readonly bool Value { get; }
-    
+
     /// <summary>
     /// Instantiates a new <see cref="Condition"/>. Its default state is representative of <see langword="false"/>.
     /// </summary>

@@ -213,7 +213,7 @@ public static class IEnumerableExtensions
                          .OrderByDescending(kvp => kvp.Count)
                          .First()
                          .Item;
-    } 
+    }
     #endregion
 
     /// <summary>

@@ -32,7 +32,7 @@ public static class PropertyInfoExtensions
     {
         ArgumentNullException.ThrowIfNull(propertyInfo);
         var value = propertyInfo.GetValue(obj);
-        if (value is not null && value.GetType().CanCastTo(typeof(T)))
+        if (value?.GetType().CanCastTo(typeof(T)) == true)
         {
             return (T)value;
         }

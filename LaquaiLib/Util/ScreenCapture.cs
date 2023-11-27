@@ -34,7 +34,7 @@ public partial class ScreenCapture
 
         public static double[] EnumerateScales()
         {
-            List<double> scales = new();
+            List<double> scales = [];
             bool Callback(nint hDesktop, nint hdc, ref Rect pRect, int dwData)
             {
                 GetScaleFactorForMonitor(hDesktop, out var scale);
@@ -45,7 +45,7 @@ public partial class ScreenCapture
             }
 
             EnumDisplayMonitors(nint.Zero, nint.Zero, Callback, 0);
-            return scales.ToArray();
+            return [.. scales];
         }
     }
 

@@ -13,8 +13,8 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     where T1 : notnull
     where T2 : notnull
 {
-    private readonly Dictionary<T1, T2> _forward = new Dictionary<T1, T2>();
-    private readonly Dictionary<T2, T1> _reverse = new Dictionary<T2, T1>();
+    private readonly Dictionary<T1, T2> _forward = [];
+    private readonly Dictionary<T2, T1> _reverse = [];
 
     /// <summary>
     /// Adds a new entry to the lookup table by the first type parameter <typeparamref name="T1"/>. An exception is thrown if either the key or the value already exists.
@@ -56,7 +56,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             return false;
         }
     }
-    
+
     /// <summary>
     /// Attempts to add a new entry to the lookup table by the second type parameter <typeparamref name="T2"/>.
     /// </summary>

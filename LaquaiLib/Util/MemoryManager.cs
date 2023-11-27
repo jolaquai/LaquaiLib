@@ -1,4 +1,10 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+using DiscUtils.Nfs;
+
+using LaquaiLib.Wrappers;
 
 namespace LaquaiLib.Util;
 
@@ -15,18 +21,11 @@ public static class MemoryManager
     {
         AppContext.SetData("GCHeapHardLimit", limit);
         // Make the GC aware of the new limit
-        typeof(GC).GetMethod("RefreshMemoryLimit", BindingFlags.Static | BindingFlags.Public).Invoke(null, null);
-        //GC.RefreshMemoryLimit();
+        GC.RefreshMemoryLimit();
     }
 
     /// <summary>
     /// Gets the current memory limit for the application in bytes or <c>0</c> if no limit is set or the value could not be retrieved.
     /// </summary>
     public static ulong GetMemoryLimit() => AppContext.GetData("GCHeapHardLimit") is ulong limit ? limit : 0;
-
-    /// <inheritdoc/>
-    public static void e()
-    {
-        
-    }
 }
