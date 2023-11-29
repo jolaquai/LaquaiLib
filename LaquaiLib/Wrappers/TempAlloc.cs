@@ -61,7 +61,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> for exactly one instance of the given <see cref="Type"/>.
+    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     public static TempAlloc Create<T>()
@@ -71,7 +71,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> for exactly one instance of the given <see cref="Type"/>, optionally clearing any previous data.
+    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>, optionally clearing any previous data.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
@@ -82,7 +82,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="Type"/>.
+    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
@@ -97,7 +97,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="Type"/>.
+    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
@@ -125,23 +125,83 @@ public unsafe class TempAlloc : IDisposable
         return alloc;
     }
 
+    #region Indexers
+    /// <summary>
+    /// Retrieves a pointer to the byte at the given <paramref name="index"/> in the memory region this <see cref="TempAlloc"/> wraps.
+    /// </summary>
+    /// <param name="index">An <see cref="Index"/> that represents the index of the byte to retrieve.</param>
+    /// <returns>A pointer to the byte at the given <paramref name="index"/>.</returns>
+    public byte* this[Index index]
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, _address);
+            return (byte*)(_address + index.GetOffset(_size));
+        }
+    }
+    /// <summary>
+    /// Constructs a <see cref="Span{T}"/> of <see cref="byte"/> sliced to the specified <paramref name="range"/> in the memory region this <see cref="TempAlloc"/> wraps.
+    /// </summary>
+    /// <param name="range">A <see cref="Range"/> that represents the range of bytes to retrieve.</param>
+    /// <returns>The created <see cref="Span{T}"/> of <see cref="byte"/> slice.</returns>
+    public Span<byte> this[Range range]
+    {
+        get
+        {
+            ObjectDisposedException.ThrowIf(IsDisposed, _address);
+            var (start, length) = range.GetOffsetAndLength(_size);
+            return Data.Slice(start, length);
+        }
+    }
+    /// <summary>
+    /// Constructs a <see cref="Span{T}"/> of <see cref="byte"/> sliced to the specified range in the memory region this <see cref="TempAlloc"/> wraps.
+    /// </summary>
+    /// <param name="start">The start index of the slice.</param>
+    /// <param name="length">The length of the slice.</param>
+    /// <returns>The created <see cref="Span{T}"/> of <see cref="byte"/> slice.</returns>
+    public Span<byte> this[int start, int length] => this[start..length];
+    #endregion
+
     private nint _address;
     private int _size;
 
     /// <summary>
     /// The address of the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public nint Address {
-        get {
+    public nint Address
+    {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
             return _address;
         }
     }
     /// <summary>
+    /// Returns the address of the memory region this <see cref="TempAlloc"/> wraps as a pointer to an unspecified type.
+    /// </summary>
+    public void* GetPointer()
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, _address);
+        return (void*)_address;
+    }
+    /// <summary>
+    /// Returns the address of the memory region this <see cref="TempAlloc"/> wraps as a pointer to an instance of <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The unmanaged <see cref="Type"/> to cast the pointer to.</typeparam>
+    /// <returns>The pointer as specified.</returns>
+    public T* GetPointer<T>()
+        where T : unmanaged
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, _address);
+        return (T*)_address;
+    }
+    /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bytes.
     /// </summary>
-    public int Size {
-        get {
+    public int Size
+    {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
             return _size;
         }
@@ -149,8 +209,10 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bits.
     /// </summary>
-    public int Bits {
-        get {
+    public int Bits
+    {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
             return _size * 8;
         }
@@ -158,13 +220,12 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// A <see cref="Span{T}"/> of <see cref="byte"/> that represents the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public Span<byte> Data {
-        get {
+    public Span<byte> Data
+    {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
-            unsafe
-            {
-                return new Span<byte>((byte*)_address, _size);
-            }
+            return new Span<byte>((byte*)_address, _size);
         }
     }
     /// <summary>
@@ -197,7 +258,6 @@ public unsafe class TempAlloc : IDisposable
     /// <typeparam name="T">The <see cref="Type"/> to cast the contents of the memory region to.</typeparam>
     /// <returns>The entire contents of the memory region this <see cref="TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
     public T As<T>() => As<T>(0, _size);
-
     /// <summary>
     /// Attempts to cast the content of a slice of the memory region this <see cref="TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
     /// </summary>
@@ -217,7 +277,6 @@ public unsafe class TempAlloc : IDisposable
                 // Special case for strings since they're not blittable
                 if (typeof(T) == typeof(string))
                 {
-                    unsafe
                     {
                         if (new string((sbyte*)bytePtr, 0, length) is T value)
                         {
@@ -285,7 +344,6 @@ public unsafe class TempAlloc : IDisposable
             return ReplaceShorter(search, replacement, shift);
         }
     }
-
     /// <summary>
     /// Searches for all occurrences of a given <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> in the memory region this <see cref="TempAlloc"/> wraps and replaces them with memory represented by another <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/>.
     /// </summary>
@@ -322,7 +380,6 @@ public unsafe class TempAlloc : IDisposable
         }
         return c;
     }
-
     private bool ReplaceLonger(ReadOnlySpan<byte> search, ReadOnlySpan<byte> replacement, bool shift)
     {
         var data = Data;
@@ -363,7 +420,6 @@ public unsafe class TempAlloc : IDisposable
 
         return false;
     }
-
     private bool ReplaceShorter(ReadOnlySpan<byte> search, ReadOnlySpan<byte> replacement, bool shift)
     {
         var data = Data;
@@ -414,7 +470,6 @@ public unsafe class TempAlloc : IDisposable
         }
         return sb.ToString().Trim(' ');
     }
-
     /// <summary>
     /// Serializes the contents of the memory region this <see cref="TempAlloc"/> wraps to a <see cref="string"/> of binary characters, grouped into 32-bit words.
     /// </summary>
@@ -434,6 +489,12 @@ public unsafe class TempAlloc : IDisposable
         }
         return sb.ToString().Trim(' ');
     }
+
+    #region Operators
+    public static implicit operator nint(TempAlloc alloc) => alloc.Address;
+    public static implicit operator nuint(TempAlloc alloc) => (nuint)alloc.Address;
+    public static implicit operator void*(TempAlloc alloc) => (void*)alloc.Address;
+    #endregion
 
     #region Dispose pattern
     private void Dispose(bool disposing)

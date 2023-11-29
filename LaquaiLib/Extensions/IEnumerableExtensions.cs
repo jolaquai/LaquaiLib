@@ -297,4 +297,41 @@ public static class IEnumerableExtensions
             }
         }
     }
+
+    /// <summary>
+    /// Blits the elements in the input sequence into a sequence of bytes.
+    /// <typeparamref name="T"/> must be an unmanaged Type.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>All elements in the input sequence, blitted into a sequence of bytes and concatenated.</returns>
+    public static IEnumerable<byte> Blitted<T>(this IEnumerable<T> source)
+        where T : unmanaged
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        foreach (var item in source)
+        {
+            var bytes = item switch
+            {
+                bool v => BitConverter.GetBytes(v),
+                char v => BitConverter.GetBytes(v),
+                short v => BitConverter.GetBytes(v),
+                int v => BitConverter.GetBytes(v),
+                long v => BitConverter.GetBytes(v),
+                ushort v => BitConverter.GetBytes(v),
+                uint v => BitConverter.GetBytes(v),
+                ulong v => BitConverter.GetBytes(v),
+                Half v => BitConverter.GetBytes(v),
+                float v => BitConverter.GetBytes(v),
+                double v => BitConverter.GetBytes(v),
+                byte v => [v],
+                byte[] v => v,
+                _ => [],
+            };
+            foreach (var b in bytes)
+            {
+                yield return b;
+            }
+        }
+    }
 }

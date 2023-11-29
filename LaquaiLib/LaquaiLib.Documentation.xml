@@ -829,6 +829,47 @@
             Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Decorators.TimingDecorator">
+            <summary>
+            Represents a decorator that measures the time it takes to execute a <see langword="delegate"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Decorators.TimingDecorator.Delegate">
+            <summary>
+            The <see langword="delegate"/> that is invoked by <see cref="M:LaquaiLib.Decorators.TimingDecorator.Invoke(System.Object@)"/> and <see cref="M:LaquaiLib.Decorators.TimingDecorator.InvokeAsync"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Decorators.TimingDecorator.Parameters">
+            <summary>
+            The parameters that are passed to the <see langword="delegate"/> on invocation.
+            May be <see langword="null"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Decorators.TimingDecorator.#ctor(System.Delegate,System.Object[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Decorators.TimingDecorator"/> with the specified <see langword="delegate"/> and parameters.
+            </summary>
+            <param name="delegate">The <see langword="delegate"/> to store.</param>
+            <param name="parameters">The parameters to pass to the <see langword="delegate"/> on invocation.</param>
+        </member>
+        <member name="M:LaquaiLib.Decorators.TimingDecorator.Invoke(System.Object@)">
+            <summary>
+            Invokes the stored <see langword="delegate"/> and returns the time it took to execute it.
+            </summary>
+            <param name="value">An <see langword="out"/> variable that receives the return value of the <see langword="delegate"/> if it returns a value, otherwise <see langword="null"/>.</param>
+            <returns>A <see cref="T:System.TimeSpan"/> that represents the time it took to execute the <see langword="delegate"/>.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the <see cref="P:LaquaiLib.Decorators.TimingDecorator.Delegate"/> returns a <see cref="T:System.Threading.Tasks.Task"/></exception>
+        </member>
+        <member name="M:LaquaiLib.Decorators.TimingDecorator.InvokeAsync">
+            <summary>
+            Asynchronously invokes the stored <see langword="delegate"/> and returns the time it took to execute it.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.ValueTask`1"/> that represents the asynchronous operation.</returns>
+            <remarks>
+            If the <see cref="T:System.Threading.Tasks.Task"/> returned by the <see langword="delegate"/> throws an exception, it is immediately propagated to the caller of this method.
+            <para/>Note that the return value of the <see langword="delegate"/> is lost when using this method.
+            </remarks>
+        </member>
         <member name="T:LaquaiLib.Extensions.AnyExtensions">
             <summary>
             Provides Extension Methods for all Types.
@@ -1290,6 +1331,21 @@
             <param name="source">The sequence of <see cref="T:System.Boolean"/> values to check.</param>
             <returns>A value that indicates whether all elements of the sequence are true.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.IEnumerableByteExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Byte"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableByteExtensions.IntoStruct``1(System.Collections.Generic.IEnumerable{System.Byte},System.Boolean)">
+            <summary>
+            Using the specified <see cref="T:System.Byte"/> sequence, creates a new <typeparamref name="T"/> instance.
+            </summary>
+            <typeparam name="T">The <see cref="T:System.Type"/> of the <see langword="struct"/> to marshal the specified bytes into.</typeparam>
+            <param name="enumerable">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Byte"/> to marshal into a new <typeparamref name="T"/> instance.</param>
+            <param name="bigEndian">Whether the individual byte sequences the struct's fields are represented by are in big-endian order (which is the default for byte sequences returned from <see cref="T:System.BitConverter"/>).</param>
+            <returns>The new <typeparamref name="T"/> instance.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the specified struct type is not declared in a manner compatible with marshalling, or the specified byte sequence is not of the correct length.</exception>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> Type.
@@ -1433,6 +1489,15 @@
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and produces a new value.</param>
             <returns>The transformed elements.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Blitted``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Blits the elements in the input sequence into a sequence of bytes.
+            <typeparamref name="T"/> must be an unmanaged Type.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>All elements in the input sequence, blitted into a sequence of bytes and concatenated.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
@@ -2285,6 +2350,26 @@
             Returns a cached instance of <see cref="T:LaquaiLib.Extensions.ReflectionOptions"/> with the default behavior.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Extensions.Unsafe.NintExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:System.IntPtr"/> and <see cref="T:System.UIntPtr"/> types, which implicitly includes pointers.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Unsafe.NintExtensions.ToArray(System.IntPtr,System.Int32)">
+            <summary>
+            Constructs a <see cref="T:System.Byte"/> array from a region of memory starting at <paramref name="address"/> with the specified <paramref name="length"/>.
+            </summary>
+            <param name="address">The address of the first <see cref="T:System.Byte"/> to be included in the array.</param>
+            <param name="length">The length of the array.</param>
+            <returns>The constructed <see cref="T:System.Byte"/> array.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Unsafe.NintExtensions.ToArray(System.IntPtr,System.Byte[])">
+            <summary>
+            Copies the contents of the memory region starting at <paramref name="address"/> to the specified <paramref name="arr"/>.
+            </summary>
+            <param name="address">The address of the first <see cref="T:System.Byte"/> to be copied.</param>
+            <param name="arr">The <see cref="T:System.Byte"/> array to copy the memory region to. Its <see cref="P:System.Array.Length"/> dictates how many bytes will be copied.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Xml.Linq.XElement"/> Type.
@@ -2998,28 +3083,6 @@
             <summary>
             Gets the current memory limit for the application in bytes or <c>0</c> if no limit is set or the value could not be retrieved.
             </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.MemoryManager.GlobalMemoryStatusEx(LaquaiLib.Util.MemoryManager.MEMORYSTATUSEX@)">
-            <summary>
-            Retrieves information about the system's current usage of both physical and virtual memory using the <see cref="T:LaquaiLib.Util.MemoryManager.MEMORYSTATUSEX"/> <see langword="struct"/>.
-            </summary>
-            <param name="lpBuffer"></param>
-            <returns></returns>
-        </member>
-        <member name="F:LaquaiLib.Util.MemoryManager.BufferBytes">
-            <summary>
-            The number of bytes that must remain unallocated for the <see cref="M:LaquaiLib.Util.MemoryManager.CanAllocate(System.UInt64,System.Boolean)"/> method to return <see langword="true"/> for any given amount of <see cref="T:System.Byte"/>s.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.MemoryManager.CanAllocate(System.UInt64,System.Boolean)">
-            <summary>
-            Makes the <see cref="T:System.GC"/> aggressively collect garbage, then checks whether the specified amount of <paramref name="bytes"/> may be allocated in any way without causing an <see cref="T:System.OutOfMemoryException"/>.
-            </summary>
-            <param name="bytes">The amount of <see cref="T:System.Byte"/>s to allocate.</param>
-            <param name="allowAllocation">Whether to allow a temporary allocation of <paramref name="bytes"/> to check whether the allocation would succeed.</param>
-            <remarks>
-            If the primary method of using a P/Invoke call to <c>kernel32.dll/GlobalMemoryStatusEx</c> fails and <paramref name="allowAllocation"/> is <see langword="true"/>, a temporary allocation of <paramref name="bytes"/> is made to check whether the allocation would succeed. Otherwise, <see langword="false"/> is returned immediately.
-            </remarks>
         </member>
         <member name="T:LaquaiLib.Util.ObservableValue`1">
             <summary>
@@ -5093,27 +5156,27 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>.
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
             <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
             <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
             <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
@@ -5126,10 +5189,44 @@
             <typeparam name="T">The <see cref="T:System.Type"/> of the <paramref name="value"/> to allocate memory for.</typeparam>
             <param name="value">A value of type <typeparamref name="T"/> to allocate memory for. The existing value is copied to the newly allocated memory region.</param>
         </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.Item(System.Index)">
+            <summary>
+            Retrieves a pointer to the byte at the given <paramref name="index"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
+            </summary>
+            <param name="index">An <see cref="T:System.Index"/> that represents the index of the byte to retrieve.</param>
+            <returns>A pointer to the byte at the given <paramref name="index"/>.</returns>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.Item(System.Range)">
+            <summary>
+            Constructs a <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> sliced to the specified <paramref name="range"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
+            </summary>
+            <param name="range">A <see cref="T:System.Range"/> that represents the range of bytes to retrieve.</param>
+            <returns>The created <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> slice.</returns>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.TempAlloc.Item(System.Int32,System.Int32)">
+            <summary>
+            Constructs a <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> sliced to the specified range in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
+            </summary>
+            <param name="start">The start index of the slice.</param>
+            <param name="length">The length of the slice.</param>
+            <returns>The created <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> slice.</returns>
+        </member>
         <member name="P:LaquaiLib.Wrappers.TempAlloc.Address">
             <summary>
             The address of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.GetPointer">
+            <summary>
+            Returns the address of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as a pointer to an unspecified type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.TempAlloc.GetPointer``1">
+            <summary>
+            Returns the address of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as a pointer to an instance of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The unmanaged <see cref="T:System.Type"/> to cast the pointer to.</typeparam>
+            <returns>The pointer as specified.</returns>
         </member>
         <member name="P:LaquaiLib.Wrappers.TempAlloc.Size">
             <summary>
