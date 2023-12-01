@@ -3,10 +3,7 @@ using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-
-using DocumentFormat.OpenXml.Bibliography;
 
 using LaquaiLib.Util;
 

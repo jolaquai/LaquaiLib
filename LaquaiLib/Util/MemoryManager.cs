@@ -1,12 +1,4 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
-
-using DiscUtils.Nfs;
-
-using LaquaiLib.Wrappers;
-
-namespace LaquaiLib.Util;
+﻿namespace LaquaiLib.Util;
 
 /// <summary>
 /// Provides methods and events for managing memory and working with the Garbage Collector (<see cref="GC"/>).
