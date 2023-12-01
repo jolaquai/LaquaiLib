@@ -26,6 +26,14 @@
             Gets the number of nodes in the <see cref="T:LaquaiLib.Collections.Deque`1"/>.
             </summary>
         </member>
+        <member name="P:LaquaiLib.Collections.Deque`1.IsEmpty">
+            <summary>
+            Gets a value indicating whether the <see cref="T:LaquaiLib.Collections.Deque`1"/> is empty.
+            </summary>
+            <remarks>
+            Do not use <see cref="P:LaquaiLib.Collections.Deque`1.Count"/> to perform an empty check under any circumstances. With sufficiently large deques, the performance penalty is significant.
+            </remarks>
+        </member>
         <member name="M:LaquaiLib.Collections.Deque`1.#ctor">
             <summary>
             Instantiates a new, empty <see cref="T:LaquaiLib.Collections.Deque`1"/>.
@@ -159,11 +167,21 @@
             Enumerates the <see cref="T:LaquaiLib.Collections.Deque`1"/> and ensures that all contained nodes have references to neighboring nodes and to this <see cref="T:LaquaiLib.Collections.Deque`1"/>.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.Rotate(System.Int32)">
+            <summary>
+            Rotates the <see cref="T:LaquaiLib.Collections.Deque`1"/> by the specified number of nodes (that is, the node <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> references is shifted by the specified number of nodes).
+            </summary>
+            <param name="n">The number of nodes to rotate by. For example, if <paramref name="n"/> is 1, the node <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> references becomes <c><see cref="P:LaquaiLib.Collections.Deque`1.Head"/>.Previous</c>.</param>
+            <returns>A reference to the new <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> node.</returns>
+        </member>
         <member name="M:LaquaiLib.Collections.Deque`1.RemoveNode(LaquaiLib.Collections.DequeNode{`0})">
             <summary>
             Detaches the specified node from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and its neighbors.
             </summary>
             <param name="node">The node to remove.</param>
+            <remarks>
+            This method ensures that, unless <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> itself is detached, <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> will always remain in a valid state (that is, it will remain attached to its <see cref="T:LaquaiLib.Collections.Deque`1"/> and its, possibly new, neighbors).
+            </remarks>
             <exception cref="T:System.InvalidOperationException">Thrown if <paramref name="node"/> does not belong to this <see cref="T:LaquaiLib.Collections.Deque`1"/>.</exception>
         </member>
         <member name="M:LaquaiLib.Collections.Deque`1.RemoveNodes(LaquaiLib.Collections.DequeNode{`0}[])">
@@ -183,13 +201,13 @@
             <param name="value">The value to remove.</param>
             <returns>The number of nodes that were removed.</returns>
         </member>
-        <member name="M:LaquaiLib.Collections.Deque`1.RemoveHead">
+        <member name="M:LaquaiLib.Collections.Deque`1.PopLeft">
             <summary>
             Detaches the <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and its neighbors.
             </summary>
             <exception cref="T:System.InvalidOperationException">Thrown if the <see cref="T:LaquaiLib.Collections.Deque`1"/> is empty.</exception>
         </member>
-        <member name="M:LaquaiLib.Collections.Deque`1.RemoveTail">
+        <member name="M:LaquaiLib.Collections.Deque`1.PopRight">
             <summary>
             Detaches the <see cref="P:LaquaiLib.Collections.Deque`1.Tail"/> from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and its neighbors.
             </summary>

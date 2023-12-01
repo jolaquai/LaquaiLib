@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 
 namespace LaquaiLib.Collections;
 
@@ -7,18 +8,18 @@ namespace LaquaiLib.Collections;
 /// This is essentially just a <see cref="LinkedList{T}"/> with the last element pointing to the first element and vice versa.
 /// </summary>
 /// <typeparam name="T">The type of elements in the deque.</typeparam>
+[DebuggerDisplay("Head = {Head}, Count = {Count}")]
 public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
 {
-    private DequeNode<T?>? head;
+    #region Properties
     /// <summary>
     /// Gets the first element of the deque.
     /// </summary>
-    public DequeNode<T?>? Head => head;
+    public DequeNode<T?>? Head { get; private set; }
     /// <summary>
     /// Gets the "last" element of the deque.
     /// </summary>
     public DequeNode<T?>? Tail => Head?.Previous;
-
     /// <summary>
     /// Gets the number of nodes in the <see cref="Deque{T}"/>.
     /// </summary>
@@ -27,19 +28,28 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
         get
         {
             var i = 0;
-            var current = head;
+            var current = Head;
             if (current is not null)
             {
                 do
                 {
                     i++;
                     current = current.Next;
-                } while (current != head && current is not null);
+                } while (current != Head && current is not null);
             }
             return i;
         }
     }
+    /// <summary>
+    /// Gets a value indicating whether the <see cref="Deque{T}"/> is empty.
+    /// </summary>
+    /// <remarks>
+    /// Do not use <see cref="Count"/> to perform an empty check under any circumstances. With sufficiently large deques, the performance penalty is significant.
+    /// </remarks>
+    public bool IsEmpty => Head is null;
+    #endregion
 
+    #region .ctors
     /// <summary>
     /// Instantiates a new, empty <see cref="Deque{T}"/>.
     /// </summary>
@@ -72,7 +82,9 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             AddLast(default(T));
         }
     }
+    #endregion
 
+    #region Find*
     /// <summary>
     /// Finds the first node in the deque that contains the specified value.
     /// </summary>
@@ -90,7 +102,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
                     return node;
                 }
                 node = node.Next;
-            } while (node != head && node is not null);
+            } while (node != Head && node is not null);
         }
         return null;
     }
@@ -132,10 +144,12 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
                     yield return node;
                 }
                 node = node.Next;
-            } while (node != head && node is not null);
+            } while (node != Head && node is not null);
         }
     }
+    #endregion
 
+    #region Add*
     /// <summary>
     /// Inserts a new <see cref="DequeNode{T}"/> containing the specified value after the specified node.
     /// </summary>
@@ -165,11 +179,11 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
         }
 
         var oldNext = node.Next;
-        var oldPrevious = node.Previous;
         node.Next = newNode;
-        oldNext.Previous = newNode;
         newNode.Next = oldNext;
-        newNode.Previous = oldPrevious;
+
+        oldNext.Previous = newNode;
+        newNode.Previous = node;
 
         newNode.Deque = this;
         return newNode;
@@ -189,36 +203,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// <param name="newNode">The node to insert.</param>
     /// <returns>A reference to the newly inserted node.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="newNode"/> already belongs to a <see cref="Deque{T}"/>.</exception>
-    public DequeNode<T?> AddBefore(DequeNode<T?> node, DequeNode<T?> newNode)
-    {
-        ArgumentNullException.ThrowIfNull(node);
-        ArgumentNullException.ThrowIfNull(newNode);
-
-        if (node.Deque != this)
-        {
-            throw new InvalidOperationException("The specified node does not belong to this deque.");
-        }
-        if (newNode.Deque != null)
-        {
-            throw new InvalidOperationException("The specified node already belongs to a deque.");
-        }
-
-        var oldNext = node.Next;
-        var oldPrevious = node.Previous;
-        node.Previous = newNode;
-        oldPrevious.Next = newNode;
-        newNode.Next = oldNext;
-        newNode.Previous = oldPrevious;
-
-        newNode.Deque = this;
-
-        if (node == head)
-        {
-            head = newNode;
-        }
-
-        return null;
-    }
+    public DequeNode<T?> AddBefore(DequeNode<T?> node, DequeNode<T?> newNode) => AddAfter(node.Previous ?? throw new InvalidOperationException("The specified node is the head of the deque."), newNode);
 
     /// <summary>
     /// Adds a new <see cref="DequeNode{T}"/> containing the specified value to the beginning of the deque (that is, the specified node becomes the <see cref="Head"/>).
@@ -241,17 +226,17 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             throw new InvalidOperationException("The specified node already belongs to a deque.");
         }
 
-        if (head == null)
+        if (Head == null)
         {
             // If this is the first node, it is also the last node.
-            head = node;
-            head.Next = head;
-            head.Previous = head;
+            Head = node;
+            Head.Next = Head;
+            Head.Previous = Head;
         }
         else
         {
             // Otherwise make this node the new head
-            AddBefore(head, node);
+            AddBefore(Head, node);
         }
 
         node.Deque = this;
@@ -280,12 +265,12 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             throw new InvalidOperationException("The specified node already belongs to a deque.");
         }
 
-        if (head == null)
+        if (Head == null)
         {
             // If this is the first node, it is also the last node.
-            head = node;
-            head.Next = head;
-            head.Previous = head;
+            Head = node;
+            Head.Next = Head;
+            Head.Previous = Head;
         }
         else
         {
@@ -297,13 +282,15 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
 
         return node;
     }
+    #endregion
 
+    #region Misc
     /// <summary>
     /// Clears the reference to <see cref="Head"/>, which in turn clears the reference to all other nodes.
     /// </summary>
     public void Clear()
     {
-        head = null;
+        Head = null;
     }
     /// <summary>
     /// Determines whether the <see cref="Deque{T}"/> contains at least one node that contains the specified value.
@@ -316,7 +303,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// </remarks>
     public bool Contains(T? value, IEqualityComparer<T?>? comparer = null)
     {
-        var current = head;
+        var current = Head;
         if (current is not null)
         {
             do
@@ -326,7 +313,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
                     return true;
                 }
                 current = current.Next;
-            } while (current != head && current is not null);
+            } while (current != Head && current is not null);
         }
         return false;
     }
@@ -350,20 +337,19 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             throw new ArgumentOutOfRangeException(nameof(index), index, $"The specified index is out of range. It must be between 0 and {len - nodeCount}.");
         }
 
-        var current = head;
+        var current = Head;
         for (var i = 0; i < len && current is not null; i++)
         {
             array[i] = current.Value;
             current = current.Next;
         }
     }
-
     /// <summary>
     /// Enumerates the <see cref="Deque{T}"/> and ensures that all contained nodes have references to neighboring nodes and to this <see cref="Deque{T}"/>.
     /// </summary>
     public void EnsureIntegrity()
     {
-        var current = head ?? throw new InvalidOperationException("The deque is empty.");
+        var current = Head ?? throw new InvalidOperationException("The deque is empty.");
         do
         {
             if (current.Deque != this)
@@ -387,13 +373,49 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
                 throw new DetachedDequeNodeException<T?>(current.Previous, DetachedDequeNodeException<T?>.OffenseKind.InconsistentPrevious);
             }
             current = current.Next;
-        } while (current != head);
+        } while (current != Head);
     }
 
+    /// <summary>
+    /// Rotates the <see cref="Deque{T}"/> by the specified number of nodes (that is, the node <see cref="Head"/> references is shifted by the specified number of nodes).
+    /// </summary>
+    /// <param name="n">The number of nodes to rotate by. For example, if <paramref name="n"/> is 1, the node <see cref="Head"/> references becomes <c><see cref="Head"/>.Previous</c>.</param>
+    /// <returns>A reference to the new <see cref="Head"/> node.</returns>
+    public DequeNode<T>? Rotate(int n)
+    {
+        if (Head is not null)
+        {
+            if (n == 0)
+            {
+                return Head;
+            }
+            else if (n > 0)
+            {
+                while (n-- != 0)
+                {
+                    Head = Head.Previous;
+                }
+            }
+            else
+            {
+                while (n++ != 0)
+                {
+                    Head = Head.Next;
+                }
+            }
+        }
+        return Head;
+    }
+    #endregion
+
+    #region Remove*
     /// <summary>
     /// Detaches the specified node from the <see cref="Deque{T}"/> and its neighbors.
     /// </summary>
     /// <param name="node">The node to remove.</param>
+    /// <remarks>
+    /// This method ensures that, unless <see cref="Head"/> itself is detached, <see cref="Head"/> will always remain in a valid state (that is, it will remain attached to its <see cref="Deque{T}"/> and its, possibly new, neighbors).
+    /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="node"/> does not belong to this <see cref="Deque{T}"/>.</exception>
     public DequeNode<T?> RemoveNode(DequeNode<T?> node)
     {
@@ -404,14 +426,21 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             throw new InvalidOperationException("The specified node does not belong to this deque.");
         }
 
+        if (node == Head && node.Next == Head && node.Previous == Head)
+        {
+            // If this is the only node, clear the deque
+            Clear();
+            return node;
+        }
+
         var oldNext = node.Next;
         var oldPrevious = node.Previous;
         oldNext.Previous = oldPrevious;
         oldPrevious.Next = oldNext;
 
-        if (node == head)
+        if (node == Head)
         {
-            head = oldNext;
+            Head = oldNext;
         }
 
         node.Next = null;
@@ -427,7 +456,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     public int RemoveNodes(params DequeNode<T?>[] nodes)
     {
         var removed = 0;
-        var current = head;
+        var current = Head;
         if (current is not null)
         {
             do
@@ -438,7 +467,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
                     removed++;
                 }
                 current = current.Next;
-            } while (current != head && current is not null);
+            } while (current != Head && current is not null);
         }
         return removed;
     }
@@ -454,13 +483,15 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// Detaches the <see cref="Head"/> from the <see cref="Deque{T}"/> and its neighbors.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
-    public void RemoveHead() => RemoveNode(Head ?? throw new InvalidOperationException("The deque is empty."));
+    public T? PopLeft() => RemoveNode(Head ?? throw new InvalidOperationException("The deque is empty.")).Value;
     /// <summary>
     /// Detaches the <see cref="Tail"/> from the <see cref="Deque{T}"/> and its neighbors.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
-    public void RemoveTail() => RemoveNode(Tail ?? throw new InvalidOperationException("The deque is empty."));
+    public T? PopRight() => RemoveNode(Tail ?? throw new InvalidOperationException("The deque is empty.")).Value;
+    #endregion
 
+    #region IEnumerable
     /// <summary>
     /// Returns an <see cref="IEnumerator{T}"/> that iterates through the <see cref="Deque{T}"/>'s nodes.
     /// </summary>
@@ -473,7 +504,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             {
                 yield return node;
                 node = node.Next;
-            } while (node != head && node is not null);
+            } while (node != Head && node is not null);
         }
     }
     /// <summary>
@@ -488,10 +519,11 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             {
                 yield return node.Value;
                 node = node.Next;
-            } while (node != head && node is not null);
+            } while (node != Head && node is not null);
         }
     }
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T?>)this).GetEnumerator();
+    #endregion
 }
 
 /// <summary>
