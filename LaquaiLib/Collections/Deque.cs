@@ -1,0 +1,603 @@
+﻿using System.Collections;
+
+namespace LaquaiLib.Collections;
+
+/// <summary>
+/// Represents a "deque" (or "double-ended queue") data structure.
+/// This is essentially just a <see cref="LinkedList{T}"/> with the last element pointing to the first element and vice versa.
+/// </summary>
+/// <typeparam name="T">The type of elements in the deque.</typeparam>
+public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
+{
+    private DequeNode<T?>? head;
+    /// <summary>
+    /// Gets the first element of the deque.
+    /// </summary>
+    public DequeNode<T?>? Head => head;
+    /// <summary>
+    /// Gets the "last" element of the deque.
+    /// </summary>
+    public DequeNode<T?>? Tail => Head?.Previous;
+
+    /// <summary>
+    /// Gets the number of nodes in the <see cref="Deque{T}"/>.
+    /// </summary>
+    public int Count
+    {
+        get
+        {
+            var i = 0;
+            var current = head;
+            if (current is not null)
+            {
+                do
+                {
+                    i++;
+                    current = current.Next;
+                } while (current != head && current is not null);
+            }
+            return i;
+        }
+    }
+
+    /// <summary>
+    /// Instantiates a new, empty <see cref="Deque{T}"/>.
+    /// </summary>
+    public Deque()
+    {
+    }
+    /// <summary>
+    /// Instantiates a new <see cref="Deque{T}"/> with nodes containing the specified values.
+    /// </summary>
+    /// <param name="values">The values to insert into the deque.</param>
+    public Deque(params T?[] values)
+    {
+        ArgumentNullException.ThrowIfNull(values);
+
+        foreach (var value in values)
+        {
+            AddLast(value);
+        }
+    }
+    /// <inheritdoc cref="Deque{T}(T[])"/>
+    public Deque(IEnumerable<T?> values) : this(values as T?[] ?? values.ToArray()) { }
+    /// <summary>
+    /// Instantaites a new <see cref="Deque{T}"/> with the specified number of nodes that contain the default value of <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="nodes">The number of nodes to insert into the deque.</param>
+    public Deque(int nodes)
+    {
+        for (var i = 0; i < nodes; i++)
+        {
+            AddLast(default(T));
+        }
+    }
+
+    /// <summary>
+    /// Finds the first node in the deque that contains the specified value.
+    /// </summary>
+    /// <param name="value">The value to find.</param>
+    /// <returns>A reference to the first node that contains the specified value, or <see langword="null"/> if no such node was found.</returns>
+    public DequeNode<T?>? FindFirst(T? value)
+    {
+        if (Head != null)
+        {
+            var node = Head;
+            do
+            {
+                if (node?.Value?.Equals(value) is true)
+                {
+                    return node;
+                }
+                node = node.Next;
+            } while (node != head && node is not null);
+        }
+        return null;
+    }
+    /// <summary>
+    /// Finds the last node in the deque that contains the specified value.
+    /// </summary>
+    /// <param name="value">The value to find.</param>
+    /// <returns>A reference to the last node that contains the specified value, or <see langword="null"/> if no such node was found.</returns>
+    public DequeNode<T?>? FindLast(T? value)
+    {
+        if (Tail != null)
+        {
+            var node = Tail;
+            do
+            {
+                if (node?.Value?.Equals(value) is true)
+                {
+                    return node;
+                }
+                node = node.Previous;
+            } while (node != Tail && node is not null);
+        }
+        return null;
+    }
+    /// <summary>
+    /// Finds all nodes in the deque that contain the specified value.
+    /// </summary>
+    /// <param name="value">The value to find.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that enumerates all nodes that contain the specified value.</returns>
+    public IEnumerable<DequeNode<T?>> FindAll(T? value)
+    {
+        if (Head != null)
+        {
+            var node = Head;
+            do
+            {
+                if (node?.Value?.Equals(value) is true)
+                {
+                    yield return node;
+                }
+                node = node.Next;
+            } while (node != head && node is not null);
+        }
+    }
+
+    /// <summary>
+    /// Inserts a new <see cref="DequeNode{T}"/> containing the specified value after the specified node.
+    /// </summary>
+    /// <param name="node">The node to insert the new node after.</param>
+    /// <param name="value">The value to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    public DequeNode<T?> AddAfter(DequeNode<T?> node, T? value) => AddAfter(node, new DequeNode<T?>(value));
+    /// <summary>
+    /// Inserts the specified <see cref="DequeNode{T}"/> after the specified node.
+    /// </summary>
+    /// <param name="node">The node to insert the new node after.</param>
+    /// <param name="newNode">The node to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="newNode"/> already belongs to a <see cref="Deque{T}"/>.</exception>
+    public DequeNode<T?> AddAfter(DequeNode<T?> node, DequeNode<T?> newNode)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(newNode);
+
+        if (node.Deque != this)
+        {
+            throw new InvalidOperationException("The specified node does not belong to this deque.");
+        }
+        if (newNode.Deque != null)
+        {
+            throw new InvalidOperationException("The specified node already belongs to a deque.");
+        }
+
+        var oldNext = node.Next;
+        var oldPrevious = node.Previous;
+        node.Next = newNode;
+        oldNext.Previous = newNode;
+        newNode.Next = oldNext;
+        newNode.Previous = oldPrevious;
+
+        newNode.Deque = this;
+        return newNode;
+    }
+
+    /// <summary>
+    /// Inserts a new <see cref="DequeNode{T}"/> containing the specified value before the specified node.
+    /// </summary>
+    /// <param name="node">The node to insert the new node before.</param>
+    /// <param name="value">The value to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    public DequeNode<T?> AddBefore(DequeNode<T?> node, T? value) => AddBefore(node, new DequeNode<T?>(value));
+    /// <summary>
+    /// Inserts the specified <see cref="DequeNode{T}"/> before the specified node.
+    /// </summary>
+    /// <param name="node">The node to insert the new node before.</param>
+    /// <param name="newNode">The node to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="newNode"/> already belongs to a <see cref="Deque{T}"/>.</exception>
+    public DequeNode<T?> AddBefore(DequeNode<T?> node, DequeNode<T?> newNode)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+        ArgumentNullException.ThrowIfNull(newNode);
+
+        if (node.Deque != this)
+        {
+            throw new InvalidOperationException("The specified node does not belong to this deque.");
+        }
+        if (newNode.Deque != null)
+        {
+            throw new InvalidOperationException("The specified node already belongs to a deque.");
+        }
+
+        var oldNext = node.Next;
+        var oldPrevious = node.Previous;
+        node.Previous = newNode;
+        oldPrevious.Next = newNode;
+        newNode.Next = oldNext;
+        newNode.Previous = oldPrevious;
+
+        newNode.Deque = this;
+
+        if (node == head)
+        {
+            head = newNode;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Adds a new <see cref="DequeNode{T}"/> containing the specified value to the beginning of the deque (that is, the specified node becomes the <see cref="Head"/>).
+    /// </summary>
+    /// <param name="value">The value to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    public DequeNode<T?> AddFirst(T? value) => AddFirst(new DequeNode<T?>(value));
+    /// <summary>
+    /// Adds the specified <see cref="DequeNode{T}"/> to the beginning of the deque (that is, the specified node becomes the <see cref="Head"/>).
+    /// </summary>
+    /// <param name="node">The node to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="node"/> already belongs to a <see cref="Deque{T}"/>.</exception>
+    public DequeNode<T?> AddFirst(DequeNode<T?> node)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+
+        if (node.Deque != null)
+        {
+            throw new InvalidOperationException("The specified node already belongs to a deque.");
+        }
+
+        if (head == null)
+        {
+            // If this is the first node, it is also the last node.
+            head = node;
+            head.Next = head;
+            head.Previous = head;
+        }
+        else
+        {
+            // Otherwise make this node the new head
+            AddBefore(head, node);
+        }
+
+        node.Deque = this;
+
+        return node;
+    }
+
+    /// <summary>
+    /// Adds a new <see cref="DequeNode{T}"/> containing the specified value to the end of the deque (that is, the specified node becomes the <see cref="Tail"/>).
+    /// </summary>
+    /// <param name="value">The value to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    public DequeNode<T?> AddLast(T? value) => AddLast(new DequeNode<T?>(value));
+    /// <summary>
+    /// Adds the specified <see cref="DequeNode{T}"/> to the end of the deque (that is, the specified node becomes the <see cref="Tail"/>).
+    /// </summary>
+    /// <param name="node">The node to insert.</param>
+    /// <returns>A reference to the newly inserted node.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="node"/> already belongs to a <see cref="Deque{T}"/>.</exception>
+    public DequeNode<T?> AddLast(DequeNode<T?> node)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+
+        if (node.Deque != null)
+        {
+            throw new InvalidOperationException("The specified node already belongs to a deque.");
+        }
+
+        if (head == null)
+        {
+            // If this is the first node, it is also the last node.
+            head = node;
+            head.Next = head;
+            head.Previous = head;
+        }
+        else
+        {
+            // Otherwise, make this node the new tail
+            AddAfter(Tail, node);
+        }
+
+        node.Deque = this;
+
+        return node;
+    }
+
+    /// <summary>
+    /// Clears the reference to <see cref="Head"/>, which in turn clears the reference to all other nodes.
+    /// </summary>
+    public void Clear()
+    {
+        head = null;
+    }
+    /// <summary>
+    /// Determines whether the <see cref="Deque{T}"/> contains at least one node that contains the specified value.
+    /// </summary>
+    /// <param name="value">The value to find.</param>
+    /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> implementation to use when comparing values.</param>
+    /// <returns><see langword="true"/> if the <see cref="Deque{T}"/> contains at least one node that contains the specified value, otherwise <see langword="false"/>.</returns>
+    /// <remarks>
+    /// If the <see cref="Deque{T}"/> is empty (that is, <see cref="Head"/> is <see langword="null"/>), this method always returns <see langword="false"/>.
+    /// </remarks>
+    public bool Contains(T? value, IEqualityComparer<T?>? comparer = null)
+    {
+        var current = head;
+        if (current is not null)
+        {
+            do
+            {
+                if ((comparer ?? EqualityComparer<T?>.Default).Equals(value, current.Value))
+                {
+                    return true;
+                }
+                current = current.Next;
+            } while (current != head && current is not null);
+        }
+        return false;
+    }
+    /// <summary>
+    /// Copies the values of the <see cref="Deque{T}"/> to the specified array, starting at the specified index.
+    /// </summary>
+    /// <param name="array">The array to copy the values to.</param>
+    /// <param name="index">The index in <paramref name="array"/> at which to begin inserting values.</param>
+    public void CopyTo(T?[] array, int index)
+    {
+        ArgumentNullException.ThrowIfNull(array);
+
+        var len = array.Length;
+        var nodeCount = Count;
+        if (index < 0 || index >= len)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), index, $"The specified index is out of range. It must be between 0 and {len - 1}.");
+        }
+        if (index + nodeCount > len)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), index, $"The specified index is out of range. It must be between 0 and {len - nodeCount}.");
+        }
+
+        var current = head;
+        for (var i = 0; i < len && current is not null; i++)
+        {
+            array[i] = current.Value;
+            current = current.Next;
+        }
+    }
+
+    /// <summary>
+    /// Enumerates the <see cref="Deque{T}"/> and ensures that all contained nodes have references to neighboring nodes and to this <see cref="Deque{T}"/>.
+    /// </summary>
+    public void EnsureIntegrity()
+    {
+        var current = head ?? throw new InvalidOperationException("The deque is empty.");
+        do
+        {
+            if (current.Deque != this)
+            {
+                throw new DetachedDequeNodeException<T?>(current, DetachedDequeNodeException<T?>.OffenseKind.NoDeque);
+            }
+            if (current.Next is null)
+            {
+                throw new DetachedDequeNodeException<T?>(current, DetachedDequeNodeException<T?>.OffenseKind.NoNext);
+            }
+            if (current.Previous is null)
+            {
+                throw new DetachedDequeNodeException<T?>(current, DetachedDequeNodeException<T?>.OffenseKind.NoPrevious);
+            }
+            if (current.Next.Previous != current)
+            {
+                throw new DetachedDequeNodeException<T?>(current.Next, DetachedDequeNodeException<T?>.OffenseKind.InconsistentNext);
+            }
+            if (current.Previous.Next != current)
+            {
+                throw new DetachedDequeNodeException<T?>(current.Previous, DetachedDequeNodeException<T?>.OffenseKind.InconsistentPrevious);
+            }
+            current = current.Next;
+        } while (current != head);
+    }
+
+    /// <summary>
+    /// Detaches the specified node from the <see cref="Deque{T}"/> and its neighbors.
+    /// </summary>
+    /// <param name="node">The node to remove.</param>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="node"/> does not belong to this <see cref="Deque{T}"/>.</exception>
+    public DequeNode<T?> RemoveNode(DequeNode<T?> node)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+
+        if (node.Deque != this)
+        {
+            throw new InvalidOperationException("The specified node does not belong to this deque.");
+        }
+
+        var oldNext = node.Next;
+        var oldPrevious = node.Previous;
+        oldNext.Previous = oldPrevious;
+        oldPrevious.Next = oldNext;
+
+        if (node == head)
+        {
+            head = oldNext;
+        }
+
+        node.Next = null;
+        node.Previous = null;
+        node.Deque = null;
+        return node;
+    }
+    /// <summary>
+    /// Detaches the specified nodes from the <see cref="Deque{T}"/> and their neighbors.
+    /// </summary>
+    /// <param name="nodes">The nodes to remove.</param>
+    /// <returns>The number of nodes that were removed.</returns>
+    public int RemoveNodes(params DequeNode<T?>[] nodes)
+    {
+        var removed = 0;
+        var current = head;
+        if (current is not null)
+        {
+            do
+            {
+                if (Array.IndexOf(nodes, current) > 0)
+                {
+                    RemoveNode(current);
+                    removed++;
+                }
+                current = current.Next;
+            } while (current != head && current is not null);
+        }
+        return removed;
+    }
+    /// <inheritdoc cref="RemoveNodes(DequeNode{T}[])"/>"
+    public int RemoveNodes(IEnumerable<DequeNode<T?>> nodes) => RemoveNodes(nodes as DequeNode<T?>[] ?? nodes.ToArray());
+    /// <summary>
+    /// Detaches all nodes that contain the specified value from the <see cref="Deque{T}"/> and their neighbors.
+    /// </summary>
+    /// <param name="value">The value to remove.</param>
+    /// <returns>The number of nodes that were removed.</returns>
+    public int RemoveAll(T? value) => RemoveNodes(FindAll(value));
+    /// <summary>
+    /// Detaches the <see cref="Head"/> from the <see cref="Deque{T}"/> and its neighbors.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
+    public void RemoveHead() => RemoveNode(Head ?? throw new InvalidOperationException("The deque is empty."));
+    /// <summary>
+    /// Detaches the <see cref="Tail"/> from the <see cref="Deque{T}"/> and its neighbors.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
+    public void RemoveTail() => RemoveNode(Tail ?? throw new InvalidOperationException("The deque is empty."));
+
+    /// <summary>
+    /// Returns an <see cref="IEnumerator{T}"/> that iterates through the <see cref="Deque{T}"/>'s nodes.
+    /// </summary>
+    IEnumerator<DequeNode<T?>> IEnumerable<DequeNode<T?>>.GetEnumerator()
+    {
+        if (Head != null)
+        {
+            var node = Head;
+            do
+            {
+                yield return node;
+                node = node.Next;
+            } while (node != head && node is not null);
+        }
+    }
+    /// <summary>
+    /// Returns an <see cref="IEnumerator{T}"/> that iterates through the values of the <see cref="Deque{T}"/>'s nodes.
+    /// </summary>
+    IEnumerator<T?> IEnumerable<T?>.GetEnumerator()
+    {
+        if (Head != null)
+        {
+            var node = Head;
+            do
+            {
+                yield return node.Value;
+                node = node.Next;
+            } while (node != head && node is not null);
+        }
+    }
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T?>)this).GetEnumerator();
+}
+
+/// <summary>
+/// Represents a node in a <see cref="Deque{T}"/>.
+/// </summary>
+/// <typeparam name="T">The type of the value this node contains. It must be compatible with the type of the <see cref="Deque{T}"/> this node belongs to.</typeparam>
+public sealed class DequeNode<T>
+{
+    public DequeNode(T? value)
+    {
+        Value = value;
+    }
+
+    /// <summary>
+    /// Returns the <see cref="Deque{T}"/> this node belongs to.
+    /// If <see langword="null"/> or set explicitly, the node is not coupled to a <see cref="Deque{T}"/>.
+    /// </summary>
+    public Deque<T?> Deque { get; set; }
+    /// <summary>
+    /// Returns the next node in the <see cref="Deque{T}"/>.
+    /// </summary>
+    public DequeNode<T?>? Next { get; set; }
+    /// <summary>
+    /// Returns the previous node in the <see cref="Deque{T}"/>.
+    /// </summary>
+    public DequeNode<T?>? Previous { get; set; }
+    /// <summary>
+    /// Returns the value this node contains.
+    /// </summary>
+    public T? Value { get; set; }
+
+    /// <summary>
+    /// Returns the string representation of the <see cref="Value"/> this node contains.
+    /// </summary>
+    /// <returns>A <see cref="string"/> as described.</returns>
+    public override string ToString() => Value?.ToString() ?? "";
+}
+
+/// <summary>
+/// The exception that is thrown when <see cref="Deque{T}.EnsureIntegrity"/> encounters a <see cref="DequeNode{T}"/> that is not attached to a <see cref="Deque{T}"/>.
+/// </summary>
+/// <typeparam name="T">The type of the value the detached <see cref="DequeNode{T}"/> contains.</typeparam>
+public sealed class DetachedDequeNodeException<T> : Exception
+{
+    /// <inheritdoc />
+    public override string Message { get; }
+    /// <inheritdoc cref="Exception.InnerException"/>
+    public new Exception? InnerException { get; }
+    /// <summary>
+    /// The <see cref="DequeNode{T}"/> that is not attached to a <see cref="Deque{T}"/>.
+    /// </summary>
+    public DequeNode<T?> Node { get; }
+    /// <summary>
+    /// The kind of offense that <see cref="Node"/> committed which caused this exception to be thrown.
+    /// </summary>
+    public OffenseKind Offense { get; }
+
+    public DetachedDequeNodeException(DequeNode<T?> node, OffenseKind offense)
+    {
+        Message = GetOffenseString(offense);
+        Node = node;
+        Offense = offense;
+    }
+    public DetachedDequeNodeException(DequeNode<T?> node, OffenseKind offense, Exception innerException) : this(node, offense)
+    {
+        InnerException = innerException;
+    }
+
+    private static string GetOffenseString(OffenseKind offense)
+    {
+        return offense switch
+        {
+            OffenseKind.NoDeque => $"The specified {nameof(DequeNode<T?>)} is not attached to a {nameof(Deque<T?>)}.",
+            OffenseKind.NoNext => $"The specified {nameof(DequeNode<T?>)} is missing a reference to its next node.",
+            OffenseKind.NoPrevious => $"The specified {nameof(DequeNode<T?>)} is missing a reference to its previous node.",
+            OffenseKind.InconsistentNext => $"The specified {nameof(DequeNode<T?>)}'s next node does not have a reference to the specified {nameof(DequeNode<T?>)} as its previous node.",
+            OffenseKind.InconsistentPrevious => $"The specified {nameof(DequeNode<T?>)}'s previous node does not have a reference to the specified {nameof(DequeNode<T?>)} as its next node.",
+            _ => throw new ArgumentOutOfRangeException(nameof(offense), offense, $"The specified {nameof(OffenseKind)} is not supported.")
+        };
+    }
+
+    /// <summary>
+    /// Identifies the kind of offense that <see cref="Node"/> committed which caused this exception to be thrown.
+    /// </summary>
+    [Flags]
+    public enum OffenseKind
+    {
+        /// <summary>
+        /// Indicates that <see cref="Node"/> is not attached to a <see cref="Deque{T}"/>.
+        /// </summary>
+        NoDeque = 1 << 0,
+        /// <summary>
+        /// Indicates that <see cref="Node"/> is missing a reference to its next node.
+        /// </summary>
+        NoNext = 1 << 1,
+        /// <summary>
+        /// Indicates that <see cref="Node"/> is missing a reference to its previous node.
+        /// </summary>
+        NoPrevious = 1 << 2,
+        /// <summary>
+        /// Indicates that <see cref="Node"/>'s next node does not have a reference to <see cref="Node"/> as its previous node.
+        /// </summary>
+        InconsistentNext = 1 << 3,
+        /// <summary>
+        /// Indicates that <see cref="Node"/>'s previous node does not have a reference to <see cref="Node"/> as its next node.
+        /// </summary>
+        InconsistentPrevious = 1 << 4
+    }
+}

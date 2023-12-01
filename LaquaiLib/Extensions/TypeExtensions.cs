@@ -842,10 +842,14 @@ public static partial class TypeExtensions
 
         if (type.IsGenericType)
         {
-            var name = operateOn[..operateOn.IndexOf('`', StringComparison.OrdinalIgnoreCase)];
+            var tickAt = operateOn.IndexOf('`', StringComparison.OrdinalIgnoreCase);
+            if (tickAt != -1)
+            {
+                operateOn = operateOn[..tickAt];
+            }
             var args = string.Join(", ", type.GetGenericArguments().Select(t => t.GetFriendlyName()));
 
-            return $"{name}<{args}>";
+            return $"{operateOn}<{args}>";
         }
 
         return AsKeyword(operateOn);

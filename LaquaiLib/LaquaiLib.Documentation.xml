@@ -4,6 +4,292 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
+        <member name="T:LaquaiLib.Collections.Deque`1">
+            <summary>
+            Represents a "deque" (or "double-ended queue") data structure.
+            This is essentially just a <see cref="T:System.Collections.Generic.LinkedList`1"/> with the last element pointing to the first element and vice versa.
+            </summary>
+            <typeparam name="T">The type of elements in the deque.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Collections.Deque`1.Head">
+            <summary>
+            Gets the first element of the deque.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.Deque`1.Tail">
+            <summary>
+            Gets the "last" element of the deque.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.Deque`1.Count">
+            <summary>
+            Gets the number of nodes in the <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.#ctor">
+            <summary>
+            Instantiates a new, empty <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.#ctor(`0[])">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Collections.Deque`1"/> with nodes containing the specified values.
+            </summary>
+            <param name="values">The values to insert into the deque.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc cref="M:LaquaiLib.Collections.Deque`1.#ctor(`0[])"/>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.#ctor(System.Int32)">
+            <summary>
+            Instantaites a new <see cref="T:LaquaiLib.Collections.Deque`1"/> with the specified number of nodes that contain the default value of <typeparamref name="T"/>.
+            </summary>
+            <param name="nodes">The number of nodes to insert into the deque.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.FindFirst(`0)">
+            <summary>
+            Finds the first node in the deque that contains the specified value.
+            </summary>
+            <param name="value">The value to find.</param>
+            <returns>A reference to the first node that contains the specified value, or <see langword="null"/> if no such node was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.FindLast(`0)">
+            <summary>
+            Finds the last node in the deque that contains the specified value.
+            </summary>
+            <param name="value">The value to find.</param>
+            <returns>A reference to the last node that contains the specified value, or <see langword="null"/> if no such node was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.FindAll(`0)">
+            <summary>
+            Finds all nodes in the deque that contain the specified value.
+            </summary>
+            <param name="value">The value to find.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that enumerates all nodes that contain the specified value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddAfter(LaquaiLib.Collections.DequeNode{`0},`0)">
+            <summary>
+            Inserts a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> containing the specified value after the specified node.
+            </summary>
+            <param name="node">The node to insert the new node after.</param>
+            <param name="value">The value to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddAfter(LaquaiLib.Collections.DequeNode{`0},LaquaiLib.Collections.DequeNode{`0})">
+            <summary>
+            Inserts the specified <see cref="T:LaquaiLib.Collections.DequeNode`1"/> after the specified node.
+            </summary>
+            <param name="node">The node to insert the new node after.</param>
+            <param name="newNode">The node to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if <paramref name="newNode"/> already belongs to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddBefore(LaquaiLib.Collections.DequeNode{`0},`0)">
+            <summary>
+            Inserts a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> containing the specified value before the specified node.
+            </summary>
+            <param name="node">The node to insert the new node before.</param>
+            <param name="value">The value to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddBefore(LaquaiLib.Collections.DequeNode{`0},LaquaiLib.Collections.DequeNode{`0})">
+            <summary>
+            Inserts the specified <see cref="T:LaquaiLib.Collections.DequeNode`1"/> before the specified node.
+            </summary>
+            <param name="node">The node to insert the new node before.</param>
+            <param name="newNode">The node to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if <paramref name="newNode"/> already belongs to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddFirst(`0)">
+            <summary>
+            Adds a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> containing the specified value to the beginning of the deque (that is, the specified node becomes the <see cref="P:LaquaiLib.Collections.Deque`1.Head"/>).
+            </summary>
+            <param name="value">The value to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddFirst(LaquaiLib.Collections.DequeNode{`0})">
+            <summary>
+            Adds the specified <see cref="T:LaquaiLib.Collections.DequeNode`1"/> to the beginning of the deque (that is, the specified node becomes the <see cref="P:LaquaiLib.Collections.Deque`1.Head"/>).
+            </summary>
+            <param name="node">The node to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if <paramref name="node"/> already belongs to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddLast(`0)">
+            <summary>
+            Adds a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> containing the specified value to the end of the deque (that is, the specified node becomes the <see cref="P:LaquaiLib.Collections.Deque`1.Tail"/>).
+            </summary>
+            <param name="value">The value to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.AddLast(LaquaiLib.Collections.DequeNode{`0})">
+            <summary>
+            Adds the specified <see cref="T:LaquaiLib.Collections.DequeNode`1"/> to the end of the deque (that is, the specified node becomes the <see cref="P:LaquaiLib.Collections.Deque`1.Tail"/>).
+            </summary>
+            <param name="node">The node to insert.</param>
+            <returns>A reference to the newly inserted node.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if <paramref name="node"/> already belongs to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.Clear">
+            <summary>
+            Clears the reference to <see cref="P:LaquaiLib.Collections.Deque`1.Head"/>, which in turn clears the reference to all other nodes.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.Contains(`0,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Deque`1"/> contains at least one node that contains the specified value.
+            </summary>
+            <param name="value">The value to find.</param>
+            <param name="comparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing values.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Deque`1"/> contains at least one node that contains the specified value, otherwise <see langword="false"/>.</returns>
+            <remarks>
+            If the <see cref="T:LaquaiLib.Collections.Deque`1"/> is empty (that is, <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> is <see langword="null"/>), this method always returns <see langword="false"/>.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies the values of the <see cref="T:LaquaiLib.Collections.Deque`1"/> to the specified array, starting at the specified index.
+            </summary>
+            <param name="array">The array to copy the values to.</param>
+            <param name="index">The index in <paramref name="array"/> at which to begin inserting values.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.EnsureIntegrity">
+            <summary>
+            Enumerates the <see cref="T:LaquaiLib.Collections.Deque`1"/> and ensures that all contained nodes have references to neighboring nodes and to this <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.RemoveNode(LaquaiLib.Collections.DequeNode{`0})">
+            <summary>
+            Detaches the specified node from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and its neighbors.
+            </summary>
+            <param name="node">The node to remove.</param>
+            <exception cref="T:System.InvalidOperationException">Thrown if <paramref name="node"/> does not belong to this <see cref="T:LaquaiLib.Collections.Deque`1"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.RemoveNodes(LaquaiLib.Collections.DequeNode{`0}[])">
+            <summary>
+            Detaches the specified nodes from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and their neighbors.
+            </summary>
+            <param name="nodes">The nodes to remove.</param>
+            <returns>The number of nodes that were removed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.RemoveNodes(System.Collections.Generic.IEnumerable{LaquaiLib.Collections.DequeNode{`0}})">
+            <inheritdoc cref="M:LaquaiLib.Collections.Deque`1.RemoveNodes(LaquaiLib.Collections.DequeNode{`0}[])"/>"
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.RemoveAll(`0)">
+            <summary>
+            Detaches all nodes that contain the specified value from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and their neighbors.
+            </summary>
+            <param name="value">The value to remove.</param>
+            <returns>The number of nodes that were removed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.RemoveHead">
+            <summary>
+            Detaches the <see cref="P:LaquaiLib.Collections.Deque`1.Head"/> from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and its neighbors.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the <see cref="T:LaquaiLib.Collections.Deque`1"/> is empty.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.RemoveTail">
+            <summary>
+            Detaches the <see cref="P:LaquaiLib.Collections.Deque`1.Tail"/> from the <see cref="T:LaquaiLib.Collections.Deque`1"/> and its neighbors.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">Thrown if the <see cref="T:LaquaiLib.Collections.Deque`1"/> is empty.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.System#Collections#Generic#IEnumerable{LaquaiLib#Collections#DequeNode{T}}#GetEnumerator">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that iterates through the <see cref="T:LaquaiLib.Collections.Deque`1"/>'s nodes.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.System#Collections#Generic#IEnumerable{T}#GetEnumerator">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that iterates through the values of the <see cref="T:LaquaiLib.Collections.Deque`1"/>'s nodes.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DequeNode`1">
+            <summary>
+            Represents a node in a <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+            <typeparam name="T">The type of the value this node contains. It must be compatible with the type of the <see cref="T:LaquaiLib.Collections.Deque`1"/> this node belongs to.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Collections.DequeNode`1.Deque">
+            <summary>
+            Returns the <see cref="T:LaquaiLib.Collections.Deque`1"/> this node belongs to.
+            If <see langword="null"/> or set explicitly, the node is not coupled to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.DequeNode`1.Next">
+            <summary>
+            Returns the next node in the <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.DequeNode`1.Previous">
+            <summary>
+            Returns the previous node in the <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.DequeNode`1.Value">
+            <summary>
+            Returns the value this node contains.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.DequeNode`1.ToString">
+            <summary>
+            Returns the string representation of the <see cref="P:LaquaiLib.Collections.DequeNode`1.Value"/> this node contains.
+            </summary>
+            <returns>A <see cref="T:System.String"/> as described.</returns>
+        </member>
+        <member name="T:LaquaiLib.Collections.DetachedDequeNodeException`1">
+            <summary>
+            The exception that is thrown when <see cref="M:LaquaiLib.Collections.Deque`1.EnsureIntegrity"/> encounters a <see cref="T:LaquaiLib.Collections.DequeNode`1"/> that is not attached to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+            <typeparam name="T">The type of the value the detached <see cref="T:LaquaiLib.Collections.DequeNode`1"/> contains.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Message">
+            <inheritdoc />
+        </member>
+        <member name="P:LaquaiLib.Collections.DetachedDequeNodeException`1.InnerException">
+            <inheritdoc cref="P:System.Exception.InnerException"/>
+        </member>
+        <member name="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node">
+            <summary>
+            The <see cref="T:LaquaiLib.Collections.DequeNode`1"/> that is not attached to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Offense">
+            <summary>
+            The kind of offense that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> committed which caused this exception to be thrown.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DetachedDequeNodeException`1.OffenseKind">
+            <summary>
+            Identifies the kind of offense that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> committed which caused this exception to be thrown.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Collections.DetachedDequeNodeException`1.OffenseKind.NoDeque">
+            <summary>
+            Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> is not attached to a <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Collections.DetachedDequeNodeException`1.OffenseKind.NoNext">
+            <summary>
+            Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> is missing a reference to its next node.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Collections.DetachedDequeNodeException`1.OffenseKind.NoPrevious">
+            <summary>
+            Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> is missing a reference to its previous node.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Collections.DetachedDequeNodeException`1.OffenseKind.InconsistentNext">
+            <summary>
+            Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/>'s next node does not have a reference to <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> as its previous node.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Collections.DetachedDequeNodeException`1.OffenseKind.InconsistentPrevious">
+            <summary>
+            Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/>'s previous node does not have a reference to <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> as its next node.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
@@ -828,47 +1114,6 @@
             <summary>
             Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Classes.Streams.MultiStream"/> instance.
             </summary>
-        </member>
-        <member name="T:LaquaiLib.Decorators.TimingDecorator">
-            <summary>
-            Represents a decorator that measures the time it takes to execute a <see langword="delegate"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Decorators.TimingDecorator.Delegate">
-            <summary>
-            The <see langword="delegate"/> that is invoked by <see cref="M:LaquaiLib.Decorators.TimingDecorator.Invoke(System.Object@)"/> and <see cref="M:LaquaiLib.Decorators.TimingDecorator.InvokeAsync"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Decorators.TimingDecorator.Parameters">
-            <summary>
-            The parameters that are passed to the <see langword="delegate"/> on invocation.
-            May be <see langword="null"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Decorators.TimingDecorator.#ctor(System.Delegate,System.Object[])">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Decorators.TimingDecorator"/> with the specified <see langword="delegate"/> and parameters.
-            </summary>
-            <param name="delegate">The <see langword="delegate"/> to store.</param>
-            <param name="parameters">The parameters to pass to the <see langword="delegate"/> on invocation.</param>
-        </member>
-        <member name="M:LaquaiLib.Decorators.TimingDecorator.Invoke(System.Object@)">
-            <summary>
-            Invokes the stored <see langword="delegate"/> and returns the time it took to execute it.
-            </summary>
-            <param name="value">An <see langword="out"/> variable that receives the return value of the <see langword="delegate"/> if it returns a value, otherwise <see langword="null"/>.</param>
-            <returns>A <see cref="T:System.TimeSpan"/> that represents the time it took to execute the <see langword="delegate"/>.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the <see cref="P:LaquaiLib.Decorators.TimingDecorator.Delegate"/> returns a <see cref="T:System.Threading.Tasks.Task"/></exception>
-        </member>
-        <member name="M:LaquaiLib.Decorators.TimingDecorator.InvokeAsync">
-            <summary>
-            Asynchronously invokes the stored <see langword="delegate"/> and returns the time it took to execute it.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.ValueTask`1"/> that represents the asynchronous operation.</returns>
-            <remarks>
-            If the <see cref="T:System.Threading.Tasks.Task"/> returned by the <see langword="delegate"/> throws an exception, it is immediately propagated to the caller of this method.
-            <para/>Note that the return value of the <see langword="delegate"/> is lost when using this method.
-            </remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.AnyExtensions">
             <summary>
