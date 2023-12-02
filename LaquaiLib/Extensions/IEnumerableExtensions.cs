@@ -255,7 +255,7 @@ public static class IEnumerableExtensions
     /// <param name="other">The sequence to compare to.</param>
     /// <param name="comparer">An instance of an <see cref="IEqualityComparer{T}"/>-implementing Type that is used to compare the elements in the sequences. If not specified, the default comparer for <typeparamref name="T"/> is used.</param>
     /// <returns><see langword="true"/> if the sequences are equivalent, otherwise <see langword="false"/>.</returns>
-    public static bool SequenceEquivalent<T>(this IEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer = null)
+    public static bool SequenceEquivalent<T>(this IEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T>? comparer = null)
     {
         comparer ??= EqualityComparer<T>.Default;
 

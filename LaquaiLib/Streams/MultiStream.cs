@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Text;
 
 using LaquaiLib.Extensions;
@@ -8,10 +9,11 @@ namespace LaquaiLib.Classes.Streams;
 /// <summary>
 /// Represents a wrapper for multiple <see cref="Stream"/> instances to be written to as one.
 /// </summary>
-public class MultiStream : IDisposable
+public class MultiStream : Stream, IDisposable
 {
     private readonly List<Stream> _streams;
 
+    #region .ctors
     /// <summary>
     /// Instantiates a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
@@ -54,14 +56,9 @@ public class MultiStream : IDisposable
         }
         else if (constructorParameters is not null)
         {
-            if (constructorParameters.Length > 1)
-            {
-                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)!).ToList()!;
-            }
-            else
-            {
-                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList()!;
-            }
+            _streams = constructorParameters.Length > 1
+                ? Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)!).ToList()
+                : Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList();
         }
         else
         {
@@ -101,41 +98,49 @@ public class MultiStream : IDisposable
 
         _streams = Enumerable.Range(0, count).Select(i => (Stream)Activator.CreateInstance(streamType, constructorParameterFactory(i))!).ToList()!;
     }
+    #endregion
 
     /// <summary>
     /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be read from.
     /// </summary>
-    public bool CanRead => _streams.Select(stream => stream.CanRead).All();
+    public override bool CanRead => _streams.Select(stream => stream.CanRead).All();
     /// <summary>
     /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be seeked.
     /// </summary>
-    public bool CanSeek => _streams.Select(stream => stream.CanSeek).All();
+    public override bool CanSeek => _streams.Select(stream => stream.CanSeek).All();
     /// <summary>
     /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be written to.
     /// </summary>
-    public bool CanWrite => _streams.Select(stream => stream.CanWrite).All();
+    public override bool CanWrite => _streams.Select(stream => stream.CanWrite).All();
     /// <summary>
     /// A collection of <see cref="long"/>s that indicate the lengths of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
     public long[] Lengths => _streams.Select(stream => stream.Length).ToArray();
+    public override long Length => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Length)}. Use {nameof(Lengths)} instead.");
     /// <summary>
     /// A collection of <see cref="long"/>s taht indicate the current positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
     public long[] Positions => _streams.Select(stream => stream.Position).ToArray();
+    public override long Position
+    {
+        get => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
+
+        set => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
+    }
     /// <summary>
     /// Flushes all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public void Flush() => _streams.ForEach(stream => stream.Flush());
+    public override void Flush() => _streams.ForEach(stream => stream.Flush());
     /// <summary>
     /// Seeks all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
     /// <param name="offset">The offset to seek by.</param>
     /// <param name="origin">A <see cref="SeekOrigin"/> value that indicates the reference point used to obtain the new position.</param>
-    /// <returns>A collection of <see cref="long"/>s that indicate the new positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.</returns>
-    public long[] Seek(long offset, SeekOrigin origin)
+    /// <returns>-1. Use <see cref="Positions"/> to obtain the new positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.</returns>
+    public override long Seek(long offset, SeekOrigin origin)
     {
         _streams.ForEach(stream => stream.Seek(offset, origin));
-        return Lengths;
+        return -1;
     }
     /// <summary>
     /// Sets a new length for all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
@@ -148,12 +153,12 @@ public class MultiStream : IDisposable
     /// <param name="buffer">The buffer containing the data to write.</param>
     /// <param name="offset">The offset in the buffer at which to begin writing.</param>
     /// <param name="count">The number of <see cref="byte"/>s to write.</param>
-    public void Write(byte[] buffer, int offset, int count) => _streams.ForEach(stream => stream.Write(buffer, offset, count));
+    public override void Write(byte[] buffer, int offset, int count) => _streams.ForEach(stream => stream.Write(buffer, offset, count));
     /// <summary>
     /// Writes a sequence of bytes to all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance and advances the current position within the <see cref="Stream"/>s by the number of <see cref="byte"/>s written.
     /// </summary>
     /// <param name="buffer">A region of memory to copy to all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.</param>
-    public void Write(ReadOnlySpan<byte> buffer)
+    public override void Write(ReadOnlySpan<byte> buffer)
     {
         foreach (var stream in _streams)
         {
@@ -172,6 +177,17 @@ public class MultiStream : IDisposable
     /// <param name="text">The text to write.</param>
     /// <param name="encoding">The <see cref="Encoding"/> to use to obtain the <see cref="byte"/>s of the characters.</param>
     public void WriteLine(string text, Encoding? encoding = null) => _streams.ForEach(stream => stream.Write((encoding ?? Encoding.Default).GetBytes(text + Environment.NewLine)));
+
+    /// <summary>
+    /// Unconditionally throws an <see cref="InvalidOperationException"/>.
+    /// </summary>
+    [DoesNotReturn]
+    public override int Read(byte[] buffer, int offset, int count) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Read)}.");
+    /// <summary>
+    /// Unconditionally throws an <see cref="InvalidOperationException"/>.
+    /// </summary>
+    [DoesNotReturn]
+    public override void SetLength(long value) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.SetLength)}.");
 
     #region Dispose pattern
     private bool _disposed;

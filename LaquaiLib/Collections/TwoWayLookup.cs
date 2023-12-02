@@ -139,40 +139,15 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         // Dynamically choose the correct method to call based on the type parameters
         try
         {
-            if (typeof(TFirst) is T1)
+            if (typeof(TFirst) is T1 && typeof(TSecond) is T2)
             {
-                if (typeof(TSecond) is T2)
-                {
-                    return TryAddForward((T1)(object)key, (T2)(object)value);
-                }
-                else if (typeof(TSecond) is T1)
-                {
-                    return false;
-                }
-                else
-                {
-                    return false;
-                }
+                return TryAddForward((T1)(object)key, (T2)(object)value);
             }
-            else if (typeof(TFirst) is T2)
+            if (typeof(TFirst) is T2 && typeof(TSecond) is T1)
             {
-                if (typeof(TSecond) is T1)
-                {
-                    return TryAddReverse((T2)(object)key, (T1)(object)value);
-                }
-                else if (typeof(TSecond) is T2)
-                {
-                    return false;
-                }
-                else
-                {
-                    return false;
-                }
+                return TryAddReverse((T2)(object)key, (T1)(object)value);
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
         catch
         {

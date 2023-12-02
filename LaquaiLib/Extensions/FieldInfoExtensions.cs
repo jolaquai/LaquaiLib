@@ -32,10 +32,6 @@ public static class FieldInfoExtensions
     {
         ArgumentNullException.ThrowIfNull(fieldInfo);
         var value = fieldInfo.GetValue(obj);
-        if (value?.GetType().CanCastTo(typeof(T)) == true)
-        {
-            return (T)value;
-        }
-        return default;
+        return value?.GetType().CanCastTo(typeof(T)) is true ? (T)value : default;
     }
 }

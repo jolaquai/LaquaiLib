@@ -43,18 +43,36 @@ public static partial class TypeExtensions
     /// Returns a collection of all types that inherit from the supplied type.
     /// </summary>
     /// <param name="type">The type to get the options.Inheriting types for.</param>
+    /// <param name="anyDepth">Whether to include all types that inherit from the supplied type, regardless of hierarchy depth.</param>
     /// <returns>A collection of all types that inherit from the supplied type.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
-    public static IEnumerable<Type> GetInheritingTypes(this Type type)
+    public static IEnumerable<Type> GetInheritingTypes(this Type type, bool anyDepth = false)
     {
-        if (Assembly.GetAssembly(type) is Assembly assemblyOfInput)
-        {
-            return assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type));
-        }
-        else
+        if (Assembly.GetAssembly(type) is not Assembly assemblyOfInput)
         {
             throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
         }
+
+        var types = new List<Type>();
+        if (anyDepth)
+        {
+            var stack = new Stack<Type>();
+            stack.Push(type);
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                types.Add(current);
+                foreach (var inheritingType in assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(current)))
+                {
+                    stack.Push(inheritingType);
+                }
+            }
+        }
+        else
+        {
+            types = assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type)).ToList();
+        }
+        return types.Except([type]).Distinct();
     }
 
     /// <summary>

@@ -84,11 +84,11 @@ public class Directory : IDirectory
     /// <inheritdoc cref="System.IO.Directory.GetLogicalDrives()" />
     public string[] GetLogicalDrives() => System.IO.Directory.GetLogicalDrives();
     /// <inheritdoc cref="System.IO.Directory.GetParent(string)" />
-    public DirectoryInfo? GetParent(string path) => System.IO.Directory.GetParent(path);
+    public DirectoryInfo GetParent(string? path) => System.IO.Directory.GetParent(path);
     /// <inheritdoc cref="System.IO.Directory.Move(string, string)" />
     public void Move(string sourceDirName, string destDirName) => System.IO.Directory.Move(sourceDirName, destDirName);
     /// <inheritdoc cref="System.IO.Directory.ResolveLinkTarget(string, bool)" />
-    public FileSystemInfo? ResolveLinkTarget(string linkPath, bool returnFinalTarget) => System.IO.Directory.ResolveLinkTarget(linkPath, returnFinalTarget);
+    public FileSystemInfo ResolveLinkTarget(string linkPath, bool returnFinalTarget) => System.IO.Directory.ResolveLinkTarget(linkPath, returnFinalTarget);
     /// <inheritdoc cref="System.IO.Directory.SetCreationTime(string, DateTime)" />
     public void SetCreationTime(string path, DateTime creationTime) => System.IO.Directory.SetCreationTime(path, creationTime);
     /// <inheritdoc cref="System.IO.Directory.SetCreationTimeUtc(string, DateTime)" />

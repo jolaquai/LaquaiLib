@@ -1,9 +1,11 @@
-﻿namespace LaquaiLib.Util;
+﻿using System.Runtime.InteropServices;
+
+namespace LaquaiLib.Util;
 
 /// <summary>
-/// Provides methods and events for managing memory and working with the Garbage Collector (<see cref="GC"/>).
+/// Provides methods and events for managing memory, working with the Garbage Collector (<see cref="GC"/>) and allocating unmanaged memory.
 /// </summary>
-public static class MemoryManager
+public static unsafe class MemoryManager
 {
     /// <summary>
     /// Sets a new memory limit for the application.
@@ -15,9 +17,120 @@ public static class MemoryManager
         // Make the GC aware of the new limit
         GC.RefreshMemoryLimit();
     }
-
     /// <summary>
     /// Gets the current memory limit for the application in bytes or <c>0</c> if no limit is set or the value could not be retrieved.
     /// </summary>
     public static ulong GetMemoryLimit() => AppContext.GetData("GCHeapHardLimit") is ulong limit ? limit : 0;
+
+    /// <summary>
+    /// Allocates the specified number of bytes of unmanaged memory and returns a <see langword="void"/> pointer to the first byte.
+    /// </summary>
+    /// <param name="bytes">The number of bytes to allocate.</param>
+    /// <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="GC.AddMemoryPressure(long)"/>.</param>
+    /// <returns>A <see langword="void"/> pointer to the first byte of the allocated memory.</returns>
+    public static void* MAlloc(int bytes, bool pressure = false)
+    {
+        if (pressure)
+        {
+            GC.AddMemoryPressure(bytes);
+        }
+        return (void*)Marshal.AllocHGlobal(bytes);
+    }
+    /// <summary>
+    /// Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
+    /// <param name="count">The number of instances to allocate memory for.</param>
+    /// <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="GC.AddMemoryPressure(long)"/>.</param>
+    /// <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the allocated memory.</returns>
+    public static T* CAlloc<T>(int count, bool pressure = false)
+        where T : unmanaged
+    {
+        var bytes = count * Marshal.SizeOf<T>();
+        if (pressure)
+        {
+            GC.AddMemoryPressure(bytes);
+        }
+        return (T*)Marshal.AllocHGlobal(bytes);
+    }
+
+    /// <summary>
+    /// Resizes a previously allocated region of memory to the specified number of bytes and returns a <see langword="void"/> pointer to the first byte.
+    /// </summary>
+    /// <param name="ptr">A pointer to the first byte of the previously allocated memory.</param>
+    /// <param name="bytes">The new size of the memory region in bytes.</param>
+    /// <param name="oldLength">The old length of the block of memory that is being resized. Depending on the new size, either <see cref="GC.AddMemoryPressure(long)"/> or <see cref="GC.RemoveMemoryPressure(long)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
+    /// <returns>A <see langword="void"/> pointer to the first byte of the resized memory region.</returns>
+    public static void* ReMAlloc(void* ptr, int bytes, long oldLength = 0)
+    {
+        if (oldLength != 0)
+        {
+            if (bytes > oldLength)
+            {
+                GC.AddMemoryPressure(bytes - oldLength);
+            }
+            else if (bytes < oldLength)
+            {
+                GC.RemoveMemoryPressure(oldLength - bytes);
+            }
+        }
+        return (void*)Marshal.ReAllocHGlobal((nint)ptr, bytes);
+    }
+    /// <summary>
+    /// Resizes a previously allocated region of memory to the specified number of instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
+    /// <param name="ptr">A pointer to the first byte of the previously allocated memory.</param>
+    /// <param name="count">The number of instances to allocate memory for.</param>
+    /// <param name="oldLength">The old length of the block of memory that is being resized. Depending on the new size, either <see cref="GC.AddMemoryPressure(long)"/> or <see cref="GC.RemoveMemoryPressure(long)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
+    /// <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the resized memory region.</returns>
+    public static T* ReCAlloc<T>(T* ptr, int count, long oldLength = 0)
+        where T : unmanaged
+    {
+        var bytes = count * Marshal.SizeOf<T>();
+        if (oldLength != 0)
+        {
+            if (bytes > oldLength)
+            {
+                GC.AddMemoryPressure(bytes - oldLength);
+            }
+            else if (bytes < oldLength)
+            {
+                GC.RemoveMemoryPressure(oldLength - bytes);
+            }
+        }
+        return (T*)Marshal.ReAllocHGlobal((nint)ptr, (nint)bytes);
+    }
+
+    /// <summary>
+    /// Frees a previously allocated region of memory.
+    /// </summary>
+    /// <param name="ptr">A pointer to the first byte of the previously allocated memory.</param>
+    /// <param name="pressure">The length of the block of memory that is being freed. If <c>&gt; 0</c>, <see cref="GC.RemoveMemoryPressure(long)"/> is called with this value.</param>
+    public static void Free(void* ptr, long pressure = -1)
+    {
+        if (pressure > 0)
+        {
+            GC.RemoveMemoryPressure(pressure);
+        }
+        Marshal.FreeHGlobal((nint)ptr);
+    }
+
+    /// <summary>
+    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by 1 byte.
+    /// </summary>
+    /// <param name="ptr">The pointer to offset.</param>
+    /// <returns>A <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by 1 byte.</returns>
+    public static void* Next(void* ptr, int count = 1) => (void*)((nint)ptr + count);
+    /// <summary>
+    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified number of bytes.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type to obtain the size of to calculate the offset.</typeparam>
+    /// <param name="ptr">The pointer to offset.</param>
+    /// <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/>.</returns>
+    public static void* Next<T>(void* ptr, int count = 1)
+        where T : unmanaged
+    {
+        return (void*)((nint)ptr + (Marshal.SizeOf<T>() * count));
+    }
 }

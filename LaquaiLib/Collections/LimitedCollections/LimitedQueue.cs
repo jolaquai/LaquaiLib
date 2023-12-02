@@ -55,9 +55,9 @@ public class LimitedQueue<T> : Queue<T>
     /// <param name="collection">The collection to copy the new <see cref="LimitedQueue{T}"/>'s items from.</param>
     /// <param name="capacity">The maximum number of items this <see cref="LimitedQueue{T}"/> can hold before discarding the oldest value.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="collection"/>.</exception>
-    public LimitedQueue(IEnumerable<T> collection, int capacity) : base(collection)
+    public LimitedQueue(IEnumerable<T> collection, int capacity) : this(collection)
     {
-        if (capacity < collection.Count())
+        if (capacity < (collection as T[] ?? collection.ToArray()).Length)
         {
             throw new ArgumentException($"The passed initial {nameof(capacity)} may not be smaller than the number of items in the passed {nameof(collection)}.", nameof(capacity));
         }
@@ -122,7 +122,7 @@ public class LimitedQueue<T> : Queue<T>
 /// <summary>
 /// Provides a builder for <see cref="LimitedQueue{T}"/>s.
 /// </summary>
-public class LimitedQueueBuilder
+public static class LimitedQueueBuilder
 {
     /// <summary>
     /// Builds a <see cref="LimitedQueue{T}"/> from the passed <paramref name="span"/>.

@@ -97,7 +97,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             var node = Head;
             do
             {
-                if (node?.Value?.Equals(value) is true)
+                if (node.Value?.Equals(value) is true)
                 {
                     return node;
                 }
@@ -118,7 +118,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             var node = Tail;
             do
             {
-                if (node?.Value?.Equals(value) is true)
+                if (node.Value?.Equals(value) is true)
                 {
                     return node;
                 }
@@ -139,7 +139,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             var node = Head;
             do
             {
-                if (node?.Value?.Equals(value) is true)
+                if (node.Value?.Equals(value) is true)
                 {
                     yield return node;
                 }
@@ -178,7 +178,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             throw new InvalidOperationException("The specified node already belongs to a deque.");
         }
 
-        var oldNext = node.Next;
+        var oldNext = node.Next!;
         node.Next = newNode;
         newNode.Next = oldNext;
 
@@ -203,7 +203,11 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// <param name="newNode">The node to insert.</param>
     /// <returns>A reference to the newly inserted node.</returns>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="newNode"/> already belongs to a <see cref="Deque{T}"/>.</exception>
-    public DequeNode<T?> AddBefore(DequeNode<T?> node, DequeNode<T?> newNode) => AddAfter(node.Previous ?? throw new InvalidOperationException("The specified node is the head of the deque."), newNode);
+    public DequeNode<T?> AddBefore(DequeNode<T?> node, DequeNode<T?> newNode)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+        return AddAfter(node.Previous ?? throw new InvalidOperationException("The specified node is the head of the deque."), newNode);
+    }
 
     /// <summary>
     /// Adds a new <see cref="DequeNode{T}"/> containing the specified value to the beginning of the deque (that is, the specified node becomes the <see cref="Head"/>).
@@ -275,7 +279,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
         else
         {
             // Otherwise, make this node the new tail
-            AddAfter(Tail, node);
+            AddAfter(Tail!, node);
         }
 
         node.Deque = this;
@@ -381,7 +385,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// </summary>
     /// <param name="n">The number of nodes to rotate by. For example, if <paramref name="n"/> is 1, the node <see cref="Head"/> references becomes <c><see cref="Head"/>.Previous</c>.</param>
     /// <returns>A reference to the new <see cref="Head"/> node.</returns>
-    public DequeNode<T>? Rotate(int n)
+    public DequeNode<T?>? Rotate(int n)
     {
         if (Head is not null)
         {
@@ -393,14 +397,14 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             {
                 while (n-- != 0)
                 {
-                    Head = Head.Previous;
+                    Head = Head!.Previous;
                 }
             }
             else
             {
                 while (n++ != 0)
                 {
-                    Head = Head.Next;
+                    Head = Head!.Next;
                 }
             }
         }
@@ -433,8 +437,8 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             return node;
         }
 
-        var oldNext = node.Next;
-        var oldPrevious = node.Previous;
+        var oldNext = node.Next!;
+        var oldPrevious = node.Previous!;
         oldNext.Previous = oldPrevious;
         oldPrevious.Next = oldNext;
 
@@ -532,34 +536,62 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
 /// <typeparam name="T">The type of the value this node contains. It must be compatible with the type of the <see cref="Deque{T}"/> this node belongs to.</typeparam>
 public sealed class DequeNode<T>
 {
-    public DequeNode(T? value)
+    /// <summary>
+    /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
+    /// </summary>
+    /// <param name="value">The value this node contains.</param>
+    public DequeNode(T? value) => Value = value;
+    /// <summary>
+    /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has the specified neighbors.
+    /// </summary>
+    /// <param name="value">The value this node contains.</param>
+    /// <param name="next">The next node in the <see cref="Deque{T}"/>.</param>
+    /// <param name="previous">The previous node in the <see cref="Deque{T}"/>.</param>
+    public DequeNode(T? value, DequeNode<T?> next, DequeNode<T?> previous) : this(value)
     {
-        Value = value;
+        ArgumentNullException.ThrowIfNull(next);
+        ArgumentNullException.ThrowIfNull(previous);
+
+        Next = next;
+        Next.Previous = this;
+        Previous = previous;
+        Previous.Next = this;
+    }
+    /// <summary>
+    /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that attached to the specified <see cref="Deque{T}"/> and has the specified neighbors.
+    /// </summary>
+    /// <param name="value">The value this node contains.</param>
+    /// <param name="next">The next node in the <see cref="Deque{T}"/>.</param>
+    /// <param name="previous">The previous node in the <see cref="Deque{T}"/>.</param>
+    /// <param name="deque">The <see cref="Deque{T}"/> this node belongs to.</param>
+    public DequeNode(T? value, DequeNode<T?> next, DequeNode<T?> previous, Deque<T?> deque) : this(value, next, previous)
+    {
+        Deque = deque;
     }
 
-    /// <summary>
-    /// Returns the <see cref="Deque{T}"/> this node belongs to.
-    /// If <see langword="null"/> or set explicitly, the node is not coupled to a <see cref="Deque{T}"/>.
-    /// </summary>
-    public Deque<T?> Deque { get; set; }
-    /// <summary>
-    /// Returns the next node in the <see cref="Deque{T}"/>.
-    /// </summary>
-    public DequeNode<T?>? Next { get; set; }
-    /// <summary>
-    /// Returns the previous node in the <see cref="Deque{T}"/>.
-    /// </summary>
-    public DequeNode<T?>? Previous { get; set; }
-    /// <summary>
-    /// Returns the value this node contains.
-    /// </summary>
-    public T? Value { get; set; }
+/// <summary>
+/// Returns the <see cref="Deque{T}"/> this node belongs to.
+/// If <see langword="null"/> or set explicitly, the node is not coupled to a <see cref="Deque{T}"/>.
+/// </summary>
+public Deque<T?>? Deque { get; set; }
+/// <summary>
+/// Returns the next node in the <see cref="Deque{T}"/>.
+/// </summary>
+public DequeNode<T?>? Next { get; set; }
+/// <summary>
+/// Returns the previous node in the <see cref="Deque{T}"/>.
+/// </summary>
+public DequeNode<T?>? Previous { get; set; }
+/// <summary>
+/// Returns the value this node contains.
+/// </summary>
+public T? Value { get; set; }
 
-    /// <summary>
-    /// Returns the string representation of the <see cref="Value"/> this node contains.
-    /// </summary>
-    /// <returns>A <see cref="string"/> as described.</returns>
-    public override string ToString() => Value?.ToString() ?? "";
+/// <summary>
+/// Returns the string representation of the <see cref="Value"/> this node contains.
+/// </summary>
+/// <returns>A <see cref="string"/> as described.</returns>
+public override string ToString() => Value?.ToString() ?? "";
 }
 
 /// <summary>

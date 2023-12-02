@@ -113,7 +113,7 @@ public class File : IFile
     /// <inheritdoc cref="System.IO.File.Replace(string, string, string, bool)" />
     public void Replace(string sourceFileName, string destinationFileName, string destinationBackupFileName, bool ignoreMetadataErrors) => System.IO.File.Replace(sourceFileName, destinationFileName, destinationBackupFileName, ignoreMetadataErrors);
     /// <inheritdoc cref="System.IO.File.ResolveLinkTarget(string, bool)" />
-    public FileSystemInfo? ResolveLinkTarget(string linkPath, bool returnFinalTarget) => System.IO.File.ResolveLinkTarget(linkPath, returnFinalTarget);
+    public FileSystemInfo ResolveLinkTarget(string linkPath, bool returnFinalTarget) => System.IO.File.ResolveLinkTarget(linkPath, returnFinalTarget);
     /// <inheritdoc cref="System.IO.File.SetAttributes(string, FileAttributes)" />
     public void SetAttributes(string path, FileAttributes fileAttributes) => System.IO.File.SetAttributes(path, fileAttributes);
     /// <inheritdoc cref="System.IO.File.SetCreationTime(string, DateTime)" />

@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
 
@@ -12,7 +14,10 @@ namespace LaquaiLib.Classes.Collections;
 public class ObservableCollectionFast<T> : ObservableCollection<T>
 {
     #region Fields / Properties
-    private bool isSilenced;
+    /// <summary>
+    /// Whether the <see cref="ObservableCollection{T}"/> is silenced. No registered events are raised, not even ones manually triggered using <see cref="RaiseCollectionChanged(NotifyCollectionChangedEventArgs?)"/>.
+    /// </summary>
+    private bool IsSilenced { get; set; }
 
     private bool keepOrdered;
     /// <summary>
@@ -33,6 +38,7 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     }
 
     private IComparer<T>? comparer;
+
     /// <summary>
     /// The <see cref="IComparer{T}"/> used to compare elements in the <see cref="ObservableCollection{T}"/> if <see cref="KeepOrdered"/> is <see langword="true"/>.
     /// <para/>
@@ -56,7 +62,7 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// <summary>
     /// Instantiates a new <see cref="ObservableCollection{T}"/>.
     /// </summary>
-    public ObservableCollectionFast() : base()
+    public ObservableCollectionFast()
     {
     }
     /// <summary>
@@ -93,12 +99,18 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     {
         get
         {
-            IndexGet?.Invoke(index.GetOffset(Count));
+            if (!IsSilenced)
+            {
+                IndexGet?.Invoke(this, new IndexGetEventArgs(index.GetOffset(Count)));
+            }
             return base[index];
         }
         set
         {
-            IndexSet?.Invoke(index.GetOffset(Count));
+            if (!IsSilenced)
+            {
+                IndexSet?.Invoke(this, new IndexSetEventArgs(index.GetOffset(Count)));
+            }
             base[index] = value;
             RaiseCollectionChanged();
         }
@@ -114,7 +126,10 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
         get
         {
             var (offset, length) = range.GetOffsetAndLength(Count);
-            RangeGet?.Invoke(offset, length);
+            if (!IsSilenced)
+            {
+                RangeGet?.Invoke(this, new RangeGetEventArgs(offset, length));
+            }
             for (var i = offset; i < offset + length; i++)
             {
                 yield return this[i];
@@ -123,10 +138,14 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
         set
         {
             var (offset, length) = range.GetOffsetAndLength(Count);
-            RangeSet?.Invoke(offset, length);
+            var materialized = value as T[] ?? value.ToArray();
             for (var i = offset; i < offset + length; i++)
             {
-                this[i] = value.ElementAt(i - offset);
+                this[i] = materialized[i - offset];
+            }
+            if (!IsSilenced)
+            {
+                RangeSet?.Invoke(this, new RangeSetEventArgs(offset, length));
             }
             RaiseCollectionChanged();
         }
@@ -142,37 +161,41 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     {
         get
         {
-            RangeGet?.Invoke(index, count);
+            if (!IsSilenced)
+            {
+                RangeGet?.Invoke(this, new RangeGetEventArgs(index, count));
+            }
             return this[range: index..(index + count)];
         }
     }
     #endregion
 
+    #region Silencing
     /// <summary>
-    /// Silences the <see cref="ObservableCollection{T}"/>. Changes made to the <see cref="ObservableCollection{T}"/> are not propagated to observers, not even using <see cref="RaiseCollectionChanged(NotifyCollectionChangedEventArgs?)"/>.
-    /// </summary>
-    public void Silence()
-    {
-        isSilenced = true;
-    }
-    /// <summary>
-    /// Executes the specified <paramref name="action"/>. For its entire context, the <see cref="ObservableCollection{T}"/> is silenced.
+    /// Executes the specified <paramref name="action"/>. For its entire context, the <see cref="ObservableCollection{T}"/> is silenced, then the previous state is restored (that is, if the <see cref="ObservableCollection{T}"/> was silenced before, this is the same as calling <paramref name="action"/> directly).
     /// </summary>
     /// <param name="action">The <see cref="Action"/> to execute.</param>
-    public void Silence(Action action)
+    public void Silenced(Action action)
     {
-        Silence();
-        action();
-        Unsilence();
+        var old = IsSilenced;
+        IsSilenced = true;
+        action?.Invoke();
+        IsSilenced = old;
     }
     /// <summary>
-    /// Unsilences the <see cref="ObservableCollection{T}"/>. Changes made to the <see cref="ObservableCollection{T}"/> are propagated to observers as normal.
+    /// Executes the specified <paramref name="action"/>. For its entire context, the <see cref="ObservableCollection{T}"/> is unsilenced, then the previous state is restored (that is, if the <see cref="ObservableCollection{T}"/> was unsilenced before, this is the same as calling <paramref name="action"/> directly).
     /// </summary>
-    public void Unsilence()
+    /// <param name="action">The <see cref="Action"/> to execute.</param>
+    public void Unsilenced(Action action)
     {
-        isSilenced = false;
+        var old = IsSilenced;
+        IsSilenced = false;
+        action?.Invoke();
+        IsSilenced = old;
     }
+    #endregion
 
+    #region Sorting
     /// <summary>
     /// Orders the elements in the <see cref="ObservableCollection{T}"/> using the <see cref="Comparer"/> or the default <see cref="Comparer{T}"/> if <see cref="Comparer"/> is <see langword="null"/>.
     /// </summary>
@@ -181,7 +204,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
         SortSilent();
         RaiseCollectionChanged();
     }
-
     /// <summary>
     /// Silently orders the elements in the <see cref="ObservableCollection{T}"/> using the <see cref="Comparer"/> or the default <see cref="Comparer{T}"/> if <see cref="Comparer"/> is <see langword="null"/>. This causes no <see cref="NotifyCollectionChangedAction.Reset"/> event to be fired.
     /// </summary>
@@ -204,41 +226,50 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
             }
         }
     }
+    #endregion
 
+    #region Add*
+    /// <inheritdoc cref="ICollection{T}.Add(T)"/>
+    public new void Add(T item)
+    {
+        if (!IsSilenced)
+        {
+            Added?.Invoke(this, new AddedEventArgs<T>(item));
+        }
+        AddSilent(item);
+        RaiseCollectionChanged();
+    }
     /// <summary>
     /// Silently adds the elements of the specified collection to the end of the <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
     /// </summary>
     /// <param name="collection">The collection whose elements should be added to the end of the <see cref="ObservableCollection{T}"/>.</param>
     public void AddRangeSilent(IEnumerable<T> collection)
     {
+        ArgumentNullException.ThrowIfNull(collection);
+
         foreach (var item in collection)
         {
             AddSilent(item);
         }
     }
-
     /// <summary>
     /// Adds the elements of the specified collection to the end of the <see cref="ObservableCollection{T}"/>.
     /// </summary>
     /// <param name="collection">The collection whose elements should be added to the end of the <see cref="ObservableCollection{T}"/>.</param>
     public void AddRange(IEnumerable<T> collection)
     {
-        RangeAdded?.Invoke(collection);
+        ArgumentNullException.ThrowIfNull(collection);
+
+        if (!IsSilenced)
+        {
+            RangeAdded?.Invoke(this, new RangeAddedEventArgs<T>(collection));
+        }
         foreach (var item in collection)
         {
             AddSilent(item);
         }
         RaiseCollectionChanged();
     }
-
-    /// <inheritdoc cref="ICollection{T}.Add(T)"/>
-    public new void Add(T item)
-    {
-        Added?.Invoke(item);
-        AddSilent(item);
-        RaiseCollectionChanged();
-    }
-
     /// <summary>
     /// Silently adds an element to the end of this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
     /// </summary>
@@ -247,48 +278,18 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     {
         Items.Add(item);
     }
+    #endregion
 
-    /// <summary>
-    /// Removes all occurrences of the specified items from the <see cref="ObservableCollection{T}"/>.
-    /// </summary>
-    /// <param name="collection">A sequence of values to remove from this <see cref="ObservableCollectionFast{T}"/>.</param>
-    public void RemoveRange(IEnumerable<T> collection)
-    {
-        RangeRemoved?.Invoke(collection);
-        foreach (var item in collection)
-        {
-            RemoveSilent(item);
-        }
-        RaiseCollectionChanged();
-    }
-
-    /// <summary>
-    /// Silently removes an element from this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
-    /// </summary>
-    /// <param name="item">The item to remove from this <see cref="ObservableCollection{T}"/>.</param>
-    public void RemoveSilent(T item)
-    {
-        Items.Remove(item);
-    }
-
-    /// <summary>
-    /// Silently removes all elements from this <see cref="ObservableCollection{T}"/> as dictated by a <paramref name="selector"/> <see cref="Func{T, TResult}"/>. This causes no <see cref="NotifyCollectionChangedAction.Remove"/> event to be fired.
-    /// </summary>
-    /// <param name="selector">A <see cref="Func{T, TResult}"/> that determines whether an element should be removed.</param>
-    public void RemoveSilent(Func<T, bool> selector)
-    {
-        foreach (var item in Items.Where(selector).ToList())
-        {
-            RemoveSilent(item);
-        }
-    }
-
+    #region Clearing
     /// <summary>
     /// Silently clears this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Reset"/> event to be fired.
     /// </summary>
     public void ClearSilent()
     {
-        RangeRemoved?.Invoke(Items);
+        if (!IsSilenced)
+        {
+            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs<T>(Items));
+        }
         Items.Clear();
     }
 
@@ -301,163 +302,356 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// </remarks>
     public void Reset(IEnumerable<T> collection)
     {
-        Refill?.Invoke(collection);
+        if (!IsSilenced)
+        {
+            Refill?.Invoke(this, new ResetEventArgs<T>(collection));
+        }
         ClearSilent();
         AddRange(collection);
     }
+    #endregion
 
+    #region Remove*
     /// <summary>
     /// Removes an element from this <see cref="ObservableCollection{T}"/>.
     /// </summary>
     /// <param name="item">The item to remove from this <see cref="ObservableCollection{T}"/>.</param>
     public new void Remove(T item)
     {
-        Removed?.Invoke(item);
+        if (!IsSilenced)
+        {
+            Removed?.Invoke(this, new RemovedEventArgs<T>(item));
+        }
         RemoveSilent(item);
         RaiseCollectionChanged();
     }
-
     /// <summary>
     /// Removes all elements from this <see cref="ObservableCollection{T}"/> as dictated by a <paramref name="selector"/> <see cref="Func{T, TResult}"/>.
     /// </summary>
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that determines whether an element should be removed.</param>
     public void Remove(Func<T, bool> selector)
     {
-        RangeRemoved?.Invoke(Items.Where(selector));
+        if (!IsSilenced)
+        {
+            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs<T>(Items.Where(selector)));
+        }
         RemoveSilent(selector);
         RaiseCollectionChanged();
     }
+    /// <summary>
+    /// Removes all occurrences of the specified items from the <see cref="ObservableCollection{T}"/>.
+    /// </summary>
+    /// <param name="collection">A sequence of values to remove from this <see cref="ObservableCollectionFast{T}"/>.</param>
+    public void RemoveRange(IEnumerable<T> collection)
+    {
+        ArgumentNullException.ThrowIfNull(collection);
 
+        if (!IsSilenced)
+        {
+            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs<T>(collection));
+        }
+        foreach (var item in collection)
+        {
+            RemoveSilent(item);
+        }
+        RaiseCollectionChanged();
+    }
+    /// <summary>
+    /// Silently removes an element from this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
+    /// </summary>
+    /// <param name="item">The item to remove from this <see cref="ObservableCollection{T}"/>.</param>
+    public void RemoveSilent(T item)
+    {
+        Items.Remove(item);
+    }
+    /// <summary>
+    /// Silently removes all elements from this <see cref="ObservableCollection{T}"/> as dictated by a <paramref name="selector"/> <see cref="Func{T, TResult}"/>. This causes no <see cref="NotifyCollectionChangedAction.Remove"/> event to be fired.
+    /// </summary>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that determines whether an element should be removed.</param>
+    public void RemoveSilent(Func<T, bool> selector)
+    {
+        foreach (var item in Items.Where(selector).ToList())
+        {
+            RemoveSilent(item);
+        }
+    }
+    #endregion
+
+    #region Events
     /// <summary>
     /// Raises a <see cref="NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="ObservableCollection{T}"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
     /// <paramref name="e"/>The <see cref="NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="NotifyCollectionChangedEventArgs"/> with <see cref="NotifyCollectionChangedAction.Reset"/> will be passed.
     /// </summary>
-    public void RaiseCollectionChanged(NotifyCollectionChangedEventArgs? e = null)
-    {
-        e ??= new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-        OnCollectionChanged(e);
-    }
-
-    /// <summary>
-    /// Encapsulates a method that is called before a <see cref="NotifyCollectionChangedAction"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    public delegate void PreCollectionChangedNotification();
-    /// <summary>
-    /// Occurs before a <see cref="NotifyCollectionChangedAction"/> event is raised. It may modify the collection.
-    /// </summary>
-    public event PreCollectionChangedNotification PreCollectionChanged;
-    /// <summary>
-    /// Encapsulates a method that is called after a <see cref="NotifyCollectionChangedAction"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may still modify the collection.
-    /// </summary>
-    public delegate void PostCollectionChangedNotification();
-    /// <summary>
-    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes
-    /// </summary>
-    public event PostCollectionChangedNotification PostCollectionChanged;
-
-    /// <summary>
-    /// Encapsulates a method that is called before a <see cref="NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    /// <param name="item">The item to be added.</param>
-    public delegate void AddedNotification(T item);
-    /// <summary>
-    /// Occurs before a <see cref="NotifyCollectionChangedAction.Add"/> event is raised. It may modify the collection.
-    /// </summary>
-    public event AddedNotification Added;
-    /// <summary>
-    /// Encapsulates a method that is called before a <see cref="NotifyCollectionChangedAction.Remove"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    /// <param name="item">The item to be removed.</param>
-    public delegate void RemovedNotification(T item);
-    /// <summary>
-    /// Occurs before a <see cref="NotifyCollectionChangedAction.Remove"/> event is raised. It may modify the collection.
-    /// </summary>
-    public event RemovedNotification Removed;
-    /// <summary>
-    /// Encapsulates a method that is called before multiple items are added to this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    /// <param name="items">The items to be added.</param>
-    public delegate void RangeAddedNotification(IEnumerable<T> items);
-    /// <summary>
-    /// Occurs before multiple items are added to this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    public event RangeAddedNotification RangeAdded;
-    /// <summary>
-    /// Encapsulates a method that is called before multiple items are removed from this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    /// <param name="items">The items to be removed.</param>
-    public delegate void RangeRemovedNotification(IEnumerable<T> items);
-    /// <summary>
-    /// Occurs before multiple items are removed from this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    public event RangeRemovedNotification RangeRemoved;
-    /// <summary>
-    /// Encapsulates a method that is called when an item located at an individual index is accessed. It may modify the collection.
-    /// </summary>
-    /// <param name="index">The index of the item to be accessed.</param>
-    public delegate void IndexGetNotification(int index);
-    /// <summary>
-    /// Occurs when an item located at an individual index is accessed. It may modify the collection.
-    /// </summary>
-    public event IndexGetNotification IndexGet;
-    /// <summary>
-    /// The event that is raised when an item located at an individual index is set. It may modify the collection.
-    /// </summary>
-    /// <param name="index">The index of the item to be set.</param>
-    public delegate void IndexSetNotification(int index);
-    /// <summary>
-    /// Occurs when an item located at an individual index is set. It may modify the collection.
-    /// </summary>
-    public event IndexSetNotification IndexSet;
-    /// <summary>
-    /// Encapsulates a method that is called when multiple items in a specific range are accessed. It may modify the collection.
-    /// </summary>
-    /// <param name="index">The zero-based starting index of the range of items to be accessed.</param>
-    /// <param name="count">The number of items to be accessed.</param>
-    public delegate void RangeGetNotification(int index, int count);
-    /// <summary>
-    /// Occurs when multiple items in a specific range are accessed. It may modify the collection.
-    /// </summary>
-    public event RangeGetNotification RangeGet;
-    /// <summary>
-    /// Encapsulates a method that is called when multiple items in a specific range are set. It may modify the collection.
-    /// </summary>
-    /// <param name="index">The zero-based starting index of the range of items to be set.</param>
-    /// <param name="count">The number of items to be set.</param>
-    public delegate void RangeSetNotification(int index, int count);
-    /// <summary>
-    /// Occurs when multiple items in a specific range are set. It may modify the collection.
-    /// </summary>
-    public event RangeSetNotification RangeSet;
-    /// <summary>
-    /// Encapsulates a method that is called when the collection is reset by clearing it and refilling it. It may modify the collection.
-    /// </summary>
-    /// <param name="newContents">The new contents of the collection.</param>
-    public delegate void ResetNotification(IEnumerable<T> newContents);
-    /// <summary>
-    /// Occurs when the collection is reset by clearing it and refilling it. It may modify the collection.
-    /// </summary>
-    public event ResetNotification Refill;
-    /// <summary>
-    /// Encapsulates a method that is called when the collection is reset by clearing it. It may modify the collection.
-    /// </summary>
-    public delegate void ClearNotification();
-    /// <summary>
-    /// Occurs when the collection is reset by clearing it. It may modify the collection.
-    /// </summary>
-    public event ClearNotification Empty;
-
+    public void RaiseCollectionChanged(NotifyCollectionChangedEventArgs? e = null) => OnCollectionChanged(e!);
     /// <inheritdoc/>
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-        PreCollectionChanged?.Invoke();
-        if (!isSilenced)
+        e ??= new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+
+        if (KeepOrdered)
         {
-            base.OnCollectionChanged(e);
+            SortSilent();
         }
-        PostCollectionChanged?.Invoke();
+
+        if (!IsSilenced)
+        {
+            PreCollectionChanged?.Invoke(this, EventArgs.Empty);
+            base.OnCollectionChanged(e);
+            PostCollectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    /// <summary>
+    /// Occurs before a <see cref="NotifyCollectionChangedAction"/> event is raised. It may modify the collection.
+    /// </summary>
+    public event EventHandler PreCollectionChanged;
+    /// <summary>
+    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes
+    /// </summary>
+    public event EventHandler PostCollectionChanged;
+    /// <summary>
+    /// Occurs before a <see cref="NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
+    /// </summary>
+    public event EventHandler<AddedEventArgs<T>> Added;
+    /// <summary>
+    /// Occurs before a <see cref="NotifyCollectionChangedAction.Remove"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
+    /// </summary>
+    public event EventHandler<RemovedEventArgs<T>> Removed;
+    /// <summary>
+    /// Occurs before multiple items are added to this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
+    /// </summary>
+    public event EventHandler<RangeAddedEventArgs<T>> RangeAdded;
+    /// <summary>
+    /// Occurs before multiple items are removed from this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
+    /// </summary>
+    public event EventHandler<RangeRemovedEventArgs<T>> RangeRemoved;
+    /// <summary>
+    /// Occurs when an item located at an individual index is accessed. It may modify the collection.
+    /// </summary>
+    public event EventHandler<IndexGetEventArgs> IndexGet;
+    /// <summary>
+    /// The event that is raised when an item located at an individual index is set. It may modify the collection.
+    /// </summary>
+    public event EventHandler<IndexSetEventArgs> IndexSet;
+    /// <summary>
+    /// Occurs when multiple items in a specific range are accessed. It may modify the collection.
+    /// </summary>
+    public event EventHandler<RangeGetEventArgs> RangeGet;
+    /// <summary>
+    /// Occurs when multiple items in a specific range are set. It may modify the collection.
+    /// </summary>
+    public event EventHandler<RangeSetEventArgs> RangeSet;
+    /// <summary>
+    /// Occurs when the collection is reset by clearing it and refilling it. It may modify the collection.
+    /// </summary>
+    public event EventHandler<ResetEventArgs<T>> Refill;
+    /// <summary>
+    /// Occurs when the collection is reset by clearing it. It may modify the collection.
+    /// </summary>
+    public event EventHandler Empty;
+    #endregion
+}
+
+#region EventArgs classes
+/// <summary>
+/// Represents the event arguments for the Added event.
+/// </summary>
+/// <typeparam name="T">The type of the item being added.</typeparam>
+public class AddedEventArgs<T>
+{
+    /// <summary>
+    /// Gets the item that was added.
+    /// </summary>
+    public T Item { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddedEventArgs{T}"/> class.
+    /// </summary>
+    /// <param name="item">The item that was added.</param>
+    public AddedEventArgs(T item)
+    {
+        Item = item;
     }
 }
+
+/// <summary>
+/// Represents the event arguments for the Removed event.
+/// </summary>
+/// <typeparam name="T">The type of the item being removed.</typeparam>
+public class RemovedEventArgs<T>
+{
+    /// <summary>
+    /// Gets the item that was removed.
+    /// </summary>
+    public T Item { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RemovedEventArgs{T}"/> class.
+    /// </summary>
+    /// <param name="item">The item that was removed.</param>
+    public RemovedEventArgs(T item)
+    {
+        Item = item;
+    }
+}
+
+/// <summary>
+/// Represents the event arguments for the RangeAdded event.
+/// </summary>
+/// <typeparam name="T">The type of the items being added.</typeparam>
+public class RangeAddedEventArgs<T>
+{
+    /// <summary>
+    /// Gets the items that were added.
+    /// </summary>
+    public IEnumerable<T> Items { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RangeAddedEventArgs{T}"/> class.
+    /// </summary>
+    /// <param name="items">The items that were added.</param>
+    public RangeAddedEventArgs(IEnumerable<T> items)
+    {
+        Items = items;
+    }
+}
+
+/// <summary>
+/// Represents the event arguments for the RangeRemoved event.
+/// </summary>
+/// <typeparam name="T">The type of the items being removed.</typeparam>
+public class RangeRemovedEventArgs<T>
+{
+    /// <summary>
+    /// Gets the items that were removed.
+    /// </summary>
+    public IEnumerable<T> Items { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RangeRemovedEventArgs{T}"/> class.
+    /// </summary>
+    /// <param name="items">The items that were removed.</param>
+    public RangeRemovedEventArgs(IEnumerable<T> items)
+    {
+        Items = items;
+    }
+}
+
+/// <summary>
+/// Represents the event arguments for the IndexGet event.
+/// </summary>
+public class IndexGetEventArgs
+{
+    /// <summary>
+    /// Gets the index being accessed.
+    /// </summary>
+    public int Index { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IndexGetEventArgs"/> class.
+    /// </summary>
+    /// <param name="index">The index being accessed.</param>
+    public IndexGetEventArgs(int index)
+    {
+        Index = index;
+    }
+}
+
+/// <summary>
+/// Represents the event arguments for the IndexSet event.
+/// </summary>
+public class IndexSetEventArgs
+{
+    /// <summary>
+    /// Gets the index being accessed.
+    /// </summary>
+    public int Index { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IndexSetEventArgs"/> class.
+    /// </summary>
+    /// <param name="index">The index being accessed.</param>
+    public IndexSetEventArgs(int index)
+    {
+        Index = index;
+    }
+}
+
+/// <summary>
+/// Represents the event arguments for the RangeGet event.
+/// </summary>
+public class RangeGetEventArgs
+{
+    /// <summary>
+    /// Gets the starting index of the range being accessed.
+    /// </summary>
+    public int Index { get; }
+
+    /// <summary>
+    /// Gets the number of items in the range being accessed.
+    /// </summary>
+    public int Count { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RangeGetEventArgs"/> class.
+    /// </summary>
+    /// <param name="index">The starting index of the range being accessed.</param>
+    /// <param name="count">The number of items in the range being accessed.</param>
+    public RangeGetEventArgs(int index, int count)
+    {
+        Index = index;
+        Count = count;
+    }
+}
+
+/// <summary>
+/// Represents the event arguments for the RangeSet event.
+/// </summary>
+public class RangeSetEventArgs
+{
+    /// <summary>
+    /// Gets the starting index of the range being accessed.
+    /// </summary>
+    public int Index { get; }
+
+    /// <summary>
+    /// Gets the number of items in the range being accessed.
+    /// </summary>
+    public int Count { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RangeSetEventArgs"/> class.
+    /// </summary>
+    /// <param name="index">The starting index of the range being accessed.</param>
+    /// <param name="count">The number of items in the range being accessed.</param>
+    public RangeSetEventArgs(int index, int count)
+    {
+        Index = index;
+        Count = count;
+    }
+}
+
+/// <summary>
+/// Represents the event arguments for the Reset event.
+/// </summary>
+/// <typeparam name="T">The type of the new contents.</typeparam>
+public class ResetEventArgs<T>
+{
+    /// <summary>
+    /// Gets the new contents.
+    /// </summary>
+    public IEnumerable<T> NewContents { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResetEventArgs{T}"/> class.
+    /// </summary>
+    /// <param name="newContents">The new contents.</param>
+    public ResetEventArgs(IEnumerable<T> newContents)
+    {
+        NewContents = newContents;
+    }
+}
+#endregion
 
 /// <summary>
 /// Provides a builder for <see cref="ObservableCollectionFast{T}"/>s.
