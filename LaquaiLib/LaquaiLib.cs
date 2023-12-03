@@ -5,7 +5,7 @@ namespace LaquaiLib;
 /// <summary>
 /// Entry point for the library.
 /// </summary>
-public class LaquaiLib
+public static class LaquaiLib
 {
     /// <summary>
     /// Compiles an <see cref="IEnumerable{T}"/> of <typeparamref name="T"/>s from <paramref name="start"/> to <paramref name="stop"/> with a step width of <paramref name="step"/>.
@@ -22,8 +22,7 @@ public class LaquaiLib
     /// <returns>An <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> as described.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
     public static IEnumerable<T> Range<T>(T start, T stop, T step)
-        where T : struct,
-                  IAdditionOperators<T, T, T>,
+        where T : IAdditionOperators<T, T, T>,
                   IUnaryNegationOperators<T, T>,
                   ISubtractionOperators<T, T, T>,
                   IComparisonOperators<T, T, bool>

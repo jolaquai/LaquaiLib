@@ -105,22 +105,11 @@ public class ExtendedBackgroundWorker : BackgroundWorker
     /// Occurs when the <see cref="ExtendedBackgroundWorker"/> is started.
     /// </summary>
     public event EventHandler WorkerStarted;
-    /// <summary>
-    /// Occurs when cancellation of the <see cref="ExtendedBackgroundWorker"/> is requested.
-    /// </summary>
-    public event EventHandler WorkerCancelled;
 
     /// <inheritdoc/>
     protected override void OnDoWork(DoWorkEventArgs e)
     {
         WorkerStarted?.Invoke(this, EventArgs.Empty);
         base.OnDoWork(e);
-    }
-
-    /// <inheritdoc cref="BackgroundWorker.CancelAsync"/>
-    public new void CancelAsync()
-    {
-        WorkerCancelled?.Invoke(this, EventArgs.Empty);
-        base.CancelAsync();
     }
 }

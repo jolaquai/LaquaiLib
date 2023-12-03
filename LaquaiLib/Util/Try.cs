@@ -39,8 +39,8 @@ public static class Try
     /// Attempts to execute the given parameterless <see cref="Func{TResult}"/> and propagates its return value if it succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-    /// <param name="method">The <see cref="Func{TResult}"/> to execute.</param>
     /// <param name="defaultValueFactory">The <see cref="Func{TResult}"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
+    /// <param name="method">The <see cref="Func{TResult}"/> to execute.</param>
     /// <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
     public static T? ExecuteOrDefault<T>(Func<T?> defaultValueFactory, Func<T?> method)
     {

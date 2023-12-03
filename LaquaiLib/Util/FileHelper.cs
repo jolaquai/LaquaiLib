@@ -90,7 +90,7 @@ public static class FileHelper
         private readonly FrozenDictionary<string, FileInfo> _files;
 
         /// <summary>
-        /// Instantiates a new <see cref="FileSizePartitioner"/> instance using the specified file paths.
+        /// Instantiates a new <see cref="FileSizePartitioner"/> using the specified file paths.
         /// </summary>
         /// <param name="paths">The paths to the files to partition.</param>
         public FileSizePartitioner(IEnumerable<string> paths)
@@ -99,7 +99,7 @@ public static class FileHelper
                           .ToFrozenDictionary();
         }
         /// <summary>
-        /// Instantiates a new <see cref="FileSizePartitioner"/> instance using the specified <see cref="FileInfo"/> instances.
+        /// Instantiates a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
         /// </summary>
         /// <param name="fileInfos">The <see cref="FileInfo"/> instances to partition.</param>
         public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)

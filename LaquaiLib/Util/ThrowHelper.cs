@@ -393,5 +393,20 @@ public static class ThrowHelper
         ArgumentNullException.ThrowIfNull(obj9, arg9);
         ArgumentNullException.ThrowIfNull(obj10, arg10);
     }
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>.
+    /// This does not accurately report the name of the argument which is <see langword="null"/>.
+    /// </summary>
+    /// <param name="objs">The objects to test.</param>
+    public static void ThrowOnNull(params object[] objs)
+    {
+        ArgumentNullException.ThrowIfNull(objs);
+        for (var i = 0; i < objs.Length; i++)
+        {
+            var obj = objs[i];
+            ArgumentNullException.ThrowIfNull(obj, $"objs[{i}]");
+        }
+    }
     #endregion
 }
