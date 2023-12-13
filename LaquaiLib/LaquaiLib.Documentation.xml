@@ -223,6 +223,12 @@
             Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that iterates through the values of the <see cref="T:LaquaiLib.Collections.Deque`1"/>'s nodes.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Collections.Deque`1.ToLinkedList">
+            <summary>
+            Constructs a new <see cref="T:System.Collections.Generic.LinkedList`1"/> from the <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            </summary>
+            <returns>The newly constructed <see cref="T:System.Collections.Generic.LinkedList`1"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Collections.DequeNode`1">
             <summary>
             Represents a node in a <see cref="T:LaquaiLib.Collections.Deque`1"/>.
@@ -1952,6 +1958,35 @@
             <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
             <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.LinkedListNodeExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.LinkedListNode`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.LinkedListNodeExtensions.DequeNext``1(System.Collections.Generic.LinkedListNode{``0})">
+            <summary>
+            Returns the next node in the <see cref="T:System.Collections.Generic.LinkedList`1"/> to which <paramref name="node"/> belongs, wrapping around to the first node if <paramref name="node"/> is the last node (that is, the <see cref="T:System.Collections.Generic.LinkedList`1"/> is treated like a "deque" data structure).
+            </summary>
+            <typeparam name="T">The type of the elements in the <see cref="T:System.Collections.Generic.LinkedList`1"/>.</typeparam>
+            <param name="node">The node to get the next node of.</param>
+            <returns>The next node as described, or whatever <see cref="P:System.Collections.Generic.LinkedListNode`1.Next"/> returns if <paramref name="node"/> is not the last node. This can be <see langword="null"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.LinkedListNodeExtensions.DequePrevious``1(System.Collections.Generic.LinkedListNode{``0})">
+            <summary>
+            Returns the previous node in the <see cref="T:System.Collections.Generic.LinkedList`1"/> to which <paramref name="node"/> belongs, wrapping around to the last node if <paramref name="node"/> is the first node (that is, the <see cref="T:System.Collections.Generic.LinkedList`1"/> is treated like a "deque" data structure).
+            </summary>
+            <typeparam name="T">The type of the elements in the <see cref="T:System.Collections.Generic.LinkedList`1"/>.</typeparam>
+            <param name="node">The node to get the previous node of.</param>
+            <returns>The previous node as described, or whatever <see cref="P:System.Collections.Generic.LinkedListNode`1.Previous"/> returns if <paramref name="node"/> is not the first node. This can be <see langword="null"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.LinkedListNodeExtensions.ToDeque``1(System.Collections.Generic.LinkedList{``0})">
+            <summary>
+            Constructs a <see cref="T:LaquaiLib.Collections.Deque`1"/> from the specified <see cref="T:System.Collections.Generic.LinkedList`1"/>.
+            </summary>
+            <typeparam name="T">The type of the elements in the <see cref="T:System.Collections.Generic.LinkedList`1"/>.</typeparam>
+            <param name="linkedList">The <see cref="T:System.Collections.Generic.LinkedList`1"/> to construct the <see cref="T:LaquaiLib.Collections.Deque`1"/> from.</param>
+            <returns>The newly constructed <see cref="T:LaquaiLib.Collections.Deque`1"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.ListExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.List`1"/> Type.
@@ -2077,6 +2112,20 @@
             <param name="obj">The <see cref="T:System.Object"/> to cast.</param>
             <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/> or <see langword="null"/> if the cast failed.</returns>
             <remarks>Contrary to <see cref="M:LaquaiLib.Extensions.ObjectExtensions.Cast``1(System.Object)"/>, this method never throws an exception.</remarks>
+        </member>
+        <member name="T:LaquaiLib.Extensions.PartitionerExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Concurrent.Partitioner"/> type and derived types.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PartitionerExtensions.ToList``1(System.Collections.Concurrent.Partitioner{``0},System.Int32)">
+            <summary>
+            Enumerates each partition of the <paramref name="partitioner"/> and returns a <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Collections.Generic.List`1"/>s containing the elements of each partition.
+            </summary>
+            <typeparam name="T">The type of the elements in the <paramref name="partitioner"/>.</typeparam>
+            <param name="partitioner">The <see cref="T:System.Collections.Concurrent.Partitioner`1"/> to enumerate.</param>
+            <param name="partitions">The number of partitions to request.</param>
+            <returns>The <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Collections.Generic.List`1"/>s containing the elements of each partition.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.PropertyInfoExtensions">
             <summary>
@@ -3399,16 +3448,8 @@
             Occurs when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Util.ExtendedBackgroundWorker.WorkerCancelled">
-            <summary>
-            Occurs when cancellation of the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is requested.
-            </summary>
-        </member>
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.OnDoWork(System.ComponentModel.DoWorkEventArgs)">
             <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.CancelAsync">
-            <inheritdoc cref="M:System.ComponentModel.BackgroundWorker.CancelAsync"/>
         </member>
         <member name="T:LaquaiLib.Util.FileHelper">
             <summary>
@@ -3435,13 +3476,13 @@
         </member>
         <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> instance using the specified file paths.
+            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> using the specified file paths.
             </summary>
             <param name="paths">The paths to the files to partition.</param>
         </member>
         <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.IO.FileInfo})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> instance using the specified <see cref="T:System.IO.FileInfo"/> instances.
+            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> using the specified <see cref="T:System.IO.FileInfo"/> instances.
             </summary>
             <param name="fileInfos">The <see cref="T:System.IO.FileInfo"/> instances to partition.</param>
         </member>
@@ -4247,6 +4288,13 @@
             <param name="arg9">The name of the ninth argument to test.</param>
             <param name="arg10">The name of the tenth argument to test.</param>
         </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowOnNull(System.Object[])">
+            <summary>
+            Throws an <see cref="T:System.ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>.
+            This does not accurately report the name of the argument which is <see langword="null"/>.
+            </summary>
+            <param name="objs">The objects to test.</param>
+        </member>
         <member name="T:LaquaiLib.Util.Try">
             <summary>
             Provides static methods that wrap <c>try-catch</c> blocks.
@@ -4267,8 +4315,8 @@
             Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
             </summary>
             <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
             <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
+            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
             <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Try.First``1(System.Collections.Generic.IEnumerable{System.Func{``0}})">

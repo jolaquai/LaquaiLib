@@ -58,4 +58,39 @@ public static class ArrayExtensions
     /// <returns>A new <see cref="Array"/> of <typeparamref name="TResult"/> that contains the transformed elements from the input sequence.</returns>
     public static TResult[] ArraySelect<TSource, TResult>(this TSource[] source, Func<TSource, TResult> selector) => Array.ConvertAll(source, x => selector(x));
     #endregion
+
+    /// <summary>
+    /// Splits the specified <paramref name="array"/> into two new <see cref="Array"/>s based on the given <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> to split.</param>
+    /// <param name="true">The <see cref="Array"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
+    /// <param name="false">The <see cref="Array"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
+    /// <remarks>
+    /// <paramref name="true"/> and <paramref name="false"/>'s lengths are not checked against <paramref name="array"/>'s length. If they are too small, an <see cref="IndexOutOfRangeException"/> will be thrown by the runtime.
+    /// </remarks>
+    public static void Split<T>(T[] array, T[] @true, T[] @false, Func<T, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(array);
+        ArgumentNullException.ThrowIfNull(@true);
+        ArgumentNullException.ThrowIfNull(@false);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var trueIndex = 0;
+        var falseIndex = 0;
+        for (var i = 0; i < array.Length; i++)
+        {
+            if (predicate(array[i]))
+            {
+                @true[trueIndex] = array[i];
+                trueIndex++;
+            }
+            else
+            {
+                @false[falseIndex] = array[i];
+                falseIndex++;
+            }
+        }
+    }
 }

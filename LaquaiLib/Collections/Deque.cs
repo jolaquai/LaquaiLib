@@ -528,13 +528,21 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     }
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T?>)this).GetEnumerator();
     #endregion
+
+    #region Conversions
+    /// <summary>
+    /// Constructs a new <see cref="LinkedList{T}"/> from the <see cref="Deque{T}"/>.
+    /// </summary>
+    /// <returns>The newly constructed <see cref="LinkedList{T}"/>.</returns>
+    public LinkedList<T> ToLinkedList() => new LinkedList<T>((IEnumerable<T?>)this);
+    #endregion
 }
 
 /// <summary>
 /// Represents a node in a <see cref="Deque{T}"/>.
 /// </summary>
 /// <typeparam name="T">The type of the value this node contains. It must be compatible with the type of the <see cref="Deque{T}"/> this node belongs to.</typeparam>
-public sealed class DequeNode<T>
+public class DequeNode<T>
 {
     /// <summary>
     /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
@@ -569,29 +577,29 @@ public sealed class DequeNode<T>
         Deque = deque;
     }
 
-/// <summary>
-/// Returns the <see cref="Deque{T}"/> this node belongs to.
-/// If <see langword="null"/> or set explicitly, the node is not coupled to a <see cref="Deque{T}"/>.
-/// </summary>
-public Deque<T?>? Deque { get; set; }
-/// <summary>
-/// Returns the next node in the <see cref="Deque{T}"/>.
-/// </summary>
-public DequeNode<T?>? Next { get; set; }
-/// <summary>
-/// Returns the previous node in the <see cref="Deque{T}"/>.
-/// </summary>
-public DequeNode<T?>? Previous { get; set; }
-/// <summary>
-/// Returns the value this node contains.
-/// </summary>
-public T? Value { get; set; }
+    /// <summary>
+    /// Returns the <see cref="Deque{T}"/> this node belongs to.
+    /// If <see langword="null"/> or set explicitly, the node is not coupled to a <see cref="Deque{T}"/>.
+    /// </summary>
+    public Deque<T?>? Deque { get; set; }
+    /// <summary>
+    /// Returns the next node in the <see cref="Deque{T}"/>.
+    /// </summary>
+    public DequeNode<T?>? Next { get; set; }
+    /// <summary>
+    /// Returns the previous node in the <see cref="Deque{T}"/>.
+    /// </summary>
+    public DequeNode<T?>? Previous { get; set; }
+    /// <summary>
+    /// Returns the value this node contains.
+    /// </summary>
+    public T? Value { get; set; }
 
-/// <summary>
-/// Returns the string representation of the <see cref="Value"/> this node contains.
-/// </summary>
-/// <returns>A <see cref="string"/> as described.</returns>
-public override string ToString() => Value?.ToString() ?? "";
+    /// <summary>
+    /// Returns the string representation of the <see cref="Value"/> this node contains.
+    /// </summary>
+    /// <returns>A <see cref="string"/> as described.</returns>
+    public override string ToString() => Value?.ToString() ?? "";
 }
 
 /// <summary>

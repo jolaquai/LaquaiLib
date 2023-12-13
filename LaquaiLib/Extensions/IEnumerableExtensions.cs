@@ -309,29 +309,93 @@ public static class IEnumerableExtensions
         where T : unmanaged
     {
         ArgumentNullException.ThrowIfNull(source);
-        foreach (var item in source)
+
+        return Blitted2();
+
+        IEnumerable<byte> Blitted2()
         {
-            var bytes = item switch
+            foreach (var item in source)
             {
-                bool v => BitConverter.GetBytes(v),
-                char v => BitConverter.GetBytes(v),
-                short v => BitConverter.GetBytes(v),
-                int v => BitConverter.GetBytes(v),
-                long v => BitConverter.GetBytes(v),
-                ushort v => BitConverter.GetBytes(v),
-                uint v => BitConverter.GetBytes(v),
-                ulong v => BitConverter.GetBytes(v),
-                Half v => BitConverter.GetBytes(v),
-                float v => BitConverter.GetBytes(v),
-                double v => BitConverter.GetBytes(v),
-                byte v => [v],
-                byte[] v => v,
-                _ => [],
-            };
-            foreach (var b in bytes)
-            {
-                yield return b;
+                var bytes = item switch
+                {
+                    bool v => BitConverter.GetBytes(v),
+                    char v => BitConverter.GetBytes(v),
+                    short v => BitConverter.GetBytes(v),
+                    int v => BitConverter.GetBytes(v),
+                    long v => BitConverter.GetBytes(v),
+                    ushort v => BitConverter.GetBytes(v),
+                    uint v => BitConverter.GetBytes(v),
+                    ulong v => BitConverter.GetBytes(v),
+                    Half v => BitConverter.GetBytes(v),
+                    float v => BitConverter.GetBytes(v),
+                    double v => BitConverter.GetBytes(v),
+                    byte v => [v],
+                    byte[] v => v,
+                    _ => [],
+                };
+                foreach (var b in bytes)
+                {
+                    yield return b;
+                }
             }
         }
+    }
+
+    /// <summary>
+    /// Filters a sequence of values based on a predicate. The predicate's result is inverted.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
+    /// <returns>The elements in the input sequence that do not satisfy the predicate.</returns>
+    /// <remarks>
+    /// This has essentially no purpose but to avoid the need to create a lambda that inverts the result of the predicate.
+    /// </remarks>
+    public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        return WhereNot2();
+
+        IEnumerable<T> WhereNot2()
+        {
+            foreach (var item in source)
+            {
+                if (!predicate(item))
+                {
+                    yield return item;
+                }
+            }
+        }
+    }
+    /// <summary>
+    /// Splits a sequence of values into two sequences based on a predicate.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
+    /// <returns>A <see cref="Tuple{T1, T2}"/> containing the two sequences.</returns>
+    public static (IEnumerable<T> True, IEnumerable<T> False) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var trueList = new List<T>();
+        var falseList = new List<T>();
+
+        foreach (var item in source)
+        {
+            if (predicate(item))
+            {
+                trueList.Add(item);
+            }
+            else
+            {
+                falseList.Add(item);
+            }
+        }
+
+        return (trueList, falseList);
     }
 }

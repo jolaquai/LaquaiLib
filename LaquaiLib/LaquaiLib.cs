@@ -65,20 +65,25 @@ public static class LaquaiLib
             throw new ArgumentException($"{nameof(step)} cannot be 0.", nameof(step));
         }
 
-        if (start == stop)
-        {
-            yield return start;
-            yield break;
-        }
-        if ((start > stop && step > 0) || (start < stop && step < 0))
-        {
-            step = -step;
-        }
+        return Range2();
 
-        var current = start - step;
-        while (step > 0 ? current + step <= stop : current + step >= stop)
+        IEnumerable<int> Range2()
         {
-            yield return current += step;
+            if (start == stop)
+            {
+                yield return start;
+                yield break;
+            }
+            if ((start > stop && step > 0) || (start < stop && step < 0))
+            {
+                step = -step;
+            }
+
+            var current = start - step;
+            while (step > 0 ? current + step <= stop : current + step >= stop)
+            {
+                yield return current += step;
+            }
         }
     }
 
@@ -97,20 +102,25 @@ public static class LaquaiLib
             throw new ArgumentException($"{nameof(step)} cannot be 0.", nameof(step));
         }
 
-        if (start == stop)
-        {
-            yield return start;
-            yield break;
-        }
-        if ((start > stop && step > 0) || (start < stop && step < 0))
-        {
-            step = -step;
-        }
+        return Range2();
 
-        var current = start - step;
-        while (step > 0 ? current + step <= stop : current + step >= stop)
+        IEnumerable<double> Range2()
         {
-            yield return current += step;
+            if (start == stop)
+            {
+                yield return start;
+                yield break;
+            }
+            if ((start > stop && step > 0) || (start < stop && step < 0))
+            {
+                step = -step;
+            }
+
+            var current = start - step;
+            while (step > 0 ? current + step <= stop : current + step >= stop)
+            {
+                yield return current += step;
+            }
         }
     }
 
@@ -129,20 +139,25 @@ public static class LaquaiLib
             throw new ArgumentException($"{nameof(step)} cannot be 0.", nameof(step));
         }
 
-        if (start == stop)
-        {
-            yield return start;
-            yield break;
-        }
-        if ((start > stop && step > 0) || (start < stop && step < 0))
-        {
-            step = -step;
-        }
+        return Range2();
 
-        var current = start - step;
-        while (step > 0 ? current + step <= stop : current + step >= stop)
+        IEnumerable<decimal> Range2()
         {
-            yield return current += step;
+            if (start == stop)
+            {
+                yield return start;
+                yield break;
+            }
+            if ((start > stop && step > 0) || (start < stop && step < 0))
+            {
+                step = -step;
+            }
+
+            var current = start - step;
+            while (step > 0 ? current + step <= stop : current + step >= stop)
+            {
+                yield return current += step;
+            }
         }
     }
 }
