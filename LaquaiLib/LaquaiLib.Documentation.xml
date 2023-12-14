@@ -337,6 +337,189 @@
             Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/>'s previous node does not have a reference to <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> as its next node.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Collections.Set`1">
+            <summary>
+            Represents an unsorted collection of unique items.
+            </summary>
+            <typeparam name="T">The type of the items.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.#ctor">
+            <summary>
+            Instantiates a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the default equality comparer.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the default equality comparer.
+            </summary>
+            <param name="collection">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> whose items are copied to the new <see cref="T:LaquaiLib.Collections.Set`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Instantiates a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the specified <paramref name="equalityComparer"/>.
+            </summary>
+            <param name="equalityComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the specified <paramref name="equalityComparer"/>.
+            </summary>
+            <param name="collection">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> whose items are copied to the new <see cref="T:LaquaiLib.Collections.Set`1"/>.</param>
+            <param name="equalityComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
+        </member>
+        <member name="P:LaquaiLib.Collections.Set`1.EqualityComparer">
+            <summary>
+            The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> used for equality comparisons.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.Set`1.Count">
+            <summary>
+            The number of items in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.Set`1.IsReadOnly">
+            <summary>
+            Whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is read-only.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Add(`0)">
+            <summary>
+            Attempts to add the specified item to the <see cref="T:LaquaiLib.Collections.Set`1"/>.
+            </summary>
+            <param name="item">The item to add.</param>
+            <returns><see langword="true"/> if the addition was successful (that is, if the <see cref="T:LaquaiLib.Collections.Set`1"/> did not previously contain the item), otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Clear">
+            <summary>
+            Removes all items from the <see cref="T:LaquaiLib.Collections.Set`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Contains(`0)">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the specified item.
+            </summary>
+            <param name="item">The item to check for.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the item, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.CopyTo(`0[],System.Int32)">
+            <summary>
+            Copies all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> to the specified <paramref name="array"/>, starting at the specified <paramref name="arrayIndex"/>.
+            </summary>
+            <param name="array">The array to copy the items to.</param>
+            <param name="arrayIndex">The index in the array to start copying at.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.ExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Removes all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> that are also in the specified <paramref name="other"/> collection.
+            </summary>
+            <param name="other">The collection of items to remove.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.GetEnumerator">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that may be used to iterate over the items in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
+            The order in which it enumerates the items is undefined.
+            </summary>
+            <returns>The enumerator as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.IntersectWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Keeps only the items in the <see cref="T:LaquaiLib.Collections.Set`1"/> that are also in the specified <paramref name="other"/> collection.
+            </summary>
+            <param name="other">The collection of items to keep.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper subset of the specified <paramref name="other"/> collection (that is, whether all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> are also in the <paramref name="other"/> collection, but the <paramref name="other"/> collection contains at least one item that is not in the <see cref="T:LaquaiLib.Collections.Set`1"/>).
+            </summary>
+            <param name="other">The collection to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper subset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper superset of the specified <paramref name="other"/> collection (that is, whether all items in the <paramref name="other"/> collection are also in the <see cref="T:LaquaiLib.Collections.Set`1"/>, but the <see cref="T:LaquaiLib.Collections.Set`1"/> contains at least one item that is not in the <paramref name="other"/> collection).
+            </summary>
+            <param name="other">The collection to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper superset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a subset of the specified <paramref name="other"/> collection (that is, whether all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> are also in the <paramref name="other"/> collection).
+            </summary>
+            <param name="other">The collection to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a subset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a superset of the specified <paramref name="other"/> collection (that is, whether all items in the <paramref name="other"/> collection are also in the <see cref="T:LaquaiLib.Collections.Set`1"/>).
+            </summary>
+            <param name="other">The collection to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a superset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> overlaps with the specified <paramref name="other"/> collection (that is, whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains at least one item that is also in the <paramref name="other"/> collection).
+            </summary>
+            <param name="other">The collection to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> overlaps with the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Remove(`0)">
+            <summary>
+            Removes the specified item from the <see cref="T:LaquaiLib.Collections.Set`1"/>.
+            </summary>
+            <param name="item">The item to remove.</param>
+            <returns><see langword="true"/> if the removal was successful (that is, if the <see cref="T:LaquaiLib.Collections.Set`1"/> contained the item), otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the specified <paramref name="other"/> collection (that is, whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the same items as the <paramref name="other"/> collection).
+            </summary>
+            <param name="other">The collection to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.SymmetricExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Removes all items from the <see cref="T:LaquaiLib.Collections.Set`1"/> that are also in the specified <paramref name="other"/> collection, and adds all items from the <paramref name="other"/> collection that are not already in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
+            </summary>
+            <param name="other">The collection of items to operate on.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.UnionWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Adds all items from the specified <paramref name="other"/> collection to the <see cref="T:LaquaiLib.Collections.Set`1"/> that are not already in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
+            </summary>
+            <param name="other">The collection of items to add.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.ToFrozenSet">
+            <summary>
+            Freezes the set into a <see cref="T:System.Collections.Frozen.FrozenSet`1"/>.
+            </summary>
+            <returns>The frozen set.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.ToSortedSet">
+            <summary>
+            Creates a <see cref="T:System.Collections.Generic.SortedSet`1"/> from the <see cref="T:LaquaiLib.Collections.Set`1"/>
+            </summary>
+            <returns>The created <see cref="T:System.Collections.Generic.SortedSet`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.ToImmutableSortedSet">
+            <summary>
+            Creates an <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/> from the <see cref="T:LaquaiLib.Collections.Set`1"/>
+            </summary>
+            <returns>The created <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Equals(LaquaiLib.Collections.Set{`0})">
+            <summary>
+            Compares the <see cref="T:LaquaiLib.Collections.Set`1"/> to the specified <paramref name="other"/> <see cref="T:LaquaiLib.Collections.Set`1"/> for equality.
+            </summary>
+            <param name="other">The <see cref="T:LaquaiLib.Collections.Set`1"/> to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the <paramref name="other"/> <see cref="T:LaquaiLib.Collections.Set`1"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Equals(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Compares the <see cref="T:LaquaiLib.Collections.Set`1"/> to the specified <paramref name="other"/> collection for equality.
+            </summary>
+            <param name="other">The collection to compare to.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Classes.Collections.LimitedCollections.LimitedConcurrentQueue`1">
             <summary>
             Represents a <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
@@ -1375,6 +1558,19 @@
             <param name="selector">A <see cref="T:System.Func`2"/> that transforms each element from <typeparamref name="TSource"/> to <typeparamref name="TResult"/>.</param>
             <returns>A new <see cref="T:System.Array"/> of <typeparamref name="TResult"/> that contains the transformed elements from the input sequence.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.Split``1(``0[],``0[],``0[],System.Func{``0,System.Boolean})">
+            <summary>
+            Splits the specified <paramref name="array"/> into two new <see cref="T:System.Array"/>s based on the given <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="T">The Type of the items in the array.</typeparam>
+            <param name="array">The <see cref="T:System.Array"/> to split.</param>
+            <param name="true">The <see cref="T:System.Array"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
+            <param name="false">The <see cref="T:System.Array"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that checks each element for a condition.</param>
+            <remarks>
+            <paramref name="true"/> and <paramref name="false"/>'s lengths are not checked against <paramref name="array"/>'s length. If they are too small, an <see cref="T:System.IndexOutOfRangeException"/> will be thrown by the runtime.
+            </remarks>
+        </member>
         <member name="T:LaquaiLib.Extensions.AssemblyExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Reflection.Assembly"/> Type.
@@ -1891,6 +2087,27 @@
             <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
             <param name="source">The input sequence.</param>
             <returns>All elements in the input sequence, blitted into a sequence of bytes and concatenated.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhereNot``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Filters a sequence of values based on a predicate. The predicate's result is inverted.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
+            <returns>The elements in the input sequence that do not satisfy the predicate.</returns>
+            <remarks>
+            This has essentially no purpose but to avoid the need to create a lambda that inverts the result of the predicate.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Split``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Splits a sequence of values into two sequences based on a predicate.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
+            <returns>A <see cref="T:System.Tuple`2"/> containing the two sequences.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
