@@ -12,9 +12,6 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
 {
     private List<T> Items { get; } = [];
 
-    // TODO: .ctors
-    // TODO: Docs
-
     /// <summary>
     /// Instantiates a new, empty <see cref="Set{T}"/> with the default equality comparer.
     /// </summary>
@@ -28,7 +25,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     /// Instantiates a new, empty <see cref="Set{T}"/> with the specified <paramref name="equalityComparer"/>.
     /// </summary>
     /// <param name="equalityComparer">The <see cref="IEqualityComparer{T}"/> to use for equality comparisons.</param>
-    public Set(IEqualityComparer<T> equalityComparer) => EqualityComparer = equalityComparer;
+    public Set(IEqualityComparer<T> equalityComparer) : this([], equalityComparer) { }
     /// <summary>
     /// Instantiates a new <see cref="Set{T}"/> with items copied from the specified <paramref name="collection"/> and the specified <paramref name="equalityComparer"/>.
     /// </summary>
@@ -77,6 +74,13 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     /// <param name="item">The item to check for.</param>
     /// <returns><see langword="true"/> if the <see cref="Set{T}"/> contains the item, otherwise <see langword="false"/>.</returns>
     public bool Contains(T item) => Items.Contains(item, EqualityComparer);
+    /// <summary>
+    /// Determines whether the <see cref="Set{T}"/> contains the specified item.
+    /// </summary>
+    /// <param name="item">The item to check for.</param>
+    /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> to use for equality comparisons.</param>
+    /// <returns><see langword="true"/> if the <see cref="Set{T}"/> contains the item, otherwise <see langword="false"/>.</returns>
+    public bool Contains(T item, IEqualityComparer<T> comparer) => Items.Contains(item, comparer ?? EqualityComparer ?? EqualityComparer<T>.Default);
     /// <summary>
     /// Copies all items in the <see cref="Set{T}"/> to the specified <paramref name="array"/>, starting at the specified <paramref name="arrayIndex"/>.
     /// </summary>
