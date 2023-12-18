@@ -279,15 +279,55 @@ public static class IEnumerableExtensions
     }
 
     /// <summary>
+    /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/> and returning all other items unchanged.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+    /// <returns>The transformed elements.</returns>
+    public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate, Func<T, T> selector)
+    {
+        foreach (var item in source)
+        {
+            yield return predicate(item) ? selector(item) : item;
+        }
+    }
+    /// <summary>
+    /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+    /// <returns>The transformed elements.</returns>
+    public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> source, Func<T, int, bool> predicate, Func<T, int, T> selector)
+    {
+        var c = 0;
+        foreach (var item in source)
+        {
+            if (predicate(item, c))
+            {
+                yield return selector(item, c);
+            }
+            else
+            {
+                yield return item;
+            }
+            c++;
+        }
+    }
+
+    /// <summary>
     /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
     /// </summary>
     /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
     /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
-    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a new value.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
     /// <returns>The transformed elements.</returns>
-    public static IEnumerable<TResult> ConditionalSelect<TSource, TResult>(this IEnumerable<TSource> source, Predicate<TSource> predicate, Func<TSource, TResult> selector)
+    public static IEnumerable<TResult> SelectOnlyWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, Func<TSource, TResult> selector)
     {
         foreach (var item in source)
         {
@@ -295,6 +335,27 @@ public static class IEnumerableExtensions
             {
                 yield return selector(item);
             }
+        }
+    }
+    /// <summary>
+    /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+    /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+    /// <returns>The transformed elements.</returns>
+    public static IEnumerable<TResult> SelectOnlyWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, bool> predicate, Func<TSource, int, TResult> selector)
+    {
+        var c = 0;
+        foreach (var item in source)
+        {
+            if (predicate(item, c))
+            {
+                yield return selector(item, c);
+            }
+            c++;
         }
     }
 
@@ -375,7 +436,7 @@ public static class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
-    /// <returns>A <see cref="Tuple{T1, T2}"/> containing the two sequences.</returns>
+    /// <returns>A <see cref="Tuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
     public static (IEnumerable<T> True, IEnumerable<T> False) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(source);
