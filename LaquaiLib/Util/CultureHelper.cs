@@ -38,19 +38,12 @@ public static partial class CultureHelper
             .GroupBy(ci => ci.Name.Split('-')[0])
             .ToArrayDictionary();
 
-        _timeZoneMap = TimeZoneInfo.GetSystemTimeZones()
-            .Aggregate(
-                new Dictionary<string[], TimeZoneInfo>(),
-                (dict, tz) =>
-                {
-                    var key = tz.DisplayName.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                                            .Select(split => split.Trim('(', ')', ',', ' '))
-                                            .ToArray();
-
-                    dict.Add(key, tz);
-                    return dict;
-                }
-            );
+        _timeZoneMap = TimeZoneInfo.GetSystemTimeZones().ToDictionary(
+            tz => tz.DisplayName
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(split => split.Trim('(', ')', ',', ' '))
+                .ToArray()
+        );
     }
 
     /// <summary>

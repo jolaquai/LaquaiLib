@@ -88,7 +88,7 @@ public class ObservableValue<T>
     /// </summary>
     /// <returns><see langword="true"/> if a value has been set, otherwise <see langword="false"/>.</returns>
     /// <remarks>A value has been "set" if the current value is non-<see langword="null"/>. This also counts for primitive types.</remarks>
-    public bool HasValue() => value != null;
+    public bool HasValue() => Value != null;
     /// <summary>
     /// Queries the value.
     /// </summary>

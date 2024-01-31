@@ -117,17 +117,19 @@ public static unsafe class MemoryManager
     }
 
     /// <summary>
-    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by 1 byte.
+    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>
     /// </summary>
     /// <param name="ptr">The pointer to offset.</param>
-    /// <returns>A <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by 1 byte.</returns>
+    /// <param name="count">The number of bytes to offset the pointer by.</param>
+    /// <returns>A <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the specified <paramref name="count"/></returns>
     public static void* Next(void* ptr, int count = 1) => (void*)((nint)ptr + count);
     /// <summary>
-    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified number of bytes.
+    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the size of <typeparamref name="T"/> <paramref name="count"/> times.
     /// </summary>
     /// <typeparam name="T">The <see langword="unmanaged"/> type to obtain the size of to calculate the offset.</typeparam>
     /// <param name="ptr">The pointer to offset.</param>
-    /// <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/>.</returns>
+    /// <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
+    /// <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
     public static void* Next<T>(void* ptr, int count = 1)
         where T : unmanaged
     {

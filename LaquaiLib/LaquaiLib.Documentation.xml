@@ -401,6 +401,14 @@
             <param name="item">The item to check for.</param>
             <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the item, otherwise <see langword="false"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Collections.Set`1.Contains(`0,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the specified item.
+            </summary>
+            <param name="item">The item to check for.</param>
+            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the item, otherwise <see langword="false"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Collections.Set`1.CopyTo(`0[],System.Int32)">
             <summary>
             Copies all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> to the specified <paramref name="array"/>, starting at the specified <paramref name="arrayIndex"/>.
@@ -1765,6 +1773,39 @@
             <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to clone.</param>
             <returns>A shallow copy of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.Dictionary{``0,``1},``0,``1,System.Func{``1,``1})">
+            <summary>
+            Adds a key/value pair to the <see cref="T:System.Collections.Generic.Dictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to add to or update.</param>
+            <param name="key">The key of the element to add or update.</param>
+            <param name="addValue">The value to be added for an absent key.</param>
+            <param name="updateValueFactory">A factory <see cref="T:System.Func`2"/> that takes the existing value for a key and produces a new value.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.Dictionary{``0,``1},``0,``1,System.Func{``1,``1,``1})">
+            <summary>
+            Adds a key/value pair to the <see cref="T:System.Collections.Generic.Dictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`3"/> that produces a new value is invoked with the existing value and <paramref name="addValue"/>.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to add to or update.</param>
+            <param name="key">The key of the element to add or update.</param>
+            <param name="addValue">The value to be added for an absent key.</param>
+            <param name="updateValueFactory">A factory <see cref="T:System.Func`3"/> that takes the existing value for a key and <paramref name="addValue"/> itself and produces a new value. This avoids having to materialize the value twice.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``1},System.Func{``1,``1})">
+            <summary>
+            Adds a key/value pair to the <see cref="T:System.Collections.Generic.Dictionary`2"/> where the value is produced by <paramref name="addValueFactory"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to add to or update.</param>
+            <param name="key">The key of the element to add or update.</param>
+            <param name="addValueFactory">A <see cref="T:System.Func`1"/> that produces the value to be added for an absent key. It is only invoked if the key does not already exist in the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
+            <param name="updateValueFactory">A factory <see cref="T:System.Func`3"/> that takes the existing value for a key and produces a new value.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.DispatcherObjectExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Windows.Threading.DispatcherObject"/> Type.
@@ -2410,6 +2451,14 @@
             <summary>
             Provides extension methods for the <see cref="T:System.Span`1"/> Type.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.SpanExtensions.AsReadOnly``1(System.Span{``0})">
+            <summary>
+            Returns  a <see cref="T:System.ReadOnlySpan`1"/> that represents a read-only view of the current <see cref="T:System.Span`1"/> instance.
+            </summary>
+            <typeparam name="T">The type of the elements in <paramref name="span"/>.</typeparam>
+            <param name="span">The <see cref="T:System.Span`1"/> to wrap.</param>
+            <returns>The <see cref="T:System.ReadOnlySpan`1"/> that acts as a read-only view of the current <see cref="T:System.Span`1"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.StreamExtensions">
             <summary>
@@ -3714,6 +3763,11 @@
         <member name="P:LaquaiLib.Util.FileHelper.FileSizePartitioner.SupportsDynamicPartitions">
             <inheritdoc/>
         </member>
+        <member name="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler">
+            <summary>
+            Represents a <see cref="T:System.Threading.Tasks.TaskScheduler"/> implementation that limits the amount of <see cref="T:System.Threading.Tasks.Task"/>s that run concurrently at any given time.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Util.MemoryManager">
             <summary>
             Provides methods and events for managing memory, working with the Garbage Collector (<see cref="T:System.GC"/>) and allocating unmanaged memory.
@@ -3775,18 +3829,20 @@
         </member>
         <member name="M:LaquaiLib.Util.MemoryManager.Next(System.Void*,System.Int32)">
             <summary>
-            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by 1 byte.
+            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>
             </summary>
             <param name="ptr">The pointer to offset.</param>
-            <returns>A <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by 1 byte.</returns>
+            <param name="count">The number of bytes to offset the pointer by.</param>
+            <returns>A <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the specified <paramref name="count"/></returns>
         </member>
         <member name="M:LaquaiLib.Util.MemoryManager.Next``1(System.Void*,System.Int32)">
             <summary>
-            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified number of bytes.
+            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the size of <typeparamref name="T"/> <paramref name="count"/> times.
             </summary>
             <typeparam name="T">The <see langword="unmanaged"/> type to obtain the size of to calculate the offset.</typeparam>
             <param name="ptr">The pointer to offset.</param>
-            <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/>.</returns>
+            <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
+            <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
         </member>
         <member name="T:LaquaiLib.Util.ObservableValue`1">
             <summary>

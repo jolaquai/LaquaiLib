@@ -54,9 +54,9 @@ public static class IGroupingExtensions
     {
         var result = new Dictionary<TKey, TCollection>();
 
-        var collection = new TCollection();
         foreach (var grouping in source)
         {
+            var collection = new TCollection();
             foreach (var element in grouping)
             {
                 collection.Add(element);

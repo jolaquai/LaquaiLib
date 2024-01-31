@@ -192,7 +192,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
         hc.Add(Type);
         if (Message is not null)
         {
-            hc.Add(string.Empty);
+            hc.Add(Message);
         }
         return hc.ToHashCode();
     }
