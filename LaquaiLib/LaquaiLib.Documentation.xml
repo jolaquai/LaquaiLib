@@ -1900,6 +1900,12 @@
             Provides extension methods for the <see cref="T:System.Security.Cryptography.HashAlgorithm"/> and derived Types.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Extensions.HttpListenerRequestExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Net.HttpListenerRequest"/> Type.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Extensions.HttpListenerRequestExtensions.GetRoute(System.Net.HttpListenerRequest)" -->
         <member name="T:LaquaiLib.Extensions.ICollectionExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.ICollection`1"/> Type.
@@ -2109,7 +2115,27 @@
             <param name="comparer">An instance of an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>-implementing Type that is used to compare the elements in the sequences. If not specified, the default comparer for <typeparamref name="T"/> is used.</param>
             <returns><see langword="true"/> if the sequences are equivalent, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ConditionalSelect``2(System.Collections.Generic.IEnumerable{``0},System.Predicate{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectWhere``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,``0})">
+            <summary>
+            Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/> and returning all other items unchanged.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+            <returns>The transformed elements.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectWhere``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean},System.Func{``0,System.Int32,``0})">
+            <summary>
+            Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+            <returns>The transformed elements.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectOnlyWhere``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,``1})">
             <summary>
             Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
             </summary>
@@ -2117,7 +2143,18 @@
             <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
             <param name="source">The input sequence.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
-            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and produces a new value.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+            <returns>The transformed elements.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectOnlyWhere``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean},System.Func{``0,System.Int32,``1})">
+            <summary>
+            Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
+            </summary>
+            <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+            <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
             <returns>The transformed elements.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Blitted``1(System.Collections.Generic.IEnumerable{``0})">
@@ -2148,7 +2185,7 @@
             <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
             <param name="source">The input sequence.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
-            <returns>A <see cref="T:System.Tuple`2"/> containing the two sequences.</returns>
+            <returns>A <see cref="T:System.Tuple`2"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
@@ -3248,6 +3285,16 @@
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         </member>
+        <member name="T:LaquaiLib.Util.AccessibilityHelper">
+            <summary>
+            Provides helper methods for accessibility features like color inversion.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.AccessibilityHelper.IsColorInversionEnabled">
+            <summary>
+            Gets or sets a value indicating whether color inversion is enabled.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Util.AsyncLogger">
             <summary>
             Represents a logger that writes messages to the <see cref="T:System.Console"/> in a separate thread to avoid blocking operations on the main thread.
@@ -3515,6 +3562,44 @@
             <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for inequality.</param>
             <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
         </member>
+        <member name="T:LaquaiLib.Util.ConsoleQueue">
+            <summary>
+            Represents a queue of console messages that is asynchronously emptied to the console.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ConsoleQueue.ForceEmptyBeforeShutdown">
+            <summary>
+            Controls whether the queue should be emptied before the application can shut down.
+            This defaults to <see langword="false"/> and may be freely changed at any time.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ConsoleQueue.Enqueue(System.Object)">
+            <summary>
+            Enqueues a message to the queue.
+            </summary>
+            <param name="message">The message to enqueue.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ConsoleQueue.Enqueue(System.Object[])">
+            <summary>
+            Enqueues multiple messages to the queue.
+            </summary>
+            <param name="messages">The messages to enqueue.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ConsoleQueue.FlushAsync">
+            <summary>
+            Creates and returns a <see cref="T:System.Threading.Tasks.Task"/> that completes when the queue has been emptied.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ConsoleQueue.Flush">
+            <summary>
+            Blocks until the queue has been emptied.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ConsoleQueue.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the queue.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Util.CultureHelper">
             <summary>
             Provides helper methods for <see cref="T:System.Globalization.CultureInfo"/>, <see cref="T:System.TimeZoneInfo"/> and related types.
@@ -3767,6 +3852,37 @@
             <summary>
             Represents a <see cref="T:System.Threading.Tasks.TaskScheduler"/> implementation that limits the amount of <see cref="T:System.Threading.Tasks.Task"/>s that run concurrently at any given time.
             </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.Default">
+            <summary>
+            Returns an instance of <see cref="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler"/> that is configured to allow a maximum of <see cref="P:System.Environment.ProcessorCount"/> <see cref="T:System.Threading.Tasks.Task"/>s to run concurrently.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TaskFactory">
+            <summary>
+            Returns an instance of <see cref="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TaskFactory"/> that is configured to use <see cref="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.Default"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.#ctor(System.Int32)">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler"/> with the specified maximum degree of parallelism.
+            </summary>
+            <param name="maxDegreeOfParallelism">The maximum number of <see cref="T:System.Threading.Tasks.Task"/>s that are allowed to run concurrently.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TryDequeue(System.Threading.Tasks.Task)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.GetScheduledTasks">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.MaximumConcurrencyLevel">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.MemoryManager">
             <summary>

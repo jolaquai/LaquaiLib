@@ -13,7 +13,7 @@ public static class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains each element in the input sequence.</returns>
-    public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source.ToArray();
+    public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source;
 
     /// <summary>
     /// Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
