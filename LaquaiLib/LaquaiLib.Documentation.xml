@@ -3142,6 +3142,18 @@
             <param name="source">The <see cref="T:System.Xml.Linq.XNode"/> to get the siblings of.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Xml.Linq.XNode"/> containing the sibling nodes of this node, in document order.</returns>
         </member>
+        <member name="T:LaquaiLib.Interfaces.ICloneable`1">
+            <summary>
+            Implements a typed version of the <see cref="T:System.ICloneable"/> interface.
+            </summary>
+            <typeparam name="TSelf">The type of the implementing class.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Interfaces.ICloneable`1.Clone">
+            <summary>
+            Clones the current instance.
+            </summary>
+            <returns>A new instance of the current class with the same values as the original instance.</returns>
+        </member>
         <member name="T:LaquaiLib.LaquaiLib">
             <summary>
             Entry point for the library.
@@ -3285,19 +3297,9 @@
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.Tuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         </member>
-        <member name="T:LaquaiLib.Util.AccessibilityHelper">
-            <summary>
-            Provides helper methods for accessibility features like color inversion.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.AccessibilityHelper.IsColorInversionEnabled">
-            <summary>
-            Gets or sets a value indicating whether color inversion is enabled.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Util.AsyncLogger">
             <summary>
-            Represents a logger that writes messages to the <see cref="T:System.Console"/> in a separate thread to avoid blocking operations on the main thread.
+            Represents a logger that writes messages to the <see cref="T:System.Console"/> in a separate thread to avoid blocking operations on the main thread. This type self-initializes when it is first used, that is, when the first message is queued. Before that, the background thread is not running.
             </summary>
             <remarks>
             This type is thread-safe.
@@ -3933,7 +3935,7 @@
             <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
             <param name="ptr">A pointer to the first byte of the previously allocated memory.</param>
             <param name="count">The number of instances to allocate memory for.</param>
-            <param name="oldLength">The old length of the block of memory that is being resized. Depending on the new size, either <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/> or <see cref="M:System.GC.RemoveMemoryPressure(System.Int64)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
+            <param name="oldCount">The number of instances the block of memory was previously assigned for. Depending on the new size, either <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/> or <see cref="M:System.GC.RemoveMemoryPressure(System.Int64)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
             <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the resized memory region.</returns>
         </member>
         <member name="M:LaquaiLib.Util.MemoryManager.Free(System.Void*,System.Int64)">
@@ -3945,7 +3947,7 @@
         </member>
         <member name="M:LaquaiLib.Util.MemoryManager.Next(System.Void*,System.Int32)">
             <summary>
-            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>
+            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>. That value may be negative.
             </summary>
             <param name="ptr">The pointer to offset.</param>
             <param name="count">The number of bytes to offset the pointer by.</param>
@@ -3953,7 +3955,7 @@
         </member>
         <member name="M:LaquaiLib.Util.MemoryManager.Next``1(System.Void*,System.Int32)">
             <summary>
-            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the size of <typeparamref name="T"/> <paramref name="count"/> times.
+            Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the size of <typeparamref name="T"/> <paramref name="count"/> times. That value may be negative.
             </summary>
             <typeparam name="T">The <see langword="unmanaged"/> type to obtain the size of to calculate the offset.</typeparam>
             <param name="ptr">The pointer to offset.</param>
@@ -4787,7 +4789,7 @@
             Provides methods and events for working with windows.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Util.Windows.SyncRoot">
+        <member name="F:LaquaiLib.Util.Windows._syncRoot">
             <summary>
             The <see cref="T:System.Object"/> that is locked on when modifying collections in any of the "GetAll..." methods in <see cref="T:LaquaiLib.Util.Windows"/>. <b>Callers should lock on this when accessing these collections as well, otherwise, exceptions may be thrown during enumeration.</b>
             </summary>
@@ -4830,21 +4832,21 @@
             Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.String"/> with the titles of all top-level windows.
             </summary>
             <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.String"/> to place the window titles into.</param>
-            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Windows.SyncRoot"/> is held.</remarks>
+            <remarks>For the entire duration of this method, a lock on <see cref="F:LaquaiLib.Util.Windows._syncRoot"/> is held.</remarks>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetAllWindowHandles(System.Collections.Generic.ICollection{System.IntPtr})">
             <summary>
             Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IntPtr"/> with the handles of all top-level windows.
             </summary>
             <param name="existing">The <see cref="T:System.Collections.Generic.ICollection`1"/> of <see cref="T:System.IntPtr"/> to place the window handles into.</param>
-            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Windows.SyncRoot"/> is held.</remarks>
+            <remarks>For the entire duration of this method, a lock on <see cref="F:LaquaiLib.Util.Windows._syncRoot"/> is held.</remarks>
         </member>
         <member name="M:LaquaiLib.Util.Windows.GetAllWindows(System.Collections.Generic.IDictionary{System.IntPtr,System.String})">
             <summary>
             Replaces the contents of the given <paramref name="existing"/> <see cref="T:System.Collections.Generic.IDictionary`2"/> of <see cref="T:System.IntPtr"/> and <see cref="T:System.String"/> with the handles and titles of all top-level windows.
             </summary>
             <param name="existing">The <see cref="T:System.Collections.Generic.IDictionary`2"/> of <see cref="T:System.IntPtr"/> and <see cref="T:System.String"/> to place the window handle-title pairs into.</param>
-            <remarks>For the entire duration of this method, a lock on <see cref="P:LaquaiLib.Util.Windows.SyncRoot"/> is held.</remarks>
+            <remarks>For the entire duration of this method, a lock on <see cref="F:LaquaiLib.Util.Windows._syncRoot"/> is held.</remarks>
         </member>
         <member name="E:LaquaiLib.Util.Windows.ActiveWindowChanged">
             <summary>
@@ -4891,6 +4893,325 @@
             Raises the events defined in <see cref="T:LaquaiLib.Util.Windows"/> if their conditions are met.
             </summary>
             <param name="state">Unused / ignored unconditionally.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.Windows.Style">
+            <summary>
+            Provides methods and constants for manipulating the style of a window.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Windows.Style.WindowStyles">
+            <summary>
+            Identifies styles applicable to windows.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_BORDER">
+            <summary>
+            The window has a thin-line border
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_CAPTION">
+            <summary>
+            The window has a title bar (includes the WS_BORDER style).
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_CHILD">
+            <summary>
+            The window is a child window. A window with this style cannot have a menu bar. This style cannot be used with the WS_POPUP style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_CHILDWINDOW">
+            <summary>
+            Same as the WS_CHILD style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_CLIPCHILDREN">
+            <summary>
+            Excludes the area occupied by child windows when drawing occurs within the parent window. This style is used when creating the parent window.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_CLIPSIBLINGS">
+            <summary>
+            Clips child windows relative to each other; that is, when a particular child window receives a WM_PAINT message, the WS_CLIPSIBLINGS style clips all other overlapping child windows out of the region of the child window to be updated. If WS_CLIPSIBLINGS is not specified and child windows overlap, it is possible, when drawing within the client area of a child window, to draw within the client area of a neighboring child window.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_DISABLED">
+            <summary>
+            The window is initially disabled. A disabled window cannot receive input from the user. To change this after a window has been created, use the EnableWindow function.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_DLGFRAME">
+            <summary>
+            The window has a border of a style typically used with dialog boxes. A window with this style cannot have a title bar.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_GROUP">
+            <summary>
+            The window is the first control of a group of controls. The group consists of this first control and all controls defined after it, up to the next control with the WS_GROUP style. The first control in each group usually has the WS_TABSTOP style so that the user can move from group to group. The user can subsequently change the keyboard focus from one control in the group to the next control in the group by using the direction keys. You can turn this style on and off to change dialog box navigation. To change this style after a window has been created, use the SetWindowLong function.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_HSCROLL">
+            <summary>
+            The window has a horizontal scroll bar.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_ICONIC">
+            <summary>
+            The window is initially minimized. Same as the WS_MINIMIZE style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_MAXIMIZE">
+            <summary>
+            The window is initially maximized.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_MAXIMIZEBOX">
+            <summary>
+            The window has a maximize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_MINIMIZE">
+            <summary>
+            The window is initially minimized. Same as the WS_ICONIC style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_MINIMIZEBOX">
+            <summary>
+            The window has a minimize button. Cannot be combined with the WS_EX_CONTEXTHELP style. The WS_SYSMENU style must also be specified.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_OVERLAPPED">
+            <summary>
+            The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_TILED style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_OVERLAPPEDWINDOW">
+            <summary>
+            The window is an overlapped window. Same as the WS_TILEDWINDOW style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_POPUP">
+            <summary>
+            The window is a pop-up window. This style cannot be used with the WS_CHILD style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_POPUPWINDOW">
+            <summary>
+            The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_SIZEBOX">
+            <summary>
+            The window has a sizing border. Same as the WS_THICKFRAME style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_SYSMENU">
+            <summary>
+            The window has a window menu on its title bar. The WS_CAPTION style must also be specified.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_TABSTOP">
+            <summary>
+            The window is a control that can receive the keyboard focus when the user presses the TAB key. Pressing the TAB key changes the keyboard focus to the next control with the WS_TABSTOP style. You can turn this style on and off to change dialog box navigation. To change this style after a window has been created, use the SetWindowLong function. For user-created windows and modeless dialogs to work with tab stops, alter the message loop to call the IsDialogMessage function.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_THICKFRAME">
+            <summary>
+            The window has a sizing border. Same as the WS_SIZEBOX style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_TILED">
+            <summary>
+            The window is an overlapped window. An overlapped window has a title bar and a border. Same as the WS_OVERLAPPED style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_TILEDWINDOW">
+            <summary>
+            The window is an overlapped window. Same as the WS_OVERLAPPEDWINDOW style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_VISIBLE">
+            <summary>
+            The window is initially visible. This style can be turned on and off by using the ShowWindow or SetWindowPos function.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.WindowStyles.WS_VSCROLL">
+            <summary>
+            The window has a vertical scroll bar.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles">
+            <summary>
+            Identifies extended styles applicable to windows.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_ACCEPTFILES">
+            <summary>
+            The window accepts drag-drop files.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_APPWINDOW">
+            <summary>
+            Forces a top-level window onto the taskbar when the window is visible.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_CLIENTEDGE">
+            <summary>
+            The window has a border with a sunken edge.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_COMPOSITED">
+            <summary>
+            Paints all descendants of a window in bottom-to-top painting order using double-buffering.
+            Bottom-to-top painting order allows a descendent window to have translucency (alpha) and transparency (color-key) effects, but only if the descendent window also has the WS_EX_TRANSPARENT bit set.
+            Double-buffering allows the window and its descendents to be painted without flicker.
+            This cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_CONTEXTHELP">
+            <summary>
+            The title bar of the window includes a question mark.
+            When the user clicks the question mark, the cursor changes to a question mark with a pointer.
+            If the user then clicks a child window, the child receives a WM_HELP message.
+            The child window should pass the message to the parent window procedure, which should call the WinHelp function using the HELP_WM_HELP command.
+            The Help application displays a pop-up window that typically contains help for the child window.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_CONTROLPARENT">
+            <summary>
+            The window itself contains child windows that should take part in dialog box navigation.
+            If this style is specified, the dialog manager recurses into children of this window when performing navigation operations such as handling the TAB key, an arrow key, or a keyboard mnemonic.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_DLGMODALFRAME">
+            <summary>
+            The window has a double border; the window can, optionally, be created with a title bar by specifying the WS_CAPTION style in the dwStyle parameter.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_LAYERED">
+            <summary>
+            The window is a layered window.
+            This style cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC.
+            Windows 8: The WS_EX_LAYERED style is supported for top-level windows and child windows.
+            Previous Windows versions support WS_EX_LAYERED only for top-level windows.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_LAYOUTRTL">
+            <summary>
+            If the shell language is Hebrew, Arabic, or another language that supports reading order alignment, the horizontal origin of the window is on the right edge.
+            Increasing horizontal values advance to the left.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_LEFT">
+            <summary>
+            The window has generic left-aligned properties.
+            This is the default.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_LEFTSCROLLBAR">
+            <summary>
+            If the shell language is Hebrew, Arabic, or another language that supports reading order alignment, the vertical scroll bar (if present) is to the left of the client area.
+            For other languages, the style is ignored.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_LTRREADING">
+            <summary>
+            The window text is displayed using left-to-right reading-order properties.
+            This is the default.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_MDICHILD">
+            <summary>
+            The window is a MDI child window.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_NOACTIVATE">
+            <summary>
+            A top-level window created with this style does not become the foreground window when the user clicks it.
+            The system does not bring this window to the foreground when the user minimizes or closes the foreground window.
+            The window should not be activated through programmatic access or via keyboard navigation by accessible technology, such as Narrator.
+            To activate the window, use the SetActiveWindow or SetForegroundWindow function.
+            The window does not appear on the taskbar by default.
+            To force the window to appear on the taskbar, use the WS_EX_APPWINDOW style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_NOINHERITLAYOUT">
+            <summary>
+            The window does not pass its window layout to its child windows.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_NOPARENTNOTIFY">
+            <summary>
+            The child window created with this style does not send the WM_PARENTNOTIFY message to its parent window when it is created or destroyed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_NOREDIRECTIONBITMAP">
+            <summary>
+            The window does not render to a redirection surface.
+            This is for windows that do not have visible content or that use mechanisms other than surfaces to provide their visual.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_OVERLAPPEDWINDOW">
+            <summary>
+            The window is an overlapped window.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_PALETTEWINDOW">
+            <summary>
+            The window is palette window, which is a modeless dialog box that presents an array of commands.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_RIGHT">
+            <summary>
+            The window has generic "right-aligned" properties.
+            This depends on the window class.
+            This style has an effect only if the shell language is Hebrew, Arabic, or another language that supports reading-order alignment; otherwise, the style is ignored.
+            Using the WS_EX_RIGHT style for static or edit controls has the same effect as using the SS_RIGHT or ES_RIGHT style, respectively.
+            Using this style with button controls has the same effect as using BS_RIGHT and BS_RIGHTBUTTON styles.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_RIGHTSCROLLBAR">
+            <summary>
+            The vertical scroll bar (if present) is to the right of the client area.
+            This is the default.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_RTLREADING">
+            <summary>
+            If the shell language is Hebrew, Arabic, or another language that supports reading-order alignment, the window text is displayed using right-to-left reading-order properties.
+            For other languages, the style is ignored.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_STATICEDGE">
+            <summary>
+            The window has a three-dimensional border style intended to be used for items that do not accept user input.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_TOOLWINDOW">
+            <summary>
+            The window is intended to be used as a floating toolbar.
+            A tool window has a title bar that is shorter than a normal title bar, and the window title is drawn using a smaller font.
+            A tool window does not appear in the taskbar or in the dialog that appears when the user presses ALT+TAB.
+            If a tool window has a system menu, its icon is not displayed on the title bar.
+            However, you can display the system menu by right-clicking or by typing ALT+SPACE.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_TOPMOST">
+            <summary>
+            The window should be placed above all non-topmost windows and should stay above them, even when the window is deactivated.
+            To add or remove this style, use the SetWindowPos function.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_TRANSPARENT">
+            <summary>
+            The window should not be painted until siblings beneath the window (that were created by the same thread) have been painted.
+            The window appears transparent because the bits of underlying sibling windows have already been painted.
+            To achieve transparency without these restrictions, use the SetWindowRgn function.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_WINDOWEDGE">
+            <summary>
+            The window has a border with a raised edge.
+            </summary>
         </member>
         <member name="T:LaquaiLib.WasmServices.FileSystemProxy.Directory">
             <summary>

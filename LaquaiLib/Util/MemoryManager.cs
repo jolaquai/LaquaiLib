@@ -82,21 +82,22 @@ public static unsafe class MemoryManager
     /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
     /// <param name="ptr">A pointer to the first byte of the previously allocated memory.</param>
     /// <param name="count">The number of instances to allocate memory for.</param>
-    /// <param name="oldLength">The old length of the block of memory that is being resized. Depending on the new size, either <see cref="GC.AddMemoryPressure(long)"/> or <see cref="GC.RemoveMemoryPressure(long)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
+    /// <param name="oldCount">The number of instances the block of memory was previously assigned for. Depending on the new size, either <see cref="GC.AddMemoryPressure(long)"/> or <see cref="GC.RemoveMemoryPressure(long)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
     /// <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the resized memory region.</returns>
-    public static T* ReCAlloc<T>(T* ptr, int count, long oldLength = 0)
+    public static T* ReCAlloc<T>(T* ptr, int count, long oldCount = 0)
         where T : unmanaged
     {
         var bytes = count * Marshal.SizeOf<T>();
-        if (oldLength != 0)
+        if (oldCount != 0)
         {
-            if (bytes > oldLength)
+            var oldBytes = oldCount * Marshal.SizeOf<T>();
+            if (bytes > oldBytes)
             {
-                GC.AddMemoryPressure(bytes - oldLength);
+                GC.AddMemoryPressure(bytes - oldBytes);
             }
-            else if (bytes < oldLength)
+            else if (bytes < oldBytes)
             {
-                GC.RemoveMemoryPressure(oldLength - bytes);
+                GC.RemoveMemoryPressure(oldBytes - bytes);
             }
         }
         return (T*)Marshal.ReAllocHGlobal((nint)ptr, (nint)bytes);
@@ -117,14 +118,14 @@ public static unsafe class MemoryManager
     }
 
     /// <summary>
-    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>
+    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>. That value may be negative.
     /// </summary>
     /// <param name="ptr">The pointer to offset.</param>
     /// <param name="count">The number of bytes to offset the pointer by.</param>
     /// <returns>A <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the specified <paramref name="count"/></returns>
     public static void* Next(void* ptr, int count = 1) => (void*)((nint)ptr + count);
     /// <summary>
-    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the size of <typeparamref name="T"/> <paramref name="count"/> times.
+    /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the size of <typeparamref name="T"/> <paramref name="count"/> times. That value may be negative.
     /// </summary>
     /// <typeparam name="T">The <see langword="unmanaged"/> type to obtain the size of to calculate the offset.</typeparam>
     /// <param name="ptr">The pointer to offset.</param>

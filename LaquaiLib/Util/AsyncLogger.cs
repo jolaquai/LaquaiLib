@@ -1,9 +1,9 @@
-﻿using System.Collections.Concurrent;
+﻿ using System.Collections.Concurrent;
 
 namespace LaquaiLib.Util;
 
 /// <summary>
-/// Represents a logger that writes messages to the <see cref="Console"/> in a separate thread to avoid blocking operations on the main thread.
+/// Represents a logger that writes messages to the <see cref="Console"/> in a separate thread to avoid blocking operations on the main thread. This type self-initializes when it is first used, that is, when the first message is queued. Before that, the background thread is not running.
 /// </summary>
 /// <remarks>
 /// This type is thread-safe.

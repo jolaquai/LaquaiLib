@@ -1,4 +1,4 @@
-﻿using LaquaiLib.Util;
+﻿using LaquaiLib.Util.ExceptionManagement;
 
 namespace LaquaiLib.Extensions;
 

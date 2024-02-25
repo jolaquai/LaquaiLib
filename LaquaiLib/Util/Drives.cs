@@ -281,6 +281,8 @@ public static class Drives
             }
 
             previousReadyCdList = currentReadyCdList;
+
+            lastCdDriveChange = DateTime.Now;
         }
         #endregion
         #region Any type that is not handled otherwise

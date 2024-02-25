@@ -87,7 +87,7 @@ public static class FileHelper
     /// </summary>
     public class FileSizePartitioner : Partitioner<string>
     {
-        private readonly FrozenDictionary<string, FileInfo> _files;
+        private readonly Dictionary<string, FileInfo> _files;
 
         /// <summary>
         /// Instantiates a new <see cref="FileSizePartitioner"/> using the specified file paths.
@@ -96,7 +96,7 @@ public static class FileHelper
         public FileSizePartitioner(IEnumerable<string> paths)
         {
             _files = paths.Select(path => new KeyValuePair<string, FileInfo>(path, new FileInfo(path)))
-                          .ToFrozenDictionary();
+                          .ToDictionary();
         }
         /// <summary>
         /// Instantiates a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
@@ -105,7 +105,7 @@ public static class FileHelper
         public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)
         {
             _files = fileInfos.Select(fileInfo => new KeyValuePair<string, FileInfo>(fileInfo.FullName, fileInfo))
-                              .ToFrozenDictionary();
+                              .ToDictionary();
         }
 
         /// <summary>

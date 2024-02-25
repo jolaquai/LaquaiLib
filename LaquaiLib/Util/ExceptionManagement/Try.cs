@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util;
+﻿namespace LaquaiLib.Util.ExceptionManagement;
 
 /// <summary>
 /// Provides static methods that wrap <c>try-catch</c> blocks.
