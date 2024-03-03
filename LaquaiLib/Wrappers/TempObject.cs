@@ -20,7 +20,7 @@ public class TempObject<T> : IDisposable
     {
         try
         {
-                typeof(T).New(parameters is null || parameters.Length == 0 ? null : parameters);
+            typeof(T).New(parameters is null || parameters.Length == 0 ? null : parameters);
         }
         catch
         {

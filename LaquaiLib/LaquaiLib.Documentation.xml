@@ -2422,6 +2422,19 @@
             <param name="partitions">The number of partitions to request.</param>
             <returns>The <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Collections.Generic.List`1"/>s containing the elements of each partition.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.ProcessExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Diagnostics.Process"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ProcessExtensions.GetCommandLine(System.Diagnostics.Process)">
+            <summary>
+            Retrieves the command line of the specified <see cref="T:System.Diagnostics.Process"/>.
+            This is done either by using the <see cref="T:System.Diagnostics.ProcessStartInfo"/> property of the <see cref="T:System.Diagnostics.Process"/> instance or, if that is <see langword="null"/>, by using WMI.
+            </summary>
+            <param name="process">A <see cref="T:System.Diagnostics.Process"/> instance.</param>
+            <returns>The command line of the specified <see cref="T:System.Diagnostics.Process"/> or <see langword="null"/> if it could not be retrieved.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.PropertyInfoExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Reflection.PropertyInfo"/> Type.
@@ -3751,6 +3764,341 @@
             </summary>
             <param name="state">Unused / ignored unconditionally.</param>
         </member>
+        <member name="T:LaquaiLib.Util.ExceptionManagement.Assert">
+            <summary>
+            Contains methods to assert conditions which throw an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the condition is not met.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.That(System.Func{System.Boolean})">
+            <summary>
+            Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.
+            </summary>
+            <param name="condition">The condition to assert to be <see langword="true"/>.</param>
+            <returns>The result of the invocation of <paramref name="condition"/> if it is <see langword="true"/>, otherwise an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.That(System.Func{System.Boolean},System.String)">
+            <summary>
+            Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <param name="condition">The condition to assert to be <see langword="true"/>.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails.</param>
+            <returns>The result of the invocation of <paramref name="condition"/> if it is <see langword="true"/>, otherwise an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNull``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is <see langword="null"/>.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be not <see langword="null"/>.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotNull``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is not <see langword="null"/>.
+            If it is, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be not <see langword="null"/>.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Util.ExceptionManagement.Assert.IsGreaterThan``1(``0,``0,System.String)" -->
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsGreaterThanOrEqualTo``1(``0,``0,System.String)">
+            <summary>
+            Asserts that a specified value is greater than or equal to another value.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the values to operate on.</typeparam>
+            <param name="value">The value to assert to be greater than or equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare <paramref name="value"/> to.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsLessThan``1(``0,``0,System.String)">
+            <summary>
+            Asserts that a specified value is less than another value.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the values to operate on.</typeparam>
+            <param name="value">The value to assert to be less than <paramref name="other"/>.</param>
+            <param name="other">The value to compare <paramref name="value"/> to.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsLessThanOrEqualTo``1(``0,``0,System.String)">
+            <summary>
+            Asserts that a specified value is less than or equal to another value.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the values to operate on.</typeparam>
+            <param name="value">The value to assert to be less than or equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare <paramref name="value"/> to.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsEqualTo``1(``0,``0,System.String)">
+            <summary>
+            Asserts that a specified value is equal to another value.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the values to operate on.</typeparam>
+            <param name="value">The value to assert to be equal to <paramref name="other"/>.</param>
+            <param name="other">The value to compare <paramref name="value"/> to.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotEqualTo``1(``0,``0,System.String)">
+            <summary>
+            Asserts that a specified value is not equal to another value.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the values to operate on.</typeparam>
+            <param name="value">The value to assert to be within the range of <paramref name="min"/> and <paramref name="max"/>.</param>
+            <param name="other">The value to compare <paramref name="value"/> to.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsInRange``1(``0,``0,``0,System.String)">
+            <summary>
+            Asserts that a specified value is in a specified range.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the values to operate on.</typeparam>
+            <param name="value">The value to assert to be greater than or equal to <paramref name="other"/>.</param>
+            <param name="min">The inclusive lower bound of the range to compare <paramref name="value"/> to.</param>
+            <param name="max">The inclusive upper bound of the range to compare <paramref name="value"/> to.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotInRange``1(``0,``0,``0,System.String)">
+            <summary>
+            Asserts that a specified value is not in a specified range.
+            If it is, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the values to operate on.</typeparam>
+            <param name="value">The value to assert to be outside the range of <paramref name="min"/> and <paramref name="max"/>.</param>
+            <param name="min">The inclusive lower bound of the range to compare <paramref name="value"/> to.</param>
+            <param name="max">The inclusive upper bound of the range to compare <paramref name="value"/> to.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsPositive``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is positive.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be positive.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNegative``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is negative.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be negative.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsZero``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is zero.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be zero.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNonZero``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is not zero.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be not equal to zero.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsDefault``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(T)</c>.
+            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be positive.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotDefault``1(``0,System.String)">
+            <summary>
+            Asserts that a specified value is not the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(T)</c>.
+            If it is, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
+            </summary>
+            <typeparam name="T">The type of the value to operate on.</typeparam>
+            <param name="value">The value to assert to be positive.</param>
+            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1">
+            <summary>
+            The exception that is thrown when an assertion fails.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1.Message">
+            <inheritdoc cref="P:System.Exception.Message"/>
+        </member>
+        <member name="P:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1.InnerException">
+            <inheritdoc cref="P:System.Exception.InnerException"/>
+        </member>
+        <member name="P:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1.Value">
+            <summary>
+            The value that caused an assertion to fail.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException">
+            <summary>
+            The exception that is thrown when an unhandled exception is wrapped or otherwise handled in a <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> method.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers">
+            <summary>
+            Exposes <see cref="T:System.EventHandler`1"/> instances registerable for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.RegisterAll">
+            <summary>
+            Registers all <see cref="T:System.EventHandler`1"/> instances in the <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> class for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.WrapEntryPointNotFoundException(System.Object,System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs)">
+            <summary>
+            Wraps <see cref="T:System.EntryPointNotFoundException"/>s in a <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException"/> with additional information about the DLL and entry point.
+            <para/>Rethrows the original exception if no additional information could be gathered.
+            </summary>
+            <param name="sender">Ignored.</param>
+            <param name="e">The <see cref="T:System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs"/> instance containing the event data.</param>
+            <exception cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException">Thrown when an <see cref="T:System.EntryPointNotFoundException"/> is caught. Contains additional information about the DLL and entry point.</exception>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.EntryPointNotFoundExceptionDataRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\\.</code><br/>
+            Options:<br/>
+            <code>RegexOptions.ExplicitCapture | RegexOptions.Compiled</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match the string "Unable to find an entry point named '".<br/>
+            ○ "entryPoint" capture group.<br/>
+                ○ Match a character other than '\'' atomically at least once.<br/>
+            ○ Match the string "' in DLL '".<br/>
+            ○ "dllName" capture group.<br/>
+                ○ Match a character other than '\'' atomically at least once.<br/>
+            ○ Match the string "'.".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:LaquaiLib.Util.ExceptionManagement.Try">
+            <summary>
+            Provides static methods that wrap <c>try-catch</c> blocks.
+            </summary>
+            <remarks>All methods in this class explicitly allow <see langword="null"/> returns.</remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.ExecuteOrDefault``1(``0,System.Func{``0})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning <paramref name="defaultValue"/>.
+            </summary>
+            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
+            <param name="defaultValue">The value to return if <paramref name="method"/> fails.</param>
+            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
+            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise <typeparamref name="T"/>'s <c>default</c> value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.ExecuteOrDefault``1(System.Func{``0},System.Func{``0})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            </summary>
+            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
+            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
+            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Collections.Generic.IEnumerable{System.Func{``0}})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates its return value if it succeeds, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by the <paramref name="methods"/>.
+            </summary>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="methods">The methods to try.</param>
+            <returns>The value of the first method that doesn't throw an exception.</returns>
+            <exception cref="T:System.AggregateException">Thrown if all methods throw an exception.</exception>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Func{``0}[])">
+            <inheritdoc cref="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Action{``0},``0[])">
+            <inheritdoc cref="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by <paramref name="test"/>.
+            </summary>
+            <typeparam name="T">The Type of the items to test.</typeparam>
+            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
+            <param name="items">The items to test.</param>
+            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.Collections.Generic.IEnumerable{System.Func{``0}})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first succeeds, otherwise returning <paramref name="defaultValue"/>.
+            </summary>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="defaultValue">The default value to return if all methods throw an exception.</param>
+            <param name="methods">The methods to try.</param>
+            <returns>The first value returned by a method that doesn't throw an exception, or the default value if all methods throw an exception.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.Func{``0}[])">
+            <inheritdoc cref="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.Func{``0}[])">
+            <inheritdoc cref="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.Collections.Generic.IEnumerable{System.Func{``0}})">
+            <summary>
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first one that succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            </summary>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="methods"/> throw an exception. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
+            <param name="methods">The methods to try.</param>
+            <returns>The first value returned by a method that doesn't throw an exception, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.Action{``0},``0[])">
+            <inheritdoc cref="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning <paramref name="defaultValue"/>.
+            </summary>
+            <typeparam name="T">The Type of the items to test.</typeparam>
+            <param name="defaultValue">The default value to return if all items throw an exception.</param>
+            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
+            <param name="items">The items to test.</param>
+            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise <paramref name="defaultValue"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},``0[])">
+            <inheritdoc cref="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            </summary>
+            <typeparam name="T">The Type of the items to test.</typeparam>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="items"/> cause an exception in <paramref name="test"/>. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
+            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
+            <param name="items">The items to test.</param>
+            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Util.ExtendedBackgroundWorker">
             <summary>
             Extends the base functionality of the <see cref="T:System.ComponentModel.BackgroundWorker"/> type.
@@ -3849,6 +4197,126 @@
         </member>
         <member name="P:LaquaiLib.Util.FileHelper.FileSizePartitioner.SupportsDynamicPartitions">
             <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.Hotkeys.FsModifiers">
+            <summary>
+            Identifies hotkey modifier keys.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Hotkeys.FsModifiers.Alt">
+            <summary>
+            Any Alt key.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Hotkeys.FsModifiers.Control">
+            <summary>
+            Any Control key.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Hotkeys.FsModifiers.Shift">
+            <summary>
+            Any Shift key.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Hotkeys.Hotkey">
+            <summary>
+            Represents a hotkey registered by <see cref="T:LaquaiLib.Util.Hotkeys.Hotkeys"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.Id">
+            <summary>
+            The ID this hotkey was registered to the system with.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.Modifiers">
+            <summary>
+            The modifier keys for this hotkey.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.Key">
+            <summary>
+            The key for this hotkey.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.SyncDelegate">
+            <summary>
+            The action to perform when this hotkey is pressed.
+            This property may be <see langword="null"/> and is as such mutually exclusive with <see cref="P:LaquaiLib.Util.Hotkeys.Hotkey.AsyncDelegate"/>, if the hotkey was created using such an asynchronous delegate.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.AsyncDelegate">
+            <summary>
+            The action to perform when this hotkey is pressed.
+            This property may be <see langword="null"/> and is as such mutually exclusive with <see cref="P:LaquaiLib.Util.Hotkeys.Hotkey.SyncDelegate"/>, if the hotkey was created using such a synchronous delegate.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Hotkeys.Hotkeys">
+            <summary>
+            Contains static methods for managing system-wide (henceforth referred to simply as 'global') hotkeys.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.UsedHotkeySlots">
+            <summary>
+            Gets the number of used hotkey slots.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.FreeHotkeySlots">
+            <summary>
+            Gets the number of free hotkey slots.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.ModifierKeys">
+            <summary>
+            Retrieves the value of the low-order word of <see cref="F:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.lParam"/>.
+            This specifies the modifier keys associated with the pressed hotkey.
+            </summary>
+            <returns>The modifier keys associated with the pressed hotkey.</returns>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.VirtualKeyCode">
+            <summary>
+            Retrieves the value of the high-order word of <see cref="F:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.lParam"/>.
+            This specifies the virtual key code of the pressed hotkey.
+            </summary>
+            <returns>The virtual key code of the pressed hotkey.</returns>
+        </member>
+        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.ProcessHotkeys">
+            <summary>
+            Controls whether hotkeys are processed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.Start">
+            <summary>
+            Starts processing hotkeys.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.Stop">
+            <summary>
+            Stops processing hotkeys.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.RegisterHotkey(LaquaiLib.Util.Hotkeys.FsModifiers,System.Windows.Forms.Keys,System.Delegate,LaquaiLib.Util.Hotkeys.Hotkey@)">
+            <summary>
+            Registers a global hotkey and begins processing hotkeys if processing has not been explicitly stopped.
+            </summary>
+            <param name="fsModifiers">A <see cref="T:LaquaiLib.Util.Hotkeys.FsModifiers"/> value specifying the modifier keys to be associated with the hotkey.</param>
+            <param name="vk">The virtual key code to be associated with the hotkey.</param>
+            <param name="method">A <see cref="T:System.Delegate"/> representing the method to be invoked when the hotkey is pressed. Must be castable to either <see cref="T:System.Action"/> or a <see cref="T:System.Threading.Tasks.Task"/>-returning <see cref="T:System.Func`1"/>, otherwise an <see cref="T:System.ArgumentException"/> is thrown. Such an asynchronous <see langword="delegate"/> is <see langword="await"/>ed appropriately upon invocation.</param>
+            <returns>The result of the registration attempt.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.UnregisterHotkey(System.Int32,LaquaiLib.Util.Hotkeys.Hotkey)">
+            <summary>
+            Unregisters a global hotkey.
+            </summary>
+            <param name="id">The ID of the hotkey to be unregistered.</param>
+            <param name="hotkey">The <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> to be unregistered. This should not be specified if consuming code stores its <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> instances by ID.</param>
+            <returns>The result of the unregistration attempt.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.UnregisterHotkey(LaquaiLib.Util.Hotkeys.Hotkey)">
+            <summary>
+            Unregisters a global hotkey.
+            </summary>
+            <param name="hotkey">The <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> to be unregistered.</param>
+            <returns>The result of the unregistration attempt.</returns>
         </member>
         <member name="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler">
             <summary>
@@ -4686,103 +5154,53 @@
             </summary>
             <param name="objs">The objects to test.</param>
         </member>
-        <member name="T:LaquaiLib.Util.Try">
+        <member name="T:LaquaiLib.Util.VolumeManager.VolumeController">
             <summary>
-            Provides static methods that wrap <c>try-catch</c> blocks.
+            Represents a controller for managing the volume of a specific window or process.
             </summary>
-            <remarks>All methods in this class explicitly allow <see langword="null"/> returns.</remarks>
         </member>
-        <member name="M:LaquaiLib.Util.Try.ExecuteOrDefault``1(``0,System.Func{``0})">
+        <member name="P:LaquaiLib.Util.VolumeManager.VolumeController.ProcessNameOrTitle">
             <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning <paramref name="defaultValue"/>.
+            The name of the process or window title this handler targets.
             </summary>
-            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-            <param name="defaultValue">The value to return if <paramref name="method"/> fails.</param>
-            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
-            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise <typeparamref name="T"/>'s <c>default</c> value.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.Try.ExecuteOrDefault``1(System.Func{``0},System.Func{``0})">
+        <member name="P:LaquaiLib.Util.VolumeManager.VolumeController.OnFocusReceived">
             <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            The <see cref="T:System.Action`1"/> that is invoked when the targeted window gains focus.
+            It is passed the <see cref="T:CoreAudio.AudioSessionControl2"/> representing the window.
             </summary>
-            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
-            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
-            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.Try.First``1(System.Collections.Generic.IEnumerable{System.Func{``0}})">
+        <member name="P:LaquaiLib.Util.VolumeManager.VolumeController.OnFocusLost">
             <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates its return value if it succeeds, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by the <paramref name="methods"/>.
+            The <see cref="T:System.Action`1"/> that is invoked when the targeted window loses focus.
+            It is passed the <see cref="T:CoreAudio.AudioSessionControl2"/> representing the window.
             </summary>
-            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
-            <param name="methods">The methods to try.</param>
-            <returns>The value of the first method that doesn't throw an exception.</returns>
-            <exception cref="T:System.AggregateException">Thrown if all methods throw an exception.</exception>
         </member>
-        <member name="M:LaquaiLib.Util.Try.First``1(System.Func{``0}[])">
-            <inheritdoc cref="M:LaquaiLib.Util.Try.First``1(System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.Try.First``1(System.Action{``0},``0[])">
-            <inheritdoc cref="M:LaquaiLib.Util.Try.First``1(System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.Try.First``1(System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+        <member name="M:LaquaiLib.Util.VolumeManager.VolumeController.#ctor">
             <summary>
-            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by <paramref name="test"/>.
+            Initializes a new instance of the <see cref="T:LaquaiLib.Util.VolumeManager.VolumeController"/> class.
             </summary>
-            <typeparam name="T">The Type of the items to test.</typeparam>
-            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
-            <param name="items">The items to test.</param>
-            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Collections.Generic.IEnumerable{System.Func{``0}})">
+        <member name="T:LaquaiLib.Util.VolumeManager.VolumeControllerManager">
             <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first succeeds, otherwise returning <paramref name="defaultValue"/>.
+            Represents a manager for creating <see cref="T:LaquaiLib.Util.VolumeManager.VolumeController"/>s.
             </summary>
-            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
-            <param name="defaultValue">The default value to return if all methods throw an exception.</param>
-            <param name="methods">The methods to try.</param>
-            <returns>The first value returned by a method that doesn't throw an exception, or the default value if all methods throw an exception.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Func{``0}[])">
-            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Func{``0}[])">
-            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Collections.Generic.IEnumerable{System.Func{``0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Collections.Generic.IEnumerable{System.Func{``0}})">
+        <member name="M:LaquaiLib.Util.VolumeManager.VolumeControllerManager.#ctor(System.Action{CoreAudio.AudioSessionControl2},System.Action{CoreAudio.AudioSessionControl2})">
             <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first one that succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.VolumeManager.VolumeControllerManager"/> with the specified default focus received and lost actions.
             </summary>
-            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
-            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="methods"/> throw an exception. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
-            <param name="methods">The methods to try.</param>
-            <returns>The first value returned by a method that doesn't throw an exception, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
+            <param name="defaultOnFocusReceived">The <see cref="T:System.Action`1"/> to be called when a window or process represented by a <see cref="T:CoreAudio.AudioSessionControl2"/> receives focus.</param>
+            <param name="defaultOnFocusLost">The <see cref="T:System.Action`1"/> to be called when a window or process represented by a <see cref="T:CoreAudio.AudioSessionControl2"/> loses focus.</param>
         </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Action{``0},``0[])">
-            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(``0,System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
+        <member name="M:LaquaiLib.Util.VolumeManager.VolumeControllerManager.CreateController(System.String,System.Action{CoreAudio.AudioSessionControl2},System.Action{CoreAudio.AudioSessionControl2})">
             <summary>
-            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning <paramref name="defaultValue"/>.
+            Creates a new <see cref="T:LaquaiLib.Util.VolumeManager.VolumeController"/> with the specified process name or title and focus received and lost actions.
             </summary>
-            <typeparam name="T">The Type of the items to test.</typeparam>
-            <param name="defaultValue">The default value to return if all items throw an exception.</param>
-            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
-            <param name="items">The items to test.</param>
-            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise <paramref name="defaultValue"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},``0[])">
-            <inheritdoc cref="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},System.Collections.Generic.IEnumerable{``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
-            </summary>
-            <typeparam name="T">The Type of the items to test.</typeparam>
-            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="items"/> cause an exception in <paramref name="test"/>. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
-            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
-            <param name="items">The items to test.</param>
-            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.</returns>
+            <param name="processNameOrTitle">The name or title of the window or process to be controlled by the <see cref="T:LaquaiLib.Util.VolumeManager.VolumeController"/>.</param>
+            <param name="onFocusReceived">The <see cref="T:System.Action`1"/> to be called when the window or process represented by the <see cref="T:LaquaiLib.Util.VolumeManager.VolumeController"/> receives focus. If omitted or <see langword="null"/>, the default focus received action will be used.</param>
+            <param name="onFocusLost">The <see cref="T:System.Action`1"/> to be called when the window or process represented by the <see cref="T:LaquaiLib.Util.VolumeManager.VolumeController"/> loses focus. If omitted or <see langword="null"/>, the default focus lost action will be used.</param>
+            <returns>The created <see cref="T:LaquaiLib.Util.VolumeManager.VolumeController"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Util.Windows">
             <summary>
@@ -6925,6 +7343,38 @@
             <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EntryPointNotFoundExceptionDataRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.Utilities">
             <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>

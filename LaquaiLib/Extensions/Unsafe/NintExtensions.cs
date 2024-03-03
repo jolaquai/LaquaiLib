@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace LaquaiLib.Extensions.Unsafe;
+﻿namespace LaquaiLib.Extensions.Unsafe;
 
 /// <summary>
 /// Provides Extension Methods for the <see cref="nint"/> and <see cref="nuint"/> types, which implicitly includes pointers.
