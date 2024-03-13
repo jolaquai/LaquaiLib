@@ -3973,6 +3973,9 @@
             <summary>
             Registers all <see cref="T:System.EventHandler`1"/> instances in the <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> class for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
             </summary>
+            <remarks>
+            Be aware that this will pollute your call stack like all hell...
+            </remarks>
         </member>
         <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.WrapEntryPointNotFoundException(System.Object,System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs)">
             <summary>
@@ -4152,12 +4155,40 @@
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.OnDoWork(System.ComponentModel.DoWorkEventArgs)">
             <inheritdoc/>
         </member>
-        <member name="T:LaquaiLib.Util.FileHelper">
+        <member name="T:LaquaiLib.Util.FileSizePartitioner">
+            <summary>
+            Represents a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> implementation that partitions files by their size.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> using the specified file paths.
+            </summary>
+            <param name="paths">The paths to the files to partition.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.IO.FileInfo})">
+            <summary>
+            Instantiates a new <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> using the specified <see cref="T:System.IO.FileInfo"/> instances.
+            </summary>
+            <param name="fileInfos">The <see cref="T:System.IO.FileInfo"/> instances to partition.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.FileSizePartitioner.GetPartitions(System.Int32)">
+            <summary>
+            Partitions the file set into at most <paramref name="partitionCount"/> partitions, accounting for the size of the files.
+            The total size of the files in each partition is approximately equal, but the number of files in each partition may vary.
+            </summary>
+            <param name="partitionCount">The number of partitions to create.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IList`1"/> of <see cref="T:System.Collections.Generic.IEnumerator`1"/> instances that represent the partitions.</returns>
+        </member>
+        <member name="P:LaquaiLib.Util.FileSizePartitioner.SupportsDynamicPartitions">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.FileSystemHelper">
             <summary>
             Provides methods and events for working with files and directories.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.FileHelper.MigrateDirectory(System.String,System.String,System.Boolean,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Util.FileSystemHelper.MigrateDirectory(System.String,System.String,System.Boolean,System.Int32,System.Threading.CancellationToken)">
             <summary>
             In parallel, migrates the contents of a directory from one location to another.
             </summary>
@@ -4167,36 +4198,8 @@
             <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow.</param>
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <remarks>
-            This method uses <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
+            This method uses <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
             </remarks>
-        </member>
-        <member name="T:LaquaiLib.Util.FileHelper.FileSizePartitioner">
-            <summary>
-            Represents a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> implementation that partitions files by their size.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> using the specified file paths.
-            </summary>
-            <param name="paths">The paths to the files to partition.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.IO.FileInfo})">
-            <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.FileHelper.FileSizePartitioner"/> using the specified <see cref="T:System.IO.FileInfo"/> instances.
-            </summary>
-            <param name="fileInfos">The <see cref="T:System.IO.FileInfo"/> instances to partition.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.FileHelper.FileSizePartitioner.GetPartitions(System.Int32)">
-            <summary>
-            Partitions the file set into at most <paramref name="partitionCount"/> partitions, accounting for the size of the files.
-            The total size of the files in each partition is approximately equal, but the number of files in each partition may vary.
-            </summary>
-            <param name="partitionCount">The number of partitions to create.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IList`1"/> of <see cref="T:System.Collections.Generic.IEnumerator`1"/> instances that represent the partitions.</returns>
-        </member>
-        <member name="P:LaquaiLib.Util.FileHelper.FileSizePartitioner.SupportsDynamicPartitions">
-            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.Hotkeys.FsModifiers">
             <summary>
@@ -7393,6 +7396,9 @@
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
             <summary>Pushes 2 values onto the backtracking stack.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
+            <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_nonAscii_50A2FEBC473A6B0B5F0FE032BEE21E08D03E2A7E307FCFCA8245C63F441BF02F">
             <summary>Supports searching for characters in or not in " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿİŸKÅ".</summary>

@@ -14,7 +14,7 @@ public static class RandomMath
     /// <param name="n">The last input value to the function.</param>
     /// <param name="fn">The function that calculates the output values given the input values.</param>
     /// <returns>The sum of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
-    public static double Sum(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Select(fn).Sum();
+    public static double Sum(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Sum(fn);
     /// <summary>
     /// Calculates the product of a series of output values of a function.
     /// </summary>
@@ -60,7 +60,7 @@ public static class RandomMath
     public static double RoundToMultiple(double number, double multiple = 1) => Math.Round(number * multiple) / multiple;
 
     /// <summary>
-    /// Smooths two functions over a given interval using a custom smoothing function.
+    /// Smooths two functions over a given interval using a smoothing function that is a linear combination of the two functions.
     /// </summary>
     /// <param name="f">The first function to use when constructing the output function.</param>
     /// <param name="g">The second function to use when constructing the output function.</param>
@@ -80,7 +80,7 @@ public static class RandomMath
     }
 
     /// <summary>
-    /// Smooths two functions over a given interval.
+    /// Smooths two functions over a given interval by returning a new function that is a linear combination of the two functions within a that interval.
     /// </summary>
     /// <param name="f">The first function to use when constructing the output function.</param>
     /// <param name="g">The second function to use when constructing the output function.</param>

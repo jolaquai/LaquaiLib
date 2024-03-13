@@ -36,6 +36,9 @@ public static partial class FirstChanceExceptionHandlers
     /// <summary>
     /// Registers all <see cref="EventHandler{TEventArgs}"/> instances in the <see cref="FirstChanceExceptionHandlers"/> class for the <see cref="AppDomain.FirstChanceException"/> event.
     /// </summary>
+    /// <remarks>
+    /// Be aware that this will pollute your call stack like all hell...
+    /// </remarks>
     public static void RegisterAll()
     {
         if (isRegistered)

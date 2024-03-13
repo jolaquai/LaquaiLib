@@ -26,14 +26,17 @@ public static class Processes
     /// <summary>
     /// Occurs for each process that is started on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStarted {
-        add {
+    public static event Action<Process>? ProcessStarted
+    {
+        add
+        {
             lock (_syncRoot)
             {
                 processStarted += value;
             }
         }
-        remove {
+        remove
+        {
             lock (_syncRoot)
             {
                 processStarted -= value;
@@ -43,14 +46,17 @@ public static class Processes
     /// <summary>
     /// Occurs for each process that is stopped on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStopped {
-        add {
+    public static event Action<Process>? ProcessStopped
+    {
+        add
+        {
             lock (_syncRoot)
             {
                 processStopped += value;
             }
         }
-        remove {
+        remove
+        {
             lock (_syncRoot)
             {
                 processStopped -= value;
