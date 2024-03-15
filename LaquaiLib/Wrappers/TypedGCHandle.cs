@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace System.Runtime.InteropServices;
+namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Provides a way to access a managed instance of <typeparamref name="T"/> from unmanaged memory.

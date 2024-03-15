@@ -1,6 +1,6 @@
 ﻿using System.Management;
 
-namespace LaquaiLib.Classes.Streams;
+namespace LaquaiLib.Streams;
 
 /// <summary>
 /// Represents a <see cref="Stream"/> that can be either a <see cref="MemoryStream"/> or a <see cref="FileStream"/>, depending on the size of the data expected to be written to it.

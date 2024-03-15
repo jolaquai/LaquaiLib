@@ -1,12 +1,11 @@
 ﻿using System.Collections.Concurrent;
 
-namespace LaquaiLib.Classes.Collections.LimitedCollections;
+namespace LaquaiLib.Collections.LimitedCollections;
 
 /// <summary>
 /// Represents a <see cref="ConcurrentQueue{T}"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
 /// </summary>
 /// <typeparam name="T">The Type of the items in the collection.</typeparam>
-[CollectionBuilder(typeof(LimitedConcurrentQueueBuilder), nameof(LimitedConcurrentQueueBuilder.Create))]
 public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
 {
     private int _capacity = int.MaxValue;
@@ -117,19 +116,4 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
             TryDequeue(out _);
         }
     }
-}
-
-/// <summary>
-/// Provides a builder for <see cref="LimitedConcurrentQueue{T}"/>s.
-/// </summary>
-public static class LimitedConcurrentQueueBuilder
-{
-    /// <summary>
-    /// Builds a <see cref="LimitedConcurrentQueue{T}"/> from the passed <paramref name="span"/>.
-    /// Used to allow <see cref="LimitedConcurrentQueue{T}"/> to be created from collection literals.
-    /// </summary>
-    /// <typeparam name="T">The Type of the items in the span.</typeparam>
-    /// <param name="span">The span to copy the new <see cref="LimitedConcurrentQueue{T}"/>'s items from.</param>
-    /// <returns>A new <see cref="LimitedConcurrentQueue{T}"/> with the items from <paramref name="span"/>.</returns>
-    public static LimitedConcurrentQueue<T> Create<T>(ReadOnlySpan<T> span) => new LimitedConcurrentQueue<T>(span);
 }
