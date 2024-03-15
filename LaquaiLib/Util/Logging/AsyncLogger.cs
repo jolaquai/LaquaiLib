@@ -20,7 +20,7 @@ public static class AsyncLogger
     private static bool initialized;
 
     private static readonly Thread _messageQueueHandler = new Thread(MessageQueueHandlerProc);
-    private static readonly ConcurrentQueue<LaquaiLib.Util.Logging.LoggerMessage> _messages = new ConcurrentQueue<LaquaiLib.Util.Logging.LoggerMessage>();
+    private static readonly ConcurrentQueue<LoggerMessage> _messages = new ConcurrentQueue<LoggerMessage>();
 
     /// <summary>
     /// Initializes the <see cref="AsyncLogger"/>.
@@ -76,19 +76,19 @@ public static class AsyncLogger
     /// </summary>
     /// <param name="message">The text of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public static void QueueMessage(string? message, MessageType type = MessageType.Info) => QueueMessage(new LaquaiLib.Util.Logging.LoggerMessage(message, DateTime.Now, type));
+    public static void QueueMessage(string? message, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message, DateTime.Now, type));
     /// <summary>
     /// Creates and queues a new <see cref="LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
     /// </summary>
     /// <param name="message">The text of the message.</param>
     /// <param name="timestamp">The timestamp of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public static void QueueMessage(string? message, DateTime timestamp, MessageType type = MessageType.Info) => QueueMessage(new LaquaiLib.Util.Logging.LoggerMessage(message, timestamp, type));
+    public static void QueueMessage(string? message, DateTime timestamp, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message, timestamp, type));
     /// <summary>
     /// Queues the given <paramref name="message"/>.
     /// </summary>
     /// <param name="message">The <see cref="LoggerMessage"/> to queue.</param>
-    public static void QueueMessage(LaquaiLib.Util.Logging.LoggerMessage message)
+    public static void QueueMessage(LoggerMessage message)
     {
         if (!initialized)
         {

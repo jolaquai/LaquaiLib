@@ -5,7 +5,7 @@ namespace LaquaiLib;
 /// <summary>
 /// Entry point for the library.
 /// </summary>
-public static class LaquaiLib
+public static class Misc
 {
     /// <summary>
     /// Compiles an <see cref="IEnumerable{T}"/> of <typeparamref name="T"/>s from <paramref name="start"/> to <paramref name="stop"/> with a step width of <paramref name="step"/>.

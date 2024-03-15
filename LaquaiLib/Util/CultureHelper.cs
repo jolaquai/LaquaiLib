@@ -318,6 +318,6 @@ public static partial class CultureHelper
         return null;
     }
 
-    [GeneratedRegex("[^a-zà-ÿ ]", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    [GeneratedRegex("[^a-zà-ÿ ]", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex GetSimilarityCleanerRegex();
 }

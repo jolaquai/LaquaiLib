@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace LaquaiLib.Util.FullAccessDynamic;
+namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
 
 /// <summary>
 /// Provides static factory methods for <see cref="SilentFullAccessDynamic{T}"/> instances.
@@ -49,4 +49,12 @@ public static class SilentFullAccessDynamicFactory
 
         return Activator.CreateInstance(typeof(SilentFullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [instance], null);
     }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="SilentFullAccessDynamic{T}"/> that wraps the current object instance.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to wrap.</typeparam>
+    /// <param name="instance">The instance to wrap.</param>
+    /// <returns>The created <see cref="SilentFullAccessDynamic{T}"/> instance.</returns>
+    public static dynamic GetSilentFullAccessDynamic<T>(this T instance) => new SilentFullAccessDynamic<T>(instance);
 }

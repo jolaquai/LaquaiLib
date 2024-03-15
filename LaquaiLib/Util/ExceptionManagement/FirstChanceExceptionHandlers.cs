@@ -199,7 +199,7 @@ public static partial class FirstChanceExceptionHandlers
     }
 
     // Unable to find an entry point named 'GetMessage' in DLL 'user32.dll'.
-    [GeneratedRegex(@"Unable to find an entry point named '(?<entryPoint>[^']+)' in DLL '(?<dllName>[^']+)'\.", RegexOptions.Compiled | RegexOptions.ExplicitCapture)]
+    [GeneratedRegex(@"Unable to find an entry point named '(?<entryPoint>[^']+)' in DLL '(?<dllName>[^']+)'\.", RegexOptions.ExplicitCapture)]
     private static partial Regex EntryPointNotFoundExceptionDataRegex();
 
     internal static void GetEntryPointNotFoundExceptionData(EntryPointNotFoundException e, out string entryPoint, out string dllName)

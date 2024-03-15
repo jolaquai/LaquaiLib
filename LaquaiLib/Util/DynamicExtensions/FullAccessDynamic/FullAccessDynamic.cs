@@ -1,24 +1,24 @@
 ﻿using System.Dynamic;
 using System.Reflection;
 
-namespace LaquaiLib.Util.FullAccessDynamic;
+namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
 
 /// <summary>
-/// Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level. All binding failures and binding-related exceptions are swallowed and will result in <see langword="null"/> returns.
-/// <para/>Note that all dynamically retrieved members are also instances of <see cref="SilentFullAccessDynamic{T}"/> to allow for further dynamic access. The only value explicitly propagated to allow <c>?.</c> <see langword="null"/> propagation is <see langword="null"/>. This does <b>not</b> work directly on an object of type <see cref="SilentFullAccessDynamic{T}"/>, i.e. the following method invocation will always take place:
+/// Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level.
+/// <para/>Note that all dynamically retrieved members are also instances of <see cref="FullAccessDynamic{T}"/> to allow for further dynamic access. The only value explicitly propagated to allow <c>?.</c> <see langword="null"/> propagation is <see langword="null"/>. This does <b>not</b> work directly on an object of type <see cref="FullAccessDynamic{T}"/>, i.e. the following method invocation will always take place:
 /// <code language="csharp">
 /// MyClass? myInstance = null;
-/// var mySilentFullAccessDynamic = SilentFullAccessDynamic.Create(typeof(MyClass), myInstance);
+/// var myFullAccessDynamic = FullAccessDynamic.Create(typeof(MyClass), myInstance);
 /// // This incovation will happen no matter if the underlying object myInstance is null or not
-/// mySilentFullAccessDynamic?.MyMethod();
+/// myFullAccessDynamic?.MyMethod();
 /// // These ones will not, however, if MyProperty is null or MyNullReturningMethod returns null
-/// mySilentFullAccessDynamic.MyProperty?.MyMethod();
-/// mySilentFullAccessDynamic.MyNullReturningMethod()?.MyMethod();
+/// myFullAccessDynamic.MyProperty?.MyMethod();
+/// myFullAccessDynamic.MyNullReturningMethod()?.MyMethod();
 /// </code>
 /// <para/><b>Warning!</b> Nothing prevents the underlying object instance of <typeparamref name="T"/> from being <see langword="null"/>. As such, <see cref="Unwrap"/> may return <see langword="null"/>.
 /// </summary>
 /// <typeparam name="T">The type of the object to wrap.</typeparam>
-public class SilentFullAccessDynamic<T> : DynamicObject
+public class FullAccessDynamic<T> : DynamicObject
 {
     private readonly T? _instance;
     private readonly Type _instanceType = typeof(T);
@@ -30,11 +30,11 @@ public class SilentFullAccessDynamic<T> : DynamicObject
 
     private static readonly Dictionary<string, MemberInfo> _memberCache = [];
 
-    internal SilentFullAccessDynamic()
+    internal FullAccessDynamic()
     {
         _instance = Activator.CreateInstance<T>();
     }
-    internal SilentFullAccessDynamic(T instance)
+    internal FullAccessDynamic(T instance)
     {
         _instance = instance;
     }
@@ -44,7 +44,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         if (_instance is null)
         {
             result = null;
-            return true;
+            return false;
         }
 
         if (args is null or { Length: 0 })
@@ -89,12 +89,12 @@ public class SilentFullAccessDynamic<T> : DynamicObject
 
         if (method is not null)
         {
-            result = SilentFullAccessDynamicFactory.Create(method.ReturnType, method.Invoke(_instance, args));
+            result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(method.ReturnType, method.Invoke(_instance, args));
             return true;
         }
 
         result = null;
-        return true;
+        return false;
     }
     public override bool TryGetMember(GetMemberBinder binder, out object result)
     {
@@ -128,7 +128,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
                 }
                 else
                 {
-                    result = SilentFullAccessDynamicFactory.Create(prop.PropertyType, propValue);
+                    result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(prop.PropertyType, propValue);
                 }
                 _memberCache[key] = prop;
                 return true;
@@ -149,7 +149,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
                 }
                 else
                 {
-                    result = SilentFullAccessDynamicFactory.Create(field.FieldType, fieldValue);
+                    result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
                 }
                 _memberCache[key] = field;
                 return true;
@@ -167,13 +167,13 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         }
 
         result = null;
-        return true;
+        return false;
     }
     public override bool TrySetMember(SetMemberBinder binder, object value)
     {
         if (_instance is null)
         {
-            return true;
+            return false;
         }
 
         PropertyInfo? prop = null;
@@ -204,7 +204,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             return true;
         }
 
-        return true;
+        return false;
     }
     public override bool TryConvert(ConvertBinder binder, out object? result)
     {
@@ -214,16 +214,14 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             return true;
         }
 
-        result = null;
-        return true;
-        //throw new InvalidCastException($"Cannot cast object of type '{_instanceType.FullName}' to '{binder.Type.FullName}'.");
+        throw new InvalidCastException($"Cannot cast object of type '{_instanceType.FullName}' to '{binder.Type.FullName}'.");
     }
     public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object? result)
     {
         if (_instance is null)
         {
             result = null;
-            return true;
+            return false;
         }
 
         var itemProp = GetFirstNonNull(bf => _instanceType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
@@ -236,19 +234,19 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             }
             else
             {
-                result = SilentFullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
+                result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
             }
             return true;
         }
 
         result = null;
-        return true;
+        return false;
     }
     public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object? value)
     {
         if (_instance is null)
         {
-            return true;
+            return false;
         }
 
         var itemProp = GetFirstNonNull(bf => _instanceType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
@@ -258,7 +256,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             return true;
         }
 
-        return true;
+        return false;
     }
     public override bool TryInvoke(InvokeBinder binder, object?[]? args, out object? result)
     {
@@ -271,10 +269,10 @@ public class SilentFullAccessDynamic<T> : DynamicObject
                 result = delegateType.DynamicInvoke(args);
                 return true;
             default:
-                result = null;
-                return true;
+                throw new InvalidOperationException($"Object of type '{_instanceType.FullName}' is not invocable, expected '{typeof(MethodInfo).FullName}' or any '{typeof(Delegate)}'-like type.");
         }
     }
+
     public override IEnumerable<string> GetDynamicMemberNames()
     {
         return _instanceType.GetProperties(bindingFlags).Select(p => p.Name);
@@ -300,7 +298,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
     }
 
     public override bool Equals(object? obj) => Equals(Unwrap(), obj);
-    public static bool operator ==(SilentFullAccessDynamic<T> left, object? right) => Equals(left.Unwrap(), right);
-    public static bool operator !=(SilentFullAccessDynamic<T> left, object? right) => !(left == right);
+    public static bool operator ==(FullAccessDynamic<T> left, object? right) => Equals(left.Unwrap(), right);
+    public static bool operator !=(FullAccessDynamic<T> left, object? right) => !(left == right);
     public override int GetHashCode() => Unwrap()?.GetHashCode() ?? 0;
 }

@@ -14,7 +14,7 @@ public static class RandomMath
     /// <param name="n">The last input value to the function.</param>
     /// <param name="fn">The function that calculates the output values given the input values.</param>
     /// <returns>The sum of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
-    public static double Sum(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Sum(fn);
+    public static double Sum(double x, double n, Func<double, double> fn) => Misc.Range(x, n, 1).Sum(fn);
     /// <summary>
     /// Calculates the product of a series of output values of a function.
     /// </summary>
@@ -22,7 +22,7 @@ public static class RandomMath
     /// <param name="n">The last input value to the function.</param>
     /// <param name="fn">The function that calculates the output values given the input values.</param>
     /// <returns>The product of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
-    public static double Product(double x, double n, Func<double, double> fn) => LaquaiLib.Range(x, n, 1).Select(fn).Aggregate(1d, (seed, res) => seed *= res);
+    public static double Product(double x, double n, Func<double, double> fn) => Misc.Range(x, n, 1).Select(fn).Aggregate(1d, (seed, res) => seed *= res);
 
     /// <summary>
     /// Determines the greatest common divisor of a series of numbers.
@@ -41,7 +41,7 @@ public static class RandomMath
             return 1;
         }
 
-        foreach (var g in LaquaiLib
+        foreach (var g in Misc
             .Range(_numbers.Max(), 2)
             .Where(g => _numbers.Select(n => n % g == 0).All()))
         {

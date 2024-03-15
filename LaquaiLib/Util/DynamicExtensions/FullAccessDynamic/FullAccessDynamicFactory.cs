@@ -1,7 +1,6 @@
-﻿using System.Dynamic;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace LaquaiLib.Util.FullAccessDynamic;
+namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
 
 /// <summary>
 /// Provides static factory methods for <see cref="FullAccessDynamic{T}"/> instances.
@@ -50,4 +49,12 @@ public static class FullAccessDynamicFactory
 
         return Activator.CreateInstance(typeof(FullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [instance], null);
     }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="FullAccessDynamic{T}"/> that wraps the current object instance.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to wrap.</typeparam>
+    /// <param name="instance">The instance to wrap.</param>
+    /// <returns>The created <see cref="FullAccessDynamic{T}"/> instance.</returns>
+    public static dynamic GetFullAccessDynamic<T>(this T instance) => new FullAccessDynamic<T>(instance);
 }
