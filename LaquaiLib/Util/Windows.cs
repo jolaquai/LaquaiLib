@@ -111,7 +111,7 @@ public static partial class Windows
         {
             var windows = new ArrayList();
 
-            using (var handle = new GCHandle<ArrayList>(windows))
+            using (var handle = new LaquaiLib.Wrappers.GCHandle<ArrayList>(windows))
             {
                 EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
@@ -138,7 +138,7 @@ public static partial class Windows
         lock (_syncRoot)
         {
             var windows = new ArrayList();
-            using (var handle = new GCHandle<ArrayList>(windows))
+            using (var handle = new LaquaiLib.Wrappers.GCHandle<ArrayList>(windows))
             {
                 EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
@@ -163,7 +163,7 @@ public static partial class Windows
         lock (_syncRoot)
         {
             var windows = new ArrayList();
-            using (var handle = new GCHandle<ArrayList>(windows))
+            using (var handle = new LaquaiLib.Wrappers.GCHandle<ArrayList>(windows))
             {
                 EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
@@ -193,7 +193,7 @@ public static partial class Windows
 
         // We assume this just works, if it doesn't, something went horribly wrong anyway
 
-        var handle = new GCHandle<ArrayList>(lParam);
+        var handle = new LaquaiLib.Wrappers.GCHandle<ArrayList>(lParam);
         var handles = handle.Target;
         lock (handles.SyncRoot)
         {

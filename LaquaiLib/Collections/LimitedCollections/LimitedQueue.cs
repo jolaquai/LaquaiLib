@@ -1,10 +1,9 @@
-﻿namespace LaquaiLib.Classes.Collections.LimitedCollections;
+﻿namespace LaquaiLib.Collections.LimitedCollections;
 
 /// <summary>
 /// Represents a <see cref="Queue{T}"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.
 /// </summary>
 /// <typeparam name="T">The Type of the items in the collection.</typeparam>
-[CollectionBuilder(typeof(LimitedQueueBuilder), nameof(LimitedQueueBuilder.Create))]
 public class LimitedQueue<T> : Queue<T>
 {
     private int _capacity = int.MaxValue;
@@ -115,19 +114,4 @@ public class LimitedQueue<T> : Queue<T>
             Dequeue();
         }
     }
-}
-
-/// <summary>
-/// Provides a builder for <see cref="LimitedQueue{T}"/>s.
-/// </summary>
-public static class LimitedQueueBuilder
-{
-    /// <summary>
-    /// Builds a <see cref="LimitedQueue{T}"/> from the passed <paramref name="span"/>.
-    /// Used to allow <see cref="LimitedQueue{T}"/> to be created from collection literals.
-    /// </summary>
-    /// <typeparam name="T">The Type of the items in the span.</typeparam>
-    /// <param name="span">The span to copy the new <see cref="LimitedQueue{T}"/>'s items from.</param>
-    /// <returns>A new <see cref="LimitedQueue{T}"/> with the items from <paramref name="span"/>.</returns>
-    public static LimitedQueue<T> Create<T>(ReadOnlySpan<T> span) => new LimitedQueue<T>(span);
 }

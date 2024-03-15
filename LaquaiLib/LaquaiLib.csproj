@@ -31,6 +31,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Attributes\**" />
+	  <EmbeddedResource Remove="Attributes\**" />
+	  <None Remove="Attributes\**" />
+	  <Page Remove="Attributes\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CoreAudio" Version="1.37.0" />
 		<PackageReference Include="DiscUtils" Version="0.16.13" />
 		<PackageReference Include="DocumentFormat.OpenXml" Version="3.0.0-ci0083" />
@@ -57,10 +64,6 @@
 		<Reference Include="office">
 			<HintPath>C:\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\OFFICE.DLL</HintPath>
 		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Attributes\" />
 	</ItemGroup>
 
 </Project>

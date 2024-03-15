@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 
-using LaquaiLib.Classes.Collections.LimitedCollections;
+using LaquaiLib.Collections.LimitedCollections;
+
 
 namespace LaquaiLib.Extensions;
 

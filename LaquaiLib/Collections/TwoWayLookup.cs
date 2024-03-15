@@ -2,7 +2,7 @@
 
 using LaquaiLib.Extensions;
 
-namespace LaquaiLib.Classes.Collections;
+namespace LaquaiLib.Collections;
 
 /// <summary>
 /// Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique.

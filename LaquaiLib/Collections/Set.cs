@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace LaquaiLib.Collections;
 
@@ -222,10 +224,27 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     /// <returns>The frozen set.</returns>
     public FrozenSet<T> ToFrozenSet() => FrozenSet.ToFrozenSet(Items);
     /// <summary>
-    /// Creates a <see cref="SortedSet{T}"/> from the <see cref="Set{T}"/>
+    /// Creates a <see cref="SortedSet{T}"/> from the <see cref="Set{T}"/> using the default comparer for <typeparamref name="T"/>.
     /// </summary>
     /// <returns>The created <see cref="SortedSet{T}"/>.</returns>
     public SortedSet<T> ToSortedSet() => new SortedSet<T>(Items);
+    public SortedSet<T> ToSortedSet(IComparer<T> comparer) => new SortedSet<T>(Items, comparer);
+    public SortedSet<T> ToSortedSet(Comparison<T> comparison)
+    {
+        // Create dynamic assembly
+        var newAssembly = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("DynamicAssembly"), AssemblyBuilderAccess.Run);
+        var newModule = newAssembly.DefineDynamicModule("DynamicModule");
+        var newType = newModule.DefineType("DynamicComparerType", TypeAttributes.Public, parent: null, interfaces: [typeof(IComparer<T>)]);
+        var newMethod = newType.DefineMethod("Compare", MethodAttributes.Public, CallingConventions.Standard, typeof(int), [typeof(T), typeof(T)]);
+        var ilGen = newMethod.GetILGenerator();
+        ilGen.Emit(OpCodes.Ldarg_1);
+        ilGen.Emit(OpCodes.Ldarg_2);
+        ilGen.Emit(OpCodes.Call, comparison.Method);
+        ilGen.Emit(OpCodes.Ret);
+        var newTypeInstance = newType.CreateType();
+        var newTypeInstanceInstance = newTypeInstance.GetConstructor([])?.Invoke(null);
+        return new SortedSet<T>(Items, (IComparer<T>)newTypeInstanceInstance);
+    }
     /// <summary>
     /// Creates an <see cref="ImmutableSortedSet{T}"/> from the <see cref="Set{T}"/>
     /// </summary>
