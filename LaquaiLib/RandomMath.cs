@@ -1,4 +1,6 @@
-﻿using LaquaiLib.Extensions;
+﻿using System.Numerics;
+
+using LaquaiLib.Extensions;
 
 namespace LaquaiLib;
 
@@ -14,7 +16,7 @@ public static class RandomMath
     /// <param name="n">The last input value to the function.</param>
     /// <param name="fn">The function that calculates the output values given the input values.</param>
     /// <returns>The sum of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
-    public static double Sum(double x, double n, Func<double, double> fn) => Misc.Range(x, n, 1).Sum(fn);
+    public static double Sum(double x, double n, Func<double, double> fn) => Miscellaneous.Range(x, n, 1).Sum(fn);
     /// <summary>
     /// Calculates the product of a series of output values of a function.
     /// </summary>
@@ -22,28 +24,29 @@ public static class RandomMath
     /// <param name="n">The last input value to the function.</param>
     /// <param name="fn">The function that calculates the output values given the input values.</param>
     /// <returns>The product of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
-    public static double Product(double x, double n, Func<double, double> fn) => Misc.Range(x, n, 1).Select(fn).Aggregate(1d, (seed, res) => seed *= res);
+    public static double Product(double x, double n, Func<double, double> fn) => Miscellaneous.Range(x, n, 1).Select(fn).Aggregate(1d, (seed, res) => seed *= res);
 
     /// <summary>
     /// Determines the greatest common divisor of a series of numbers.
     /// </summary>
     /// <param name="numbers">The numbers to determine the GCD of.</param>
     /// <returns>The GCD of the given <paramref name="numbers"/>.</returns>
-    public static int GCD(params int[] numbers)
+    public static int GCD<TInteger>(params int[] numbers)
+        where TInteger : IBinaryInteger<TInteger>
     {
         if (numbers.Length == 1)
         {
             return numbers[0];
         }
-        var _numbers = numbers.Select(Math.Abs).ToList();
-        if (_numbers.Any(n => n == 1))
+        numbers = Array.ConvertAll(numbers, Math.Abs);
+        if (Array.Exists(numbers, n => n == 1))
         {
             return 1;
         }
 
-        foreach (var g in Misc
-            .Range(_numbers.Max(), 2)
-            .Where(g => _numbers.Select(n => n % g == 0).All()))
+        foreach (var g in Miscellaneous
+            .Range(0, numbers.Max(), 2)
+            .Where(g => numbers.Select(n => n % g == 0).All()))
         {
             return g;
         }

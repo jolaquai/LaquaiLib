@@ -12,7 +12,7 @@ public interface ICloneable<TSelf> :
     /// Clones the current instance.
     /// </summary>
     /// <returns>A new instance of the current class with the same values as the original instance.</returns>
-    public TSelf Clone();
+    public new TSelf Clone();
 
     object ICloneable.Clone() => Clone();
 }
