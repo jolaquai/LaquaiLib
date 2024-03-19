@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.MessageBox;
+﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
 /// <summary>
 /// Specifies the default button on a message box.
 /// </summary>

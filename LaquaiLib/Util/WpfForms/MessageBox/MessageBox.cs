@@ -1,7 +1,4 @@
-﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
-using System.Configuration;
-
-namespace LaquaiLib.Util.MessageBox;
+﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>
 /// Provides message box functionality to non-WinForms or WPF applications through P/Invoke.

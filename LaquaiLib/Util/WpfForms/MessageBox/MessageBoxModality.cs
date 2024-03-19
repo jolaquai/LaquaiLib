@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.MessageBox;
+﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>
 /// Specifies the modality of a message box.

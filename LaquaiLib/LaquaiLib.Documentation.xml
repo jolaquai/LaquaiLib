@@ -4539,28 +4539,28 @@
             <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String)"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String)"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
         </member>
         <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)"/>
+            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)"/>
         </member>
         <member name="T:LaquaiLib.Util.MessageBox.MessageBoxButton">
             <summary>
@@ -6352,6 +6352,895 @@
             <summary>
             The window has a border with a raised edge.
             </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.VirtualKey">
+            <summary>
+            Provides the virtual key code constants without requiring WPF or Forms references.
+            Taken directly from <seealso href="https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LBUTTON">
+            <summary>
+            Left mouse button
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_RBUTTON">
+            <summary>
+            Right mouse button
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_CANCEL">
+            <summary>
+            Control-break processing
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MBUTTON">
+            <summary>
+            Middle mouse button
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_XBUTTON1">
+            <summary>
+            X1 mouse button
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_XBUTTON2">
+            <summary>
+            X2 mouse button
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BACK">
+            <summary>
+            BACKSPACE key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_TAB">
+            <summary>
+            TAB key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_CLEAR">
+            <summary>
+            CLEAR key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_RETURN">
+            <summary>
+            ENTER key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SHIFT">
+            <summary>
+            SHIFT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_CONTROL">
+            <summary>
+            CTRL key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MENU">
+            <summary>
+            ALT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_PAUSE">
+            <summary>
+            PAUSE key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_CAPITAL">
+            <summary>
+            CAPS LOCK key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_KANA">
+            <summary>
+            IME Kana mode
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_HANGUL">
+            <summary>
+            IME Hangul mode
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_IME_ON">
+            <summary>
+            IME On
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_JUNJA">
+            <summary>
+            IME Junja mode
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_FINAL">
+            <summary>
+            IME final mode
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_HANJA">
+            <summary>
+            IME Hanja mode
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_KANJI">
+            <summary>
+            IME Kanji mode
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_IME_OFF">
+            <summary>
+            IME Off
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_ESCAPE">
+            <summary>
+            ESC key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_CONVERT">
+            <summary>
+            IME convert
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NONCONVERT">
+            <summary>
+            IME nonconvert
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_ACCEPT">
+            <summary>
+            IME accept
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MODECHANGE">
+            <summary>
+            IME mode change request
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SPACE">
+            <summary>
+            SPACEBAR
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_PRIOR">
+            <summary>
+            PAGE UP key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NEXT">
+            <summary>
+            PAGE DOWN key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_END">
+            <summary>
+            END key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_HOME">
+            <summary>
+            HOME key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LEFT">
+            <summary>
+            LEFT ARROW key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_UP">
+            <summary>
+            UP ARROW key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_RIGHT">
+            <summary>
+            RIGHT ARROW key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_DOWN">
+            <summary>
+            DOWN ARROW key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SELECT">
+            <summary>
+            SELECT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_PRINT">
+            <summary>
+            PRINT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_EXECUTE">
+            <summary>
+            EXECUTE key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SNAPSHOT">
+            <summary>
+            PRINT SCREEN key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_INSERT">
+            <summary>
+            INS key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_DELETE">
+            <summary>
+            DEL key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_HELP">
+            <summary>
+            HELP key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_0">
+            <summary>
+            0 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_1">
+            <summary>
+            1 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_2">
+            <summary>
+            2 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_3">
+            <summary>
+            3 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_4">
+            <summary>
+            4 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_5">
+            <summary>
+            5 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_6">
+            <summary>
+            6 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_7">
+            <summary>
+            7 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_8">
+            <summary>
+            8 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_9">
+            <summary>
+            9 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.A">
+            <summary>
+            A key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.B">
+            <summary>
+            B key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.C">
+            <summary>
+            C key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.D">
+            <summary>
+            D key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.E">
+            <summary>
+            E key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.F">
+            <summary>
+            F key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.G">
+            <summary>
+            G key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.H">
+            <summary>
+            H key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.I">
+            <summary>
+            I key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.J">
+            <summary>
+            J key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.K">
+            <summary>
+            K key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.L">
+            <summary>
+            L key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.M">
+            <summary>
+            M key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.N">
+            <summary>
+            N key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.O">
+            <summary>
+            O key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.P">
+            <summary>
+            P key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.Q">
+            <summary>
+            Q key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.R">
+            <summary>
+            R key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.S">
+            <summary>
+            S key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.T">
+            <summary>
+            T key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.U">
+            <summary>
+            U key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.V">
+            <summary>
+            V key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.W">
+            <summary>
+            W key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.X">
+            <summary>
+            X key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.Y">
+            <summary>
+            Y key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.Z">
+            <summary>
+            Z key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LWIN">
+            <summary>
+            Left Windows key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_RWIN">
+            <summary>
+            Right Windows key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_APPS">
+            <summary>
+            Applications key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SLEEP">
+            <summary>
+            Computer Sleep key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD0">
+            <summary>
+            Numeric keypad 0 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD1">
+            <summary>
+            Numeric keypad 1 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD2">
+            <summary>
+            Numeric keypad 2 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD3">
+            <summary>
+            Numeric keypad 3 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD4">
+            <summary>
+            Numeric keypad 4 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD5">
+            <summary>
+            Numeric keypad 5 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD6">
+            <summary>
+            Numeric keypad 6 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD7">
+            <summary>
+            Numeric keypad 7 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD8">
+            <summary>
+            Numeric keypad 8 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMPAD9">
+            <summary>
+            Numeric keypad 9 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MULTIPLY">
+            <summary>
+            Multiply key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_ADD">
+            <summary>
+            Add key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SEPARATOR">
+            <summary>
+            Separator key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SUBTRACT">
+            <summary>
+            Subtract key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_DECIMAL">
+            <summary>
+            Decimal key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_DIVIDE">
+            <summary>
+            Divide key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F1">
+            <summary>
+            F1 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F2">
+            <summary>
+            F2 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F3">
+            <summary>
+            F3 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F4">
+            <summary>
+            F4 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F5">
+            <summary>
+            F5 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F6">
+            <summary>
+            F6 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F7">
+            <summary>
+            F7 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F8">
+            <summary>
+            F8 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F9">
+            <summary>
+            F9 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F10">
+            <summary>
+            F10 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F11">
+            <summary>
+            F11 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F12">
+            <summary>
+            F12 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F13">
+            <summary>
+            F13 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F14">
+            <summary>
+            F14 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F15">
+            <summary>
+            F15 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F16">
+            <summary>
+            F16 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F17">
+            <summary>
+            F17 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F18">
+            <summary>
+            F18 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F19">
+            <summary>
+            F19 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F20">
+            <summary>
+            F20 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F21">
+            <summary>
+            F21 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F22">
+            <summary>
+            F22 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F23">
+            <summary>
+            F23 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_F24">
+            <summary>
+            F24 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NUMLOCK">
+            <summary>
+            NUM LOCK key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_SCROLL">
+            <summary>
+            SCROLL LOCK key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LSHIFT">
+            <summary>
+            Left SHIFT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_RSHIFT">
+            <summary>
+            Right SHIFT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LCONTROL">
+            <summary>
+            Left CONTROL key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_RCONTROL">
+            <summary>
+            Right CONTROL key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LMENU">
+            <summary>
+            Left ALT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_RMENU">
+            <summary>
+            Right ALT key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BROWSER_BACK">
+            <summary>
+            Browser Back key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BROWSER_FORWARD">
+            <summary>
+            Browser Forward key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BROWSER_REFRESH">
+            <summary>
+            Browser Refresh key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BROWSER_STOP">
+            <summary>
+            Browser Stop key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BROWSER_SEARCH">
+            <summary>
+            Browser Search key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BROWSER_FAVORITES">
+            <summary>
+            Browser Favorites key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_BROWSER_HOME">
+            <summary>
+            Browser Start and Home key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_VOLUME_MUTE">
+            <summary>
+            Volume Mute key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_VOLUME_DOWN">
+            <summary>
+            Volume Down key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_VOLUME_UP">
+            <summary>
+            Volume Up key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MEDIA_NEXT_TRACK">
+            <summary>
+            Next Track key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MEDIA_PREV_TRACK">
+            <summary>
+            Previous Track key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MEDIA_STOP">
+            <summary>
+            Stop Media key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_MEDIA_PLAY_PAUSE">
+            <summary>
+            Play/Pause Media key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LAUNCH_MAIL">
+            <summary>
+            Start Mail key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LAUNCH_MEDIA_SELECT">
+            <summary>
+            Select Media key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LAUNCH_APP1">
+            <summary>
+            Start Application 1 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_LAUNCH_APP2">
+            <summary>
+            Start Application 2 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_1">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_PLUS">
+            <summary>
+            For any country/region, the + key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_COMMA">
+            <summary>
+            For any country/region, the , key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_MINUS">
+            <summary>
+            For any country/region, the - key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_PERIOD">
+            <summary>
+            For any country/region, the . key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_2">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_3">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_4">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_5">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_6">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_7">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_8">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_102">
+            <summary>
+            Varies by keyboard. Call <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)"/> for more information.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_PROCESSKEY">
+            <summary>
+            IME PROCESS key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_PACKET">
+            <summary>
+            Used to pass Unicode characters as if they were keystrokes. The VK_PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT, SendInput, WM_KEYDOWN, and WM_KEYUP
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_ATTN">
+            <summary>
+            Attn key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_CRSEL">
+            <summary>
+            CrSel key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_EXSEL">
+            <summary>
+            ExSel key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_EREOF">
+            <summary>
+            Erase EOF key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_PLAY">
+            <summary>
+            Play key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_ZOOM">
+            <summary>
+            Zoom key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_NONAME">
+            <summary>
+            Reserved
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_PA1">
+            <summary>
+            PA1 key
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.VK_OEM_CLEAR">
+            <summary>
+            Clear key
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.VirtualKeyUtils">
+            <summary>
+            Provides utility methods for working with virtual key codes.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)">
+            <summary>
+            Translates a virtual key code to a Unicode character.
+            </summary>
+            <param name="vk">The virtual key code to translate.</param>
+            <param name="cultureInfo">The <see cref="T:System.Globalization.CultureInfo"/> instance to use for the translation. It specifies the keyboard layout to use, which influences the actual character of <c>VK_OEM_*</c> keys. If omitted, <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/> is used.</param>
+            <returns>The Unicode character that corresponds to the specified virtual key code, or <see langword="null"/> if the key does not correspond to a character or the translation has failed.</returns>
         </member>
         <member name="T:LaquaiLib.WasmServices.FileSystemProxy.Directory">
             <summary>

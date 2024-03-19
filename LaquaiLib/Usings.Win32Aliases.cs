@@ -3,8 +3,4 @@
 global using WPARAM = nuint;
 global using LPARAM = nint;
 global using DWORD = uint;
-global using HANDLE = nint;
-global using HFILE = int;
-global using HRESULT = int;
 global using HWND = nint;
-global using WORD = ushort;

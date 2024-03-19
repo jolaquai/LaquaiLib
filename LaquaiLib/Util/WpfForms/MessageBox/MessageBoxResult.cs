@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.MessageBox;
+﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>
 /// Specifies the return value a message box interaction produced.
