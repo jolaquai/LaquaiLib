@@ -548,7 +548,11 @@ public class DequeNode<T>
     /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
     /// </summary>
     /// <param name="value">The value this node contains.</param>
-    public DequeNode(T? value) => Value = value;
+    public DequeNode(T? value)
+    {
+        Value = value;
+    }
+
     /// <summary>
     /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has the specified neighbors.
     /// </summary>
