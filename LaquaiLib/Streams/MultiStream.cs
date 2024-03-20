@@ -14,7 +14,7 @@ public class MultiStream : Stream, IDisposable
 
     #region .ctors
     /// <summary>
-    /// Instantiates a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
+    /// Initializes a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
     public MultiStream(params Stream[] streams)
@@ -23,7 +23,7 @@ public class MultiStream : Stream, IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
+    /// Initializes a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
     public MultiStream(IEnumerable<Stream> streams)
@@ -32,7 +32,7 @@ public class MultiStream : Stream, IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="MultiStream"/> with the given number of <see cref="Stream"/>s.
+    /// Initializes a new <see cref="MultiStream"/> with the given number of <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streamType">The type of <see cref="Stream"/>s to instantiate.</param>
     /// <param name="count">The number of <see cref="Stream"/>s to instantiate.</param>
@@ -66,7 +66,7 @@ public class MultiStream : Stream, IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="MultiStream"/> with the given number of <see cref="Stream"/>s.
+    /// Initializes a new <see cref="MultiStream"/> with the given number of <see cref="Stream"/>s.
     /// <example>
     /// For example, to create a <see cref="MultiStream"/> with 5 <see cref="FileStream"/> instances that point to temporary files, use this constructor and something along the lines of:
     /// <code>

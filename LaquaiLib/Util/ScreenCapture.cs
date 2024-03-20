@@ -228,7 +228,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the entire primary screen and a <see cref="Predicate"/> that allows all created captures.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the entire primary screen and a <see cref="Predicate"/> that allows all created captures.
     /// </summary>
     public ScreenCapture()
     {
@@ -239,7 +239,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
     /// </summary>
     /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
     public ScreenCapture(Func<bool> predicate)
@@ -251,7 +251,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the passed <paramref name="region"/> and a <see cref="Predicate"/> that allows all created captures.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the passed <paramref name="region"/> and a <see cref="Predicate"/> that allows all created captures.
     /// </summary>
     /// <param name="region">The region this <see cref="ScreenCapture"/> captures.</param>
     public ScreenCapture(Rectangle region)
@@ -262,7 +262,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
     /// </summary>
     /// <param name="region">The region this <see cref="ScreenCapture"/> captures.</param>
     /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
@@ -274,7 +274,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> created from a series of passed coordinates and a <see cref="Predicate"/> that allows all created captures.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> created from a series of passed coordinates and a <see cref="Predicate"/> that allows all created captures.
     /// </summary>
     /// <param name="x1">The x-coordinate of the top-left point of the region.</param>
     /// <param name="y1">The y-coordinate of the top-left point of the region.</param>
@@ -288,7 +288,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
     /// </summary>
     /// <param name="x1">The x-coordinate of the top-left point of the region.</param>
     /// <param name="y1">The y-coordinate of the top-left point of the region.</param>
@@ -303,7 +303,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to a specific screen and a <see cref="Predicate"/> that allows all created captures.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to a specific screen and a <see cref="Predicate"/> that allows all created captures.
     /// </summary>
     /// <param name="monitor">The number of the monitor to capture.</param>
     public ScreenCapture(int monitor)
@@ -315,7 +315,7 @@ public partial class ScreenCapture
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
+    /// Initializes a new <see cref="ScreenCapture"/> with the capture <see cref="Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
     /// </summary>
     /// <param name="monitor">The number of the monitor to capture.</param>
     /// <param name="predicate">The <see cref="Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
@@ -375,7 +375,7 @@ public partial class ScreenCapture
         /// </summary>
         public DateTime CaptureTime { get; init; }
         /// <summary>
-        /// Instantiates <see cref="ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+        /// Initializes <see cref="ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
         /// </summary>
         /// <param name="bitmap"></param>
         /// <param name="timestamp"></param>

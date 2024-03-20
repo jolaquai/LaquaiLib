@@ -8,7 +8,7 @@ namespace LaquaiLib.Util;
 public class ExtendedBackgroundWorker : BackgroundWorker
 {
     /// <summary>
-    /// Instantiates a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation.
+    /// Initializes a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation.
     /// </summary>
     public ExtendedBackgroundWorker()
     {
@@ -16,7 +16,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         WorkerSupportsCancellation = true;
     }
     /// <summary>
-    /// Instantiates a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started.
+    /// Initializes a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started.
     /// </summary>
     /// <param name="work">A <see cref="Delegate"/> that encapsulates a method that is executed when the <see cref="ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
     public ExtendedBackgroundWorker(Delegate work) : this()
@@ -35,7 +35,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         }
     }
     /// <summary>
-    /// Instantiates a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started, passing the specified <paramref name="args"/> as parameters.
+    /// Initializes a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started, passing the specified <paramref name="args"/> as parameters.
     /// </summary>
     /// <param name="work">A <see cref="Delegate"/> that encapsulates a method that is executed when the <see cref="ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with the specified <paramref name="args"/> is used.</param>
     /// <param name="args">The arguments to pass to the <paramref name="work"/> delegate or <see langword="null"/> if the delegate does not take any arguments.</param>
@@ -45,7 +45,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         DoWork += (sender, e) => work.DynamicInvoke(args);
     }
     /// <summary>
-    /// Instantiates a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
+    /// Initializes a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
     /// </summary>
     /// <param name="work">The <see cref="Delegate"/>s that encapsulate methods that are executed when the <see cref="ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
     public ExtendedBackgroundWorker(params Delegate[] work) : this()
@@ -68,7 +68,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         }
     }
     /// <summary>
-    /// Instantiates a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
+    /// Initializes a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
     /// </summary>
     /// <param name="work">The <see cref="Delegate"/>s that encapsulate methods that are executed when the <see cref="ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
     /// <param name="args">The arguments to pass to the <paramref name="work"/> delegates or <see langword="null"/> if the delegates do not take any arguments.</param>

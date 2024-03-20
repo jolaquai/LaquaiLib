@@ -8,7 +8,7 @@ namespace LaquaiLib.Wrappers;
 public unsafe class TempAlloc : IDisposable
 {
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer.
+    /// Initializes a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer.
     /// </summary>
     /// <param name="bytes">The amount of bytes to allocate.</param>
     public TempAlloc(int bytes)
@@ -18,7 +18,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
+    /// Initializes a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
     /// </summary>
     /// <param name="bytes">The amount of bytes to allocate.</param>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
@@ -33,7 +33,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> as a wrapper around existing allocated memory.
+    /// Initializes a new <see cref="TempAlloc"/> as a wrapper around existing allocated memory.
     /// </summary>
     /// <param name="address">The address to the memory region to wrap with this <see cref="TempAlloc"/>.</param>
     /// <param name="size">The size of the memory region at <paramref name="address"/>.</param>
@@ -44,7 +44,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> as a wrapper around existing allocated memory.
+    /// Initializes a new <see cref="TempAlloc"/> as a wrapper around existing allocated memory.
     /// </summary>
     /// <param name="address">The address to the memory region to wrap with this <see cref="TempAlloc"/>.</param>
     /// <param name="size">The size of the memory region at <paramref name="address"/>.</param>
@@ -60,7 +60,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>.
+    /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     public static TempAlloc Create<T>()
@@ -70,7 +70,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>, optionally clearing any previous data.
+    /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>, optionally clearing any previous data.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
@@ -81,7 +81,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
+    /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
@@ -96,7 +96,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
+    /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
@@ -112,7 +112,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempAlloc"/> for the
+    /// Initializes a new <see cref="TempAlloc"/> for the
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> of the <paramref name="value"/> to allocate memory for.</typeparam>
     /// <param name="value">A value of type <typeparamref name="T"/> to allocate memory for. The existing value is copied to the newly allocated memory region.</param>

@@ -3,14 +3,14 @@
 namespace LaquaiLib.Util;
 
 /// <summary>
-/// Represents a <see cref="Partitioner{TSource}"/> implementation that partitions files by their size.
+/// Implements a <see cref="Partitioner{TSource}"/> that partitions files by their size.
 /// </summary>
 public class FileSizePartitioner : Partitioner<string>
 {
     private readonly Dictionary<string, FileInfo> _files;
 
     /// <summary>
-    /// Instantiates a new <see cref="FileSizePartitioner"/> using the specified file paths.
+    /// Initializes a new <see cref="FileSizePartitioner"/> using the specified file paths.
     /// </summary>
     /// <param name="paths">The paths to the files to partition.</param>
     public FileSizePartitioner(IEnumerable<string> paths)
@@ -19,7 +19,7 @@ public class FileSizePartitioner : Partitioner<string>
                       .ToDictionary();
     }
     /// <summary>
-    /// Instantiates a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
+    /// Initializes a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
     /// </summary>
     /// <param name="fileInfos">The <see cref="FileInfo"/> instances to partition.</param>
     public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)

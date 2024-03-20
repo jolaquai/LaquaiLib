@@ -36,14 +36,14 @@ public class ObservableValue<T>
     public IComparer<T> Comparer { get; } = Comparer<T>.Default;
 
     /// <summary>
-    /// Instantiates an <see cref="ObservableValue{T}"/> of type <typeparamref name="T"/> and sets the value to the default for this type. At instantiation, no <see cref="PropertyChanged"/> event is raised.
+    /// Initializes an <see cref="ObservableValue{T}"/> of type <typeparamref name="T"/> and sets the value to the default for this type. At instantiation, no <see cref="PropertyChanged"/> event is raised.
     /// </summary>
     public ObservableValue()
     {
         value = default;
     }
     /// <summary>
-    /// Instantiates an <see cref="ObservableValue{T}"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="PropertyChanged"/> event is raised.
+    /// Initializes an <see cref="ObservableValue{T}"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="PropertyChanged"/> event is raised.
     /// </summary>
     /// <param name="value">The initial value.</param>
     public ObservableValue(T value)

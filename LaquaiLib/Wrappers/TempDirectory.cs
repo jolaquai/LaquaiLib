@@ -6,13 +6,13 @@
 public class TempDirectory : IDisposable
 {
     /// <summary>
-    /// Instantiates a new <see cref="TempDirectory"/> with a fully random name.
+    /// Initializes a new <see cref="TempDirectory"/> with a fully random name.
     /// </summary>
     public TempDirectory()
         : this(System.IO.Path.Combine(System.IO.Path.GetTempPath(), Guid.NewGuid().ToString())) { }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="TempDirectory"/> is disposed.
+    /// Initializes a new <see cref="TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="TempDirectory"/> is disposed.
     /// </summary>
     /// <param name="path">The path to the directory to wrap with this <see cref="TempDirectory"/>.</param>
     public TempDirectory(string path)

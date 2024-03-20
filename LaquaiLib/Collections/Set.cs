@@ -15,21 +15,21 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     private List<T> Items { get; } = [];
 
     /// <summary>
-    /// Instantiates a new, empty <see cref="Set{T}"/> with the default equality comparer.
+    /// Initializes a new, empty <see cref="Set{T}"/> with the default equality comparer.
     /// </summary>
     public Set() : this(EqualityComparer<T>.Default) { }
     /// <summary>
-    /// Instantiates a new <see cref="Set{T}"/> with items copied from the specified <paramref name="collection"/> and the default equality comparer.
+    /// Initializes a new <see cref="Set{T}"/> with items copied from the specified <paramref name="collection"/> and the default equality comparer.
     /// </summary>
     /// <param name="collection">An <see cref="IEnumerable{T}"/> whose items are copied to the new <see cref="Set{T}"/>.</param>
     public Set(IEnumerable<T> collection) : this(collection, EqualityComparer<T>.Default) { }
     /// <summary>
-    /// Instantiates a new, empty <see cref="Set{T}"/> with the specified <paramref name="equalityComparer"/>.
+    /// Initializes a new, empty <see cref="Set{T}"/> with the specified <paramref name="equalityComparer"/>.
     /// </summary>
     /// <param name="equalityComparer">The <see cref="IEqualityComparer{T}"/> to use for equality comparisons.</param>
     public Set(IEqualityComparer<T> equalityComparer) : this([], equalityComparer) { }
     /// <summary>
-    /// Instantiates a new <see cref="Set{T}"/> with items copied from the specified <paramref name="collection"/> and the specified <paramref name="equalityComparer"/>.
+    /// Initializes a new <see cref="Set{T}"/> with items copied from the specified <paramref name="collection"/> and the specified <paramref name="equalityComparer"/>.
     /// </summary>
     /// <param name="collection">An <see cref="IEnumerable{T}"/> whose items are copied to the new <see cref="Set{T}"/>.</param>
     /// <param name="equalityComparer">The <see cref="IEqualityComparer{T}"/> to use for equality comparisons.</param>

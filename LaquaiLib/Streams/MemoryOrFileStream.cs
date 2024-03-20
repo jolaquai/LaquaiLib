@@ -56,7 +56,7 @@ public class MemoryOrFileStream : Stream, IDisposable
     public Type StreamType => Stream.GetType();
 
     /// <summary>
-    /// Instantiates a new <see cref="MemoryOrFileStream"/> with the given expected payload size.
+    /// Initializes a new <see cref="MemoryOrFileStream"/> with the given expected payload size.
     /// </summary>
     /// <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="Cutoff"/>, the internal <see cref="Stream"/> is created as a <see cref="FileStream"/>.</param>
     public MemoryOrFileStream(int payloadSize)

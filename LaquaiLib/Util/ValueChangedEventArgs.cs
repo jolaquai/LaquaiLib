@@ -16,7 +16,7 @@ public class ValueChangedEventArgs<T> : EventArgs
     public T NewValue { get; }
 
     /// <summary>
-    /// Instantiates new <see cref="ValueChangedEventArgs{T}"/> with the given values.
+    /// Initializes new <see cref="ValueChangedEventArgs{T}"/> with the given values.
     /// </summary>
     /// <param name="oldValue">The value before the change.</param>
     /// <param name="newValue">The value after the change.</param>

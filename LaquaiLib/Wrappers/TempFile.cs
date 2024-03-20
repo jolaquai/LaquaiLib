@@ -6,20 +6,20 @@
 public class TempFile : IDisposable
 {
     /// <summary>
-    /// Instantiates a new <see cref="TempFile"/> with the file name and extension being assigned by the OS. It is usually a <see cref="Guid"/> with the extension <c>.tmp</c>.
+    /// Initializes a new <see cref="TempFile"/> with the file name and extension being assigned by the OS. It is usually a <see cref="Guid"/> with the extension <c>.tmp</c>.
     /// </summary>
     public TempFile()
         : this(System.IO.Path.GetTempFileName(), null) { }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempFile"/> with the file name being assigned by the OS (it is usually a <see cref="Guid"/>), and changes its extension to the one specified.
+    /// Initializes a new <see cref="TempFile"/> with the file name being assigned by the OS (it is usually a <see cref="Guid"/>), and changes its extension to the one specified.
     /// </summary>
     /// <param name="fileExtension">The file extension for this <see cref="TempFile"/>.</param>
     public TempFile(string fileExtension)
         : this(System.IO.Path.GetTempFileName(), fileExtension) { }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="TempFile"/> is disposed.
+    /// Initializes a new <see cref="TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="TempFile"/> is disposed.
     /// </summary>
     /// <param name="path">The path to the file to wrap with this <see cref="TempFile"/>.</param>
     /// <param name="fileExtension">The file extension for this <see cref="TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <see langword="null"/> or white space, the existing extension in <paramref name="path"/> is kept.</param>

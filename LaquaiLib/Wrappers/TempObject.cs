@@ -13,7 +13,7 @@ public class TempObject<T> : IDisposable
     public T? Value { get; private set; }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempObject{T}"/>.
+    /// Initializes a new <see cref="TempObject{T}"/>.
     /// </summary>
     /// <param name="parameters">The parameters to use to find a constructor for <typeparamref name="T"/>. If <see langword="null"/> or <c>0</c>-length, the parameterless constructor is used.</param>
     public TempObject(params object?[]? parameters)

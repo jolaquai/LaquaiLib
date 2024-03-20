@@ -35,7 +35,7 @@ public readonly struct GCHandle<T> : IDisposable
 
     #region Constructors
     /// <summary>
-    /// Instantiates a new <see cref="GCHandle{T}"/> that represents the specified instance of <typeparamref name="T"/>.
+    /// Initializes a new <see cref="GCHandle{T}"/> that represents the specified instance of <typeparamref name="T"/>.
     /// </summary>
     /// <param name="value">The object to be referenced.</param>
     public GCHandle(T value)
@@ -43,7 +43,7 @@ public readonly struct GCHandle<T> : IDisposable
         Handle = GCHandle.Alloc(value);
     }
     /// <summary>
-    /// Instantiates a new <see cref="GCHandle{T}"/> that represents the specified instance of <typeparamref name="T"/>.
+    /// Initializes a new <see cref="GCHandle{T}"/> that represents the specified instance of <typeparamref name="T"/>.
     /// </summary>
     /// <param name="value">The object to be referenced.</param>
     /// <param name="type">The <see cref="GCHandleType"/> of the object to be referenced.</param>
@@ -52,7 +52,7 @@ public readonly struct GCHandle<T> : IDisposable
         Handle = GCHandle.Alloc(value, type);
     }
     /// <summary>
-    /// Instantiates a new <see cref="GCHandle{T}"/> from a handle to a managed object.
+    /// Initializes a new <see cref="GCHandle{T}"/> from a handle to a managed object.
     /// </summary>
     /// <param name="ptr">The handle to a managed object.</param>
     public GCHandle(nint? ptr)
@@ -61,7 +61,7 @@ public readonly struct GCHandle<T> : IDisposable
         Handle = GCHandle.FromIntPtr((nint)ptr);
     }
     /// <summary>
-    /// Instantiates a new <see cref="GCHandle{T}"/> typed <typeparamref name="T"/> from an existing untyped handle to a managed object.
+    /// Initializes a new <see cref="GCHandle{T}"/> typed <typeparamref name="T"/> from an existing untyped handle to a managed object.
     /// </summary>
     /// <param name="handle">The existing untyped handle to a managed object.</param>
     public GCHandle(GCHandle handle)

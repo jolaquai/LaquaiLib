@@ -25,21 +25,21 @@ public class LimitedQueue<T> : Queue<T>
     }
 
     /// <summary>
-    /// Instantiates a new empty <see cref="LimitedQueue{T}"/> with the default maximum capacity.
+    /// Initializes a new empty <see cref="LimitedQueue{T}"/> with the default maximum capacity.
     /// </summary>
     public LimitedQueue() : base() { }
     /// <summary>
-    /// Instantiates a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
+    /// Initializes a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
     /// </summary>
     /// <param name="collection">The collection to copy the new <see cref="LimitedQueue{T}"/>'s items from.</param>
     public LimitedQueue(IEnumerable<T> collection) : base(collection) { }
     /// <summary>
-    /// Instantiates a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
+    /// Initializes a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
     /// </summary>
     /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> to copy the new <see cref="LimitedQueue{T}"/>'s items from.</param>
     public LimitedQueue(ReadOnlySpan<T> span) : base(span.ToArray()) { }
     /// <summary>
-    /// Instantiates a new empty <see cref="LimitedQueue{T}"/> with the given maximum <paramref name="capacity"/>.
+    /// Initializes a new empty <see cref="LimitedQueue{T}"/> with the given maximum <paramref name="capacity"/>.
     /// </summary>
     /// <param name="capacity">The maximum number of items this <see cref="LimitedQueue{T}"/> can hold before discarding the oldest value.</param>
     public LimitedQueue(int capacity)
@@ -47,7 +47,7 @@ public class LimitedQueue<T> : Queue<T>
         Capacity = capacity;
     }
     /// <summary>
-    /// Instantiates a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+    /// Initializes a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
     /// </summary>
     /// <param name="collection">The collection to copy the new <see cref="LimitedQueue{T}"/>'s items from.</param>
     /// <param name="capacity">The maximum number of items this <see cref="LimitedQueue{T}"/> can hold before discarding the oldest value.</param>
@@ -61,7 +61,7 @@ public class LimitedQueue<T> : Queue<T>
         Capacity = capacity;
     }
     /// <summary>
-    /// Instantiates a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+    /// Initializes a new <see cref="LimitedQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
     /// </summary>
     /// <param name="span">The span to copy the new <see cref="LimitedQueue{T}"/>'s items from.</param>
     /// <param name="capacity">The maximum number of items this <see cref="LimitedQueue{T}"/> can hold before discarding the oldest value.</param>

@@ -17,7 +17,7 @@ public class TaskbarProgress
     private readonly TaskbarItemInfo? _taskbar;
 
     /// <summary>
-    /// Instantiates a new <see cref="TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+    /// Initializes a new <see cref="TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
     /// </summary>
     /// <param name="window">The <see cref="Window"/> the taskbar icon of which is to display progress.</param>
     internal TaskbarProgress(Window window)

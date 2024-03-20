@@ -20,7 +20,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     public readonly MessageType Type { get; }
 
     /// <summary>
-    /// Instantiates a new <see cref="LoggerMessage"/> with the given <paramref name="message"/>.
+    /// Initializes a new <see cref="LoggerMessage"/> with the given <paramref name="message"/>.
     /// The default <see cref="MessageType"/> is <see cref="MessageType.Info"/> and its <see cref="Timestamp"/> is set to <see cref="DateTime.Now"/>.
     /// </summary>
     /// <param name="message">The text of the message.</param>
@@ -31,7 +31,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
         Type = MessageType.Info;
     }
     /// <summary>
-    /// Instantiates a new <see cref="LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>.
+    /// Initializes a new <see cref="LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>.
     /// </summary>
     /// <param name="message">The text of the message.</param>
     /// <param name="type">The type of the message.</param>
@@ -42,7 +42,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
         Type = type;
     }
     /// <summary>
-    /// Instantiates a new <see cref="LoggerMessage"/> with the given data.
+    /// Initializes a new <see cref="LoggerMessage"/> with the given data.
     /// </summary>
     /// <param name="message">The text of the message.</param>
     /// <param name="timestamp">The timestamp of the message.</param>

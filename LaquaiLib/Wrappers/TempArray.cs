@@ -9,7 +9,7 @@ namespace LaquaiLib.Wrappers;
 public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquatable, IDisposable
 {
     /// <summary>
-    /// Instantiates a new <see cref="TempArray{T}"/> with the given size. It is automatically rented from and returned to <see cref="ArrayPool{T}.Shared"/> upon disposal of this <see cref="TempArray{T}"/>, unless <see langword="false"/> is explicitly passed for <paramref name="allowPooledArray"/>.
+    /// Initializes a new <see cref="TempArray{T}"/> with the given size. It is automatically rented from and returned to <see cref="ArrayPool{T}.Shared"/> upon disposal of this <see cref="TempArray{T}"/>, unless <see langword="false"/> is explicitly passed for <paramref name="allowPooledArray"/>.
     /// </summary>
     /// <param name="capacity">The capacity of the array to create.</param>
     /// <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="ArrayPool{T}.Shared"/>. If <see langword="false"/>, a new array will be created instead.</param>
@@ -29,7 +29,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempArray{T}"/> as a wrapper around the specified array of <typeparamref name="T"/>.
+    /// Initializes a new <see cref="TempArray{T}"/> as a wrapper around the specified array of <typeparamref name="T"/>.
     /// </summary>
     /// <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="TempArray{T}"/>.</param>
     /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to return the array to when this <see cref="TempArray{T}"/> is disposed. May be <see langword="null"/> to indicate that the passed <paramref name="array"/> is not from any <see cref="ArrayPool{T}"/>.</param>
@@ -41,7 +41,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="TempArray{T}"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
+    /// Initializes a new <see cref="TempArray{T}"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
     /// </summary>
     /// <param name="value">The value to initialize all elements with.</param>
     /// <param name="size">The size of the array to create.</param>

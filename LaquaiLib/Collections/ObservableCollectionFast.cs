@@ -58,27 +58,27 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
 
     #region Constructors
     /// <summary>
-    /// Instantiates a new <see cref="ObservableCollection{T}"/>.
+    /// Initializes a new <see cref="ObservableCollection{T}"/>.
     /// </summary>
     public ObservableCollectionFast()
     {
     }
     /// <summary>
-    /// Instantiates a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified collection.
+    /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified collection.
     /// </summary>
     /// <param name="collection">The collection from which the elements are copied.</param>
     public ObservableCollectionFast(IEnumerable<T> collection) : base(collection)
     {
     }
     /// <summary>
-    /// Instantiates a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified span.
+    /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified span.
     /// </summary>
     /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> from which the elements are copied.</param>
     public ObservableCollectionFast(ReadOnlySpan<T> span) : base(span.ToArray())
     {
     }
     /// <summary>
-    /// Instantiates a new <see cref="ObservableCollection{T}"/> that contains the specified items and has a capacity equal to the number of items.
+    /// Initializes a new <see cref="ObservableCollection{T}"/> that contains the specified items and has a capacity equal to the number of items.
     /// </summary>
     /// <param name="items">The items for the list to contain.</param>
     public ObservableCollectionFast(params T[] items) : base()

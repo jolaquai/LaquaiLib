@@ -22,7 +22,7 @@ public class LimitedConcurrencyTaskScheduler : TaskScheduler
     public static TaskFactory TaskFactory { get; } = new TaskFactory(Default);
 
     /// <summary>
-    /// Instantiates a new <see cref="LimitedConcurrencyTaskScheduler"/> with the specified maximum degree of parallelism.
+    /// Initializes a new <see cref="LimitedConcurrencyTaskScheduler"/> with the specified maximum degree of parallelism.
     /// </summary>
     /// <param name="maxDegreeOfParallelism">The maximum number of <see cref="Task"/>s that are allowed to run concurrently.</param>
     public LimitedConcurrencyTaskScheduler(int maxDegreeOfParallelism)

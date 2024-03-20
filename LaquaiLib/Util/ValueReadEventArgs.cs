@@ -12,7 +12,7 @@ public class ValueReadEventArgs<T> : EventArgs
     public T Value { get; }
 
     /// <summary>
-    /// Instantiates new <see cref="ValueReadEventArgs{T}"/> with the given value.
+    /// Initializes new <see cref="ValueReadEventArgs{T}"/> with the given value.
     /// </summary>
     /// <param name="value">The value the reader received.</param>
     public ValueReadEventArgs(T value)

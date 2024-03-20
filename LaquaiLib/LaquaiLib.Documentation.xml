@@ -53,12 +53,12 @@
         </member>
         <member name="M:LaquaiLib.Collections.Deque`1.#ctor">
             <summary>
-            Instantiates a new, empty <see cref="T:LaquaiLib.Collections.Deque`1"/>.
+            Initializes a new, empty <see cref="T:LaquaiLib.Collections.Deque`1"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.Deque`1.#ctor(`0[])">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.Deque`1"/> with nodes containing the specified values.
+            Initializes a new <see cref="T:LaquaiLib.Collections.Deque`1"/> with nodes containing the specified values.
             </summary>
             <param name="values">The values to insert into the deque.</param>
         </member>
@@ -254,13 +254,13 @@
         </member>
         <member name="M:LaquaiLib.Collections.DequeNode`1.#ctor(`0)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> with the specified value that is not attached to a <see cref="T:LaquaiLib.Collections.Deque`1"/> and has no neighbors.
+            Initializes a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> with the specified value that is not attached to a <see cref="T:LaquaiLib.Collections.Deque`1"/> and has no neighbors.
             </summary>
             <param name="value">The value this node contains.</param>
         </member>
         <member name="M:LaquaiLib.Collections.DequeNode`1.#ctor(`0,LaquaiLib.Collections.DequeNode{`0},LaquaiLib.Collections.DequeNode{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> with the specified value that is not attached to a <see cref="T:LaquaiLib.Collections.Deque`1"/> and has the specified neighbors.
+            Initializes a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> with the specified value that is not attached to a <see cref="T:LaquaiLib.Collections.Deque`1"/> and has the specified neighbors.
             </summary>
             <param name="value">The value this node contains.</param>
             <param name="next">The next node in the <see cref="T:LaquaiLib.Collections.Deque`1"/>.</param>
@@ -268,7 +268,7 @@
         </member>
         <member name="M:LaquaiLib.Collections.DequeNode`1.#ctor(`0,LaquaiLib.Collections.DequeNode{`0},LaquaiLib.Collections.DequeNode{`0},LaquaiLib.Collections.Deque{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> with the specified value that attached to the specified <see cref="T:LaquaiLib.Collections.Deque`1"/> and has the specified neighbors.
+            Initializes a new <see cref="T:LaquaiLib.Collections.DequeNode`1"/> with the specified value that attached to the specified <see cref="T:LaquaiLib.Collections.Deque`1"/> and has the specified neighbors.
             </summary>
             <param name="value">The value this node contains.</param>
             <param name="next">The next node in the <see cref="T:LaquaiLib.Collections.Deque`1"/>.</param>
@@ -399,30 +399,30 @@
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the default maximum capacity.
+            Initializes a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the default maximum capacity.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
             </summary>
             <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.ReadOnlySpan{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
             </summary>
             <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.Int32)">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the given maximum <paramref name="capacity"/>.
+            Initializes a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the given maximum <paramref name="capacity"/>.
             </summary>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
             </summary>
             <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
@@ -430,7 +430,7 @@
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1.#ctor(System.ReadOnlySpan{`0},System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
             </summary>
             <param name="span">The span to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/>'s items from.</param>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1"/> can hold before discarding the oldest value.</param>
@@ -468,30 +468,30 @@
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1.#ctor">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the default maximum capacity.
+            Initializes a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the default maximum capacity.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="collection"/>'s length.
             </summary>
             <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.ReadOnlySpan{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="span"/>'s length.
             </summary>
             <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.Int32)">
             <summary>
-            Instantiates a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the given maximum <paramref name="capacity"/>.
+            Initializes a new empty <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the given maximum <paramref name="capacity"/>.
             </summary>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="collection"/>. Its maximum capacity is set to <paramref name="capacity"/>.
             </summary>
             <param name="collection">The collection to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
@@ -499,7 +499,7 @@
         </member>
         <member name="M:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1.#ctor(System.ReadOnlySpan{`0},System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+            Initializes a new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
             </summary>
             <param name="span">The span to copy the new <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/>'s items from.</param>
             <param name="capacity">The maximum number of items this <see cref="T:LaquaiLib.Collections.LimitedCollections.LimitedQueue`1"/> can hold before discarding the oldest value.</param>
@@ -550,24 +550,24 @@
         </member>
         <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor">
             <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
+            Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified collection.
+            Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified collection.
             </summary>
             <param name="collection">The collection from which the elements are copied.</param>
         </member>
         <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor(System.ReadOnlySpan{`0})">
             <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified span.
+            Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified span.
             </summary>
             <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> from which the elements are copied.</param>
         </member>
         <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor(`0[])">
             <summary>
-            Instantiates a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains the specified items and has a capacity equal to the number of items.
+            Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains the specified items and has a capacity equal to the number of items.
             </summary>
             <param name="items">The items for the list to contain.</param>
         </member>
@@ -869,24 +869,24 @@
         </member>
         <member name="M:LaquaiLib.Collections.Set`1.#ctor">
             <summary>
-            Instantiates a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the default equality comparer.
+            Initializes a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the default equality comparer.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the default equality comparer.
+            Initializes a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the default equality comparer.
             </summary>
             <param name="collection">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> whose items are copied to the new <see cref="T:LaquaiLib.Collections.Set`1"/>.</param>
         </member>
         <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
-            Instantiates a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the specified <paramref name="equalityComparer"/>.
+            Initializes a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the specified <paramref name="equalityComparer"/>.
             </summary>
             <param name="equalityComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
         </member>
         <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the specified <paramref name="equalityComparer"/>.
+            Initializes a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the specified <paramref name="equalityComparer"/>.
             </summary>
             <param name="collection">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> whose items are copied to the new <see cref="T:LaquaiLib.Collections.Set`1"/>.</param>
             <param name="equalityComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
@@ -3053,7 +3053,7 @@
         </member>
         <member name="M:LaquaiLib.Streams.MemoryOrFileStream.#ctor(System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> with the given expected payload size.
+            Initializes a new <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> with the given expected payload size.
             </summary>
             <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
         </member>
@@ -3110,19 +3110,19 @@
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.#ctor(System.IO.Stream[])">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
+            Initializes a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
             </summary>
             <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.#ctor(System.Collections.Generic.IEnumerable{System.IO.Stream})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
+            Initializes a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
             </summary>
             <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.#ctor(System.Type,System.Int32,System.Object[])">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given number of <see cref="T:System.IO.Stream"/>s.
+            Initializes a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given number of <see cref="T:System.IO.Stream"/>s.
             </summary>
             <param name="streamType">The type of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
             <param name="count">The number of <see cref="T:System.IO.Stream"/>s to instantiate.</param>
@@ -3131,7 +3131,7 @@
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.#ctor(System.Type,System.Int32,System.Func{System.Int32,System.Object[]})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given number of <see cref="T:System.IO.Stream"/>s.
+            Initializes a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given number of <see cref="T:System.IO.Stream"/>s.
             <example>
             For example, to create a <see cref="T:LaquaiLib.Streams.MultiStream"/> with 5 <see cref="T:System.IO.FileStream"/> instances that point to temporary files, use this constructor and something along the lines of:
             <code>
@@ -3274,12 +3274,12 @@
         </member>
         <member name="M:LaquaiLib.Util.Condition.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.Condition"/>. Its default state is representative of <see langword="false"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.Condition"/>. Its default state is representative of <see langword="false"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.Condition.#ctor(System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.Condition"/> representing the given <paramref name="value"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.Condition"/> representing the given <paramref name="value"/>.
             </summary>
             <param name="value">The <see cref="T:System.Boolean"/> value this <see cref="T:LaquaiLib.Util.Condition"/> should represent.</param>
         </member>
@@ -4056,18 +4056,18 @@
         </member>
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation.
+            Initializes a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Delegate)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started.
+            Initializes a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started.
             </summary>
             <param name="work">A <see cref="T:System.Delegate"/> that encapsulates a method that is executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
         </member>
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Delegate,System.Object[])">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started, passing the specified <paramref name="args"/> as parameters.
+            Initializes a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegate when started, passing the specified <paramref name="args"/> as parameters.
             </summary>
             <param name="work">A <see cref="T:System.Delegate"/> that encapsulates a method that is executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with the specified <paramref name="args"/> is used.</param>
             <param name="args">The arguments to pass to the <paramref name="work"/> delegate or <see langword="null"/> if the delegate does not take any arguments.</param>
@@ -4075,13 +4075,13 @@
         </member>
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Delegate[])">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
+            Initializes a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
             </summary>
             <param name="work">The <see cref="T:System.Delegate"/>s that encapsulate methods that are executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
         </member>
         <member name="M:LaquaiLib.Util.ExtendedBackgroundWorker.#ctor(System.Collections.Generic.IEnumerable{System.Delegate},System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
+            Initializes a new <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
             </summary>
             <param name="work">The <see cref="T:System.Delegate"/>s that encapsulate methods that are executed when the <see cref="T:LaquaiLib.Util.ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="T:System.ComponentModel.DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
             <param name="args">The arguments to pass to the <paramref name="work"/> delegates or <see langword="null"/> if the delegates do not take any arguments.</param>
@@ -4109,13 +4109,13 @@
         </member>
         <member name="M:LaquaiLib.Util.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> using the specified file paths.
+            Initializes a new <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> using the specified file paths.
             </summary>
             <param name="paths">The paths to the files to partition.</param>
         </member>
         <member name="M:LaquaiLib.Util.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.IO.FileInfo})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> using the specified <see cref="T:System.IO.FileInfo"/> instances.
+            Initializes a new <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> using the specified <see cref="T:System.IO.FileInfo"/> instances.
             </summary>
             <param name="fileInfos">The <see cref="T:System.IO.FileInfo"/> instances to partition.</param>
         </member>
@@ -4285,7 +4285,7 @@
         </member>
         <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.#ctor(System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler"/> with the specified maximum degree of parallelism.
+            Initializes a new <see cref="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler"/> with the specified maximum degree of parallelism.
             </summary>
             <param name="maxDegreeOfParallelism">The maximum number of <see cref="T:System.Threading.Tasks.Task"/>s that are allowed to run concurrently.</param>
         </member>
@@ -4375,21 +4375,21 @@
         </member>
         <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>.
             The default <see cref="T:LaquaiLib.Util.MessageType"/> is <see cref="F:LaquaiLib.Util.MessageType.Info"/> and its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
             </summary>
             <param name="message">The text of the message.</param>
         </member>
         <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,LaquaiLib.Util.MessageType)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>.
             </summary>
             <param name="message">The text of the message.</param>
             <param name="type">The type of the message.</param>
         </member>
         <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,System.DateTime,LaquaiLib.Util.MessageType)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given data.
+            Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given data.
             </summary>
             <param name="message">The text of the message.</param>
             <param name="timestamp">The timestamp of the message.</param>
@@ -5186,12 +5186,12 @@
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.#ctor">
             <summary>
-            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> and sets the value to the default for this type. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> event is raised.
+            Initializes an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> and sets the value to the default for this type. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> event is raised.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.ObservableValue`1.#ctor(`0)">
             <summary>
-            Instantiates an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> event is raised.
+            Initializes an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> of type <typeparamref name="T"/> with the given initial <paramref name="value"/>. At instantiation, no <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyChanged"/> event is raised.
             </summary>
             <param name="value">The initial value.</param>
         </member>
@@ -5476,31 +5476,31 @@
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Func{System.Boolean})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
             </summary>
             <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Drawing.Rectangle)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
             </summary>
             <param name="region">The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Drawing.Rectangle,System.Func{System.Boolean})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
             </summary>
             <param name="region">The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.</param>
             <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
             </summary>
             <param name="x1">The x-coordinate of the top-left point of the region.</param>
             <param name="y1">The y-coordinate of the top-left point of the region.</param>
@@ -5509,7 +5509,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Boolean})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
             </summary>
             <param name="x1">The x-coordinate of the top-left point of the region.</param>
             <param name="y1">The y-coordinate of the top-left point of the region.</param>
@@ -5519,13 +5519,13 @@
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
             </summary>
             <param name="monitor">The number of the monitor to capture.</param>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Func{System.Boolean})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
             </summary>
             <param name="monitor">The number of the monitor to capture.</param>
             <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
@@ -5563,7 +5563,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs.#ctor(System.Drawing.Bitmap,System.DateTime)">
             <summary>
-            Instantiates <see cref="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+            Initializes <see cref="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
             </summary>
             <param name="bitmap"></param>
             <param name="timestamp"></param>
@@ -5575,7 +5575,7 @@
         </member>
         <member name="M:LaquaiLib.Util.TaskbarProgress.#ctor(System.Windows.Window)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+            Initializes a new <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
             </summary>
             <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
         </member>
@@ -5871,7 +5871,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ValueChangedEventArgs`1.#ctor(`0,`0)">
             <summary>
-            Instantiates new <see cref="T:LaquaiLib.Util.ValueChangedEventArgs`1"/> with the given values.
+            Initializes new <see cref="T:LaquaiLib.Util.ValueChangedEventArgs`1"/> with the given values.
             </summary>
             <param name="oldValue">The value before the change.</param>
             <param name="newValue">The value after the change.</param>
@@ -8361,27 +8361,27 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer.
             </summary>
             <param name="bytes">The amount of bytes to allocate.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
             </summary>
             <param name="bytes">The amount of bytes to allocate.</param>
             <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.IntPtr,System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
             </summary>
             <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/>.</param>
             <param name="size">The size of the memory region at <paramref name="address"/>.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.IntPtr,System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
             </summary>
             <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/>.</param>
             <param name="size">The size of the memory region at <paramref name="address"/>.</param>
@@ -8389,27 +8389,27 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
             <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
             <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
             <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
@@ -8417,7 +8417,7 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(``0)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for the
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for the
             </summary>
             <typeparam name="T">The <see cref="T:System.Type"/> of the <paramref name="value"/> to allocate memory for.</typeparam>
             <param name="value">A value of type <typeparamref name="T"/> to allocate memory for. The existing value is copied to the newly allocated memory region.</param>
@@ -8581,21 +8581,21 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given size. It is automatically rented from and returned to <see cref="P:System.Buffers.ArrayPool`1.Shared"/> upon disposal of this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>, unless <see langword="false"/> is explicitly passed for <paramref name="allowPooledArray"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given size. It is automatically rented from and returned to <see cref="P:System.Buffers.ArrayPool`1.Shared"/> upon disposal of this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>, unless <see langword="false"/> is explicitly passed for <paramref name="allowPooledArray"/>.
             </summary>
             <param name="capacity">The capacity of the array to create.</param>
             <param name="allowPooledArray">Whether to allow the array to be rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>. If <see langword="false"/>, a new array will be created instead.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(`0[],System.Buffers.ArrayPool{`0})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> as a wrapper around the specified array of <typeparamref name="T"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> as a wrapper around the specified array of <typeparamref name="T"/>.
             </summary>
             <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/>.</param>
             <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> to return the array to when this <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> is disposed. May be <see langword="null"/> to indicate that the passed <paramref name="array"/> is not from any <see cref="T:System.Buffers.ArrayPool`1"/>.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempArray`1.#ctor(`0,System.Int32)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempArray`1"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
             </summary>
             <param name="value">The value to initialize all elements with.</param>
             <param name="size">The size of the array to create.</param>
@@ -8692,12 +8692,12 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempDirectory.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> with a fully random name.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> with a fully random name.
             </summary>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempDirectory.#ctor(System.String)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> is disposed.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> as a wrapper around the specified directory. If the target directory does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Wrappers.TempDirectory"/> is disposed.
             </summary>
             <param name="path">The path to the directory to wrap with this <see cref="T:LaquaiLib.Wrappers.TempDirectory"/>.</param>
         </member>
@@ -8726,18 +8726,18 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempFile.#ctor">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> with the file name and extension being assigned by the OS. It is usually a <see cref="T:System.Guid"/> with the extension <c>.tmp</c>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> with the file name and extension being assigned by the OS. It is usually a <see cref="T:System.Guid"/> with the extension <c>.tmp</c>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempFile.#ctor(System.String)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> with the file name being assigned by the OS (it is usually a <see cref="T:System.Guid"/>), and changes its extension to the one specified.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> with the file name being assigned by the OS (it is usually a <see cref="T:System.Guid"/>), and changes its extension to the one specified.
             </summary>
             <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Wrappers.TempFile"/>.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.TempFile.#ctor(System.String,System.String)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Wrappers.TempFile"/> is disposed.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempFile"/> as a wrapper around the specified file path. If the target file does not exist, it is created. A deletion attempt is still made when the wrapping <see cref="T:LaquaiLib.Wrappers.TempFile"/> is disposed.
             </summary>
             <param name="path">The path to the file to wrap with this <see cref="T:LaquaiLib.Wrappers.TempFile"/>.</param>
             <param name="fileExtension">The file extension for this <see cref="T:LaquaiLib.Wrappers.TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <see langword="null"/> or white space, the existing extension in <paramref name="path"/> is kept.</param>
@@ -8777,7 +8777,7 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.TempObject`1.#ctor(System.Object[])">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.TempObject`1"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempObject`1"/>.
             </summary>
             <param name="parameters">The parameters to use to find a constructor for <typeparamref name="T"/>. If <see langword="null"/> or <c>0</c>-length, the parameterless constructor is used.</param>
         </member>
@@ -8816,26 +8816,26 @@
         </member>
         <member name="M:LaquaiLib.Wrappers.GCHandle`1.#ctor(`0)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> that represents the specified instance of <typeparamref name="T"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> that represents the specified instance of <typeparamref name="T"/>.
             </summary>
             <param name="value">The object to be referenced.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.GCHandle`1.#ctor(`0,System.Runtime.InteropServices.GCHandleType)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> that represents the specified instance of <typeparamref name="T"/>.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> that represents the specified instance of <typeparamref name="T"/>.
             </summary>
             <param name="value">The object to be referenced.</param>
             <param name="type">The <see cref="T:System.Runtime.InteropServices.GCHandleType"/> of the object to be referenced.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.GCHandle`1.#ctor(System.Nullable{System.IntPtr})">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> from a handle to a managed object.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> from a handle to a managed object.
             </summary>
             <param name="ptr">The handle to a managed object.</param>
         </member>
         <member name="M:LaquaiLib.Wrappers.GCHandle`1.#ctor(System.Runtime.InteropServices.GCHandle)">
             <summary>
-            Instantiates a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> typed <typeparamref name="T"/> from an existing untyped handle to a managed object.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> typed <typeparamref name="T"/> from an existing untyped handle to a managed object.
             </summary>
             <param name="handle">The existing untyped handle to a managed object.</param>
         </member>
@@ -8909,7 +8909,7 @@
         </member>
         <member name="M:ValueReadEventArgs`1.#ctor(`0)">
             <summary>
-            Instantiates new <see cref="T:ValueReadEventArgs`1"/> with the given value.
+            Initializes new <see cref="T:ValueReadEventArgs`1"/> with the given value.
             </summary>
             <param name="value">The value the reader received.</param>
         </member>

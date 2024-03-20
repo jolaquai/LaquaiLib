@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util;
+﻿namespace LaquaiLib.Util.Logging;
 
 /// <summary>
 /// Identifies the type of a <see cref="LoggerMessage"/>.

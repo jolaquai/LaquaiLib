@@ -51,13 +51,13 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
 
     #region .ctors
     /// <summary>
-    /// Instantiates a new, empty <see cref="Deque{T}"/>.
+    /// Initializes a new, empty <see cref="Deque{T}"/>.
     /// </summary>
     public Deque()
     {
     }
     /// <summary>
-    /// Instantiates a new <see cref="Deque{T}"/> with nodes containing the specified values.
+    /// Initializes a new <see cref="Deque{T}"/> with nodes containing the specified values.
     /// </summary>
     /// <param name="values">The values to insert into the deque.</param>
     public Deque(params T?[] values)
@@ -545,7 +545,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
 public class DequeNode<T>
 {
     /// <summary>
-    /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
+    /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
     /// </summary>
     /// <param name="value">The value this node contains.</param>
     public DequeNode(T? value)
@@ -554,7 +554,7 @@ public class DequeNode<T>
     }
 
     /// <summary>
-    /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has the specified neighbors.
+    /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has the specified neighbors.
     /// </summary>
     /// <param name="value">The value this node contains.</param>
     /// <param name="next">The next node in the <see cref="Deque{T}"/>.</param>
@@ -570,7 +570,7 @@ public class DequeNode<T>
         Previous.Next = this;
     }
     /// <summary>
-    /// Instantiates a new <see cref="DequeNode{T}"/> with the specified value that attached to the specified <see cref="Deque{T}"/> and has the specified neighbors.
+    /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that attached to the specified <see cref="Deque{T}"/> and has the specified neighbors.
     /// </summary>
     /// <param name="value">The value this node contains.</param>
     /// <param name="next">The next node in the <see cref="Deque{T}"/>.</param>
