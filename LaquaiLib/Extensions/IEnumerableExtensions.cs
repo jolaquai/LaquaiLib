@@ -459,4 +459,64 @@ public static class IEnumerableExtensions
 
         return (trueList, falseList);
     }
+
+    /// <summary>
+    /// For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
+    /// </summary>
+    /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+    /// <typeparam name="TOther">The Type of the elements in the other sequence.</typeparam>
+    /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="other">The other sequence.</param>
+    /// <param name="selector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and each element of the other sequence and produces a new value.</param>
+    /// <returns>A sequence that contains the new values produced by the selector function.</returns>
+    public static IEnumerable<TResult> CrossSelect<TSource, TOther, TResult>(this IEnumerable<TSource> source, IEnumerable<TOther> other, Func<TSource, TOther, TResult> selector)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(other);
+        ArgumentNullException.ThrowIfNull(selector);
+
+        return CrossSelect2();
+
+        IEnumerable<TResult> CrossSelect2()
+        {
+            foreach (var item in source)
+            {
+                foreach (var otherItem in other)
+                {
+                    yield return selector(item, otherItem);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// For each element in the input sequence, selects each value from all other sequences and produces a new value using a specified selector function.
+    /// </summary>
+    /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="selector">The <see cref="Delegate"/> that is passed each element of the input sequence and each element of the other sequences and produces a new value.</param>
+    /// <param name="others">The other sequences.</param>
+    /// <returns>The new values produced by the selector function.</returns>
+    public static IEnumerable<TResult> CrossSelect<TResult>(this System.Collections.IEnumerable source, Delegate selector, params System.Collections.IEnumerable[] others)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(others);
+        ArgumentNullException.ThrowIfNull(selector);
+
+        return CrossSelect2();
+
+        IEnumerable<TResult> CrossSelect2()
+        {
+            List<System.Collections.IEnumerator> enumerators = [.. others.Select(other => other.GetEnumerator())];
+            foreach (var obj in source)
+            {
+                var currentEnumerator = enumerators[^1];
+                while (currentEnumerator.MoveNext())
+                {
+
+                }
+            }
+        }
+    }
 }

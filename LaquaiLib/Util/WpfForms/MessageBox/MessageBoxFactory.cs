@@ -84,9 +84,14 @@ public sealed partial class MessageBoxFactory
         Configuration = new MessageBoxConfiguration(ownerHwnd, text, caption, button, defaultButton, icon, modality, otherOptions);
     }
 
-    private static partial class Internals
+    private static partial class Interop
     {
         [LibraryImport("user32.dll", EntryPoint = "MessageBoxW")]
         internal static partial uint PInvokeMessageBox(nint hWnd, [MarshalAs(UnmanagedType.LPWStr)] string lpText, [MarshalAs(UnmanagedType.LPWStr)] string lpCaption, uint uType);
+        [LibraryImport("user32.dll", EntryPoint = "CreateWindowExW")]
+        internal static partial nint CreateWindowExW(uint dwExStyle, [MarshalAs(UnmanagedType.LPWStr)] string lpClassName, [MarshalAs(UnmanagedType.LPWStr)] string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, nint hWndParent, nint hMenu, nint hInstance, nint lpParam);
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static partial bool DestroyWindow(nint hwnd);
     }
 }

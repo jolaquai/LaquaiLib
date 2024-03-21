@@ -1588,12 +1588,21 @@
             Provides Extension Methods for <see cref="T:System.Enum"/> Types.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.EnumExtensions.GetDescription(System.Enum)">
+        <member name="M:LaquaiLib.Extensions.EnumExtensions.GetDescription``1(``0)">
             <summary>
             Returns the <see cref="P:System.ComponentModel.DescriptionAttribute.Description"/> for the given <see cref="T:System.Enum"/> value. If the value is not decorated with a <see cref="T:System.ComponentModel.DescriptionAttribute"/>, the default <see cref="T:System.String"/> representation of the value is returned.
             </summary>
             <param name="any">The <see cref="T:System.Enum"/> value to retrieve the description for.</param>
             <returns>The value of the <see cref="P:System.ComponentModel.DescriptionAttribute.Description"/> for the given <see cref="T:System.Enum"/> value or its default <see cref="T:System.String"/> representation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.EnumExtensions.GetFlags``1(``0)">
+            <summary>
+            Retrieves all flags that are currently set in the specified <typeparamref name="TEnum"/> value.
+            Because this implicitly makes <paramref name="any"/> a bitwise-AND combination of the resulting flags, it is not included in the result set.
+            </summary>
+            <typeparam name="TEnum">The <see cref="T:System.Enum"/> type to retrieve the flags for.</typeparam>
+            <param name="any">The <typeparamref name="TEnum"/> value to retrieve the flags for.</param>
+            <returns>The flags that are currently set in the specified <typeparamref name="TEnum"/> value or an empty array if no flags are set.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.FieldInfoExtensions">
             <summary>
@@ -1910,6 +1919,18 @@
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
             <returns>A <see cref="T:System.Tuple`2"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CrossSelect``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
+            <summary>
+            For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
+            </summary>
+            <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+            <typeparam name="TOther">The Type of the elements in the other sequence.</typeparam>
+            <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="other">The other sequence.</param>
+            <param name="selector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and each element of the other sequence and produces a new value.</param>
+            <returns>A sequence that contains the new values produced by the selector function.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
@@ -1975,6 +1996,20 @@
             <typeparam name="TElement">The Type of the values of the <typeparamref name="TCollection"/>s.</typeparam>
             <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
             <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.NumberExtensions">
+            <summary>
+            Provides extension methods for <see cref="T:System.Numerics.INumber`1"/>-implementing Types.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.NumberExtensions.HasFlag``1(``0,``0)">
+            <summary>
+            Determines whether the specified number has the specified flag(s) set, that is, whether the bitwise AND of the number and the other number is equal to the other number.
+            </summary>
+            <typeparam name="T">The type of the number.</typeparam>
+            <param name="number">The number.</param>
+            <param name="other">The other number.</param>
+            <returns>Whether the specified number has the specified flag(s) set.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.LinkedListNodeExtensions">
             <summary>
@@ -3252,132 +3287,6 @@
             Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Util.Condition">
-            <summary>
-            Represents a <see cref="T:System.Boolean"/> value that can be chained with other <see cref="T:LaquaiLib.Util.Condition"/>s.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Condition.True">
-            <summary>
-            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <see langword="true"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Condition.False">
-            <summary>
-            Returns a cached <see cref="T:LaquaiLib.Util.Condition"/> representing <see langword="false"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Condition.Value">
-            <summary>
-            The actual <see cref="T:System.Boolean"/> value this <see cref="T:LaquaiLib.Util.Condition"/> represents.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.#ctor">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.Condition"/>. Its default state is representative of <see langword="false"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.#ctor(System.Boolean)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.Condition"/> representing the given <paramref name="value"/>.
-            </summary>
-            <param name="value">The <see cref="T:System.Boolean"/> value this <see cref="T:LaquaiLib.Util.Condition"/> should represent.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.op_Implicit(LaquaiLib.Util.Condition)~System.Boolean">
-            <summary>
-            Converts a <see cref="T:LaquaiLib.Util.Condition"/> to a <see cref="T:System.Boolean"/>.
-            </summary>
-            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to convert.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.op_Implicit(System.Boolean)~LaquaiLib.Util.Condition">
-            <summary>
-            Converts a <see cref="T:System.Boolean"/> to a <see cref="T:LaquaiLib.Util.Condition"/>.
-            </summary>
-            <param name="value">The <see cref="T:System.Boolean"/> to convert.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.And(LaquaiLib.Util.Condition)">
-            <summary>
-            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with another <see cref="T:LaquaiLib.Util.Condition"/> using logical AND.
-            </summary>
-            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to chain with.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical AND.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.And(LaquaiLib.Util.Condition[])">
-            <summary>
-            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with other <see cref="T:LaquaiLib.Util.Condition"/>s using logical AND.
-            </summary>
-            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to chain with.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical AND.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.Or(LaquaiLib.Util.Condition)">
-            <summary>
-            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with another <see cref="T:LaquaiLib.Util.Condition"/> using logical OR.
-            </summary>
-            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to chain with.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical OR.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.Or(LaquaiLib.Util.Condition[])">
-            <summary>
-            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with other <see cref="T:LaquaiLib.Util.Condition"/>s using logical OR.
-            </summary>
-            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to chain with.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical OR.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.Not">
-            <summary>
-            Inverts the current <see cref="T:LaquaiLib.Util.Condition"/> using logical NOT.
-            </summary>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical NOT.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.Xor(LaquaiLib.Util.Condition[])">
-            <summary>
-            Chains the current <see cref="T:LaquaiLib.Util.Condition"/> with other <see cref="T:LaquaiLib.Util.Condition"/>s using logical XOR.
-            </summary>
-            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to chain with.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the logical XOR.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.Is(LaquaiLib.Util.Condition)">
-            <summary>
-            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is equal to the given <paramref name="condition"/>.
-            </summary>
-            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to check for equality.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the equality check.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.Are(LaquaiLib.Util.Condition[])">
-            <summary>
-            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is equal to all of the given <paramref name="conditions"/>.
-            </summary>
-            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for equality.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the equality check.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.Any(LaquaiLib.Util.Condition[])">
-            <summary>
-            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is equal to any of the given <paramref name="conditions"/>.
-            </summary>
-            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for equality.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the equality check.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.IsNot(LaquaiLib.Util.Condition)">
-            <summary>
-            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is not equal to the given <paramref name="condition"/>.
-            </summary>
-            <param name="condition">The <see cref="T:LaquaiLib.Util.Condition"/> to check for inequality.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.AreNot(LaquaiLib.Util.Condition[])">
-            <summary>
-            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is not equal to all of the given <paramref name="conditions"/>.
-            </summary>
-            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for inequality.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Condition.AnyNot(LaquaiLib.Util.Condition[])">
-            <summary>
-            Checks whether the current <see cref="T:LaquaiLib.Util.Condition"/> is not equal to any of the given <paramref name="conditions"/>.
-            </summary>
-            <param name="conditions">The <see cref="T:LaquaiLib.Util.Condition"/>s to check for inequality.</param>
-            <returns>A new <see cref="T:LaquaiLib.Util.Condition"/> representing the result of the inequality check.</returns>
-        </member>
         <member name="T:LaquaiLib.Util.ConsoleQueue">
             <summary>
             Represents a queue of console messages that is asynchronously emptied to the console.
@@ -4104,7 +4013,7 @@
         </member>
         <member name="T:LaquaiLib.Util.FileSizePartitioner">
             <summary>
-            Represents a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> implementation that partitions files by their size.
+            Implements a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> that partitions files by their size.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.FileSizePartitioner.#ctor(System.Collections.Generic.IEnumerable{System.String})">
@@ -4331,14 +4240,14 @@
             </summary>
             <param name="thread">The thread to use as the parent thread. May be <see langword="null"/> to explicitly leave the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> running, even after all other threads have exited.</param>
         </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.String,LaquaiLib.Util.MessageType)">
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.String,LaquaiLib.Util.Logging.MessageType)">
             <summary>
             Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>. Its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
             </summary>
             <param name="message">The text of the message.</param>
             <param name="type">The type of the message.</param>
         </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.String,System.DateTime,LaquaiLib.Util.MessageType)">
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.String,System.DateTime,LaquaiLib.Util.Logging.MessageType)">
             <summary>
             Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
             </summary>
@@ -4376,18 +4285,18 @@
         <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String)">
             <summary>
             Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>.
-            The default <see cref="T:LaquaiLib.Util.MessageType"/> is <see cref="F:LaquaiLib.Util.MessageType.Info"/> and its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
+            The default <see cref="T:LaquaiLib.Util.Logging.MessageType"/> is <see cref="F:LaquaiLib.Util.Logging.MessageType.Info"/> and its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
             </summary>
             <param name="message">The text of the message.</param>
         </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,LaquaiLib.Util.MessageType)">
+        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,LaquaiLib.Util.Logging.MessageType)">
             <summary>
             Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>.
             </summary>
             <param name="message">The text of the message.</param>
             <param name="type">The type of the message.</param>
         </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,System.DateTime,LaquaiLib.Util.MessageType)">
+        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,System.DateTime,LaquaiLib.Util.Logging.MessageType)">
             <summary>
             Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given data.
             </summary>
@@ -4419,6 +4328,31 @@
             <param name="left">The first <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.</param>
             <param name="right">The second <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.</param>
             <returns><see langword="true"/> if the two <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>s are not equal, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.Logging.MessageType">
+            <summary>
+            Identifies the type of a <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Logging.MessageType.Info">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is informational.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Logging.MessageType.Warning">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is a warning.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Logging.MessageType.Error">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is an error.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Logging.MessageType.Success">
+            <summary>
+            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is a success message.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Util.MemoryManager">
             <summary>
@@ -4496,659 +4430,103 @@
             <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
             <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
         </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBox">
+        <member name="T:LaquaiLib.Util.MetaHelpers">
             <summary>
-            Provides message box functionality to non-WinForms or WPF applications through P/Invoke.
-            The <see langword="static"/> methods in this <see langword="class"/> simply delegate to the default <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> instance.
+            Provides utility methods for meta-metaprogramming, finding Visual Studio paths, etc.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBox.Factory">
+        <member name="M:LaquaiLib.Util.MetaHelpers.FindInstallations(LaquaiLib.Util.VSVersion,LaquaiLib.Util.VSEdition,LaquaiLib.Util.Architecture)">
             <summary>
-            Gets the <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> any <see cref="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String)"/> method overloads use by default.
-            To ignore these defaults, create and use a custom <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> instance.
+            Finds Visual Studio installations that are located in default installation directories, constrained by the specified parameters.
             </summary>
+            <param name="versions">The version(s) of Visual Studio that should be included in the search.</param>
+            <param name="edition">The edition(s) of Visual Studio that should be included in the search.</param>
+            <param name="architecture">The architecture(s) of an app or tool that should be included in the search.</param>
+            <returns>The paths of the Visual Studio installations that were found.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String,System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.Show(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBox.ShowAsync(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)">
-            <inheritdoc cref="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)"/>
-        </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxButton">
-            <summary>
-            Specifies the buttons that are displayed on a message box.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.OK">
-            <summary>
-            Specifies that only an "OK" button is displayed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.OKCancel">
-            <summary>
-            Specifies that "OK" and "Cancel" buttons are displayed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.AbortRetryIgnore">
-            <summary>
-            Specifies that "Abort", "Retry", and "Ignore" buttons are displayed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.YesNoCancel">
-            <summary>
-            Specifies that "Yes" and "No" buttons are displayed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.YesNo">
-            <summary>
-            Specifies that "Yes" and "No" buttons are displayed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.RetryCancel">
-            <summary>
-            Specifies that "Retry" and "Cancel" buttons are displayed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.CancelTryAgainContinue">
-            <summary>
-            Specifies that "Cancel", "Try Again", and "Continue" buttons are displayed.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxButton.HelpButton">
-            <summary>
-            Specifies that a "Help" button is displayed in the message box, <i>in addition</i> to any other buttons specified.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration">
-            <summary>
-            Encapsulates configuration values for <see cref="T:LaquaiLib.Util.MessageBox.MessageBox"/> and <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>.
-            After creation, an instance of this <see langword="class"/> is immutable.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Default">
-            <summary>
-            Gets the default <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> instance.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.OwnerHwnd">
-            <summary>
-            Gets the HWND of the owner window used to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Text">
-            <summary>
-            Gets the text to display in message boxes if none is specified.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Caption">
-            <summary>
-            Gets the caption to display in message boxes if none is specified.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Button">
-            <summary>
-            Gets the <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxButton"/> used to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.DefaultButton">
-            <summary>
-            Gets the <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxDefaultButton"/> used to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Icon">
-            <summary>
-            Gets the <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxIcon"/> used to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Modality">
-            <summary>
-            Gets the <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxModality"/> used to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.OtherOptions">
-            <summary>
-            Gets the <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions"/> used to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.TypeParameterValue">
-            <summary>
-            Bitwise-ORs all the properties of this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> instance and returns the result.
-            </summary>
-            <returns>The result of the bitwise-OR operation on all properties of this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.#ctor(System.UInt32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> by reconstructing the properties from an existing <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.TypeParameterValue"/>. This does not preserve <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.OwnerHwnd"/>, <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Text"/> or <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Caption"/>, which are set to their respective default values.
-            </summary>
-            <param name="typeParameterValue">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.TypeParameterValue"/> to reconstruct the properties from.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.#ctor(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> by copying the properties from an existing <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/>.
-            </summary>
-            <param name="other">The <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> to copy from.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.#ctor(System.IntPtr,System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> with the specified properties. Any are omissible and will default to their respective default values.
-            </summary>
-            <param name="ownerHwnd">The HWND of the owner window to use.</param>
-            <param name="text">The text to use.</param>
-            <param name="caption">The caption to use.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Modality"/> value to use.</param>
-            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.OtherOptions"/> value to use.</param>
-        </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxDefaultButton">
-            <summary>
-            Specifies the default button on a message box.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxDefaultButton.Button1">
-            <summary>
-            Specifies that the first button on the message box is the default button. This is the default.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxDefaultButton.Button2">
-            <summary>
-            Specifies that the second button on the message box is the default button.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxDefaultButton.Button3">
-            <summary>
-            Specifies that the third button on the message box is the default button.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxDefaultButton.ButtonHelp">
-            <summary>
-            Specifies that the fourth button on the message box is the default button. This requires the Help button to be present (see <see cref="!:MessageBoxOtherOptions.HelpButton"/>).
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxFactory">
-            <summary>
-            Provides a factory that creates message boxes using non-standard default values.
-            After creation, an instance of this <see langword="class"/> is immutable.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Default">
-            <summary>
-            Gets the default <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> instance.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration">
-            <summary>
-            Gets the entire <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OwnerHwnd">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.OwnerHwnd"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Text">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Text"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Caption">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Caption"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Button"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.DefaultButton"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Icon"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.Modality"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OtherOptions">
-            <summary>
-            Gets the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxConfiguration.OtherOptions"/> value in the <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.#ctor(LaquaiLib.Util.MessageBox.MessageBoxFactory)">
-            <summary>
-            Initialies a new <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> with the same default values as <paramref name="other"/>.
-            </summary>
-            <param name="other">The <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> to copy from.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.#ctor(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> with the specified <paramref name="config"/>.
-            </summary>
-            <param name="config">The <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> to use.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.#ctor(System.IntPtr,System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/> with the specified parameters. Any are omissible and will default to their respective default values.
-            </summary>
-            <param name="ownerHwnd">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OwnerHwnd"/> value to use.</param>
-            <param name="text">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Text"/> value to use.</param>
-            <param name="caption">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Caption"/> value to use.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
-            <summary>
-            Shows a message box with the specified properties. Any are omissible and will default to their respective default value configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="ownerHwnd">The HWND of the owner window to associate the message box with.</param>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/> and <paramref name="caption"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/> and <paramref name="button"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/> and <paramref name="defaultButton"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/> and <paramref name="icon"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/> and <paramref name="modality"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/>, <paramref name="modality"/> and <paramref name="otherOptions"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)">
-            <summary>
-            Shows a message box using the specified <paramref name="configuration"/>.
-            </summary>
-            <param name="configuration">The <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxConfiguration"/> to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
-            <summary>
-            Asynchronously shows a message box with the specified properties. Any are omissible and will default to their respective default value configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="ownerHwnd">The HWND of the owner window to associate the message box with.</param>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String)">
-            <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String)">
-            <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/> and <paramref name="caption"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32)">
-            <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/> and <paramref name="button"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)">
-            <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/> and <paramref name="defaultButton"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/> and <paramref name="icon"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/> and <paramref name="modality"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/>, <paramref name="modality"/> and <paramref name="otherOptions"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
-        </member>
-        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Util.MessageBox.MessageBoxFactory.ShowAsync(LaquaiLib.Util.MessageBox.MessageBoxConfiguration)" -->
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxIcon">
-            <summary>
-            Specifies the icon that is displayed in a message box.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.None">
-            <summary>
-            Specifies that the message box contain no symbols.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Hand">
-            <summary>
-            Specifies that the message box contain a symbol consisting of a white X in a circle with a red background.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Question">
-            <summary>
-            Specifies that the message box contain a symbol consisting of white X in a circle with a red background.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Exclamation">
-            <summary>
-            Specifies that the message box contain a symbol consisting of an exclamation point in a triangle with a yellow background.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Asterisk">
-            <summary>
-            Specifies that the message box contain a symbol consisting of a lowercase letter i in a circle.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Stop">
-            <summary>
-            Same as <see cref="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Hand"/>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Error">
-            <summary>
-            Same as <see cref="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Hand"/>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Warning">
-            <summary>
-            Same as <see cref="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Exclamation"/>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Information">
-            <summary>
-            Same as <see cref="F:LaquaiLib.Util.MessageBox.MessageBoxIcon.Asterisk"/>.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxModality">
-            <summary>
-            Specifies the modality of a message box.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxModality.Application">
-            <summary>
-            Specifies that the message box is application modal. This blocks interaction with the associated owner window of the message box, if it has one, but windows belonging to other threads can be interacted with. This is the default.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxModality.System">
-            <summary>
-            Specifies that the message box is system modal. Behaves exactly like <see cref="F:LaquaiLib.Util.MessageBox.MessageBoxModality.Application"/>, but promotes the message box's window to be always-on-top.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxModality.Task">
-            <summary>
-            Specifies that the message box is task modal. Behaves exactly like <see cref="F:LaquaiLib.Util.MessageBox.MessageBoxModality.Application"/>, but blocks interaction with all windows belonging to the creating thread, if it has no owner window.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions">
-            <summary>
-            Specifies miscellaneous options for a message box.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions.SetForeground">
-            <summary>
-            Specifies that the message box should become the foreground window upon creation.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions.DefaultDesktopOnly">
-            <summary>
-            Specifies that, if the current input desktop is not the default desktop, the call to <c>MessageBox</c> will not return until the user switches to the default desktop.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions.Topmost">
-            <summary>
-            Specifies that the message box is created with the <c>WS_EX_TOPMOST</c> window style.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions.RightJustify">
-            <summary>
-            Specifies that the message box display its contents right-justified.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions.RtlReading">
+        <member name="T:LaquaiLib.Util.MetaTool">
             <summary>
-            Specifies that the message box use right-to-left reading layout for Hebrew and Arabic systems.
+            Specifies the tool that should be searched for.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxOtherOptions.ServiceNotification">
+        <member name="F:LaquaiLib.Util.MetaTool.MSBuild">
             <summary>
-            Specifies that the creating thread is a service notifying the user of an event. The message box is displayed on the current active desktop, even if there is no user logged on to the computer. This requires the owner HWND to be <see langword="null"/>.
+            Indicates that <c>msbuild.exe</c> should be searched for.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Util.MessageBox.MessageBoxResult">
+        <member name="T:LaquaiLib.Util.VSVersion">
             <summary>
-            Specifies the return value a message box interaction produced.
+            Specifies the version(s) of Visual Studio that should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.OK">
+        <member name="F:LaquaiLib.Util.VSVersion.VS2017">
             <summary>
-            The "OK" button was selected.
+            Indicates that Visual Studio 2017 installations should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.Cancel">
+        <member name="F:LaquaiLib.Util.VSVersion.VS2019">
             <summary>
-            The "Cancel" button was selected.
+            Indicates that Visual Studio 2019 installations should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.Abort">
+        <member name="F:LaquaiLib.Util.VSVersion.VS2022">
             <summary>
-            The "Abort" button was selected.
+            Indicates that Visual Studio 2022 installations should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.Retry">
+        <member name="F:LaquaiLib.Util.VSVersion.Any">
             <summary>
-            The "Retry" button was selected.
+            Indicates that any version of Visual Studio is included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.Ignore">
+        <member name="T:LaquaiLib.Util.VSEdition">
             <summary>
-            The "Ignore" button was selected.
+            Specifies the edition(s) of Visual Studio that should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.Yes">
+        <member name="F:LaquaiLib.Util.VSEdition.Community">
             <summary>
-            The "Yes" button was selected.
+            Indicates that Community editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.No">
+        <member name="F:LaquaiLib.Util.VSEdition.Professional">
             <summary>
-            The "No" button was selected.
+            Indicates that Professional editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.Continue">
+        <member name="F:LaquaiLib.Util.VSEdition.Enterprise">
             <summary>
-            The "Continue" button was selected.
+            Indicates that Enterprise editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageBox.MessageBoxResult.TryAgain">
+        <member name="F:LaquaiLib.Util.VSEdition.Preview">
             <summary>
-            The "Try Again" button was selected.
+            Indicates that Preview editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Util.MessageType">
+        <member name="F:LaquaiLib.Util.VSEdition.Any">
             <summary>
-            Identifies the type of a <see cref="!:LoggerMessage"/>.
+            Indicates that any edition of Visual Studio is included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageType.Info">
+        <member name="T:LaquaiLib.Util.Architecture">
             <summary>
-            Indicates that the <see cref="!:LoggerMessage"/> is informational.
+            Specifies the architecture(s) of an app or tool that should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageType.Warning">
+        <member name="F:LaquaiLib.Util.Architecture.x86">
             <summary>
-            Indicates that the <see cref="!:LoggerMessage"/> is a warning.
+            Indicates that x86 apps or tools should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageType.Error">
+        <member name="F:LaquaiLib.Util.Architecture.x64">
             <summary>
-            Indicates that the <see cref="!:LoggerMessage"/> is an error.
+            Indicates that x64 apps or tools should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MessageType.Success">
+        <member name="F:LaquaiLib.Util.Architecture.Any">
             <summary>
-            Indicates that the <see cref="!:LoggerMessage"/> is a success message.
+            Indicates that any architecture is included in the search.
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.NaturalStringComparer">
@@ -6351,6 +5729,636 @@
         <member name="F:LaquaiLib.Util.Windows.Style.ExtendedWindowStyles.WS_EX_WINDOWEDGE">
             <summary>
             The window has a border with a raised edge.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBox">
+            <summary>
+            Provides message box functionality to non-WinForms or WPF applications through P/Invoke.
+            The <see langword="static"/> methods in this <see langword="class"/> simply delegate to the default <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Factory">
+            <summary>
+            Gets the <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> any <see cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String)"/> method overloads use by default.
+            To ignore these defaults, create and use a custom <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String,System.String)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
+            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)"/>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton">
+            <summary>
+            Specifies the buttons that are displayed on a message box.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.OK">
+            <summary>
+            Specifies that only an "OK" button is displayed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.OKCancel">
+            <summary>
+            Specifies that "OK" and "Cancel" buttons are displayed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.AbortRetryIgnore">
+            <summary>
+            Specifies that "Abort", "Retry", and "Ignore" buttons are displayed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.YesNoCancel">
+            <summary>
+            Specifies that "Yes" and "No" buttons are displayed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.YesNo">
+            <summary>
+            Specifies that "Yes" and "No" buttons are displayed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.RetryCancel">
+            <summary>
+            Specifies that "Retry" and "Cancel" buttons are displayed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.CancelTryAgainContinue">
+            <summary>
+            Specifies that "Cancel", "Try Again", and "Continue" buttons are displayed.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton.HelpButton">
+            <summary>
+            Specifies that a "Help" button is displayed in the message box, <i>in addition</i> to any other buttons specified.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration">
+            <summary>
+            Encapsulates configuration values for <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBox"/> and <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>.
+            After creation, an instance of this <see langword="class"/> is immutable.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Default">
+            <summary>
+            Gets the default <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.OwnerHwnd">
+            <summary>
+            Gets the HWND of the owner window used to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Text">
+            <summary>
+            Gets the text to display in message boxes if none is specified.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Caption">
+            <summary>
+            Gets the caption to display in message boxes if none is specified.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Button">
+            <summary>
+            Gets the <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton"/> used to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.DefaultButton">
+            <summary>
+            Gets the <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxDefaultButton"/> used to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Icon">
+            <summary>
+            Gets the <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon"/> used to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Modality">
+            <summary>
+            Gets the <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxModality"/> used to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.OtherOptions">
+            <summary>
+            Gets the <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions"/> used to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.TypeParameterValue">
+            <summary>
+            Bitwise-ORs all the properties of this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> instance and returns the result.
+            </summary>
+            <returns>The result of the bitwise-OR operation on all properties of this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.#ctor(System.UInt32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> by reconstructing the properties from an existing <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.TypeParameterValue"/>. This does not preserve <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.OwnerHwnd"/>, <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Text"/> or <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Caption"/>, which are set to their respective default values.
+            </summary>
+            <param name="typeParameterValue">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.TypeParameterValue"/> to reconstruct the properties from.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.#ctor(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> by copying the properties from an existing <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/>.
+            </summary>
+            <param name="other">The <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> to copy from.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.#ctor(System.IntPtr,System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> with the specified properties. Any are omissible and will default to their respective default values.
+            </summary>
+            <param name="ownerHwnd">The HWND of the owner window to use.</param>
+            <param name="text">The text to use.</param>
+            <param name="caption">The caption to use.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.OtherOptions"/> value to use.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxDefaultButton">
+            <summary>
+            Specifies the default button on a message box.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxDefaultButton.Button1">
+            <summary>
+            Specifies that the first button on the message box is the default button. This is the default.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxDefaultButton.Button2">
+            <summary>
+            Specifies that the second button on the message box is the default button.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxDefaultButton.Button3">
+            <summary>
+            Specifies that the third button on the message box is the default button.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxDefaultButton.ButtonHelp">
+            <summary>
+            Specifies that the fourth button on the message box is the default button. This requires the Help button to be present (see <see cref="!:MessageBoxOtherOptions.HelpButton"/>).
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory">
+            <summary>
+            Provides a factory that creates message boxes using non-standard default values.
+            After creation, an instance of this <see langword="class"/> is immutable.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Default">
+            <summary>
+            Gets the default <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration">
+            <summary>
+            Gets the entire <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OwnerHwnd">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.OwnerHwnd"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Text">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Text"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Caption">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Caption"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Button"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.DefaultButton"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Icon"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.Modality"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions">
+            <summary>
+            Gets the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration.OtherOptions"/> value in the <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance this factory uses to create message boxes.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.#ctor(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory)">
+            <summary>
+            Initialies a new <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> with the same default values as <paramref name="other"/>.
+            </summary>
+            <param name="other">The <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> to copy from.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.#ctor(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> with the specified <paramref name="config"/>.
+            </summary>
+            <param name="config">The <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> to use.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.#ctor(System.IntPtr,System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/> with the specified parameters. Any are omissible and will default to their respective default values.
+            </summary>
+            <param name="ownerHwnd">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OwnerHwnd"/> value to use.</param>
+            <param name="text">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Text"/> value to use.</param>
+            <param name="caption">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Caption"/> value to use.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
+            <summary>
+            Shows a message box with the specified properties. Any are omissible and will default to their respective default value configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="ownerHwnd">The HWND of the owner window to associate the message box with.</param>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/> and <paramref name="caption"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/> and <paramref name="button"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/> and <paramref name="defaultButton"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/> and <paramref name="icon"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/> and <paramref name="modality"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/>, <paramref name="modality"/> and <paramref name="otherOptions"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
+            <summary>
+            Shows a message box using the specified <paramref name="configuration"/>.
+            </summary>
+            <param name="configuration">The <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
+            <summary>
+            Asynchronously shows a message box with the specified properties. Any are omissible and will default to their respective default value configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="ownerHwnd">The HWND of the owner window to associate the message box with.</param>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/> and <paramref name="caption"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/> and <paramref name="button"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/> and <paramref name="defaultButton"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/> and <paramref name="icon"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/> and <paramref name="modality"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/>, <paramref name="modality"/> and <paramref name="otherOptions"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)" -->
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon">
+            <summary>
+            Specifies the icon that is displayed in a message box.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.None">
+            <summary>
+            Specifies that the message box contain no symbols.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Hand">
+            <summary>
+            Specifies that the message box contain a symbol consisting of a white X in a circle with a red background.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Question">
+            <summary>
+            Specifies that the message box contain a symbol consisting of white X in a circle with a red background.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Exclamation">
+            <summary>
+            Specifies that the message box contain a symbol consisting of an exclamation point in a triangle with a yellow background.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Asterisk">
+            <summary>
+            Specifies that the message box contain a symbol consisting of a lowercase letter i in a circle.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Stop">
+            <summary>
+            Same as <see cref="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Hand"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Error">
+            <summary>
+            Same as <see cref="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Hand"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Warning">
+            <summary>
+            Same as <see cref="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Exclamation"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Information">
+            <summary>
+            Same as <see cref="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxIcon.Asterisk"/>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxModality">
+            <summary>
+            Specifies the modality of a message box.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxModality.Application">
+            <summary>
+            Specifies that the message box is application modal. This blocks interaction with the associated owner window of the message box, if it has one, but windows belonging to other threads can be interacted with. This is the default.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxModality.System">
+            <summary>
+            Specifies that the message box is system modal. Behaves exactly like <see cref="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxModality.Application"/>, but promotes the message box's window to be always-on-top.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxModality.Task">
+            <summary>
+            Specifies that the message box is task modal. Behaves exactly like <see cref="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxModality.Application"/>, but blocks interaction with all windows belonging to the creating thread, if it has no owner window.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions">
+            <summary>
+            Specifies miscellaneous options for a message box.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions.SetForeground">
+            <summary>
+            Specifies that the message box should become the foreground window upon creation.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions.DefaultDesktopOnly">
+            <summary>
+            Specifies that, if the current input desktop is not the default desktop, the call to <c>MessageBox</c> will not return until the user switches to the default desktop.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions.Topmost">
+            <summary>
+            Specifies that the message box is created with the <c>WS_EX_TOPMOST</c> window style.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions.RightJustify">
+            <summary>
+            Specifies that the message box display its contents right-justified.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions.RtlReading">
+            <summary>
+            Specifies that the message box use right-to-left reading layout for Hebrew and Arabic systems.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxOtherOptions.ServiceNotification">
+            <summary>
+            Specifies that the creating thread is a service notifying the user of an event. The message box is displayed on the current active desktop, even if there is no user logged on to the computer. This requires the owner HWND to be <see langword="null"/>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult">
+            <summary>
+            Specifies the return value a message box interaction produced.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.OK">
+            <summary>
+            The "OK" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.Cancel">
+            <summary>
+            The "Cancel" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.Abort">
+            <summary>
+            The "Abort" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.Retry">
+            <summary>
+            The "Retry" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.Ignore">
+            <summary>
+            The "Ignore" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.Yes">
+            <summary>
+            The "Yes" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.No">
+            <summary>
+            The "No" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.Continue">
+            <summary>
+            The "Continue" button was selected.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxResult.TryAgain">
+            <summary>
+            The "Try Again" button was selected.
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.WpfForms.VirtualKey">
