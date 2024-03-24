@@ -14,9 +14,9 @@ public static class IServiceCollectionExtensions
     /// <returns>A reference to this instance after the operation has completed.</returns>
     public static IServiceCollection AddFileSystemProxy(this IServiceCollection services)
     {
-        return services.AddSingleton<IFile, File>()
-                       .AddSingleton<IDirectory, Directory>()
-                       .AddSingleton<IPath, Path>()
-                       .AddSingleton<IFileSystemProxy, FileSystemProxy>();
+        return services.AddSingleton<IFile>(new File())
+                       .AddSingleton<IDirectory>(new Directory())
+                       .AddSingleton<IPath>(new Path())
+                       .AddSingleton<IFileSystemProxy>(sp => new FileSystemProxy(sp.GetRequiredService<IFile>(), sp.GetRequiredService<IDirectory>(), sp.GetRequiredService<IPath>()));
     }
 }

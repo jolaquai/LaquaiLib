@@ -3,6 +3,7 @@ using System.Runtime.ExceptionServices;
 using System.Text.RegularExpressions;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.Util.Meta;
 
 namespace LaquaiLib.Util.ExceptionManagement;
 
@@ -52,8 +53,8 @@ public static partial class FirstChanceExceptionHandlers
         isRegistered = true;
     }
 
-    private static string[] allPaths = null;
-    private static string[] pathExts = null;
+    private static string[] allPaths;
+    private static string[] pathExts;
     /// <summary>
     /// Wraps <see cref="EntryPointNotFoundException"/>s in a <see cref="FirstChanceException"/> with additional information about the DLL and entry point.
     /// <para/>Rethrows the original exception if no additional information could be gathered.
@@ -98,43 +99,7 @@ public static partial class FirstChanceExceptionHandlers
             string[] possibleEntryPoints;
 
             // Find dumpbin.exe
-            var dumpbinPath = "";
-            string[] programFiles = [Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)];
-            string[] vsVersions = ["2022", "2019", "2017"];
-            string[] vsEditions = ["Community", "Professional", "Enterprise", "Preview"];
-            string[] hostArchs = ["Hostx64", "Hostx86"];
-            string[] archs = ["x64", "x86"];
-            foreach (var programFile in programFiles)
-            {
-                foreach (var vsVersion in vsVersions)
-                {
-                    foreach (var vsEdition in vsEditions)
-                    {
-                        var msvc = Path.Combine(programFile, "Microsoft Visual Studio", vsVersion, vsEdition, "VC", "Tools", "MSVC");
-                        if (!Directory.Exists(msvc))
-                        {
-                            continue;
-                        }
-                        var versions = Directory.GetDirectories(msvc);
-                        foreach (var version in versions)
-                        {
-                            foreach (var hostArch in hostArchs)
-                            {
-                                foreach (var arch in archs)
-                                {
-                                    var dumpbin = Path.Combine(version, "bin", hostArch, arch, "dumpbin.exe");
-                                    if (File.Exists(dumpbin))
-                                    {
-                                        dumpbinPath = dumpbin;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
+            var dumpbinPath = MetaHelpers.FindTool(MetaTool.Dumpbin).FirstOrDefault();
             if (string.IsNullOrWhiteSpace(dumpbinPath))
             {
                 // no wrapped exception here, as this is a critical error

@@ -53,4 +53,16 @@ public static class MethodInfoExtensions
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is an accessor.</returns>
     public static bool IsAccessor(this MethodInfo methodInfo) => methodInfo.IsGetterOrSetter() || methodInfo.IsAdderOrRemover();
+
+    /// <summary>
+    /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is marked <see langword="extern"/>.
+    /// </summary>
+    /// <param name="methodInfo">The <see cref="MethodInfo"/> instance representing the method to check.</param>
+    /// <returns><see langword="true"/> if the method is marked <see langword="extern"/>, otherwise <see langword="false"/>.</returns>
+    public static bool IsExtern(this MethodInfo methodInfo) => methodInfo.GetMethodBody() is null;
+    public static bool IsPartial(this MethodInfo methodInfo)
+    {
+        var type = methodInfo.DeclaringType;
+        return type?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).Count(m => m.Name == methodInfo.Name || m.Name.IndexOf($"<{methodInfo.Name}>", StringComparison.OrdinalIgnoreCase) != -1) > 1;
+    }
 }

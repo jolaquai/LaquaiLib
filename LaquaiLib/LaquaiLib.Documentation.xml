@@ -2089,6 +2089,17 @@
             <param name="match">The <see cref="T:System.Text.RegularExpressions.Match"/> instance to retrieve the <see cref="T:System.Text.RegularExpressions.Regex"/> instance from.</param>
             <returns>The <see cref="T:System.Text.RegularExpressions.Regex"/> instance that was used to create this <see cref="T:System.Text.RegularExpressions.Match"/>.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.MemberInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Reflection.MemberInfo"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemberInfoExtensions.ConstructBindingFlags(System.Reflection.MemberInfo)">
+            <summary>
+            Creates a <see cref="T:System.Reflection.BindingFlags"/> enum value that, when used to reflect into the member represented by a <paramref name="memberInfo"/> instance, will yield that same instance.
+            </summary>
+            <returns>The created <see cref="T:System.Reflection.BindingFlags"/> enum value.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.MethodInfoExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Reflection.MethodInfo"/> Type.
@@ -2142,6 +2153,13 @@
             </summary>
             <param name="methodInfo">A <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
             <returns>A value indicating whether the method is an accessor.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.IsExtern(System.Reflection.MethodInfo)">
+            <summary>
+            Determines whether a method represented by a <paramref name="methodInfo"/> instance is marked <see langword="extern"/>.
+            </summary>
+            <param name="methodInfo">The <see cref="T:System.Reflection.MethodInfo"/> instance representing the method to check.</param>
+            <returns><see langword="true"/> if the method is marked <see langword="extern"/>, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ObjectExtensions">
             <summary>
@@ -2254,6 +2272,28 @@
             <typeparam name="T">The Type of the items in the collection.</typeparam>
             <param name="queue">The <see cref="T:System.Collections.Generic.Queue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
             <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        </member>
+        <member name="T:LaquaiLib.Extensions.RangeExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Range"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetRange(System.Range)">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Int32"/>s that are within the given <paramref name="range"/>.
+            </summary>
+            <param name="range">The <see cref="T:System.Range"/> to get the range from.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Int32"/>s that are within the given <paramref name="range"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetEnumerator(System.Range)">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> of <see cref="T:System.Int32"/>s that may be used to iterate through the numbers within the given <paramref name="range"/>.
+            </summary>
+            <param name="range">The <see cref="T:System.Range"/> to get the range from.</param>
+            <returns>The <see cref="T:System.Collections.Generic.IEnumerator`1"/> as described.</returns>
+            <remarks>
+            This wouldn't typically be called directly, but rather through a <see langword="foreach"/> loop.
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.ReflectionOptions">
             <summary>
@@ -2947,7 +2987,7 @@
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Range``1(``0)">
             <summary>
-            Compiles an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>s from <c>0</c> to <paramref name="stop"/> with a step width of <c>1</c>.
+            Compiles an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>s from <c>0</c> to <paramref name="stop"/> - 1 with a step width of <c>1</c>.
             </summary>
             <typeparam name="T">The type of the items in the created sqeuence.</typeparam>
             <param name="stop">The end of the range.</param>
@@ -4430,12 +4470,37 @@
             <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
             <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
         </member>
-        <member name="T:LaquaiLib.Util.MetaHelpers">
+        <member name="T:LaquaiLib.Util.Meta.Architecture">
+            <summary>
+            Specifies the architecture(s) of an app or tool that should be included in the search.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Meta.Architecture.x86">
+            <summary>
+            Indicates that x86 apps or tools should be included in the search.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Meta.Architecture.x64">
+            <summary>
+            Indicates that x64 apps or tools should be included in the search.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Meta.Architecture.Any">
+            <summary>
+            Indicates that any architecture is included in the search.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Meta.MetaHelpers">
             <summary>
             Provides utility methods for meta-metaprogramming, finding Visual Studio paths, etc.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.MetaHelpers.FindInstallations(LaquaiLib.Util.VSVersion,LaquaiLib.Util.VSEdition,LaquaiLib.Util.Architecture)">
+        <member name="F:LaquaiLib.Util.Meta.MetaHelpers.UNIVERSAL">
+            <summary>
+            A <see cref="T:System.Reflection.BindingFlags"/> value that returns members regardless of access level and instance/static status.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Meta.MetaHelpers.FindInstallations(LaquaiLib.Util.Meta.VSVersion,LaquaiLib.Util.Meta.VSEdition,LaquaiLib.Util.Meta.Architecture)">
             <summary>
             Finds Visual Studio installations that are located in default installation directories, constrained by the specified parameters.
             </summary>
@@ -4444,89 +4509,74 @@
             <param name="architecture">The architecture(s) of an app or tool that should be included in the search.</param>
             <returns>The paths of the Visual Studio installations that were found.</returns>
         </member>
-        <member name="T:LaquaiLib.Util.MetaTool">
+        <member name="T:LaquaiLib.Util.Meta.MetaTool">
             <summary>
             Specifies the tool that should be searched for.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.MetaTool.MSBuild">
+        <member name="F:LaquaiLib.Util.Meta.MetaTool.MSBuild">
             <summary>
             Indicates that <c>msbuild.exe</c> should be searched for.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Util.VSVersion">
+        <member name="F:LaquaiLib.Util.Meta.MetaTool.Dumpbin">
             <summary>
-            Specifies the version(s) of Visual Studio that should be included in the search.
+            Indicates that <c>dumpbin.exe</c> should be searched for.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.VSVersion.VS2017">
-            <summary>
-            Indicates that Visual Studio 2017 installations should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.VSVersion.VS2019">
-            <summary>
-            Indicates that Visual Studio 2019 installations should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.VSVersion.VS2022">
-            <summary>
-            Indicates that Visual Studio 2022 installations should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.VSVersion.Any">
-            <summary>
-            Indicates that any version of Visual Studio is included in the search.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.VSEdition">
+        <member name="T:LaquaiLib.Util.Meta.VSEdition">
             <summary>
             Specifies the edition(s) of Visual Studio that should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.VSEdition.Community">
+        <member name="F:LaquaiLib.Util.Meta.VSEdition.Community">
             <summary>
             Indicates that Community editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.VSEdition.Professional">
+        <member name="F:LaquaiLib.Util.Meta.VSEdition.Professional">
             <summary>
             Indicates that Professional editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.VSEdition.Enterprise">
+        <member name="F:LaquaiLib.Util.Meta.VSEdition.Enterprise">
             <summary>
             Indicates that Enterprise editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.VSEdition.Preview">
+        <member name="F:LaquaiLib.Util.Meta.VSEdition.Preview">
             <summary>
             Indicates that Preview editions of Visual Studio should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.VSEdition.Any">
+        <member name="F:LaquaiLib.Util.Meta.VSEdition.Any">
             <summary>
             Indicates that any edition of Visual Studio is included in the search.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Util.Architecture">
+        <member name="T:LaquaiLib.Util.Meta.VSVersion">
             <summary>
-            Specifies the architecture(s) of an app or tool that should be included in the search.
+            Specifies the version(s) of Visual Studio that should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.Architecture.x86">
+        <member name="F:LaquaiLib.Util.Meta.VSVersion.VS2017">
             <summary>
-            Indicates that x86 apps or tools should be included in the search.
+            Indicates that Visual Studio 2017 installations should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.Architecture.x64">
+        <member name="F:LaquaiLib.Util.Meta.VSVersion.VS2019">
             <summary>
-            Indicates that x64 apps or tools should be included in the search.
+            Indicates that Visual Studio 2019 installations should be included in the search.
             </summary>
         </member>
-        <member name="F:LaquaiLib.Util.Architecture.Any">
+        <member name="F:LaquaiLib.Util.Meta.VSVersion.VS2022">
             <summary>
-            Indicates that any architecture is included in the search.
+            Indicates that Visual Studio 2022 installations should be included in the search.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.Meta.VSVersion.Any">
+            <summary>
+            Indicates that any version of Visual Studio is included in the search.
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.NaturalStringComparer">
@@ -8007,6 +8057,23 @@
         <member name="T:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy">
             <summary>
             Exposes access to the file system by proxy in a Blazor WebAssembly application.
+            This only works when the Blazor WASM application is being hosted inside a WPF application, which, outside of any Blazor WASM context, provides the actual file system access.
+            This will not work, even if created from a class library project, because the Blazor WASM application is sandboxed and cannot access the file system directly, even by proxy.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy.File">
+            <summary>
+            An <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IFile"/> implementation that proxies functionality from <see cref="T:System.IO.File"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy.Directory">
+            <summary>
+            An <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IDirectory"/> implementation that proxies functionality from <see cref="T:System.IO.Directory"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.WasmServices.FileSystemProxy.IFileSystemProxy.Path">
+            <summary>
+            An <see cref="T:LaquaiLib.WasmServices.FileSystemProxy.IPath"/> implementation that proxies functionality from <see cref="T:System.IO.Path"/>.
             </summary>
         </member>
         <member name="T:LaquaiLib.WasmServices.FileSystemProxy.IPath">

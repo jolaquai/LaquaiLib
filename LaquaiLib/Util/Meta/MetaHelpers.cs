@@ -1,15 +1,21 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 
 using LaquaiLib.Extensions;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Util.Meta;
 
 /// <summary>
 /// Provides utility methods for meta-metaprogramming, finding Visual Studio paths, etc.
 /// </summary>
 public static class MetaHelpers
 {
+    /// <summary>
+    /// A <see cref="BindingFlags"/> value that returns members regardless of access level and instance/static status.
+    /// </summary>
+    public const BindingFlags UNIVERSAL = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+
     /// <summary>
     /// Finds Visual Studio installations that are located in default installation directories, constrained by the specified parameters.
     /// </summary>
@@ -85,97 +91,4 @@ public static class MetaHelpers
 
         return tasks.Where(t => t.Result is not null).Select(t => t.Result).ToArray();
     }
-
-    /// <summary>
-    /// Finds the executable path of the currently running Visual Studio instance.
-    /// This does not handle multiple instances of Visual Studio running at the same time, and will return the path of the first instance found.
-    /// </summary>
-    /// <returns>The path of the currently running Visual Studio instance or <see langword="null"/> if none is found.</returns>
-    public static string? GetCurrentVisualStudioLocation()
-    {
-        return Process.GetProcessesByName("devenv").FirstOrDefault()?.MainModule?.FileName;
-    }
-}
-/// <summary>
-/// Specifies the tool that should be searched for.
-/// </summary>
-public enum MetaTool
-{
-    /// <summary>
-    /// Indicates that <c>msbuild.exe</c> should be searched for.
-    /// </summary>
-    [Description("msbuild.exe")]
-    MSBuild,
-}
-/// <summary>
-/// Specifies the version(s) of Visual Studio that should be included in the search.
-/// </summary>
-[Flags]
-public enum VSVersion
-{
-    /// <summary>
-    /// Indicates that Visual Studio 2017 installations should be included in the search.
-    /// </summary>
-    [Description("2017")]
-    VS2017 = 0b1,
-    /// <summary>
-    /// Indicates that Visual Studio 2019 installations should be included in the search.
-    /// </summary>
-    [Description("2019")]
-    VS2019 = 1 << 1,
-    /// <summary>
-    /// Indicates that Visual Studio 2022 installations should be included in the search.
-    /// </summary>
-    [Description("2022")]
-    VS2022 = 1 << 2,
-    /// <summary>
-    /// Indicates that any version of Visual Studio is included in the search.
-    /// </summary>
-    Any = VS2017 | VS2019 | VS2022
-}
-/// <summary>
-/// Specifies the edition(s) of Visual Studio that should be included in the search.
-/// </summary>
-[Flags]
-public enum VSEdition
-{
-    /// <summary>
-    /// Indicates that Community editions of Visual Studio should be included in the search.
-    /// </summary>
-    Community = 0b1,
-    /// <summary>
-    /// Indicates that Professional editions of Visual Studio should be included in the search.
-    /// </summary>
-    Professional = 1 << 1,
-    /// <summary>
-    /// Indicates that Enterprise editions of Visual Studio should be included in the search.
-    /// </summary>
-    Enterprise = 1 << 2,
-    /// <summary>
-    /// Indicates that Preview editions of Visual Studio should be included in the search.
-    /// </summary>
-    Preview = 1 << 3,
-    /// <summary>
-    /// Indicates that any edition of Visual Studio is included in the search.
-    /// </summary>
-    Any = Community | Professional | Enterprise | Preview
-}
-/// <summary>
-/// Specifies the architecture(s) of an app or tool that should be included in the search.
-/// </summary>
-[Flags]
-public enum Architecture
-{
-    /// <summary>
-    /// Indicates that x86 apps or tools should be included in the search.
-    /// </summary>
-    x86 = 0b1,
-    /// <summary>
-    /// Indicates that x64 apps or tools should be included in the search.
-    /// </summary>
-    x64 = 1 << 1,
-    /// <summary>
-    /// Indicates that any architecture is included in the search.
-    /// </summary>
-    Any = x86 | x64
 }

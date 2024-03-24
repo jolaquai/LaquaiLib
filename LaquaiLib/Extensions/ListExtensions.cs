@@ -19,7 +19,11 @@ public static class ListExtensions
     /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
     /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
     /// <param name="range">A <see cref="Range"/> instance that indicates where the items to be removed are located in the <paramref name="list"/>.</param>
-    public static void RemoveRange<T>(this List<T> list, Range range) => new Action<(int, int)>(tuple => list.RemoveRange(tuple.Item1, tuple.Item2))(range.GetOffsetAndLength(list.Count));
+    public static void RemoveRange<T>(this List<T> list, Range range)
+    {
+        var (offset, length) = range.GetOffsetAndLength(list.Count);
+        list.RemoveRange(offset, length);
+    }
 
     /// <summary>
     /// Extracts a range of elements from this <see cref="List{T}"/>.

@@ -5,7 +5,7 @@
 /// </summary>
 public class FileSystemProxy : IFileSystemProxy
 {
-    internal FileSystemProxy(File file, Directory directory, Path path)
+    internal FileSystemProxy(IFile file, IDirectory directory, IPath path)
     {
         File = file;
         Directory = directory;

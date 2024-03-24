@@ -20,7 +20,7 @@ public static class Miscellaneous
         => Range(default, stop, step);
 
     /// <summary>
-    /// Compiles an <see cref="IEnumerable{T}"/> of <typeparamref name="T"/>s from <c>0</c> to <paramref name="stop"/> with a step width of <c>1</c>.
+    /// Compiles an <see cref="IEnumerable{T}"/> of <typeparamref name="T"/>s from <c>0</c> to <paramref name="stop"/> - 1 with a step width of <c>1</c>.
     /// </summary>
     /// <typeparam name="T">The type of the items in the created sqeuence.</typeparam>
     /// <param name="stop">The end of the range.</param>
