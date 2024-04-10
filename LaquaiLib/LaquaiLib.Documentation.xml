@@ -2953,11 +2953,6 @@
             <param name="name">The <see cref="T:System.Xml.Linq.XName"/> to match.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Xml.Linq.XElement"/> containing the sibling elements of this node, in document order. Only elements that have a matching <see cref="T:System.Xml.Linq.XName"/> are included in the collection.</returns>
         </member>
-        <member name="T:LaquaiLib.Extensions.TaskExtensions">
-            <summary>
-            Provides extension methods for the <see cref="T:System.Threading.Tasks.Task"/> Type.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Interfaces.ICloneable`1">
             <summary>
             Implements a typed version of the <see cref="T:System.ICloneable"/> interface.
@@ -3325,6 +3320,138 @@
         <member name="M:LaquaiLib.Streams.MultiStream.Dispose">
             <summary>
             Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.ObservableStream`1.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="E:LaquaiLib.Streams.ObservableStream`1.Flushed">
+            <summary>
+            Occurs when the stream is flushed.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Streams.ObservableStream`1.DataRead">
+            <summary>
+            Occurs when data is read from the stream.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Streams.ObservableStream`1.Seeked">
+            <summary>
+            Occurs when the stream is seeked, irrespective of whether this was part of a write or read operation, a call to <see cref="M:LaquaiLib.Streams.ObservableStream`1.Seek(System.Int64,System.IO.SeekOrigin)"/> or a direct change of the <see cref="P:LaquaiLib.Streams.ObservableStream`1.Position"/> property.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Streams.ObservableStream`1.DataWritten">
+            <summary>
+            Occurs when data is written to the stream.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.Streams.ObservableStream`1.Resized">
+            <summary>
+            Occurs when the stream is resized, that is, an operation causes <see cref="P:LaquaiLib.Streams.ObservableStream`1.Length"/> to change.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.ObservableStream`1.#ctor(`0)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> instance by wrapping an existing <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to wrap.</param>
+        </member>
+        <member name="T:LaquaiLib.Streams.ObservableStreamFactory">
+            <summary>
+            Provides factory methods for <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create``1">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> by creating a new instance of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of <see cref="T:System.IO.Stream"/> to create. Must have a public parameterless constructor.</typeparam>
+            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create``1(``0)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> from an existing <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <typeparam name="T">The type of the <see cref="T:System.IO.Stream"/> to wrap.</typeparam>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to wrap.</param>
+            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> from a portion of a <see cref="T:System.Byte"/> array.
+            </summary>
+            <param name="data">The <see cref="T:System.Byte"/> array to create the <see cref="T:System.IO.MemoryStream"/> from.</param>
+            <param name="offset">The offset in the <see cref="T:System.Byte"/> array to start reading from.</param>
+            <param name="length">The number of bytes to read from the <see cref="T:System.Byte"/> array.</param>
+            <param name="canResize">Whether the underlying <see cref="T:System.IO.MemoryStream"/> should be made resizable.</param>
+            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> that wraps a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <param name="path">The path to the file to open.</param>
+            <param name="fileMode">A <see cref="T:System.IO.FileMode"/> enum value that specifies how the operating system should open the file.</param>
+            <param name="fileAccess">A <see cref="T:System.IO.FileAccess"/> enum value that specifies the access level.</param>
+            <param name="fileShare">A <see cref="T:System.IO.FileShare"/> enum value that specifies the sharing mode of the file.</param>
+            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create(System.String,System.IO.FileStreamOptions)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> that wraps a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <param name="path">The path to the file to open.</param>
+            <param name="fileStreamOptions">A <see cref="T:System.IO.FileStreamOptions"/> instance that specifies how the <see cref="T:System.IO.FileStream"/> is opened.</param>
+            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Streams.ReadEventArgs">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataRead"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.ReadEventArgs.Data">
+            <summary>
+            A readonly view of the data that was read.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Streams.ResizedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Resized"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.ResizedEventArgs.OldLength">
+            <summary>
+            The old length of the stream before the resize operation.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.ResizedEventArgs.NewLength">
+            <summary>
+            The new length of the stream after the resize operation.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Streams.SeekedEventArgs">
+            <summary>
+            Provides data about the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Seeked"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.SeekedEventArgs.OldPosition">
+            <summary>
+            The old position of the stream before the seek operation.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.SeekedEventArgs.NewPosition">
+            <summary>
+            The new position of the stream after the seek operation.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Streams.WrittenEventArgs">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataWritten"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.WrittenEventArgs.Data">
+            <summary>
+            A readonly view of the data that was written.
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.ConsoleQueue">
@@ -4813,6 +4940,13 @@
             </summary>
             <param name="region">The region to capture.</param>
             <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the given region.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.IntPtr)">
+            <summary>
+            Captures a region of the screen as defined by the bounding rectangle of the passed <paramref name="hWnd"/>.
+            </summary>
+            <param name="hWnd">The handle of the window to capture.</param>
+            <returns>The <see cref="T:System.Drawing.Bitmap"/> created by capturing the region.</returns>
         </member>
         <member name="M:LaquaiLib.Util.ScreenCapture.Capture">
             <summary>

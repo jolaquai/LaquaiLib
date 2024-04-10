@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 
 namespace LaquaiLib.Util.ExceptionManagement;
 
@@ -9,13 +10,7 @@ public class AssertionFailureException<T> : Exception
 {
     private const string _defaultMessage = "Assertion failed.";
     private static string MessageFromCaller
-    {
-        get
-        {
-            var method = new StackFrame(1).GetMethod();
-            return method is not null ? $"Assertion failed in {method.Name}." : _defaultMessage;
-        }
-    }
+        => new StackFrame(1).GetMethod() is MethodBase method ? $"Assertion failed in {method.Name}." : _defaultMessage;
 
     /// <inheritdoc cref="Exception.Message"/>
     public new string Message { get; }

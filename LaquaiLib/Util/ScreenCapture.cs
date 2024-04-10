@@ -9,26 +9,24 @@ namespace LaquaiLib.Util;
 /// </summary>
 public partial class ScreenCapture
 {
-    private partial class MonitorEnum
+    private partial class Interop
     {
         [LibraryImport("shcore.dll")]
         private static partial nint GetScaleFactorForMonitor(nint hmonitor, out nint deviceScaleFactor);
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct Rect
+        public struct Rect
         {
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
         }
 
         private delegate bool MonitorEnumProc(nint hDesktop, nint hdc, ref Rect pRect, int dwData);
-
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool EnumDisplayMonitors(nint hdc, nint lpRect, MonitorEnumProc callback, int dwData);
-
         public static double[] EnumerateScales()
         {
             List<double> scales = [];
@@ -44,12 +42,22 @@ public partial class ScreenCapture
             EnumDisplayMonitors(nint.Zero, nint.Zero, Callback, 0);
             return [.. scales];
         }
+
+        [LibraryImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool GetWindowRect(nint hWnd, ref Rect lpRect);
+        public static Rect GetWindowBounds(nint hWnd)
+        {
+            var rect = new Rect();
+            GetWindowRect(hWnd, ref rect);
+            return rect;
+        }
     }
 
     /// <summary>
     /// The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set.
     /// </summary>
-    public static double[] ResolutionScales { get; } = MonitorEnum.EnumerateScales();
+    public static double[] ResolutionScales { get; } = Interop.EnumerateScales();
 
     /// <summary>
     /// Captures a region of the screen. Passed coordinates are not corrected using <see cref="ResolutionScales"/>.
@@ -75,6 +83,17 @@ public partial class ScreenCapture
     /// <param name="region">The region to capture.</param>
     /// <returns>A <see cref="Bitmap"/> object containing the capture created from the given region.</returns>
     public static Bitmap Capture(Rectangle region) => Capture(region.Left, region.Top, region.Right, region.Bottom);
+
+    /// <summary>
+    /// Captures a region of the screen as defined by the bounding rectangle of the passed <paramref name="hWnd"/>.
+    /// </summary>
+    /// <param name="hWnd">The handle of the window to capture.</param>
+    /// <returns>The <see cref="Bitmap"/> created by capturing the region.</returns>
+    public static Bitmap Capture(nint hWnd)
+    {
+        var rect = Interop.GetWindowBounds(hWnd);
+        return Capture(rect.Left, rect.Top, rect.Right, rect.Bottom);
+    }
 
     /// <summary>
     /// Captures the entire primary screen.

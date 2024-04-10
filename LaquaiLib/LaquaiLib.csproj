@@ -14,7 +14,6 @@
 		<DocumentationFile>LaquaiLib.Documentation.xml</DocumentationFile>
 		<AnalysisLevel>preview-all</AnalysisLevel>
 		<AnalysisMode>all</AnalysisMode>
-		<Platforms>AnyCPU;x64;x86</Platforms>
 		<LangVersion>preview</LangVersion>
 
 		<!--<EnablePreviewFeatures>True</EnablePreviewFeatures>-->

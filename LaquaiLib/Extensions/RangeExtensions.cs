@@ -17,14 +17,7 @@ public static class RangeExtensions
             throw new ArgumentException("Range indices cannot be from the end since there is no end to reference from.", nameof(range));
         }
 
-        return GetRangeInternal();
-        IEnumerable<int> GetRangeInternal()
-        {
-            for (var i = range.Start.Value; i < range.End.Value; i++)
-            {
-                yield return i;
-            }
-        }
+        return Enumerable.Range(range.Start.Value, range.End.Value - range.Start.Value);
     }
     /// <summary>
     /// Returns an <see cref="IEnumerator{T}"/> of <see cref="int"/>s that may be used to iterate through the numbers within the given <paramref name="range"/>.
