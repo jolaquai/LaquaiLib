@@ -1,7 +1,11 @@
-﻿using System.Globalization;
+﻿using System.Collections.Frozen;
+using System.Collections.Immutable;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 using LaquaiLib.Extensions;
+
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace LaquaiLib.Util;
 
@@ -18,7 +22,9 @@ public static partial class CultureHelper
     /// </remarks>
     public static double SimilarityThreshold { get; set; } = 0.7;
 
-    private static readonly Dictionary<string, CultureInfo[]> _cultureMap;
+    private static readonly FrozenDictionary<string, CultureInfo[]> _cultureMap = CultureInfo.GetCultures(CultureTypes.AllCultures)
+            .GroupBy(ci => ci.Name.Split('-')[0])
+            .ToFrozenDictionary(ci => ci.Key, ci => ci.ToArray());
 
     private static readonly Regex _similarityCleanerRegex = GetSimilarityCleanerRegex();
 
@@ -30,21 +36,12 @@ public static partial class CultureHelper
     /// </remarks>
     public static Dictionary<string, CultureInfo> CultureInfoOverrides { get; } = [];
 
-    private static readonly Dictionary<string[], TimeZoneInfo> _timeZoneMap;
-
-    static CultureHelper()
-    {
-        _cultureMap = CultureInfo.GetCultures(CultureTypes.AllCultures)
-            .GroupBy(ci => ci.Name.Split('-')[0])
-            .ToArrayDictionary();
-
-        _timeZoneMap = TimeZoneInfo.GetSystemTimeZones().ToDictionary(
-            tz => tz.DisplayName
-                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(split => split.Trim('(', ')', ',', ' '))
-                .ToArray()
-        );
-    }
+    private static readonly FrozenDictionary<string[], TimeZoneInfo> _timeZoneMap = TimeZoneInfo
+        .GetSystemTimeZones()
+        .ToFrozenDictionary(tz => tz.DisplayName
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(split => split.Trim('(', ')', ',', ' '))
+            .ToArray());
 
     /// <summary>
     /// Resolves a <see cref="CultureInfo"/> from data in a <see cref="string"/>. See the parameter documentation for more information.

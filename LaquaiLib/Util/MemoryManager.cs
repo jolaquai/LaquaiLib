@@ -1,4 +1,7 @@
-﻿namespace LaquaiLib.Util;
+﻿using System.Globalization;
+using System.Numerics;
+
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Provides methods and events for managing memory, working with the Garbage Collector (<see cref="GC"/>) and allocating unmanaged memory.
@@ -44,7 +47,7 @@ public static unsafe class MemoryManager
     public static T* CAlloc<T>(int count, bool pressure = false)
         where T : unmanaged
     {
-        var bytes = count * Marshal.SizeOf<T>();
+        var bytes = count * sizeof(T);
         if (pressure)
         {
             GC.AddMemoryPressure(bytes);
@@ -85,10 +88,10 @@ public static unsafe class MemoryManager
     public static T* ReCAlloc<T>(T* ptr, int count, long oldCount = 0)
         where T : unmanaged
     {
-        var bytes = count * Marshal.SizeOf<T>();
+        var bytes = count * sizeof(T);
         if (oldCount != 0)
         {
-            var oldBytes = oldCount * Marshal.SizeOf<T>();
+            var oldBytes = oldCount * sizeof(T);
             if (bytes > oldBytes)
             {
                 GC.AddMemoryPressure(bytes - oldBytes);
@@ -132,6 +135,6 @@ public static unsafe class MemoryManager
     public static void* Next<T>(void* ptr, int count = 1)
         where T : unmanaged
     {
-        return (void*)((nint)ptr + (Marshal.SizeOf<T>() * count));
+        return (void*)((nint)ptr + (sizeof(T) * count));
     }
 }

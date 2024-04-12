@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Frozen;
 
 namespace LaquaiLib.Util;
 
@@ -7,7 +8,7 @@ namespace LaquaiLib.Util;
 /// </summary>
 public class FileSizePartitioner : Partitioner<string>
 {
-    private readonly Dictionary<string, FileInfo> _files;
+    private readonly FrozenDictionary<string, FileInfo> _files;
 
     /// <summary>
     /// Initializes a new <see cref="FileSizePartitioner"/> using the specified file paths.
@@ -15,8 +16,7 @@ public class FileSizePartitioner : Partitioner<string>
     /// <param name="paths">The paths to the files to partition.</param>
     public FileSizePartitioner(IEnumerable<string> paths)
     {
-        _files = paths.Select(path => new KeyValuePair<string, FileInfo>(path, new FileInfo(path)))
-                      .ToDictionary();
+        _files = paths.ToFrozenDictionary(path => path, path => new FileInfo(path));
     }
     /// <summary>
     /// Initializes a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
@@ -24,8 +24,7 @@ public class FileSizePartitioner : Partitioner<string>
     /// <param name="fileInfos">The <see cref="FileInfo"/> instances to partition.</param>
     public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)
     {
-        _files = fileInfos.Select(fileInfo => new KeyValuePair<string, FileInfo>(fileInfo.FullName, fileInfo))
-                          .ToDictionary();
+        _files = fileInfos.ToFrozenDictionary(fi => fi.FullName);
     }
 
     /// <summary>

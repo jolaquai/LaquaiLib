@@ -47,27 +47,24 @@ public class FullAccessDynamic<T> : DynamicObject
             return false;
         }
 
-        if (args is null or { Length: 0 })
+        // Proxy all the object-inherited methods back to the instance
+        switch (binder.Name)
         {
-            // Proxy all the object-inherited methods back to the instance
-            switch (binder.Name)
-            {
-                case "ToString":
-                    result = _instance.ToString();
-                    return true;
-                case "GetHashCode":
-                    result = _instance.GetHashCode();
-                    return true;
-                case "GetType":
-                    result = _instance.GetType();
-                    return true;
-                case "Equals":
-                    result = _instance.Equals(args[0]);
-                    return true;
-                case "Unwrap":
-                    result = Unwrap();
-                    return true;
-            }
+            case "ToString":
+                result = _instance.ToString();
+                return true;
+            case "GetHashCode":
+                result = _instance.GetHashCode();
+                return true;
+            case "GetType":
+                result = _instance.GetType();
+                return true;
+            case "Equals" when args is not null and { Length: 1 }:
+                result = _instance.Equals(args[0]);
+                return true;
+            case "Unwrap":
+                result = Unwrap();
+                return true;
         }
 
         // Attempt to find the method with the specified name and parameter types.
@@ -89,7 +86,7 @@ public class FullAccessDynamic<T> : DynamicObject
 
         if (method is not null)
         {
-            result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(method.ReturnType, method.Invoke(_instance, args));
+            result = FullAccessDynamicFactory.Create(method.ReturnType, method.Invoke(_instance, args));
             return true;
         }
 
@@ -120,22 +117,15 @@ public class FullAccessDynamic<T> : DynamicObject
             prop ??= GetFirstNonNull(bf => _instanceType.GetProperty(binder.Name, bf));
             if (prop is not null)
             {
-
                 var propValue = prop.GetValue(_instance);
-                if (propValue is null)
-                {
-                    result = null;
-                }
-                else
-                {
-                    result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(prop.PropertyType, propValue);
-                }
+                result = propValue is null ? null : FullAccessDynamicFactory.Create(prop.PropertyType, propValue);
                 _memberCache[key] = prop;
                 return true;
             }
         }
         catch
-        { }
+        {
+        }
 
         try
         {
@@ -156,7 +146,8 @@ public class FullAccessDynamic<T> : DynamicObject
             }
         }
         catch
-        { }
+        {
+        }
 
         // Before failing (which base.TryGetMember will do once we call it), check if the property or field we were searching for was not null
         // This means the property exists, but either _instance is null or the member's value is null

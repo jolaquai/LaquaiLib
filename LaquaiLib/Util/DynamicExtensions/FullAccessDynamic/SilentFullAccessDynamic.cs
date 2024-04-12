@@ -47,27 +47,24 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             return true;
         }
 
-        if (args is null or { Length: 0 })
+        // Proxy all the object-inherited methods back to the instance
+        switch (binder.Name)
         {
-            // Proxy all the object-inherited methods back to the instance
-            switch (binder.Name)
-            {
-                case "ToString":
-                    result = _instance.ToString();
-                    return true;
-                case "GetHashCode":
-                    result = _instance.GetHashCode();
-                    return true;
-                case "GetType":
-                    result = _instance.GetType();
-                    return true;
-                case "Equals":
-                    result = _instance.Equals(args[0]);
-                    return true;
-                case "Unwrap":
-                    result = Unwrap();
-                    return true;
-            }
+            case "ToString":
+                result = _instance.ToString();
+                return true;
+            case "GetHashCode":
+                result = _instance.GetHashCode();
+                return true;
+            case "GetType":
+                result = _instance.GetType();
+                return true;
+            case "Equals" when args is not null and { Length: 1 }:
+                result = _instance.Equals(args[0]);
+                return true;
+            case "Unwrap":
+                result = Unwrap();
+                return true;
         }
 
         // Attempt to find the method with the specified name and parameter types.
@@ -135,7 +132,8 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             }
         }
         catch
-        { }
+        {
+        }
 
         try
         {
@@ -156,7 +154,8 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             }
         }
         catch
-        { }
+        {
+        }
 
         // Before failing (which base.TryGetMember will do once we call it), check if the property or field we were searching for was not null
         // This means the property exists, but either _instance is null or the member's value is null
