@@ -10,7 +10,8 @@ public static class FileSystemHelper
     /// </summary>
     /// <param name="source">The directory to move.</param>
     /// <param name="to">The directory that becomes the new parent directory of <paramref name="source"/>.</param>
-    /// <param name="allowExisting">Whether to allow the destination directory to already exist and contain files.</param>
+    /// <param name="copy">Replicate the directory and its contents at the source location instead of moving it.</param>
+    /// <param name="allowExisting">Whether to allow the destination directory to already exist and contain files, and whether to overwrite existing files when <paramref name="copy"/> is <see langword="true"/>.</param>
     /// <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
     /// <remarks>
@@ -19,6 +20,7 @@ public static class FileSystemHelper
     public static void MigrateDirectory(
         string source,
         string to,
+        bool copy = false,
         bool allowExisting = false,
         int maxDegreeOfParallelism = -1,
         CancellationToken cancellationToken = default
@@ -66,14 +68,36 @@ public static class FileSystemHelper
             Directory.CreateDirectory(newDirPath);
         }
 
-        Parallel.ForEach(
-            new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories)),
-            new ParallelOptions() { CancellationToken = cancellationToken, MaxDegreeOfParallelism = maxDegreeOfParallelism },
-            newPath =>
-            {
-                var newFilePath = newPath.Replace(source, newTopPath);
-                File.Move(newPath, newFilePath);
-            }
-        );
+        var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
+        var parallelOptions = new ParallelOptions()
+        {
+            CancellationToken = cancellationToken,
+            MaxDegreeOfParallelism = maxDegreeOfParallelism
+        };
+
+        if (copy)
+        {
+            Parallel.ForEach(
+                partitioner,
+                parallelOptions,
+                newPath =>
+                {
+                    var newFilePath = newPath.Replace(source, newTopPath);
+                    File.Copy(newPath, newFilePath, allowExisting);
+                }
+            );
+        }
+        else
+        {
+            Parallel.ForEach(
+                partitioner,
+                parallelOptions,
+                newPath =>
+                {
+                    var newFilePath = newPath.Replace(source, newTopPath);
+                    File.Move(newPath, newFilePath);
+                }
+            );
+        }
     }
 }

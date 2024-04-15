@@ -30,7 +30,6 @@ public static class ThrowHelper
             }
         }
     }
-
     /// <summary>
     /// Throws the specified <paramref name="exception"/> of type <typeparamref name="TException"/> on the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/>.
     /// </summary>
@@ -404,6 +403,22 @@ public static class ThrowHelper
         {
             var obj = objs[i];
             ArgumentNullException.ThrowIfNull(obj, $"objs[{i}]");
+        }
+    }
+    #endregion
+
+    #region ArgumentException factories
+    /// <summary>
+    /// Throws an <see cref="ArgumentException"/> or <see cref="ArgumentNullException"/> if the specified sequence is empty or <see langword="null"/> respectively. Note that this will enumerate the sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the sequence.</typeparam>
+    /// <param name="sequence">The sequence to test.</param>
+    public static void ThrowIfNullOrEmpty<T>(IEnumerable<T> sequence)
+    {
+        ArgumentNullException.ThrowIfNull(sequence);
+        if (!sequence.Any())
+        {
+            throw new ArgumentException("The sequence is empty.", nameof(sequence));
         }
     }
     #endregion

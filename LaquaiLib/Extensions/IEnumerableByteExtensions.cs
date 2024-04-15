@@ -50,6 +50,7 @@ public static class IEnumerableByteExtensions
         {
             // The data is little-endian, which is horrible
             // We now have to reverse the byte order of each field
+            // God thanks we can just Span over the relevant areas instead of having to copy the whole thing
             foreach (var field in fields)
             {
                 var fieldSize = Marshal.SizeOf(field.FieldType);

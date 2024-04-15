@@ -2965,6 +2965,33 @@
             </summary>
             <returns>A new instance of the current class with the same values as the original instance.</returns>
         </member>
+        <member name="T:LaquaiLib.Interfaces.IInitializable">
+            <summary>
+            Extends the <see cref="T:System.ComponentModel.ISupportInitialize"/> using an <see cref="T:LaquaiLib.Interfaces.InitializationHandle"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Interfaces.IInitializable.IsInitializing">
+            <summary>
+            Gets or sets whether this instance is currently initializing.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Interfaces.IInitializable.BeginInit">
+            <summary>
+            Transitions this instance to the initializing state and creates an <see cref="T:LaquaiLib.Interfaces.InitializationHandle"/> that represents this initialization.
+            </summary>
+            <returns>The created <see cref="T:LaquaiLib.Interfaces.InitializationHandle"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Interfaces.InitializationHandle">
+            <summary>
+            Supports the <see cref="T:LaquaiLib.Interfaces.IInitializable"/> interface. While an instance of this <see langword="struct"/> is held and not disposed, the <see cref="T:LaquaiLib.Interfaces.IInitializable"/> instance is considered to be initializing.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Interfaces.InitializationHandle.#ctor(LaquaiLib.Interfaces.IInitializable)">
+            <summary>
+            Constructs a  new <see cref="T:LaquaiLib.Interfaces.InitializationHandle"/> for the given <see cref="T:LaquaiLib.Interfaces.IInitializable"/> component. While the instance remains undisposed, the component should be considered to be initializing.
+            </summary>
+            <param name="component">The <see cref="T:LaquaiLib.Interfaces.IInitializable"/> component to initialize.</param>
+        </member>
         <member name="T:LaquaiLib.Miscellaneous">
             <summary>
             Contains miscellaneous functionality.
@@ -3403,6 +3430,198 @@
             <param name="path">The path to the file to open.</param>
             <param name="fileStreamOptions">A <see cref="T:System.IO.FileStreamOptions"/> instance that specifies how the <see cref="T:System.IO.FileStream"/> is opened.</param>
             <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Streams.RandomStream">
+            <summary>
+            Represents a <see cref="T:System.IO.Stream"/> that generates random bytes upon reading from it.
+            It comes in two variants: <see cref="T:LaquaiLib.Streams.RandomStream"/> for applications that do not require cryptographic security and <see cref="T:LaquaiLib.Streams.CryptographicRandomStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.#ctor">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.#ctor(System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStream"/> with the specified seed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.#ctor(System.Random)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStream"/> with the specified <see cref="T:System.Random"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStream.CanRead">
+            <summary>
+            Whether the <see cref="T:System.IO.Stream"/> can be read from. This is always <see langword="true"/> for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStream.CanSeek">
+            <summary>
+            Whether the <see cref="T:System.IO.Stream"/> can be seeked. This is always <see langword="false"/> for <see cref="T:LaquaiLib.Streams.RandomStream"/> since seeking is ignored.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStream.CanWrite">
+            <summary>
+            Whether the <see cref="T:System.IO.Stream"/> can be written to. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStream"/> since writes are ignored.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStream.Length">
+            <summary>
+            The length of the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStream"/>. Its length will never change.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStream.Position">
+            <summary>
+            The position in the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStream"/>. Its position will never change.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.Flush">
+            <summary>
+            Flushing is ignored for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <param name="offset">The offset in the buffer at which to start writing.</param>
+            <param name="count">The number of bytes to write.</param>
+            <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.Read(System.Span{System.Byte})">
+            <summary>
+            Fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <param name="offset">The offset in the buffer at which to start writing.</param>
+            <param name="count">The number of bytes to write.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.ReadByte">
+            <summary>
+            Returns a random <see langword="byte"/> value.
+            </summary>
+            <returns>The random <see langword="byte"/> value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Seek operations are ignored for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
+            </summary>
+            <param name="offset">Ignored.</param>
+            <param name="origin">Ignored.</param>
+            <returns><c>0</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.SetLength(System.Int64)">
+            <summary>
+            The length of a <see cref="T:LaquaiLib.Streams.RandomStream"/> is irrelevant and operations controlling it are ignored.
+            </summary>
+            <param name="value">Ignored.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes are ignored for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
+            </summary>
+            <param name="buffer">Ignored.</param>
+            <param name="offset">Ignored.</param>
+            <param name="count">Ignored.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.CopyTo(System.IO.Stream)">
+            <summary>
+            Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            </summary>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.CopyTo(System.IO.Stream,System.Int32)">
+            <summary>
+            Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            </summary>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
+            <param name="bufferSize">The size of the buffer to use for copying.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            </summary>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
+            <param name="bufferSize">The size of the buffer to use for copying.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns></returns>
+        </member>
+        <member name="T:LaquaiLib.Streams.CryptographicRandomStream">
+            <summary>
+            Implements <see cref="T:LaquaiLib.Streams.RandomStream"/> with a cryptographic random number generator.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.#ctor">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Streams.CryptographicRandomStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.Read(System.Span{System.Byte})">
+            <summary>
+            Fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <param name="offset">The offset in the buffer at which to start writing.</param>
+            <param name="count">The number of bytes to write.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.CopyTo(System.IO.Stream)">
+            <summary>
+            Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            </summary>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.CopyTo(System.IO.Stream,System.Int32)">
+            <summary>
+            Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            </summary>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
+            <param name="bufferSize">The size of the buffer to use for copying.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            </summary>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
+            <param name="bufferSize">The size of the buffer to use for copying.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns></returns>
         </member>
         <member name="T:LaquaiLib.Streams.ReadEventArgs">
             <summary>
@@ -4211,13 +4430,14 @@
             Provides methods and events for working with files and directories.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.FileSystemHelper.MigrateDirectory(System.String,System.String,System.Boolean,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Util.FileSystemHelper.MigrateDirectory(System.String,System.String,System.Boolean,System.Boolean,System.Int32,System.Threading.CancellationToken)">
             <summary>
             In parallel, migrates the contents of a directory from one location to another.
             </summary>
             <param name="source">The directory to move.</param>
             <param name="to">The directory that becomes the new parent directory of <paramref name="source"/>.</param>
-            <param name="allowExisting">Whether to allow the destination directory to already exist and contain files.</param>
+            <param name="copy">Replicate the directory and its contents at the source location instead of moving it.</param>
+            <param name="allowExisting">Whether to allow the destination directory to already exist and contain files, and whether to overwrite existing files when <paramref name="copy"/> is <see langword="true"/>.</param>
             <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow.</param>
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <remarks>
@@ -5141,37 +5361,15 @@
             </summary>
             <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
         </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.GetInstance(System.Windows.Window)">
+        <member name="M:LaquaiLib.Util.TaskbarProgress.#ctor(System.IntPtr)">
             <summary>
-            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a <see cref="T:System.Windows.Window"/> identified by its <paramref name="hwnd"/>.
             </summary>
             <remarks>
-            The application calling this method or using its return value must own the specified <paramref name="window"/>.
+            The application calling this method or using its return value must own the <see cref="T:System.Windows.Window"/> pointed to by <paramref name="hwnd"/>.
             </remarks>
-            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+            <param name="hwnd">The hwnd to the <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
             <returns>A <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.GetInstance(System.IntPtr)">
-            <summary>
-            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to a <see cref="T:System.Windows.Window"/> identified by its <paramref name="pointer"/>.
-            </summary>
-            <remarks>
-            The application calling this method or using its return value must own the <see cref="T:System.Windows.Window"/> pointed to by <paramref name="pointer"/>.
-            </remarks>
-            <param name="pointer">The pointer to the <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
-            <returns>A <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.GetInstance">
-            <summary>
-            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Util.TaskbarProgress"/> with reference to the <see cref="T:System.Windows.Window"/> of the calling process.
-            </summary>
-            <returns>A <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance.</returns>
-            <exception cref="T:System.InvalidOperationException">Thrown if the calling context's window handle was 0. Usually occurs when this method is called from a non-WPF context.</exception>
-        </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.ResetInstance">
-            <summary>
-            Resets the state of the taskbar progress bar and the <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance that is kept internally. Only one <see cref="T:LaquaiLib.Util.TaskbarProgress"/> instance may exist at a time.
-            </summary>
         </member>
         <member name="M:LaquaiLib.Util.TaskbarProgress.SetState(System.Windows.Shell.TaskbarItemProgressState)">
             <summary>
@@ -5179,34 +5377,6 @@
             </summary>
             <param name="state">The new state of the taskbar progress visual.</param>
             <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressState"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.SetValue(System.Int32)">
-            <summary>
-            Sets a new value for the taskbar progress bar.
-            </summary>
-            <param name="percent">The new value for the taskbar progress bar. Must be between 0 and 100. Values outside this range are clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.SetValue(System.Double)">
-            <summary>
-            Sets a new value for the taskbar progress bar.
-            </summary>
-            <param name="value">The new value for the taskbar progress bar. Must be between 0 and 1. Values outside this range are clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.IncreaseValue(System.Double)">
-            <summary>
-            Increases the value of the taskbar progress bar by a specified amount.
-            </summary>
-            <param name="value">The amount to increase the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.DecreaseValue(System.Double)">
-            <summary>
-            Decreases the value of the taskbar progress bar by a specified amount.
-            </summary>
-            <param name="value">The amount to decrease the value of the taskbar progress bar by. If the given value would cause the progress bar's value to fall outside range (0-1), the value is clamped.</param>
-            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressValue"/> property after the attempted set operation.</returns>
         </member>
         <member name="M:LaquaiLib.Util.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int32,System.Int32)">
             <summary>
@@ -5217,11 +5387,10 @@
             <param name="steps">The number of steps to take to reach the target value. This is ignored if greater than <paramref name="duration"/>.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when the animation has finished.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.TaskbarProgress.GetValue">
+        <member name="P:LaquaiLib.Util.TaskbarProgress.Value">
             <summary>
-            Gets the current value of the taskbar progress bar.
+            Gets or sets the current value of the taskbar progress bar.
             </summary>
-            <returns>The current value of the taskbar progress bar.</returns>
         </member>
         <member name="T:LaquaiLib.Util.ThrowHelper">
             <summary>
@@ -5414,6 +5583,13 @@
             This does not accurately report the name of the argument which is <see langword="null"/>.
             </summary>
             <param name="objs">The objects to test.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ThrowHelper.ThrowIfNullOrEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Throws an <see cref="T:System.ArgumentException"/> or <see cref="T:System.ArgumentNullException"/> if the specified sequence is empty or <see langword="null"/> respectively. Note that this will enumerate the sequence.
+            </summary>
+            <typeparam name="T">The Type of the items in the sequence.</typeparam>
+            <param name="sequence">The sequence to test.</param>
         </member>
         <member name="T:LaquaiLib.Util.ValueChangedEventArgs`1">
             <summary>
