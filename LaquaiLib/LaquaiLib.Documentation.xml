@@ -1604,6 +1604,23 @@
             <param name="any">The <typeparamref name="TEnum"/> value to retrieve the flags for.</param>
             <returns>The flags that are currently set in the specified <typeparamref name="TEnum"/> value or an empty array if no flags are set.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.EnumExtensions.HasValue``1(``0)">
+            <summary>
+            Determines if an enum value <paramref name="source"/> of <typeparamref name="T"/> has a non-zero value.
+            </summary>
+            <typeparam name="T">The type of the enum.</typeparam>
+            <param name="source">The enum value to test.</param>
+            <returns>A value indicating whether <paramref name="source"/> has a non-zero value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.EnumExtensions.HasValue``1(``0,``0)">
+            <summary>
+            Determines if an enum value <paramref name="source"/> of <typeparamref name="T"/> has at least one value that another <paramref name="value"/> also has. May not work correctly with non-<see cref="T:System.FlagsAttribute"/> enums.
+            </summary>
+            <typeparam name="T">The type of the enum.</typeparam>
+            <param name="source">The enum value to test.</param>
+            <param name="value">An enum value that is checked against.</param>
+            <returns>A value indicating whether <paramref name="source"/> has at least one value that <paramref name="value"/> also has.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.FieldInfoExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Reflection.FieldInfo"/> Type.
@@ -3431,74 +3448,24 @@
             <param name="fileStreamOptions">A <see cref="T:System.IO.FileStreamOptions"/> instance that specifies how the <see cref="T:System.IO.FileStream"/> is opened.</param>
             <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
         </member>
-        <member name="T:LaquaiLib.Streams.RandomStream">
+        <member name="T:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream">
             <summary>
-            Represents a <see cref="T:System.IO.Stream"/> that generates random bytes upon reading from it.
-            It comes in two variants: <see cref="T:LaquaiLib.Streams.RandomStream"/> for applications that do not require cryptographic security and <see cref="T:LaquaiLib.Streams.CryptographicRandomStream"/>.
+            Implements <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> with a cryptographic random number generator.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.#ctor">
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.#ctor">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStream"/>.
+            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.#ctor(System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStream"/> with the specified seed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.#ctor(System.Random)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStream"/> with the specified <see cref="T:System.Random"/> instance.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStream.CanRead">
-            <summary>
-            Whether the <see cref="T:System.IO.Stream"/> can be read from. This is always <see langword="true"/> for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStream.CanSeek">
-            <summary>
-            Whether the <see cref="T:System.IO.Stream"/> can be seeked. This is always <see langword="false"/> for <see cref="T:LaquaiLib.Streams.RandomStream"/> since seeking is ignored.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStream.CanWrite">
-            <summary>
-            Whether the <see cref="T:System.IO.Stream"/> can be written to. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStream"/> since writes are ignored.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStream.Length">
-            <summary>
-            The length of the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStream"/>. Its length will never change.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStream.Position">
-            <summary>
-            The position in the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStream"/>. Its position will never change.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.Flush">
-            <summary>
-            Flushing is ignored for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Fills the specified buffer with random bytes.
-            </summary>
-            <param name="buffer">The buffer to fill with random bytes.</param>
-            <param name="offset">The offset in the buffer at which to start writing.</param>
-            <param name="count">The number of bytes to write.</param>
-            <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.Read(System.Span{System.Byte})">
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.Read(System.Span{System.Byte})">
             <summary>
             Fills the specified buffer with random bytes.
             </summary>
             <param name="buffer">The buffer to fill with random bytes.</param>
             <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
         </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Asynchronously fills the specified buffer with random bytes.
             </summary>
@@ -3508,7 +3475,7 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
             <summary>
             Asynchronously fills the specified buffer with random bytes.
             </summary>
@@ -3516,48 +3483,20 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
         </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.ReadByte">
-            <summary>
-            Returns a random <see langword="byte"/> value.
-            </summary>
-            <returns>The random <see langword="byte"/> value.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.Seek(System.Int64,System.IO.SeekOrigin)">
-            <summary>
-            Seek operations are ignored for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
-            </summary>
-            <param name="offset">Ignored.</param>
-            <param name="origin">Ignored.</param>
-            <returns><c>0</c>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.SetLength(System.Int64)">
-            <summary>
-            The length of a <see cref="T:LaquaiLib.Streams.RandomStream"/> is irrelevant and operations controlling it are ignored.
-            </summary>
-            <param name="value">Ignored.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.Write(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Writes are ignored for <see cref="T:LaquaiLib.Streams.RandomStream"/>.
-            </summary>
-            <param name="buffer">Ignored.</param>
-            <param name="offset">Ignored.</param>
-            <param name="count">Ignored.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.CopyTo(System.IO.Stream)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.CopyTo(System.IO.Stream)">
             <summary>
             Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
             </summary>
             <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
         </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.CopyTo(System.IO.Stream,System.Int32)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.CopyTo(System.IO.Stream,System.Int32)">
             <summary>
             Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
             </summary>
             <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
             <param name="bufferSize">The size of the buffer to use for copying.</param>
         </member>
-        <member name="M:LaquaiLib.Streams.RandomStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Asynchronously fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
             </summary>
@@ -3566,24 +3505,74 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <returns></returns>
         </member>
-        <member name="T:LaquaiLib.Streams.CryptographicRandomStream">
+        <member name="T:LaquaiLib.Streams.RandomStreams.RandomStream">
             <summary>
-            Implements <see cref="T:LaquaiLib.Streams.RandomStream"/> with a cryptographic random number generator.
+            Represents a <see cref="T:System.IO.Stream"/> that generates random bytes upon reading from it.
+            It comes in two variants: <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> for applications that do not require cryptographic security and <see cref="T:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.#ctor">
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.#ctor">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.CryptographicRandomStream"/>.
+            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.Read(System.Span{System.Byte})">
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.#ctor(System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> with the specified seed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.#ctor(System.Random)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> with the specified <see cref="T:System.Random"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.CanRead">
+            <summary>
+            Whether the <see cref="T:System.IO.Stream"/> can be read from. This is always <see langword="true"/> for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.CanSeek">
+            <summary>
+            Whether the <see cref="T:System.IO.Stream"/> can be seeked. This is always <see langword="false"/> for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> since seeking is ignored.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.CanWrite">
+            <summary>
+            Whether the <see cref="T:System.IO.Stream"/> can be written to. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> since writes are ignored.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.Length">
+            <summary>
+            The length of the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>. Its length will never change.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.Position">
+            <summary>
+            The position in the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>. Its position will never change.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.Flush">
+            <summary>
+            Flushing is ignored for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <param name="offset">The offset in the buffer at which to start writing.</param>
+            <param name="count">The number of bytes to write.</param>
+            <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.Read(System.Span{System.Byte})">
             <summary>
             Fills the specified buffer with random bytes.
             </summary>
             <param name="buffer">The buffer to fill with random bytes.</param>
             <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
         </member>
-        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Asynchronously fills the specified buffer with random bytes.
             </summary>
@@ -3593,7 +3582,7 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
             <summary>
             Asynchronously fills the specified buffer with random bytes.
             </summary>
@@ -3601,20 +3590,48 @@
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
         </member>
-        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.CopyTo(System.IO.Stream)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.ReadByte">
+            <summary>
+            Returns a random <see langword="byte"/> value.
+            </summary>
+            <returns>The random <see langword="byte"/> value.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Seek operations are ignored for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>.
+            </summary>
+            <param name="offset">Ignored.</param>
+            <param name="origin">Ignored.</param>
+            <returns><c>0</c>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.SetLength(System.Int64)">
+            <summary>
+            The length of a <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> is irrelevant and operations controlling it are ignored.
+            </summary>
+            <param name="value">Ignored.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes are ignored for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>.
+            </summary>
+            <param name="buffer">Ignored.</param>
+            <param name="offset">Ignored.</param>
+            <param name="count">Ignored.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.CopyTo(System.IO.Stream)">
             <summary>
             Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
             </summary>
             <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
         </member>
-        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.CopyTo(System.IO.Stream,System.Int32)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.CopyTo(System.IO.Stream,System.Int32)">
             <summary>
             Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
             </summary>
             <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
             <param name="bufferSize">The size of the buffer to use for copying.</param>
         </member>
-        <member name="M:LaquaiLib.Streams.CryptographicRandomStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Asynchronously fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
             </summary>

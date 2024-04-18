@@ -66,56 +66,32 @@ public class CryptographicRandomStream : RandomStream
         }
     }
     /// <summary>
-    /// Fills the specified <paramref name="destination"/> <see cref="Stream"/> with as many <see langword="byte"/>s as will fit.
+    /// Writes <paramref name="byteCount"/> random bytes to the specified <paramref name="destination"/> <see cref="Stream"/>.
     /// </summary>
-    /// <param name="destination">The <see cref="Stream"/> to fill with random bytes.</param>
-    /// <param name="bufferSize">The size of the buffer to use for copying.</param>
-    public override void CopyTo(Stream destination, int bufferSize)
+    /// <param name="destination">The <see cref="Stream"/> to write to.</param>
+    /// <param name="byteCount">How many random bytes to write to <paramref name="destination"/>.</param>
+    public override void CopyTo(Stream destination, int byteCount)
     {
-        using (var buffer = new TempArray<byte>(int.Min(bufferSize, (int)(destination.Length - destination.Position))))
+        using (var buffer = new TempArray<byte>(byteCount))
         {
-            while (destination.Length - destination.Position >= bufferSize)
-            {
-                Read(buffer.Array);
-                destination.Write(buffer.Array);
-            }
-            var remaining = (int)(destination.Length - destination.Position);
-            if (remaining > 0)
-            {
-                var span = buffer.Array.AsSpan(0, remaining);
-                Read(span);
-                destination.Write(span);
-            }
+            Read(buffer.Array);
+            destination.Write(buffer.Array, 0, byteCount);
         }
     }
     /// <summary>
-    /// Asynchronously fills the specified <paramref name="destination"/> <see cref="Stream"/> with as many <see langword="byte"/>s as will fit.
+    /// Asynchronously writes <paramref name="byteCount"/> random bytes to the specified <paramref name="destination"/> <see cref="Stream"/>.
     /// </summary>
-    /// <param name="destination">The <see cref="Stream"/> to fill with random bytes.</param>
-    /// <param name="bufferSize">The size of the buffer to use for copying.</param>
+    /// <param name="destination">The <see cref="Stream"/> to write to.</param>
+    /// <param name="byteCount">How many random bytes to write to <paramref name="destination"/>.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
-    /// <returns></returns>
-    public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+    public override async Task CopyToAsync(Stream destination, int byteCount, CancellationToken cancellationToken)
     {
-        using (var buffer = new TempArray<byte>(int.Min(bufferSize, (int)(destination.Length - destination.Position))))
+        using (var buffer = new TempArray<byte>(int.Min(byteCount, (int)(destination.Length - destination.Position))))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            while (destination.Length - destination.Position >= bufferSize)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
-                await destination.WriteAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
-            }
+            await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
-            var remaining = (int)(destination.Length - destination.Position);
-            if (remaining > 0)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await ReadAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
-                await destination.WriteAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
-            }
+            await destination.WriteAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
         }
     }
 
