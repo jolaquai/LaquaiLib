@@ -9,7 +9,7 @@ public static class HttpListenerRequestExtensions
 {
     /// <summary>
     /// Returns the route that the request was made to.
-    /// <para/>For example, if the request was made to "http://localhost:8080/api/v1/endpoint?param1=1&param2=2", this method would return "/api/v1/endpoint".
+    /// <para/>For example, if the request was made to <c>http://localhost:8080/api/v1/endpoint?param1=1&amp;param2=2</c>, this method would return <c>/api/v1/endpoint</c>.
     /// </summary>
     /// <param name="request">The <see cref="HttpListenerRequest"/> to get the route from.</param>
     /// <returns>The route that the request was made to.</returns>

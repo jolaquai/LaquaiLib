@@ -14,7 +14,7 @@ public static class Try
     #endregion
 
     #region ExecuteOrDefault
-    // These methods execute parameterless Func<T>s and propagate their return value if they succeed, otherwise returning a default value, either passed directly or produced by a Func<T>
+    // These methods execute parameterless Func<TSelf>s and propagate their return value if they succeed, otherwise returning a default value, either passed directly or produced by a Func<TSelf>
 
     /// <summary>
     /// Attempts to execute the given parameterless <see cref="Func{TResult}"/> and propagates its return value if it succeeds, otherwise returning <paramref name="defaultValue"/>.
@@ -56,7 +56,7 @@ public static class Try
     #endregion
 
     #region First (variant 1)
-    // These methods execute parameterless Func<T>s and propagate the return value of the first that succeeds, otherwise throwing an AggregateException containing all thrown exceptions
+    // These methods execute parameterless Func<TSelf>s and propagate the return value of the first that succeeds, otherwise throwing an AggregateException containing all thrown exceptions
 
     /// <summary>
     /// Attempts to execute the given parameterless <see cref="Func{TResult}"/>s and propagates its return value if it succeeds, otherwise throwing an <see cref="AggregateException"/> composed of all exceptions thrown by the <paramref name="methods"/>.
@@ -86,7 +86,7 @@ public static class Try
     #endregion
 
     #region First (variant 2)
-    // These methods test items in collection using a test Action<T> and return the first item that the test method does not throw an exception for, otherwise throwing an AggregateException containing all thrown exceptions
+    // These methods test items in collection using a test Action<TSelf> and return the first item that the test method does not throw an exception for, otherwise throwing an AggregateException containing all thrown exceptions
 
     /// <inheritdoc cref="First{T}(Action{T}, IEnumerable{T})"/>
     public static T? First<T>(Action<T?> test, params T?[] items) => First(test, (IEnumerable<T?>)items);
@@ -117,7 +117,7 @@ public static class Try
     #endregion
 
     #region FirstOrDefault (variant 1)
-    // These methods execute parameterless Func<T>s and propagate the return value of the first that succeeds, otherwise returning a default value, either passed directly or produced by a Func<T>
+    // These methods execute parameterless Func<TSelf>s and propagate the return value of the first that succeeds, otherwise returning a default value, either passed directly or produced by a Func<TSelf>
 
     /// <summary>
     /// Attempts to execute the given parameterless <see cref="Func{TResult}"/>s and propagates the return value of the first succeeds, otherwise returning <paramref name="defaultValue"/>.
@@ -166,7 +166,7 @@ public static class Try
     #endregion
 
     #region FirstOrDefault (variant 2)
-    // These methods test items in collection using a test Action<T> and return the first item that the test method does not throw an exception for, otherwise returning a default value, either passed directly or produced by a Func<T>
+    // These methods test items in collection using a test Action<TSelf> and return the first item that the test method does not throw an exception for, otherwise returning a default value, either passed directly or produced by a Func<TSelf>
 
     /// <inheritdoc cref="FirstOrDefault{T}(T, Action{T}, IEnumerable{T})"/>
     public static T? FirstOrDefault<T>(T? defaultValue, Action<T?> test, params T?[] items) => FirstOrDefault(defaultValue, test, (IEnumerable<T?>)items);

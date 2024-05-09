@@ -1,21 +1,29 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace LaquaiLib.Collections;
+using DocumentFormat.OpenXml.Spreadsheet;
+
+namespace LaquaiLib.Collections.Observable;
 
 /// <summary>
 /// Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
 /// </summary>
 /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-public class ObservableCollectionFast<T> : ObservableCollection<T>
+public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection<T>, IEnumerable<T>
 {
     #region Fields / Properties
+    protected List<T> _items;
+
     /// <summary>
     /// Whether the <see cref="ObservableCollection{T}"/> is silenced. No registered events are raised, not even ones manually triggered using <see cref="RaiseCollectionChanged(NotifyCollectionChangedEventArgs?)"/>.
     /// </summary>
-    private bool IsSilenced { get; set; }
+    private bool IsSilenced
+    {
+        get; set;
+    }
 
     private bool keepOrdered;
     /// <summary>
@@ -36,7 +44,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     }
 
     private IComparer<T>? comparer;
-
     /// <summary>
     /// The <see cref="IComparer{T}"/> used to compare elements in the <see cref="ObservableCollection{T}"/> if <see cref="KeepOrdered"/> is <see langword="true"/>.
     /// <para/>
@@ -54,6 +61,23 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
             }
         }
     }
+
+    Func<T, bool>? filter;
+    public Func<T, bool>? Filter
+    {
+        get => filter;
+        set
+        {
+            if (filter != value)
+            {
+                filter = value;
+                RaiseCollectionChanged();
+            }
+        }
+    }
+
+    public int Count => _items.Count;
+    bool ICollection<T>.IsReadOnly => false;
     #endregion
 
     #region Constructors
@@ -62,28 +86,33 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// </summary>
     public ObservableCollectionFast()
     {
+        _items = new List<T>();
     }
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified collection.
     /// </summary>
     /// <param name="collection">The collection from which the elements are copied.</param>
-    public ObservableCollectionFast(IEnumerable<T> collection) : base(collection)
+    public ObservableCollectionFast(IEnumerable<T> collection)
     {
+        ArgumentNullException.ThrowIfNull(collection);
+
+        _items = new List<T>(collection);
     }
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified span.
     /// </summary>
     /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> from which the elements are copied.</param>
-    public ObservableCollectionFast(ReadOnlySpan<T> span) : base(span.ToArray())
+    public ObservableCollectionFast(ReadOnlySpan<T> span)
     {
+        _items = new List<T>(span.ToArray());
     }
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains the specified items and has a capacity equal to the number of items.
     /// </summary>
     /// <param name="items">The items for the list to contain.</param>
-    public ObservableCollectionFast(params T[] items) : base()
+    public ObservableCollectionFast(params T[] items)
     {
-        AddRange(items);
+        _items = new List<T>(items);
     }
     #endregion
 
@@ -97,19 +126,11 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     {
         get
         {
-            if (!IsSilenced)
-            {
-                IndexGet?.Invoke(this, new IndexGetEventArgs(index.GetOffset(Count)));
-            }
-            return base[index];
+            return _items[index];
         }
         set
         {
-            if (!IsSilenced)
-            {
-                IndexSet?.Invoke(this, new IndexSetEventArgs(index.GetOffset(Count)));
-            }
-            base[index] = value;
+            _items[index] = value;
             RaiseCollectionChanged();
         }
     }
@@ -124,10 +145,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
         get
         {
             var (offset, length) = range.GetOffsetAndLength(Count);
-            if (!IsSilenced)
-            {
-                RangeGet?.Invoke(this, new RangeGetEventArgs(offset, length));
-            }
             for (var i = offset; i < offset + length; i++)
             {
                 yield return this[i];
@@ -141,10 +158,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
             {
                 this[i] = materialized[i - offset];
             }
-            if (!IsSilenced)
-            {
-                RangeSet?.Invoke(this, new RangeSetEventArgs(offset, length));
-            }
             RaiseCollectionChanged();
         }
     }
@@ -155,17 +168,7 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// <param name="index">The zero-based starting index of the range of elements to get or set.</param>
     /// <param name="count">The number of elements to get or set.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> containing the items that were get or set.</returns>
-    public IEnumerable<T> this[int index, int count]
-    {
-        get
-        {
-            if (!IsSilenced)
-            {
-                RangeGet?.Invoke(this, new RangeGetEventArgs(index, count));
-            }
-            return this[range: index..(index + count)];
-        }
-    }
+    public IEnumerable<T> this[int index, int count] => this[range: index..(index + count)];
     #endregion
 
     #region Silencing
@@ -207,33 +210,14 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// </summary>
     public void SortSilent()
     {
-        if (Comparer is not null)
-        {
-            ClearSilent();
-            foreach (var item in Items.OrderBy(x => x, Comparer).ToList())
-            {
-                AddSilent(item);
-            }
-        }
-        else
-        {
-            ClearSilent();
-            foreach (var item in Items.OrderBy(x => x, Comparer<T>.Default).ToList())
-            {
-                AddSilent(item);
-            }
-        }
+        _items = _items.OrderBy(x => x, Comparer ?? Comparer<T>.Default).ToList();
     }
     #endregion
 
     #region Add*
     /// <inheritdoc cref="ICollection{T}.Add(T)"/>
-    public new void Add(T item)
+    public void Add(T item)
     {
-        if (!IsSilenced)
-        {
-            Added?.Invoke(this, new AddedEventArgs<T>(item));
-        }
         AddSilent(item);
         RaiseCollectionChanged();
     }
@@ -258,10 +242,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     {
         ArgumentNullException.ThrowIfNull(collection);
 
-        if (!IsSilenced)
-        {
-            RangeAdded?.Invoke(this, new RangeAddedEventArgs<T>(collection));
-        }
         foreach (var item in collection)
         {
             AddSilent(item);
@@ -274,7 +254,85 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// <param name="item">The item to add to the end of this <see cref="ObservableCollection{T}"/>.</param>
     public void AddSilent(T item)
     {
-        Items.Add(item);
+        _items.Add(item);
+    }
+    #endregion
+    #region Insert
+    /// <summary>
+    /// Inserts the specified <paramref name="item"/> into the collection at the specified <paramref name="index"/>.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="item"/> should be inserted.</param>
+    /// <param name="item">The object to insert.</param>
+    public void Insert(int index, T item)
+    {
+        InsertSilent(index, item);
+        RaiseCollectionChanged();
+    }
+    /// <summary>
+    /// Silently inserts the specified <paramref name="item"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="item"/> should be inserted.</param>
+    /// <param name="item">The object to insert.</param>
+    public void InsertSilent(int index, T item)
+    {
+        _items.Insert(index, item);
+    }
+    /// <summary>
+    /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+    /// <param name="items">The objects to insert.</param>
+    public void InsertRangeSilent(int index, params T[] items)
+    {
+        _items.InsertRange(index, items);
+    }
+    /// <summary>
+    /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+    /// <param name="items">The objects to insert.</param>
+    public void InsertRangeSilent(int index, IEnumerable<T> items)
+    {
+        _items.InsertRange(index, items);
+    }
+    /// <summary>
+    /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+    /// <param name="items">The objects to insert.</param>
+    public void InsertRangeSilent(int index, ReadOnlySpan<T> items)
+    {
+        _items.InsertRange(index, items);
+    }
+    /// <summary>
+    /// Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+    /// <param name="items">The objects to insert.</param>
+    public void InsertRange(int index, params T[] items)
+    {
+        InsertRangeSilent(index, items);
+        RaiseCollectionChanged();
+    }
+    /// <summary>
+    /// Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+    /// <param name="items">The objects to insert.</param>
+    public void InsertRange(int index, IEnumerable<T> items)
+    {
+        InsertRangeSilent(index, items);
+        RaiseCollectionChanged();
+    }
+    /// <summary>
+    /// Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+    /// <param name="items">The objects to insert.</param>
+    public void InsertRange(int index, ReadOnlySpan<T> items)
+    {
+        InsertRangeSilent(index, items);
+        RaiseCollectionChanged();
     }
     #endregion
 
@@ -284,11 +342,13 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// </summary>
     public void ClearSilent()
     {
-        if (!IsSilenced)
-        {
-            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs<T>(Items));
-        }
-        Items.Clear();
+        _items.Clear();
+    }
+    /// <inheritdoc/>
+    public void Clear()
+    {
+        ClearSilent();
+        RaiseCollectionChanged();
     }
 
     /// <summary>
@@ -300,10 +360,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// </remarks>
     public void Reset(IEnumerable<T> collection)
     {
-        if (!IsSilenced)
-        {
-            Refill?.Invoke(this, new ResetEventArgs<T>(collection));
-        }
         ClearSilent();
         AddRange(collection);
     }
@@ -314,14 +370,11 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// Removes an element from this <see cref="ObservableCollection{T}"/>.
     /// </summary>
     /// <param name="item">The item to remove from this <see cref="ObservableCollection{T}"/>.</param>
-    public new void Remove(T item)
+    public bool Remove(T item)
     {
-        if (!IsSilenced)
-        {
-            Removed?.Invoke(this, new RemovedEventArgs<T>(item));
-        }
-        RemoveSilent(item);
+        var ret = RemoveSilent(item);
         RaiseCollectionChanged();
+        return ret;
     }
     /// <summary>
     /// Removes all elements from this <see cref="ObservableCollection{T}"/> as dictated by a <paramref name="selector"/> <see cref="Func{T, TResult}"/>.
@@ -329,10 +382,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that determines whether an element should be removed.</param>
     public void Remove(Func<T, bool> selector)
     {
-        if (!IsSilenced)
-        {
-            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs<T>(Items.Where(selector)));
-        }
         RemoveSilent(selector);
         RaiseCollectionChanged();
     }
@@ -344,10 +393,6 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     {
         ArgumentNullException.ThrowIfNull(collection);
 
-        if (!IsSilenced)
-        {
-            RangeRemoved?.Invoke(this, new RangeRemovedEventArgs<T>(collection));
-        }
         foreach (var item in collection)
         {
             RemoveSilent(item);
@@ -358,31 +403,83 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
     /// Silently removes an element from this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
     /// </summary>
     /// <param name="item">The item to remove from this <see cref="ObservableCollection{T}"/>.</param>
-    public void RemoveSilent(T item)
-    {
-        Items.Remove(item);
-    }
+    public bool RemoveSilent(T item) => _items.Remove(item);
     /// <summary>
     /// Silently removes all elements from this <see cref="ObservableCollection{T}"/> as dictated by a <paramref name="selector"/> <see cref="Func{T, TResult}"/>. This causes no <see cref="NotifyCollectionChangedAction.Remove"/> event to be fired.
     /// </summary>
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that determines whether an element should be removed.</param>
-    public void RemoveSilent(Func<T, bool> selector)
+    public void RemoveSilent(Func<T, bool> selector) => _items.RemoveAll(new Predicate<T>(selector));
+    #endregion
+
+    #region ICollection<T>
+    /// <inheritdoc/>
+    public bool Contains(T item) => _items.Contains(item);
+    /// <summary>
+    /// Searches for the specified <paramref name="item"/> in the collection using the specified <paramref name="comparer"/>, skipping the first <paramref name="startIndex"/> elements.
+    /// </summary>
+    /// <param name="item">The item to search for.</param>
+    /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> implementation to use when comparing elements, or <see langword="null"/> to use the default comparer.</param>
+    /// <param name="startIndex">The index at which to start the search.</param>
+    /// <returns>The index of the first occurrence of the specified <paramref name="item"/> in the collection, or -1 if the <paramref name="item"/> is not found.</returns>
+    public int IndexOf(T? item, IEqualityComparer<T>? comparer = null, int startIndex = 0)
     {
-        foreach (var item in Items.Where(selector).ToList())
+        if (item is null)
         {
-            RemoveSilent(item);
+            return -1;
         }
+        var i = startIndex;
+        foreach (var t in ((IEnumerable<T>)(Filter is not null ? this : _items)).Skip(startIndex))
+        {
+            if (comparer is not null ? comparer.Equals(t, item) : t.Equals(item))
+            {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
+    /// <summary>
+    /// Searches for the specified <paramref name="item"/> in the collection in reverse using the specified <paramref name="comparer"/>, skipping the last <paramref name="startIndex"/> elements.
+    /// </summary>
+    /// <param name="item">The item to search for.</param>
+    /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> implementation to use when comparing elements, or <see langword="null"/> to use the default comparer.</param>
+    /// <param name="startIndex">The index at which to start the search, or <c>-1</c> to start with the last element.</param>
+    /// <returns>The index of the first occurrence of the specified <paramref name="item"/> in the collection, or -1 if the <paramref name="item"/> is not found.</returns>
+    public int LastIndexOf(T? item, IEqualityComparer<T>? comparer = null, int startIndex = -1)
+    {
+        if (item is null)
+        {
+            return -1;
+        }
+        var i = startIndex == -1 ? _items.Count : startIndex;
+        foreach (var t in ((IEnumerable<T>)(Filter is not null ? this : _items)).Reverse().Skip(startIndex))
+        {
+            if (comparer is not null ? comparer.Equals(t, item) : t.Equals(item))
+            {
+                return i;
+            }
+            i--;
+        }
+        return -1;
+    }
+    /// <inheritdoc/>
+    public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
+    /// <inheritdoc/>
+    public IEnumerator<T> GetEnumerator() => Filter is not null ? new FilterableCollectionEnumerator<T>(_items, Filter) : _items.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
 
     #region Events
+    /// <inheritdoc/>
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
+
     /// <summary>
     /// Raises a <see cref="NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="ObservableCollection{T}"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
     /// <paramref name="e"/>The <see cref="NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="NotifyCollectionChangedEventArgs"/> with <see cref="NotifyCollectionChangedAction.Reset"/> will be passed.
     /// </summary>
-    public void RaiseCollectionChanged(NotifyCollectionChangedEventArgs? e = null) => OnCollectionChanged(e!);
+    public void RaiseCollectionChanged(NotifyCollectionChangedEventArgs? e = null) => OnCollectionChanged(e);
     /// <inheritdoc/>
-    protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+    protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs? e = null)
     {
         e ??= new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 
@@ -393,59 +490,8 @@ public class ObservableCollectionFast<T> : ObservableCollection<T>
 
         if (!IsSilenced)
         {
-            PreCollectionChanged?.Invoke(this, EventArgs.Empty);
-            base.OnCollectionChanged(e);
-            PostCollectionChanged?.Invoke(this, EventArgs.Empty);
+            CollectionChanged?.Invoke(this, e);
         }
     }
-
-    /// <summary>
-    /// Occurs before a <see cref="NotifyCollectionChangedAction"/> event is raised. It may modify the collection.
-    /// </summary>
-    public event EventHandler PreCollectionChanged;
-    /// <summary>
-    /// Occurs after a <see cref="NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes
-    /// </summary>
-    public event EventHandler PostCollectionChanged;
-    /// <summary>
-    /// Occurs before a <see cref="NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    public event EventHandler<AddedEventArgs<T>> Added;
-    /// <summary>
-    /// Occurs before a <see cref="NotifyCollectionChangedAction.Remove"/> event is raised for this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    public event EventHandler<RemovedEventArgs<T>> Removed;
-    /// <summary>
-    /// Occurs before multiple items are added to this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    public event EventHandler<RangeAddedEventArgs<T>> RangeAdded;
-    /// <summary>
-    /// Occurs before multiple items are removed from this <see cref="ObservableCollectionFast{T}"/>. It may modify the collection.
-    /// </summary>
-    public event EventHandler<RangeRemovedEventArgs<T>> RangeRemoved;
-    /// <summary>
-    /// Occurs when an item located at an individual index is accessed. It may modify the collection.
-    /// </summary>
-    public event EventHandler<IndexGetEventArgs> IndexGet;
-    /// <summary>
-    /// The event that is raised when an item located at an individual index is set. It may modify the collection.
-    /// </summary>
-    public event EventHandler<IndexSetEventArgs> IndexSet;
-    /// <summary>
-    /// Occurs when multiple items in a specific range are accessed. It may modify the collection.
-    /// </summary>
-    public event EventHandler<RangeGetEventArgs> RangeGet;
-    /// <summary>
-    /// Occurs when multiple items in a specific range are set. It may modify the collection.
-    /// </summary>
-    public event EventHandler<RangeSetEventArgs> RangeSet;
-    /// <summary>
-    /// Occurs when the collection is reset by clearing it and refilling it. It may modify the collection.
-    /// </summary>
-    public event EventHandler<ResetEventArgs<T>> Refill;
-    /// <summary>
-    /// Occurs when the collection is reset by clearing it. It may modify the collection.
-    /// </summary>
-    public event EventHandler Empty;
     #endregion
 }

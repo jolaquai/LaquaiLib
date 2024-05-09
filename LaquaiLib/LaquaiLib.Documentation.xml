@@ -354,37 +354,31 @@
             Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/>'s previous node does not have a reference to <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> as its next node.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Collections.IndexGetEventArgs">
+        <member name="T:LaquaiLib.Collections.FilterableCollectionEnumerator`1">
             <summary>
-            Represents the event arguments for the IndexGet event.
+            Implements an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that iterates over only the items that match a given predicate.
+            This implementation is essentially stateless; all caching is done through the internals of <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </summary>
+            <typeparam name="T">The type of the items to iterate over.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Collections.IndexGetEventArgs.Index">
+        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Boolean})">
             <summary>
-            Gets the index being accessed.
+            Initializes a new <see cref="T:LaquaiLib.Collections.FilterableCollectionEnumerator`1"/>.
             </summary>
+            <param name="items">The items to iterate over.</param>
+            <param name="predicate">The predicate to filter the items by. If <see langword="null"/>, this instance will behave exactly like a regular <see cref="T:System.Collections.Generic.IEnumerator`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.IndexGetEventArgs.#ctor(System.Int32)">
-            <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.IndexGetEventArgs"/> class.
-            </summary>
-            <param name="index">The index being accessed.</param>
+        <member name="P:LaquaiLib.Collections.FilterableCollectionEnumerator`1.Current">
+            <inheritdoc/>
         </member>
-        <member name="T:LaquaiLib.Collections.IndexSetEventArgs">
-            <summary>
-            Represents the event arguments for the IndexSet event.
-            </summary>
+        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.MoveNext">
+            <inheritdoc/>
         </member>
-        <member name="P:LaquaiLib.Collections.IndexSetEventArgs.Index">
-            <summary>
-            Gets the index being accessed.
-            </summary>
+        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.Reset">
+            <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Collections.IndexSetEventArgs.#ctor(System.Int32)">
-            <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.IndexSetEventArgs"/> class.
-            </summary>
-            <param name="index">The index being accessed.</param>
+        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.Dispose">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1">
             <summary>
@@ -524,68 +518,100 @@
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
         </member>
-        <member name="T:LaquaiLib.Collections.ObservableCollectionFast`1">
+        <member name="T:LaquaiLib.Collections.Observable.IndexGetEventArgs">
+            <summary>
+            Represents the event arguments for the IndexGet event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.Observable.IndexGetEventArgs.Index">
+            <summary>
+            Gets the index being accessed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.IndexGetEventArgs.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexGetEventArgs"/> class.
+            </summary>
+            <param name="index">The index being accessed.</param>
+        </member>
+        <member name="T:LaquaiLib.Collections.Observable.IndexSetEventArgs">
+            <summary>
+            Represents the event arguments for the IndexSet event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Collections.Observable.IndexSetEventArgs.Index">
+            <summary>
+            Gets the index being accessed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.IndexSetEventArgs.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexSetEventArgs"/> class.
+            </summary>
+            <param name="index">The index being accessed.</param>
+        </member>
+        <member name="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1">
             <summary>
             Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
             </summary>
             <typeparam name="T">The Type of the elements in the collection.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Collections.ObservableCollectionFast`1.IsSilenced">
+        <member name="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.IsSilenced">
             <summary>
-            Whether the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> is silenced. No registered events are raised, not even ones manually triggered using <see cref="M:LaquaiLib.Collections.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)"/>.
+            Whether the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> is silenced. No registered events are raised, not even ones manually triggered using <see cref="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)"/>.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Collections.ObservableCollectionFast`1.KeepOrdered">
+        <member name="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.KeepOrdered">
             <summary>
-            Whether the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> should keep itself ordered. When this is <see langword="true"/>, whenever the collection is modified in a way that raises a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event, it is sorted using <see cref="P:LaquaiLib.Collections.ObservableCollectionFast`1.Comparer"/>.
-            Assigning a new <see cref="T:System.Boolean"/> value will cause the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> to be sorted using the currently set <see cref="P:LaquaiLib.Collections.ObservableCollectionFast`1.Comparer"/> immediately. This also raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event.
+            Whether the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> should keep itself ordered. When this is <see langword="true"/>, whenever the collection is modified in a way that raises a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event, it is sorted using <see cref="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Comparer"/>.
+            Assigning a new <see cref="T:System.Boolean"/> value will cause the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> to be sorted using the currently set <see cref="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Comparer"/> immediately. This also raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Collections.ObservableCollectionFast`1.Comparer">
+        <member name="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Comparer">
             <summary>
-            The <see cref="T:System.Collections.Generic.IComparer`1"/> used to compare elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> if <see cref="P:LaquaiLib.Collections.ObservableCollectionFast`1.KeepOrdered"/> is <see langword="true"/>.
+            The <see cref="T:System.Collections.Generic.IComparer`1"/> used to compare elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> if <see cref="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.KeepOrdered"/> is <see langword="true"/>.
             <para/>
             <para/>Assigning a new <see cref="T:System.Collections.Generic.IComparer`1"/> will cause the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> to be sorted using the new <see cref="T:System.Collections.Generic.IComparer`1"/> immediately. This also raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.#ctor">
             <summary>
             Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified collection.
             </summary>
             <param name="collection">The collection from which the elements are copied.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor(System.ReadOnlySpan{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.#ctor(System.ReadOnlySpan{`0})">
             <summary>
             Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains elements copied from the specified span.
             </summary>
             <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> from which the elements are copied.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.#ctor(`0[])">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.#ctor(`0[])">
             <summary>
             Initializes a new <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> that contains the specified items and has a capacity equal to the number of items.
             </summary>
             <param name="items">The items for the list to contain.</param>
         </member>
-        <member name="P:LaquaiLib.Collections.ObservableCollectionFast`1.Item(System.Index)">
+        <member name="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Item(System.Index)">
             <summary>
             Gets or sets the element at the specified <paramref name="index"/>.
             </summary>
             <param name="index">An <see cref="T:System.Index"/> instance that identifies the location of the element to get or set.</param>
             <returns>The element at the specified <paramref name="index"/>.</returns>
         </member>
-        <member name="P:LaquaiLib.Collections.ObservableCollectionFast`1.Item(System.Range)">
+        <member name="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Item(System.Range)">
             <summary>
             Gets or sets elements within the specified <paramref name="range"/>.
             </summary>
             <param name="range">The <see cref="T:System.Range"/> in which to get or set elements.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
         </member>
-        <member name="P:LaquaiLib.Collections.ObservableCollectionFast`1.Item(System.Int32,System.Int32)">
+        <member name="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Item(System.Int32,System.Int32)">
             <summary>
             Gets or sets elements within a range as specified by <paramref name="index"/> and <paramref name="count"/>.
             </summary>
@@ -593,55 +619,58 @@
             <param name="count">The number of elements to get or set.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing the items that were get or set.</returns>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.Silenced(System.Action)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Silenced(System.Action)">
             <summary>
             Executes the specified <paramref name="action"/>. For its entire context, the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> is silenced, then the previous state is restored (that is, if the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> was silenced before, this is the same as calling <paramref name="action"/> directly).
             </summary>
             <param name="action">The <see cref="T:System.Action"/> to execute.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.Unsilenced(System.Action)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Unsilenced(System.Action)">
             <summary>
             Executes the specified <paramref name="action"/>. For its entire context, the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> is unsilenced, then the previous state is restored (that is, if the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> was unsilenced before, this is the same as calling <paramref name="action"/> directly).
             </summary>
             <param name="action">The <see cref="T:System.Action"/> to execute.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.Sort">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Sort">
             <summary>
-            Orders the elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> using the <see cref="P:LaquaiLib.Collections.ObservableCollectionFast`1.Comparer"/> or the default <see cref="T:System.Collections.Generic.Comparer`1"/> if <see cref="P:LaquaiLib.Collections.ObservableCollectionFast`1.Comparer"/> is <see langword="null"/>.
+            Orders the elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> using the <see cref="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Comparer"/> or the default <see cref="T:System.Collections.Generic.Comparer`1"/> if <see cref="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Comparer"/> is <see langword="null"/>.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.SortSilent">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.SortSilent">
             <summary>
-            Silently orders the elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> using the <see cref="P:LaquaiLib.Collections.ObservableCollectionFast`1.Comparer"/> or the default <see cref="T:System.Collections.Generic.Comparer`1"/> if <see cref="P:LaquaiLib.Collections.ObservableCollectionFast`1.Comparer"/> is <see langword="null"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event to be fired.
+            Silently orders the elements in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> using the <see cref="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Comparer"/> or the default <see cref="T:System.Collections.Generic.Comparer`1"/> if <see cref="P:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Comparer"/> is <see langword="null"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event to be fired.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.Add(`0)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Add(`0)">
             <inheritdoc cref="M:System.Collections.Generic.ICollection`1.Add(`0)"/>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.AddRangeSilent(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.AddRangeSilent(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Silently adds the elements of the specified collection to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
             </summary>
             <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.AddRange(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Adds the elements of the specified collection to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             </summary>
             <param name="collection">The collection whose elements should be added to the end of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.AddSilent(`0)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.AddSilent(`0)">
             <summary>
             Silently adds an element to the end of this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
             </summary>
             <param name="item">The item to add to the end of this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.ClearSilent">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.ClearSilent">
             <summary>
             Silently clears this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event to be fired.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.Reset(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Reset(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Resets this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> by clearing it (silently) and re-filling it using the specified <paramref name="collection"/>.
             </summary>
@@ -650,214 +679,244 @@
             The clearing operation itself is silent, but the re-filling operation is not; that is, observers of the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> will only be notified AFTER the re-filling operation is complete.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.Remove(`0)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Remove(`0)">
             <summary>
             Removes an element from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             </summary>
             <param name="item">The item to remove from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.Remove(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Remove(System.Func{`0,System.Boolean})">
             <summary>
             Removes all elements from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> as dictated by a <paramref name="selector"/> <see cref="T:System.Func`2"/>.
             </summary>
             <param name="selector">A <see cref="T:System.Func`2"/> that determines whether an element should be removed.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.RemoveRange(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RemoveRange(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Removes all occurrences of the specified items from the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             </summary>
-            <param name="collection">A sequence of values to remove from this <see cref="T:LaquaiLib.Collections.ObservableCollectionFast`1"/>.</param>
+            <param name="collection">A sequence of values to remove from this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.RemoveSilent(`0)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RemoveSilent(`0)">
             <summary>
             Silently removes an element from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
             </summary>
             <param name="item">The item to remove from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.RemoveSilent(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RemoveSilent(System.Func{`0,System.Boolean})">
             <summary>
             Silently removes all elements from this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> as dictated by a <paramref name="selector"/> <see cref="T:System.Func`2"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove"/> event to be fired.
             </summary>
             <param name="selector">A <see cref="T:System.Func`2"/> that determines whether an element should be removed.</param>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Contains(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0},System.Int32)">
+            <summary>
+            Searches for the specified <paramref name="item"/> in the collection using the specified <paramref name="comparer"/>, skipping the first <paramref name="startIndex"/> elements.
+            </summary>
+            <param name="item">The item to search for.</param>
+            <param name="comparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing elements, or <see langword="null"/> to use the default comparer.</param>
+            <param name="startIndex">The index at which to start the search.</param>
+            <returns>The index of the first occurrence of the specified <paramref name="item"/> in the collection, or -1 if the <paramref name="item"/> is not found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.LastIndexOf(`0,System.Collections.Generic.IEqualityComparer{`0},System.Int32)">
+            <summary>
+            Searches for the specified <paramref name="item"/> in the collection in reverse using the specified <paramref name="comparer"/>, skipping the last <paramref name="startIndex"/> elements.
+            </summary>
+            <param name="item">The item to search for.</param>
+            <param name="comparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing elements, or <see langword="null"/> to use the default comparer.</param>
+            <param name="startIndex">The index at which to start the search, or <c>-1</c> to start with the last element.</param>
+            <returns>The index of the first occurrence of the specified <paramref name="item"/> in the collection, or -1 if the <paramref name="item"/> is not found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.CopyTo(`0[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.CollectionChanged">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <summary>
             Raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
             <paramref name="e"/>The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> with <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> will be passed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.ObservableCollectionFast`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <inheritdoc/>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.PreCollectionChanged">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.PreCollectionChanged">
             <summary>
             Occurs before a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.PostCollectionChanged">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.PostCollectionChanged">
             <summary>
-            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes
+            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes will not be propagated to observers without an additional call to <see cref="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)"/>.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.Added">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Added">
             <summary>
-            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="T:LaquaiLib.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.Removed">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Removed">
             <summary>
-            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove"/> event is raised for this <see cref="T:LaquaiLib.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove"/> event is raised for this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.RangeAdded">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeAdded">
             <summary>
-            Occurs before multiple items are added to this <see cref="T:LaquaiLib.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            Occurs before multiple items are added to this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.RangeRemoved">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeRemoved">
             <summary>
-            Occurs before multiple items are removed from this <see cref="T:LaquaiLib.Collections.ObservableCollectionFast`1"/>. It may modify the collection.
+            Occurs before multiple items are removed from this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.IndexGet">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.IndexGet">
             <summary>
             Occurs when an item located at an individual index is accessed. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.IndexSet">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.IndexSet">
             <summary>
             The event that is raised when an item located at an individual index is set. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.RangeGet">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeGet">
             <summary>
             Occurs when multiple items in a specific range are accessed. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.RangeSet">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeSet">
             <summary>
             Occurs when multiple items in a specific range are set. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.Refill">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Refill">
             <summary>
             Occurs when the collection is reset by clearing it and refilling it. It may modify the collection.
             </summary>
         </member>
-        <member name="E:LaquaiLib.Collections.ObservableCollectionFast`1.Empty">
+        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Empty">
             <summary>
             Occurs when the collection is reset by clearing it. It may modify the collection.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Collections.RangeAddedEventArgs`1">
+        <member name="T:LaquaiLib.Collections.Observable.RangeAddedEventArgs`1">
             <summary>
             Represents the event arguments for the RangeAdded event.
             </summary>
             <typeparam name="T">The type of the items being added.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Collections.RangeAddedEventArgs`1.Items">
+        <member name="P:LaquaiLib.Collections.Observable.RangeAddedEventArgs`1.Items">
             <summary>
             Gets the items that were added.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.RangeAddedEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.RangeAddedEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.RangeAddedEventArgs`1"/> class.
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.RangeAddedEventArgs`1"/> class.
             </summary>
             <param name="items">The items that were added.</param>
         </member>
-        <member name="T:LaquaiLib.Collections.RangeGetEventArgs">
+        <member name="T:LaquaiLib.Collections.Observable.RangeGetEventArgs">
             <summary>
             Represents the event arguments for the RangeGet event.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Collections.RangeGetEventArgs.Index">
+        <member name="P:LaquaiLib.Collections.Observable.RangeGetEventArgs.Index">
             <summary>
             Gets the starting index of the range being accessed.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Collections.RangeGetEventArgs.Count">
+        <member name="P:LaquaiLib.Collections.Observable.RangeGetEventArgs.Count">
             <summary>
             Gets the number of items in the range being accessed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.RangeGetEventArgs.#ctor(System.Int32,System.Int32)">
+        <member name="M:LaquaiLib.Collections.Observable.RangeGetEventArgs.#ctor(System.Int32,System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.RangeGetEventArgs"/> class.
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.RangeGetEventArgs"/> class.
             </summary>
             <param name="index">The starting index of the range being accessed.</param>
             <param name="count">The number of items in the range being accessed.</param>
         </member>
-        <member name="T:LaquaiLib.Collections.RangeRemovedEventArgs`1">
+        <member name="T:LaquaiLib.Collections.Observable.RangeRemovedEventArgs`1">
             <summary>
             Represents the event arguments for the RangeRemoved event.
             </summary>
             <typeparam name="T">The type of the items being removed.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Collections.RangeRemovedEventArgs`1.Items">
+        <member name="P:LaquaiLib.Collections.Observable.RangeRemovedEventArgs`1.Items">
             <summary>
             Gets the items that were removed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.RangeRemovedEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.RangeRemovedEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.RangeRemovedEventArgs`1"/> class.
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.RangeRemovedEventArgs`1"/> class.
             </summary>
             <param name="items">The items that were removed.</param>
         </member>
-        <member name="T:LaquaiLib.Collections.RangeSetEventArgs">
+        <member name="T:LaquaiLib.Collections.Observable.RangeSetEventArgs">
             <summary>
             Represents the event arguments for the RangeSet event.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Collections.RangeSetEventArgs.Index">
+        <member name="P:LaquaiLib.Collections.Observable.RangeSetEventArgs.Index">
             <summary>
             Gets the starting index of the range being accessed.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Collections.RangeSetEventArgs.Count">
+        <member name="P:LaquaiLib.Collections.Observable.RangeSetEventArgs.Count">
             <summary>
             Gets the number of items in the range being accessed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.RangeSetEventArgs.#ctor(System.Int32,System.Int32)">
+        <member name="M:LaquaiLib.Collections.Observable.RangeSetEventArgs.#ctor(System.Int32,System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.RangeSetEventArgs"/> class.
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.RangeSetEventArgs"/> class.
             </summary>
             <param name="index">The starting index of the range being accessed.</param>
             <param name="count">The number of items in the range being accessed.</param>
         </member>
-        <member name="T:LaquaiLib.Collections.RemovedEventArgs`1">
+        <member name="T:LaquaiLib.Collections.Observable.RemovedEventArgs`1">
             <summary>
             Represents the event arguments for the Removed event.
             </summary>
             <typeparam name="T">The type of the item being removed.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Collections.RemovedEventArgs`1.Item">
+        <member name="P:LaquaiLib.Collections.Observable.RemovedEventArgs`1.Item">
             <summary>
             Gets the item that was removed.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.RemovedEventArgs`1.#ctor(`0)">
+        <member name="M:LaquaiLib.Collections.Observable.RemovedEventArgs`1.#ctor(`0)">
             <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.RemovedEventArgs`1"/> class.
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.RemovedEventArgs`1"/> class.
             </summary>
             <param name="item">The item that was removed.</param>
         </member>
-        <member name="T:LaquaiLib.Collections.ResetEventArgs`1">
+        <member name="T:LaquaiLib.Collections.Observable.ResetEventArgs`1">
             <summary>
             Represents the event arguments for the Reset event.
             </summary>
             <typeparam name="T">The type of the new contents.</typeparam>
         </member>
-        <member name="P:LaquaiLib.Collections.ResetEventArgs`1.NewContents">
+        <member name="P:LaquaiLib.Collections.Observable.ResetEventArgs`1.NewContents">
             <summary>
             Gets the new contents.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Collections.ResetEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Collections.Observable.ResetEventArgs`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.ResetEventArgs`1"/> class.
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.ResetEventArgs`1"/> class.
             </summary>
             <param name="newContents">The new contents.</param>
         </member>
@@ -1654,7 +1713,14 @@
             Provides extension methods for the <see cref="T:System.Net.HttpListenerRequest"/> Type.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Extensions.HttpListenerRequestExtensions.GetRoute(System.Net.HttpListenerRequest)" -->
+        <member name="M:LaquaiLib.Extensions.HttpListenerRequestExtensions.GetRoute(System.Net.HttpListenerRequest)">
+            <summary>
+            Returns the route that the request was made to.
+            <para/>For example, if the request was made to <c>http://localhost:8080/api/v1/endpoint?param1=1&amp;param2=2</c>, this method would return <c>/api/v1/endpoint</c>.
+            </summary>
+            <param name="request">The <see cref="T:System.Net.HttpListenerRequest"/> to get the route from.</param>
+            <returns>The route that the request was made to.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.ICollectionExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.ICollection`1"/> Type.
@@ -2950,6 +3016,19 @@
             <param name="address">The address of the first <see cref="T:System.Byte"/> to be copied.</param>
             <param name="arr">The <see cref="T:System.Byte"/> array to copy the memory region to. Its <see cref="P:System.Array.Length"/> dictates how many bytes will be copied.</param>
         </member>
+        <member name="T:LaquaiLib.Extensions.UriExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Uri"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.UriExtensions.GetRoute(System.Uri)">
+            <summary>
+            Returns the route component of the <see cref="T:System.Uri"/>.
+            <para/>For example, if the request was made to <c>http://localhost:8080/api/v1/endpoint?param1=1&amp;param2=2</c>, this method would return <c>/api/v1/endpoint</c>.
+            </summary>
+            <param name="request">The <see cref="T:System.Uri"/> to get the route from.</param>
+            <returns>The route component of the <see cref="T:System.Uri"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Xml.Linq.XElement"/> Type.
@@ -2969,6 +3048,22 @@
             <param name="source">The <see cref="T:System.Xml.Linq.XElement"/> to get the siblings of.</param>
             <param name="name">The <see cref="T:System.Xml.Linq.XName"/> to match.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Xml.Linq.XElement"/> containing the sibling elements of this node, in document order. Only elements that have a matching <see cref="T:System.Xml.Linq.XName"/> are included in the collection.</returns>
+        </member>
+        <member name="T:LaquaiLib.Interfaces.EventHandler`1">
+            <summary>
+            Represents the method that will handle an event by a sender of type <typeparamref name="TSender"/> when the event does not provide data.
+            </summary>
+            <typeparam name="TSender">The type of the sender.</typeparam>
+            <param name="sender">The source of the event.</param>
+        </member>
+        <member name="T:LaquaiLib.Interfaces.EventHandler`2">
+            <summary>
+            Represents the method that will handle an event by a sender of type <typeparamref name="TSender"/> when the event provides data of type <typeparamref name="TEventArgs"/>.
+            </summary>
+            <typeparam name="TSender">The type of the sender.</typeparam>
+            <typeparam name="TEventArgs">The type of the event data.</typeparam>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The event data.</param>
         </member>
         <member name="T:LaquaiLib.Interfaces.ICloneable`1">
             <summary>
@@ -2997,6 +3092,45 @@
             Transitions this instance to the initializing state and creates an <see cref="T:LaquaiLib.Interfaces.InitializationHandle"/> that represents this initialization.
             </summary>
             <returns>The created <see cref="T:LaquaiLib.Interfaces.InitializationHandle"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Interfaces.INotifyCollectionChanged`2">
+            <summary>
+            Represents a type-safe collection that provides notifications when the collection is mutated.
+            This interface is designed to seamlessly interoperate with <see cref="T:System.Collections.Specialized.INotifyCollectionChanged"/> while providing full type safety by automatically proxying event handler registrations.
+            </summary>
+            <typeparam name="TSelf">The type that implements this interface.</typeparam>
+            <typeparam name="TItem">The type of the items in the collection.</typeparam>
+        </member>
+        <member name="T:LaquaiLib.Interfaces.CollectionChangedEventArgs`1">
+            <summary>
+            Provides type-safe event data for the <see cref="!:INotifyCollectionChanged&lt;TItem&gt;.CollectionChanged"/> event.
+            </summary>
+            <typeparam name="TItem"></typeparam>
+        </member>
+        <member name="P:LaquaiLib.Interfaces.CollectionChangedEventArgs`1.Action">
+            <summary>
+            The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> that caused the event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Interfaces.CollectionChangedEventArgs`1.NewItems">
+            <summary>
+            The items affected by the change.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Interfaces.CollectionChangedEventArgs`1.OldItems">
+            <summary>
+            The old items affected by the change (for Replace events).
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Interfaces.CollectionChangedEventArgs`1.NewStartingIndex">
+            <summary>
+            The index where the change occurred.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Interfaces.CollectionChangedEventArgs`1.OldStartingIndex">
+            <summary>
+            The old index where the change occurred (for Move events).
+            </summary>
         </member>
         <member name="T:LaquaiLib.Interfaces.InitializationHandle">
             <summary>
@@ -3491,19 +3625,18 @@
         </member>
         <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.CopyTo(System.IO.Stream,System.Int32)">
             <summary>
-            Fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            Writes <paramref name="byteCount"/> random bytes to the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/>.
             </summary>
-            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
-            <param name="bufferSize">The size of the buffer to use for copying.</param>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="byteCount">How many random bytes to write to <paramref name="destination"/>.</param>
         </member>
         <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
             <summary>
-            Asynchronously fills the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/> with as many <see langword="byte"/>s as will fit.
+            Asynchronously writes <paramref name="byteCount"/> random bytes to the specified <paramref name="destination"/> <see cref="T:System.IO.Stream"/>.
             </summary>
-            <param name="destination">The <see cref="T:System.IO.Stream"/> to fill with random bytes.</param>
-            <param name="bufferSize">The size of the buffer to use for copying.</param>
+            <param name="destination">The <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="byteCount">How many random bytes to write to <paramref name="destination"/>.</param>
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
-            <returns></returns>
         </member>
         <member name="T:LaquaiLib.Streams.RandomStreams.RandomStream">
             <summary>
@@ -4184,7 +4317,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsDefault``1(``0,System.String)">
             <summary>
-            Asserts that a specified value is the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(T)</c>.
+            Asserts that a specified value is the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(TSelf)</c>.
             If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
             </summary>
             <typeparam name="T">The type of the value to operate on.</typeparam>
@@ -4194,7 +4327,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotDefault``1(``0,System.String)">
             <summary>
-            Asserts that a specified value is not the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(T)</c>.
+            Asserts that a specified value is not the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(TSelf)</c>.
             If it is, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
             </summary>
             <typeparam name="T">The type of the value to operate on.</typeparam>
@@ -7111,7 +7244,7 @@
         </member>
         <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.T">
             <summary>
-            T key
+            TSelf key
             </summary>
         </member>
         <member name="F:LaquaiLib.Util.WpfForms.VirtualKey.U">

@@ -101,7 +101,7 @@ public static unsafe class MemoryManager
                 GC.RemoveMemoryPressure(oldBytes - bytes);
             }
         }
-        return (T*)Marshal.ReAllocHGlobal((nint)ptr, (nint)bytes);
+        return (T*)Marshal.ReAllocHGlobal((nint)ptr, bytes);
     }
 
     /// <summary>

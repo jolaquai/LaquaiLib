@@ -209,7 +209,7 @@ public static class Assert
         return value.CompareTo(default) != 0 ? value : throw new AssertionFailureException<T>(value, message);
     }
     /// <summary>
-    /// Asserts that a specified value is the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(T)</c>.
+    /// Asserts that a specified value is the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(TSelf)</c>.
     /// If it is not, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
     /// </summary>
     /// <typeparam name="T">The type of the value to operate on.</typeparam>
@@ -221,7 +221,7 @@ public static class Assert
         return value.Equals(default) ? value : throw new AssertionFailureException<T>(value, message);
     }
     /// <summary>
-    /// Asserts that a specified value is not the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(T)</c>.
+    /// Asserts that a specified value is not the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(TSelf)</c>.
     /// If it is, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
     /// </summary>
     /// <typeparam name="T">The type of the value to operate on.</typeparam>

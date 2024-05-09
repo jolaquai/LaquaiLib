@@ -7,17 +7,29 @@
 public sealed class DetachedDequeNodeException<T> : Exception
 {
     /// <inheritdoc />
-    public override string Message { get; }
+    public override string Message
+    {
+        get;
+    }
     /// <inheritdoc cref="Exception.InnerException"/>
-    public new Exception? InnerException { get; }
+    public new Exception? InnerException
+    {
+        get;
+    }
     /// <summary>
     /// The <see cref="DequeNode{T}"/> that is not attached to a <see cref="Deque{T}"/>.
     /// </summary>
-    public DequeNode<T?> Node { get; }
+    public DequeNode<T?> Node
+    {
+        get;
+    }
     /// <summary>
     /// The kind of offense that <see cref="Node"/> committed which caused this exception to be thrown.
     /// </summary>
-    public OffenseKind Offense { get; }
+    public OffenseKind Offense
+    {
+        get;
+    }
 
     public DetachedDequeNodeException(DequeNode<T?> node, OffenseKind offense)
     {

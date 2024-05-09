@@ -304,7 +304,7 @@ public enum VirtualKey : uint
     /// </summary>
     S = 0x53,
     /// <summary>
-    /// T key
+    /// TSelf key
     /// </summary>
     T = 0x54,
     /// <summary>

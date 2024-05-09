@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: DisableRuntimeMarshalling]
-
 namespace LaquaiLib.Util.Hotkeys;
 
 /// <summary>
@@ -63,7 +61,7 @@ public static partial class Hotkeys
     [LibraryImport("user32.dll", EntryPoint = "GetMessageW")]
     private static partial int GetMessage(out LPMSG lpMsg, nint hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    [StructLayout(LayoutKind.Sequential)]
     private struct LPMSG
     {
         public HWND hWnd;
@@ -74,22 +72,20 @@ public static partial class Hotkeys
         public Point pt;
         public DWORD lPrivate;
 
-        private nint? lowWord;
         /// <summary>
         /// Retrieves the value of the low-order word of <see cref="lParam"/>.
         /// This specifies the modifier keys associated with the pressed hotkey.
         /// </summary>
         /// <returns>The modifier keys associated with the pressed hotkey.</returns>
-        public nint ModifierKeys => lowWord ??= lParam & 0xFFFF;
-        private nint? highWord;
+        public nint ModifierKeys => lParam & 0xFFFF;
         /// <summary>
         /// Retrieves the value of the high-order word of <see cref="lParam"/>.
         /// This specifies the virtual key code of the pressed hotkey.
         /// </summary>
         /// <returns>The virtual key code of the pressed hotkey.</returns>
-        public nint VirtualKeyCode => highWord ??= (lParam >> 16) & 0xFFFF;
+        public nint VirtualKeyCode => (lParam >> 16) & 0xFFFF;
     }
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    [StructLayout(LayoutKind.Sequential)]
     private struct Point
     {
         public int x;
