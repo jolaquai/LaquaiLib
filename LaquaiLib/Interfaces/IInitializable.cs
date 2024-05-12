@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
 
-using LaquaiLib.Interfaces;
-
 namespace LaquaiLib.Interfaces;
 
 /// <summary>

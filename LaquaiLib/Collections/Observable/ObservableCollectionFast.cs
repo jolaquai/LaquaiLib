@@ -4,8 +4,6 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-using DocumentFormat.OpenXml.Spreadsheet;
-
 namespace LaquaiLib.Collections.Observable;
 
 /// <summary>
@@ -86,7 +84,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// </summary>
     public ObservableCollectionFast()
     {
-        _items = new List<T>();
+        _items = [];
     }
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified collection.
@@ -124,10 +122,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <returns>The element at the specified <paramref name="index"/>.</returns>
     public T this[Index index]
     {
-        get
-        {
-            return _items[index];
-        }
+        get => _items[index];
         set
         {
             _items[index] = value;
@@ -208,10 +203,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <summary>
     /// Silently orders the elements in the <see cref="ObservableCollection{T}"/> using the <see cref="Comparer"/> or the default <see cref="Comparer{T}"/> if <see cref="Comparer"/> is <see langword="null"/>. This causes no <see cref="NotifyCollectionChangedAction.Reset"/> event to be fired.
     /// </summary>
-    public void SortSilent()
-    {
-        _items = _items.OrderBy(x => x, Comparer ?? Comparer<T>.Default).ToList();
-    }
+    public void SortSilent() => _items = new List<T>(_items.OrderBy(x => x, Comparer ?? Comparer<T>.Default));
     #endregion
 
     #region Add*
@@ -252,10 +244,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// Silently adds an element to the end of this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
     /// </summary>
     /// <param name="item">The item to add to the end of this <see cref="ObservableCollection{T}"/>.</param>
-    public void AddSilent(T item)
-    {
-        _items.Add(item);
-    }
+    public void AddSilent(T item) => _items.Add(item);
     #endregion
     #region Insert
     /// <summary>
@@ -273,37 +262,25 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// </summary>
     /// <param name="index">The zero-based index at which the <paramref name="item"/> should be inserted.</param>
     /// <param name="item">The object to insert.</param>
-    public void InsertSilent(int index, T item)
-    {
-        _items.Insert(index, item);
-    }
+    public void InsertSilent(int index, T item) => _items.Insert(index, item);
     /// <summary>
     /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
     /// </summary>
     /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
     /// <param name="items">The objects to insert.</param>
-    public void InsertRangeSilent(int index, params T[] items)
-    {
-        _items.InsertRange(index, items);
-    }
+    public void InsertRangeSilent(int index, params T[] items) => _items.InsertRange(index, items);
     /// <summary>
     /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
     /// </summary>
     /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
     /// <param name="items">The objects to insert.</param>
-    public void InsertRangeSilent(int index, IEnumerable<T> items)
-    {
-        _items.InsertRange(index, items);
-    }
+    public void InsertRangeSilent(int index, IEnumerable<T> items) => _items.InsertRange(index, items);
     /// <summary>
     /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
     /// </summary>
     /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
     /// <param name="items">The objects to insert.</param>
-    public void InsertRangeSilent(int index, ReadOnlySpan<T> items)
-    {
-        _items.InsertRange(index, items);
-    }
+    public void InsertRangeSilent(int index, ReadOnlySpan<T> items) => _items.InsertRange(index, items);
     /// <summary>
     /// Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
     /// </summary>
@@ -340,10 +317,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <summary>
     /// Silently clears this <see cref="ObservableCollection{T}"/>. This causes no <see cref="NotifyCollectionChangedAction.Reset"/> event to be fired.
     /// </summary>
-    public void ClearSilent()
-    {
-        _items.Clear();
-    }
+    public void ClearSilent() => _items.Clear();
     /// <inheritdoc/>
     public void Clear()
     {
@@ -475,8 +449,8 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
 
     /// <summary>
     /// Raises a <see cref="NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="ObservableCollection{T}"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
-    /// <paramref name="e"/>The <see cref="NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="NotifyCollectionChangedEventArgs"/> with <see cref="NotifyCollectionChangedAction.Reset"/> will be passed.
     /// </summary>
+    /// <paramref name="e"/>The <see cref="NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="NotifyCollectionChangedEventArgs"/> with <see cref="NotifyCollectionChangedAction.Reset"/> will be passed.
     public void RaiseCollectionChanged(NotifyCollectionChangedEventArgs? e = null) => OnCollectionChanged(e);
     /// <inheritdoc/>
     protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs? e = null)

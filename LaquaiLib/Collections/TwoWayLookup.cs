@@ -26,7 +26,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         _forward.Add(key, value);
         _reverse.Add(value, key);
     }
-
     /// <summary>
     /// Adds a new entry to the lookup table by the second type parameter <typeparamref name="T2"/>. An exception is thrown if either the key or the value already exists.
     /// </summary>
@@ -37,7 +36,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         _reverse.Add(key, value);
         _forward.Add(value, key);
     }
-
     /// <summary>
     /// Attempts to add a new entry to the lookup table by the first type parameter <typeparamref name="T1"/>.
     /// </summary>
@@ -56,7 +54,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             return false;
         }
     }
-
     /// <summary>
     /// Attempts to add a new entry to the lookup table by the second type parameter <typeparamref name="T2"/>.
     /// </summary>
@@ -75,7 +72,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             return false;
         }
     }
-
     /// <summary>
     /// Adds a new entry to the lookup table. An exception is thrown if either the key or the value already exists or if the type parameters do not match <typeparamref name="T1"/> and <typeparamref name="T2"/>.
     /// </summary>
@@ -125,7 +121,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             throw new ArgumentException($"Type of parameter '{nameof(key)}' '{typeof(TFirst).FullName}' is not assignable to either type parameter of the TwoWayLookup ('{typeof(T1).FullName}' or '{typeof(T2).FullName}')", nameof(key));
         }
     }
-
     /// <summary>
     /// Attempts to add a new entry to the lookup table.
     /// </summary>
@@ -160,21 +155,13 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// </summary>
     /// <param name="key">The key of the entry.</param>
     /// <returns>The value associated with the given key.</returns>
-    public T2 GetForward(T1 key)
-    {
-        return _forward[key];
-    }
-
+    public T2 GetForward(T1 key) => _forward[key];
     /// <summary>
     /// Retrieves an entry from the lookup table by its value. An exception is thrown if there is no entry with the given value.
     /// </summary>
     /// <param name="value">The value of the entry.</param>
     /// <returns>The key associated with the given value.</returns>
-    public T1 GetReverse(T2 value)
-    {
-        return _reverse[value];
-    }
-
+    public T1 GetReverse(T2 value) => _reverse[value];
     /// <summary>
     /// Attempts to retrieve an entry from the lookup table by its key.
     /// </summary>
@@ -194,7 +181,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             return false;
         }
     }
-
     /// <summary>
     /// Attempts to retrieve an entry from the lookup table by its value.
     /// </summary>
@@ -214,7 +200,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             return false;
         }
     }
-
     /// <summary>
     /// Removes an entry from the lookup table by its key. An exception is thrown if there is no entry with the given key.
     /// </summary>
@@ -225,7 +210,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         _reverse.Remove(rev);
         _forward.Remove(key);
     }
-
     /// <summary>
     /// Removes an entry from the lookup table by its value. An exception is thrown if there is no entry with the given value.
     /// </summary>
@@ -236,7 +220,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         _forward.Remove(forw);
         _reverse.Remove(value);
     }
-
     /// <summary>
     /// Attempts to remove an entry from the lookup table by its key.
     /// </summary>
@@ -254,7 +237,6 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             return false;
         }
     }
-
     /// <summary>
     /// Attempts to remove an entry from the lookup table by its value.
     /// </summary>
@@ -273,12 +255,21 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         }
     }
 
-    /// <inheritdoc/>
-    public IEnumerator<KeyValuePair<T1, T2>> GetEnumerator() => ((IEnumerable<KeyValuePair<T1, T2>>)_forward).GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_forward).GetEnumerator();
     /// <summary>
-    /// Returns an enumerator that iterates through the reverse collection.
+    /// Gets an enumerator that, by default, iterates through the forward collection as <see cref="KeyValuePair{TKey, TValue}"/>s.
+    /// </summary>
+    /// <returns>An enumerator that can be used to iterate through the forward collection.</returns>
+    public IEnumerator<KeyValuePair<T1, T2>> GetEnumerator() => (_forward as IEnumerable<KeyValuePair<T1, T2>>).GetEnumerator();
+    /// <summary>
+    /// Returns an enumerator that iterates through the forward collection as <see cref="KeyValuePair{TKey, TValue}"/>s.
+    /// </summary>
+    /// <returns>An enumerator that can be used to iterate through the forward collection.</returns>
+    IEnumerator<KeyValuePair<T1, T2>> IEnumerable<KeyValuePair<T1, T2>>.GetEnumerator() => ((IEnumerable<KeyValuePair<T1, T2>>)_forward).GetEnumerator();
+    /// <summary>
+    /// Returns an enumerator that iterates through the reverse collection as <see cref="KeyValuePair{TKey, TValue}"/>s.
     /// </summary>
     /// <returns>An enumerator that can be used to iterate through the reverse collection.</returns>
     public IEnumerator<KeyValuePair<T2, T1>> GetReverseEnumerator() => ((IEnumerable<KeyValuePair<T2, T1>>)_reverse).GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_forward).GetEnumerator();
 }

@@ -4,23 +4,6 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
-        <member name="T:LaquaiLib.Collections.AddedEventArgs`1">
-            <summary>
-            Represents the event arguments for the Added event.
-            </summary>
-            <typeparam name="T">The type of the item being added.</typeparam>
-        </member>
-        <member name="P:LaquaiLib.Collections.AddedEventArgs`1.Item">
-            <summary>
-            Gets the item that was added.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Collections.AddedEventArgs`1.#ctor(`0)">
-            <summary>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.AddedEventArgs`1"/> class.
-            </summary>
-            <param name="item">The item that was added.</param>
-        </member>
         <member name="T:LaquaiLib.Collections.Deque`1">
             <summary>
             Represents a "deque" (or "double-ended queue") data structure.
@@ -518,6 +501,23 @@
             </summary>
             <param name="length">The number of items to remain in the collection.</param>
         </member>
+        <member name="T:LaquaiLib.Collections.Observable.AddedEventArgs`1">
+            <summary>
+            Represents the event arguments for the Added event.
+            </summary>
+            <typeparam name="T">The type of the item being added.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Collections.Observable.AddedEventArgs`1.Item">
+            <summary>
+            Gets the item that was added.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.AddedEventArgs`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.AddedEventArgs`1"/> class.
+            </summary>
+            <param name="item">The item that was added.</param>
+        </member>
         <member name="T:LaquaiLib.Collections.Observable.IndexGetEventArgs">
             <summary>
             Represents the event arguments for the IndexGet event.
@@ -662,6 +662,62 @@
             </summary>
             <param name="item">The item to add to the end of this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.</param>
         </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Insert(System.Int32,`0)">
+            <summary>
+            Inserts the specified <paramref name="item"/> into the collection at the specified <paramref name="index"/>.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="item"/> should be inserted.</param>
+            <param name="item">The object to insert.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.InsertSilent(System.Int32,`0)">
+            <summary>
+            Silently inserts the specified <paramref name="item"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="item"/> should be inserted.</param>
+            <param name="item">The object to insert.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.InsertRangeSilent(System.Int32,`0[])">
+            <summary>
+            Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+            <param name="items">The objects to insert.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.InsertRangeSilent(System.Int32,System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+            <param name="items">The objects to insert.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.InsertRangeSilent(System.Int32,System.ReadOnlySpan{`0})">
+            <summary>
+            Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event to be fired.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+            <param name="items">The objects to insert.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.InsertRange(System.Int32,`0[])">
+            <summary>
+            Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+            <param name="items">The objects to insert.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.InsertRange(System.Int32,System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+            <param name="items">The objects to insert.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.InsertRange(System.Int32,System.ReadOnlySpan{`0})">
+            <summary>
+            Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
+            </summary>
+            <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
+            <param name="items">The objects to insert.</param>
+        </member>
         <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.ClearSilent">
             <summary>
             Silently clears this <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>. This causes no <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event to be fired.
@@ -742,71 +798,11 @@
         <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <summary>
             Raises a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> event. Changes made to the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/> by any methods with a "Silent" suffix will not be propagated to observers until this method is called.
-            <paramref name="e"/>The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> with <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> will be passed.
             </summary>
+            <paramref name="e"/>The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> to pass to observers. If <see langword="null"/>, a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> with <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Reset"/> will be passed.
         </member>
         <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <inheritdoc/>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.PreCollectionChanged">
-            <summary>
-            Occurs before a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.PostCollectionChanged">
-            <summary>
-            Occurs after a <see cref="T:System.Collections.Specialized.NotifyCollectionChangedAction"/> event is raised. It should not modify the collection as changes will not be propagated to observers without an additional call to <see cref="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RaiseCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)"/>.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Added">
-            <summary>
-            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Add"/> event is raised for this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Removed">
-            <summary>
-            Occurs before a <see cref="F:System.Collections.Specialized.NotifyCollectionChangedAction.Remove"/> event is raised for this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeAdded">
-            <summary>
-            Occurs before multiple items are added to this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeRemoved">
-            <summary>
-            Occurs before multiple items are removed from this <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/>. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.IndexGet">
-            <summary>
-            Occurs when an item located at an individual index is accessed. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.IndexSet">
-            <summary>
-            The event that is raised when an item located at an individual index is set. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeGet">
-            <summary>
-            Occurs when multiple items in a specific range are accessed. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RangeSet">
-            <summary>
-            Occurs when multiple items in a specific range are set. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Refill">
-            <summary>
-            Occurs when the collection is reset by clearing it and refilling it. It may modify the collection.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Empty">
-            <summary>
-            Occurs when the collection is reset by clearing it. It may modify the collection.
-            </summary>
         </member>
         <member name="T:LaquaiLib.Collections.Observable.RangeAddedEventArgs`1">
             <summary>
@@ -1228,11 +1224,20 @@
             <returns><see langword="true"/> if there was a key associated with the value that could be removed, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Collections.TwoWayLookup`2.GetEnumerator">
-            <inheritdoc/>
+            <summary>
+            Gets an enumerator that, by default, iterates through the forward collection as <see cref="T:System.Collections.Generic.KeyValuePair`2"/>s.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the forward collection.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.TwoWayLookup`2.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{T1,T2}}#GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the forward collection as <see cref="T:System.Collections.Generic.KeyValuePair`2"/>s.
+            </summary>
+            <returns>An enumerator that can be used to iterate through the forward collection.</returns>
         </member>
         <member name="M:LaquaiLib.Collections.TwoWayLookup`2.GetReverseEnumerator">
             <summary>
-            Returns an enumerator that iterates through the reverse collection.
+            Returns an enumerator that iterates through the reverse collection as <see cref="T:System.Collections.Generic.KeyValuePair`2"/>s.
             </summary>
             <returns>An enumerator that can be used to iterate through the reverse collection.</returns>
         </member>
@@ -3134,7 +3139,7 @@
         </member>
         <member name="T:LaquaiLib.Interfaces.InitializationHandle">
             <summary>
-            Supports the <see cref="T:LaquaiLib.Interfaces.IInitializable"/> interface. While an instance of this <see langword="struct"/> is held and not disposed, the <see cref="T:LaquaiLib.Interfaces.IInitializable"/> instance is considered to be initializing.
+            Supports the <see cref="T:LaquaiLib.Interfaces.IInitializable"/> interface. While an instance of this type is held and not disposed, the <see cref="T:LaquaiLib.Interfaces.IInitializable"/> instance is considered to be initializing.
             </summary>
         </member>
         <member name="M:LaquaiLib.Interfaces.InitializationHandle.#ctor(LaquaiLib.Interfaces.IInitializable)">
@@ -7752,6 +7757,96 @@
             Provides utility methods for working with virtual key codes.
             </summary>
         </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.ToggleKeys">
+            <summary>
+            Gets an array of <see cref="T:LaquaiLib.Util.WpfForms.VirtualKey"/> values that represent toggle keys.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.NormalKeys">
+            <summary>
+            Gets an array of <see cref="T:LaquaiLib.Util.WpfForms.VirtualKey"/> values that represent all keys that are not a toggle key.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.Ctrl">
+            <summary>
+            Gets whether any control key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.LCtrl">
+            <summary>
+            Gets whether the left control key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.RCtrl">
+            <summary>
+            Gets whether the right control key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.Shift">
+            <summary>
+            Gets whether any shift key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.LShift">
+            <summary>
+            Gets whether the left shift key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.RShift">
+            <summary>
+            Gets whether the right shift key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.Alt">
+            <summary>
+            Gets whether any alt key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.LAlt">
+            <summary>
+            Gets whether the left alt key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.RAlt">
+            <summary>
+            Gets whether the right alt key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.AltGr">
+            <summary>
+            Gets whether the AltGr key is pressed. This is equivalent to <c><see cref="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.LCtrl"/> &amp;&amp; <see cref="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.RAlt"/></c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.Win">
+            <summary>
+            Gets whether any Windows key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.LWin">
+            <summary>
+            Gets whether the left Windows key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.RWin">
+            <summary>
+            Gets whether the right Windows key is pressed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.CapsLock">
+            <summary>
+            Gets whether Caps Lock is toggled on.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.NumLock">
+            <summary>
+            Gets whether Num Lock is toggled on.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyUtils.ScrollLock">
+            <summary>
+            Gets whether Scroll Lock is toggled on.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetOemKeyData(LaquaiLib.Util.WpfForms.VirtualKey,System.Globalization.CultureInfo)">
             <summary>
             Translates a virtual key code to a Unicode character.
@@ -7759,6 +7854,35 @@
             <param name="vk">The virtual key code to translate.</param>
             <param name="cultureInfo">The <see cref="T:System.Globalization.CultureInfo"/> instance to use for the translation. It specifies the keyboard layout to use, which influences the actual character of <c>VK_OEM_*</c> keys. If omitted, <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/> is used.</param>
             <returns>The Unicode character that corresponds to the specified virtual key code, or <see langword="null"/> if the key does not correspond to a character or the translation has failed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetPressedKeys">
+            <summary>
+            Returns an array of all <see cref="T:LaquaiLib.Util.WpfForms.VirtualKey"/>s that are currently pressed.
+            The return value does not reflect the toggle state, but the current state of the key. To accurately determine toggle states, use <see cref="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetKeyStates"/>.
+            </summary>
+            <returns>The array of all <see cref="T:LaquaiLib.Util.WpfForms.VirtualKey"/>s that are currently pressed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetKeyState(LaquaiLib.Util.WpfForms.VirtualKey)">
+            <summary>
+            Gets the state of the specified virtual key.
+            The return value does not reflect the toggle state, but the current state of the key.
+            </summary>
+            <param name="vk">The virtual key to get the state of.</param>
+            <returns><see langword="true"/> if the key is pressed, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetToggleState(LaquaiLib.Util.WpfForms.VirtualKey)">
+            <summary>
+            Gets the toggle state of the specified virtual key.
+            The return value is meaningless for keys that are not toggle keys.
+            </summary>
+            <param name="vk">The virtual key to get the toggle state of.</param>
+            <returns><see langword="true"/> if the key is toggled on, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.VirtualKeyUtils.GetKeyStates">
+            <summary>
+            Returns an array all <see cref="T:LaquaiLib.Util.WpfForms.VirtualKey"/>s that are currently pressed or toggled on if the key is a toggle key.
+            </summary>
+            <returns>The array of all <see cref="T:LaquaiLib.Util.WpfForms.VirtualKey"/>s that are currently pressed or toggled on.</returns>
         </member>
         <member name="T:LaquaiLib.WasmServices.FileSystemProxy.Directory">
             <summary>

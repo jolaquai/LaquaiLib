@@ -1,7 +1,7 @@
 ﻿namespace LaquaiLib.Interfaces;
 
 /// <summary>
-/// Supports the <see cref="IInitializable"/> interface. While an instance of this <see langword="struct"/> is held and not disposed, the <see cref="IInitializable"/> instance is considered to be initializing.
+/// Supports the <see cref="IInitializable"/> interface. While an instance of this type is held and not disposed, the <see cref="IInitializable"/> instance is considered to be initializing.
 /// </summary>
 public class InitializationHandle : IDisposable
 {

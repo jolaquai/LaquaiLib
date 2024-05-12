@@ -82,7 +82,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     /// <param name="item">The item to check for.</param>
     /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> to use for equality comparisons.</param>
     /// <returns><see langword="true"/> if the <see cref="Set{T}"/> contains the item, otherwise <see langword="false"/>.</returns>
-    public bool Contains(T item, IEqualityComparer<T> comparer) => Items.Contains(item, comparer ?? EqualityComparer ?? EqualityComparer<T>.Default);
+    public bool Contains(T item, IEqualityComparer<T> comparer = null) => Items.Contains(item, comparer ?? EqualityComparer ?? EqualityComparer<T>.Default);
     /// <summary>
     /// Copies all items in the <see cref="Set{T}"/> to the specified <paramref name="array"/>, starting at the specified <paramref name="arrayIndex"/>.
     /// </summary>
