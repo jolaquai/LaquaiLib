@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
+namespace LaquaiLib.Util.WpfForms.MessageBox;
 /// <summary>
 /// Specifies the icon that is displayed in a message box.
 /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Streams;
+namespace LaquaiLib.Streams;
 
 /// <summary>
 /// Provides data about the <see cref="ObservableStream{T}.Seeked"/> event.

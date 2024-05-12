@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.Logging;
+namespace LaquaiLib.Util.Logging;
 
 /// <summary>
 /// Represents an immutable message that can be queued for logging.

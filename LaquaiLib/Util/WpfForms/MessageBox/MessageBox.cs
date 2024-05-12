@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
+namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>
 /// Provides message box functionality to non-WinForms or WPF applications through P/Invoke.

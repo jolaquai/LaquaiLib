@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 
 using LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
 

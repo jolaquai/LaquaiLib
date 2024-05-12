@@ -1,4 +1,4 @@
-﻿using LaquaiLib.Util;
+using LaquaiLib.Util;
 
 /// <summary>
 /// Provides data for the <see cref="ObservableValue{T}.PropertyRead"/> event.

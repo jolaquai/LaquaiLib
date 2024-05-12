@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.Meta;
+namespace LaquaiLib.Util.Meta;
 /// <summary>
 /// Specifies the architecture(s) of an app or tool that should be included in the search.
 /// </summary>

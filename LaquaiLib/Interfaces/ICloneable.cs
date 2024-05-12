@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Interfaces;
+namespace LaquaiLib.Interfaces;
 
 /// <summary>
 /// Implements a typed version of the <see cref="ICloneable"/> interface.

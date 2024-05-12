@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Collections.LimitedCollections;
+namespace LaquaiLib.Collections.LimitedCollections;
 
 /// <summary>
 /// Represents a <see cref="Queue{T}"/> with a maximum number of items allowed in it. When the collection is at capacity and it is attempted to enqueue another object, the oldest is removed.

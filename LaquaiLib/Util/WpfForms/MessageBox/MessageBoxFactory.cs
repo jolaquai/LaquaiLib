@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
+namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>
 /// Provides a factory that creates message boxes using non-standard default values.

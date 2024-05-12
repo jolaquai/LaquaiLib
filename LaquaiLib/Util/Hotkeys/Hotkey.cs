@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.Hotkeys;
+namespace LaquaiLib.Util.Hotkeys;
 
 /// <summary>
 /// Represents a hotkey registered by <see cref="Hotkeys"/>.

@@ -1,4 +1,4 @@
-﻿using LaquaiLib.Extensions;
+using LaquaiLib.Extensions;
 
 using Timer = System.Threading.Timer;
 

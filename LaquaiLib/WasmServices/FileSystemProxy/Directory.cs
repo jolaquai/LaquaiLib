@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.WasmServices.FileSystemProxy;
+namespace LaquaiLib.WasmServices.FileSystemProxy;
 
 /// <summary>
 /// Implements the <see cref="IDirectory"/> interface for use in the <see cref="IFileSystemProxy"/>.

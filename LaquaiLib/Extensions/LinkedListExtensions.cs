@@ -1,4 +1,4 @@
-﻿using LaquaiLib.Collections;
+using LaquaiLib.Collections;
 
 namespace LaquaiLib.Extensions;
 

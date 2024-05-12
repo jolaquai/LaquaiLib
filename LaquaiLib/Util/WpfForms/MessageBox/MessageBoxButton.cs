@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
+namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>
 /// Specifies the buttons that are displayed on a message box.

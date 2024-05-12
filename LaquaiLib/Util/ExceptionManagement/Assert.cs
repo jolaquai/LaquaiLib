@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.ExceptionManagement;
+namespace LaquaiLib.Util.ExceptionManagement;
 
 /// <summary>
 /// Contains methods to assert conditions which throw an <see cref="AssertionFailureException{T}"/> if the condition is not met.

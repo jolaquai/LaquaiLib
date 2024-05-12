@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Interfaces;
+namespace LaquaiLib.Interfaces;
 
 /// <summary>
 /// Represents the method that will handle an event by a sender of type <typeparamref name="TSender"/> when the event does not provide data.

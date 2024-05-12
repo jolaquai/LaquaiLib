@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.WasmServices.FileSystemProxy;
+namespace LaquaiLib.WasmServices.FileSystemProxy;
 
 /// <summary>
 /// Exposes access to the <see cref="System.IO.Path"/> class by proxy in a Blazor WebAssembly application.

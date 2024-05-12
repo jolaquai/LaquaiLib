@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Extensions;
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides Extension Methods for the <see cref="Color"/> Type.

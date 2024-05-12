@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util;
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Provides methods and events for managing memory, working with the Garbage Collector (<see cref="GC"/>) and allocating unmanaged memory.

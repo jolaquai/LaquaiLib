@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 
 namespace LaquaiLib.Extensions.ThirdParty.HtmlAgilityPackExtensions;
 

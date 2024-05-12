@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util;
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Represents a <see cref="IComparer{T}"/> that compares strings using a natural sort order, that is, like Windows Explorer sorts file names.

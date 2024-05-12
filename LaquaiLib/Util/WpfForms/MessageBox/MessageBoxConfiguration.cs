@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.WpfForms.MessageBox;
+namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>
 /// Encapsulates configuration values for <see cref="MessageBox"/> and <see cref="MessageBoxFactory"/>.

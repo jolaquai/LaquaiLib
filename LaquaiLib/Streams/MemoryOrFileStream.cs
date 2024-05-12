@@ -1,4 +1,4 @@
-﻿using System.Management;
+using System.Management;
 
 namespace LaquaiLib.Streams;
 

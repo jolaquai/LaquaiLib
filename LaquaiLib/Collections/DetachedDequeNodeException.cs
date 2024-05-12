@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Collections;
+namespace LaquaiLib.Collections;
 
 /// <summary>
 /// The exception that is thrown when <see cref="Deque{T}.EnsureIntegrity"/> encounters a <see cref="DequeNode{T}"/> that is not attached to a <see cref="Deque{T}"/>.

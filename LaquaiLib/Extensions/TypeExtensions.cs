@@ -1,4 +1,4 @@
-﻿using System.CodeDom.Compiler;
+using System.CodeDom.Compiler;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Reflection;

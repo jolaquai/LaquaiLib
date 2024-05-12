@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Wrappers;
+namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Represents a temporary directory that is automatically deleted when its wrapper object is disposed.

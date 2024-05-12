@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Interfaces;
+namespace LaquaiLib.Interfaces;
 
 /// <summary>
 /// Supports the <see cref="IInitializable"/> interface. While an instance of this type is held and not disposed, the <see cref="IInitializable"/> instance is considered to be initializing.

@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Streams;
+namespace LaquaiLib.Streams;
 
 /// <summary>
 /// Provides data for the <see cref="ObservableStream{T}.DataWritten"/> event.

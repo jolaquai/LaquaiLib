@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.Meta;
+namespace LaquaiLib.Util.Meta;
 /// <summary>
 /// Specifies the edition(s) of Visual Studio that should be included in the search.
 /// </summary>

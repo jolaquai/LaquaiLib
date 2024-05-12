@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util.WpfForms;
+namespace LaquaiLib.Util.WpfForms;
 
 #pragma warning disable CA1008 // Enums should have zero value
 #pragma warning disable CA1028 // Enum Storage should be Int32

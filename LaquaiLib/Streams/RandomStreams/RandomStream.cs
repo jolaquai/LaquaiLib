@@ -1,4 +1,4 @@
-﻿using LaquaiLib.Wrappers;
+using LaquaiLib.Wrappers;
 
 // TODO: Make this generic and able to return arbitrary types, not just bytes
 

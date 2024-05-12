@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Extensions;
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Represents a set of options for <see cref="TypeExtensions.Reflect(Type, ReflectionOptions)"/>.

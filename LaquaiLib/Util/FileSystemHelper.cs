@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util;
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Provides methods and events for working with files and directories.

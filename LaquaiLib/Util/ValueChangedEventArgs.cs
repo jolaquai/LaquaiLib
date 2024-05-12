@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Util;
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Provides data for the <see cref="ObservableValue{T}.ValueChanged"/> event.

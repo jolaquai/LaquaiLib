@@ -1,4 +1,4 @@
-﻿using CoreAudio;
+using CoreAudio;
 
 namespace LaquaiLib.Util.VolumeManager;
 
