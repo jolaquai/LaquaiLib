@@ -649,5 +649,47 @@ public static partial class Windows
             RefreshWindow(hWnd);
             return functionSucceeded && !lastErrorModified;
         }
+
+        private static partial class Interop
+        {
+            [StructLayout(LayoutKind.Sequential)]
+            internal unsafe struct FLASHWINFO
+            {
+                private uint cbSize = (uint)sizeof(FLASHWINFO);
+                public nint hwnd;
+                public uint dwFlags;
+                public uint uCount;
+                public uint dwTimeout;
+
+                public FLASHWINFO()
+                {
+                }
+            }
+            internal enum DwFlags : uint
+            {
+                FLASHW_STOP = 0,
+                FLASHW_CAPTION = 0x1,
+                FLASHW_TRAY = 0x2,
+                FLASHW_ALL = 0x3,
+                FLASHW_TIMER = 0x4,
+                FLASHW_TIMERNOFG = 0xC,
+            }
+
+            [LibraryImport("user32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static partial bool FlashWindowEx(FLASHWINFO flashwInfo);
+        }
+
+        private static nint _hwnd;
+        public static void SetFlashing()
+        {
+        }
+        public static void SetFlashing(uint count = 1)
+        {
+
+        }
+        public static void StopFlashing()
+        {
+        }
     }
 }

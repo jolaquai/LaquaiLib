@@ -112,10 +112,10 @@ public static partial class FirstChanceExceptionHandlers
                 {
                     FileName = dumpbinPath,
                     ArgumentList =
-                {
-                    "/exports",
-                    fullPath
-                },
+                    {
+                        "/exports",
+                        fullPath
+                    },
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true

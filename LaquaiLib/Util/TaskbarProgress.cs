@@ -9,7 +9,7 @@ namespace LaquaiLib.Util;
 /// <summary>
 /// Represents a handler for a progress display on the current window's taskbar icon.
 /// </summary>
-public class TaskbarProgress
+public partial class TaskbarProgress
 {
     private readonly TaskbarItemInfo? _taskbar;
 

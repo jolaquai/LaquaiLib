@@ -1806,6 +1806,55 @@
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> Type.
             </summary>
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasLessThan``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Determines if a sequence contains less than the specified number of elements.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="n">The number of elements to check for.</param>
+            <returns><see langword="true"/> if the input sequence contains less than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasLessThanOr``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Determines if a sequence contains less than or exactly the specified number of elements.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="n">The number of elements to check for.</param>
+            <returns><see langword="true"/> if the input sequence contains less than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasExactly``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Determines if a sequence contains exactly the specified number of elements.
+            An attempt is made to avoid enumerating the input sequence, but if this fails, it is done regardless.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="n">The number of elements to check for.</param>
+            <returns>The result of the check.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasMoreThanOr``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Determines if a sequence contains more than or exactly the specified number of elements.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="n">The number of elements to check for.</param>
+            <returns><see langword="true"/> if the input sequence contains more than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasMoreThan``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Determines if a sequence contains more than the specified number of elements.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="n">The number of elements to check for.</param>
+            <returns><see langword="true"/> if the input sequence contains more than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Select``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
@@ -1861,7 +1910,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetRange``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
             <summary>
-            Extracts a range of elements from this collection.
+            Extracts a range of elements from this collection. This enumerates the entire collection.
             </summary>
             <typeparam name="T">The Type of the elements in the collection.</typeparam>
             <param name="source">The collection to extract elements from.</param>
@@ -2010,6 +2059,7 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CrossSelect``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
             <summary>
             For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
+            This is essentially a cross join and may yield a large number of non-sensical results if the input sequences are large.
             </summary>
             <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
             <typeparam name="TOther">The Type of the elements in the other sequence.</typeparam>
@@ -2018,6 +2068,63 @@
             <param name="other">The other sequence.</param>
             <param name="selector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and each element of the other sequence and produces a new value.</param>
             <returns>A sequence that contains the new values produced by the selector function.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.None``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines if a sequence is empty.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns><see langword="true"/> if the input sequence is empty, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.None``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Determines if a sequence contains no elements that satisfy a condition.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The condition to check for.</param>
+            <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Only``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
+            This behaves exactly like <see cref="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0})"/> without throwing exceptions.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>The single element in the input sequence, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Only``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
+            This behaves exactly like <see cref="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})"/> without throwing exceptions.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The condition to check for.</param>
+            <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OnlyOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+            This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)"/> without throwing exceptions.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
+            <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OnlyOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)">
+            <summary>
+            Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+            This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)"/> without throwing exceptions.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="predicate">The condition to check for.</param>
+            <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
+            <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
@@ -2164,6 +2271,25 @@
             <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
             <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> delegate that defines the conditions of the elements to keep.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.TryGetBackingStore``1(System.Collections.Generic.List{``0},``0[]@)">
+            <summary>
+            Attempts to retrieve the backing store of this <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.TryGetBackingStore``1(System.Collections.Generic.List{``0},``0[]@,System.Int32@,System.Int32@)">
+            <summary>
+            Attempts to retrieve the backing store of this <see cref="T:System.Collections.Generic.List`1"/>, also providing the <paramref name="count"/> and <paramref name="length"/> of the backing store.
+            </summary>
+            <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to retrieve the backing store from.</param>
+            <param name="backingStore">The backing store of the <paramref name="list"/>.</param>
+            <param name="count">The number of elements from the start of <paramref name="backingStore"/> that are guaranteed to be populated.</param>
+            <param name="length">The length of the <paramref name="backingStore"/>.</param>
+            <returns>The backing store of the <paramref name="list"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.MatchExtensions">
             <summary>

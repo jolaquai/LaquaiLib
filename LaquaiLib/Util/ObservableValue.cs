@@ -211,3 +211,60 @@ public class ObservableValue<T>
     public static bool operator >=(ObservableValue<T> left, ObservableValue<T> right) => left is null ? right is null : left.CompareTo(right) >= 0;
     #endregion
 }
+
+/// <summary>
+/// Provides data for the <see cref="ObservableValue{T}.ValueChanged"/> event.
+/// </summary>
+/// <typeparam name="T">The type of the value.</typeparam>
+public class ValueChangedEventArgs<T> : EventArgs
+{
+    /// <summary>
+    /// The value before the change.
+    /// </summary>
+    public T OldValue
+    {
+        get;
+    }
+    /// <summary>
+    /// The value after the change.
+    /// </summary>
+    public T NewValue
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Initializes new <see cref="ValueChangedEventArgs{T}"/> with the given values.
+    /// </summary>
+    /// <param name="oldValue">The value before the change.</param>
+    /// <param name="newValue">The value after the change.</param>
+    public ValueChangedEventArgs(T oldValue, T newValue)
+    {
+        OldValue = oldValue;
+        NewValue = newValue;
+    }
+}
+
+/// <summary>
+/// Provides data for the <see cref="ObservableValue{T}.PropertyRead"/> event.
+/// </summary>
+/// <typeparam name="T">The type of the value.</typeparam>
+public class ValueReadEventArgs<T> : EventArgs
+{
+    /// <summary>
+    /// The value the reader received.
+    /// </summary>
+    public T Value
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Initializes new <see cref="ValueReadEventArgs{T}"/> with the given value.
+    /// </summary>
+    /// <param name="value">The value the reader received.</param>
+    public ValueReadEventArgs(T value)
+    {
+        Value = value;
+    }
+}

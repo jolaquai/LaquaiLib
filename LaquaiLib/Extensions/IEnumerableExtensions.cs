@@ -5,7 +5,7 @@ namespace LaquaiLib.Extensions;
 /// <summary>
 /// Provides extension methods for the <see cref="IEnumerable{T}"/> Type.
 /// </summary>
-public static class IEnumerableExtensions
+public static partial class IEnumerableExtensions
 {
     /// <summary>
     /// Selects each element in the input sequence without transformation.
@@ -32,7 +32,7 @@ public static class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(new Random());
+    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(Random.Shared);
 
     /// <summary>
     /// Shuffles the elements in the input sequence, using a specified <see cref="Random"/> instance.
@@ -73,19 +73,12 @@ public static class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Extracts a range of elements from this collection.
+    /// Extracts a range of elements from this collection. This enumerates the entire collection.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
     /// <param name="source">The collection to extract elements from.</param>
     /// <param name="range">A <see cref="Range"/> instance that indicates where the items to be extracted are located in the <paramref name="source"/>.</param>
-    public static IEnumerable<T> GetRange<T>(this IEnumerable<T> source, Range range)
-    {
-        var (offset, length) = range.GetOffsetAndLength(source.Count());
-        for (var i = offset; i < offset + length; i++)
-        {
-            yield return source.ElementAt(i);
-        }
-    }
+    public static T[] GetRange<T>(this IEnumerable<T> source, Range range) => source.ToArray()[range];
 
     /// <summary>
     /// Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
@@ -137,9 +130,18 @@ public static class IEnumerableExtensions
     #region Mode
     private class ModeModel<TSource, TSelect>
     {
-        public TSource OriginalValue { get; set; }
-        public TSelect SelectedValue { get; set; }
-        public int CountBySelect { get; set; }
+        public TSource OriginalValue
+        {
+            get; set;
+        }
+        public TSelect SelectedValue
+        {
+            get; set;
+        }
+        public int CountBySelect
+        {
+            get; set;
+        }
     }
 
     /// <summary>
@@ -223,10 +225,10 @@ public static class IEnumerableExtensions
     /// <param name="source">The input sequence to sample.</param>
     /// <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
     /// <returns>The sampled elements.</returns>
-    public static IEnumerable<T> Sample<T>(this IEnumerable<T> source, int itemCount = -1)
+    public static T[] Sample<T>(this IEnumerable<T> source, int itemCount = -1)
     {
-        return source.Shuffle()
-                     .Take(itemCount > 0 ? itemCount : source.Count() / 100);
+        var enumerated = source.Shuffle().ToArray();
+        return enumerated[..(itemCount > 0 ? itemCount : enumerated.Length / 100)];
     }
 
     /// <summary>
@@ -369,35 +371,28 @@ public static class IEnumerableExtensions
     public static IEnumerable<byte> Blitted<T>(this IEnumerable<T> source)
         where T : unmanaged
     {
-        ArgumentNullException.ThrowIfNull(source);
-
-        return Blitted2();
-
-        IEnumerable<byte> Blitted2()
+        foreach (var item in source)
         {
-            foreach (var item in source)
+            var bytes = item switch
             {
-                var bytes = item switch
-                {
-                    bool v => BitConverter.GetBytes(v),
-                    char v => BitConverter.GetBytes(v),
-                    short v => BitConverter.GetBytes(v),
-                    int v => BitConverter.GetBytes(v),
-                    long v => BitConverter.GetBytes(v),
-                    ushort v => BitConverter.GetBytes(v),
-                    uint v => BitConverter.GetBytes(v),
-                    ulong v => BitConverter.GetBytes(v),
-                    Half v => BitConverter.GetBytes(v),
-                    float v => BitConverter.GetBytes(v),
-                    double v => BitConverter.GetBytes(v),
-                    byte v => [v],
-                    byte[] v => v,
-                    _ => [],
-                };
-                foreach (var b in bytes)
-                {
-                    yield return b;
-                }
+                bool v => BitConverter.GetBytes(v),
+                char v => BitConverter.GetBytes(v),
+                short v => BitConverter.GetBytes(v),
+                int v => BitConverter.GetBytes(v),
+                long v => BitConverter.GetBytes(v),
+                ushort v => BitConverter.GetBytes(v),
+                uint v => BitConverter.GetBytes(v),
+                ulong v => BitConverter.GetBytes(v),
+                Half v => BitConverter.GetBytes(v),
+                float v => BitConverter.GetBytes(v),
+                double v => BitConverter.GetBytes(v),
+                byte v => [v],
+                byte[] v => v,
+                _ => [],
+            };
+            foreach (var b in bytes)
+            {
+                yield return b;
             }
         }
     }
@@ -414,19 +409,11 @@ public static class IEnumerableExtensions
     /// </remarks>
     public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(predicate);
-
-        return WhereNot2();
-
-        IEnumerable<T> WhereNot2()
+        foreach (var item in source)
         {
-            foreach (var item in source)
+            if (!predicate(item))
             {
-                if (!predicate(item))
-                {
-                    yield return item;
-                }
+                yield return item;
             }
         }
     }
@@ -462,6 +449,7 @@ public static class IEnumerableExtensions
 
     /// <summary>
     /// For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
+    /// This is essentially a cross join and may yield a large number of non-sensical results if the input sequences are large.
     /// </summary>
     /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
     /// <typeparam name="TOther">The Type of the elements in the other sequence.</typeparam>
@@ -476,17 +464,105 @@ public static class IEnumerableExtensions
         ArgumentNullException.ThrowIfNull(other);
         ArgumentNullException.ThrowIfNull(selector);
 
-        return CrossSelect2();
-
-        IEnumerable<TResult> CrossSelect2()
+        foreach (var item in source)
         {
-            foreach (var item in source)
+            foreach (var otherItem in other)
             {
-                foreach (var otherItem in other)
-                {
-                    yield return selector(item, otherItem);
-                }
+                yield return selector(item, otherItem);
             }
+        }
+    }
+
+    /// <summary>
+    /// Determines if a sequence is empty.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns><see langword="true"/> if the input sequence is empty, otherwise <see langword="false"/>.</returns>
+    public static bool None<T>(this IEnumerable<T> source) => !source.Any();
+    /// <summary>
+    /// Determines if a sequence contains no elements that satisfy a condition.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The condition to check for.</param>
+    /// <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
+    public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate) => !source.Any(predicate);
+
+    /// <summary>
+    /// Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
+    /// This behaves exactly like <see cref="Enumerable.Single{TSource}(IEnumerable{TSource})"/> without throwing exceptions.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>The single element in the input sequence, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
+    public static T? Only<T>(this IEnumerable<T> source)
+    {
+        try
+        {
+            return source.Single();
+        }
+        catch
+        {
+            return default;
+        }
+    }
+    /// <summary>
+    /// Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
+    /// This behaves exactly like <see cref="Enumerable.Single{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> without throwing exceptions.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The condition to check for.</param>
+    /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
+    public static T? Only<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        try
+        {
+            return source.Single(predicate);
+        }
+        catch
+        {
+            return default;
+        }
+    }
+    /// <summary>
+    /// Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+    /// This behaves exactly like <see cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, TSource)"/> without throwing exceptions.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
+    /// <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
+    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, T defaultValue)
+    {
+        try
+        {
+            return source.Single();
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+    /// <summary>
+    /// Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+    /// This behaves exactly like <see cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool}, TSource)"/> without throwing exceptions.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The condition to check for.</param>
+    /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
+    /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
+    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate, T defaultValue)
+    {
+        try
+        {
+            return source.Single(predicate);
+        }
+        catch
+        {
+            return defaultValue;
         }
     }
 }

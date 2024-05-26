@@ -1,3 +1,7 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
+using System.Reflection;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -12,7 +16,6 @@ public static class ListExtensions
     /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
     /// <param name="index">An <see cref="Index"/> instance that indicates where the item to be removed is located in the <paramref name="list"/>.</param>
     public static void Remove<T>(this List<T> list, Index index) => list.Remove(index.GetOffset(list.Count));
-
     /// <summary>
     /// Removes elements in a specified <paramref name="range"/> from this <see cref="List{T}"/>.
     /// </summary>
@@ -47,4 +50,30 @@ public static class ListExtensions
     /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> delegate that defines the conditions of the elements to keep.</param>
     public static void KeepOnly<T>(this List<T> list, Predicate<T> predicate) => list.RemoveAll(item => !predicate(item));
+
+    /// <summary>
+    /// Attempts to retrieve the backing store of this <see cref="List{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
+    /// <param name="list">The <see cref="List{T}"/> to retrieve the backing store from.</param>
+    /// <param name="backingStore">An <see langword="out"/> variable that receives the backing store of the <paramref name="list"/>.</param>
+    /// <returns>The backing store of the <paramref name="list"/>.</returns>
+    public static bool TryGetBackingStore<T>(this List<T> list, [NotNullWhen(true)] out T[]? backingStore) => TryGetBackingStore(list, out backingStore, out _, out _);
+    /// <summary>
+    /// Attempts to retrieve the backing store of this <see cref="List{T}"/>, also providing the <paramref name="count"/> and <paramref name="length"/> of the backing store.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
+    /// <param name="list">The <see cref="List{T}"/> to retrieve the backing store from.</param>
+    /// <param name="backingStore">An <see langword="out"/> variable that receives the backing store of the <paramref name="list"/>.</param>
+    /// <param name="count">An <see langword="out"/> variable that receives the number of elements from the start of <paramref name="backingStore"/> that lay within <paramref name="list"/>'s <see cref="List{T}.Count"/>.</param>
+    /// <param name="length">An <see langword="out"/> variable that receives the length of the <paramref name="backingStore"/>.</param>
+    /// <returns>The backing store of the <paramref name="list"/>.</returns>
+    public static bool TryGetBackingStore<T>(this List<T> list, [NotNullWhen(true)] out T[]? backingStore, out int count, out int length)
+    {
+        var fieldInfo = typeof(List<T>).GetField("_items", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        backingStore = fieldInfo.GetValueOrDefault<T[]>(list);
+        count = list.Count;
+        length = backingStore?.Length ?? 0;
+        return backingStore is not null;
+    }
 }
