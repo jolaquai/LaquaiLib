@@ -1530,10 +1530,10 @@
         </member>
         <member name="T:LaquaiLib.Extensions.DictionaryExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.Dictionary`2"/> Type.
+            Provides extension methods for the <see cref="T:System.Collections.Generic.IDictionary`2"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Invert``2(System.Collections.Generic.Dictionary{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Invert``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
             Creates an inverted <see cref="T:System.Collections.Generic.Dictionary`2"/>, where the original keys are now the values and vice versa.
             </summary>
@@ -1542,56 +1542,115 @@
             <param name="source">The original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
             <returns>A new <see cref="T:System.Collections.Generic.Dictionary`2"/> where the keys are the values of the original <see cref="T:System.Collections.Generic.Dictionary`2"/> and vice versa.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.InvertContentAware``2(System.Collections.Generic.Dictionary{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.InvertContentAware``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
             Creates a content-aware inverse <see cref="T:System.Collections.Generic.Dictionary`2"/> where the original keys are now values grouped by the original values.
             </summary>
-            <typeparam name="TKey">The Type of the keys of the original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <typeparam name="TValue">The Type of the values of the original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <param name="source">The original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
+            <typeparam name="TKey">The Type of the keys of the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The original <see cref="T:System.Collections.Generic.IDictionary`2"/>.</param>
             <returns>An inverted <see cref="T:System.Collections.Generic.Dictionary`2"/> as described.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Clone``2(System.Collections.Generic.Dictionary{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Clone``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
-            Creates a shallow copy of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            Creates a mutable shallow copy of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
             </summary>
-            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <typeparam name="TValue">They Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to clone.</param>
-            <returns>A shallow copy of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TValue">They Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to clone.</param>
+            <returns>A shallow copy of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.Dictionary{``0,``1},``0,``1,System.Func{``1,``1})">
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
             <summary>
-            Adds a key/value pair to the <see cref="T:System.Collections.Generic.Dictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
+            Gets the value associated with the specified key or adds a new key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
             </summary>
-            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to add to or update.</param>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add to.</param>
+            <param name="key">The key of the value to get or add.</param>
+            <param name="addValue">The value to be added for an absent key. If the key is absent, the return value is this value.</param>
+            <returns>The value associated with the specified key, if the key is found, otherwise <paramref name="addValue"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``1})">
+            <summary>
+            Gets the value associated with the specified key or adds a new key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add to.</param>
+            <param name="key">The key of the value to get or add.</param>
+            <param name="addValueFactory">A factory <see cref="T:System.Func`1"/> that produces the value to be added for an absent key. If the key is absent, the return value is the produced value.</param>
+            <returns>The value associated with the specified key, if the key is found, otherwise the value produced by <paramref name="addValueFactory"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``1,``1})">
+            <summary>
+            Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update.</param>
             <param name="key">The key of the element to add or update.</param>
             <param name="addValue">The value to be added for an absent key.</param>
             <param name="updateValueFactory">A factory <see cref="T:System.Func`2"/> that takes the existing value for a key and produces a new value.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.Dictionary{``0,``1},``0,``1,System.Func{``1,``1,``1})">
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``1,``1,``1})">
             <summary>
-            Adds a key/value pair to the <see cref="T:System.Collections.Generic.Dictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`3"/> that produces a new value is invoked with the existing value and <paramref name="addValue"/>.
+            Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`3"/> that produces a new value is invoked with the existing value and <paramref name="addValue"/>.
             </summary>
-            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to add to or update.</param>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update.</param>
             <param name="key">The key of the element to add or update.</param>
             <param name="addValue">The value to be added for an absent key.</param>
             <param name="updateValueFactory">A factory <see cref="T:System.Func`3"/> that takes the existing value for a key and <paramref name="addValue"/> itself and produces a new value. This avoids having to materialize the value twice.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.Dictionary{``0,``1},``0,System.Func{``1},System.Func{``1,``1})">
+        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``1},System.Func{``1,``1})">
             <summary>
-            Adds a key/value pair to the <see cref="T:System.Collections.Generic.Dictionary`2"/> where the value is produced by <paramref name="addValueFactory"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
+            Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> where the value is produced by <paramref name="addValueFactory"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
             </summary>
-            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to add to or update.</param>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update.</param>
             <param name="key">The key of the element to add or update.</param>
-            <param name="addValueFactory">A <see cref="T:System.Func`1"/> that produces the value to be added for an absent key. It is only invoked if the key does not already exist in the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
+            <param name="addValueFactory">A <see cref="T:System.Func`1"/> that produces the value to be added for an absent key. It is only invoked if the key does not already exist in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</param>
             <param name="updateValueFactory">A factory <see cref="T:System.Func`3"/> that takes the existing value for a key and produces a new value.</param>
+        </member>
+        <member name="T:LaquaiLib.Extensions.DirectoryInfoExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.IO.DirectoryInfo"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.Directory(System.IO.DirectoryInfo,System.String)">
+            <summary>
+            Creates a new <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/> if it exists, otherwise returns <see langword="null"/>.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="name">A relative directory path to search for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/> if it exists, otherwise <see langword="null"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.MakeDirectory(System.IO.DirectoryInfo,System.String)">
+            <summary>
+            Creates a new <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/>, creating the entire directory structure it does not exist.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="name">A relative directory path to search for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.File(System.IO.DirectoryInfo,System.String)">
+            <summary>
+            Creates a <see cref="T:System.IO.FileInfo"/> instance for the file identified by <paramref name="name"/> if it exists, otherwise returns <see langword="null"/>.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="name">A relative file path to search for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.FileInfo"/> instance for the file identified by <paramref name="name"/> if it exists, otherwise <see langword="null"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.MakeFile(System.IO.DirectoryInfo,System.String)">
+            <summary>
+            Creates a <see cref="T:System.IO.FileInfo"/> instance for the file identified by <paramref name="name"/>, creating the entire directory structure and the file itself if any part of it does not exist.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="name">A relative file path to construct for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.FileInfo"/> instance for the file identified by <paramref name="name"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.DispatcherObjectExtensions">
             <summary>
@@ -2276,9 +2335,10 @@
             <summary>
             Attempts to retrieve the backing store of this <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
-            <typeparam name="T"></typeparam>
-            <param name="list"></param>
-            <returns></returns>
+            <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
+            <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to retrieve the backing store from.</param>
+            <param name="backingStore">An <see langword="out"/> variable that receives the backing store of the <paramref name="list"/>.</param>
+            <returns>The backing store of the <paramref name="list"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.ListExtensions.TryGetBackingStore``1(System.Collections.Generic.List{``0},``0[]@,System.Int32@,System.Int32@)">
             <summary>
@@ -2286,9 +2346,9 @@
             </summary>
             <typeparam name="T">The Type of the elements in the <see cref="T:System.Collections.Generic.List`1"/>.</typeparam>
             <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to retrieve the backing store from.</param>
-            <param name="backingStore">The backing store of the <paramref name="list"/>.</param>
-            <param name="count">The number of elements from the start of <paramref name="backingStore"/> that are guaranteed to be populated.</param>
-            <param name="length">The length of the <paramref name="backingStore"/>.</param>
+            <param name="backingStore">An <see langword="out"/> variable that receives the backing store of the <paramref name="list"/>.</param>
+            <param name="count">An <see langword="out"/> variable that receives the number of elements from the start of <paramref name="backingStore"/> that lay within <paramref name="list"/>'s <see cref="P:System.Collections.Generic.List`1.Count"/>.</param>
+            <param name="length">An <see langword="out"/> variable that receives the length of the <paramref name="backingStore"/>.</param>
             <returns>The backing store of the <paramref name="list"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.MatchExtensions">
@@ -5373,6 +5433,46 @@
         <member name="M:LaquaiLib.Util.ObservableValue`1.op_GreaterThanOrEqual(LaquaiLib.Util.ObservableValue{`0},LaquaiLib.Util.ObservableValue{`0})">
             <inheritdoc/>
         </member>
+        <member name="T:LaquaiLib.Util.ValueChangedEventArgs`1">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event.
+            </summary>
+            <typeparam name="T">The type of the value.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Util.ValueChangedEventArgs`1.OldValue">
+            <summary>
+            The value before the change.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ValueChangedEventArgs`1.NewValue">
+            <summary>
+            The value after the change.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ValueChangedEventArgs`1.#ctor(`0,`0)">
+            <summary>
+            Initializes new <see cref="T:LaquaiLib.Util.ValueChangedEventArgs`1"/> with the given values.
+            </summary>
+            <param name="oldValue">The value before the change.</param>
+            <param name="newValue">The value after the change.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.ValueReadEventArgs`1">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyRead"/> event.
+            </summary>
+            <typeparam name="T">The type of the value.</typeparam>
+        </member>
+        <member name="P:LaquaiLib.Util.ValueReadEventArgs`1.Value">
+            <summary>
+            The value the reader received.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ValueReadEventArgs`1.#ctor(`0)">
+            <summary>
+            Initializes new <see cref="T:LaquaiLib.Util.ValueReadEventArgs`1"/> with the given value.
+            </summary>
+            <param name="value">The value the reader received.</param>
+        </member>
         <member name="T:LaquaiLib.Util.Processes">
             <summary>
             Provides methods and events for working with processes.
@@ -5871,29 +5971,6 @@
             </summary>
             <typeparam name="T">The Type of the items in the sequence.</typeparam>
             <param name="sequence">The sequence to test.</param>
-        </member>
-        <member name="T:LaquaiLib.Util.ValueChangedEventArgs`1">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.ValueChanged"/> event.
-            </summary>
-            <typeparam name="T">The type of the value.</typeparam>
-        </member>
-        <member name="P:LaquaiLib.Util.ValueChangedEventArgs`1.OldValue">
-            <summary>
-            The value before the change.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.ValueChangedEventArgs`1.NewValue">
-            <summary>
-            The value after the change.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ValueChangedEventArgs`1.#ctor(`0,`0)">
-            <summary>
-            Initializes new <see cref="T:LaquaiLib.Util.ValueChangedEventArgs`1"/> with the given values.
-            </summary>
-            <param name="oldValue">The value before the change.</param>
-            <param name="newValue">The value after the change.</param>
         </member>
         <member name="T:LaquaiLib.Util.VolumeManager.VolumeController">
             <summary>
@@ -9680,23 +9757,6 @@
             <summary>
             Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Wrappers.GCHandle`1"/> instance.
             </summary>
-        </member>
-        <member name="T:ValueReadEventArgs`1">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Util.ObservableValue`1.PropertyRead"/> event.
-            </summary>
-            <typeparam name="T">The type of the value.</typeparam>
-        </member>
-        <member name="P:ValueReadEventArgs`1.Value">
-            <summary>
-            The value the reader received.
-            </summary>
-        </member>
-        <member name="M:ValueReadEventArgs`1.#ctor(`0)">
-            <summary>
-            Initializes new <see cref="T:ValueReadEventArgs`1"/> with the given value.
-            </summary>
-            <param name="value">The value the reader received.</param>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.FuncSignatureRegex_0">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the FuncSignatureRegex method.</summary>
