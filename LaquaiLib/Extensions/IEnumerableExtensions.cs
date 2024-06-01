@@ -286,7 +286,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
-    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
     /// <returns>The transformed elements.</returns>
     public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate, Func<T, T> selector)
     {
@@ -301,7 +301,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
-    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+    /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
     /// <returns>The transformed elements.</returns>
     public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> source, Func<T, int, bool> predicate, Func<T, int, T> selector)
     {
@@ -490,43 +490,6 @@ public static partial class IEnumerableExtensions
     public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate) => !source.Any(predicate);
 
     /// <summary>
-    /// Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
-    /// This behaves exactly like <see cref="Enumerable.Single{TSource}(IEnumerable{TSource})"/> without throwing exceptions.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <returns>The single element in the input sequence, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
-    public static T? Only<T>(this IEnumerable<T> source)
-    {
-        try
-        {
-            return source.Single();
-        }
-        catch
-        {
-            return default;
-        }
-    }
-    /// <summary>
-    /// Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
-    /// This behaves exactly like <see cref="Enumerable.Single{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> without throwing exceptions.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <param name="predicate">The condition to check for.</param>
-    /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
-    public static T? Only<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-    {
-        try
-        {
-            return source.Single(predicate);
-        }
-        catch
-        {
-            return default;
-        }
-    }
-    /// <summary>
     /// Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
     /// This behaves exactly like <see cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, TSource)"/> without throwing exceptions.
     /// </summary>
@@ -534,7 +497,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
     /// <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
-    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, T defaultValue)
+    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, T defaultValue = default)
     {
         try
         {
@@ -554,7 +517,7 @@ public static partial class IEnumerableExtensions
     /// <param name="predicate">The condition to check for.</param>
     /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
     /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
-    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate, T defaultValue)
+    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate, T defaultValue = default)
     {
         try
         {
