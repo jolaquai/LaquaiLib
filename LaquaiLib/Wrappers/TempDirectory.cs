@@ -20,7 +20,7 @@ public class TempDirectory : IDisposable
         _path = path;
         if (!Directory.Exists(_path))
         {
-            Directory.CreateDirectory(_path);
+            _ = Directory.CreateDirectory(_path);
         }
     }
 
@@ -30,7 +30,8 @@ public class TempDirectory : IDisposable
     /// The path to the file this <see cref="TempDirectory"/> wraps.
     /// </summary>
     public string Path {
-        get {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _path!);
             return _path!;
         }

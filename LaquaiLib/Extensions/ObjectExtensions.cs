@@ -30,9 +30,6 @@ public static class ObjectExtensions
     /// <returns>An instance of <typeparamref name="T"/> that has been produced by casting <paramref name="obj"/> or <see langword="null"/> if the cast failed.</returns>
     /// <remarks>Contrary to <see cref="Cast{T}(object?)"/>, this method never throws an exception.</remarks>
     public static T? As<T>(this object? obj)
-        where T : class
-    {
-        return obj as T;
-    }
+        where T : class => obj as T;
 }
 

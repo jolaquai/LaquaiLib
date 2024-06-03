@@ -53,8 +53,7 @@ public class RandomStream : Stream
     /// <summary>
     /// The position in the <see cref="Stream"/>. This is irrelevant for <see cref="RandomStream"/>. Its position will never change.
     /// </summary>
-    public override long Position
-    {
+    public override long Position {
         get => 0;
         set => _ = 0;
     }
@@ -114,10 +113,7 @@ public class RandomStream : Stream
     /// <param name="offset">Ignored.</param>
     /// <param name="origin">Ignored.</param>
     /// <returns><c>0</c>.</returns>
-    public override long Seek(long offset, SeekOrigin origin = SeekOrigin.Begin)
-    {
-        return 0;
-    }
+    public override long Seek(long offset, SeekOrigin origin = SeekOrigin.Begin) => 0;
     /// <summary>
     /// The length of a <see cref="RandomStream"/> is irrelevant and operations controlling it are ignored.
     /// </summary>
@@ -144,7 +140,7 @@ public class RandomStream : Stream
         var exactly = (int)(destination.Length - destination.Position);
         using (var buffer = new TempArray<byte>(exactly))
         {
-            Read(buffer.Array, 0, exactly);
+            _ = Read(buffer.Array, 0, exactly);
             destination.Write(buffer.Array, 0, exactly);
         }
     }
@@ -159,14 +155,14 @@ public class RandomStream : Stream
         {
             while (destination.Length - destination.Position >= bufferSize)
             {
-                Read(buffer.Array);
+                _ = Read(buffer.Array);
                 destination.Write(buffer.Array);
             }
             var remaining = (int)(destination.Length - destination.Position);
             if (remaining > 0)
             {
                 var span = buffer.Array.AsSpan(0, remaining);
-                Read(span);
+                _ = Read(span);
                 destination.Write(span);
             }
         }
@@ -186,7 +182,7 @@ public class RandomStream : Stream
             while (destination.Length - destination.Position >= bufferSize)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
+                _ = await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
                 await destination.WriteAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
             }
@@ -195,7 +191,7 @@ public class RandomStream : Stream
             if (remaining > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await ReadAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
+                _ = await ReadAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
                 await destination.WriteAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
             }

@@ -5,10 +5,6 @@ namespace LaquaiLib.Util.ExceptionManagement;
 /// </summary>
 public class FirstChanceException : Exception
 {
-    private FirstChanceException(string message) : base(message)
-    {
-    }
-
     public FirstChanceException(string message, Exception innerException) : base(message, innerException)
     {
     }

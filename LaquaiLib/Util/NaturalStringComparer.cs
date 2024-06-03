@@ -63,7 +63,7 @@ public class NaturalStringComparer : IComparer<string>
         long number = 0;
         while (index < s.Length && char.IsDigit(s[index]))
         {
-            number = number * 10 + s[index] - '0';
+            number = (number * 10) + s[index] - '0';
             index++;
         }
         return number;

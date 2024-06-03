@@ -117,6 +117,8 @@ public static partial class CultureHelper
                     return threeLetterMatch;
                 }
                 break;
+            default:
+                break;
         }
 
         // Full match of any name
@@ -153,17 +155,14 @@ public static partial class CultureHelper
         }
 
         // Similarity
-        if (flattened.FirstOrDefault(ci =>
+        return flattened.FirstOrDefault(ci =>
             _similarityCleanerRegex.Replace(ci.Name, "").GetSimilarity(data) >= SimilarityThreshold
             || _similarityCleanerRegex.Replace(ci.DisplayName, "").GetSimilarity(data) >= SimilarityThreshold
             || _similarityCleanerRegex.Replace(ci.EnglishName, "").GetSimilarity(data) >= SimilarityThreshold
             || _similarityCleanerRegex.Replace(ci.NativeName, "").GetSimilarity(data) >= SimilarityThreshold
-        ) is CultureInfo similarityMatch)
-        {
-            return similarityMatch;
-        }
-
-        return null;
+        ) is CultureInfo similarityMatch
+            ? similarityMatch
+            : null;
     }
 
     /// <summary>
@@ -238,18 +237,14 @@ public static partial class CultureHelper
                 }
 
                 // Similarity
-                if (timeZones.FirstOrDefault(tz =>
+                return timeZones.FirstOrDefault(tz =>
                     _similarityCleanerRegex.Replace(tz.Id, "").GetSimilarity(data) >= SimilarityThreshold
                     || _similarityCleanerRegex.Replace(tz.DisplayName, "").GetSimilarity(data) >= SimilarityThreshold
                     || _similarityCleanerRegex.Replace(tz.StandardName, "").GetSimilarity(data) >= SimilarityThreshold
                     || _similarityCleanerRegex.Replace(tz.DaylightName, "").GetSimilarity(data) >= SimilarityThreshold
-                ) is TimeZoneInfo similarityMatch)
-                {
-                    return similarityMatch;
-                }
-
-                return null;
-            }),
+                ) is TimeZoneInfo similarityMatch
+                    ? similarityMatch
+                    : null; }),
             Task.Run(() =>
             {
                 // Same in _timeZoneMap
@@ -274,13 +269,9 @@ public static partial class CultureHelper
                 }
 
                 // Similarity
-                if (keys.FirstOrDefault(key => key.Any(k => _similarityCleanerRegex.Replace(k, "").GetSimilarity(data) >= SimilarityThreshold)) is string[] similarityMatchKey)
-                {
-                    return _timeZoneMap[similarityMatchKey];
-                }
-
-                return null;
-            })
+                return keys.FirstOrDefault(key => key.Any(k => _similarityCleanerRegex.Replace(k, "").GetSimilarity(data) >= SimilarityThreshold)) is string[] similarityMatchKey
+                    ? _timeZoneMap[similarityMatchKey]
+                    : null; })
         ];
 
         Task.WaitAll(tasks);

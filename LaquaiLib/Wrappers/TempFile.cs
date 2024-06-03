@@ -36,7 +36,8 @@ public class TempFile : IDisposable
     /// The path to the file this <see cref="TempFile"/> wraps.
     /// </summary>
     public string Path {
-        get {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _path!);
             return _path!;
         }
@@ -45,7 +46,8 @@ public class TempFile : IDisposable
     /// The <see cref="FileStream"/> for the file this <see cref="TempFile"/> wraps.
     /// </summary>
     public FileStream Stream {
-        get {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _stream!);
             return _stream!;
         }

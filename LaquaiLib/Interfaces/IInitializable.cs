@@ -10,8 +10,7 @@ public interface IInitializable : ISupportInitialize
     /// <summary>
     /// Gets or sets whether this instance is currently initializing.
     /// </summary>
-    bool IsInitializing
-    {
+    bool IsInitializing {
         get; protected set;
     }
     void ISupportInitialize.BeginInit() => IsInitializing = true;

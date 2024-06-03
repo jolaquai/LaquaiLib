@@ -16,20 +16,7 @@ public readonly struct GCHandle<T> : IDisposable
     /// Gets the object of type <typeparamref name="T"/> this <see cref="GCHandle{T}"/> represents.
     /// </summary>
     /// <exception cref="ObjectDisposedException">Thrown if the handle has been disposed.</exception>
-    public T Target
-    {
-        get
-        {
-            if (Handle.IsAllocated)
-            {
-                return (T)Handle.Target!;
-            }
-            else
-            {
-                throw new ObjectDisposedException("The handle is disposed.");
-            }
-        }
-    }
+    public T Target => Handle.IsAllocated ? (T)Handle.Target! : throw new ObjectDisposedException("The handle is disposed.");
     /// <inheritdoc cref="GCHandle.IsAllocated"/>
     public bool IsAllocated => Handle.IsAllocated;
 
@@ -104,14 +91,7 @@ public readonly struct GCHandle<T> : IDisposable
     public static explicit operator nint?(GCHandle<T> handle) => (nint)handle.Handle;
 
     /// <inheritdoc/>
-    public override bool Equals([NotNullWhen(true)] object? obj)
-    {
-        if (obj is GCHandle<T> handle)
-        {
-            return this == handle;
-        }
-        return false;
-    }
+    public override bool Equals([NotNullWhen(true)] object? obj) => obj is GCHandle<T> handle && this == handle;
     /// <inheritdoc/>
     public override int GetHashCode() => base.GetHashCode();
 

@@ -38,8 +38,9 @@ public class FullAccessDynamic<T> : DynamicObject
     {
         _instance = instance;
     }
+    /// <inheritdoc/>
 
-    public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+    public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object? result)
     {
         if (_instance is null)
         {
@@ -65,6 +66,8 @@ public class FullAccessDynamic<T> : DynamicObject
             case "Unwrap":
                 result = Unwrap();
                 return true;
+            default:
+                break;
         }
 
         // Attempt to find the method with the specified name and parameter types.
@@ -93,7 +96,8 @@ public class FullAccessDynamic<T> : DynamicObject
         result = null;
         return false;
     }
-    public override bool TryGetMember(GetMemberBinder binder, out object result)
+    /// <inheritdoc/>
+    public override bool TryGetMember(GetMemberBinder binder, out object? result)
     {
         var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name;
 
@@ -108,6 +112,8 @@ public class FullAccessDynamic<T> : DynamicObject
                     break;
                 case FieldInfo fieldInfo:
                     field = fieldInfo;
+                    break;
+                default:
                     break;
             }
         }
@@ -133,14 +139,9 @@ public class FullAccessDynamic<T> : DynamicObject
             if (field is not null)
             {
                 var fieldValue = field.GetValue(_instance);
-                if (fieldValue is null)
-                {
-                    result = null;
-                }
-                else
-                {
-                    result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
-                }
+                result = fieldValue is null
+                    ? null
+                    : (object?)LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
                 _memberCache[key] = field;
                 return true;
             }
@@ -160,6 +161,7 @@ public class FullAccessDynamic<T> : DynamicObject
         result = null;
         return false;
     }
+    /// <inheritdoc/>
     public override bool TrySetMember(SetMemberBinder binder, object value)
     {
         if (_instance is null)
@@ -197,6 +199,7 @@ public class FullAccessDynamic<T> : DynamicObject
 
         return false;
     }
+    /// <inheritdoc/>
     public override bool TryConvert(ConvertBinder binder, out object? result)
     {
         if (binder.Type.IsAssignableFrom(_instanceType))
@@ -207,6 +210,7 @@ public class FullAccessDynamic<T> : DynamicObject
 
         throw new InvalidCastException($"Cannot cast object of type '{_instanceType.FullName}' to '{binder.Type.FullName}'.");
     }
+    /// <inheritdoc/>
     public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object? result)
     {
         if (_instance is null)
@@ -219,20 +223,16 @@ public class FullAccessDynamic<T> : DynamicObject
         if (itemProp is not null)
         {
             var itemValue = itemProp.GetValue(_instance, indexes);
-            if (itemValue is null)
-            {
-                result = null;
-            }
-            else
-            {
-                result = LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
-            }
+            result = itemValue is null
+                ? null
+                : (object?)LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
             return true;
         }
 
         result = null;
         return false;
     }
+    /// <inheritdoc/>
     public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object? value)
     {
         if (_instance is null)
@@ -249,6 +249,7 @@ public class FullAccessDynamic<T> : DynamicObject
 
         return false;
     }
+    /// <inheritdoc/>
     public override bool TryInvoke(InvokeBinder binder, object?[]? args, out object? result)
     {
         switch (_instance)
@@ -263,11 +264,9 @@ public class FullAccessDynamic<T> : DynamicObject
                 throw new InvalidOperationException($"Object of type '{_instanceType.FullName}' is not invocable, expected '{typeof(MethodInfo).FullName}' or any '{typeof(Delegate)}'-like type.");
         }
     }
+    /// <inheritdoc/>
 
-    public override IEnumerable<string> GetDynamicMemberNames()
-    {
-        return _instanceType.GetProperties(bindingFlags).Select(p => p.Name);
-    }
+    public override IEnumerable<string> GetDynamicMemberNames() => _instanceType.GetProperties(bindingFlags).Select(p => p.Name);
 
     /// <summary>
     /// Returns the underlying <typeparamref name="T"/> instance.
@@ -287,9 +286,13 @@ public class FullAccessDynamic<T> : DynamicObject
             ?? func(publicInstance)
             ?? func(anyInstance);
     }
+    /// <inheritdoc/>
 
     public override bool Equals(object? obj) => Equals(Unwrap(), obj);
+    /// <inheritdoc/>
     public static bool operator ==(FullAccessDynamic<T> left, object? right) => Equals(left.Unwrap(), right);
+    /// <inheritdoc/>
     public static bool operator !=(FullAccessDynamic<T> left, object? right) => !(left == right);
+    /// <inheritdoc/>
     public override int GetHashCode() => Unwrap()?.GetHashCode() ?? 0;
 }

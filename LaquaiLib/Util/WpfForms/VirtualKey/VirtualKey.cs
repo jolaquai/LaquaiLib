@@ -1,7 +1,5 @@
 namespace LaquaiLib.Util.WpfForms;
 
-#pragma warning disable CA1008 // Enums should have zero value
-#pragma warning disable CA1028 // Enum Storage should be Int32
 #pragma warning disable CA1069 // Enums values should not be duplicated
 #pragma warning disable CA1707 // Identifiers should not contain underscores
 

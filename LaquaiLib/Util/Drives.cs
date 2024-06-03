@@ -82,8 +82,7 @@ public static class Drives
     /// <summary>
     /// Occurs when a drive is connected to the system.
     /// </summary>
-    public static event Action<DriveInfo>? DriveConnected
-    {
+    public static event Action<DriveInfo>? DriveConnected {
         add
         {
             lock (SyncRoot)
@@ -102,8 +101,7 @@ public static class Drives
     /// <summary>
     /// Occurs when a drive is disconnected from the system.
     /// </summary>
-    public static event Action<DriveInfo>? DriveDisconnected
-    {
+    public static event Action<DriveInfo>? DriveDisconnected {
         add
         {
             lock (SyncRoot)
@@ -122,8 +120,7 @@ public static class Drives
     /// <summary>
     /// Occurs when a removable drive (such as a USB drive) is connected to the system.
     /// </summary>
-    public static event Action<DriveInfo>? RemovableDriveConnected
-    {
+    public static event Action<DriveInfo>? RemovableDriveConnected {
         add
         {
             lock (SyncRoot)
@@ -142,8 +139,7 @@ public static class Drives
     /// <summary>
     /// Occurs when a removable drive (such as a USB drive) is disconnected from the system.
     /// </summary>
-    public static event Action<DriveInfo>? RemovableDriveDisconnected
-    {
+    public static event Action<DriveInfo>? RemovableDriveDisconnected {
         add
         {
             lock (SyncRoot)
@@ -162,8 +158,7 @@ public static class Drives
     /// <summary>
     /// Occurs when a disc is inserted into a drive.
     /// </summary>
-    public static event Action<DriveInfo>? DiscInserted
-    {
+    public static event Action<DriveInfo>? DiscInserted {
         add
         {
             lock (SyncRoot)
@@ -182,8 +177,7 @@ public static class Drives
     /// <summary>
     /// Occurs when a disc is ejected from a drive.
     /// </summary>
-    public static event Action<DriveInfo>? DiscEjected
-    {
+    public static event Action<DriveInfo>? DiscEjected {
         add
         {
             lock (SyncRoot)
@@ -215,17 +209,11 @@ public static class Drives
     /// <summary>
     /// Starts raising the events defined in <see cref="Drives"/>.
     /// </summary>
-    public static void Start()
-    {
-        _timer.Change(0, 10);
-    }
+    public static void Start() => _timer.Change(0, 10);
     /// <summary>
     /// Stops raising the events defined in <see cref="Drives"/>.
     /// </summary>
-    public static void Stop()
-    {
-        _timer.Change(Timeout.Infinite, 10);
-    }
+    public static void Stop() => _timer.Change(Timeout.Infinite, 10);
 
     /// <summary>
     /// Raises the events defined in <see cref="Drives"/> if their conditions are met.

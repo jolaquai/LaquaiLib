@@ -3,7 +3,7 @@ using LaquaiLib.Extensions;
 namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 // Contains just the Show method overloads
-partial class MessageBoxFactory
+public partial class MessageBoxFactory
 {
     #region Synchronous
     /// <summary>
@@ -135,7 +135,7 @@ partial class MessageBoxFactory
         var msgBoxThread = new Thread(state =>
         {
             Thread.CurrentThread.Name = nameof(WpfForms.MessageBox.MessageBoxFactory) + '.' + nameof(ShowAsync);
-            var result = Interop.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | (modality.Value | MessageBoxModality.Application) | otherOptions.Value);
+            var result = Interop.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | MessageBoxModality.Application | otherOptions.Value);
             tcs.SetResult(result);
         });
         msgBoxThread.Start();

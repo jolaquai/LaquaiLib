@@ -16,7 +16,7 @@ public static class HtmlNodeExtensions
     {
         foreach (var child in children)
         {
-            node.AppendChild(child);
+            _ = node.AppendChild(child);
         }
     }
 }

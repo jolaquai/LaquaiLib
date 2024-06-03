@@ -42,7 +42,7 @@ public class MemoryOrFileStream : Stream, IDisposable
     /// </summary>
     static MemoryOrFileStream()
     {
-        ResetCutoff();
+        _ = ResetCutoff();
     }
 
     /// <summary>
@@ -75,8 +75,7 @@ public class MemoryOrFileStream : Stream, IDisposable
     /// <inheritdoc/>
     public override long Length => Stream.Length;
     /// <inheritdoc/>
-    public override long Position
-    {
+    public override long Position {
         get => Stream.Position;
         set => Stream.Position = value;
     }

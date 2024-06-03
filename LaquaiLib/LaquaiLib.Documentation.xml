@@ -2050,7 +2050,7 @@
             <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
             <param name="source">The input sequence.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
-            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
             <returns>The transformed elements.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectWhere``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean},System.Func{``0,System.Int32,``0})">
@@ -2060,7 +2060,7 @@
             <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
             <param name="source">The input sequence.</param>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
-            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
             <returns>The transformed elements.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectOnlyWhere``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,``1})">
@@ -2145,25 +2145,6 @@
             <param name="predicate">The condition to check for.</param>
             <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Only``1(System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
-            This behaves exactly like <see cref="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0})"/> without throwing exceptions.
-            </summary>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <returns>The single element in the input sequence, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Only``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <summary>
-            Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the <see langword="default"/> for <typeparamref name="T"/>.
-            This behaves exactly like <see cref="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})"/> without throwing exceptions.
-            </summary>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <param name="predicate">The condition to check for.</param>
-            <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or the <see langword="default"/> for <typeparamref name="T"/> if the sequence contains no elements or more than one element.</returns>
-        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OnlyOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
             Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
@@ -2217,6 +2198,19 @@
             </summary>
             <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when all of the <see cref="T:System.Threading.Tasks.Task"/>s in this collection have completed.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IEnumeratorExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerator`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumeratorExtensions.AsEnumerable``1(System.Collections.Generic.IEnumerator{``0})">
+            <summary>
+            Yields each element of <paramref name="source"/> so that it can be used within LINQ queries.
+            No full enumeration of <paramref name="source"/> is performed.
+            </summary>
+            <param name="source">The <see cref="T:System.Collections.Generic.IEnumerator`1"/> to iterate over.</param>
+            <returns>The elements of the <paramref name="source"/> as an <see cref="T:System.Collections.Generic.IEnumerable`1"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IGroupingExtensions">
             <summary>
@@ -2471,6 +2465,15 @@
             <param name="partitioner">The <see cref="T:System.Collections.Concurrent.Partitioner`1"/> to enumerate.</param>
             <param name="partitions">The number of partitions to request.</param>
             <returns>The <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Collections.Generic.List`1"/>s containing the elements of each partition.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PartitionerExtensions.AsEnumerable``1(System.Collections.Concurrent.Partitioner{``0},System.Int32)">
+            <summary>
+            Transforms each partition of the <paramref name="partitioner"/> into an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/>s containing the elements of each partition.
+            </summary>
+            <typeparam name="T">The type of the elements in the <paramref name="partitioner"/>.</typeparam>
+            <param name="partitioner">The <see cref="T:System.Collections.Concurrent.Partitioner`1"/> to transform.</param>
+            <param name="partitions">The number of partitions to request.</param>
+            <returns>The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/>s enumerating the elements of each partition.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ProcessExtensions">
             <summary>
@@ -3154,10 +3157,7 @@
             Reflects the entirety of this <see cref="T:System.Type"/> and generates .NET 8.0 code that can be used to replicate it.
             </summary>
             <param name="type">The <see cref="T:System.Type"/> to reflect.</param>
-            <param name="namespace">The namespace to place the generated type(s) into. If <see langword="null"/> or empty, the code is generated without a namespace declaration.</param>
             <param name="options.Inheriting.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="T:System.NotImplementedException"/>s.</param>
-            <param name="inherited">Whether to generate code for all members <paramref name="type"/> inherits from its base types.</param>
-            <param name="options.Deep.Deep">Whether to generate code for all <see cref="T:System.Type"/>s that are referenced by this <paramref name="type"/> in any way.</param>
             <returns>A <see cref="T:System.String"/> containing the generated code.</returns>
             <remarks>
             This method is not guaranteed to generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
@@ -3613,10 +3613,16 @@
             A collection of <see cref="T:System.Int64"/>s that indicate the lengths of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
             </summary>
         </member>
+        <member name="P:LaquaiLib.Streams.MultiStream.Length">
+            <inheritdoc/>
+        </member>
         <member name="P:LaquaiLib.Streams.MultiStream.Positions">
             <summary>
             A collection of <see cref="T:System.Int64"/>s taht indicate the current positions of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
             </summary>
+        </member>
+        <member name="P:LaquaiLib.Streams.MultiStream.Position">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.Flush">
             <summary>
@@ -3783,6 +3789,9 @@
             Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream"/>.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.Read(System.Span{System.Byte})">
             <summary>
             Fills the specified buffer with random bytes.
@@ -3828,6 +3837,9 @@
             <param name="destination">The <see cref="T:System.IO.Stream"/> to write to.</param>
             <param name="byteCount">How many random bytes to write to <paramref name="destination"/>.</param>
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.Dispose(System.Boolean)">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Streams.RandomStreams.RandomStream">
             <summary>
@@ -4218,6 +4230,30 @@
             </summary>
             <typeparam name="T">The type of the object to wrap.</typeparam>
         </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.TryInvokeMember(System.Dynamic.InvokeMemberBinder,System.Object[],System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.TryGetMember(System.Dynamic.GetMemberBinder,System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.TrySetMember(System.Dynamic.SetMemberBinder,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.TryConvert(System.Dynamic.ConvertBinder,System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.TryGetIndex(System.Dynamic.GetIndexBinder,System.Object[],System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.TrySetIndex(System.Dynamic.SetIndexBinder,System.Object[],System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.TryInvoke(System.Dynamic.InvokeBinder,System.Object[],System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.GetDynamicMemberNames">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.Unwrap">
             <summary>
             Returns the underlying <typeparamref name="T"/> instance.
@@ -4230,6 +4266,18 @@
             </summary>
             <param name="func">The function to execute.</param>
             <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.op_Equality(LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic{`0},System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.op_Inequality(LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic{`0},System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamic`1.GetHashCode">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory">
             <summary>
@@ -4291,6 +4339,30 @@
             </summary>
             <typeparam name="T">The type of the object to wrap.</typeparam>
         </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.TryInvokeMember(System.Dynamic.InvokeMemberBinder,System.Object[],System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.TryGetMember(System.Dynamic.GetMemberBinder,System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.TrySetMember(System.Dynamic.SetMemberBinder,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.TryConvert(System.Dynamic.ConvertBinder,System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.TryGetIndex(System.Dynamic.GetIndexBinder,System.Object[],System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.TrySetIndex(System.Dynamic.SetIndexBinder,System.Object[],System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.TryInvoke(System.Dynamic.InvokeBinder,System.Object[],System.Object@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.GetDynamicMemberNames">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.Unwrap">
             <summary>
             Returns the underlying <typeparamref name="T"/> instance.
@@ -4303,6 +4375,18 @@
             </summary>
             <param name="func">The function to execute.</param>
             <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.op_Equality(LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic{`0},System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.op_Inequality(LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic{`0},System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamic`1.GetHashCode">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.SilentFullAccessDynamicFactory">
             <summary>
@@ -4888,6 +4972,7 @@
             <param name="fsModifiers">A <see cref="T:LaquaiLib.Util.Hotkeys.FsModifiers"/> value specifying the modifier keys to be associated with the hotkey.</param>
             <param name="vk">The virtual key code to be associated with the hotkey.</param>
             <param name="method">A <see cref="T:System.Delegate"/> representing the method to be invoked when the hotkey is pressed. Must be castable to either <see cref="T:System.Action"/> or a <see cref="T:System.Threading.Tasks.Task"/>-returning <see cref="T:System.Func`1"/>, otherwise an <see cref="T:System.ArgumentException"/> is thrown. Such an asynchronous <see langword="delegate"/> is <see langword="await"/>ed appropriately upon invocation.</param>
+            <param name="hotkey"></param>
             <returns>The result of the registration attempt.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.UnregisterHotkey(System.Int32,LaquaiLib.Util.Hotkeys.Hotkey)">
@@ -5731,6 +5816,85 @@
             <param name="bitmap"></param>
             <param name="timestamp"></param>
         </member>
+        <member name="T:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult">
+            <summary>
+            Encapsulates a command dispatch result; that is, a command sent to a <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation and the output produced by the script that received the command in response to it.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Input">
+            <summary>
+            The input sent to the <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation that produced this output.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Output">
+            <summary>
+            The output produced by the script that received the <see cref="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Input"/>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ShellInterfaces.CommandInterface">
+            <summary>
+            Implements <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> using a <c>cmd.exe</c> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ShellInterfaces.CommandInterface.CreateInstanceAsync">
+            <summary>
+            Asynchronously creates and configures a new instance of <see cref="T:LaquaiLib.Util.ShellInterfaces.CommandInterface"/>.
+            </summary>
+            <returns>The configured instance of <see cref="T:LaquaiLib.Util.ShellInterfaces.CommandInterface"/>.</returns>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.IShellInterface.Process">
+            <summary>
+            Gets the <see cref="T:System.Diagnostics.Process"/> component that represents the underlying shell.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.IShellInterface.StdOut">
+            <summary>
+            Gets the standard output stream of the underlying PowerShell instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.IShellInterface.StdErr">
+            <summary>
+            Gets the standard error stream of the underlying PowerShell instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.IShellInterface.Ready">
+            <summary>
+            Indicates whether the underlying shell is ready to receive input.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.IShellInterface.Exists">
+            <summary>
+            Indicates whether the underlying shell still exists.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ShellInterfaces.IShellInterface.DispatchAsync(System.String)">
+            <summary>
+            Sends a string to the standard input of the underlying shell, then closes the input stream to allow the script to execute.
+            </summary>
+            <param name="input">The string to send. See remarks for further information.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that completes when the command has been dispatched and the output has been received.</returns>
+            <remarks>
+            Before sending multiline input, ensure that the shell you are sending to supports this. For example, a multiline PowerShell block must be enclosed in a block: <c>&amp; { }</c>
+            <para/>
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.ShellInterfaces.IShellInterface.Close">
+            <summary>
+            Requests that the interactive shell represented by this instance terminate at the earliest opportunity.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when the shell has terminated.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.ShellInterfaces.PowerShellInterface">
+            <summary>
+            Implements <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> using a PowerShell instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ShellInterfaces.PowerShellInterface.CreateInstanceAsync">
+            <summary>
+            Asynchronously creates and configures a new instance of <see cref="T:LaquaiLib.Util.ShellInterfaces.PowerShellInterface"/>.
+            </summary>
+            <returns>The configured instance of <see cref="T:LaquaiLib.Util.ShellInterfaces.PowerShellInterface"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Util.TaskbarProgress">
             <summary>
             Represents a handler for a progress display on the current window's taskbar icon.
@@ -6486,33 +6650,6 @@
             <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
         </member>
         <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Nullable{System.UInt32})"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)"/>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBox.ShowAsync(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
             <inheritdoc cref="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)"/>
         </member>
         <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxButton">
@@ -9152,11 +9289,6 @@
             </summary>
             <typeparam name="T">The type of the value to be returned.</typeparam>
             <param name="state">Optional parameter(s) to be used by the window.</param>
-        </member>
-        <member name="M:LaquaiLib.WPF.AsyncGetterWindow.Button_Click">
-            <summary>
-            Template: Marks the window as ready to return a value, which is then returned by <see cref="M:LaquaiLib.WPF.AsyncGetterWindow.GetValue``1(System.Object)"/>.
-            </summary>
         </member>
         <member name="M:LaquaiLib.WPF.AsyncGetterWindow.InitializeComponent">
             <summary>

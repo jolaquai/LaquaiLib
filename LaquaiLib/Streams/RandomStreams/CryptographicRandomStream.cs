@@ -1,7 +1,7 @@
 
-using LaquaiLib.Wrappers;
-
 using System.Security.Cryptography;
+
+using LaquaiLib.Wrappers;
 
 namespace LaquaiLib.Streams.RandomStreams;
 
@@ -19,6 +19,7 @@ public class CryptographicRandomStream : RandomStream
         random = null!;
         rng = RandomNumberGenerator.Create();
     }
+    /// <inheritdoc/>
 
     public override int Read(byte[] buffer, int offset, int count) => Read(buffer.AsSpan(offset, count));
     /// <summary>
@@ -61,7 +62,7 @@ public class CryptographicRandomStream : RandomStream
         var exactly = (int)(destination.Length - destination.Position);
         using (var buffer = new TempArray<byte>(exactly))
         {
-            Read(buffer.Array, 0, exactly);
+            _ = Read(buffer.Array, 0, exactly);
             destination.Write(buffer.Array, 0, exactly);
         }
     }
@@ -74,7 +75,7 @@ public class CryptographicRandomStream : RandomStream
     {
         using (var buffer = new TempArray<byte>(byteCount))
         {
-            Read(buffer.Array);
+            _ = Read(buffer.Array);
             destination.Write(buffer.Array, 0, byteCount);
         }
     }
@@ -89,11 +90,12 @@ public class CryptographicRandomStream : RandomStream
         using (var buffer = new TempArray<byte>(int.Min(byteCount, (int)(destination.Length - destination.Position))))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
+            _ = await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
             cancellationToken.ThrowIfCancellationRequested();
             await destination.WriteAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
         }
     }
+    /// <inheritdoc/>
 
     protected override void Dispose(bool disposing)
     {

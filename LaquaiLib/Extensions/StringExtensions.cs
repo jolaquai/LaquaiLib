@@ -63,21 +63,14 @@ public static class StringExtensions
         {
             foreach (var c in exceptString)
             {
-                replacedChars.Add(c);
+                _ = replacedChars.Add(c);
             }
         }
 
         var result = new StringBuilder();
         foreach (var c in source)
         {
-            if (replacedChars.Contains(c))
-            {
-                result.Append(c);
-            }
-            else
-            {
-                result.Append(replace);
-            }
+            _ = replacedChars.Contains(c) ? result.Append(c) : result.Append(replace);
         }
 
         return result.ToString();
@@ -406,14 +399,13 @@ public static class StringExtensions
     /// <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
     public static int IndexOfAnyExcept(this string source, IEnumerable<char> excepts)
     {
-        var index = -1;
         var minIndex = int.MaxValue;
 
         foreach (var c in source)
         {
             if (!excepts.Contains(c))
             {
-                index = source.IndexOf(c);
+                var index = source.IndexOf(c);
                 if (index >= 0 && index < minIndex)
                 {
                     minIndex = index;
@@ -433,14 +425,13 @@ public static class StringExtensions
     /// <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
     public static int IndexOfAnyExcept(this string source, IEnumerable<char> excepts, int startIndex)
     {
-        var index = -1;
         var minIndex = int.MaxValue;
 
         foreach (var c in source[startIndex..])
         {
             if (!excepts.Contains(c))
             {
-                index = source.IndexOf(c, startIndex);
+                var index = source.IndexOf(c, startIndex);
                 if (index >= 0 && index < minIndex)
                 {
                     minIndex = index;

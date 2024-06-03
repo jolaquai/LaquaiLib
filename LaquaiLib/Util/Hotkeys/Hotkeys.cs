@@ -26,7 +26,7 @@ public static partial class Hotkeys
                         );
                     if (hotkey is not null)
                     {
-                       await OnHotkeyTriggered(hotkey).ConfigureAwait(false);
+                        await OnHotkeyTriggered(hotkey).ConfigureAwait(false);
                     }
                 }
             }
@@ -98,8 +98,7 @@ public static partial class Hotkeys
     /// <summary>
     /// Controls whether hotkeys are processed.
     /// </summary>
-    public static bool ProcessHotkeys
-    {
+    public static bool ProcessHotkeys {
         get => processHotkeys;
         set
         {
@@ -135,8 +134,9 @@ public static partial class Hotkeys
     /// <param name="fsModifiers">A <see cref="FsModifiers"/> value specifying the modifier keys to be associated with the hotkey.</param>
     /// <param name="vk">The virtual key code to be associated with the hotkey.</param>
     /// <param name="method">A <see cref="Delegate"/> representing the method to be invoked when the hotkey is pressed. Must be castable to either <see cref="Action"/> or a <see cref="Task"/>-returning <see cref="Func{TResult}"/>, otherwise an <see cref="ArgumentException"/> is thrown. Such an asynchronous <see langword="delegate"/> is <see langword="await"/>ed appropriately upon invocation.</param>
+    /// <param name="hotkey"></param>
     /// <returns>The result of the registration attempt.</returns>
-    public static bool RegisterHotkey(FsModifiers fsModifiers, Keys vk, Delegate method, [NotNullWhen(true)] out Hotkey hotkey)
+    public static bool RegisterHotkey(FsModifiers fsModifiers, Keys vk, Delegate method, [NotNullWhen(true)] out Hotkey? hotkey)
     {
         if (!processHotkeys && !hasStoppedManually)
         {
@@ -170,7 +170,7 @@ public static partial class Hotkeys
         hotkey ??= _hotkeys.Find(hk => hk.Id == id);
         if (hotkey is not null)
         {
-            _hotkeys.Remove(hotkey);
+            _ = _hotkeys.Remove(hotkey);
             return UnregisterHotKey(_hostWindowHandle, id) != 0;
         }
         return false;
@@ -181,14 +181,12 @@ public static partial class Hotkeys
     /// <param name="hotkey">The <see cref="Hotkey"/> to be unregistered.</param>
     /// <returns>The result of the unregistration attempt.</returns>
     public static bool UnregisterHotkey(Hotkey hotkey) => UnregisterHotkey(hotkey.Id, hotkey);
-    private static int GetMessage(out LPMSG lpMsg)
-    {
+    private static int GetMessage(out LPMSG lpMsg) =>
         // Get only WM_HOTKEY messages
         // Also use GetMessage instead of PeekMessage to block until a message is available
         // This way, we don't need a timer or something similar to keep the application running
         // Just offload this into a separate thread and we're good
-        return GetMessage(out lpMsg, _hostWindowHandle, 0, 0);
-    }
+        GetMessage(out lpMsg, _hostWindowHandle, 0, 0);
 
     private static async Task OnHotkeyTriggered(Hotkey hotkey)
     {

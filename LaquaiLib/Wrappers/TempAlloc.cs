@@ -64,10 +64,7 @@ public unsafe class TempAlloc : IDisposable
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     public static TempAlloc Create<T>()
-        where T : struct
-    {
-        return new TempAlloc(Marshal.SizeOf<T>());
-    }
+        where T : struct => new TempAlloc(Marshal.SizeOf<T>());
 
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>, optionally clearing any previous data.
@@ -75,10 +72,7 @@ public unsafe class TempAlloc : IDisposable
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
     public static TempAlloc Create<T>(bool clear)
-        where T : struct
-    {
-        return new TempAlloc(Marshal.SizeOf<T>(), clear);
-    }
+        where T : struct => new TempAlloc(Marshal.SizeOf<T>(), clear);
 
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
@@ -88,11 +82,9 @@ public unsafe class TempAlloc : IDisposable
     public static TempAlloc Create<T>(int count)
         where T : struct
     {
-        if (count <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.");
-        }
-        return new TempAlloc(Marshal.SizeOf<T>() * count);
+        return count <= 0
+            ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
+            : new TempAlloc(Marshal.SizeOf<T>() * count);
     }
 
     /// <summary>
@@ -104,11 +96,9 @@ public unsafe class TempAlloc : IDisposable
     public static TempAlloc Create<T>(int count, bool clear)
         where T : struct
     {
-        if (count <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.");
-        }
-        return new TempAlloc(Marshal.SizeOf<T>() * count, clear);
+        return count <= 0
+            ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
+            : new TempAlloc(Marshal.SizeOf<T>() * count, clear);
     }
 
     /// <summary>
@@ -130,8 +120,7 @@ public unsafe class TempAlloc : IDisposable
     /// </summary>
     /// <param name="index">An <see cref="Index"/> that represents the index of the byte to retrieve.</param>
     /// <returns>A pointer to the byte at the given <paramref name="index"/>.</returns>
-    public byte* this[Index index]
-    {
+    public byte* this[Index index] {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
@@ -143,8 +132,7 @@ public unsafe class TempAlloc : IDisposable
     /// </summary>
     /// <param name="range">A <see cref="Range"/> that represents the range of bytes to retrieve.</param>
     /// <returns>The created <see cref="Span{T}"/> of <see cref="byte"/> slice.</returns>
-    public Span<byte> this[Range range]
-    {
+    public Span<byte> this[Range range] {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
@@ -167,8 +155,7 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// The address of the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public nint Address
-    {
+    public nint Address {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
@@ -197,8 +184,7 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bytes.
     /// </summary>
-    public int Size
-    {
+    public int Size {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
@@ -208,8 +194,7 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bits.
     /// </summary>
-    public int Bits
-    {
+    public int Bits {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
@@ -219,8 +204,7 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// A <see cref="Span{T}"/> of <see cref="byte"/> that represents the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public Span<byte> Data
-    {
+    public Span<byte> Data {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
@@ -435,7 +419,7 @@ public unsafe class TempAlloc : IDisposable
                 {
                     data[i - shiftAmount] = data[i];
                 }
-                Reallocate(data.Length - shiftAmount);
+                _ = Reallocate(data.Length - shiftAmount);
                 data = Data;
             }
 
@@ -464,8 +448,8 @@ public unsafe class TempAlloc : IDisposable
         for (var i = 0; i < _size; i += 4)
         {
             var slice = data[i..(i + 4 > _size ? _size : i + 4)];
-            sb.Append(Convert.ToHexString(slice));
-            sb.Append(' ');
+            _ = sb.Append(Convert.ToHexString(slice));
+            _ = sb.Append(' ');
         }
         return sb.ToString().Trim(' ');
     }
@@ -482,9 +466,9 @@ public unsafe class TempAlloc : IDisposable
             var slice = i - 4 < 0 ? data[..i] : data.Slice(i - 4, 4);
             foreach (var b in slice)
             {
-                sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
+                _ = sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }
-            sb.Insert(0, ' ');
+            _ = sb.Insert(0, ' ');
         }
         return sb.ToString().Trim(' ');
     }

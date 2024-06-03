@@ -18,14 +18,9 @@ public static class ProcessExtensions
     {
         if (process.StartInfo is ProcessStartInfo psi)
         {
-            if (psi.ArgumentList.Count > 0)
-            {
-                return $"\"{psi.FileName}\" {string.Join(' ', psi.ArgumentList.Select(a => '"' + a + '"'))}";
-            }
-            else
-            {
-                return $"\"{psi.FileName}\" {psi.Arguments}";
-            }
+            return psi.ArgumentList.Count > 0
+                ? $"\"{psi.FileName}\" {string.Join(' ', psi.ArgumentList.Select(a => '"' + a + '"'))}"
+                : $"\"{psi.FileName}\" {psi.Arguments}";
         }
         {
             using (var searcher = new ManagementObjectSearcher("SELECT CommandLine FROM Win32_Process WHERE ProcessId = " + process.Id))

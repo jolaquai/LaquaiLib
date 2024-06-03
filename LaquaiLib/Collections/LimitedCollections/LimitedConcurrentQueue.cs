@@ -13,8 +13,7 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
     /// <summary>
     /// The capacity of this <see cref="LimitedConcurrentQueue{T}"/>.
     /// </summary>
-    public int Capacity
-    {
+    public int Capacity {
         get => _capacity;
         set
         {
@@ -86,7 +85,7 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
         base.Enqueue(item);
         if (Count > Capacity)
         {
-            TryDequeue(out _);
+            _ = TryDequeue(out _);
         }
     }
 
@@ -113,7 +112,7 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
     {
         while (Count > length)
         {
-            TryDequeue(out _);
+            _ = TryDequeue(out _);
         }
     }
 }

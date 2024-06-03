@@ -7,7 +7,7 @@ namespace LaquaiLib.Util.WpfForms;
 /// </summary>
 public static partial class VirtualKeyUtils
 {
-    private static VirtualKey[] toggleKeys;
+    private static VirtualKey[]? toggleKeys;
     /// <summary>
     /// Gets an array of <see cref="VirtualKey"/> values that represent toggle keys.
     /// </summary>
@@ -17,7 +17,7 @@ public static partial class VirtualKeyUtils
         VirtualKey.VK_NUMLOCK,
         VirtualKey.VK_SCROLL
     ];
-    private static VirtualKey[] normalKeys;
+    private static VirtualKey[]? normalKeys;
     /// <summary>
     /// Gets an array of <see cref="VirtualKey"/> values that represent all keys that are not a toggle key.
     /// </summary>
@@ -29,7 +29,7 @@ public static partial class VirtualKeyUtils
         internal const byte msgByte = 0x80;
         internal const ushort msbShort = 0x8000;
 
-        private static byte[] _keyboardStateBuffer;
+        private static byte[]? _keyboardStateBuffer;
         internal static byte[] KeyboardStateBuffer => _keyboardStateBuffer ??= new byte[256];
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -117,16 +117,12 @@ public static partial class VirtualKeyUtils
     {
         cultureInfo ??= CultureInfo.CurrentCulture;
 
-        Interop.GetKeyboardState(Interop.KeyboardStateBuffer);
+        _ = Interop.GetKeyboardState(Interop.KeyboardStateBuffer);
 
         var keyboardLayout = cultureInfo.KeyboardLayoutId;
         var receiver = new string('\0', 2);
         var result = Interop.ToUnicodeEx((uint)vk, 0, Interop.KeyboardStateBuffer, receiver, 2, 0, keyboardLayout);
-        if (result > 0)
-        {
-            return receiver.Trim('\0');
-        }
-        return null;
+        return result > 0 ? receiver.Trim('\0') : null;
     }
     /// <summary>
     /// Returns an array of all <see cref="VirtualKey"/>s that are currently pressed.
@@ -144,20 +140,14 @@ public static partial class VirtualKeyUtils
     /// </summary>
     /// <param name="vk">The virtual key to get the state of.</param>
     /// <returns><see langword="true"/> if the key is pressed, otherwise <see langword="false"/>.</returns>
-    public static bool GetKeyState(VirtualKey vk)
-    {
-        return (Interop.GetKeyState((uint)vk) & Interop.msbShort) != 0;
-    }
+    public static bool GetKeyState(VirtualKey vk) => (Interop.GetKeyState((uint)vk) & Interop.msbShort) != 0;
     /// <summary>
     /// Gets the toggle state of the specified virtual key.
     /// The return value is meaningless for keys that are not toggle keys.
     /// </summary>
     /// <param name="vk">The virtual key to get the toggle state of.</param>
     /// <returns><see langword="true"/> if the key is toggled on, otherwise <see langword="false"/>.</returns>
-    public static bool GetToggleState(VirtualKey vk)
-    {
-        return (Interop.GetKeyState((uint)vk) & Interop.lsb) != 0;
-    }
+    public static bool GetToggleState(VirtualKey vk) => (Interop.GetKeyState((uint)vk) & Interop.lsb) != 0;
     /// <summary>
     /// Returns an array all <see cref="VirtualKey"/>s that are currently pressed or toggled on if the key is a toggle key.
     /// </summary>

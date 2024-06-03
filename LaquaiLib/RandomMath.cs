@@ -74,12 +74,9 @@ public static class RandomMath
     /// <exception cref="ArgumentException"><paramref name="xStart"/> was greater than <paramref name="xEnd"/>.</exception>
     public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, Func<double, double> smoothFunc, double xStart = 0, double xEnd = 1)
     {
-        if (xEnd < xStart)
-        {
-            throw new ArgumentException("Smoothing end value must be greater than start value.", nameof(xEnd));
-        }
-
-        return p => (smoothFunc(p) * f(p)) + (smoothFunc(xEnd - p) + g(p));
+        return xEnd < xStart
+            ? throw new ArgumentException("Smoothing end value must be greater than start value.", nameof(xEnd))
+            : (p => (smoothFunc(p) * f(p)) + (smoothFunc(xEnd - p) + g(p)));
     }
 
     /// <summary>
@@ -107,7 +104,7 @@ public static class RandomMath
         /// <param name="rCos">The "vertical" radius of the ellipse. If equal to <paramref name="rSin"/>, the ellipse is a circle. In that case, use <see cref="EllipseAround(double, double, double, double)"/> instead.</param>
         /// <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
         /// <returns>A <see cref="Tuple{T1, T2}"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an ellipse with the specified radii <paramref name="rSin"/> and <paramref name="rCos"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
-        public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double rCos, double resolution = 360) => (new Func<double, double>(d => rSin * Math.Sin(d / resolution * (2 * Math.PI)) + x), new Func<double, double>(d => rCos * -Math.Cos(d / resolution * (2 * Math.PI)) + y));
+        public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double rCos, double resolution = 360) => (new Func<double, double>(d => (rSin * Math.Sin(d / resolution * (2 * Math.PI))) + x), new Func<double, double>(d => (rCos * -Math.Cos(d / resolution * (2 * Math.PI))) + y));
 
         /// <summary>
         /// Returns the <c>sin</c> and <c>cos</c> functions that, together, trace a circle with specified radius and a given smoothness around a point.

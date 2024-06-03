@@ -19,11 +19,9 @@ public partial class BoolInverterConverter : IValueConverter
     /// <exception cref="ArgumentException">Thrown if the input <paramref name="value"/> is not a <see cref="bool"/>.</exception>
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is bool b)
-        {
-            return !b;
-        }
-        throw new ArgumentException($"Input value was expected to be a '{typeof(bool).FullName}' value, received '{value?.GetType().FullName ?? "null"}' instead.", nameof(value));
+        return value is bool b
+            ? (object)!b
+            : throw new ArgumentException($"Input value was expected to be a '{typeof(bool).FullName}' value, received '{value?.GetType().FullName ?? "null"}' instead.", nameof(value));
     }
 
     /// <summary>

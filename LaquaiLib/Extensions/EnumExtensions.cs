@@ -19,15 +19,10 @@ public static class EnumExtensions
         var type = any.GetType();
         var name = Enum.GetName(any);
         var fallback = any.ToString();
-        if (type.GetField(name!) is FieldInfo field
-            && field.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute desc)
-        {
-            return desc.Description;
-        }
-        else
-        {
-            return fallback;
-        }
+        return type.GetField(name!) is FieldInfo field
+            && field.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute desc
+            ? desc.Description
+            : fallback;
     }
 
     /// <summary>
@@ -40,11 +35,9 @@ public static class EnumExtensions
     public static TEnum[] GetFlags<TEnum>(this TEnum any)
         where TEnum : struct, Enum
     {
-        if (typeof(TEnum).GetCustomAttribute<FlagsAttribute>() is null)
-        {
-            throw new ArgumentException($"The given Enum type '{typeof(TEnum).FullName}' is not marked with [FlagsAttribute].", nameof(any));
-        }
-        return Array.FindAll(Enum.GetValues<TEnum>(), field => any.HasFlag(field) && !field.Equals(any));
+        return typeof(TEnum).GetCustomAttribute<FlagsAttribute>() is null
+            ? throw new ArgumentException($"The given Enum type '{typeof(TEnum).FullName}' is not marked with [FlagsAttribute].", nameof(any))
+            : Array.FindAll(Enum.GetValues<TEnum>(), field => any.HasFlag(field) && !field.Equals(any));
     }
 
     /// <summary>

@@ -41,30 +41,22 @@ public class LimitedConcurrencyTaskScheduler : TaskScheduler
         }
     }
     /// <inheritdoc/>
-    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
-    {
-        if (taskWasPreviouslyQueued && !TryDequeue(task))
-        {
-            return false;
-        }
-
-        return TryExecuteTask(task);
-    }
+    protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) => (!taskWasPreviouslyQueued || TryDequeue(task)) && TryExecuteTask(task);
     private void NotifyThreadPoolOfPendingWork()
     {
-        ThreadPool.UnsafeQueueUserWorkItem(_ =>
+        _ = ThreadPool.UnsafeQueueUserWorkItem(_ =>
         {
-            Interlocked.Increment(ref _delegatesQueuedOrRunning);
+            _ = Interlocked.Increment(ref _delegatesQueuedOrRunning);
             try
             {
                 while (_tasks.TryTake(out var task, Timeout.Infinite))
                 {
-                    TryExecuteTask(task);
+                    _ = TryExecuteTask(task);
                 }
             }
             finally
             {
-                Interlocked.Decrement(ref _delegatesQueuedOrRunning);
+                _ = Interlocked.Decrement(ref _delegatesQueuedOrRunning);
             }
         }, null);
     }

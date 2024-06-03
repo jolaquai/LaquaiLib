@@ -62,11 +62,13 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// The array of <typeparamref name="T"/> this <see cref="TempArray{T}"/> wraps.
     /// </summary>
     public T[] Array {
-        get {
+        get
+        {
             ObjectDisposedException.ThrowIf(IsDisposed, _array!);
             return _array!;
         }
-        set {
+        set
+        {
             ArgumentNullException.ThrowIfNull(value);
             if (_isPooledInstance)
             {

@@ -57,10 +57,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// <inheritdoc/>
     public bool Equals(LoggerMessage other) => Message == other.Message && Timestamp.Equals(other.Timestamp) && Type == other.Type;
     /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        return obj is LoggerMessage msg && Equals(msg);
-    }
+    public override bool Equals(object? obj) => obj is LoggerMessage msg && Equals(msg);
     /// <inheritdoc/>
     public override int GetHashCode()
     {

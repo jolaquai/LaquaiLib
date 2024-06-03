@@ -13,7 +13,7 @@ public static class ICollectionExtensions
     /// <param name="predicate">The <see cref="Predicate{T}"/> delegate that defines the conditions of the elements to keep.</param>
     public static void KeepOnly<T>(this ICollection<T> collection, Predicate<T> predicate)
     {
-        var temp = collection.Where(element => predicate(element)).ToList();
+        var temp = collection.Where(element => predicate(element)).ToArray();
         collection.Clear();
         foreach (var element in temp)
         {

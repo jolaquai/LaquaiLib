@@ -13,8 +13,5 @@ public static class HttpListenerRequestExtensions
     /// </summary>
     /// <param name="request">The <see cref="HttpListenerRequest"/> to get the route from.</param>
     /// <returns>The route that the request was made to.</returns>
-    public static string GetRoute(this HttpListenerRequest request)
-    {
-        return request.RawUrl[..request.RawUrl.IndexOf('?')];
-    }
+    public static string GetRoute(this HttpListenerRequest request) => request.RawUrl[..request.RawUrl.IndexOf('?')];
 }

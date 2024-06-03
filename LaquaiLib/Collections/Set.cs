@@ -82,7 +82,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     /// <param name="item">The item to check for.</param>
     /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> to use for equality comparisons.</param>
     /// <returns><see langword="true"/> if the <see cref="Set{T}"/> contains the item, otherwise <see langword="false"/>.</returns>
-    public bool Contains(T item, IEqualityComparer<T> comparer = null) => Items.Contains(item, comparer ?? EqualityComparer ?? EqualityComparer<T>.Default);
+    public bool Contains(T item, IEqualityComparer<T>? comparer = null) => Items.Contains(item, comparer ?? EqualityComparer ?? EqualityComparer<T>.Default);
     /// <summary>
     /// Copies all items in the <see cref="Set{T}"/> to the specified <paramref name="array"/>, starting at the specified <paramref name="arrayIndex"/>.
     /// </summary>
@@ -161,7 +161,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
         var remove = Items.Contains(item);
         if (remove)
         {
-            Items.Remove(item);
+            _ = Items.Remove(item);
         }
         return remove;
     }
@@ -178,12 +178,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
         }
 
         var otherEnumerated = other as T[] ?? other.ToArray();
-        if (Count != otherEnumerated.Length)
-        {
-            return false;
-        }
-
-        return Array.TrueForAll(otherEnumerated, Contains);
+        return Count == otherEnumerated.Length && Array.TrueForAll(otherEnumerated, Contains);
     }
     /// <summary>
     /// Removes all items from the <see cref="Set{T}"/> that are also in the specified <paramref name="other"/> collection, and adds all items from the <paramref name="other"/> collection that are not already in the <see cref="Set{T}"/>.
@@ -193,14 +188,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     {
         foreach (var item in other)
         {
-            if (Contains(item))
-            {
-                Remove(item);
-            }
-            else
-            {
-                Add(item);
-            }
+            _ = Contains(item) ? Remove(item) : Add(item);
         }
     }
     /// <summary>
@@ -211,7 +199,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     {
         foreach (var item in other)
         {
-            Add(item);
+            _ = Add(item);
         }
     }
 

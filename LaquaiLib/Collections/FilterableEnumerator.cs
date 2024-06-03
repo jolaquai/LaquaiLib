@@ -9,7 +9,6 @@ namespace LaquaiLib.Collections;
 /// <typeparam name="T">The type of the items to iterate over.</typeparam>
 public class FilterableCollectionEnumerator<T> : IEnumerator<T>
 {
-    private bool disposedValue;
     private readonly IEnumerable<T> items;
     private readonly IEnumerator<T> filteredEnumerator;
     private readonly Func<T, bool> predicate;
@@ -21,14 +20,7 @@ public class FilterableCollectionEnumerator<T> : IEnumerator<T>
     /// <param name="predicate">The predicate to filter the items by. If <see langword="null"/>, this instance will behave exactly like a regular <see cref="IEnumerator{T}"/>.</param>
     public FilterableCollectionEnumerator(IEnumerable<T> items, Func<T, bool>? predicate)
     {
-        if (predicate is null)
-        {
-            this.items = items;
-        }
-        else
-        {
-            this.items = items.Where(predicate);
-        }
+        this.items = predicate is null ? items : items.Where(predicate);
         this.filteredEnumerator = this.items.GetEnumerator();
         this.predicate = predicate;
     }

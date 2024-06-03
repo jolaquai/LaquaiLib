@@ -76,10 +76,7 @@ public static class AnyExtensions
     /// <typeparam name="T">The Type of the input object.</typeparam>
     /// <param name="source">The input object.</param>
     /// <returns><see langword="true"/> if <paramref name="source"/> is <see langword="null"/>, otherwise <see langword="false"/>.</returns>
-    public static bool IsNull<T>([NotNullWhen(false)] this T source)
-    {
-        return source is null;
-    }
+    public static bool IsNull<T>([NotNullWhen(false)] this T source) => source is null;
 
     /// <summary>
     /// Creates a new <see cref="ObservableValue{T}"/> from the given value by cloning <paramref name="value"/>. As such, <typeparamref name="T"/> must implement <see cref="ICloneable"/>.

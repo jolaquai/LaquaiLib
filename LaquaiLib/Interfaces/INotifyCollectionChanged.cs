@@ -13,8 +13,7 @@ public interface INotifyCollectionChanged<TSelf, TItem> : INotifyCollectionChang
 {
     public event EventHandler<TSelf, CollectionChangedEventArgs<TItem>>? CollectionChanged;
 
-    event NotifyCollectionChangedEventHandler? INotifyCollectionChanged.CollectionChanged
-    {
+    event NotifyCollectionChangedEventHandler? INotifyCollectionChanged.CollectionChanged {
         add => CollectionChanged += (sender, e) => value?.Invoke(sender, (NotifyCollectionChangedEventArgs)e);
         remove => CollectionChanged -= (sender, e) => value?.Invoke(sender, (NotifyCollectionChangedEventArgs)e);
     }
@@ -28,22 +27,19 @@ public class CollectionChangedEventArgs<TItem>
     /// <summary>
     /// The <see cref="NotifyCollectionChangedAction"/> that caused the event.
     /// </summary>
-    public NotifyCollectionChangedAction Action
-    {
+    public NotifyCollectionChangedAction Action {
         get;
     }
     /// <summary>
     /// The items affected by the change.
     /// </summary>
-    public IList<TItem>? NewItems
-    {
+    public IList<TItem>? NewItems {
         get;
     }
     /// <summary>
     /// The old items affected by the change (for Replace events).
     /// </summary>
-    public IList<TItem>? OldItems
-    {
+    public IList<TItem>? OldItems {
         get;
     }
     /// <summary>
@@ -124,18 +120,14 @@ public class CollectionChangedEventArgs<TItem>
 
     public static explicit operator NotifyCollectionChangedEventArgs(CollectionChangedEventArgs<TItem> args)
     {
-        switch (args.Action)
+        return args.Action switch
         {
-            case NotifyCollectionChangedAction.Add:
-                return new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, args.NewItems, args.NewStartingIndex);
-            case NotifyCollectionChangedAction.Remove:
-                return new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, args.OldItems, args.OldStartingIndex);
-            case NotifyCollectionChangedAction.Replace:
-                return new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, args.NewItems, args.OldItems, args.NewStartingIndex);
-            case NotifyCollectionChangedAction.Move:
-                return new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, args.NewItems, args.NewStartingIndex, args.OldStartingIndex);
-            default:
-                return new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-        }
+            NotifyCollectionChangedAction.Add => new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, args.NewItems, args.NewStartingIndex),
+            NotifyCollectionChangedAction.Remove => new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, args.OldItems, args.OldStartingIndex),
+            NotifyCollectionChangedAction.Replace => new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, args.NewItems, args.OldItems, args.NewStartingIndex),
+            NotifyCollectionChangedAction.Move => new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, args.NewItems, args.NewStartingIndex, args.OldStartingIndex),
+            NotifyCollectionChangedAction.Reset => throw new NotImplementedException(),
+            _ => new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset),
+        };
     }
 }

@@ -19,13 +19,13 @@ public partial class AsyncGetterWindow : Window
     /// </summary>
     /// <typeparam name="T">The type of the value to be returned.</typeparam>
     /// <param name="state">Optional parameter(s) to be used by the window.</param>
-    protected async virtual Task<T?> GetValue<T>(object? state)
+    protected virtual async Task<T?> GetValue<T>(object? state)
     {
         using var cts = new CancellationTokenSource();
         Closed += (_, _) => cts.Cancel();
 
         Show();
-        Activate();
+        _ = Activate();
 
         // Initializing actions here...
 
@@ -44,15 +44,5 @@ public partial class AsyncGetterWindow : Window
 
             await Task.Delay(10);
         }
-    }
-
-    /// <summary>
-    /// Template: Marks the window as ready to return a value, which is then returned by <see cref="GetValue{T}(object?)"/>.
-    /// </summary>
-    private void Button_Click()
-    {
-        // Any other actions...
-
-        _mres.Set();
     }
 }

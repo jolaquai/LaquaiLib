@@ -34,14 +34,9 @@ public partial class TaskbarProgress
     /// <returns>A <see cref="TaskbarProgress"/> instance.</returns>
     public TaskbarProgress(nint hwnd)
     {
-        if (HwndSource.FromHwnd(hwnd).RootVisual is Window target)
-        {
-            _taskbar = target.TaskbarItemInfo;
-        }
-        else
-        {
-            throw new ArgumentException("Window hwnd was 0 or resolved to null.", nameof(hwnd));
-        }
+        _taskbar = HwndSource.FromHwnd(hwnd).RootVisual is Window target
+            ? target.TaskbarItemInfo
+            : throw new ArgumentException("Window hwnd was 0 or resolved to null.", nameof(hwnd));
     }
 
     /// <summary>
@@ -96,8 +91,7 @@ public partial class TaskbarProgress
     /// <summary>
     /// Gets or sets the current value of the taskbar progress bar.
     /// </summary>
-    public double Value
-    {
+    public double Value {
         get => _taskbar!.ProgressValue;
         set => _taskbar!.ProgressValue = value;
     }

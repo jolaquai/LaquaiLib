@@ -50,10 +50,7 @@ public static class MetaHelpers
         }
     }
 
-    public static string[] FindTool(MetaTool tool, VSVersion versions = VSVersion.Any, VSEdition edition = VSEdition.Any, Architecture architecture = Architecture.Any)
-    {
-        return FindTool(tool.GetDescription(), versions, edition, architecture);
-    }
+    public static string[] FindTool(MetaTool tool, VSVersion versions = VSVersion.Any, VSEdition edition = VSEdition.Any, Architecture architecture = Architecture.Any) => FindTool(tool.GetDescription(), versions, edition, architecture);
     public static string[] FindTool(string fileName, VSVersion versions = VSVersion.Any, VSEdition edition = VSEdition.Any, Architecture architecture = Architecture.Any)
     {
         var drives = Array.ConvertAll(Array.FindAll(DriveInfo.GetDrives(), di => di.DriveType is DriveType.Fixed and not DriveType.Network), di => Path.TrimEndingDirectorySeparator(di.Name));

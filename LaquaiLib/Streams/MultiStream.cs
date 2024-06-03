@@ -45,24 +45,15 @@ public class MultiStream : Stream, IDisposable
             throw new ArgumentException($"The given type '{streamType.Name}' must inherit from '{nameof(Stream)}'.", nameof(streamType));
         }
 
-        if (streamType.IsAssignableTo(typeof(MemoryStream)))
-        {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new MemoryStream()).ToList();
-        }
-        else if (streamType.IsAssignableTo(typeof(FileStream)))
-        {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose)).ToList();
-        }
-        else if (constructorParameters is not null)
-        {
-            _streams = constructorParameters.Length > 1
-                ? Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)!).ToList()
-                : Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList();
-        }
-        else
-        {
-            throw new ArgumentException($"The given type '{streamType.Name}' could not be instantiated. The call was invalid.", nameof(streamType));
-        }
+        _streams = streamType.IsAssignableTo(typeof(MemoryStream))
+            ? Enumerable.Range(0, count).Select(_ => (Stream)new MemoryStream()).ToList()
+            : streamType.IsAssignableTo(typeof(FileStream))
+                ? Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose)).ToList()
+                : constructorParameters is not null
+                            ? constructorParameters.Length > 1
+                                        ? Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)!).ToList()
+                                        : Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList()
+                            : throw new ArgumentException($"The given type '{streamType.Name}' could not be instantiated. The call was invalid.", nameof(streamType));
     }
 
     /// <summary>
@@ -115,13 +106,14 @@ public class MultiStream : Stream, IDisposable
     /// A collection of <see cref="long"/>s that indicate the lengths of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
     public long[] Lengths => _streams.Select(stream => stream.Length).ToArray();
+    /// <inheritdoc/>
     public override long Length => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Length)}. Use {nameof(Lengths)} instead.");
     /// <summary>
     /// A collection of <see cref="long"/>s taht indicate the current positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
     public long[] Positions => _streams.Select(stream => stream.Position).ToArray();
-    public override long Position
-    {
+    /// <inheritdoc/>
+    public override long Position {
         get => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
 
         set => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
@@ -222,7 +214,7 @@ public class MultiStream : Stream, IDisposable
     /// <summary>
     /// Releases the managed and unmanaged resources used by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public void Dispose()
+    public new void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);

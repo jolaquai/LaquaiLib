@@ -11,8 +11,5 @@ public static class UriExtensions
     /// </summary>
     /// <param name="request">The <see cref="Uri"/> to get the route from.</param>
     /// <returns>The route component of the <see cref="Uri"/>.</returns>
-    public static string GetRoute(this Uri request)
-    {
-        return request.AbsolutePath;
-    }
+    public static string GetRoute(this Uri request) => request.AbsolutePath;
 }

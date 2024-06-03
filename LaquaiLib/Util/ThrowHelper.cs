@@ -62,10 +62,7 @@ public static class ThrowHelper
     /// <param name="arg1">The name of the argument to test.</param>
     public static void ThrowOnNull(
         object obj1,
-        [CallerArgumentExpression(nameof(obj1))] string arg1 = "")
-    {
-        ArgumentNullException.ThrowIfNull(obj1, arg1);
-    }
+        [CallerArgumentExpression(nameof(obj1))] string arg1 = "") => ArgumentNullException.ThrowIfNull(obj1, arg1);
     /// <summary>
     /// Throws an <see cref="ArgumentNullException"/> on the first item in the argument list which is <see langword="null"/>. This method has overloads for up to 10 arguments.
     /// </summary>

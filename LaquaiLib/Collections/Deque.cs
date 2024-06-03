@@ -23,8 +23,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// <summary>
     /// Gets the number of nodes in the <see cref="Deque{T}"/>.
     /// </summary>
-    public int Count
-    {
+    public int Count {
         get
         {
             var i = 0;
@@ -66,7 +65,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
 
         foreach (var value in values)
         {
-            AddLast(value);
+            _ = AddLast(value);
         }
     }
     /// <inheritdoc cref="Deque{T}(T[])"/>
@@ -79,7 +78,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     {
         for (var i = 0; i < nodes; i++)
         {
-            AddLast(default(T));
+            _ = AddLast(default(T));
         }
     }
     #endregion
@@ -240,7 +239,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
         else
         {
             // Otherwise make this node the new head
-            AddBefore(Head, node);
+            _ = AddBefore(Head, node);
         }
 
         node.Deque = this;
@@ -279,7 +278,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
         else
         {
             // Otherwise, make this node the new tail
-            AddAfter(Tail!, node);
+            _ = AddAfter(Tail!, node);
         }
 
         node.Deque = this;
@@ -292,10 +291,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// <summary>
     /// Clears the reference to <see cref="Head"/>, which in turn clears the reference to all other nodes.
     /// </summary>
-    public void Clear()
-    {
-        Head = null;
-    }
+    public void Clear() => Head = null;
     /// <summary>
     /// Determines whether the <see cref="Deque{T}"/> contains at least one node that contains the specified value.
     /// </summary>
@@ -467,7 +463,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             {
                 if (Array.IndexOf(nodes, current) > 0)
                 {
-                    RemoveNode(current);
+                    _ = RemoveNode(current);
                     removed++;
                 }
                 current = current.Next;

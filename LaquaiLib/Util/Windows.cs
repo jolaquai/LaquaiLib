@@ -67,38 +67,26 @@ public static partial class Windows
     /// </summary>
     /// <returns>The handle of the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
     [return: MaybeNull]
-    public static nint? GetActiveWindowHandle()
-    {
-        return GetForegroundWindow() is nint handle ? handle : null;
-    }
+    public static nint? GetActiveWindowHandle() => GetForegroundWindow() is nint handle ? handle : null;
     /// <summary>
     /// Retrieves the title of the currently active window.
     /// </summary>
     /// <returns>The title of the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
     [return: MaybeNull]
-    public static string? GetActiveWindowTitle()
-    {
-        return GetForegroundWindow() is nint handle ? GetWindowText(handle) : null;
-    }
+    public static string? GetActiveWindowTitle() => GetForegroundWindow() is nint handle ? GetWindowText(handle) : null;
     /// <summary>
     /// Retrieves the PID of the process that owns the currently active window.
     /// </summary>
     /// <returns>The PID of the process that owns the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
     [return: MaybeNull]
-    public static int? GetActiveWindowPid()
-    {
-        return GetForegroundWindow() is nint handle ? GetWindowThreadProcessId(handle, out var pid) > 0 ? pid : null : (int?)null;
-    }
+    public static int? GetActiveWindowPid() => GetForegroundWindow() is nint handle ? GetWindowThreadProcessId(handle, out var pid) > 0 ? pid : null : (int?)null;
     /// <summary>
     /// Retrieves the handle of the first window that matches the specified <paramref name="title"/>.
     /// </summary>
     /// <param name="title">The title of the window to find.</param>
     /// <returns>The HWND of the first window that matches the specified <paramref name="title"/> or <see langword="null"/> if no window matches the specified <paramref name="title"/>.</returns>
     [return: MaybeNull]
-    public static nint? GetWindowHandle(string title)
-    {
-        return FindWindow(null, title);
-    }
+    public static nint? GetWindowHandle(string title) => FindWindow(null, title);
 
     /// <summary>
     /// Replaces the contents of the given <paramref name="existing"/> <see cref="ICollection{T}"/> of <see cref="string"/> with the titles of all top-level windows.
@@ -113,7 +101,7 @@ public static partial class Windows
 
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -140,7 +128,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -165,7 +153,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -197,7 +185,7 @@ public static partial class Windows
         var handles = handle.Target;
         lock (handles.SyncRoot)
         {
-            handles.Add(hWnd);
+            _ = handles.Add(hWnd);
         }
 
         return true;
@@ -211,8 +199,7 @@ public static partial class Windows
     /// Occurs when the active window changes.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the current active window is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent? ActiveWindowChanged
-    {
+    public static event WindowEvent? ActiveWindowChanged {
         add
         {
             lock (_syncRoot)
@@ -238,8 +225,7 @@ public static partial class Windows
     /// Occurs when a new window is created / opened.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent? WindowCreated
-    {
+    public static event WindowEvent? WindowCreated {
         add
         {
             lock (_syncRoot)
@@ -260,8 +246,7 @@ public static partial class Windows
     /// Occurs when a window is destroyed / closed.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent? WindowDestroyed
-    {
+    public static event WindowEvent? WindowDestroyed {
         add
         {
             lock (_syncRoot)
@@ -298,17 +283,11 @@ public static partial class Windows
     /// <summary>
     /// Starts raising the events defined in <see cref="Windows"/>.
     /// </summary>
-    public static void Start()
-    {
-        _timer.Change(0, 10);
-    }
+    public static void Start() => _timer.Change(0, 10);
     /// <summary>
     /// Stops raising the events defined in <see cref="Windows"/>.
     /// </summary>
-    public static void Stop()
-    {
-        _timer.Change(Timeout.Infinite, 10);
-    }
+    public static void Stop() => _timer.Change(Timeout.Infinite, 10);
 
     /// <summary>
     /// Raises the events defined in <see cref="Windows"/> if their conditions are met.
@@ -655,7 +634,7 @@ public static partial class Windows
             [StructLayout(LayoutKind.Sequential)]
             internal unsafe struct FLASHWINFO
             {
-                private uint cbSize = (uint)sizeof(FLASHWINFO);
+                private readonly uint cbSize = (uint)sizeof(FLASHWINFO);
                 public nint hwnd;
                 public uint dwFlags;
                 public uint uCount;
@@ -680,7 +659,6 @@ public static partial class Windows
             internal static partial bool FlashWindowEx(FLASHWINFO flashwInfo);
         }
 
-        private static nint _hwnd;
         public static void SetFlashing()
         {
         }

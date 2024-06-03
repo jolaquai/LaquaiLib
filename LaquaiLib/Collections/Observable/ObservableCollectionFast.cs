@@ -1,4 +1,3 @@
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -18,8 +17,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <summary>
     /// Whether the <see cref="ObservableCollection{T}"/> is silenced. No registered events are raised, not even ones manually triggered using <see cref="RaiseCollectionChanged(NotifyCollectionChangedEventArgs?)"/>.
     /// </summary>
-    private bool IsSilenced
-    {
+    private bool IsSilenced {
         get; set;
     }
 
@@ -28,8 +26,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// Whether the <see cref="ObservableCollection{T}"/> should keep itself ordered. When this is <see langword="true"/>, whenever the collection is modified in a way that raises a <see cref="NotifyCollectionChangedAction"/> event, it is sorted using <see cref="Comparer"/>.
     /// Assigning a new <see cref="bool"/> value will cause the <see cref="ObservableCollection{T}"/> to be sorted using the currently set <see cref="Comparer"/> immediately. This also raises a <see cref="NotifyCollectionChangedAction.Reset"/> event.
     /// </summary>
-    public bool KeepOrdered
-    {
+    public bool KeepOrdered {
         get => keepOrdered;
         set
         {
@@ -47,8 +44,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <para/>
     /// <para/>Assigning a new <see cref="IComparer{T}"/> will cause the <see cref="ObservableCollection{T}"/> to be sorted using the new <see cref="IComparer{T}"/> immediately. This also raises a <see cref="NotifyCollectionChangedAction.Reset"/> event.
     /// </summary>
-    public IComparer<T>? Comparer
-    {
+    public IComparer<T>? Comparer {
         get => comparer;
         set
         {
@@ -60,9 +56,8 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         }
     }
 
-    Func<T, bool>? filter;
-    public Func<T, bool>? Filter
-    {
+    private Func<T, bool>? filter;
+    public Func<T, bool>? Filter {
         get => filter;
         set
         {
@@ -120,8 +115,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// </summary>
     /// <param name="index">An <see cref="Index"/> instance that identifies the location of the element to get or set.</param>
     /// <returns>The element at the specified <paramref name="index"/>.</returns>
-    public T this[Index index]
-    {
+    public T this[Index index] {
         get => _items[index];
         set
         {
@@ -135,8 +129,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// </summary>
     /// <param name="range">The <see cref="Range"/> in which to get or set elements.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> containing the items that were get or set.</returns>
-    public IEnumerable<T> this[Range range]
-    {
+    public IEnumerable<T> this[Range range] {
         get
         {
             var (offset, length) = range.GetOffsetAndLength(Count);
@@ -369,7 +362,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
 
         foreach (var item in collection)
         {
-            RemoveSilent(item);
+            _ = RemoveSilent(item);
         }
         RaiseCollectionChanged();
     }

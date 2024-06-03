@@ -23,19 +23,11 @@ public static partial class TypeExtensions
     /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
     public static IEnumerable<Type> GetInterfaceImplementingTypes(this Type type)
     {
-        if (!type.IsInterface)
-        {
-            throw new ArgumentException("Supplied type must be an interface.", nameof(type));
-        }
-
-        if (Assembly.GetAssembly(type) is Assembly assemblyOfInput)
-        {
-            return assemblyOfInput.GetTypes().Where(t => t.GetInterfaces().Contains(type));
-        }
-        else
-        {
-            throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
-        }
+        return !type.IsInterface
+            ? throw new ArgumentException("Supplied type must be an interface.", nameof(type))
+            : Assembly.GetAssembly(type) is Assembly assemblyOfInput
+            ? assemblyOfInput.GetTypes().Where(t => t.GetInterfaces().Contains(type))
+            : throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
     }
 
     /// <summary>
@@ -82,14 +74,9 @@ public static partial class TypeExtensions
     /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
     public static IEnumerable<Type> GetNonAbstractInheritingTypes(this Type type)
     {
-        if (Assembly.GetAssembly(type) is Assembly assemblyOfInput)
-        {
-            return assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type) && !t.IsAbstract);
-        }
-        else
-        {
-            throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
-        }
+        return Assembly.GetAssembly(type) is Assembly assemblyOfInput
+            ? assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type) && !t.IsAbstract)
+            : throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
     }
 
     /// <summary>
@@ -100,14 +87,9 @@ public static partial class TypeExtensions
     /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
     public static IEnumerable<Type> GetConstructableInheritingTypes(this Type type)
     {
-        if (Assembly.GetAssembly(type) is Assembly assemblyOfInput)
-        {
-            return assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type) && t.GetConstructors().Any(c => c.IsPublic));
-        }
-        else
-        {
-            throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
-        }
+        return Assembly.GetAssembly(type) is Assembly assemblyOfInput
+            ? assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type) && t.GetConstructors().Any(c => c.IsPublic))
+            : throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
     }
     #endregion
 
@@ -181,6 +163,20 @@ public static partial class TypeExtensions
                         dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))}", null);
                     }
                     break;
+                case MemberTypes.Constructor:
+                    break;
+                case MemberTypes.Event:
+                    break;
+                case MemberTypes.TypeInfo:
+                    break;
+                case MemberTypes.Custom:
+                    break;
+                case MemberTypes.NestedType:
+                    break;
+                case MemberTypes.All:
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -228,6 +224,20 @@ public static partial class TypeExtensions
                             dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))})", null);
                         }
                     }
+                    break;
+                case MemberTypes.Constructor:
+                    break;
+                case MemberTypes.Event:
+                    break;
+                case MemberTypes.TypeInfo:
+                    break;
+                case MemberTypes.Custom:
+                    break;
+                case MemberTypes.NestedType:
+                    break;
+                case MemberTypes.All:
+                    break;
+                default:
                     break;
             }
         }
@@ -434,10 +444,7 @@ public static partial class TypeExtensions
     /// Reflects the entirety of this <see cref="Type"/> and generates .NET 8.0 code that can be used to replicate it.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to reflect.</param>
-    /// <param name="namespace">The namespace to place the generated type(s) into. If <see langword="null"/> or empty, the code is generated without a namespace declaration.</param>
     /// <param name="options.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="NotImplementedException"/>s.</param>
-    /// <param name="inherited">Whether to generate code for all members <paramref name="type"/> inherits from its base types.</param>
-    /// <param name="options.Deep">Whether to generate code for all <see cref="Type"/>s that are referenced by this <paramref name="type"/> in any way.</param>
     /// <returns>A <see cref="string"/> containing the generated code.</returns>
     /// <remarks>
     /// This method is not guaranteed to generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
@@ -706,25 +713,15 @@ public static partial class TypeExtensions
         {
             return "private";
         }
-        else if (modifiersEnumerated.ArrayContains("private protected")) // same type and derived types in same assembly
+        else
         {
-            return "private protected";
-        }
-        else if (modifiersEnumerated.ArrayContains("protected")) // same type and derived types
-        {
-            return "protected";
-        }
-        else if (modifiersEnumerated.ArrayContains("internal")) // same assembly only
-        {
-            return "internal";
-        }
-        else if (modifiersEnumerated.ArrayContains("protected internal")) // same type and derived types OR same assembly
-        {
-            return "protected internal";
-        }
-        else // public
-        {
-            return "public";
+            return modifiersEnumerated.ArrayContains("private protected")
+                ? "private protected"
+                : modifiersEnumerated.ArrayContains("protected")
+                            ? "protected"
+                            : modifiersEnumerated.ArrayContains("internal")
+                                        ? "internal"
+                                        : modifiersEnumerated.ArrayContains("protected internal") ? "protected internal" : "public";
         }
     }
     private static bool IsInaccessibleAsReflectedType(string modifiers, bool? inheriting)

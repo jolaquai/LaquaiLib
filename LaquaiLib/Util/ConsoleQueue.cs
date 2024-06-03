@@ -14,8 +14,7 @@ public static class ConsoleQueue
     /// Controls whether the queue should be emptied before the application can shut down.
     /// This defaults to <see langword="false"/> and may be freely changed at any time.
     /// </summary>
-    public static bool ForceEmptyBeforeShutdown
-    {
+    public static bool ForceEmptyBeforeShutdown {
         get => forceEmptyBeforeShutdown;
         set
         {

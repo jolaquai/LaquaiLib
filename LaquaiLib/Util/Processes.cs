@@ -26,8 +26,7 @@ public static class Processes
     /// <summary>
     /// Occurs for each process that is started on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStarted
-    {
+    public static event Action<Process>? ProcessStarted {
         add
         {
             lock (_syncRoot)
@@ -46,8 +45,7 @@ public static class Processes
     /// <summary>
     /// Occurs for each process that is stopped on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStopped
-    {
+    public static event Action<Process>? ProcessStopped {
         add
         {
             lock (_syncRoot)
@@ -75,17 +73,11 @@ public static class Processes
     /// <summary>
     /// Starts raising the events defined in <see cref="Processes"/>.
     /// </summary>
-    public static void Start()
-    {
-        timer.Change(0, 10);
-    }
+    public static void Start() => timer.Change(0, 10);
     /// <summary>
     /// Stops raising the events defined in <see cref="Processes"/>.
     /// </summary>
-    public static void Stop()
-    {
-        timer.Change(Timeout.Infinite, 10);
-    }
+    public static void Stop() => timer.Change(Timeout.Infinite, 10);
 
     /// <summary>
     /// Raises the events defined in <see cref="Processes"/> if their conditions are met.

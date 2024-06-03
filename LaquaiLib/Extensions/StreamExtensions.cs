@@ -13,7 +13,7 @@ public static class StreamExtensions
     public static byte[] ReadToEnd(this Stream stream)
     {
         var buffer = new byte[stream.Length - stream.Position];
-        stream.Read(buffer);
+        _ = stream.Read(buffer);
         return buffer;
     }
 
@@ -29,7 +29,7 @@ public static class StreamExtensions
         {
             throw new ArgumentException($"The provided {nameof(Span<byte>)} is too small to hold the rest of the stream (can only accommodate {span.Length}/{requiredSpace} bytes).");
         }
-        stream.Read(span);
+        _ = stream.Read(span);
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public static class StreamExtensions
     public static async Task<byte[]> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken = default)
     {
         var buffer = new byte[stream.Length - stream.Position];
-        await stream.ReadAsync(buffer, cancellationToken);
+        _ = await stream.ReadAsync(buffer, cancellationToken);
         return buffer;
     }
 }

@@ -11,8 +11,7 @@ public class ObservableStream<T> : Stream
     public override bool CanSeek => _underlying.CanSeek;
     public override bool CanWrite => _underlying.CanWrite;
     public override long Length => _underlying.Length;
-    public override long Position
-    {
+    public override long Position {
         get => _underlying.Position;
         set
         {
@@ -97,7 +96,7 @@ public class ObservableStream<T> : Stream
     }
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        _ = await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         DataRead?.Invoke(this, new ReadEventArgs(buffer));
         return buffer.Length;
     }
@@ -126,6 +125,8 @@ public class ObservableStream<T> : Stream
             case SeekOrigin.Current when offset == 0:
             case SeekOrigin.End when Length - offset == Position:
                 return Position;
+            default:
+                break;
         }
 
         var oldPos = Position;
@@ -222,7 +223,7 @@ public class ObservableStream<T> : Stream
     }
     public override void CopyTo(Stream destination, int bufferSize)
     {
-        var prevPosition = Position;
+        _ = Position;
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
         while (Position != Length)
         {
@@ -233,7 +234,7 @@ public class ObservableStream<T> : Stream
     }
     public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken = default)
     {
-        var prevPosition = Position;
+        _ = Position;
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
         while (Position != Length)
         {
@@ -355,18 +356,12 @@ public static class ObservableStreamFactory
     /// <param name="fileAccess">A <see cref="FileAccess"/> enum value that specifies the access level.</param>
     /// <param name="fileShare">A <see cref="FileShare"/> enum value that specifies the sharing mode of the file.</param>
     /// <returns>The created <see cref="ObservableStream{T}"/>.</returns>
-    public static ObservableStream<FileStream> Create(string path, FileMode fileMode = default, FileAccess fileAccess = default, FileShare fileShare = default)
-    {
-        return new ObservableStream<FileStream>(File.Open(path, fileMode, fileAccess, fileShare));
-    }
+    public static ObservableStream<FileStream> Create(string path, FileMode fileMode = default, FileAccess fileAccess = default, FileShare fileShare = default) => new ObservableStream<FileStream>(File.Open(path, fileMode, fileAccess, fileShare));
     /// <summary>
     /// Creates an <see cref="ObservableStream{T}"/> that wraps a <see cref="FileStream"/>.
     /// </summary>
     /// <param name="path">The path to the file to open.</param>
     /// <param name="fileStreamOptions">A <see cref="FileStreamOptions"/> instance that specifies how the <see cref="FileStream"/> is opened.</param>
     /// <returns>The created <see cref="ObservableStream{T}"/>.</returns>
-    public static ObservableStream<FileStream> Create(string path, FileStreamOptions fileStreamOptions)
-    {
-        return new ObservableStream<FileStream>(File.Open(path, fileStreamOptions));
-    }
+    public static ObservableStream<FileStream> Create(string path, FileStreamOptions fileStreamOptions) => new ObservableStream<FileStream>(File.Open(path, fileStreamOptions));
 }

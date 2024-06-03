@@ -17,12 +17,10 @@ public static class LinkedListNodeExtensions
     {
         ArgumentNullException.ThrowIfNull(node);
 
-        if (node.List is not null
-            && node == node.List.Last)
-        {
-            return node.List.First;
-        }
-        return node.Next;
+        return node.List is not null
+            && node == node.List.Last
+            ? node.List.First
+            : node.Next;
     }
     /// <summary>
     /// Returns the previous node in the <see cref="LinkedList{T}"/> to which <paramref name="node"/> belongs, wrapping around to the last node if <paramref name="node"/> is the first node (that is, the <see cref="LinkedList{T}"/> is treated like a "deque" data structure).
@@ -34,12 +32,10 @@ public static class LinkedListNodeExtensions
     {
         ArgumentNullException.ThrowIfNull(node);
 
-        if (node.List is not null
-               && node == node.List.First)
-        {
-            return node.List.Last;
-        }
-        return node.Previous;
+        return node.List is not null
+               && node == node.List.First
+            ? node.List.Last
+            : node.Previous;
     }
     /// <summary>
     /// Constructs a <see cref="Deque{T}"/> from the specified <see cref="LinkedList{T}"/>.

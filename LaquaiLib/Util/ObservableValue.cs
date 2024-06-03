@@ -12,8 +12,7 @@ public class ObservableValue<T>
     /// <summary>
     /// The current value.
     /// </summary>
-    public T Value
-    {
+    public T Value {
         get
         {
             RaiseValueRead(value);
@@ -135,15 +134,12 @@ public class ObservableValue<T>
         if (deep)
         {
             // If deep copy is requested, create a new instance of ObservableValue with a deep copy of the value.
-            var copy = new ObservableValue<T>();
-            if (value is ICloneable cloneable)
+            var copy = new ObservableValue<T>
             {
-                copy.value = (T)cloneable.Clone();
-            }
-            else
-            {
-                throw new InvalidOperationException($"Type {typeof(T)} does not implement ICloneable.");
-            }
+                value = value is ICloneable cloneable
+                ? (T)cloneable.Clone()
+                : throw new InvalidOperationException($"Type {typeof(T)} does not implement ICloneable.")
+            };
             return copy;
         }
         else
@@ -168,32 +164,13 @@ public class ObservableValue<T>
 
     #region Equality / comparison overrides
     /// <inheritdoc/>
-    public override bool Equals(object? obj)
-    {
-        if (ReferenceEquals(this, obj))
-        {
-            return true;
-        }
-        if (obj is null)
-        {
-            return false;
-        }
-        return obj is ObservableValue<T> observableValue && Equals(observableValue);
-    }
+    public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is not null && obj is ObservableValue<T> observableValue && Equals(observableValue));
 
     /// <inheritdoc/>
     public override int GetHashCode() => Value.GetHashCode();
 
     /// <inheritdoc/>
-    public static bool operator ==(ObservableValue<T> left, ObservableValue<T> right)
-    {
-        if (left is null)
-        {
-            return right is null;
-        }
-
-        return left.Equals(right);
-    }
+    public static bool operator ==(ObservableValue<T> left, ObservableValue<T> right) => left is null ? right is null : left.Equals(right);
 
     /// <inheritdoc/>
     public static bool operator !=(ObservableValue<T> left, ObservableValue<T> right) => !(left == right);
@@ -221,15 +198,13 @@ public class ValueChangedEventArgs<T> : EventArgs
     /// <summary>
     /// The value before the change.
     /// </summary>
-    public T OldValue
-    {
+    public T OldValue {
         get;
     }
     /// <summary>
     /// The value after the change.
     /// </summary>
-    public T NewValue
-    {
+    public T NewValue {
         get;
     }
 
@@ -254,8 +229,7 @@ public class ValueReadEventArgs<T> : EventArgs
     /// <summary>
     /// The value the reader received.
     /// </summary>
-    public T Value
-    {
+    public T Value {
         get;
     }
 

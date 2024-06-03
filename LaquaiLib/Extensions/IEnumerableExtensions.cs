@@ -130,16 +130,13 @@ public static partial class IEnumerableExtensions
     #region Mode
     private class ModeModel<TSource, TSelect>
     {
-        public TSource OriginalValue
-        {
+        public required TSource OriginalValue {
             get; set;
         }
-        public TSelect SelectedValue
-        {
+        public required TSelect SelectedValue {
             get; set;
         }
-        public int CountBySelect
-        {
+        public int CountBySelect {
             get; set;
         }
     }
@@ -205,12 +202,9 @@ public static partial class IEnumerableExtensions
         ArgumentNullException.ThrowIfNull(source, nameof(source));
 
         var enumerated = source as T[] ?? source.ToArray();
-        if (enumerated.Length == 0)
-        {
-            throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source));
-        }
-
-        return enumerated.Select(item => (Item: item,
+        return enumerated.Length == 0
+            ? throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source))
+            : enumerated.Select(item => (Item: item,
                                             Count: source.Count(i => i.Equals(item))))
                          .OrderByDescending(kvp => kvp.Count)
                          .First()
@@ -272,12 +266,8 @@ public static partial class IEnumerableExtensions
 
         var sourceEnumerated = source as T[] ?? source.ToArray();
         var otherEnumerated = other as T[] ?? other.ToArray();
-        if (sourceEnumerated.Length != otherEnumerated.Length)
-        {
-            return false;
-        }
-
-        return Array.TrueForAll(sourceEnumerated, item => otherEnumerated.Contains(item, comparer));
+        return sourceEnumerated.Length == otherEnumerated.Length
+&& Array.TrueForAll(sourceEnumerated, item => otherEnumerated.Contains(item, comparer));
     }
 
     /// <summary>
@@ -308,14 +298,7 @@ public static partial class IEnumerableExtensions
         var c = 0;
         foreach (var item in source)
         {
-            if (predicate(item, c))
-            {
-                yield return selector(item, c);
-            }
-            else
-            {
-                yield return item;
-            }
+            yield return predicate(item, c) ? selector(item, c) : item;
             c++;
         }
     }
