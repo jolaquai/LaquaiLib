@@ -244,30 +244,41 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Determines if two sequences are equivalent, meaning they contain the same elements, regardless of order.
+    /// Determines whether two sequences are equivalent, that is, whether they contain the same elements in any order.
     /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence to reference.</param>
-    /// <param name="other">The sequence to compare to.</param>
-    /// <param name="comparer">An instance of an <see cref="IEqualityComparer{T}"/>-implementing Type that is used to compare the elements in the sequences. If not specified, the default comparer for <typeparamref name="T"/> is used.</param>
-    /// <returns><see langword="true"/> if the sequences are equivalent, otherwise <see langword="false"/>.</returns>
-    public static bool SequenceEquivalent<T>(this IEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T>? comparer = null)
+    /// <typeparam name="T">The type of the elements of the input sequences.</typeparam>
+    /// <param name="first">The first sequence to compare.</param>
+    /// <param name="second">The second sequence to compare.</param>
+    /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> implementation to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
+    /// <returns><see langword="true"/> if the two source sequences are of equal length and are equivalent, otherwise <see langword="false"/>. If one of the sequences is <see langword="null"/>, both sequences must be <see langword="null"/> to be considered equivalent.</returns>
+    public static bool SequenceEquivalent<T>(this IEnumerable<T> first, IEnumerable<T> second, IEqualityComparer<T> comparer = null)
     {
+        if (first is null || second is null)
+        {
+            return first == second;
+        }
+
         comparer ??= EqualityComparer<T>.Default;
-
-        if (other is null && source is null)
+        try
         {
-            return true;
+            var firstEnumerated = first.ToHashSet(comparer);
+            var secondEnumerated = second.ToHashSet(comparer);
+            if (firstEnumerated.Count != secondEnumerated.Count)
+            {
+                return false;
+            }
+            return firstEnumerated.SetEquals(secondEnumerated);
         }
-        if (other is null || source is null)
+        catch
         {
-            return false;
+            var firstEnumerated = first.ToArray();
+            var secondEnumerated = second.ToArray();
+            if (firstEnumerated.Length != secondEnumerated.Length)
+            {
+                return false;
+            }
+            return Array.TrueForAll(firstEnumerated, f => Array.Exists(secondEnumerated, s => comparer.Equals(f, s)));
         }
-
-        var sourceEnumerated = source as T[] ?? source.ToArray();
-        var otherEnumerated = other as T[] ?? other.ToArray();
-        return sourceEnumerated.Length == otherEnumerated.Length
-&& Array.TrueForAll(sourceEnumerated, item => otherEnumerated.Contains(item, comparer));
     }
 
     /// <summary>
