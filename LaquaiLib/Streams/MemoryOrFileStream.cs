@@ -3,18 +3,17 @@ using System.Management;
 namespace LaquaiLib.Streams;
 
 /// <summary>
-/// Represents a <see cref="Stream"/> that can be either a <see cref="MemoryStream"/> or a <see cref="FileStream"/>, depending on the size of the data expected to be written to it.
+/// Contains factory methods that produce either <see cref="MemoryStream"/> or <see cref="FileStream"/> instances, depending on the size of the data expected to be written to it.
 /// </summary>
-public class MemoryOrFileStream : Stream, IDisposable
+public static class MemoryOrFileStream
 {
     /// <summary>
     /// The number of bytes at which the stream will switch from a <see cref="MemoryStream"/> to a <see cref="FileStream"/>.
     /// </summary>
     /// <remarks>
-    /// You may freely change this value at runtime. Its initial value is 1/64th of the total physical memory of the system (e.g., if your system has 32 GB of total physical memory, this will initially have the value <c>32768 / 64 = 512 MB</c>). If an exception is thrown during retrieval of the total physical memory, the value will default to 64 MB.
+    /// You may freely change this value at runtime. Its initial value is 1/512th of the total physical memory of the system (e.g., if your system has 32 GB of total physical memory, this will initially have the value <c>32768 / 512 = 64 MB</c>). If total physical memory cannot be retrieved, the value will default to 64 MB.
     /// </remarks>
-    public static int Cutoff { get; set; }
-
+    public static int Cutoff { get; set; } = ResetCutoff();
     /// <summary>
     /// Resets the <see cref="Cutoff"/> to the initial value. See the documentation of <see cref="Cutoff"/> for more information.
     /// </summary>
@@ -38,96 +37,61 @@ public class MemoryOrFileStream : Stream, IDisposable
     }
 
     /// <summary>
-    /// Initializes the <see cref="MemoryOrFileStream"/> Type.
-    /// </summary>
-    static MemoryOrFileStream()
-    {
-        _ = ResetCutoff();
-    }
-
-    /// <summary>
-    /// The wrapped <see cref="Stream"/>.
-    /// </summary>
-    public Stream Stream { get; }
-
-    /// <summary>
-    /// The actual <see cref="Type"/> of the wrapped <see cref="Stream"/>, either <see cref="MemoryStream"/> or <see cref="FileStream"/>.
-    /// </summary>
-    public Type StreamType => Stream.GetType();
-
-    /// <summary>
-    /// Initializes a new <see cref="MemoryOrFileStream"/> with the given expected payload size.
+    /// Initializes a new <see cref="Stream"/> with the given expected payload size.
     /// </summary>
     /// <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="Cutoff"/>, the internal <see cref="Stream"/> is created as a <see cref="FileStream"/>.</param>
-    public MemoryOrFileStream(int payloadSize)
+    /// <returns>The created <see cref="Stream"/>.</returns>
+    public static Stream Create(int payloadSize)
     {
-        Stream = payloadSize >= Cutoff
+        return payloadSize >= Cutoff
             ? new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.Asynchronous)
             : new MemoryStream(payloadSize);
     }
-
-    /// <inheritdoc/>
-    public override bool CanRead => Stream.CanRead;
-    /// <inheritdoc/>
-    public override bool CanSeek => Stream.CanSeek;
-    /// <inheritdoc/>
-    public override bool CanWrite => Stream.CanWrite;
-    /// <inheritdoc/>
-    public override long Length => Stream.Length;
-    /// <inheritdoc/>
-    public override long Position {
-        get => Stream.Position;
-        set => Stream.Position = value;
-    }
-    /// <inheritdoc/>
-    public override void Flush() => Stream.Flush();
-    /// <inheritdoc/>
-    public override int Read(byte[] buffer, int offset, int count) => Stream.Read(buffer, offset, count);
-    /// <inheritdoc/>
-    public override long Seek(long offset, SeekOrigin origin) => Stream.Seek(offset, origin);
-    /// <inheritdoc/>
-    public override void SetLength(long value) => Stream.SetLength(value);
-    /// <inheritdoc/>
-    public override void Write(byte[] buffer, int offset, int count) => Stream.Write(buffer, offset, count);
-
-    #region Dispose pattern
-    private bool _disposed;
-
     /// <summary>
-    /// Releases the unmanaged and optionally the managed resources used by this <see cref="MemoryOrFileStream"/> instance.
+    /// Initializes a new <see cref="Stream"/> from the specified <paramref name="other"/> <see cref="Stream"/>.
+    /// Its data from its current position to the end will be copied to the new <see cref="Stream"/>. Both streams' positions will be advanced by the number of bytes copied.
     /// </summary>
-    /// <param name="disposing">Whether to release the managed resources used by this <see cref="MemoryOrFileStream"/> instance.</param>
-    protected override void Dispose(bool disposing)
+    /// <param name="other">The <see cref="Stream"/> to copy the data from.</param>
+    /// <param name="fromBeginning">Whether to seek <paramref name="other"/> to its beginning before copying the data.</param>
+    /// <returns>The created <see cref="Stream"/>.</returns>
+    public static Stream Create(Stream other, bool fromBeginning = false)
     {
-        if (!_disposed)
+        if (fromBeginning)
         {
-            if (disposing)
-            {
-                // Dispose of managed resources (Streams etc.)
-                Stream.Dispose();
-            }
-
-            // Dispose of unmanaged resources (native allocated memory etc.)
-
-            _disposed = true;
+            other.Seek(0, SeekOrigin.Begin);
         }
+        var stream = Create((int)other.Length);
+        other.CopyTo(stream);
+        return stream;
     }
-
     /// <summary>
-    /// Finalizes this <see cref="MemoryOrFileStream"/> instance, releasing any unmanaged resources.
+    /// Initializes a new <see cref="Stream"/> from the specified <paramref name="buffer"/>.
+    /// Its data is copied to the new <see cref="Stream"/> and its position advanced by the number of bytes copied.
     /// </summary>
-    ~MemoryOrFileStream()
+    /// <param name="buffer">The buffer to copy the data from.</param>
+    /// <param name="offset">The index in <paramref name="buffer"/> at which to start copying.</param>
+    /// <param name="length">The number of bytes to copy from <paramref name="buffer"/>.</param>
+    /// <param name="canResize">If the created <see cref="Stream"/> is a <see cref="MemoryStream"/>, whether it can resize itself if the data exceeds its initial capacity.</param>
+    /// <param name="canWrite">If the created <see cref="Stream"/> is a <see cref="MemoryStream"/>, whether it is created as writable.</param>
+    /// <returns>The created <see cref="Stream"/>.</returns>
+    /// <remarks>
+    /// <para/><paramref name="canResize"/> and <paramref name="canWrite"/> are ignored if the number of bytes that would be copied exceeds <see cref="Cutoff"/>.
+    /// <para/>Calling this constructor with just <paramref name="buffer"/> matches the behavior of <see cref="MemoryStream(byte[])"/>, except if its length exceeds <see cref="Cutoff"/>, in which case a <see cref="FileStream"/> is created.
+    /// </remarks>
+    public static Stream Create(byte[] buffer, int offset = 0, int length = -1, bool canResize = false, bool canWrite = true)
     {
-        Dispose(false);
-    }
+        if (length == -1)
+        {
+            length = buffer.Length;
+        }
+        var realLength = length - offset;
+        if (realLength < Cutoff && !canResize)
+        {
+            return new MemoryStream(buffer, offset, length, canWrite);
+        }
 
-    /// <summary>
-    /// Releases the managed and unmanaged resources used by this <see cref="MemoryOrFileStream"/> instance.
-    /// </summary>
-    public new void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
+        var stream = Create(realLength);
+        stream.Write(buffer, offset, length);
+        return stream;
     }
-    #endregion
 }

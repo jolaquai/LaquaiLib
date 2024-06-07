@@ -130,13 +130,16 @@ public static partial class IEnumerableExtensions
     #region Mode
     private class ModeModel<TSource, TSelect>
     {
-        public required TSource OriginalValue {
+        public required TSource OriginalValue
+        {
             get; set;
         }
-        public required TSelect SelectedValue {
+        public required TSelect SelectedValue
+        {
             get; set;
         }
-        public int CountBySelect {
+        public int CountBySelect
+        {
             get; set;
         }
     }
@@ -440,6 +443,16 @@ public static partial class IEnumerableExtensions
 
         return (trueList, falseList);
     }
+    /// <summary>
+    /// Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
+    /// </summary>
+    /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+    /// <typeparam name="TDerived">The Type of the elements to exclude from the output sequence. Must be, derive from or implement <typeparamref name="TSource"/>.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>A sequence of all objects from <paramref name="source"/> that are not of type <typeparamref name="TDerived"/>.</returns>
+    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source)
+        where TDerived : TSource
+        => source.Where(i => i is not TDerived);
 
     /// <summary>
     /// For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
@@ -516,6 +529,26 @@ public static partial class IEnumerableExtensions
         try
         {
             return source.Single(predicate);
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the element at the specified index from the input sequence if that index is valid for the sequence, otherwise a default value is returned.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="i">The index of the element to retrieve.</param>
+    /// <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
+    /// <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
+    public static T? ElementAtOrDefault<T>(this IEnumerable<T> source, int i, T defaultValue = default)
+    {
+        try
+        {
+            return source.ElementAt(i);
         }
         catch
         {
