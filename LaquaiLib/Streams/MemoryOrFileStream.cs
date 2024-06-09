@@ -37,7 +37,7 @@ public static class MemoryOrFileStream
     }
 
     /// <summary>
-    /// Initializes a new <see cref="Stream"/> with the given expected payload size.
+    /// Creates a new <see cref="Stream"/> with the given expected payload size.
     /// </summary>
     /// <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="Cutoff"/>, the internal <see cref="Stream"/> is created as a <see cref="FileStream"/>.</param>
     /// <returns>The created <see cref="Stream"/>.</returns>
@@ -48,7 +48,7 @@ public static class MemoryOrFileStream
             : new MemoryStream(payloadSize);
     }
     /// <summary>
-    /// Initializes a new <see cref="Stream"/> from the specified <paramref name="other"/> <see cref="Stream"/>.
+    /// Creates a new <see cref="Stream"/> from the specified <paramref name="other"/> <see cref="Stream"/>.
     /// Its data from its current position to the end will be copied to the new <see cref="Stream"/>. Both streams' positions will be advanced by the number of bytes copied.
     /// </summary>
     /// <param name="other">The <see cref="Stream"/> to copy the data from.</param>
@@ -65,7 +65,7 @@ public static class MemoryOrFileStream
         return stream;
     }
     /// <summary>
-    /// Initializes a new <see cref="Stream"/> from the specified <paramref name="buffer"/>.
+    /// Creates a new <see cref="Stream"/> from the specified <paramref name="buffer"/>.
     /// Its data is copied to the new <see cref="Stream"/> and its position advanced by the number of bytes copied.
     /// </summary>
     /// <param name="buffer">The buffer to copy the data from.</param>
@@ -87,7 +87,7 @@ public static class MemoryOrFileStream
         var realLength = length - offset;
         if (realLength < Cutoff && !canResize)
         {
-            return new MemoryStream(buffer, offset, length, canWrite);
+            return new MemoryStream(buffer, offset, length, canWrite, true);
         }
 
         var stream = Create(realLength);

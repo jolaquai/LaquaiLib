@@ -426,22 +426,7 @@ public static partial class IEnumerableExtensions
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(predicate);
 
-        var trueList = new List<T>();
-        var falseList = new List<T>();
-
-        foreach (var item in source)
-        {
-            if (predicate(item))
-            {
-                trueList.Add(item);
-            }
-            else
-            {
-                falseList.Add(item);
-            }
-        }
-
-        return (trueList, falseList);
+        return (source.Where(predicate), source.WhereNot(predicate));
     }
     /// <summary>
     /// Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.

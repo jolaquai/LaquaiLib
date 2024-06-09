@@ -32,14 +32,14 @@ public partial class ScreenCapture
             List<double> scales = [];
             bool Callback(nint hDesktop, nint hdc, ref Rect pRect, int dwData)
             {
-                _ = GetScaleFactorForMonitor(hDesktop, out var scale);
+                GetScaleFactorForMonitor(hDesktop, out var scale);
                 scales.Add(Math.Round(scale / 100d / 0.25) * 0.25);
                 // scales.Add(scale / 100d);
 
                 return true;
             }
 
-            _ = EnumDisplayMonitors(nint.Zero, nint.Zero, Callback, 0);
+            EnumDisplayMonitors(nint.Zero, nint.Zero, Callback, 0);
             return [.. scales];
         }
 
@@ -49,7 +49,7 @@ public partial class ScreenCapture
         public static Rect GetWindowBounds(nint hWnd)
         {
             var rect = new Rect();
-            _ = GetWindowRect(hWnd, ref rect);
+            GetWindowRect(hWnd, ref rect);
             return rect;
         }
     }
@@ -234,7 +234,7 @@ public partial class ScreenCapture
     {
         IsCapturing = true;
 
-        _ = Timer.Change(0, 50);
+        Timer.Change(0, 50);
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ public partial class ScreenCapture
     {
         IsCapturing = false;
 
-        _ = Timer.Change(Timeout.Infinite, 50);
+        Timer.Change(Timeout.Infinite, 50);
     }
 
     /// <summary>

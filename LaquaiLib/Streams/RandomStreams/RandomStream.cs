@@ -53,10 +53,7 @@ public class RandomStream : Stream
     /// <summary>
     /// The position in the <see cref="Stream"/>. This is irrelevant for <see cref="RandomStream"/>. Its position will never change.
     /// </summary>
-    public override long Position {
-        get => 0;
-        set => _ = 0;
-    }
+    public override long Position { get; set; }
 
     /// <summary>
     /// Flushing is ignored for <see cref="RandomStream"/>.
@@ -140,7 +137,7 @@ public class RandomStream : Stream
         var exactly = (int)(destination.Length - destination.Position);
         using (var buffer = new TempArray<byte>(exactly))
         {
-            _ = Read(buffer.Array, 0, exactly);
+            Read(buffer.Array, 0, exactly);
             destination.Write(buffer.Array, 0, exactly);
         }
     }
@@ -155,14 +152,14 @@ public class RandomStream : Stream
         {
             while (destination.Length - destination.Position >= bufferSize)
             {
-                _ = Read(buffer.Array);
+                Read(buffer.Array);
                 destination.Write(buffer.Array);
             }
             var remaining = (int)(destination.Length - destination.Position);
             if (remaining > 0)
             {
                 var span = buffer.Array.AsSpan(0, remaining);
-                _ = Read(span);
+                Read(span);
                 destination.Write(span);
             }
         }
@@ -182,7 +179,7 @@ public class RandomStream : Stream
             while (destination.Length - destination.Position >= bufferSize)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                _ = await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
+                await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
                 await destination.WriteAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
             }
@@ -191,7 +188,7 @@ public class RandomStream : Stream
             if (remaining > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                _ = await ReadAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
+                await ReadAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
                 await destination.WriteAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
             }

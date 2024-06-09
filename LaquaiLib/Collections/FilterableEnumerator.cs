@@ -7,18 +7,18 @@ namespace LaquaiLib.Collections;
 /// This implementation is essentially stateless; all caching is done through the internals of <see cref="IEnumerable{T}"/>.
 /// </summary>
 /// <typeparam name="T">The type of the items to iterate over.</typeparam>
-public class FilterableCollectionEnumerator<T> : IEnumerator<T>
+public class FilterableEnumerator<T> : IEnumerator<T>
 {
     private readonly IEnumerable<T> items;
     private readonly IEnumerator<T> filteredEnumerator;
     private readonly Func<T, bool> predicate;
 
     /// <summary>
-    /// Initializes a new <see cref="FilterableCollectionEnumerator{T}"/>.
+    /// Initializes a new <see cref="FilterableEnumerator{T}"/>.
     /// </summary>
     /// <param name="items">The items to iterate over.</param>
     /// <param name="predicate">The predicate to filter the items by. If <see langword="null"/>, this instance will behave exactly like a regular <see cref="IEnumerator{T}"/>.</param>
-    public FilterableCollectionEnumerator(IEnumerable<T> items, Func<T, bool>? predicate)
+    public FilterableEnumerator(IEnumerable<T> items, Func<T, bool>? predicate)
     {
         this.items = predicate is null ? items : items.Where(predicate);
         this.filteredEnumerator = this.items.GetEnumerator();

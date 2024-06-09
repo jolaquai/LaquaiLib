@@ -60,12 +60,12 @@ public static class FileSystemHelper
             throw new ArgumentException("Source is a subdirectory of the destination.", nameof(source));
         }
 
-        _ = Directory.CreateDirectory(newTopPath);
+        Directory.CreateDirectory(newTopPath);
 
         foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
         {
             var newDirPath = dirPath.Replace(source, newTopPath);
-            _ = Directory.CreateDirectory(newDirPath);
+            Directory.CreateDirectory(newDirPath);
         }
 
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
@@ -75,8 +75,9 @@ public static class FileSystemHelper
             MaxDegreeOfParallelism = maxDegreeOfParallelism
         };
 
-        _ = copy
-            ? Parallel.ForEach(
+        if (copy)
+        {
+            Parallel.ForEach(
                 partitioner,
                 parallelOptions,
                 newPath =>
@@ -84,8 +85,11 @@ public static class FileSystemHelper
                     var newFilePath = newPath.Replace(source, newTopPath);
                     File.Copy(newPath, newFilePath, allowExisting);
                 }
-            )
-            : Parallel.ForEach(
+            );
+        }
+        else
+        {
+            Parallel.ForEach(
                 partitioner,
                 parallelOptions,
                 newPath =>
@@ -94,5 +98,6 @@ public static class FileSystemHelper
                     File.Move(newPath, newFilePath);
                 }
             );
+        }
     }
 }

@@ -21,6 +21,6 @@ public class InitializationHandle : IDisposable
     public InitializationHandle(IInitializable component)
     {
         this.component = component;
-        _ = this.component.BeginInit();
+        this.component.BeginInit();
     }
 }

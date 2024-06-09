@@ -11,6 +11,7 @@ public static class IEnumerableIDisposableExtensions
     /// <param name="disposables">The sequence of <see cref="IDisposable"/> objects to dispose.</param>
     /// <remarks>
     /// If any of the <see cref="IDisposable.Dispose"/> calls throw an exception, the exceptions are collected and rethrown as an <see cref="AggregateException"/> after all <see cref="IDisposable.Dispose"/> calls have been made.
+    /// <para/>If <paramref name="disposables"/> is of a type that implements <see cref="IDisposable"/> itself, the collection itself will <b>not</b> be disposed.
     /// </remarks>
     public static void Dispose(this IEnumerable<IDisposable> disposables)
     {

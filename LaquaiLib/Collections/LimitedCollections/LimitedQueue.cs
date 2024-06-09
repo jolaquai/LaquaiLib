@@ -83,7 +83,7 @@ public class LimitedQueue<T> : Queue<T>
         base.Enqueue(item);
         if (Count > Capacity)
         {
-            _ = Dequeue();
+            Dequeue();
         }
     }
 
@@ -110,7 +110,7 @@ public class LimitedQueue<T> : Queue<T>
     {
         while (Count > length)
         {
-            _ = Dequeue();
+            Dequeue();
         }
     }
 }

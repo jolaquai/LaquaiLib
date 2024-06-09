@@ -20,7 +20,7 @@ public class TempDirectory : IDisposable
         _path = path;
         if (!Directory.Exists(_path))
         {
-            _ = Directory.CreateDirectory(_path);
+            Directory.CreateDirectory(_path);
         }
     }
 

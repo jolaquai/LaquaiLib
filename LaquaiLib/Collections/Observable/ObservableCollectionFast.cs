@@ -362,7 +362,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
 
         foreach (var item in collection)
         {
-            _ = RemoveSilent(item);
+            RemoveSilent(item);
         }
         RaiseCollectionChanged();
     }
@@ -432,7 +432,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <inheritdoc/>
     public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
     /// <inheritdoc/>
-    public IEnumerator<T> GetEnumerator() => Filter is not null ? new FilterableCollectionEnumerator<T>(_items, Filter) : _items.GetEnumerator();
+    public IEnumerator<T> GetEnumerator() => Filter is not null ? new FilterableEnumerator<T>(_items, Filter) : _items.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
 

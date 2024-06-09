@@ -37,9 +37,6 @@ public static partial class FirstChanceExceptionHandlers
     /// <summary>
     /// Registers all <see cref="EventHandler{TEventArgs}"/> instances in the <see cref="FirstChanceExceptionHandlers"/> class for the <see cref="AppDomain.FirstChanceException"/> event.
     /// </summary>
-    /// <remarks>
-    /// Be aware that this will pollute your call stack like all hell...
-    /// </remarks>
     public static void RegisterAll()
     {
         if (isRegistered)
@@ -66,100 +63,105 @@ public static partial class FirstChanceExceptionHandlers
     {
         var capture = ExceptionDispatchInfo.Capture(e.Exception);
 
-        if (e.Exception is EntryPointNotFoundException epnfEx)
+        switch (e.Exception)
         {
-            GetEntryPointNotFoundExceptionData(epnfEx, out var entryPoint, out var dllName);
+            case EntryPointNotFoundException epnfEx:
+            {
+                GetEntryPointNotFoundExceptionData(epnfEx, out var entryPoint, out var dllName);
 
-            allPaths ??=
-            [
-                .. Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process).Split(Path.PathSeparator),
+                allPaths ??=
+                [
+                    .. Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process).Split(Path.PathSeparator),
                 .. Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User).Split(Path.PathSeparator),
                 .. Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine).Split(Path.PathSeparator)
-            ];
-            allPaths = allPaths.Select(p => p.Trim()).Distinct().OrderDescending().ToArray();
-            pathExts ??=
-            [
-                .. Environment.GetEnvironmentVariable("PATHEXT", EnvironmentVariableTarget.Process).Split(Path.PathSeparator),
+                ];
+                allPaths = allPaths.Select(p => p.Trim()).Distinct().OrderDescending().ToArray();
+                pathExts ??=
+                [
+                    .. Environment.GetEnvironmentVariable("PATHEXT", EnvironmentVariableTarget.Process).Split(Path.PathSeparator),
                 .. Environment.GetEnvironmentVariable("PATHEXT", EnvironmentVariableTarget.User).Split(Path.PathSeparator),
                 .. Environment.GetEnvironmentVariable("PATHEXT", EnvironmentVariableTarget.Machine).Split(Path.PathSeparator)
-            ];
-            pathExts = pathExts.Select(p => p.Trim()).Distinct().OrderDescending().ToArray();
+                ];
+                pathExts = pathExts.Select(p => p.Trim()).Distinct().OrderDescending().ToArray();
 
-            var fullPath = "";
-            foreach (var path in allPaths)
-            {
-                var possiblePath = Path.Combine(path, dllName);
-                if (File.Exists(possiblePath))
+                var fullPath = "";
+                foreach (var path in allPaths)
                 {
-                    fullPath = Path.GetFullPath(possiblePath);
-                    break;
+                    var possiblePath = Path.Combine(path, dllName);
+                    if (File.Exists(possiblePath))
+                    {
+                        fullPath = Path.GetFullPath(possiblePath);
+                        break;
+                    }
                 }
-            }
 
-            string[] possibleEntryPoints;
+                string[] possibleEntryPoints;
 
-            // Find dumpbin.exe
-            var dumpbinPath = MetaHelpers.FindTool(MetaTool.Dumpbin).FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(dumpbinPath))
-            {
-                // no wrapped exception here, as this is a critical error
-                capture.Throw();
-            }
-
-            try
-            {
-                using (var proc = Process.Start(new ProcessStartInfo()
+                // Find dumpbin.exe
+                var dumpbinPath = MetaHelpers.FindTool(MetaTool.Dumpbin).FirstOrDefault();
+                if (string.IsNullOrWhiteSpace(dumpbinPath))
                 {
-                    FileName = dumpbinPath,
-                    ArgumentList =
+                    // no wrapped exception here, as this is a critical error
+                    capture.Throw();
+                }
+
+                try
+                {
+                    using (var proc = Process.Start(new ProcessStartInfo()
+                    {
+                        FileName = dumpbinPath,
+                        ArgumentList =
                     {
                         "/exports",
                         fullPath
                     },
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }))
-                {
-                    var output = proc.StandardOutput.ReadToEnd();
-                    proc.Kill();
-                    proc.WaitForExit();
-                    // Sample:
-                    // 2459  3C6 0002A800 UnregisterDeviceNotification
-                    // 2460  3C7 0002EB60 UnregisterHotKey
-                    // 2461  3C8 000029B0 UnregisterMessagePumpHook
-                    // 2462  3C9 000496C0 UnregisterPointerInputTarget
-                    // 2463  3CA 000496E0 UnregisterPointerInputTargetEx
-                    // 2464  3CB 0002A730 UnregisterPowerSettingNotification
-                    var entryPoints = output
-                        .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                        .SkipWhile(l => !l.Contains("ordinal hint RVA", StringComparison.OrdinalIgnoreCase))
-                        .Skip(1)
-                        .TakeWhile(l => !string.IsNullOrWhiteSpace(l))
-                        .Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last())
-                        .ToArray();
-                    possibleEntryPoints = Array.FindAll(entryPoints, ep => ep.StartsWith(entryPoint, StringComparison.OrdinalIgnoreCase));
-                    Array.Sort(possibleEntryPoints);
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }))
+                    {
+                        var output = proc.StandardOutput.ReadToEnd();
+                        proc.Kill();
+                        proc.WaitForExit();
+                        // Sample:
+                        // 2459  3C6 0002A800 UnregisterDeviceNotification
+                        // 2460  3C7 0002EB60 UnregisterHotKey
+                        // 2461  3C8 000029B0 UnregisterMessagePumpHook
+                        // 2462  3C9 000496C0 UnregisterPointerInputTarget
+                        // 2463  3CA 000496E0 UnregisterPointerInputTargetEx
+                        // 2464  3CB 0002A730 UnregisterPowerSettingNotification
+                        var entryPoints = output
+                            .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                            .SkipWhile(l => !l.Contains("ordinal hint RVA", StringComparison.OrdinalIgnoreCase))
+                            .Skip(1)
+                            .TakeWhile(l => !string.IsNullOrWhiteSpace(l))
+                            .Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last())
+                            .ToArray();
+                        possibleEntryPoints = Array.FindAll(entryPoints, ep => ep.StartsWith(entryPoint, StringComparison.OrdinalIgnoreCase));
+                        Array.Sort(possibleEntryPoints);
+                    }
                 }
-            }
-            catch
-            {
-                capture.Throw();
-                // Unreachable
-                throw;
-            }
+                catch
+                {
+                    capture.Throw();
+                    // Unreachable
+                    throw;
+                }
 
-            throw new FirstChanceException($"""
+                var (searchFor, otherMatches) = possibleEntryPoints.Split(n => n.Length == entryPoint.Length + 1);
+
+                throw new FirstChanceException($"""
                 {e.Exception.Message}
                 Are you missing a value for LibraryImportAttribute.EntryPoint with an 'A' or 'W' suffix?
 
                 You were probably looking for one of these entry points:
-                {string.Join(Environment.NewLine, possibleEntryPoints.Where(n => n.Length == entryPoint.Length + 1).Select(name => $"    - {name}"))}
+                {string.Join(Environment.NewLine, searchFor.Select(name => $"    - {name}"))}
 
                 Other matching entry points in '{dllName}':
-                {string.Join(Environment.NewLine, possibleEntryPoints.WhereNot(n => n.Length == entryPoint.Length + 1).Select(name => $"    - {name}"))}
+                {string.Join(Environment.NewLine, otherMatches.Select(name => $"    - {name}"))}
 
                 """, e.Exception);
+            }
         }
     }
 

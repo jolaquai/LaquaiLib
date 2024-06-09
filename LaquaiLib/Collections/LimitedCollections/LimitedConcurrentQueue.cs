@@ -85,7 +85,7 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
         base.Enqueue(item);
         if (Count > Capacity)
         {
-            _ = TryDequeue(out _);
+            TryDequeue(out _);
         }
     }
 
@@ -112,7 +112,7 @@ public class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
     {
         while (Count > length)
         {
-            _ = TryDequeue(out _);
+            TryDequeue(out _);
         }
     }
 }

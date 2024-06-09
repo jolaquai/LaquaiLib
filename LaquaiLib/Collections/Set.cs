@@ -161,7 +161,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
         var remove = Items.Contains(item);
         if (remove)
         {
-            _ = Items.Remove(item);
+            Items.Remove(item);
         }
         return remove;
     }
@@ -188,7 +188,14 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     {
         foreach (var item in other)
         {
-            _ = Contains(item) ? Remove(item) : Add(item);
+            if (Contains(item))
+            {
+                Remove(item);
+            }
+            else
+            {
+                Add(item);
+            }
         }
     }
     /// <summary>
@@ -199,7 +206,7 @@ public class Set<T> : ISet<T>, IEquatable<Set<T>>, IEquatable<IEnumerable<T>>
     {
         foreach (var item in other)
         {
-            _ = Add(item);
+            Add(item);
         }
     }
 

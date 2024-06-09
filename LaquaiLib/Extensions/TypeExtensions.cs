@@ -255,7 +255,7 @@ public static partial class TypeExtensions
     {
         try
         {
-            _ = Convert.ChangeType(Activator.CreateInstance(type), other);
+            Convert.ChangeType(Activator.CreateInstance(type), other);
             return true;
         }
         catch (Exception ex)
@@ -273,7 +273,7 @@ public static partial class TypeExtensions
         {
             try
             {
-                _ = Convert.ChangeType(type.GetDefault(), other);
+                Convert.ChangeType(type.GetDefault(), other);
                 return true;
             }
             catch
@@ -709,19 +709,19 @@ public static partial class TypeExtensions
     private static string GetLeastAccessibleModifier(IEnumerable<string> modifiers)
     {
         var modifiersEnumerated = modifiers.ToArray();
-        if (modifiersEnumerated.ArrayContains("private")) // same type only
+        if (modifiersEnumerated.Contains("private")) // same type only
         {
             return "private";
         }
         else
         {
-            return modifiersEnumerated.ArrayContains("private protected")
+            return modifiersEnumerated.Contains("private protected")
                 ? "private protected"
-                : modifiersEnumerated.ArrayContains("protected")
-                            ? "protected"
-                            : modifiersEnumerated.ArrayContains("internal")
-                                        ? "internal"
-                                        : modifiersEnumerated.ArrayContains("protected internal") ? "protected internal" : "public";
+                : modifiersEnumerated.Contains("protected")
+                    ? "protected"
+                    : modifiersEnumerated.Contains("internal")
+                        ? "internal"
+                        : modifiersEnumerated.Contains("protected internal") ? "protected internal" : "public";
         }
     }
     private static bool IsInaccessibleAsReflectedType(string modifiers, bool? inheriting)

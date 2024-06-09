@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,6 +34,44 @@ public static class StringExtensions
         }
         return input;
     }
+    /// <summary>
+    /// Creates a new string from this string with all occurrences <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
+    /// </summary>
+    /// <param name="source">The string to perform replacements in.</param>
+    /// <param name="search">The string to search for in <paramref name="source"/>.</param>
+    /// <param name="replaceFactory">A <see cref="Func{TResult}"/> that produces the replacement for occurrences of <paramref name="search"/>. It is called once for each occurrence of <paramref name="search"/>.</param>
+    /// <param name="recurse"><see langword="true"/> to not skip the substring produced by <paramref name="replaceFactory"/> calls when searching for the next occurrence of <paramref name="search"/>. <b>If <paramref name="replaceFactory"/> always returns strings containing <paramref name="search"/>, this will result in an infinite loop.</b> Defaults to <see langword="false"/> for this very reason.</param>
+    /// <returns>The string with replacements as described.</returns>
+    public static string Replace(this string source, string search, Func<string> replaceFactory, bool recurse = false)
+    {
+        var index = source.IndexOf(search);
+        var searchLen = search.Length;
+        while (index > -1)
+        {
+            var currentReplacement = replaceFactory();
+            source = source.Remove(index, searchLen).Insert(index, currentReplacement);
+            if (!recurse)
+            {
+                index += currentReplacement.Length;
+            }
+            index = source.IndexOf(search, index);
+        }
+        return source;
+    }
+    /// <summary>
+    /// Replaces all occurrences of the specified <paramref name="search"/> <see langword="string"/> with the specified <paramref name="replacement"/> <see langword="string"/> using the specified <paramref name="stringComparison"/> and returns whether the replacement resulted in a change to the original string.
+    /// </summary>
+    /// <param name="source">The <see langword="string"/> to search.</param>
+    /// <param name="search">The <see langword="string"/> to search for.</param>
+    /// <param name="replacement">The <see langword="string"/> to replace <paramref name="search"/> with.</param>
+    /// <param name="replaced">An <see langword="out"/> variable that receives the result of the replacement. It is assigned the result of the <see cref="string.Replace(string, string?, StringComparison)"/> call regardless of whether this results in a change.</param>
+    /// <param name="stringComparison">The <see cref="StringComparison"/> to use for the replacement <b>and</b> the comparison of the original and replaced strings. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
+    /// <returns><see langword="true"/> if the replace operation resulted in a change to the original string, <see langword="false"/> otherwise.</returns>
+    public static bool TryReplace(this string source, string search, string replacement, [NotNull] out string replaced, StringComparison stringComparison = StringComparison.CurrentCulture)
+    {
+        replaced = source.Replace(search, replacement, stringComparison);
+        return replaced.Equals(source, stringComparison);
+    }
 
     /// <summary>
     /// Searches the specified input string for occurrences of a specified regex pattern.
@@ -63,14 +102,21 @@ public static class StringExtensions
         {
             foreach (var c in exceptString)
             {
-                _ = replacedChars.Add(c);
+                replacedChars.Add(c);
             }
         }
 
         var result = new StringBuilder();
         foreach (var c in source)
         {
-            _ = replacedChars.Contains(c) ? result.Append(c) : result.Append(replace);
+            if (replacedChars.Contains(c))
+            {
+                result.Append(c);
+            }
+            else
+            {
+                result.Append(replace);
+            }
         }
 
         return result.ToString();
@@ -655,7 +701,7 @@ public static class StringExtensions
             return 1;
         }
 
-        _ = first.Select(c => c.ToString()).Intersect(second.Select(c => c.ToString()), stringComparer);
+        first.Select(c => c.ToString()).Intersect(second.Select(c => c.ToString()), stringComparer);
         return (double)first.Select(c => c.ToString()).Intersect(second.Select(c => c.ToString()), stringComparer).Count() / new List<string>() { first, second }.Max(str => str.Length);
     }
     #endregion

@@ -337,30 +337,30 @@
             Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/>'s previous node does not have a reference to <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> as its next node.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Collections.FilterableCollectionEnumerator`1">
+        <member name="T:LaquaiLib.Collections.FilterableEnumerator`1">
             <summary>
             Implements an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that iterates over only the items that match a given predicate.
             This implementation is essentially stateless; all caching is done through the internals of <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </summary>
             <typeparam name="T">The type of the items to iterate over.</typeparam>
         </member>
-        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Boolean})">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.FilterableCollectionEnumerator`1"/>.
+            Initializes a new <see cref="T:LaquaiLib.Collections.FilterableEnumerator`1"/>.
             </summary>
             <param name="items">The items to iterate over.</param>
             <param name="predicate">The predicate to filter the items by. If <see langword="null"/>, this instance will behave exactly like a regular <see cref="T:System.Collections.Generic.IEnumerator`1"/>.</param>
         </member>
-        <member name="P:LaquaiLib.Collections.FilterableCollectionEnumerator`1.Current">
+        <member name="P:LaquaiLib.Collections.FilterableEnumerator`1.Current">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.MoveNext">
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.MoveNext">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.Reset">
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.Reset">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Collections.FilterableCollectionEnumerator`1.Dispose">
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.Dispose">
             <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue`1">
@@ -1307,52 +1307,6 @@
             <param name="source">The <see cref="T:System.Array"/> to transform.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that contains the transformed elements from the input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayAny``1(``0[],System.Predicate{``0})">
-            <summary>
-            Determines if any element of the <see cref="T:System.Array"/> matches the given <paramref name="predicate"/>.
-            </summary>
-            <typeparam name="T">They Type of the items in the array.</typeparam>
-            <param name="source">The <see cref="T:System.Array"/> to check.</param>
-            <param name="predicate">A <see cref="T:System.Predicate`1"/> that checks each element for a condition.</param>
-            <returns><see langword="true"/> if any element matches the given <paramref name="predicate"/>, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayContains``1(``0[],``0)">
-            <summary>
-            Determines if any element of the <see cref="T:System.Array"/> matches the given <paramref name="item"/>.
-            </summary>
-            <typeparam name="T">They Type of the items in the array.</typeparam>
-            <param name="source">The <see cref="T:System.Array"/> to check.</param>
-            <param name="item">The item to search for.</param>
-            <returns><see langword="true"/> if any element matches the given <paramref name="item"/>, otherwise <see langword="false"/>.</returns>"
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayAll``1(``0[],System.Predicate{``0})">
-            <summary>
-            Determines if all elements of the <see cref="T:System.Array"/> match the given <paramref name="predicate"/>.
-            </summary>
-            <typeparam name="T">The Type of the items in the array.</typeparam>
-            <param name="source">The <see cref="T:System.Array"/> to check.</param>
-            <param name="predicate">A <see cref="T:System.Predicate`1"/> that checks each element for a condition.</param>
-            <returns><see langword="true"/> if all elements match the given <paramref name="predicate"/>, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArrayWhere``1(``0[],System.Predicate{``0})">
-            <summary>
-            Filters the elements of the <see cref="T:System.Array"/> based on a <paramref name="predicate"/>.
-            </summary>
-            <typeparam name="T">The Type of the items in the array.</typeparam>
-            <param name="source">The <see cref="T:System.Array"/> to filter.</param>
-            <param name="predicate">A <see cref="T:System.Predicate`1"/> that checks each element for a condition.</param>
-            <returns>A new <see cref="T:System.Array"/> of <typeparamref name="T"/> that contains all elements of the input sequence that satisfy the condition.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayExtensions.ArraySelect``2(``0[],System.Func{``0,``1})">
-            <summary>
-            Projects each element of the <see cref="T:System.Array"/> into a new form.
-            </summary>
-            <typeparam name="TSource">The Type of the items in the array.</typeparam>
-            <typeparam name="TResult">The Type of the value returned by <paramref name="selector"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Array"/> to transform.</param>
-            <param name="selector">A <see cref="T:System.Func`2"/> that transforms each element from <typeparamref name="TSource"/> to <typeparamref name="TResult"/>.</param>
-            <returns>A new <see cref="T:System.Array"/> of <typeparamref name="TResult"/> that contains the transformed elements from the input sequence.</returns>
-        </member>
         <member name="M:LaquaiLib.Extensions.ArrayExtensions.Split``1(``0[],``0[],``0[],System.Func{``0,System.Boolean})">
             <summary>
             Splits the specified <paramref name="array"/> into two new <see cref="T:System.Array"/>s based on the given <paramref name="predicate"/>.
@@ -1365,6 +1319,26 @@
             <remarks>
             <paramref name="true"/> and <paramref name="false"/>'s lengths are not checked against <paramref name="array"/>'s length. If they are too small, an <see cref="T:System.IndexOutOfRangeException"/> will be thrown by the runtime.
             </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.TryGetAt``1(``0[],System.Int32,``0@)">
+            <summary>
+            Attempts to retrieve the element at the specified index from the array if that index is valid for the array.
+            </summary>
+            <typeparam name="T">The type of the array elements.</typeparam>
+            <param name="array">The array to retrieve the element from.</param>
+            <param name="i">The index of the element to retrieve.</param>
+            <param name="value">An <see langword="out"/> variable that receives the element at the specified index if it is valid.</param>
+            <returns><see langword="true"/> if the index was valid and the element could be retrieved, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayExtensions.GetAtOrDefault``1(``0[],System.Int32,``0)">
+            <summary>
+            Attempts to retrieve the element at specified index from the array if that index is valid for the array, otherwise returns the specified default value.
+            </summary>
+            <typeparam name="T">The type of the array elements.</typeparam>
+            <param name="array">The array to retrieve the element from.</param>
+            <param name="i">The index of the element to retrieve.</param>
+            <param name="defaultValue">The default value to return if the index is invalid.</param>
+            <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.AssemblyExtensions">
             <summary>
@@ -1462,45 +1436,6 @@
             <param name="comparison">The <see cref="T:System.Comparison`1"/> <see langword="delegate"/> to convert.</param>
             <returns>The <see cref="T:System.Collections.Generic.IComparer`1"/> instance.</returns>
         </member>
-        <member name="T:LaquaiLib.Extensions.ConcurrentQueueExtensions">
-            <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> Type.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(System.Collections.Concurrent.ConcurrentQueue{``0},``0,``0[])">
-            <summary>
-            Adds items to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
-            </summary>
-            <typeparam name="T">The Type of the items in the collection.</typeparam>
-            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from <paramref name="items"/> to.</param>
-            <param name="item">The first item to add to <paramref name="queue"/>.</param>
-            <param name="items">Any more items to add to <paramref name="queue"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(System.Collections.Concurrent.ConcurrentQueue{``0},System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Adds items from a collection to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
-            </summary>
-            <typeparam name="T">The Type of the items in the collection.</typeparam>
-            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
-            <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue{``0},``0,``0[])">
-            <summary>
-            Adds items to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
-            </summary>
-            <typeparam name="T">The Type of the items in the collection.</typeparam>
-            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from <paramref name="items"/> to.</param>
-            <param name="item">The first item to add to <paramref name="queue"/>.</param>
-            <param name="items">Any more items to add to <paramref name="queue"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ConcurrentQueueExtensions.Enqueue``1(LaquaiLib.Collections.LimitedCollections.LimitedConcurrentQueue{``0},System.Collections.Generic.IEnumerable{``0})">
-            <summary>
-            Adds items from a collection to the end of the <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/>.
-            </summary>
-            <typeparam name="T">The Type of the items in the collection.</typeparam>
-            <param name="queue">The <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> instance to add the items from the <paramref name="collection"/> to.</param>
-            <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
-        </member>
         <member name="T:LaquaiLib.Extensions.ConstructorInfoExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Reflection.ConstructorInfo"/> Type.
@@ -1528,89 +1463,115 @@
             Provides extension methods for the <see cref="T:System.Delegate"/> Type.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Extensions.DictionaryExtensions">
+        <member name="T:LaquaiLib.Extensions.IDictionaryExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IDictionary`2"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Invert``2(System.Collections.Generic.IDictionary{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.Invert``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
             Creates an inverted <see cref="T:System.Collections.Generic.Dictionary`2"/>, where the original keys are now the values and vice versa.
             </summary>
             <typeparam name="TKey">The Type of the keys of the original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
             <typeparam name="TValue">The Type of the values of the original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</typeparam>
-            <param name="source">The original <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
+            <param name="source">The original <see cref="T:System.Collections.Generic.Dictionary`2"/>. Must be mutable.</param>
             <returns>A new <see cref="T:System.Collections.Generic.Dictionary`2"/> where the keys are the values of the original <see cref="T:System.Collections.Generic.Dictionary`2"/> and vice versa.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.InvertContentAware``2(System.Collections.Generic.IDictionary{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.InvertContentAware``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
             Creates a content-aware inverse <see cref="T:System.Collections.Generic.Dictionary`2"/> where the original keys are now values grouped by the original values.
             </summary>
             <typeparam name="TKey">The Type of the keys of the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
             <typeparam name="TValue">The Type of the values of the original <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
-            <param name="source">The original <see cref="T:System.Collections.Generic.IDictionary`2"/>.</param>
+            <param name="source">The original <see cref="T:System.Collections.Generic.IDictionary`2"/>. Must be mutable.</param>
             <returns>An inverted <see cref="T:System.Collections.Generic.Dictionary`2"/> as described.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.Clone``2(System.Collections.Generic.IDictionary{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.Clone``2(System.Collections.Generic.IDictionary{``0,``1})">
             <summary>
             Creates a mutable shallow copy of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.
             </summary>
             <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
             <typeparam name="TValue">They Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to clone.</param>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to clone. Must be mutable.</param>
             <returns>A shallow copy of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1)">
             <summary>
             Gets the value associated with the specified key or adds a new key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
             </summary>
             <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
             <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add to.</param>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add to. Must be mutable.</param>
             <param name="key">The key of the value to get or add.</param>
             <param name="addValue">The value to be added for an absent key. If the key is absent, the return value is this value.</param>
             <returns>The value associated with the specified key, if the key is found, otherwise <paramref name="addValue"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``1})">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``1})">
             <summary>
             Gets the value associated with the specified key or adds a new key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist.
             </summary>
             <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
             <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add to.</param>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add to. Must be mutable.</param>
             <param name="key">The key of the value to get or add.</param>
             <param name="addValueFactory">A factory <see cref="T:System.Func`1"/> that produces the value to be added for an absent key. If the key is absent, the return value is the produced value.</param>
             <returns>The value associated with the specified key, if the key is found, otherwise the value produced by <paramref name="addValueFactory"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``1,``1})">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,``1@)">
+            <summary>
+            Gets the value associated with the specified key or adds a new key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not exist.
+            </summary>
+            <typeparam name="TKey">The type of the keys in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TElement">The type of the elements in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add the value to. Must be mutable.</param>
+            <param name="key">The key of the value to get or add.</param>
+            <param name="toAdd">The value to add to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not exist.</param>
+            <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
+            <returns><see langword="true"/> if the key was found in the <see cref="T:System.Collections.Generic.IDictionary`2"/>, otherwise <see langword="false"/>.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the <see cref="T:System.Collections.Generic.IDictionary`2"/> is not mutable.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetOrAdd``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``1},``1@)">
+            <summary>
+            Gets the value associated with the specified key or adds a new key/value pair produced by a factory to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not exist.
+            </summary>
+            <typeparam name="TKey">The type of the keys in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <typeparam name="TElement">The type of the elements in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to get the value from or add the value to. Must be mutable.</param>
+            <param name="key">The key of the value to get or add.</param>
+            <param name="toAdd">A factory <see cref="T:System.Func`1"/> that produces the value to add to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not exist. This overload is useful when constructing the value is expensive and should only be done when necessary.</param>
+            <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
+            <returns><see langword="true"/> if the key was found in the <see cref="T:System.Collections.Generic.IDictionary`2"/>, otherwise <see langword="false"/>.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the dictionary is not mutable.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``1,``1})">
             <summary>
             Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
             </summary>
             <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
             <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update.</param>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update. Must be mutable.</param>
             <param name="key">The key of the element to add or update.</param>
             <param name="addValue">The value to be added for an absent key.</param>
             <param name="updateValueFactory">A factory <see cref="T:System.Func`2"/> that takes the existing value for a key and produces a new value.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``1,``1,``1})">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``1,``1,``1})">
             <summary>
             Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`3"/> that produces a new value is invoked with the existing value and <paramref name="addValue"/>.
             </summary>
             <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
             <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update.</param>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update. Must be mutable.</param>
             <param name="key">The key of the element to add or update.</param>
             <param name="addValue">The value to be added for an absent key.</param>
             <param name="updateValueFactory">A factory <see cref="T:System.Func`3"/> that takes the existing value for a key and <paramref name="addValue"/> itself and produces a new value. This avoids having to materialize the value twice.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.DictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``1},System.Func{``1,``1})">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,System.Func{``1},System.Func{``1,``1})">
             <summary>
             Adds a key/value pair to the <see cref="T:System.Collections.Generic.IDictionary`2"/> where the value is produced by <paramref name="addValueFactory"/> if the key does not already exist. Otherwise, a factory <see cref="T:System.Func`2"/> that produces a new value is invoked with the existing value.
             </summary>
             <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
             <typeparam name="TValue">The Type of the values of the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</typeparam>
-            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update.</param>
+            <param name="source">The <see cref="T:System.Collections.Generic.IDictionary`2"/> to add to or update. Must be mutable.</param>
             <param name="key">The key of the element to add or update.</param>
             <param name="addValueFactory">A <see cref="T:System.Func`1"/> that produces the value to be added for an absent key. It is only invoked if the key does not already exist in the <see cref="T:System.Collections.Generic.IDictionary`2"/>.</param>
             <param name="updateValueFactory">A factory <see cref="T:System.Func`3"/> that takes the existing value for a key and produces a new value.</param>
@@ -2115,6 +2076,15 @@
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
             <returns>A <see cref="T:System.Tuple`2"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.NotOfType``2(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
+            </summary>
+            <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
+            <typeparam name="TDerived">The Type of the elements to exclude from the output sequence. Must be, derive from or implement <typeparamref name="TSource"/>.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>A sequence of all objects from <paramref name="source"/> that are not of type <typeparamref name="TDerived"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CrossSelect``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
             <summary>
             For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
@@ -2166,6 +2136,16 @@
             <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
             <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Int32,``0)">
+            <summary>
+            Attempts to retrieve the element at the specified index from the input sequence if that index is valid for the sequence, otherwise a default value is returned.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <param name="i">The index of the element to retrieve.</param>
+            <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
+            <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
@@ -2178,6 +2158,7 @@
             <param name="disposables">The sequence of <see cref="T:System.IDisposable"/> objects to dispose.</param>
             <remarks>
             If any of the <see cref="M:System.IDisposable.Dispose"/> calls throw an exception, the exceptions are collected and rethrown as an <see cref="T:System.AggregateException"/> after all <see cref="M:System.IDisposable.Dispose"/> calls have been made.
+            <para/>If <paramref name="disposables"/> is of a type that implements <see cref="T:System.IDisposable"/> itself, the collection itself will <b>not</b> be disposed.
             </remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableTaskExtensions">
@@ -2243,6 +2224,40 @@
             <typeparam name="TCollection">The Type of the collections that will be used to store the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
             <typeparam name="TElement">The Type of the values of the <typeparamref name="TCollection"/>s.</typeparam>
             <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
+            <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IGroupingExtensions.ToListDictionary``3(System.Collections.Generic.IEnumerable{System.Linq.IGrouping{``0,``1}},System.Func{``1,``2})">
+            <summary>
+            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s transformed using a selector <see cref="T:System.Func`2"/> as <see cref="T:System.Collections.Generic.List`1"/>s to allow for adding more values.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TElement">The Type of the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TTransform">The Type of the values of the <see cref="T:System.Collections.Generic.List`1"/>s.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each <typeparamref name="TElement"/> in the <see cref="T:System.Linq.IGrouping`2"/>s and returns an instance of <typeparamref name="TTransform"/>.</param>
+            <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IGroupingExtensions.ToArrayDictionary``3(System.Collections.Generic.IEnumerable{System.Linq.IGrouping{``0,``1}},System.Func{``1,``2})">
+            <summary>
+            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s as <see cref="T:System.Array"/>s.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TElement">The Type of the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TTransform">The Type of the values of the <see cref="T:System.Collections.Generic.List`1"/>s.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each <typeparamref name="TElement"/> in the <see cref="T:System.Linq.IGrouping`2"/>s and returns an instance of <typeparamref name="TTransform"/>.</param>
+            <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IGroupingExtensions.ToDictionary``4(System.Collections.Generic.IEnumerable{System.Linq.IGrouping{``0,``2}},System.Func{``2,``3})">
+            <summary>
+            Constructs a <see cref="T:System.Collections.Generic.Dictionary`2"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>. The keys of the dictionary are the <see cref="P:System.Linq.IGrouping`2.Key"/>s of the <see cref="T:System.Linq.IGrouping`2"/>s, and the values are the values of the <see cref="T:System.Linq.IGrouping`2"/>s as <typeparamref name="TCollection"/>s.
+            </summary>
+            <typeparam name="TKey">The Type of the keys of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TCollection">The Type of the collections that will be used to store the values of the <see cref="T:System.Linq.IGrouping`2"/>s.</typeparam>
+            <typeparam name="TElement">The Type of the values of the <typeparamref name="TCollection"/>s.</typeparam>
+            <typeparam name="TTransform">The Type of the values of the <see cref="T:System.Collections.Generic.List`1"/>s.</typeparam>
+            <param name="source">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Linq.IGrouping`2"/>s to construct the <see cref="T:System.Collections.Generic.Dictionary`2"/> from.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each <typeparamref name="TElement"/> in the <see cref="T:System.Linq.IGrouping`2"/>s and returns an instance of <typeparamref name="TTransform"/>.</param>
             <returns>The constructed <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.NumberExtensions">
@@ -2639,20 +2654,38 @@
             <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
             <returns>The bytes of the rest of the <see cref="T:System.IO.Stream"/>, from its current position to the end.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.ToArray(System.IO.Stream)">
+            <summary>
+            Reads the entire contents of the <paramref name="stream"/> into a <see langword="byte"/> array, regardless of current position.
+            The <paramref name="stream"/> remains sought to its end.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <returns>The created <see langword="byte"/> array.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEnd(System.IO.Stream,System.Span{System.Byte})">
             <summary>
             Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> into the specified <paramref name="span"/> and advances the position within it to the end.
             </summary>
             <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
-            <param name="span">The <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> to read into.</param>
+            <param name="span">A <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> to read into.</param>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Threading.CancellationToken)">
             <summary>
             Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> asynchronously, optionally monitoring a <paramref name="cancellationToken"/> for cancellation requests, and advances the position within it to the end.
             </summary>
             <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
-            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous read operation and proxies for the read bytes.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Memory{System.Byte},System.Threading.CancellationToken)">
+            <summary>
+            Reads all bytes from the current position to the end of the <see cref="T:System.IO.Stream"/> into the specified <paramref name="memory"/> and advances the position within it to the end.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to read from.</param>
+            <param name="memory">A <see cref="T:System.Memory`1"/> of <see cref="T:System.Byte"/> to read into.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="T:LaquaiLib.Extensions.StringExtensions">
             <summary>
@@ -2675,6 +2708,27 @@
             <param name="finds">A collection of strings to search for in <paramref name="source"/>.</param>
             <param name="replace">The replacement for occurrences of strings in <paramref name="finds"/>.</param>
             <returns>A string as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Replace(System.String,System.String,System.Func{System.String},System.Boolean)">
+            <summary>
+            Creates a new string from this string with all occurrences <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
+            </summary>
+            <param name="source">The string to perform replacements in.</param>
+            <param name="search">The string to search for in <paramref name="source"/>.</param>
+            <param name="replaceFactory">A <see cref="T:System.Func`1"/> that produces the replacement for occurrences of <paramref name="search"/>. It is called once for each occurrence of <paramref name="search"/>.</param>
+            <param name="recurse"><see langword="true"/> to not skip the substring produced by <paramref name="replaceFactory"/> calls when searching for the next occurrence of <paramref name="search"/>. <b>If <paramref name="replaceFactory"/> always returns strings containing <paramref name="search"/>, this will result in an infinite loop.</b> Defaults to <see langword="false"/> for this very reason.</param>
+            <returns>The string with replacements as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.TryReplace(System.String,System.String,System.String,System.String@,System.StringComparison)">
+            <summary>
+            Replaces all occurrences of the specified <paramref name="search"/> <see langword="string"/> with the specified <paramref name="replacement"/> <see langword="string"/> using the specified <paramref name="stringComparison"/> and returns whether the replacement resulted in a change to the original string.
+            </summary>
+            <param name="source">The <see langword="string"/> to search.</param>
+            <param name="search">The <see langword="string"/> to search for.</param>
+            <param name="replacement">The <see langword="string"/> to replace <paramref name="search"/> with.</param>
+            <param name="replaced">An <see langword="out"/> variable that receives the result of the replacement. It is assigned the result of the <see cref="M:System.String.Replace(System.String,System.String,System.StringComparison)"/> call regardless of whether this results in a change.</param>
+            <param name="stringComparison">The <see cref="T:System.StringComparison"/> to use for the replacement <b>and</b> the comparison of the original and replaced strings. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
+            <returns><see langword="true"/> if the replace operation resulted in a change to the original string, <see langword="false"/> otherwise.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.Match(System.String,System.String)">
             <summary>
@@ -3220,6 +3274,14 @@
             <param name="request">The <see cref="T:System.Uri"/> to get the route from.</param>
             <returns>The route component of the <see cref="T:System.Uri"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.UriExtensions.Combine(System.Uri,System.Object[])">
+            <summary>
+            Combines this <see cref="T:System.Uri"/> instance with multiple relative paths or <see cref="T:System.Uri"/>.
+            </summary>
+            <param name="baseUri">The base <see cref="T:System.Uri"/> to combine with. May also be relative.</param>
+            <param name="relative">Any number of <see langword="string"/>s or relative <see cref="T:System.Uri"/>s to combine with the base <see cref="T:System.Uri"/>. Must be relative.</param>
+            <returns>A new <see cref="T:System.Uri"/> instance that is the result of combining the base <see cref="T:System.Uri"/> with the relative paths or <see cref="T:System.Uri"/>s.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.XElementExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Xml.Linq.XElement"/> Type.
@@ -3458,7 +3520,7 @@
         </member>
         <member name="T:LaquaiLib.Streams.MemoryOrFileStream">
             <summary>
-            Represents a <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Stream"/> that can be either a <see cref="T:System.IO.MemoryStream"/> or a <see cref="T:System.IO.FileStream"/>, depending on the size of the data expected to be written to it.
+            Contains factory methods that produce either <see cref="T:System.IO.MemoryStream"/> or <see cref="T:System.IO.FileStream"/> instances, depending on the size of the data expected to be written to it.
             </summary>
         </member>
         <member name="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff">
@@ -3466,7 +3528,7 @@
             The number of bytes at which the stream will switch from a <see cref="T:System.IO.MemoryStream"/> to a <see cref="T:System.IO.FileStream"/>.
             </summary>
             <remarks>
-            You may freely change this value at runtime. Its initial value is 1/64th of the total physical memory of the system (e.g., if your system has 32 GB of total physical memory, this will initially have the value <c>32768 / 64 = 512 MB</c>). If an exception is thrown during retrieval of the total physical memory, the value will default to 64 MB.
+            You may freely change this value at runtime. Its initial value is 1/512th of the total physical memory of the system (e.g., if your system has 32 GB of total physical memory, this will initially have the value <c>32768 / 512 = 64 MB</c>). If total physical memory cannot be retrieved, the value will default to 64 MB.
             </remarks>
         </member>
         <member name="M:LaquaiLib.Streams.MemoryOrFileStream.ResetCutoff">
@@ -3475,72 +3537,37 @@
             </summary>
             <returns>The new value of <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.#cctor">
+        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Create(System.Int32)">
             <summary>
-            Initializes the <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> Type.
+            Creates a new <see cref="T:System.IO.Stream"/> with the given expected payload size.
             </summary>
+            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="T:System.IO.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
+            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
         </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.Stream">
+        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Create(System.IO.Stream,System.Boolean)">
             <summary>
-            The wrapped <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Stream"/>.
+            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="other"/> <see cref="T:System.IO.Stream"/>.
+            Its data from its current position to the end will be copied to the new <see cref="T:System.IO.Stream"/>. Both streams' positions will be advanced by the number of bytes copied.
             </summary>
+            <param name="other">The <see cref="T:System.IO.Stream"/> to copy the data from.</param>
+            <param name="fromBeginning">Whether to seek <paramref name="other"/> to its beginning before copying the data.</param>
+            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
         </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.StreamType">
+        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Create(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
             <summary>
-            The actual <see cref="T:System.Type"/> of the wrapped <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Stream"/>, either <see cref="T:System.IO.MemoryStream"/> or <see cref="T:System.IO.FileStream"/>.
+            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="buffer"/>.
+            Its data is copied to the new <see cref="T:System.IO.Stream"/> and its position advanced by the number of bytes copied.
             </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.#ctor(System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> with the given expected payload size.
-            </summary>
-            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
-        </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.CanRead">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.CanSeek">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.CanWrite">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.Length">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.Position">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Flush">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.SetLength(System.Int64)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Write(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Dispose(System.Boolean)">
-            <summary>
-            Releases the unmanaged and optionally the managed resources used by this <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> instance.
-            </summary>
-            <param name="disposing">Whether to release the managed resources used by this <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> instance.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Finalize">
-            <summary>
-            Finalizes this <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> instance, releasing any unmanaged resources.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Dispose">
-            <summary>
-            Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Streams.MemoryOrFileStream"/> instance.
-            </summary>
+            <param name="buffer">The buffer to copy the data from.</param>
+            <param name="offset">The index in <paramref name="buffer"/> at which to start copying.</param>
+            <param name="length">The number of bytes to copy from <paramref name="buffer"/>.</param>
+            <param name="canResize">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it can resize itself if the data exceeds its initial capacity.</param>
+            <param name="canWrite">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it is created as writable.</param>
+            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
+            <remarks>
+            <para/><paramref name="canResize"/> and <paramref name="canWrite"/> are ignored if the number of bytes that would be copied exceeds <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>.
+            <para/>Calling this constructor with just <paramref name="buffer"/> matches the behavior of <see cref="M:System.IO.MemoryStream.#ctor(System.Byte[])"/>, except if its length exceeds <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>, in which case a <see cref="T:System.IO.FileStream"/> is created.
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Streams.MultiStream">
             <summary>
@@ -3980,51 +4007,71 @@
             <summary>
             Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataRead"/> event.
             </summary>
+            <param name="Data">A readonly view of the data that was read.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.ReadEventArgs.#ctor(System.ReadOnlyMemory{System.Byte})">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataRead"/> event.
+            </summary>
+            <param name="Data">A readonly view of the data that was read.</param>
         </member>
         <member name="P:LaquaiLib.Streams.ReadEventArgs.Data">
-            <summary>
-            A readonly view of the data that was read.
-            </summary>
+            <summary>A readonly view of the data that was read.</summary>
         </member>
         <member name="T:LaquaiLib.Streams.ResizedEventArgs">
             <summary>
             Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Resized"/> event.
             </summary>
+            <param name="OldLength">The old length of the stream before the resize operation.</param>
+            <param name="NewLength">The new length of the stream after the resize operation.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.ResizedEventArgs.#ctor(System.Int64,System.Int64)">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Resized"/> event.
+            </summary>
+            <param name="OldLength">The old length of the stream before the resize operation.</param>
+            <param name="NewLength">The new length of the stream after the resize operation.</param>
         </member>
         <member name="P:LaquaiLib.Streams.ResizedEventArgs.OldLength">
-            <summary>
-            The old length of the stream before the resize operation.
-            </summary>
+            <summary>The old length of the stream before the resize operation.</summary>
         </member>
         <member name="P:LaquaiLib.Streams.ResizedEventArgs.NewLength">
-            <summary>
-            The new length of the stream after the resize operation.
-            </summary>
+            <summary>The new length of the stream after the resize operation.</summary>
         </member>
         <member name="T:LaquaiLib.Streams.SeekedEventArgs">
             <summary>
             Provides data about the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Seeked"/> event.
             </summary>
+            <param name="OldPosition">The old position of the stream before the seek operation.</param>
+            <param name="NewPosition">The new position of the stream after the seek operation.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.SeekedEventArgs.#ctor(System.Int64,System.Int64)">
+            <summary>
+            Provides data about the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Seeked"/> event.
+            </summary>
+            <param name="OldPosition">The old position of the stream before the seek operation.</param>
+            <param name="NewPosition">The new position of the stream after the seek operation.</param>
         </member>
         <member name="P:LaquaiLib.Streams.SeekedEventArgs.OldPosition">
-            <summary>
-            The old position of the stream before the seek operation.
-            </summary>
+            <summary>The old position of the stream before the seek operation.</summary>
         </member>
         <member name="P:LaquaiLib.Streams.SeekedEventArgs.NewPosition">
-            <summary>
-            The new position of the stream after the seek operation.
-            </summary>
+            <summary>The new position of the stream after the seek operation.</summary>
         </member>
         <member name="T:LaquaiLib.Streams.WrittenEventArgs">
             <summary>
             Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataWritten"/> event.
             </summary>
+            <param name="Data">A readonly view of the data that was written.</param>
+        </member>
+        <member name="M:LaquaiLib.Streams.WrittenEventArgs.#ctor(System.ReadOnlyMemory{System.Byte})">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataWritten"/> event.
+            </summary>
+            <param name="Data">A readonly view of the data that was written.</param>
         </member>
         <member name="P:LaquaiLib.Streams.WrittenEventArgs.Data">
-            <summary>
-            A readonly view of the data that was written.
-            </summary>
+            <summary>A readonly view of the data that was written.</summary>
         </member>
         <member name="T:LaquaiLib.Util.ConsoleQueue">
             <summary>
@@ -4640,9 +4687,6 @@
             <summary>
             Registers all <see cref="T:System.EventHandler`1"/> instances in the <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> class for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
             </summary>
-            <remarks>
-            Be aware that this will pollute your call stack like all hell...
-            </remarks>
         </member>
         <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.WrapEntryPointNotFoundException(System.Object,System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs)">
             <summary>

@@ -25,7 +25,7 @@ public partial class AsyncGetterWindow : Window
         Closed += (_, _) => cts.Cancel();
 
         Show();
-        _ = Activate();
+        Activate();
 
         // Initializing actions here...
 

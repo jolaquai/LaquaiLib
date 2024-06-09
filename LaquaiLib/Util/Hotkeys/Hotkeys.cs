@@ -170,7 +170,7 @@ public static partial class Hotkeys
         hotkey ??= _hotkeys.Find(hk => hk.Id == id);
         if (hotkey is not null)
         {
-            _ = _hotkeys.Remove(hotkey);
+            _hotkeys.Remove(hotkey);
             return UnregisterHotKey(_hostWindowHandle, id) != 0;
         }
         return false;

@@ -419,7 +419,7 @@ public unsafe class TempAlloc : IDisposable
                 {
                     data[i - shiftAmount] = data[i];
                 }
-                _ = Reallocate(data.Length - shiftAmount);
+                Reallocate(data.Length - shiftAmount);
                 data = Data;
             }
 
@@ -448,8 +448,8 @@ public unsafe class TempAlloc : IDisposable
         for (var i = 0; i < _size; i += 4)
         {
             var slice = data[i..(i + 4 > _size ? _size : i + 4)];
-            _ = sb.Append(Convert.ToHexString(slice));
-            _ = sb.Append(' ');
+            sb.Append(Convert.ToHexString(slice));
+            sb.Append(' ');
         }
         return sb.ToString().Trim(' ');
     }
@@ -466,9 +466,9 @@ public unsafe class TempAlloc : IDisposable
             var slice = i - 4 < 0 ? data[..i] : data.Slice(i - 4, 4);
             foreach (var b in slice)
             {
-                _ = sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
+                sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }
-            _ = sb.Insert(0, ' ');
+            sb.Insert(0, ' ');
         }
         return sb.ToString().Trim(' ');
     }

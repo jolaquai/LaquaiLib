@@ -96,7 +96,7 @@ public class ObservableStream<T> : Stream
     }
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        _ = await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         DataRead?.Invoke(this, new ReadEventArgs(buffer));
         return buffer.Length;
     }
@@ -223,7 +223,6 @@ public class ObservableStream<T> : Stream
     }
     public override void CopyTo(Stream destination, int bufferSize)
     {
-        _ = Position;
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
         while (Position != Length)
         {
@@ -234,7 +233,6 @@ public class ObservableStream<T> : Stream
     }
     public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken = default)
     {
-        _ = Position;
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
         while (Position != Length)
         {

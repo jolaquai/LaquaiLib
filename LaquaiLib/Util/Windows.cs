@@ -101,7 +101,7 @@ public static partial class Windows
 
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -128,7 +128,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -153,7 +153,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -185,7 +185,7 @@ public static partial class Windows
         var handles = handle.Target;
         lock (handles.SyncRoot)
         {
-            _ = handles.Add(hWnd);
+            handles.Add(hWnd);
         }
 
         return true;

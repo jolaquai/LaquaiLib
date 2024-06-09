@@ -44,19 +44,19 @@ public class LimitedConcurrencyTaskScheduler : TaskScheduler
     protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) => (!taskWasPreviouslyQueued || TryDequeue(task)) && TryExecuteTask(task);
     private void NotifyThreadPoolOfPendingWork()
     {
-        _ = ThreadPool.UnsafeQueueUserWorkItem(_ =>
+        ThreadPool.UnsafeQueueUserWorkItem(_ =>
         {
-            _ = Interlocked.Increment(ref _delegatesQueuedOrRunning);
+            Interlocked.Increment(ref _delegatesQueuedOrRunning);
             try
             {
                 while (_tasks.TryTake(out var task, Timeout.Infinite))
                 {
-                    _ = TryExecuteTask(task);
+                    TryExecuteTask(task);
                 }
             }
             finally
             {
-                _ = Interlocked.Decrement(ref _delegatesQueuedOrRunning);
+                Interlocked.Decrement(ref _delegatesQueuedOrRunning);
             }
         }, null);
     }

@@ -117,7 +117,7 @@ public static partial class VirtualKeyUtils
     {
         cultureInfo ??= CultureInfo.CurrentCulture;
 
-        _ = Interop.GetKeyboardState(Interop.KeyboardStateBuffer);
+        Interop.GetKeyboardState(Interop.KeyboardStateBuffer);
 
         var keyboardLayout = cultureInfo.KeyboardLayoutId;
         var receiver = new string('\0', 2);

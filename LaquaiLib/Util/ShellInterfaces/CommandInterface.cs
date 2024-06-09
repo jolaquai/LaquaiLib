@@ -108,7 +108,7 @@ public class CommandInterface : IShellInterface
         }
         finally
         {
-            _ = _syncSemaphore.Release();
+            _syncSemaphore.Release();
         }
     }
     public async Task Close()
@@ -120,7 +120,7 @@ public class CommandInterface : IShellInterface
         }
         finally
         {
-            _ = _syncSemaphore.Release();
+            _syncSemaphore.Release();
         }
     }
 
@@ -152,10 +152,10 @@ public class CommandInterface : IShellInterface
                     }
                     finally
                     {
-                        _ = _syncSemaphore.Release();
+                        _syncSemaphore.Release();
                     }
                 }, cts.Token);
-                _ = readTask.Wait(300);
+                readTask.Wait(300);
                 if (!readTask.IsCompleted)
                 {
                     cts.Cancel();
@@ -174,7 +174,7 @@ public class CommandInterface : IShellInterface
     #region public async ValueTask DisposeAsync()
     public async ValueTask DisposeAsync()
     {
-        _ = await DispatchAsync("break");
+        await DispatchAsync("break");
         await (Process.WaitForExitAsync() ?? Task.CompletedTask);
         Process.Dispose();
     }

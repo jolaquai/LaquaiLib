@@ -201,8 +201,8 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     public void RemoveForward(T1 key)
     {
         var rev = _forward[key];
-        _ = _reverse.Remove(rev);
-        _ = _forward.Remove(key);
+        _reverse.Remove(rev);
+        _forward.Remove(key);
     }
     /// <summary>
     /// Removes an entry from the lookup table by its value. An exception is thrown if there is no entry with the given value.
@@ -211,8 +211,8 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     public void RemoveReverse(T2 value)
     {
         var forw = _reverse[value];
-        _ = _forward.Remove(forw);
-        _ = _reverse.Remove(value);
+        _forward.Remove(forw);
+        _reverse.Remove(value);
     }
     /// <summary>
     /// Attempts to remove an entry from the lookup table by its key.
