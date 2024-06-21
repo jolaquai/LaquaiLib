@@ -31,27 +31,27 @@ public static class RandomMath
     /// </summary>
     /// <param name="numbers">The numbers to determine the GCD of.</param>
     /// <returns>The GCD of the given <paramref name="numbers"/>.</returns>
-    public static int GCD<TInteger>(params int[] numbers)
+    public static TInteger GCD<TInteger>(params TInteger[] numbers)
         where TInteger : IBinaryInteger<TInteger>
     {
         if (numbers.Length == 1)
         {
             return numbers[0];
         }
-        numbers = Array.ConvertAll(numbers, Math.Abs);
-        if (Array.Exists(numbers, n => n == 1))
+        numbers = Array.ConvertAll(numbers, n => n < TInteger.Zero ? -TInteger.One * n : n);
+        if (Array.Exists(numbers, n => n == TInteger.One))
         {
-            return 1;
+            return TInteger.One;
         }
 
         foreach (var g in Miscellaneous
-            .Range(0, numbers.Max(), 2)
-            .Where(g => numbers.Select(n => n % g == 0).All()))
+            .Range(TInteger.Zero, numbers.Max(), (TInteger)Convert.ChangeType(2, typeof(TInteger)))
+            .Where(g => numbers.Select(n => n % g == TInteger.Zero).All()))
         {
             return g;
         }
 
-        return 1;
+        return TInteger.One;
     }
 
     /// <summary>

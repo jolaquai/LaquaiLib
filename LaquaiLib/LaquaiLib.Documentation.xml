@@ -3277,6 +3277,7 @@
         <member name="M:LaquaiLib.Extensions.UriExtensions.Combine(System.Uri,System.Object[])">
             <summary>
             Combines this <see cref="T:System.Uri"/> instance with multiple relative paths or <see cref="T:System.Uri"/>.
+            This is intended to replicate <see cref="M:System.IO.Path.Combine(System.String[])"/> for <see cref="T:System.Uri"/> instances.
             </summary>
             <param name="baseUri">The base <see cref="T:System.Uri"/> to combine with. May also be relative.</param>
             <param name="relative">Any number of <see langword="string"/>s or relative <see cref="T:System.Uri"/>s to combine with the base <see cref="T:System.Uri"/>. Must be relative.</param>
@@ -4933,11 +4934,6 @@
             Any Shift key.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Util.Hotkeys.Hotkey">
-            <summary>
-            Represents a hotkey registered by <see cref="T:LaquaiLib.Util.Hotkeys.Hotkeys"/>.
-            </summary>
-        </member>
         <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.Id">
             <summary>
             The ID this hotkey was registered to the system with.
@@ -4953,17 +4949,11 @@
             The key for this hotkey.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.SyncDelegate">
+        <member name="M:LaquaiLib.Util.Hotkeys.Hotkey.InvokeAsync">
             <summary>
-            The action to perform when this hotkey is pressed.
-            This property may be <see langword="null"/> and is as such mutually exclusive with <see cref="P:LaquaiLib.Util.Hotkeys.Hotkey.AsyncDelegate"/>, if the hotkey was created using such an asynchronous delegate.
+            Invokes the <see langword="delegate"/> attached to this <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/>.
             </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.AsyncDelegate">
-            <summary>
-            The action to perform when this hotkey is pressed.
-            This property may be <see langword="null"/> and is as such mutually exclusive with <see cref="P:LaquaiLib.Util.Hotkeys.Hotkey.SyncDelegate"/>, if the hotkey was created using such a synchronous delegate.
-            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the work done by the <see langword="delegate"/>. This also applies to <see langword="delegate"/>s of type <see cref="T:System.Action"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Util.Hotkeys.Hotkeys">
             <summary>
@@ -5009,14 +4999,16 @@
             Stops processing hotkeys.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.RegisterHotkey(LaquaiLib.Util.Hotkeys.FsModifiers,System.Windows.Forms.Keys,System.Delegate,LaquaiLib.Util.Hotkeys.Hotkey@)">
+        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.RegisterHotkey(LaquaiLib.Util.Hotkeys.FsModifiers,System.Windows.Forms.Keys,System.Delegate,LaquaiLib.Util.Hotkeys.Hotkey@,System.Nullable{System.IntPtr})">
             <summary>
             Registers a global hotkey and begins processing hotkeys if processing has not been explicitly stopped.
+            This generic overload allows must be used when the specified <paramref name="method"/> returns a value.
             </summary>
             <param name="fsModifiers">A <see cref="T:LaquaiLib.Util.Hotkeys.FsModifiers"/> value specifying the modifier keys to be associated with the hotkey.</param>
             <param name="vk">The virtual key code to be associated with the hotkey.</param>
             <param name="method">A <see cref="T:System.Delegate"/> representing the method to be invoked when the hotkey is pressed. Must be castable to either <see cref="T:System.Action"/> or a <see cref="T:System.Threading.Tasks.Task"/>-returning <see cref="T:System.Func`1"/>, otherwise an <see cref="T:System.ArgumentException"/> is thrown. Such an asynchronous <see langword="delegate"/> is <see langword="await"/>ed appropriately upon invocation.</param>
-            <param name="hotkey"></param>
+            <param name="hotkey">An <see langword="out"/> variable that receives the created <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> instance if the registration is successful.</param>
+            <param name="hWnd">The handle of the window that the hotkey is registered to. If set to <see langword="null"/> or equivalent <see cref="F:System.IntPtr.Zero"/>, efforts are made to determine the best window handle to use.</param>
             <returns>The result of the registration attempt.</returns>
         </member>
         <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.UnregisterHotkey(System.Int32,LaquaiLib.Util.Hotkeys.Hotkey)">
@@ -9877,7 +9869,7 @@
             </summary>
             <param name="handle">The existing untyped handle to a managed object.</param>
         </member>
-        <member name="M:LaquaiLib.Wrappers.GCHandle`1.AddrOfPinnedObject(LaquaiLib.Wrappers.GCHandle{`0})">
+        <member name="M:LaquaiLib.Wrappers.GCHandle`1.AddrOfPinnedObject">
             <inheritdoc cref="M:System.Runtime.InteropServices.GCHandle.AddrOfPinnedObject"/>
         </member>
         <member name="M:LaquaiLib.Wrappers.GCHandle`1.op_Implicit(LaquaiLib.Wrappers.GCHandle{`0})~System.Runtime.InteropServices.GCHandle">

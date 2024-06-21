@@ -58,7 +58,7 @@ public readonly struct GCHandle<T> : IDisposable
     #endregion
 
     /// <inheritdoc cref="GCHandle.AddrOfPinnedObject"/>
-    public nint AddrOfPinnedObject(GCHandle<T> handle) => Handle.AddrOfPinnedObject();
+    public nint AddrOfPinnedObject() => Handle.AddrOfPinnedObject();
 
     /// <summary>
     /// Returns the untyped <see cref="GCHandle"/> a typed <see cref="GCHandle{T}"/> represents.

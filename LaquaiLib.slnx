@@ -1,0 +1,27 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="LaquaiLib\LaquaiLib.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="Debug|x86" Project="x86" />
+  </Project>
+  <Project Path="TestConsole\TestConsole.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="Debug|x86" Project="x86" />
+  </Project>
+  <Project Path="TestCore\TestCore.csproj" />
+  <Project Path="TestWpf\TestWpf.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+  </Project>
+  <Properties Name="Visual Studio">
+    <Property Name="OpenWith" Value="17" />
+  </Properties>
+</Solution>
