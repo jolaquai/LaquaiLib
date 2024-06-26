@@ -22,5 +22,16 @@ public static unsafe class NintExtensions
     /// </summary>
     /// <param name="address">The address of the first <see cref="byte"/> to be copied.</param>
     /// <param name="arr">The <see cref="byte"/> array to copy the memory region to. Its <see cref="Array.Length"/> dictates how many bytes will be copied.</param>
-    public static void ToArray(this nint address, byte[] arr) => Marshal.Copy(address, arr, 0, arr.Length);
+    public static void CopyTo(this nint address, byte[] arr) => Marshal.Copy(address, arr, 0, arr.Length);
+    /// <summary>
+    /// Wraps the specified <paramref name="address"/> in a <see cref="Span{T}"/> of <typeparamref name="T"/> with the specified <paramref name="length"/>.
+    /// </summary>
+    /// <param name="address">The address of the first <see cref="byte"/> to be included in the <see cref="Span{T}"/>.</param>
+    /// <param name="length">The length of the <see cref="Span{T}"/>.</param>
+    /// <returns>The constructed <see cref="Span{T}"/>.</returns>
+    public static Span<T> AsSpan<T>(this nint address, int length)
+        where T : unmanaged
+    {
+        return new Span<T>((void*)address, length);
+    }
 }
