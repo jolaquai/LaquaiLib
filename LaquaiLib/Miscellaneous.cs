@@ -25,7 +25,6 @@ public static class Miscellaneous
     /// <typeparam name="T">The type of the items in the created sqeuence.</typeparam>
     /// <param name="stop">The end of the range.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> as described.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
     public static IEnumerable<T> Range<T>(T stop)
         where T : INumber<T>
         => Range(default, stop, (T)Convert.ChangeType(1, typeof(T)));

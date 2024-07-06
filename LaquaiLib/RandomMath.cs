@@ -44,14 +44,29 @@ public static class RandomMath
             return TInteger.One;
         }
 
-        foreach (var g in Miscellaneous
-            .Range(TInteger.Zero, numbers.Max(), (TInteger)Convert.ChangeType(2, typeof(TInteger)))
-            .Where(g => numbers.Select(n => n % g == TInteger.Zero).All()))
+        foreach (var g in Miscellaneous.Range(numbers.Max(), TInteger.Zero, -TInteger.One)
+            .Where(g => numbers.All(n => n % g == TInteger.Zero)))
         {
             return g;
         }
 
         return TInteger.One;
+    }
+
+    public static TInteger LCM<TInteger>(params TInteger[] numbers)
+        where TInteger : IBinaryInteger<TInteger>
+    {
+        if (numbers.Length == 1)
+        {
+            return numbers[0];
+        }
+        numbers = Array.ConvertAll(numbers, n => n < TInteger.Zero ? -TInteger.One * n : n);
+        if (Array.Exists(numbers, n => n == TInteger.Zero))
+        {
+            return TInteger.Zero;
+        }
+
+        return numbers.Aggregate((a, b) => a * b / GCD(a, b));
     }
 
     /// <summary>

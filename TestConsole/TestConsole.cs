@@ -4,8 +4,10 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+using LaquaiLib;
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
+using LaquaiLib.Util.Threading;
 
 namespace TestConsole;
 
@@ -24,12 +26,26 @@ public partial class TestConsole
             await ActualMain(scope.ServiceProvider);
         }
     }
+    private static void cw<T>(T obj) => Console.WriteLine(obj);
     [STAThread]
     public static async ValueTask ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
 
+        var startedAt = DateTime.Now;
+        var timer = new LinearTimer(_ =>
+        {
+            var timeSince = DateTime.Now - startedAt;
+            cw($"Start at {timeSince}");
 
+            Task.Delay(2600).ConfigureAwait(false).GetAwaiter().GetResult();
+
+            cw("Stop");
+        }, TimeSpan.FromSeconds(1))
+        {
+            QueueCallback = true
+        };
+        timer.Start();
 
         await Task.Delay(-1);
     }

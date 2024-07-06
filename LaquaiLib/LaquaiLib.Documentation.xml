@@ -337,12 +337,37 @@
             Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/>'s previous node does not have a reference to <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> as its next node.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Collections.FilterableEnumerator">
+            <summary>
+            Contains factory and extension methods that create <see cref="T:LaquaiLib.Collections.FilterableEnumerator`1"/> instances.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator.GetEnumerator``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>
+            Creates a <see cref="T:LaquaiLib.Collections.FilterableEnumerator`1"/> that may be used to iterate over only the items that match a given predicate.
+            </summary>
+            <typeparam name="T">The type of the items to iterate over.</typeparam>
+            <param name="items">The items to iterate over.</param>
+            <param name="predicate">The predicate to filter the items by. If <see langword="null"/>, this instance will behave exactly like a regular <see cref="T:System.Collections.Generic.IEnumerator`1"/>.</param>
+            <returns>The created <see cref="T:LaquaiLib.Collections.FilterableEnumerator`1"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Collections.FilterableEnumerator`1">
             <summary>
             Implements an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that iterates over only the items that match a given predicate.
-            This implementation is essentially stateless; all caching is done through the internals of <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            This implementation is stateless; all caching is done through the internals of <see cref="T:System.Collections.Generic.IEnumerable`1"/>, meaning this enumerator may be reused.
             </summary>
             <typeparam name="T">The type of the items to iterate over.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.#ctor">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.FilterableEnumerator`1"/> with no items to iterate over.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.FilterableEnumerator`1"/> that behaves exactly like a regular <see cref="T:System.Collections.Generic.IEnumerator`1"/>.
+            </summary>
+            <param name="items">The items to iterate over.</param>
         </member>
         <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Boolean})">
             <summary>
@@ -350,6 +375,9 @@
             </summary>
             <param name="items">The items to iterate over.</param>
             <param name="predicate">The predicate to filter the items by. If <see langword="null"/>, this instance will behave exactly like a regular <see cref="T:System.Collections.Generic.IEnumerator`1"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.FilterableEnumerator`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Int32,System.Boolean})">
+            <inheritdoc cref="M:LaquaiLib.Collections.FilterableEnumerator`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Boolean})"/>
         </member>
         <member name="P:LaquaiLib.Collections.FilterableEnumerator`1.Current">
             <inheritdoc/>
@@ -916,197 +944,6 @@
             </summary>
             <param name="newContents">The new contents.</param>
         </member>
-        <member name="T:LaquaiLib.Collections.Set`1">
-            <summary>
-            Represents an unsorted collection of unique items.
-            </summary>
-            <typeparam name="T">The type of the items.</typeparam>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.#ctor">
-            <summary>
-            Initializes a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the default equality comparer.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the default equality comparer.
-            </summary>
-            <param name="collection">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> whose items are copied to the new <see cref="T:LaquaiLib.Collections.Set`1"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Initializes a new, empty <see cref="T:LaquaiLib.Collections.Set`1"/> with the specified <paramref name="equalityComparer"/>.
-            </summary>
-            <param name="equalityComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.Set`1"/> with items copied from the specified <paramref name="collection"/> and the specified <paramref name="equalityComparer"/>.
-            </summary>
-            <param name="collection">An <see cref="T:System.Collections.Generic.IEnumerable`1"/> whose items are copied to the new <see cref="T:LaquaiLib.Collections.Set`1"/>.</param>
-            <param name="equalityComparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
-        </member>
-        <member name="P:LaquaiLib.Collections.Set`1.EqualityComparer">
-            <summary>
-            The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> used for equality comparisons.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Collections.Set`1.Count">
-            <summary>
-            The number of items in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Collections.Set`1.IsReadOnly">
-            <summary>
-            Whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is read-only.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Add(`0)">
-            <summary>
-            Attempts to add the specified item to the <see cref="T:LaquaiLib.Collections.Set`1"/>.
-            </summary>
-            <param name="item">The item to add.</param>
-            <returns><see langword="true"/> if the addition was successful (that is, if the <see cref="T:LaquaiLib.Collections.Set`1"/> did not previously contain the item), otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Clear">
-            <summary>
-            Removes all items from the <see cref="T:LaquaiLib.Collections.Set`1"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Contains(`0)">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the specified item.
-            </summary>
-            <param name="item">The item to check for.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the item, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Contains(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the specified item.
-            </summary>
-            <param name="item">The item to check for.</param>
-            <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use for equality comparisons.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the item, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.CopyTo(`0[],System.Int32)">
-            <summary>
-            Copies all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> to the specified <paramref name="array"/>, starting at the specified <paramref name="arrayIndex"/>.
-            </summary>
-            <param name="array">The array to copy the items to.</param>
-            <param name="arrayIndex">The index in the array to start copying at.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.ExceptWith(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Removes all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> that are also in the specified <paramref name="other"/> collection.
-            </summary>
-            <param name="other">The collection of items to remove.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.GetEnumerator">
-            <summary>
-            Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> that may be used to iterate over the items in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
-            The order in which it enumerates the items is undefined.
-            </summary>
-            <returns>The enumerator as described.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.IntersectWith(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Keeps only the items in the <see cref="T:LaquaiLib.Collections.Set`1"/> that are also in the specified <paramref name="other"/> collection.
-            </summary>
-            <param name="other">The collection of items to keep.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper subset of the specified <paramref name="other"/> collection (that is, whether all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> are also in the <paramref name="other"/> collection, but the <paramref name="other"/> collection contains at least one item that is not in the <see cref="T:LaquaiLib.Collections.Set`1"/>).
-            </summary>
-            <param name="other">The collection to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper subset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper superset of the specified <paramref name="other"/> collection (that is, whether all items in the <paramref name="other"/> collection are also in the <see cref="T:LaquaiLib.Collections.Set`1"/>, but the <see cref="T:LaquaiLib.Collections.Set`1"/> contains at least one item that is not in the <paramref name="other"/> collection).
-            </summary>
-            <param name="other">The collection to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a proper superset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a subset of the specified <paramref name="other"/> collection (that is, whether all items in the <see cref="T:LaquaiLib.Collections.Set`1"/> are also in the <paramref name="other"/> collection).
-            </summary>
-            <param name="other">The collection to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a subset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is a superset of the specified <paramref name="other"/> collection (that is, whether all items in the <paramref name="other"/> collection are also in the <see cref="T:LaquaiLib.Collections.Set`1"/>).
-            </summary>
-            <param name="other">The collection to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is a superset of the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> overlaps with the specified <paramref name="other"/> collection (that is, whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains at least one item that is also in the <paramref name="other"/> collection).
-            </summary>
-            <param name="other">The collection to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> overlaps with the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Remove(`0)">
-            <summary>
-            Removes the specified item from the <see cref="T:LaquaiLib.Collections.Set`1"/>.
-            </summary>
-            <param name="item">The item to remove.</param>
-            <returns><see langword="true"/> if the removal was successful (that is, if the <see cref="T:LaquaiLib.Collections.Set`1"/> contained the item), otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Determines whether the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the specified <paramref name="other"/> collection (that is, whether the <see cref="T:LaquaiLib.Collections.Set`1"/> contains the same items as the <paramref name="other"/> collection).
-            </summary>
-            <param name="other">The collection to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.SymmetricExceptWith(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Removes all items from the <see cref="T:LaquaiLib.Collections.Set`1"/> that are also in the specified <paramref name="other"/> collection, and adds all items from the <paramref name="other"/> collection that are not already in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
-            </summary>
-            <param name="other">The collection of items to operate on.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.UnionWith(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Adds all items from the specified <paramref name="other"/> collection to the <see cref="T:LaquaiLib.Collections.Set`1"/> that are not already in the <see cref="T:LaquaiLib.Collections.Set`1"/>.
-            </summary>
-            <param name="other">The collection of items to add.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.ToFrozenSet">
-            <summary>
-            Freezes the set into a <see cref="T:System.Collections.Frozen.FrozenSet`1"/>.
-            </summary>
-            <returns>The frozen set.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.ToSortedSet">
-            <summary>
-            Creates a <see cref="T:System.Collections.Generic.SortedSet`1"/> from the <see cref="T:LaquaiLib.Collections.Set`1"/> using the default comparer for <typeparamref name="T"/>.
-            </summary>
-            <returns>The created <see cref="T:System.Collections.Generic.SortedSet`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.ToImmutableSortedSet">
-            <summary>
-            Creates an <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/> from the <see cref="T:LaquaiLib.Collections.Set`1"/>
-            </summary>
-            <returns>The created <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Equals(LaquaiLib.Collections.Set{`0})">
-            <summary>
-            Compares the <see cref="T:LaquaiLib.Collections.Set`1"/> to the specified <paramref name="other"/> <see cref="T:LaquaiLib.Collections.Set`1"/> for equality.
-            </summary>
-            <param name="other">The <see cref="T:LaquaiLib.Collections.Set`1"/> to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the <paramref name="other"/> <see cref="T:LaquaiLib.Collections.Set`1"/>, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.Set`1.Equals(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Compares the <see cref="T:LaquaiLib.Collections.Set`1"/> to the specified <paramref name="other"/> collection for equality.
-            </summary>
-            <param name="other">The collection to compare to.</param>
-            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Collections.Set`1"/> is equal to the <paramref name="other"/> collection, otherwise <see langword="false"/>.</returns>
-        </member>
         <member name="T:LaquaiLib.Collections.TwoWayLookup`2">
             <summary>
             Represents a two-way lookup table where entries can be looked up by either key or value and are guaranteed to be unique.
@@ -1144,18 +981,15 @@
             <param name="value">The value of the entry.</param>
             <returns><see langword="true"/> if the key-value pair could be added, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Collections.TwoWayLookup`2.Add``2(``0,``1)">
+        <member name="M:LaquaiLib.Collections.TwoWayLookup`2.Add(`0,`1)">
             <summary>
-            Adds a new entry to the lookup table. An exception is thrown if either the key or the value already exists or if the type parameters do not match <typeparamref name="T1"/> and <typeparamref name="T2"/>.
+            Adds a new entry to the lookup table.
             </summary>
-            <typeparam name="TFirst">The type of the key.</typeparam>
-            <typeparam name="TSecond">The type of the value.</typeparam>
             <param name="key">The key of the entry.</param>
             <param name="value">The value of the entry.</param>
-            <remarks>For the love of all things holy, avoid using this method. The 9000 generic type parameters make it a nightmare to use and slow as all hell. Additionally, it's incredibly inefficient because values of the generic types of this method cannot be directly cast to the generic types of the <see cref="T:LaquaiLib.Collections.TwoWayLookup`2"/>.</remarks>
-            <exception cref="T:System.ArgumentException">Thrown if the types <typeparamref name="TFirst"/> and <typeparamref name="TSecond"/> do not match the <see cref="T:LaquaiLib.Collections.TwoWayLookup`2"/>'s type parameters in any order.</exception>
-            <exception cref="T:System.ArgumentException">Thrown if the type <typeparamref name="TFirst"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
-            <exception cref="T:System.ArgumentException">Thrown if the type <typeparamref name="TSecond"/> matches both <typeparamref name="T1"/> and <typeparamref name="T2"/>, but the latter are different types.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.TwoWayLookup`2.Add(`1,`0)">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Collections.TwoWayLookup`2.TryAdd``2(``0,``1)">
             <summary>
@@ -1222,6 +1056,11 @@
             </summary>
             <param name="value">The value of the entry.</param>
             <returns><see langword="true"/> if there was a key associated with the value that could be removed, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.TwoWayLookup`2.Clear">
+            <summary>
+            Removes all entries from the lookup table.
+            </summary>
         </member>
         <member name="M:LaquaiLib.Collections.TwoWayLookup`2.GetEnumerator">
             <summary>
@@ -1589,6 +1428,14 @@
             <param name="name">A relative directory path to search for under the directory represented by <paramref name="di"/>.</param>
             <returns>A <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/> if it exists, otherwise <see langword="null"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.Directory(System.IO.DirectoryInfo,System.String[])">
+            <summary>
+            Creates a new <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by a path consisting of subdirectory <paramref name="names"/> if it exists, otherwise returns <see langword="null"/>.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by a path consisting of subdirectory <paramref name="names"/> if it exists, otherwise <see langword="null"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.MakeDirectory(System.IO.DirectoryInfo,System.String)">
             <summary>
             Creates a new <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/>, creating the entire directory structure it does not exist.
@@ -1596,6 +1443,14 @@
             <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
             <param name="name">A relative directory path to search for under the directory represented by <paramref name="di"/>.</param>
             <returns>A <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.MakeDirectory(System.IO.DirectoryInfo,System.String[])">
+            <summary>
+            Creates a new <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by a path consisting of subdirectory <paramref name="names"/>, creating the entire directory structure it does not exist.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.DirectoryInfo"/> instance for the subdirectory identified by a path consisting of subdirectory <paramref name="names"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.File(System.IO.DirectoryInfo,System.String)">
             <summary>
@@ -1605,6 +1460,14 @@
             <param name="name">A relative file path to search for under the directory represented by <paramref name="di"/>.</param>
             <returns>A <see cref="T:System.IO.FileInfo"/> instance for the file identified by <paramref name="name"/> if it exists, otherwise <see langword="null"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.File(System.IO.DirectoryInfo,System.String[])">
+            <summary>
+            Creates a <see cref="T:System.IO.FileInfo"/> instance for the file identified by a path consisting of subdirectory <paramref name="names"/> if it exists, otherwise returns <see langword="null"/>.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.FileInfo"/> instance for the file identified by a path consisting of subdirectory <paramref name="names"/> if it exists, otherwise <see langword="null"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.MakeFile(System.IO.DirectoryInfo,System.String)">
             <summary>
             Creates a <see cref="T:System.IO.FileInfo"/> instance for the file identified by <paramref name="name"/>, creating the entire directory structure and the file itself if any part of it does not exist.
@@ -1612,6 +1475,14 @@
             <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
             <param name="name">A relative file path to construct for under the directory represented by <paramref name="di"/>.</param>
             <returns>A <see cref="T:System.IO.FileInfo"/> instance for the file identified by <paramref name="name"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DirectoryInfoExtensions.MakeFile(System.IO.DirectoryInfo,System.String[])">
+            <summary>
+            Creates a <see cref="T:System.IO.FileInfo"/> instance for the file identified by a path consisting of subdirectory <paramref name="names"/>, creating the entire directory structure and the file itself if any part of it does not exist.
+            </summary>
+            <param name="di">The <see cref="T:System.IO.DirectoryInfo"/> instance to use as the current directory.</param>
+            <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
+            <returns>A <see cref="T:System.IO.FileInfo"/> instance for the file identified by a path consisting of subdirectory <paramref name="names"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.DispatcherObjectExtensions">
             <summary>
@@ -2146,6 +2017,78 @@
             <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
             <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``0})">
+            <summary>
+            Sorts the elements of a sequence in ascending order according to a key extracted from each element.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+            <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenBy``1(System.Linq.IOrderedEnumerable{``0},System.Func{``0,System.Int32,``0})">
+            <summary>
+            Augments the sort order of a previously sorted sequence according to a key extracted from each element.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+            <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``0})">
+            <summary>
+            Sorts the elements of a sequence in descending order according to a key extracted from each element.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+            <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenByDescending``1(System.Linq.IOrderedEnumerable{``0},System.Func{``0,System.Int32,``0})">
+            <summary>
+            Augments the sort order of a previously sorted sequence according to a key extracted from each element.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+            <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Sorts the elements of a sequence in ascending order according to another sequence that specifies the keys to use for sorting.
+            </summary>
+            <typeparam name="T">The Type of the elements in the sequences.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keys">The sequence that specifies the keys to use for sorting.</param>
+            <returns>The sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenBy``1(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Augments the sort order of a previously sorted sequence using the specified sequence that specifies the keys to use for sorting.
+            </summary>
+            <typeparam name="T">The Type of the elements in the sequences.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keys">The sequence that specifies the keys to use for sorting.</param>
+            <returns>The sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Sorts the elements of a sequence in descending order according to another sequence that specifies the keys to use for sorting.
+            </summary>
+            <typeparam name="T">The Type of the elements in the sequences.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keys">The sequence that specifies the keys to use for sorting.</param>
+            <returns>The sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenByDescending``1(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Augments the sort order of a previously sorted sequence using the specified sequence that specifies the keys to use for sorting.
+            </summary>
+            <typeparam name="T">The Type of the elements in the sequences.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keys">The sequence that specifies the keys to use for sorting.</param>
+            <returns>The sorted input sequence.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableIDisposableExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.IDisposable"/> Type.
@@ -2165,20 +2108,6 @@
             <summary>
             Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> Type.
             </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableTaskExtensions.Start(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
-            <summary>
-            Starts all the tasks in this collection of <see cref="T:System.Threading.Tasks.Task"/>s.
-            </summary>
-            <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
-            <remarks>Note that this does not await any of the <see cref="T:System.Threading.Tasks.Task"/>s, they are merely started. The calling code is expected to await the availability of and process their results.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableTaskExtensions.StartAsync(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
-            <summary>
-            Starts all the tasks in this collection of <see cref="T:System.Threading.Tasks.Task"/>s and returns a <see cref="T:System.Threading.Tasks.Task"/> that represents their completion.
-            </summary>
-            <param name="tasks">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Threading.Tasks.Task"/> that contains the <see cref="T:System.Threading.Tasks.Task"/>s that are to be started.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when all of the <see cref="T:System.Threading.Tasks.Task"/>s in this collection have completed.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumeratorExtensions">
             <summary>
@@ -2633,14 +2562,6 @@
             <summary>
             Provides extension methods for the <see cref="T:System.Span`1"/> Type.
             </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.SpanExtensions.AsReadOnly``1(System.Span{``0})">
-            <summary>
-            Returns  a <see cref="T:System.ReadOnlySpan`1"/> that represents a read-only view of the current <see cref="T:System.Span`1"/> instance.
-            </summary>
-            <typeparam name="T">The type of the elements in <paramref name="span"/>.</typeparam>
-            <param name="span">The <see cref="T:System.Span`1"/> to wrap.</param>
-            <returns>The <see cref="T:System.ReadOnlySpan`1"/> that acts as a read-only view of the current <see cref="T:System.Span`1"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.StreamExtensions">
             <summary>
@@ -3254,12 +3175,20 @@
             <param name="length">The length of the array.</param>
             <returns>The constructed <see cref="T:System.Byte"/> array.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.Unsafe.NintExtensions.ToArray(System.IntPtr,System.Byte[])">
+        <member name="M:LaquaiLib.Extensions.Unsafe.NintExtensions.CopyTo(System.IntPtr,System.Byte[])">
             <summary>
             Copies the contents of the memory region starting at <paramref name="address"/> to the specified <paramref name="arr"/>.
             </summary>
             <param name="address">The address of the first <see cref="T:System.Byte"/> to be copied.</param>
             <param name="arr">The <see cref="T:System.Byte"/> array to copy the memory region to. Its <see cref="P:System.Array.Length"/> dictates how many bytes will be copied.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Unsafe.NintExtensions.AsSpan``1(System.IntPtr,System.Int32)">
+            <summary>
+            Wraps the specified <paramref name="address"/> in a <see cref="T:System.Span`1"/> of <typeparamref name="T"/> with the specified <paramref name="length"/>.
+            </summary>
+            <param name="address">The address of the first <see cref="T:System.Byte"/> to be included in the <see cref="T:System.Span`1"/>.</param>
+            <param name="length">The length of the <see cref="T:System.Span`1"/>.</param>
+            <returns>The constructed <see cref="T:System.Span`1"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.UriExtensions">
             <summary>
@@ -3419,7 +3348,6 @@
             <typeparam name="T">The type of the items in the created sqeuence.</typeparam>
             <param name="stop">The end of the range.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> as described.</returns>
-            <exception cref="T:System.ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
         </member>
         <member name="M:LaquaiLib.Miscellaneous.Range``1(``0,``0,``0)">
             <summary>
@@ -3455,7 +3383,7 @@
             <param name="fn">The function that calculates the output values given the input values.</param>
             <returns>The product of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.RandomMath.GCD``1(System.Int32[])">
+        <member name="M:LaquaiLib.RandomMath.GCD``1(``0[])">
             <summary>
             Determines the greatest common divisor of a series of numbers.
             </summary>
@@ -4914,118 +4842,6 @@
             This method uses <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
             </remarks>
         </member>
-        <member name="T:LaquaiLib.Util.Hotkeys.FsModifiers">
-            <summary>
-            Identifies hotkey modifier keys.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Hotkeys.FsModifiers.Alt">
-            <summary>
-            Any Alt key.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Hotkeys.FsModifiers.Control">
-            <summary>
-            Any Control key.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Hotkeys.FsModifiers.Shift">
-            <summary>
-            Any Shift key.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.Id">
-            <summary>
-            The ID this hotkey was registered to the system with.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.Modifiers">
-            <summary>
-            The modifier keys for this hotkey.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkey.Key">
-            <summary>
-            The key for this hotkey.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Hotkeys.Hotkey.InvokeAsync">
-            <summary>
-            Invokes the <see langword="delegate"/> attached to this <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/>.
-            </summary>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the work done by the <see langword="delegate"/>. This also applies to <see langword="delegate"/>s of type <see cref="T:System.Action"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Util.Hotkeys.Hotkeys">
-            <summary>
-            Contains static methods for managing system-wide (henceforth referred to simply as 'global') hotkeys.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.UsedHotkeySlots">
-            <summary>
-            Gets the number of used hotkey slots.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.FreeHotkeySlots">
-            <summary>
-            Gets the number of free hotkey slots.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.ModifierKeys">
-            <summary>
-            Retrieves the value of the low-order word of <see cref="F:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.lParam"/>.
-            This specifies the modifier keys associated with the pressed hotkey.
-            </summary>
-            <returns>The modifier keys associated with the pressed hotkey.</returns>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.VirtualKeyCode">
-            <summary>
-            Retrieves the value of the high-order word of <see cref="F:LaquaiLib.Util.Hotkeys.Hotkeys.LPMSG.lParam"/>.
-            This specifies the virtual key code of the pressed hotkey.
-            </summary>
-            <returns>The virtual key code of the pressed hotkey.</returns>
-        </member>
-        <member name="P:LaquaiLib.Util.Hotkeys.Hotkeys.ProcessHotkeys">
-            <summary>
-            Controls whether hotkeys are processed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.Start">
-            <summary>
-            Starts processing hotkeys.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.Stop">
-            <summary>
-            Stops processing hotkeys.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.RegisterHotkey(LaquaiLib.Util.Hotkeys.FsModifiers,System.Windows.Forms.Keys,System.Delegate,LaquaiLib.Util.Hotkeys.Hotkey@,System.Nullable{System.IntPtr})">
-            <summary>
-            Registers a global hotkey and begins processing hotkeys if processing has not been explicitly stopped.
-            This generic overload allows must be used when the specified <paramref name="method"/> returns a value.
-            </summary>
-            <param name="fsModifiers">A <see cref="T:LaquaiLib.Util.Hotkeys.FsModifiers"/> value specifying the modifier keys to be associated with the hotkey.</param>
-            <param name="vk">The virtual key code to be associated with the hotkey.</param>
-            <param name="method">A <see cref="T:System.Delegate"/> representing the method to be invoked when the hotkey is pressed. Must be castable to either <see cref="T:System.Action"/> or a <see cref="T:System.Threading.Tasks.Task"/>-returning <see cref="T:System.Func`1"/>, otherwise an <see cref="T:System.ArgumentException"/> is thrown. Such an asynchronous <see langword="delegate"/> is <see langword="await"/>ed appropriately upon invocation.</param>
-            <param name="hotkey">An <see langword="out"/> variable that receives the created <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> instance if the registration is successful.</param>
-            <param name="hWnd">The handle of the window that the hotkey is registered to. If set to <see langword="null"/> or equivalent <see cref="F:System.IntPtr.Zero"/>, efforts are made to determine the best window handle to use.</param>
-            <returns>The result of the registration attempt.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.UnregisterHotkey(System.Int32,LaquaiLib.Util.Hotkeys.Hotkey)">
-            <summary>
-            Unregisters a global hotkey.
-            </summary>
-            <param name="id">The ID of the hotkey to be unregistered.</param>
-            <param name="hotkey">The <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> to be unregistered. This should not be specified if consuming code stores its <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> instances by ID.</param>
-            <returns>The result of the unregistration attempt.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Hotkeys.Hotkeys.UnregisterHotkey(LaquaiLib.Util.Hotkeys.Hotkey)">
-            <summary>
-            Unregisters a global hotkey.
-            </summary>
-            <param name="hotkey">The <see cref="T:LaquaiLib.Util.Hotkeys.Hotkey"/> to be unregistered.</param>
-            <returns>The result of the unregistration attempt.</returns>
-        </member>
         <member name="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler">
             <summary>
             Represents a <see cref="T:System.Threading.Tasks.TaskScheduler"/> implementation that limits the amount of <see cref="T:System.Threading.Tasks.Task"/>s that run concurrently at any given time.
@@ -5971,6 +5787,107 @@
         <member name="P:LaquaiLib.Util.TaskbarProgress.Value">
             <summary>
             Gets or sets the current value of the taskbar progress bar.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Threading.LinearTimer">
+            <summary>
+            Implements a timer that periodically invokes a callback while guaranteeing that no two invocations of that callback overlap.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LinearTimer.QueueCallback">
+            <summary>
+            Gets or sets whether the callback should be queued for immediate invocation if the timer ticks while the callback is still running.
+            If <see langword="false"/>, the callback will only be invoked after the previous invocation has completed and the timer ticks again. Invocations then occur only at multiples of <see cref="P:LaquaiLib.Util.Threading.LinearTimer.Interval"/>. The default is <see langword="false"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LinearTimer.State">
+            <summary>
+            Gets or sets the state object that is passed to the callback when it is invoked.
+            May be freely changed, even while the timer is running, with changes being reflected upon the next invocation of the callback.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LinearTimer.Interval">
+            <summary>
+            Gets or sets the minimal interval between invocations of the callback.
+            Assigning this will stop the timer.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LinearTimer.WaitOnStart">
+            <summary>
+            Gets or sets the delay before the first invocation of the callback when the timer is started.
+            Assigning this will stop the timer.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LinearTimer.Callback">
+            <summary>
+            Gets or sets the callback method to invoke periodically.
+            Assigning this will stop the timer.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.TimeSpan)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified interval and an initial delay equal to that interval.
+            </summary>
+            <param name="interval">A <see cref="T:System.TimeSpan"/> instance that represents the interval between invocations of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified interval and initial delay.
+            </summary>
+            <param name="interval">A <see cref="T:System.TimeSpan"/> instance that represents the interval between invocations of the callback.</param>
+            <param name="waitOnStart">A <see cref="T:System.TimeSpan"/> instance that represents the delay before the first invocation of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.Int64)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified interval and an initial delay equal to that interval.
+            </summary>
+            <param name="milliseconds">The number of milliseconds that represents the interval between invocations of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.Int64,System.Int64)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified interval and initial delay.
+            </summary>
+            <param name="milliseconds">The number of milliseconds that represents the interval between invocations of the callback.</param>
+            <param name="waitOnStart">The number of milliseconds that represents the delay before the first invocation of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.Action{System.Object},System.TimeSpan)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified callback method, interval and an initial delay equal to that interval.
+            </summary>
+            <param name="callback">The callback method to invoke periodically.</param>
+            <param name="interval">A <see cref="T:System.TimeSpan"/> instance that represents the interval between invocations of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.Action{System.Object},System.TimeSpan,System.TimeSpan)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified interval and initial delay.
+            </summary>
+            <param name="callback">The callback method to invoke periodically.</param>
+            <param name="interval">A <see cref="T:System.TimeSpan"/> instance that represents the interval between invocations of the callback.</param>
+            <param name="waitOnStart">A <see cref="T:System.TimeSpan"/> instance that represents the delay before the first invocation of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.Action{System.Object},System.Int64)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified interval and an initial delay equal to that interval.
+            </summary>
+            <param name="callback">The callback method to invoke periodically.</param>
+            <param name="milliseconds">The number of milliseconds that represents the interval between invocations of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.#ctor(System.Action{System.Object},System.Int64,System.Int64)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LinearTimer"/> with the specified interval and initial delay.
+            </summary>
+            <param name="callback">The callback method to invoke periodically.</param>
+            <param name="milliseconds">The number of milliseconds that represents the interval between invocations of the callback.</param>
+            <param name="waitOnStart">The number of milliseconds that represents the delay before the first invocation of the callback.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.Start">
+            <summary>
+            Begins invoking the callback periodically.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LinearTimer.Stop">
+            <summary>
+            Stops invoking the callback periodically.
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.ThrowHelper">
