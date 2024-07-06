@@ -32,20 +32,7 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        var startedAt = DateTime.Now;
-        var timer = new LinearTimer(_ =>
-        {
-            var timeSince = DateTime.Now - startedAt;
-            cw($"Start at {timeSince}");
-
-            Task.Delay(2600).ConfigureAwait(false).GetAwaiter().GetResult();
-
-            cw("Stop");
-        }, TimeSpan.FromSeconds(1))
-        {
-            QueueCallback = true
-        };
-        timer.Start();
+        // Things
 
         await Task.Delay(-1);
     }

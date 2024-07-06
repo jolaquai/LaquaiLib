@@ -1113,24 +1113,16 @@
             <param name="source">The input object.</param>
             <returns><see langword="true"/> if <paramref name="source"/> is <see langword="null"/>, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.AnyExtensions.CreateObservable``1(``0)">
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.With``1(``0,System.Action{``0})">
             <summary>
-            Creates a new <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from the given value by cloning <paramref name="value"/>. As such, <typeparamref name="T"/> must implement <see cref="T:System.ICloneable"/>.
+            Invokes an <paramref name="action"/> that is passed the <paramref name="source"/> object.
             </summary>
-            <typeparam name="T">The Type of the value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</typeparam>
-            <param name="value">The value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</param>
-            <returns>An <see cref="T:LaquaiLib.Util.ObservableValue`1"/> wrapping a copy of the given value.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.AnyExtensions.AsObservable``1(``0)">
-            <summary>
-            Creates a new <see cref="T:LaquaiLib.Util.ObservableValue`1"/> as a wrapper around the given value.
-            </summary>
-            <typeparam name="T">The Type of the value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</typeparam>
-            <param name="value">The value to create an <see cref="T:LaquaiLib.Util.ObservableValue`1"/> from.</param>
-            <returns>An <see cref="T:LaquaiLib.Util.ObservableValue`1"/> wrapping the given value.</returns>
+            <typeparam name="T">The Type of the object to execute the <paramref name="action"/> on.</typeparam>
+            <param name="source">The object to execute the <paramref name="action"/> on.</param>
+            <param name="action">The action to execute on the <paramref name="source"/> object.</param>
+            <returns>A reference to <paramref name="source"/> itself after <paramref name="action"/> has returned.</returns>
             <remarks>
-            If <typeparamref name="T"/> is a <see langword="struct"/>, this method behaves like <see cref="M:LaquaiLib.Extensions.AnyExtensions.CreateObservable``1(``0)"/>.
-            If <typeparamref name="T"/> is a <see langword="class"/>, <paramref name="value"/> is referenced instead.
+            While not tremendously useful, this method can be used to effectively limit variable scopes or chain calls to the same object like when using a builder pattern.
             </remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensions">
@@ -1801,7 +1793,8 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetRange``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
             <summary>
-            Extracts a range of elements from this collection. This enumerates the entire collection.
+            Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
+            If <paramref name="source"/> is not indexable, the entire sequence is enumerated.
             </summary>
             <typeparam name="T">The Type of the elements in the collection.</typeparam>
             <param name="source">The collection to extract elements from.</param>
@@ -1827,7 +1820,7 @@
             <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
             <remarks>Basically just another <see cref="M:System.Linq.Enumerable.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1})"/> overload that... actually makes sense.</remarks>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ModeBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ModeBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
             <summary>
             Determines the mode of a sequence of values from a given key extracted from each value; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
             </summary>
@@ -1838,7 +1831,7 @@
             <returns>The mode of <paramref name="source"/>.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Mode``1(System.Collections.Generic.IEnumerable{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Mode``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
             <summary>
             Determines the mode of a sequence of values; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
             </summary>
@@ -2640,6 +2633,16 @@
             <param name="recurse"><see langword="true"/> to not skip the substring produced by <paramref name="replaceFactory"/> calls when searching for the next occurrence of <paramref name="search"/>. <b>If <paramref name="replaceFactory"/> always returns strings containing <paramref name="search"/>, this will result in an infinite loop.</b> Defaults to <see langword="false"/> for this very reason.</param>
             <returns>The string with replacements as described.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.Replace(System.String,System.String,System.Func{System.String,System.String},System.Boolean)">
+            <summary>
+            Creates a new string from this string with all occurrences <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
+            </summary>
+            <param name="source">The string to perform replacements in.</param>
+            <param name="search">The string to search for in <paramref name="source"/>.</param>
+            <param name="replaceFactory">A <see cref="T:System.Func`1"/> that produces the replacement for occurrences of <paramref name="search"/>. It is called once for each occurrence of <paramref name="search"/> and passed the previous iteration's produced replacement or <see langword="null"/> on the first invocation.</param>
+            <param name="recurse"><see langword="true"/> to not skip the substring produced by <paramref name="replaceFactory"/> calls when searching for the next occurrence of <paramref name="search"/>. <b>If <paramref name="replaceFactory"/> always returns strings containing <paramref name="search"/>, this will result in an infinite loop.</b> Defaults to <see langword="false"/> for this very reason.</param>
+            <returns>The string with replacements as described.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.TryReplace(System.String,System.String,System.String,System.String@,System.StringComparison)">
             <summary>
             Replaces all occurrences of the specified <paramref name="search"/> <see langword="string"/> with the specified <paramref name="replacement"/> <see langword="string"/> using the specified <paramref name="stringComparison"/> and returns whether the replacement resulted in a change to the original string.
@@ -2650,22 +2653,6 @@
             <param name="replaced">An <see langword="out"/> variable that receives the result of the replacement. It is assigned the result of the <see cref="M:System.String.Replace(System.String,System.String,System.StringComparison)"/> call regardless of whether this results in a change.</param>
             <param name="stringComparison">The <see cref="T:System.StringComparison"/> to use for the replacement <b>and</b> the comparison of the original and replaced strings. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
             <returns><see langword="true"/> if the replace operation resulted in a change to the original string, <see langword="false"/> otherwise.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.Match(System.String,System.String)">
-            <summary>
-            Searches the specified input string for occurrences of a specified regex pattern.
-            </summary>
-            <param name="source">The <see cref="T:System.String"/> to search.</param>
-            <param name="pattern">The pattern to search for.</param>
-            <returns>The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> instance returned by <see cref="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)"/></returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.Match(System.String,System.Text.RegularExpressions.Regex)">
-            <summary>
-            Searches the specified input string for occurrences of a specified regex pattern represented by a <see cref="T:System.Text.RegularExpressions.Regex"/> instance.
-            </summary>
-            <param name="source">The <see cref="T:System.String"/> to search.</param>
-            <param name="regex">The pattern to search for.</param>
-            <returns>The <see cref="T:System.Text.RegularExpressions.MatchCollection"/> instance returned by <see cref="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)"/></returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.ReplaceExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
             <summary>
@@ -4842,42 +4829,6 @@
             This method uses <see cref="T:LaquaiLib.Util.FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
             </remarks>
         </member>
-        <member name="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler">
-            <summary>
-            Represents a <see cref="T:System.Threading.Tasks.TaskScheduler"/> implementation that limits the amount of <see cref="T:System.Threading.Tasks.Task"/>s that run concurrently at any given time.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.Default">
-            <summary>
-            Returns an instance of <see cref="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler"/> that is configured to allow a maximum of <see cref="P:System.Environment.ProcessorCount"/> <see cref="T:System.Threading.Tasks.Task"/>s to run concurrently.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TaskFactory">
-            <summary>
-            Returns an instance of <see cref="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TaskFactory"/> that is configured to use <see cref="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.Default"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.#ctor(System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.LimitedConcurrencyTaskScheduler"/> with the specified maximum degree of parallelism.
-            </summary>
-            <param name="maxDegreeOfParallelism">The maximum number of <see cref="T:System.Threading.Tasks.Task"/>s that are allowed to run concurrently.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.TryDequeue(System.Threading.Tasks.Task)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.GetScheduledTasks">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Util.LimitedConcurrencyTaskScheduler.MaximumConcurrencyLevel">
-            <inheritdoc/>
-        </member>
         <member name="T:LaquaiLib.Util.Logging.AsyncLogger">
             <summary>
             Represents a logger that writes messages to the <see cref="T:System.Console"/> in a separate thread to avoid blocking operations on the main thread. This type self-initializes when it is first used, that is, when the first message is queued. Before that, the background thread is not running.
@@ -5788,6 +5739,42 @@
             <summary>
             Gets or sets the current value of the taskbar progress bar.
             </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler">
+            <summary>
+            Implements a <see cref="T:System.Threading.Tasks.TaskScheduler"/> that limits the amount of <see cref="T:System.Threading.Tasks.Task"/>s that run concurrently at any given time.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.Default">
+            <summary>
+            Returns an instance of <see cref="T:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler"/> that is configured to allow a maximum of <see cref="P:System.Environment.ProcessorCount"/> <see cref="T:System.Threading.Tasks.Task"/>s to run concurrently.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.TaskFactory">
+            <summary>
+            Returns an instance of <see cref="P:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.TaskFactory"/> that is configured to use <see cref="P:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.Default"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.#ctor(System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler"/> with the specified maximum degree of parallelism.
+            </summary>
+            <param name="maxDegreeOfParallelism">The maximum number of <see cref="T:System.Threading.Tasks.Task"/>s that are allowed to run concurrently.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.TryDequeue(System.Threading.Tasks.Task)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.GetScheduledTasks">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Util.Threading.LimitedConcurrencyTaskScheduler.MaximumConcurrencyLevel">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.Threading.LinearTimer">
             <summary>

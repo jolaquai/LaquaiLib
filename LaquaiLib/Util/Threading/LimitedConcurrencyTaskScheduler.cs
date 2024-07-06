@@ -1,10 +1,10 @@
 
 using System.Collections.Concurrent;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Util.Threading;
 
 /// <summary>
-/// Represents a <see cref="TaskScheduler"/> implementation that limits the amount of <see cref="Task"/>s that run concurrently at any given time.
+/// Implements a <see cref="TaskScheduler"/> that limits the amount of <see cref="Task"/>s that run concurrently at any given time.
 /// </summary>
 public class LimitedConcurrencyTaskScheduler : TaskScheduler
 {

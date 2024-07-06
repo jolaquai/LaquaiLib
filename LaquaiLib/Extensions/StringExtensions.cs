@@ -59,6 +59,31 @@ public static class StringExtensions
         return source;
     }
     /// <summary>
+    /// Creates a new string from this string with all occurrences <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
+    /// </summary>
+    /// <param name="source">The string to perform replacements in.</param>
+    /// <param name="search">The string to search for in <paramref name="source"/>.</param>
+    /// <param name="replaceFactory">A <see cref="Func{TResult}"/> that produces the replacement for occurrences of <paramref name="search"/>. It is called once for each occurrence of <paramref name="search"/> and passed the previous iteration's produced replacement or <see langword="null"/> on the first invocation.</param>
+    /// <param name="recurse"><see langword="true"/> to not skip the substring produced by <paramref name="replaceFactory"/> calls when searching for the next occurrence of <paramref name="search"/>. <b>If <paramref name="replaceFactory"/> always returns strings containing <paramref name="search"/>, this will result in an infinite loop.</b> Defaults to <see langword="false"/> for this very reason.</param>
+    /// <returns>The string with replacements as described.</returns>
+    public static string Replace(this string source, string search, Func<string?, string> replaceFactory, bool recurse = false)
+    {
+        var index = source.IndexOf(search);
+        var searchLen = search.Length;
+        string lastReplacement = null;
+        while (index > -1)
+        {
+            lastReplacement = replaceFactory(lastReplacement);
+            source = source.Remove(index, searchLen).Insert(index, lastReplacement);
+            if (!recurse)
+            {
+                index += lastReplacement.Length;
+            }
+            index = source.IndexOf(search, index);
+        }
+        return source;
+    }
+    /// <summary>
     /// Replaces all occurrences of the specified <paramref name="search"/> <see langword="string"/> with the specified <paramref name="replacement"/> <see langword="string"/> using the specified <paramref name="stringComparison"/> and returns whether the replacement resulted in a change to the original string.
     /// </summary>
     /// <param name="source">The <see langword="string"/> to search.</param>
@@ -72,21 +97,6 @@ public static class StringExtensions
         replaced = source.Replace(search, replacement, stringComparison);
         return replaced.Equals(source, stringComparison);
     }
-
-    /// <summary>
-    /// Searches the specified input string for occurrences of a specified regex pattern.
-    /// </summary>
-    /// <param name="source">The <see cref="string"/> to search.</param>
-    /// <param name="pattern">The pattern to search for.</param>
-    /// <returns>The <see cref="MatchCollection"/> instance returned by <see cref="Regex.Matches(string, string)"/></returns>
-    public static MatchCollection Match(this string source, string pattern) => Regex.Matches(source, pattern);
-    /// <summary>
-    /// Searches the specified input string for occurrences of a specified regex pattern represented by a <see cref="Regex"/> instance.
-    /// </summary>
-    /// <param name="source">The <see cref="string"/> to search.</param>
-    /// <param name="regex">The pattern to search for.</param>
-    /// <returns>The <see cref="MatchCollection"/> instance returned by <see cref="Regex.Matches(string, string)"/></returns>
-    public static MatchCollection Match(this string source, Regex regex) => regex.Matches(source);
 
     /// <summary>
     /// Creates a new string from this string with all occurrences of any string that is not contained in <paramref name="except"/> replaced with <paramref name="replace"/>.

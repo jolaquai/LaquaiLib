@@ -1,3 +1,5 @@
+using System.Diagnostics.Tracing;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -12,7 +14,6 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains each element in the input sequence.</returns>
     public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source;
-
     /// <summary>
     /// Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
     /// </summary>
@@ -31,7 +32,6 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(Random.Shared);
-
     /// <summary>
     /// Shuffles the elements in the input sequence, using a specified <see cref="Random"/> instance.
     /// </summary>
@@ -39,7 +39,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <param name="random">The <see cref="Random"/> instance to use for shuffling.</param>
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) => source.OrderBy(item => random.Next());
+    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) => source.OrderBy(_ => random.Next());
 
     /// <summary>
     /// Performs the specified <paramref name="action"/> on each element of the source collection.
@@ -54,7 +54,6 @@ public static partial class IEnumerableExtensions
             action(element);
         }
     }
-
     /// <summary>
     /// Performs the specified <paramref name="action"/> on each element of the source collection, incorporating each element's index in the <see cref="Action{T1, T2}"/>.
     /// </summary>
@@ -71,12 +70,28 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Extracts a range of elements from this collection. This enumerates the entire collection.
+    /// Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
+    /// If <paramref name="source"/> is not indexable, the entire sequence is enumerated.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
     /// <param name="source">The collection to extract elements from.</param>
     /// <param name="range">A <see cref="Range"/> instance that indicates where the items to be extracted are located in the <paramref name="source"/>.</param>
-    public static T[] GetRange<T>(this IEnumerable<T> source, Range range) => source.ToArray()[range];
+    public static IEnumerable<T> GetRange<T>(this IEnumerable<T> source, Range range)
+    {
+        if (source is IReadOnlyList<T> rol)
+        {
+            var (start, length) = range.GetOffsetAndLength(rol.Count);
+            IEnumerable<T> GetRangeImpl()
+            {
+                for (var i = start; i < start + length; i++)
+                {
+                    yield return rol[i];
+                }
+            }
+            return GetRangeImpl();
+        }
+        return source.ToArray()[range];
+    }
 
     /// <summary>
     /// Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
@@ -126,20 +141,11 @@ public static partial class IEnumerableExtensions
     }
 
     #region Mode
-    private class ModeModel<TSource, TSelect>
+    private struct ModeModel<TSource, TSelect>
     {
-        public required TSource OriginalValue
-        {
-            get; set;
-        }
-        public required TSelect SelectedValue
-        {
-            get; set;
-        }
-        public int CountBySelect
-        {
-            get; set;
-        }
+        public readonly TSource OriginalValue;
+        public readonly TSelect SelectedValue;
+        public int CountBySelect;
     }
 
     /// <summary>
@@ -151,9 +157,10 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of <paramref name="source"/> and produces a value that is used to determine the mode of <paramref name="source"/>.</param>
     /// <returns>The mode of <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
-    public static TSource ModeBy<TSource, TSelect>(this IEnumerable<TSource> source, Func<TSource, TSelect> selector)
+    public static TSource ModeBy<TSource, TSelect>(this IEnumerable<TSource> source, Func<TSource, TSelect> selector, IEqualityComparer<TSelect> equalityComparer = null)
     {
         ArgumentNullException.ThrowIfNull(source);
+        equalityComparer ??= EqualityComparer<TSelect>.Default;
 
         if (selector is null)
         {
@@ -161,34 +168,14 @@ public static partial class IEnumerableExtensions
         }
 
         var enumerated = source as TSource[] ?? source.ToArray();
-
         if (enumerated.Length != 0)
         {
-            throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source));
+            return default;
         }
+        var converted = enumerated.Select(selector).ToArray();
 
-        var models = new List<ModeModel<TSource, TSelect>>();
-
-        foreach (var item in source)
-        {
-            var selected = selector(item);
-            var model = models.Find(m => m.SelectedValue.Equals(selected));
-            if (model is null)
-            {
-                models.Add(new ModeModel<TSource, TSelect>
-                {
-                    OriginalValue = item,
-                    SelectedValue = selected,
-                    CountBySelect = 1
-                });
-            }
-            else
-            {
-                model.CountBySelect++;
-            }
-        }
-
-        return models.OrderByDescending(m => m.CountBySelect).First().OriginalValue;
+        var i = 0;
+        return source.MaxBy(_ => converted.Count(item2 => equalityComparer.Equals(item2, converted[i++])));
     }
 
     /// <summary>
@@ -198,18 +185,13 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The sequence of values to determine the mode of.</param>
     /// <returns>The mode of <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
-    public static T Mode<T>(this IEnumerable<T> source)
+    public static T Mode<T>(this IEnumerable<T> source, IEqualityComparer<T> equalityComparer = null)
     {
-        ArgumentNullException.ThrowIfNull(source, nameof(source));
+        ArgumentNullException.ThrowIfNull(source);
+        equalityComparer ??= EqualityComparer<T>.Default;
 
         var enumerated = source as T[] ?? source.ToArray();
-        return enumerated.Length == 0
-            ? throw new ArgumentException("Cannot determine the mode of an empty sequence.", nameof(source))
-            : enumerated.Select(item => (Item: item,
-                                            Count: source.Count(i => i.Equals(item))))
-                         .OrderByDescending(kvp => kvp.Count)
-                         .First()
-                         .Item;
+        return enumerated.Length == 0 ? default : enumerated.MaxBy(item => source.Count(item2 => equalityComparer.Equals(item, item2)));
     }
     #endregion
 

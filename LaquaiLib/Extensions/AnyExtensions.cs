@@ -37,7 +37,6 @@ public static class AnyExtensions
         }
         return true;
     }
-
     /// <summary>
     /// Invokes a <paramref name="transform"/> function on a <paramref name="source"/> and any <paramref name="other"/> objects and checks whether the results are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>. In this case, <paramref name="transform"/> is never invoked.
     /// </summary>
@@ -79,21 +78,18 @@ public static class AnyExtensions
     public static bool IsNull<T>([NotNullWhen(false)] this T source) => source is null;
 
     /// <summary>
-    /// Creates a new <see cref="ObservableValue{T}"/> from the given value by cloning <paramref name="value"/>. As such, <typeparamref name="T"/> must implement <see cref="ICloneable"/>.
+    /// Invokes an <paramref name="action"/> that is passed the <paramref name="source"/> object.
     /// </summary>
-    /// <typeparam name="T">The Type of the value to create an <see cref="ObservableValue{T}"/> from.</typeparam>
-    /// <param name="value">The value to create an <see cref="ObservableValue{T}"/> from.</param>
-    /// <returns>An <see cref="ObservableValue{T}"/> wrapping a copy of the given value.</returns>
-    public static ObservableValue<T> CreateObservable<T>(this T value) where T : ICloneable => new ObservableValue<T>((T)value.Clone());
-    /// <summary>
-    /// Creates a new <see cref="ObservableValue{T}"/> as a wrapper around the given value.
-    /// </summary>
-    /// <typeparam name="T">The Type of the value to create an <see cref="ObservableValue{T}"/> from.</typeparam>
-    /// <param name="value">The value to create an <see cref="ObservableValue{T}"/> from.</param>
-    /// <returns>An <see cref="ObservableValue{T}"/> wrapping the given value.</returns>
+    /// <typeparam name="T">The Type of the object to execute the <paramref name="action"/> on.</typeparam>
+    /// <param name="source">The object to execute the <paramref name="action"/> on.</param>
+    /// <param name="action">The action to execute on the <paramref name="source"/> object.</param>
+    /// <returns>A reference to <paramref name="source"/> itself after <paramref name="action"/> has returned.</returns>
     /// <remarks>
-    /// If <typeparamref name="T"/> is a <see langword="struct"/>, this method behaves like <see cref="CreateObservable{T}(T)"/>.
-    /// If <typeparamref name="T"/> is a <see langword="class"/>, <paramref name="value"/> is referenced instead.
+    /// While not tremendously useful, this method can be used to effectively limit variable scopes or chain calls to the same object like when using a builder pattern.
     /// </remarks>
-    public static ObservableValue<T> AsObservable<T>(this T value) => new ObservableValue<T>(value);
+    public static T With<T>(this T source, Action<T> action)
+    {
+        action(source);
+        return source;
+    }
 }
