@@ -23,6 +23,23 @@ public static partial class IEnumerableExtensions
     public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(item => item);
 
     /// <summary>
+    /// Halves the input sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>A <see cref="ValueTuple{T1, T2}"/> that contains the two halves of the input sequence.</returns>
+    public static (T[] First, T[] Second) Halve<T>(this IEnumerable<T> source)
+    {
+        var enumerated = source.ToArray();
+        if (enumerated.Length is <= 1)
+        {
+            throw new ArgumentException("The input sequence must contain at least two elements.", nameof(source));
+        }
+        var half = enumerated.Length / 2;
+        return (enumerated[..half], enumerated[half..]);
+    }
+
+    /// <summary>
     /// Shuffles the elements in the input sequence.
     /// </summary>
     /// <remarks>
@@ -40,6 +57,50 @@ public static partial class IEnumerableExtensions
     /// <param name="random">The <see cref="Random"/> instance to use for shuffling.</param>
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) => source.OrderBy(_ => random.Next());
+    /// <summary>
+    /// Performs a Ruffle operation on the input sequence; that is, the sequence is halved, then the individual items are interlaced.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>The sequence after the operation has been performed.</returns>
+    public static IEnumerable<T> Ruffle<T>(this IEnumerable<T> source)
+    {
+        var (first, second) = source.Halve();
+        var ruffled = Interlace(first, second);
+        return ruffled;
+    }
+
+    /// <summary>
+    /// Interlaces the items of the specified sequences.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequences.</typeparam>
+    /// <param name="first">The first sequence to interlace.</param>
+    /// <param name="second">The second sequence to interlace.</param>
+    /// <returns>A single sequence that contains the elements of both input sequences, interlaced.</returns>
+    public static IEnumerable<T> Interlace<T>(this IEnumerable<T> first, IEnumerable<T> second)
+    {
+        using (var enumerator1 = first.GetEnumerator())
+        using (var enumerator2 = second.GetEnumerator())
+        {
+            var hasNext1 = enumerator1.MoveNext();
+            var hasNext2 = enumerator2.MoveNext();
+
+            while (hasNext1 || hasNext2)
+            {
+                if (hasNext1)
+                {
+                    yield return enumerator1.Current;
+                    hasNext1 = enumerator1.MoveNext();
+                }
+
+                if (hasNext2)
+                {
+                    yield return enumerator2.Current;
+                    hasNext2 = enumerator2.MoveNext();
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// Performs the specified <paramref name="action"/> on each element of the source collection.
@@ -68,6 +129,9 @@ public static partial class IEnumerableExtensions
             action(element, c++);
         }
     }
+    /// <summary>
+    /// Represents the state of a single iteration in a loop construct. This has no functionality and is used solely to support the iterator pattern.
+    /// </summary>
 
     /// <summary>
     /// Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
@@ -207,7 +271,6 @@ public static partial class IEnumerableExtensions
         var enumerated = source.Shuffle().ToArray();
         return enumerated[..(itemCount > 0 ? itemCount : enumerated.Length / 100)];
     }
-
     /// <summary>
     /// Samples a specified number of elements from the input sequence, ensuring that the sampled elements remain in the same order as they were in the input sequence.
     /// </summary>

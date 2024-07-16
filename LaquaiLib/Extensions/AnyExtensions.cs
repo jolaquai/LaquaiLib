@@ -92,4 +92,19 @@ public static class AnyExtensions
         action(source);
         return source;
     }
+    /// <summary>
+    /// Invokes an asynchronous <paramref name="action"/> that is passed the <paramref name="source"/> object.
+    /// </summary>
+    /// <typeparam name="T">The Type of the object to execute the <paramref name="action"/> on.</typeparam>
+    /// <param name="source">The object to execute the <paramref name="action"/> on.</param>
+    /// <param name="action">The action to execute on the <paramref name="source"/> object.</param>
+    /// <returns>A reference to <paramref name="source"/> itself after <paramref name="action"/> has returned.</returns>
+    /// <remarks>
+    /// While not tremendously useful, this method can be used to effectively limit variable scopes or chain calls to the same object like when using a builder pattern.
+    /// </remarks>
+    public static async ValueTask<T> With<T>(this T source, Func<T, ValueTask> action)
+    {
+        await action(source);
+        return source;
+    }
 }

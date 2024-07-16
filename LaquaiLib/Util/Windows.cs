@@ -664,7 +664,7 @@ public static partial class Windows
         }
         public static void SetFlashing(uint count = 1)
         {
-
+            _ = count;
         }
         public static void StopFlashing()
         {

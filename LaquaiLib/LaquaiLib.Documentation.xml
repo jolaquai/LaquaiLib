@@ -1125,6 +1125,18 @@
             While not tremendously useful, this method can be used to effectively limit variable scopes or chain calls to the same object like when using a builder pattern.
             </remarks>
         </member>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.With``1(``0,System.Func{``0,System.Threading.Tasks.ValueTask})">
+            <summary>
+            Invokes an asynchronous <paramref name="action"/> that is passed the <paramref name="source"/> object.
+            </summary>
+            <typeparam name="T">The Type of the object to execute the <paramref name="action"/> on.</typeparam>
+            <param name="source">The object to execute the <paramref name="action"/> on.</param>
+            <param name="action">The action to execute on the <paramref name="source"/> object.</param>
+            <returns>A reference to <paramref name="source"/> itself after <paramref name="action"/> has returned.</returns>
+            <remarks>
+            While not tremendously useful, this method can be used to effectively limit variable scopes or chain calls to the same object like when using a builder pattern.
+            </remarks>
+        </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensions">
             <summary>
             Provides Extension Methods for <see cref="T:System.Array"/> Types.
@@ -1293,6 +1305,14 @@
             <summary>
             Provides extension methods for the <see cref="T:System.Delegate"/> Type.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.DelegateExtensions.OnException(System.Delegate,System.Action{System.Exception},System.Object[])">
+            <summary>
+            Executes the specified <see cref="T:System.Delegate"/> (dynamically, causing considerable overhead) and catches any exceptions that occur, instead passing it to the specified <see cref="T:System.Action`1"/>.
+            </summary>
+            <param name="del">The <see cref="T:System.Delegate"/> to execute.</param>
+            <param name="onException">The <see cref="T:System.Action`1"/> to execute when an exception occurs.</param>
+            <param name="arguments">The arguments to pass to the <see cref="T:System.Delegate"/>.</param>
         </member>
         <member name="T:LaquaiLib.Extensions.IDictionaryExtensions">
             <summary>
@@ -1755,6 +1775,14 @@
             <param name="source">The sequence of nested sequences to flatten.</param>
             <returns>A sequence that contains all the elements of the nested sequences.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Halve``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Halves the input sequence.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>A <see cref="T:System.ValueTuple`2"/> that contains the two halves of the input sequence.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Shuffles the elements in the input sequence.
@@ -1775,6 +1803,23 @@
             <param name="random">The <see cref="T:System.Random"/> instance to use for shuffling.</param>
             <returns>A shuffled sequence of the elements in the input sequence.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Ruffle``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Performs a Ruffle operation on the input sequence; that is, the sequence is halved, then the individual items are interlaced.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>The sequence after the operation has been performed.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Interlace``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Interlaces the items of the specified sequences.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequences.</typeparam>
+            <param name="first">The first sequence to interlace.</param>
+            <param name="second">The second sequence to interlace.</param>
+            <returns>A single sequence that contains the elements of both input sequences, interlaced.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
             Performs the specified <paramref name="action"/> on each element of the source collection.
@@ -1792,6 +1837,9 @@
             <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetRange``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
+            <summary>
+            Represents the state of a single iteration in a loop construct. This has no functionality and is used solely to support the iterator pattern.
+            </summary>
             <summary>
             Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
             If <paramref name="source"/> is not indexable, the entire sequence is enumerated.

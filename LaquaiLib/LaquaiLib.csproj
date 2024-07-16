@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net9.0-windows</TargetFramework>
+		<LangVersion>preview</LangVersion>
 		<UseWindowsForms>true</UseWindowsForms>
 		<UseWPF>true</UseWPF>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -14,9 +15,8 @@
 		<DocumentationFile>LaquaiLib.Documentation.xml</DocumentationFile>
 		<AnalysisLevel>preview-all</AnalysisLevel>
 		<AnalysisMode>all</AnalysisMode>
-		<LangVersion>preview</LangVersion>
 
-		<!--<EnablePreviewFeatures>True</EnablePreviewFeatures>-->
+		<EnablePreviewFeatures>True</EnablePreviewFeatures>
 
 		<Optimize>False</Optimize>
 		<DebugType>embedded</DebugType>
