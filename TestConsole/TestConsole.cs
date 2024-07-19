@@ -1,21 +1,11 @@
 using System.Diagnostics;
-using System.Drawing.Text;
-using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Text.RegularExpressions;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
-
-using MediaDevices;
-
-using Microsoft.CodeAnalysis.Operations;
-using Microsoft.EntityFrameworkCore;
-
-using Potato.Fastboot;
 
 namespace TestConsole;
 
@@ -31,123 +21,18 @@ public partial class TestConsole
 
         await using (var scope = await TestCore.TestCore.GetScope())
         {
-            await ActualMain(scope.ServiceProvider);
+            ActualMain(scope.ServiceProvider);
         }
     }
     private static void cw<T>(T obj) => Console.WriteLine(obj);
     [STAThread]
-    public static async ValueTask ActualMain(IServiceProvider serviceProvider)
+    public static void ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
 
-        var fb = new Fastboot();
-        try
-        {
-            fb.Connect();
-        }
-        catch
-        {
-            Process.Start("cmd", "/c adb reboot bootloader").WaitForExit();
-            Console.WriteLine($"Press any key once your device is in the bootloader.");
-            Console.ReadKey();
+        
 
-            while (true)
-            {
-                try
-                {
-                    fb.Connect();
-                    break;
-                }
-                catch
-                {
-                    await Task.Delay(1000);
-                }
-            }
-        }
-        AppDomain.CurrentDomain.ProcessExit += (s, e) => fb.Disconnect();
-
-        // const long imei = 862680041740255; // top one
-        const long imei = 862680041776267; // bottom one
-        var unlocker = new BootloaderUnlocker(fb, imei);
-        unlocker.TryUnlock();
-
-        await Task.Delay(-1);
-    }
-
-    private class BootloaderUnlocker(Fastboot fastboot, long imei)
-    {
-        private long lastCheckedCode = 1000000000000000;
-        private long imeiChecksum = LuhnChecksum(imei);
-        private string lastPrefix;
-        private long? nextIncr;
-
-        public long TryUnlock()
-        {
-            nextIncr ??= (long)(imeiChecksum + Math.Sqrt(imei) * 1024);
-            var code = lastCheckedCode;
-
-            while (true)
-            {
-                var response = fastboot.Command($"fastboot oem unlock {code}");
-                response.Payload = response.Payload.Trim();
-                if (response.Payload == "Command not allowed")
-                {
-                }
-                else if (response.Payload.Contains("success"))
-                {
-                    File.WriteAllText("oem.txt", $"Bootloader unlock code: {code}");
-                    return code;
-                }
-                else if (response.Payload.Contains("reboot"))
-                {
-                    Console.WriteLine("There's weird stuff going on with your bootloader, I can't unlock it :c");
-                }
-
-                var prefix = code.ToString()[..2];
-                if (lastPrefix != prefix)
-                {
-                    lastPrefix = prefix;
-                    Console.WriteLine($"Surpassed new prefix '{lastPrefix}'");
-                }
-
-                lastCheckedCode = code;
-                NextChecksum(ref code);
-            }
-        }
-
-        private void NextChecksum(ref long genOEMcode)
-        {
-            genOEMcode += nextIncr.Value;
-        }
-
-        private static long LuhnChecksum(long imei)
-        {
-            static int[] DigitsOf(string str) => str.Select(static d => int.Parse(d.ToString())).ToArray();
-
-            var digits = DigitsOf(imei.ToString());
-            var oddDigits = digits.Reverse().Where((d, i) => i % 2 == 0).ToArray();
-            var evenDigits = digits.Reverse().Where((d, i) => i % 2 != 0).ToArray();
-
-            long checksum = oddDigits.Sum();
-            foreach (var i in evenDigits)
-            {
-                checksum += DigitsOf((i * 2).ToString()).Sum();
-            }
-
-            return checksum % 10;
-        }
-    }
-}
-public static class Ext
-{
-    public readonly struct MediaDeviceHandle(MediaDevice device) : IDisposable
-    {
-        public void Dispose() => device.Disconnect();
-    }
-    public static MediaDeviceHandle Use(this MediaDevice device)
-    {
-        device.Connect();
-        return new MediaDeviceHandle(device);
+        Task.Delay(-1).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 }
 

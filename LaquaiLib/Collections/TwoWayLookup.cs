@@ -1,7 +1,5 @@
 using System.Collections;
 
-using LaquaiLib.Extensions;
-
 namespace LaquaiLib.Collections;
 
 /// <summary>

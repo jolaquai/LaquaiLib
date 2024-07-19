@@ -1775,6 +1775,14 @@
             <param name="source">The sequence of nested sequences to flatten.</param>
             <returns>A sequence that contains all the elements of the nested sequences.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AsOrdered``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the input sequence typed as <see cref="T:System.Linq.IOrderedEnumerable`1"/> without actually changing the order of the items.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence.</param>
+            <returns>The input sequence typed as <see cref="T:System.Linq.IOrderedEnumerable`1"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Halve``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Halves the input sequence.
@@ -1838,9 +1846,6 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetRange``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
             <summary>
-            Represents the state of a single iteration in a loop construct. This has no functionality and is used solely to support the iterator pattern.
-            </summary>
-            <summary>
             Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
             If <paramref name="source"/> is not indexable, the entire sequence is enumerated.
             </summary>
@@ -1876,6 +1881,7 @@
             <typeparam name="TSelect">The Type of the elements <paramref name="selector"/> produces.</typeparam>
             <param name="source">The sequence of values to determine the mode of.</param>
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of <paramref name="source"/> and produces a value that is used to determine the mode of <paramref name="source"/>.</param>
+            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> of <typeparamref name="TSelect"/> to use when comparing values, or null to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
             <returns>The mode of <paramref name="source"/>.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
         </member>
@@ -1885,6 +1891,7 @@
             </summary>
             <typeparam name="T">The Type of the elements in <paramref name="source"/>.</typeparam>
             <param name="source">The sequence of values to determine the mode of.</param>
+            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> of <typeparamref name="TSelect"/> to use when comparing values, or null to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
             <returns>The mode of <paramref name="source"/>.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
         </member>
@@ -1993,13 +2000,16 @@
             Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
             </summary>
             <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
-            <typeparam name="TDerived">The Type of the elements to exclude from the output sequence. Must be, derive from or implement <typeparamref name="TSource"/>.</typeparam>
+            <typeparam name="TDerived">The Type of the elements to exclude from the output sequence. Must be, derive from or implement <typeparamref name="TSource"/>. If <typeparamref name="TDerived"/> is not assignable to <typeparamref name="TSource"/>, the input sequence is returned as is.</typeparam>
             <param name="source">The input sequence.</param>
             <returns>A sequence of all objects from <paramref name="source"/> that are not of type <typeparamref name="TDerived"/>.</returns>
+            <remarks>
+            <typeparamref name="TDerived"/> is not constrained with regards to <typeparamref name="TSource"/>, so that consuming code needn't check for type relationships before calling this method.
+            </remarks>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CrossSelect``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Join``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2})">
             <summary>
-            For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
+            For each element in the <paramref name="source"/> sequence, combines it with each value from an<paramref name="other"/> sequence using a specified <paramref name="selector"/> function.
             This is essentially a cross join and may yield a large number of non-sensical results if the input sequences are large.
             </summary>
             <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
@@ -2073,7 +2083,7 @@
             </summary>
             <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
             <param name="source">The input sequence to sort.</param>
-            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the sequence and produces a key to use for sorting.</param>
             <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``0})">
@@ -2091,8 +2101,27 @@
             </summary>
             <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
             <param name="source">The input sequence to sort.</param>
-            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+            <param name="keySelector">The <see cref="T:System.Func`3"/> that is passed each element of the input sequence and its index in the sequence and produces a key to use for sorting.</param>
             <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderByMultiple``1(System.Collections.Generic.IEnumerable{``0},System.ReadOnlySpan{System.Func{``0,``0}})">
+            <summary>
+            Orders the elements of a sequence in ascending order according to a key extracted from each element.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keySelectors">The <see cref="T:System.Func`3"/>s that are passed each element of the input sequence produce a key to use for sorting.</param>
+            <returns>The ordered input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderByMultiple``1(System.Collections.Generic.IEnumerable{``0},System.ReadOnlySpan{System.Func{``0,System.Int32,``0}})">
+            <summary>
+            Orders the elements of a sequence in ascending order according to a key extracted from each element.
+            Each selector is passed the element and the index of that element from the last iteration.
+            </summary>
+            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+            <param name="source">The input sequence to sort.</param>
+            <param name="keySelectors">The <see cref="T:System.Func`3"/>s that are passed each element of the input sequence and its position from the last iteration and produce a key to use for sorting.</param>
+            <returns>The ordered input sequence.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
@@ -2809,24 +2838,43 @@
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.ReadOnlySpan{System.Char})">
+            <summary>
+            Reports the zero-based index of the first occurrence of any of the specified Unicode <see langword="char"/>s in this <see langword="string"/>.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="searches">The Unicode <see langword="char"/>s to seek.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any <see langword="char"/> in <paramref name="searches"/> was found; -1 if no <see langword="char"/> in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.ReadOnlySpan{System.Char},System.Int32)">
+            <summary>
+            Reports the zero-based index of the first occurrence of any of the specified Unicode <see langword="char"/>s in this <see langword="string"/>. The search starts at a specified character position.
+            </summary>
+            <param name="source">The string to search.</param>
+            <param name="searches">The Unicode <see langword="char"/>s to seek.</param>
+            <param name="startIndex">The search starting position.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any <see langword="char"/> in <paramref name="searches"/> was found; -1 if no <see langword="char"/> in <paramref name="searches"/> was found.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.ReadOnlySpan{System.String},System.StringComparison)">
             <summary>
             Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings.
             </summary>
             <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
-            <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
+            <param name="stringComparison">The <see cref="T:System.StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any <see langword="string"/> in <paramref name="searches"/> was found; -1 if no <see langword="string"/> in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAny(System.String,System.ReadOnlySpan{System.String},System.Int32,System.StringComparison)">
             <summary>
-            Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
+            Reports the zero-based index of the first occurrence in this instance of any <see langword="string"/> in a specified sequence of <see langword="string"/>s. The search starts at a specified character position.
             </summary>
             <param name="source">The string to search.</param>
             <param name="searches">A sequence of strings to seek.</param>
             <param name="startIndex">The search starting position.</param>
-            <returns>The zero-based index position of the first occurrence in this instance where any string in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
+            <param name="stringComparison">The <see cref="T:System.StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
+            <returns>The zero-based index position of the first occurrence in this instance where any <see langword="string"/> in <paramref name="searches"/> was found; -1 if no string in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.ReadOnlySpan{System.Char})">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters.
             </summary>
@@ -2834,7 +2882,7 @@
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.ReadOnlySpan{System.Char},System.Int32)">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters. The search starts at a specified character position.
             </summary>
@@ -2843,7 +2891,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.ReadOnlySpan{System.String})">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings.
             </summary>
@@ -2851,7 +2899,7 @@
             <param name="searches">A sequence of strings to seek.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAny(System.String,System.ReadOnlySpan{System.String},System.Int32)">
             <summary>
             Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
             </summary>
@@ -2894,15 +2942,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
-            <summary>
-            Reports the zero-based index of the first occurrence of a character other than the ones specified in this string.
-            </summary>
-            <param name="source">The string to search.</param>
-            <param name="excepts">A sequence of characters to except.</param>
-            <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.ReadOnlySpan{System.Char},System.Int32)">
             <summary>
             Reports the zero-based index of the first occurrence of a character other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -2911,15 +2951,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Reports the zero-based index of the first occurrence of a string (or single character) other than the ones specified in this string.
-            </summary>
-            <param name="source">The string to search.</param>
-            <param name="excepts">A sequence of strings to except.</param>
-            <returns>The zero-based index position of the first occurrence in this instance where any string other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndexOfAnyExcept(System.String,System.ReadOnlySpan{System.String},System.Int32,System.StringComparison)">
             <summary>
             Reports the zero-based index of the first occurrence of a string (or single character) other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -2928,7 +2960,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index position of the first occurrence in this instance where any string other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.ReadOnlySpan{System.Char})">
             <summary>
             Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string.
             </summary>
@@ -2936,7 +2968,7 @@
             <param name="excepts">A sequence of characters to except.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.Char},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.ReadOnlySpan{System.Char},System.Int32)">
             <summary>
             Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -2945,7 +2977,7 @@
             <param name="startIndex">The search starting position.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.ReadOnlySpan{System.String},System.StringComparison)">
             <summary>
             Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string.
             </summary>
@@ -2953,7 +2985,7 @@
             <param name="excepts">A sequence of characters to except.</param>
             <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.IndicesOfAnyExcept(System.String,System.ReadOnlySpan{System.String},System.Int32,System.StringComparison)">
             <summary>
             Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string. The search starts at a specified character position.
             </summary>
@@ -2996,6 +3028,36 @@
             <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
             <returns></returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Action{System.ReadOnlySpan{System.Char}})">
+            <summary>
+            Executes an <paramref name="action"/> for each line of a <see langword="string"/>. It is passed a <see cref="T:System.ReadOnlySpan`1"/> of the line.
+            </summary>
+            <param name="source">The <see langword="string"/> to iterate over.</param>
+            <param name="action">The <see cref="T:System.Action`1"/> to execute for each line.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Action{System.ReadOnlySpan{System.Char},System.Int32})">
+            <summary>
+            Executes an <paramref name="action"/> for each line of a <see langword="string"/>. It is passed a <see cref="T:System.ReadOnlySpan`1"/> of the line and the index of the line.
+            </summary>
+            <param name="source">The <see langword="string"/> to iterate over.</param>
+            <param name="action">The <see cref="T:System.Action`2"/> to execute for each line.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Action{System.ReadOnlySpan{System.Char}},System.Func{System.ReadOnlySpan{System.Char},System.Boolean})">
+            <summary>
+            Executes an <paramref name="action"/> for each line of a <see langword="string"/> that satisfies conditions defined by <paramref name="predicate"/>. It is passed a <see cref="T:System.ReadOnlySpan`1"/> of the line.
+            </summary>
+            <param name="source">The <see langword="string"/> to iterate over.</param>
+            <param name="action">The <see cref="T:System.Action`1"/> to execute for each line.</param>
+            <param name="predicate">The <see cref="T:System.Func`2"/> used to determine which lines are processed by <paramref name="action"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.ForEachLine(System.String,System.Action{System.ReadOnlySpan{System.Char},System.Int32},System.Func{System.ReadOnlySpan{System.Char},System.Int32,System.Boolean})">
+            <summary>
+            Executes an <paramref name="action"/> for each line of a <see langword="string"/> that satisfies conditions defined by <paramref name="predicate"/>. It is passed a <see cref="T:System.ReadOnlySpan`1"/> of the line and the index of the line.
+            </summary>
+            <param name="source">The <see langword="string"/> to iterate over.</param>
+            <param name="action">The <see cref="T:System.Action`2"/> to execute for each line.</param>
+            <param name="predicate">The <see cref="T:System.Func`3"/> used to determine which lines are processed by <paramref name="action"/>.</param>
+        </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.GetSimilarity(System.String,System.String,System.StringComparer)">
             <summary>
             Computes a value that indicates the similarity between two strings. "Similarity" is defined as the number of characters that are the same in both strings, divided by the length of the longer string. As such, the value returned by this method is always between <c>0</c> (the strings are have no characters in common) and <c>1</c> (the strings are equal), inclusive.
@@ -3004,6 +3066,109 @@
             <param name="second">The second <see cref="T:System.String"/> to use for the comparison.</param>
             <param name="stringComparer">A <see cref="T:System.StringComparer"/> instance to use when comparing the <see cref="T:System.String"/>s. Defaults to <see cref="P:System.StringComparer.OrdinalIgnoreCase"/>.</param>
             <returns>The computed similarity as described.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.EnumerateSplits(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <summary>
+            Returns a <see cref="T:LaquaiLib.Extensions.SpanSplitByCharEnumerator"/> that enumerates the segments of a <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Char"/>s that are separated by any of the <see langword="char"/>s specified by <paramref name="chars"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="chars">The <see langword="char"/>s to use as delimiters.</param>
+            <returns>The created <see cref="T:LaquaiLib.Extensions.SpanSplitByCharEnumerator"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.EnumerateSplits(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)">
+            <summary>
+            Enumerates the segments of a <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Char"/>s that are separated by any of the <see langword="string"/>s specified by <paramref name="strings"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="strings">The <see langword="string"/>s to use as delimiters.</param>
+            <param name="stringComparison">The <see cref="T:System.StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.ReadOnlySpan`1"/>s representing the segments of the input <see cref="T:System.ReadOnlySpan`1"/>.</returns>
+            <remarks>
+            This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="M:LaquaiLib.Extensions.StringExtensions.EnumerateSplits(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})"/> instead.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <summary>
+            Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Char"/>s.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to search.</param>
+            <param name="chars">The <see langword="char"/>s to search for.</param>
+            <returns>The number of occurrences of any of the <paramref name="chars"/> in the input <see cref="T:System.ReadOnlySpan`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)">
+            <summary>
+            Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Char"/>s.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to search.</param>
+            <param name="strings">The <paramref name="string"/>s to search for.</param>
+            <param name="stringComparison">The <see cref="T:System.StringComparison"/> behavior to employ when searching for the strings. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
+            <returns>The number of occurrences of any of the <paramref name="strings"/> in the input <see cref="T:System.ReadOnlySpan`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)"/>
+        </member>
+        <member name="T:LaquaiLib.Extensions.SpanSplitByCharEnumerator">
+            <summary>
+            Implements the enumerator pattern to enumerate the segments in a source <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>s that are separated by any of the <paramref name="char"/>s specified by <paramref name="chars"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="chars">The <see langword="char"/>s to use as delimiters.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.SpanSplitByCharEnumerator.#ctor(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <summary>
+            Implements the enumerator pattern to enumerate the segments in a source <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>s that are separated by any of the <paramref name="char"/>s specified by <paramref name="chars"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="chars">The <see langword="char"/>s to use as delimiters.</param>
+        </member>
+        <member name="P:LaquaiLib.Extensions.SpanSplitByCharEnumerator.Current">
+            <summary>
+            Retrieves the current segment at which the enumerator is positioned.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.SpanSplitByCharEnumerator.GetEnumerator">
+            <summary>
+            Returns the current instance. For use in <see langword="foreach"/> statements.
+            </summary>
+            <returns>A reference to the current instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.SpanSplitByCharEnumerator.MoveNext">
+            <summary>
+            Attempts to advance the enumerator to the next segment in the source span.
+            </summary>
+            <returns><see langword="true"/> if the advancement has succeeded, otherwise <see langword="false"/> if the enumerator has passed the end of the span.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.SpanSplitByStringEnumerator">
+            <summary>
+            Implements the enumerator pattern to enumerate the segments in a source <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>s that are separated by any of the <see langword="string"/>s specified by <paramref name="strings"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="strings">The <see cref="T:System.ReadOnlySpan`1"/>s to use as delimiters.</param>
+            <param name="stringComparison">The <see cref="T:System.StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.SpanSplitByStringEnumerator.#ctor(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)">
+            <summary>
+            Implements the enumerator pattern to enumerate the segments in a source <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>s that are separated by any of the <see langword="string"/>s specified by <paramref name="strings"/>.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="strings">The <see cref="T:System.ReadOnlySpan`1"/>s to use as delimiters.</param>
+            <param name="stringComparison">The <see cref="T:System.StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.Extensions.SpanSplitByStringEnumerator.Current">
+            <summary>
+            Retrieves the current segment at which the enumerator is positioned.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.SpanSplitByStringEnumerator.GetEnumerator">
+            <summary>
+            Returns the current instance. For use in <see langword="foreach"/> statements.
+            </summary>
+            <returns>A reference to the current instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.SpanSplitByStringEnumerator.MoveNext">
+            <summary>
+            Attempts to advance the enumerator to the next segment in the source span.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.XNodeExtensions">
             <summary>
@@ -4037,44 +4202,6 @@
         <member name="P:LaquaiLib.Streams.WrittenEventArgs.Data">
             <summary>A readonly view of the data that was written.</summary>
         </member>
-        <member name="T:LaquaiLib.Util.ConsoleQueue">
-            <summary>
-            Represents a queue of console messages that is asynchronously emptied to the console.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.ConsoleQueue.ForceEmptyBeforeShutdown">
-            <summary>
-            Controls whether the queue should be emptied before the application can shut down.
-            This defaults to <see langword="false"/> and may be freely changed at any time.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ConsoleQueue.Enqueue(System.Object)">
-            <summary>
-            Enqueues a message to the queue.
-            </summary>
-            <param name="message">The message to enqueue.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.ConsoleQueue.Enqueue(System.Object[])">
-            <summary>
-            Enqueues multiple messages to the queue.
-            </summary>
-            <param name="messages">The messages to enqueue.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.ConsoleQueue.FlushAsync">
-            <summary>
-            Creates and returns a <see cref="T:System.Threading.Tasks.Task"/> that completes when the queue has been emptied.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ConsoleQueue.Flush">
-            <summary>
-            Blocks until the queue has been emptied.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ConsoleQueue.GetEnumerator">
-            <summary>
-            Returns an enumerator that iterates through the queue.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Util.CultureHelper">
             <summary>
             Provides helper methods for <see cref="T:System.Globalization.CultureInfo"/>, <see cref="T:System.TimeZoneInfo"/> and related types.
@@ -4892,6 +5019,18 @@
             By default, this is <see langword="true"/>.
             </summary>
         </member>
+        <member name="P:LaquaiLib.Util.Logging.AsyncLogger.Target">
+            <summary>
+            The target <see cref="T:System.IO.TextWriter"/> to write messages to.
+            Changing this while messages are being processed is not recommended.
+            If this is <see cref="P:System.Console.Out"/>, output colorization is supported automatically through <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Type"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Logging.AsyncLogger.Processing">
+            <summary>
+            Gets a value indicating whether the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> is currently processing messages, that is, the message queue is not empty.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Util.Logging.AsyncLogger.Initialize">
             <summary>
             Initializes the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/>.
@@ -4900,9 +5039,24 @@
         </member>
         <member name="M:LaquaiLib.Util.Logging.AsyncLogger.Initialize(System.Threading.Thread)">
             <summary>
-            Initializes the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> usnig the given <paramref name="thread"/> as its parent.
+            Initializes the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> using the given <paramref name="thread"/> as its parent.
             </summary>
             <param name="thread">The thread to use as the parent thread. May be <see langword="null"/> to explicitly leave the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> running, even after all other threads have exited.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.Object,LaquaiLib.Util.Logging.MessageType)">
+            <summary>
+            Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>. Its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
+            </summary>
+            <param name="message">The object to convert to a string and use as the text of the message.</param>
+            <param name="type">The type of the message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.Object,System.DateTime,LaquaiLib.Util.Logging.MessageType)">
+            <summary>
+            Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
+            </summary>
+            <param name="message">The object to convert to a string and use as the text of the message.</param>
+            <param name="timestamp">The timestamp of the message.</param>
+            <param name="type">The type of the message.</param>
         </member>
         <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.String,LaquaiLib.Util.Logging.MessageType)">
             <summary>
@@ -4919,11 +5073,36 @@
             <param name="timestamp">The timestamp of the message.</param>
             <param name="type">The type of the message.</param>
         </member>
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.ReadOnlySpan{System.String},LaquaiLib.Util.Logging.MessageType)">
+            <summary>
+            Creates and queues a new multi-line <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="lines"/> and <paramref name="type"/>.
+            </summary>
+            <param name="lines">The lines of the message.</param>
+            <param name="type">The type of the message.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.ReadOnlySpan{System.String},System.DateTime,LaquaiLib.Util.Logging.MessageType)">
+            <summary>
+            Creates and queues a new multi-line <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="lines"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
+            </summary>
+            <param name="lines">The lines of the message.</param>
+            <param name="timestamp">The timestamp of the message.</param>
+            <param name="type">The type of the message.</param>
+        </member>
         <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(LaquaiLib.Util.Logging.LoggerMessage)">
             <summary>
             Queues the given <paramref name="message"/>.
             </summary>
             <param name="message">The <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> to queue.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.FlushAsync">
+            <summary>
+            Creates a <see cref="T:System.Threading.Tasks.Task"/> that completes when the message queue is empty.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.Flush">
+            <summary>
+            Blocks the calling thread until the message queue is empty.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Util.Logging.LoggerMessage">
             <summary>
@@ -4934,6 +5113,7 @@
             <summary>
             The text of the message.
             If explicitly <see langword="null"/>, an empty line is written (i.e. without the default formatting including a timestamp).
+            If this contains multiple lines, each line is written separately. For each but the first, padding is added to align the text with the first line, after the timestamp.
             </summary>
         </member>
         <member name="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp">
@@ -6123,6 +6303,67 @@
             </summary>
             <typeparam name="T">The Type of the items in the sequence.</typeparam>
             <param name="sequence">The sequence to test.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.UsingWrapper">
+            <summary>
+            Provides factory methods for <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> instances.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.UsingWrapper.RegisterProcessExit">
+            <summary>
+            Controls whether <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> dispose actions are also proxied to the <see cref="E:System.AppDomain.ProcessExit"/> event.
+            This is <see langword="false"/> by default.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.UsingWrapper.Use``1(``0)">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> instance for the given <see cref="T:System.IDisposable"/>-implementing instance of <typeparamref name="T"/>.
+            The registered dispose action just delegates to <see cref="M:System.IDisposable.Dispose"/> of the underlying instance.
+            </summary>
+            <typeparam name="T">The type of the object to wrap.</typeparam>
+            <param name="instance">The instance to wrap.</param>
+            <returns>The created <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.UsingWrapper.Use``1(``0,System.Action{``0})">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> instance for the given instance of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of the object to wrap.</typeparam>
+            <param name="instance">The instance to wrap.</param>
+            <param name="dispose">The <see cref="T:System.Action`1"/> that is executed when the <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> is disposed. It is passed the wrapped instance.</param>
+            <returns>The created <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> instance.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.UsingWrapper`1">
+            <summary>
+            Wraps an instance of an object and, when disposed, executes dispose logic.
+            Allows usage of any object in a <see langword="using"/> block or statement for syntactic sugar or to make sure the desired actions aren't forgotten.
+            </summary>
+            <typeparam name="T">The type of the object to wrap.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Util.UsingWrapper`1.#ctor(`0,System.Action{`0},System.Nullable{System.Boolean})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> for the specified <paramref name="instance"/> of <typeparamref name="T"/>, optionally registering the <paramref name="dispose"/> action to the <see cref="E:System.AppDomain.ProcessExit"/> event.
+            </summary>
+            <param name="instance">The instance to wrap.</param>
+            <param name="dispose">The <see cref="T:System.Action`1"/> that is executed when the <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> is disposed. It is passed the wrapped instance.</param>
+            <param name="registerProcessExit">Whether to register the <paramref name="dispose"/> action to the <see cref="E:System.AppDomain.ProcessExit"/> event. If <see langword="null"/> or omitted, the value of <see cref="P:LaquaiLib.Util.UsingWrapper.RegisterProcessExit"/> is used. Passing a value for this parameter overrides but does not change that fallback value.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.UsingWrapper`1.Instance">
+            <summary>
+            A reference to the wrapped instance of <typeparamref name="T"/>.
+            If the instance is disposed, an <see cref="T:System.ObjectDisposedException"/> is thrown.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.UsingWrapper`1.Dispose">
+            <summary>
+            Executes the registered dispose action on the wrapped instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.UsingWrapper`1.op_Implicit(LaquaiLib.Util.UsingWrapper{`0})~`0">
+            <summary>
+            Converts a <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> instance to the wrapped instance. The wrapper instance is lost if not kept track of separately
+            </summary>
+            <param name="wrapper">The <see cref="T:LaquaiLib.Util.UsingWrapper`1"/> instance to convert.</param>
         </member>
         <member name="T:LaquaiLib.Util.VolumeManager.VolumeController">
             <summary>

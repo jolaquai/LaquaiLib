@@ -8,6 +8,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// <summary>
     /// The text of the message.
     /// If explicitly <see langword="null"/>, an empty line is written (i.e. without the default formatting including a timestamp).
+    /// If this contains multiple lines, each line is written separately. For each but the first, padding is added to align the text with the first line, after the timestamp.
     /// </summary>
     public readonly string? Message { get; }
     /// <summary>
@@ -57,7 +58,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// <inheritdoc/>
     public bool Equals(LoggerMessage other) => Message == other.Message && Timestamp.Equals(other.Timestamp) && Type == other.Type;
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is LoggerMessage msg && Equals(msg);
+    public override bool Equals(object? obj) => obj is LoggerMessage lm && Equals(lm);
     /// <inheritdoc/>
     public override int GetHashCode()
     {

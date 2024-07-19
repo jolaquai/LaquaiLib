@@ -37,7 +37,7 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="name">A relative directory path to search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/>.</returns>
-    public static DirectoryInfo? MakeDirectory(this DirectoryInfo di, string name)
+    public static DirectoryInfo MakeDirectory(this DirectoryInfo di, string name)
     {
         ArgumentNullException.ThrowIfNull(di);
         var directory = new DirectoryInfo(Path.Combine(di.FullName, name));
@@ -53,7 +53,7 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="DirectoryInfo"/> instance for the subdirectory identified by a path consisting of subdirectory <paramref name="names"/>.</returns>
-    public static DirectoryInfo? MakeDirectory(this DirectoryInfo di, params string[] names) => di.MakeDirectory(Path.Combine(names));
+    public static DirectoryInfo MakeDirectory(this DirectoryInfo di, params string[] names) => di.MakeDirectory(Path.Combine(names));
 
     /// <summary>
     /// Creates a <see cref="FileInfo"/> instance for the file identified by <paramref name="name"/> if it exists, otherwise returns <see langword="null"/>.
@@ -87,19 +87,18 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="name">A relative file path to construct for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="FileInfo"/> instance for the file identified by <paramref name="name"/>.</returns>
-    public static FileInfo? MakeFile(this DirectoryInfo di, string name)
+    public static FileInfo MakeFile(this DirectoryInfo di, string name)
     {
         ArgumentNullException.ThrowIfNull(di);
         var file = new FileInfo(Path.Combine(di.FullName, name));
-        if (file.Directory?.Exists is false)
+        var dir = file.Directory;
+        if (dir.Exists is not true)
         {
-            file.Directory.Create();
+            dir.Create();
         }
         if (!file.Exists)
         {
-            using (file.Create())
-            {
-            }
+            using var _ = file.Create();
         }
         return file;
     }
@@ -109,5 +108,5 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="FileInfo"/> instance for the file identified by a path consisting of subdirectory <paramref name="names"/>.</returns>
-    public static FileInfo? MakeFile(this DirectoryInfo di, params string[] names) => di.MakeFile(Path.Combine(names));
+    public static FileInfo MakeFile(this DirectoryInfo di, params string[] names) => di.MakeFile(Path.Combine(names));
 }

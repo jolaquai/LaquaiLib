@@ -1,5 +1,3 @@
-using TestWpf;
-
 namespace TestWpf;
 
 /// <summary>

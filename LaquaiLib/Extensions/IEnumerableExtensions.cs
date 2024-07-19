@@ -1,5 +1,3 @@
-using System.Diagnostics.Tracing;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -21,6 +19,16 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The sequence of nested sequences to flatten.</param>
     /// <returns>A sequence that contains all the elements of the nested sequences.</returns>
     public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(item => item);
+    /// <summary>
+    /// Returns the input sequence typed as <see cref="IOrderedEnumerable{TElement}"/> without actually changing the order of the items.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>The input sequence typed as <see cref="IOrderedEnumerable{TElement}"/>.</returns>
+    public static IOrderedEnumerable<T> AsOrdered<T>(this IEnumerable<T> source)
+    {
+        return (IOrderedEnumerable<T>)source;
+    }
 
     /// <summary>
     /// Halves the input sequence.
@@ -69,7 +77,6 @@ public static partial class IEnumerableExtensions
         var ruffled = Interlace(first, second);
         return ruffled;
     }
-
     /// <summary>
     /// Interlaces the items of the specified sequences.
     /// </summary>
@@ -129,9 +136,6 @@ public static partial class IEnumerableExtensions
             action(element, c++);
         }
     }
-    /// <summary>
-    /// Represents the state of a single iteration in a loop construct. This has no functionality and is used solely to support the iterator pattern.
-    /// </summary>
 
     /// <summary>
     /// Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
@@ -219,6 +223,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="TSelect">The Type of the elements <paramref name="selector"/> produces.</typeparam>
     /// <param name="source">The sequence of values to determine the mode of.</param>
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of <paramref name="source"/> and produces a value that is used to determine the mode of <paramref name="source"/>.</param>
+    /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> of <typeparamref name="TSelect"/> to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
     /// <returns>The mode of <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
     public static TSource ModeBy<TSource, TSelect>(this IEnumerable<TSource> source, Func<TSource, TSelect> selector, IEqualityComparer<TSelect> equalityComparer = null)
@@ -247,6 +252,7 @@ public static partial class IEnumerableExtensions
     /// </summary>
     /// <typeparam name="T">The Type of the elements in <paramref name="source"/>.</typeparam>
     /// <param name="source">The sequence of values to determine the mode of.</param>
+    /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> of <typeparamref name="TSelect"/> to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
     /// <returns>The mode of <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
     public static T Mode<T>(this IEnumerable<T> source, IEqualityComparer<T> equalityComparer = null)
@@ -475,15 +481,16 @@ public static partial class IEnumerableExtensions
     /// Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
     /// </summary>
     /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
-    /// <typeparam name="TDerived">The Type of the elements to exclude from the output sequence. Must be, derive from or implement <typeparamref name="TSource"/>.</typeparam>
+    /// <typeparam name="TDerived">The Type of the elements to exclude from the output sequence. Must be, derive from or implement <typeparamref name="TSource"/>. If <typeparamref name="TDerived"/> is not assignable to <typeparamref name="TSource"/>, the input sequence is returned as is.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>A sequence of all objects from <paramref name="source"/> that are not of type <typeparamref name="TDerived"/>.</returns>
-    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source)
-        where TDerived : TSource
-        => source.Where(i => i is not TDerived);
+    /// <remarks>
+    /// <typeparamref name="TDerived"/> is not constrained with regards to <typeparamref name="TSource"/>, so that consuming code needn't check for type relationships before calling this method.
+    /// </remarks>
+    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source) => typeof(TDerived).IsAssignableTo(typeof(TSource)) ? source.Where(i => i is not TDerived) : source;
 
     /// <summary>
-    /// For each element in the input sequence, selects each value from another sequence and produces a new value using a specified selector function.
+    /// For each element in the <paramref name="source"/> sequence, combines it with each value from an<paramref name="other"/> sequence using a specified <paramref name="selector"/> function.
     /// This is essentially a cross join and may yield a large number of non-sensical results if the input sequences are large.
     /// </summary>
     /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
@@ -493,7 +500,7 @@ public static partial class IEnumerableExtensions
     /// <param name="other">The other sequence.</param>
     /// <param name="selector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and each element of the other sequence and produces a new value.</param>
     /// <returns>A sequence that contains the new values produced by the selector function.</returns>
-    public static IEnumerable<TResult> CrossSelect<TSource, TOther, TResult>(this IEnumerable<TSource> source, IEnumerable<TOther> other, Func<TSource, TOther, TResult> selector)
+    public static IEnumerable<TResult> Join<TSource, TOther, TResult>(this IEnumerable<TSource> source, IEnumerable<TOther> other, Func<TSource, TOther, TResult> selector)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(other);
@@ -574,13 +581,21 @@ public static partial class IEnumerableExtensions
     /// <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
     public static T? ElementAtOrDefault<T>(this IEnumerable<T> source, int i, T defaultValue = default)
     {
-        try
+        switch (source)
         {
-            return source.ElementAt(i);
-        }
-        catch
-        {
-            return defaultValue;
+            case null:
+                throw new ArgumentNullException(nameof(source));
+            case IReadOnlyList<T> list:
+                return i >= 0 && i < list.Count ? list[i] : defaultValue;
+            default:
+                try
+                {
+                    return source.ElementAt(i);
+                }
+                catch
+                {
+                    return defaultValue;
+                }
         }
     }
 
@@ -604,7 +619,7 @@ public static partial class IEnumerableExtensions
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the sequence and produces a key to use for sorting.</param>
     /// <returns>An <see cref="IOrderedEnumerable{TElement}"/> that iterates over the sorted input sequence.</returns>
     public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> source, Func<T, int, T> keySelector)
     {
@@ -634,7 +649,7 @@ public static partial class IEnumerableExtensions
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
+    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the sequence and produces a key to use for sorting.</param>
     /// <returns>An <see cref="IOrderedEnumerable{TElement}"/> that iterates over the sorted input sequence.</returns>
     public static IOrderedEnumerable<T> ThenByDescending<T>(this IOrderedEnumerable<T> source, Func<T, int, T> keySelector)
     {
@@ -643,6 +658,51 @@ public static partial class IEnumerableExtensions
 
         var i = 0;
         return source.ThenByDescending(e => keySelector(e, i++));
+    }
+
+    /// <summary>
+    /// Orders the elements of a sequence in ascending order according to a key extracted from each element.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence to sort.</param>
+    /// <param name="keySelectors">The <see cref="Func{T1, T2, TResult}"/>s that are passed each element of the input sequence produce a key to use for sorting.</param>
+    /// <returns>The ordered input sequence.</returns>
+    public static IOrderedEnumerable<T> OrderByMultiple<T>(this IEnumerable<T> source, params ReadOnlySpan<Func<T, T>> keySelectors)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        if (keySelectors.Length == 0)
+        {
+            return source.AsOrdered();
+        }
+        var ordered = source.OrderBy(keySelectors[0]);
+        foreach (var selector in keySelectors[1..])
+        {
+            ordered = ordered.ThenBy(selector);
+        }
+        return ordered.Select().AsOrdered();
+    }
+    /// <summary>
+    /// Orders the elements of a sequence in ascending order according to a key extracted from each element.
+    /// Each selector is passed the element and the index of that element from the last iteration.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence to sort.</param>
+    /// <param name="keySelectors">The <see cref="Func{T1, T2, TResult}"/>s that are passed each element of the input sequence and its position from the last iteration and produce a key to use for sorting.</param>
+    /// <returns>The ordered input sequence.</returns>
+    public static IOrderedEnumerable<T> OrderByMultiple<T>(this IEnumerable<T> source, params ReadOnlySpan<Func<T, int, T>> keySelectors)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        if (keySelectors.Length == 0)
+        {
+            return source.AsOrdered();
+        }
+        var firstSelector = keySelectors[0];
+        var ordered = source.Index().OrderBy(tuple => firstSelector(tuple.Item, tuple.Index));
+        foreach (var selector in keySelectors[1..])
+        {
+            ordered = ordered.ThenBy(tuple => selector(tuple.Item, tuple.Index));
+        }
+        return ordered.Select(tuple => tuple.Item).AsOrdered();
     }
 
     /// <summary>

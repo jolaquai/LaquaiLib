@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-using LaquaiLib.Util;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>
