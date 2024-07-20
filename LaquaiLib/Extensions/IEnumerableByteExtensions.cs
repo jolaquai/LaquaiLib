@@ -26,7 +26,7 @@ public static class IEnumerableByteExtensions
         }
         if (sla.Value != LayoutKind.Sequential)
         {
-            throw new ArgumentException("The struct type to marshal the specified bytes into must be laid-out sequentially.");
+            throw new ArgumentException("The struct type to marshal the specified bytes into must be laid out sequentially.");
         }
         if (sla.Pack == 0)
         {

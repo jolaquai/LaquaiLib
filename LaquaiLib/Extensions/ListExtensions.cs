@@ -14,7 +14,7 @@ public static class ListExtensions
     /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
     /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
     /// <param name="index">An <see cref="Index"/> instance that indicates where the item to be removed is located in the <paramref name="list"/>.</param>
-    public static void Remove<T>(this List<T> list, Index index) => list.Remove(index.GetOffset(list.Count));
+    public static void Remove<T>(this IList<T> list, Index index) => list.Remove(index.GetOffset(list.Count));
     /// <summary>
     /// Removes elements in a specified <paramref name="range"/> from this <see cref="List{T}"/>.
     /// </summary>
@@ -33,7 +33,7 @@ public static class ListExtensions
     /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
     /// <param name="list">The <see cref="List{T}"/> to extract elements from.</param>
     /// <param name="range">A <see cref="Range"/> instance that indicates where the items to be extracted are located in the <paramref name="list"/>.</param>
-    public static IEnumerable<T> GetRange<T>(this List<T> list, Range range)
+    public static IEnumerable<T> GetRange<T>(this IList<T> list, Range range)
     {
         var (offset, length) = range.GetOffsetAndLength(list.Count);
         for (var i = offset; i < offset + length; i++)

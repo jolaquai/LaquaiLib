@@ -2307,7 +2307,7 @@
             Provides extension methods for the <see cref="T:System.Collections.Generic.List`1"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.ListExtensions.Remove``1(System.Collections.Generic.List{``0},System.Index)">
+        <member name="M:LaquaiLib.Extensions.ListExtensions.Remove``1(System.Collections.Generic.IList{``0},System.Index)">
             <summary>
             Removes the element at the specified <paramref name="index"/> from this <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
@@ -2323,7 +2323,7 @@
             <param name="list">The <see cref="T:System.Collections.Generic.List`1"/> to be modified.</param>
             <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be removed are located in the <paramref name="list"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.ListExtensions.GetRange``1(System.Collections.Generic.List{``0},System.Range)">
+        <member name="M:LaquaiLib.Extensions.ListExtensions.GetRange``1(System.Collections.Generic.IList{``0},System.Range)">
             <summary>
             Extracts a range of elements from this <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
@@ -2761,14 +2761,6 @@
             </summary>
             <param name="source">The <see cref="T:System.String"/> to convert.</param>
             <returns><paramref name="source"/> in title case according to the invariant culture.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.Char[])">
-            <summary>
-            Removes all occurrences of the specified <see cref="T:System.Char"/>s from this <see cref="T:System.String"/>.
-            </summary>
-            <param name="source">The <see cref="T:System.String"/> to modify.</param>
-            <param name="remove">The <see cref="T:System.Char"/>s to remove.</param>
-            <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.Remove(System.String,System.Collections.Generic.IEnumerable{System.Char})">
             <summary>

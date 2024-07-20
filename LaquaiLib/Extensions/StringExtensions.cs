@@ -697,9 +697,7 @@ public static class StringExtensions
     /// <param name="chars">The <see langword="char"/>s to use as delimiters.</param>
     /// <returns>The created <see cref="SpanSplitByCharEnumerator"/>.</returns>
     public static SpanSplitByCharEnumerator EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<char> chars)
-    {
-        return new SpanSplitByCharEnumerator(source, chars);
-    }
+        => new SpanSplitByCharEnumerator(source, chars);
     /// <summary>
     /// Enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s that are separated by any of the <see langword="string"/>s specified by <paramref name="strings"/>.
     /// </summary>
@@ -711,9 +709,7 @@ public static class StringExtensions
     /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits(ReadOnlySpan{char}, ReadOnlySpan{char})"/> instead.
     /// </remarks>
     public static SpanSplitByStringEnumerator EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)
-    {
-        return new SpanSplitByStringEnumerator(source, strings, stringComparison);
-    }
+        => new SpanSplitByStringEnumerator(source, strings, stringComparison);
 
     /// <summary>
     /// Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s.
@@ -745,7 +741,7 @@ public static class StringExtensions
     /// <returns>The number of occurrences of any of the <paramref name="strings"/> in the input <see cref="ReadOnlySpan{T}"/>.</returns>
     public static int FindCount(this ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)
     {
-        var searchValues = System.Buffers.SearchValues.Create(strings, stringComparison);
+        var searchValues = SearchValues.Create(strings, stringComparison);
         var count = 0;
         while (source.Length > 0)
         {
