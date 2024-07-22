@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 using LaquaiLib.Extensions;
 
 namespace LaquaiLib.Util;

@@ -2,9 +2,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Shell;
 
-using LaquaiLib.Extensions;
-
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Windows.Util;
 
 /// <summary>
 /// Represents a handler for a progress display on the current window's taskbar icon.

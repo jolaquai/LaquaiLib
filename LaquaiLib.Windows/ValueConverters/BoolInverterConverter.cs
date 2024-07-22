@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace LaquaiLib.WPF.ValueConverters;
+namespace LaquaiLib.Windows.ValueConverters;
 
 /// <summary>
 /// Represents an <see cref="IValueConverter"/> implementation that inverts a <see cref="bool"/> value.ss

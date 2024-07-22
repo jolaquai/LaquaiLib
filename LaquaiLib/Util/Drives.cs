@@ -72,139 +72,42 @@ public static class Drives
         }
     }
 
-    private static event Action<DriveInfo>? driveConnected;
-    private static event Action<DriveInfo>? driveDisconnected;
-    private static event Action<DriveInfo>? removableDriveConnected;
-    private static event Action<DriveInfo>? removableDriveDisconnected;
-    private static event Action<DriveInfo>? discInserted;
-    private static event Action<DriveInfo>? discEjected;
-
     /// <summary>
     /// Occurs when a drive is connected to the system.
     /// </summary>
-    public static event Action<DriveInfo>? DriveConnected {
-        add
-        {
-            lock (SyncRoot)
-            {
-                driveConnected += value;
-            }
-        }
-        remove
-        {
-            lock (SyncRoot)
-            {
-                driveConnected -= value;
-            }
-        }
-    }
+    public static event Action<DriveInfo>? DriveConnected;
     /// <summary>
     /// Occurs when a drive is disconnected from the system.
     /// </summary>
-    public static event Action<DriveInfo>? DriveDisconnected {
-        add
-        {
-            lock (SyncRoot)
-            {
-                driveDisconnected += value;
-            }
-        }
-        remove
-        {
-            lock (SyncRoot)
-            {
-                driveDisconnected -= value;
-            }
-        }
-    }
+    public static event Action<DriveInfo>? DriveDisconnected;
     /// <summary>
     /// Occurs when a removable drive (such as a USB drive) is connected to the system.
     /// </summary>
-    public static event Action<DriveInfo>? RemovableDriveConnected {
-        add
-        {
-            lock (SyncRoot)
-            {
-                removableDriveConnected += value;
-            }
-        }
-        remove
-        {
-            lock (SyncRoot)
-            {
-                removableDriveConnected -= value;
-            }
-        }
-    }
+    public static event Action<DriveInfo>? RemovableDriveConnected;
     /// <summary>
     /// Occurs when a removable drive (such as a USB drive) is disconnected from the system.
     /// </summary>
-    public static event Action<DriveInfo>? RemovableDriveDisconnected {
-        add
-        {
-            lock (SyncRoot)
-            {
-                removableDriveDisconnected += value;
-            }
-        }
-        remove
-        {
-            lock (SyncRoot)
-            {
-                removableDriveDisconnected -= value;
-            }
-        }
-    }
+    public static event Action<DriveInfo>? RemovableDriveDisconnected;
     /// <summary>
     /// Occurs when a disc is inserted into a drive.
     /// </summary>
-    public static event Action<DriveInfo>? DiscInserted {
-        add
-        {
-            lock (SyncRoot)
-            {
-                discInserted += value;
-            }
-        }
-        remove
-        {
-            lock (SyncRoot)
-            {
-                discInserted -= value;
-            }
-        }
-    }
+    public static event Action<DriveInfo>? DiscInserted;
     /// <summary>
     /// Occurs when a disc is ejected from a drive.
     /// </summary>
-    public static event Action<DriveInfo>? DiscEjected {
-        add
-        {
-            lock (SyncRoot)
-            {
-                discEjected += value;
-            }
-        }
-        remove
-        {
-            lock (SyncRoot)
-            {
-                discEjected -= value;
-            }
-        }
-    }
+    public static event Action<DriveInfo>? DiscEjected;
 
     /// <summary>
     /// Removes all entries in the invocation lists of the events defined in <see cref="Drives"/>.
     /// </summary>
     public static void Clear()
     {
-        driveDisconnected = null;
-        driveConnected = null;
-        removableDriveConnected = null;
-        removableDriveDisconnected = null;
-        discInserted = null;
-        discEjected = null;
+        DriveDisconnected = null;
+        DriveConnected = null;
+        RemovableDriveConnected = null;
+        RemovableDriveDisconnected = null;
+        DiscInserted = null;
+        DiscEjected = null;
     }
     /// <summary>
     /// Starts raising the events defined in <see cref="Drives"/>.
@@ -222,8 +125,8 @@ public static class Drives
     private static void ConditionalRaiseEvents(object? state)
     {
         #region Removable
-        if (removableDriveConnected is not null
-            || removableDriveDisconnected is not null)
+        if (RemovableDriveConnected is not null
+            || RemovableDriveDisconnected is not null)
         {
             var currentRemovableDriveList = new List<DriveInfo>();
             GetAllRemovableDrives(currentRemovableDriveList);
@@ -234,11 +137,11 @@ public static class Drives
 
             foreach (var drive in newRemovableDrives)
             {
-                removableDriveConnected?.Invoke(drive);
+                RemovableDriveConnected?.Invoke(drive);
             }
             foreach (var drive in removedRemovableDrives)
             {
-                removableDriveDisconnected?.Invoke(drive);
+                RemovableDriveDisconnected?.Invoke(drive);
             }
 
             previousRemovableList = currentRemovableDriveList;
@@ -247,7 +150,7 @@ public static class Drives
         #region CDRom
         // Special treatments for CDs because their status is... weird
         if (DateTime.Now - lastCdDriveChange > TimeSpan.FromMilliseconds(500)
-            && (discInserted is not null || discEjected is not null))
+            && (DiscInserted is not null || DiscEjected is not null))
         {
             var currentReadyCdList = new List<DriveInfo>();
             GetAllCdDrives(currentReadyCdList);
@@ -258,12 +161,12 @@ public static class Drives
 
             foreach (var drive in insertedCds)
             {
-                discInserted?.Invoke(drive);
+                DiscInserted?.Invoke(drive);
             }
 
             foreach (var drive in ejectedCds)
             {
-                discEjected?.Invoke(drive);
+                DiscEjected?.Invoke(drive);
             }
 
             previousReadyCdList = currentReadyCdList;
@@ -272,8 +175,8 @@ public static class Drives
         }
         #endregion
         #region Any type that is not handled otherwise
-        if (driveConnected is not null
-            || driveDisconnected is not null)
+        if (DriveConnected is not null
+            || DriveDisconnected is not null)
         {
             var currentDriveList = new List<DriveInfo>();
             GetAllDrives(currentDriveList);
@@ -286,11 +189,11 @@ public static class Drives
 
             foreach (var drive in newDrives)
             {
-                driveConnected?.Invoke(drive);
+                DriveConnected?.Invoke(drive);
             }
             foreach (var drive in removedDrives)
             {
-                driveDisconnected?.Invoke(drive);
+                DriveDisconnected?.Invoke(drive);
             }
 
             previousDriveList = currentDriveList;

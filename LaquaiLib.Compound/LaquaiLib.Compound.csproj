@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<PackageVersion>1.0.6</PackageVersion>
+		<FileVersion>$(PackageVersion)</FileVersion>
+		<AssemblyVersion>$(FileVersion)</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<AnalysisLevel>preview-all</AnalysisLevel>
+		<AnalysisMode>all</AnalysisMode>
+
+		<EnablePreviewFeatures>True</EnablePreviewFeatures>
+
+		<UseWPF>True</UseWPF>
+		<UseWindowsForms>True</UseWindowsForms>
+
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Title>LaquaiLib.Compound</Title>
+		<Authors>Joshua Laquai</Authors>
+		<Description>Personal library.</Description>
+		<Copyright>(C) Joshua Laquai 20xx</Copyright>
+		<PackageDescription>Personal library. Compounds all parts of LaquaiLib, adding references to all of them.</PackageDescription>
+	</PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <ProjectReference Include="..\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
+  </ItemGroup>
+
+</Project>

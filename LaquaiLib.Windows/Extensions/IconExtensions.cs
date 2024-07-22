@@ -1,7 +1,7 @@
 using System.Windows.Interop;
 using System.Windows.Media;
 
-namespace LaquaiLib.Extensions;
+namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="Icon"/> Type.

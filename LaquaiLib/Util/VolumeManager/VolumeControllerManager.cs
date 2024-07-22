@@ -3,7 +3,7 @@ using CoreAudio;
 namespace LaquaiLib.Util.VolumeManager;
 
 /// <summary>
-/// Represents a manager for creating <see cref="VolumeController"/>s.
+/// Implements a manager for creating <see cref="VolumeController"/>s.
 /// </summary>
 public class VolumeControllerManager
 {

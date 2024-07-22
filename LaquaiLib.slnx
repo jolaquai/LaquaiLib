@@ -24,4 +24,8 @@
   <Properties Name="Visual Studio">
     <Property Name="OpenWith" Value="17" />
   </Properties>
+  <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" Type="C#" />
+  <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" Type="C#" />
+  <Folder Name="/Test/" />
+  <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" Type="C#" />
 </Solution>

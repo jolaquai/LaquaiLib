@@ -1,6 +1,6 @@
 using System.Windows.Threading;
 
-namespace LaquaiLib.Extensions;
+namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="DispatcherObject"/> Type.

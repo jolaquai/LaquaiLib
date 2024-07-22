@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<LangVersion>preview</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<PackageVersion>1.0.6</PackageVersion>
+		<FileVersion>$(PackageVersion)</FileVersion>
+		<AssemblyVersion>$(FileVersion)</AssemblyVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<AnalysisLevel>preview-all</AnalysisLevel>
+		<AnalysisMode>all</AnalysisMode>
+
+		<EnablePreviewFeatures>True</EnablePreviewFeatures>
+
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Title>LaquaiLib.Core</Title>
+		<Authors>Joshua Laquai</Authors>
+		<Description>Personal library.</Description>
+		<Copyright>(C) Joshua Laquai 20xx</Copyright>
+		<PackageDescription>Personal library. Contains core functionality shared among the other parts of LaquaiLib.</PackageDescription>
+	</PropertyGroup>
+
+</Project>

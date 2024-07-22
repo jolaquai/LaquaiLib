@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace LaquaiLib.Extensions.Unsafe;
 
 /// <summary>

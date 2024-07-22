@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace LaquaiLib.Extensions;
+namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IDataObject"/> Type.

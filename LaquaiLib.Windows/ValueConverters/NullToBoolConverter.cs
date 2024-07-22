@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace LaquaiLib.WPF.ValueConverters;
+namespace LaquaiLib.Windows.ValueConverters;
 
 /// <summary>
 /// Represents an <see cref="IValueConverter"/> implementation that returns a <see cref="bool"/> value depending on whether the given input is null. Passing <see langword="true"/> as the parameter inverts the result of the conversion.
