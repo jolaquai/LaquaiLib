@@ -26,9 +26,26 @@
   </Properties>
   <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" Type="C#" />
   <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" Type="C#" />
-  <Folder Name="/Test/" />
+  <Folder Name="/Test/">
+    <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\TestConsole\TestConsole.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="Debug|x86" Project="x86" />
+    </Project>
+    <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\TestCore\TestCore.csproj" />
+    <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\TestWpf\TestWpf.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Platform Solution="*|x86" Project="x86" />
+    </Project>
+  </Folder>
   <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" Type="C#" />
   <Folder Name="/Solution Items/Scripts/">
     <File Path="Scripts\PackAll.ps1" />
   </Folder>
+  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Compound\LaquaiLib.Compound.csproj" Type="C#" />
+  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Core\LaquaiLib.Core.csproj" Type="C#" />
+  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Windows\LaquaiLib.Windows.csproj" Type="C#" />
+  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib\LaquaiLib.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="Debug|x86" Project="x86" />
+  </Project>
 </Solution>

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net9.0-windows</TargetFramework>
-		<LangVersion>preview</LangVersion>
+        <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>

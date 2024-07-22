@@ -1,60 +1,53 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
-		<LangVersion>preview</LangVersion>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<PackageVersion>1.0.6</PackageVersion>
-		<FileVersion>$(PackageVersion)</FileVersion>
-		<AssemblyVersion>$(FileVersion)</AssemblyVersion>
-		<Version>$(AssemblyVersion)</Version>
-		<AnalysisLevel>preview-all</AnalysisLevel>
-		<AnalysisMode>all</AnalysisMode>
-
-		<EnablePreviewFeatures>True</EnablePreviewFeatures>
-
-		<DebugType>embedded</DebugType>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<Title>LaquaiLib</Title>
-		<Authors>Joshua Laquai</Authors>
-		<Description>Personal library.</Description>
-		<Copyright>(C) Joshua Laquai 20xx</Copyright>
-		<PackageDescription>Personal library. General purpose.</PackageDescription>
-		<PackageId>$(Title)</PackageId>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<IncludeSource>True</IncludeSource>
-		<IncludeSymbols>True</IncludeSymbols>
-		<PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="CoreAudio" Version="1.37.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.5.24306.7" />
-		<PackageReference Include="System.Management" Version="9.0.0-preview.5.24306.7" />
-		<PackageReference Include="UnicodeInformation" Version="2.7.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
-	</ItemGroup>
-
-	<ItemGroup Condition="false">
-		<Reference Include="Microsoft.Office.Interop.Word">
-			<HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Word\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Word.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Vbe.Interop">
-			<HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Vbe.Interop\15.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll</HintPath>
-		</Reference>
-		<Reference Include="office">
-			<HintPath>C:\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\OFFICE.DLL</HintPath>
-		</Reference>
-	</ItemGroup>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageVersion>1.1.0</PackageVersion>
+    <FileVersion>$(PackageVersion)</FileVersion>
+    <AssemblyVersion>$(FileVersion)</AssemblyVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <AnalysisLevel>preview-all</AnalysisLevel>
+    <AnalysisMode>all</AnalysisMode>
+    <EnablePreviewFeatures>True</EnablePreviewFeatures>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>LaquaiLib</Title>
+    <Authors>Joshua Laquai</Authors>
+    <Description>Personal library.</Description>
+    <Copyright>(C) Joshua Laquai 20xx</Copyright>
+    <PackageDescription>Personal library. General purpose.</PackageDescription>
+    <PackageId>$(Title)</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+    <PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CoreAudio" Version="1.37.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.5.24306.7" />
+    <PackageReference Include="System.Management" Version="9.0.0-preview.5.24306.7" />
+    <PackageReference Include="UnicodeInformation" Version="2.7.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="false">
+    <Reference Include="Microsoft.Office.Interop.Word">
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Word\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Word.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Vbe.Interop">
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Vbe.Interop\15.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="office">
+      <HintPath>C:\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\OFFICE.DLL</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

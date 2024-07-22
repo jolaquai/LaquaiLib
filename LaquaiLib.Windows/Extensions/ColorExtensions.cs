@@ -1,6 +1,3 @@
-using LaquaiLib.Extensions;
-using LaquaiLib;
-
 namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>

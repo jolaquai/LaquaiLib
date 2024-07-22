@@ -1,7 +1,5 @@
 using System.Numerics;
 
-using LaquaiLib;
-
 namespace LaquaiLib.Core;
 
 /// <summary>

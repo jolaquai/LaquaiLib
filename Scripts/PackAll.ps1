@@ -15,5 +15,5 @@ foreach ($project in $projects) {
 
     # Delete the nupkg without the source
     $nupkg = Get-ChildItem -Path $packLoc -Filter *.nupkg
-    $nupkg | Where-Object { $_.Name -notlike "*ssymbols*" } | Remove-Item
+    $nupkg | Where-Object { $_.Name -notlike "*symbols*" } | Remove-Item
 }

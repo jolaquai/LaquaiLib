@@ -1,43 +1,37 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-		<TargetFramework>net9.0-windows</TargetFramework>
-		<LangVersion>preview</LangVersion>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<PackageVersion>1.0.6</PackageVersion>
-		<FileVersion>$(PackageVersion)</FileVersion>
-		<AssemblyVersion>$(FileVersion)</AssemblyVersion>
-		<Version>$(AssemblyVersion)</Version>
-		<AnalysisLevel>preview-all</AnalysisLevel>
-		<AnalysisMode>all</AnalysisMode>
-
-		<EnablePreviewFeatures>True</EnablePreviewFeatures>
-
-		<UseWPF>True</UseWPF>
-		<UseWindowsForms>True</UseWindowsForms>
-
-		<DebugType>embedded</DebugType>
-	</PropertyGroup>
-
-	<PropertyGroup>
-		<Title>LaquaiLib.Windows</Title>
-		<Authors>Joshua Laquai</Authors>
-		<Description>Personal library.</Description>
-		<Copyright>(C) Joshua Laquai 20xx</Copyright>
-		<PackageDescription>Personal library. Contains functionality specifically for Windows. Adds references to Windows Forms and WPF.</PackageDescription>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<IncludeSource>True</IncludeSource>
-		<IncludeSymbols>True</IncludeSymbols>
-		<PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
-		<PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
-	</PropertyGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
-	</ItemGroup>
-
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageVersion>1.1.0</PackageVersion>
+    <FileVersion>$(PackageVersion)</FileVersion>
+    <AssemblyVersion>$(FileVersion)</AssemblyVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <AnalysisLevel>preview-all</AnalysisLevel>
+    <AnalysisMode>all</AnalysisMode>
+    <EnablePreviewFeatures>True</EnablePreviewFeatures>
+    <UseWPF>True</UseWPF>
+    <UseWindowsForms>True</UseWindowsForms>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>LaquaiLib.Windows</Title>
+    <Authors>Joshua Laquai</Authors>
+    <Description>Personal library.</Description>
+    <Copyright>(C) Joshua Laquai 20xx</Copyright>
+    <PackageDescription>Personal library. Contains functionality specifically for Windows. Adds references to Windows Forms and WPF.</PackageDescription>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+    <PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+  </ItemGroup>
 </Project>
