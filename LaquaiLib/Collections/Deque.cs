@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Collections;
 
@@ -530,6 +531,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// Constructs a new <see cref="LinkedList{T}"/> from the <see cref="Deque{T}"/>.
     /// </summary>
     /// <returns>The newly constructed <see cref="LinkedList{T}"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public LinkedList<T> ToLinkedList() => new LinkedList<T>((IEnumerable<T?>)this);
     #endregion
 }

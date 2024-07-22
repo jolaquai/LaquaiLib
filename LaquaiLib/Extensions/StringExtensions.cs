@@ -1,6 +1,7 @@
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 using LaquaiLib.Extensions;
@@ -695,6 +696,7 @@ public static class StringExtensions
     /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
     /// <param name="chars">The <see langword="char"/>s to use as delimiters.</param>
     /// <returns>The created <see cref="SpanSplitByCharEnumerator"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanSplitByCharEnumerator EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<char> chars)
         => new SpanSplitByCharEnumerator(source, chars);
     /// <summary>
@@ -707,6 +709,7 @@ public static class StringExtensions
     /// <remarks>
     /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits(ReadOnlySpan{char}, ReadOnlySpan{char})"/> instead.
     /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanSplitByStringEnumerator EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)
         => new SpanSplitByStringEnumerator(source, strings, stringComparison);
 

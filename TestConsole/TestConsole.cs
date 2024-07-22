@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -29,8 +30,6 @@ public partial class TestConsole
     public static void ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
-
-        
 
         Task.Delay(-1).ConfigureAwait(false).GetAwaiter().GetResult();
     }

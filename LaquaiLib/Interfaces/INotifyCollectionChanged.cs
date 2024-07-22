@@ -1,4 +1,5 @@
 using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Interfaces;
 
@@ -118,6 +119,7 @@ public class CollectionChangedEventArgs<TItem>
         NewStartingIndex = index;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator NotifyCollectionChangedEventArgs(CollectionChangedEventArgs<TItem> args)
     {
         return args.Action switch

@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Streams;
 
@@ -311,6 +312,7 @@ public static class ObservableStreamFactory
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Stream"/> to create. Must have a public parameterless constructor.</typeparam>
     /// <returns>The created <see cref="ObservableStream{T}"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ObservableStream<T> Create<T>() where T : Stream => new ObservableStream<T>(Activator.CreateInstance<T>());
     /// <summary>
     /// Creates an <see cref="ObservableStream{T}"/> from an existing <see cref="Stream"/>.
@@ -318,6 +320,7 @@ public static class ObservableStreamFactory
     /// <typeparam name="T">The type of the <see cref="Stream"/> to wrap.</typeparam>
     /// <param name="stream">The <see cref="Stream"/> to wrap.</param>
     /// <returns>The created <see cref="ObservableStream{T}"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ObservableStream<T> Create<T>(T stream) where T : Stream => new ObservableStream<T>(stream);
     /// <summary>
     /// Creates an <see cref="ObservableStream{T}"/> from a portion of a <see cref="byte"/> array.
@@ -354,6 +357,7 @@ public static class ObservableStreamFactory
     /// <param name="fileAccess">A <see cref="FileAccess"/> enum value that specifies the access level.</param>
     /// <param name="fileShare">A <see cref="FileShare"/> enum value that specifies the sharing mode of the file.</param>
     /// <returns>The created <see cref="ObservableStream{T}"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ObservableStream<FileStream> Create(string path, FileMode fileMode = default, FileAccess fileAccess = default, FileShare fileShare = default) => new ObservableStream<FileStream>(File.Open(path, fileMode, fileAccess, fileShare));
     /// <summary>
     /// Creates an <see cref="ObservableStream{T}"/> that wraps a <see cref="FileStream"/>.
@@ -361,5 +365,6 @@ public static class ObservableStreamFactory
     /// <param name="path">The path to the file to open.</param>
     /// <param name="fileStreamOptions">A <see cref="FileStreamOptions"/> instance that specifies how the <see cref="FileStream"/> is opened.</param>
     /// <returns>The created <see cref="ObservableStream{T}"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ObservableStream<FileStream> Create(string path, FileStreamOptions fileStreamOptions) => new ObservableStream<FileStream>(File.Open(path, fileStreamOptions));
 }

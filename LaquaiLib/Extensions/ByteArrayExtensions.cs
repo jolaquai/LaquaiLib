@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace LaquaiLib.Extensions;
@@ -37,6 +38,7 @@ public static class ByteArrayExtensions
     /// </summary>
     /// <param name="bytes">The <see cref="byte"/> array to create the <see cref="MemoryStream"/> from.</param>
     /// <returns>The created <see cref="MemoryStream"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static MemoryStream AsMemoryStream(this byte[] bytes) => new MemoryStream(bytes);
     /// <summary>
     /// Creates a <see cref="MemoryStream"/> from the given <see cref="byte"/> array. Its <see cref="Stream.Position"/> upon return is set to the <see cref="Array.Length"/> of <paramref name="bytes"/>, i.e. it is not sought to the beginning.

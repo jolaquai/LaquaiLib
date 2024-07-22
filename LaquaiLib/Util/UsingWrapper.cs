@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Util;
+﻿using System.Runtime.CompilerServices;
+
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Provides factory methods for <see cref="UsingWrapper{T}"/> instances.
@@ -18,6 +20,7 @@ public static class UsingWrapper
     /// <typeparam name="T">The type of the object to wrap.</typeparam>
     /// <param name="instance">The instance to wrap.</param>
     /// <returns>The created <see cref="UsingWrapper{T}"/> instance.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UsingWrapper<T> Use<T>(T instance)
         where T : IDisposable
         => new UsingWrapper<T>(instance, instance => instance.Dispose());
@@ -28,6 +31,7 @@ public static class UsingWrapper
     /// <param name="instance">The instance to wrap.</param>
     /// <param name="dispose">The <see cref="Action{T}"/> that is executed when the <see cref="UsingWrapper{T}"/> is disposed. It is passed the wrapped instance.</param>
     /// <returns>The created <see cref="UsingWrapper{T}"/> instance.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UsingWrapper<T> Use<T>(T instance, Action<T> dispose) => new UsingWrapper<T>(instance, dispose);
 }
 

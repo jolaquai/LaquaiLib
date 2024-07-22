@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Interfaces;
 
@@ -18,6 +19,7 @@ public interface IInitializable : ISupportInitialize
     /// Transitions this instance to the initializing state and creates an <see cref="InitializationHandle"/> that represents this initialization.
     /// </summary>
     /// <returns>The created <see cref="InitializationHandle"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     new InitializationHandle BeginInit() => new InitializationHandle(this);
     void ISupportInitialize.EndInit() => IsInitializing = false;
 }

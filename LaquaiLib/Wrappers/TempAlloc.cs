@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -64,6 +65,7 @@ public unsafe class TempAlloc : IDisposable
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TempAlloc Create<T>()
         where T : struct => new TempAlloc(Marshal.SizeOf<T>());
 
@@ -72,6 +74,7 @@ public unsafe class TempAlloc : IDisposable
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TempAlloc Create<T>(bool clear)
         where T : struct => new TempAlloc(Marshal.SizeOf<T>(), clear);
 
@@ -80,6 +83,7 @@ public unsafe class TempAlloc : IDisposable
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TempAlloc Create<T>(int count)
         where T : struct
     {
@@ -94,6 +98,7 @@ public unsafe class TempAlloc : IDisposable
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TempAlloc Create<T>(int count, bool clear)
         where T : struct
     {

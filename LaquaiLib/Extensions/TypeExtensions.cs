@@ -358,7 +358,7 @@ public static partial class TypeExtensions
         var ret = (Type.GetTypeCode(first), Type.GetTypeCode(second));
 
         ThrowHelper.ThrowOnFirstOffender<ArgumentNullException, TypeCode>(
-            item => new[] { "Type must be a numeric primitive type." },
+            _ => ["Type must be a numeric primitive type."],
             item => item is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String,
             ret.Item1,
             ret.Item2

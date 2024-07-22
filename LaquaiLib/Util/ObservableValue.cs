@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Util;
 
@@ -155,11 +156,13 @@ public class ObservableValue<T>
     /// Converts the given <see cref="ObservableValue{T}"/> to its underlying value.
     /// </summary>
     /// <param name="value">The <see cref="ObservableValue{T}"/> to convert.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static implicit operator T(ObservableValue<T> value) => value.Value;
     /// <summary>
     /// Makes the given value observable.
     /// </summary>
     /// <param name="value">The value to instantiate an <see cref="ObservableValue{T}"/> from.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static explicit operator ObservableValue<T>(T value) => new ObservableValue<T>(value);
 
     #region Equality / comparison overrides

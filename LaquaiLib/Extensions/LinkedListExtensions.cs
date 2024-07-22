@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 using LaquaiLib.Collections;
 
 namespace LaquaiLib.Extensions;
@@ -43,5 +45,6 @@ public static class LinkedListNodeExtensions
     /// <typeparam name="T">The type of the elements in the <see cref="LinkedList{T}"/>.</typeparam>
     /// <param name="linkedList">The <see cref="LinkedList{T}"/> to construct the <see cref="Deque{T}"/> from.</param>
     /// <returns>The newly constructed <see cref="Deque{T}"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Deque<T> ToDeque<T>(this LinkedList<T> linkedList) => new Deque<T>(linkedList);
 }
