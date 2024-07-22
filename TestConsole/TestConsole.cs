@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -31,6 +32,8 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
+        
+
         Task.Delay(-1).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 }
@@ -54,10 +57,10 @@ public class DiscordWebhookApiClient : HttpClient
         {
             { new StringContent(content), nameof(content) },
         };
-        using var response = await PostAsync(_query, mfd);
-        await using var resStream = await response.Content.ReadAsStreamAsync();
+        using var response = await PostAsync(_query, mfd).ConfigureAwait(false);
+        await using var resStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-        return await JsonSerializer.DeserializeAsync<webhookmessage>(resStream);
+        return await JsonSerializer.DeserializeAsync<webhookmessage>(resStream).ConfigureAwait(false);
     }
 
     public class webhookmessage
@@ -83,7 +86,7 @@ public class DiscordWebhookApiClient : HttpClient
         public async ValueTask<bool> DeleteAsync(DiscordWebhookApiClient client)
         {
             var uri = client.BaseAddress.Combine("messages", id);
-            using var response = await client.DeleteAsync(uri);
+            using var response = await client.DeleteAsync(uri).ConfigureAwait(false);
 
             return response.IsSuccessStatusCode;
         }
@@ -95,7 +98,7 @@ public class DiscordWebhookApiClient : HttpClient
             {
                 { new StringContent(content), nameof(content) },
             };
-            using var response = await client.PatchAsync(uri, mfd);
+            using var response = await client.PatchAsync(uri, mfd).ConfigureAwait(false);
 
             return response.IsSuccessStatusCode;
         }
@@ -178,8 +181,7 @@ public class DynamicTypeBuilder(JsonObject root)
             throw new InvalidOperationException("Stack depth is above 100.");
         }
 
-        var type = node?.GetValueKind();
-        switch (type)
+        switch (node?.GetValueKind())
         {
             case JsonValueKind.String:
                 return "string";

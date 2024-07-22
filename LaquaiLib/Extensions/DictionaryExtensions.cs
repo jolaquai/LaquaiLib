@@ -35,7 +35,7 @@ public static class IDictionaryExtensions
         where TValue : notnull
     {
         var grouping = source.GroupBy(kv => kv.Value);
-        var result = grouping.Aggregate(
+        return grouping.Aggregate(
             new Dictionary<TValue, IEnumerable<TKey>>(),
             (acc, grouping) =>
             {
@@ -43,8 +43,6 @@ public static class IDictionaryExtensions
                 return acc;
             }
         );
-
-        return result;
     }
     /// <summary>
     /// Creates a mutable shallow copy of the <see cref="IDictionary{TKey, TValue}"/>.

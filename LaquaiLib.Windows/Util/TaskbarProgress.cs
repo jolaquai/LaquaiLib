@@ -80,7 +80,7 @@ public partial class TaskbarProgress
         foreach (var (value, time) in sequence)
         {
             _taskbar.ProgressValue = value;
-            await Task.Delay(time);
+            await Task.Delay(time).ConfigureAwait(false);
         }
 
         _taskbar!.ProgressValue = to;

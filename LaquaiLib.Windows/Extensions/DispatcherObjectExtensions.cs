@@ -34,14 +34,14 @@ public static class DispatcherObjectExtensions
     /// <param name="dispatcherObject">The <see cref="DispatcherObject"/> of which the <see cref="Dispatcher"/> is used to invoke the <paramref name="action"/>.</param>
     /// <param name="action">The <see cref="Action"/> to invoke.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public static async Task DispatchAsync(this DispatcherObject dispatcherObject, Action action) => await dispatcherObject.Dispatcher.InvokeAsync(action);
+    public static async Task DispatchAsync(this DispatcherObject dispatcherObject, Action action) => await dispatcherObject.Dispatcher.InvokeAsync(action).Task.ConfigureAwait(false);
     /// <summary>
     /// Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
     /// </summary>
     /// <param name="dispatcherObject">The <see cref="DispatcherObject"/> of which the <see cref="Dispatcher"/> is used to invoke the <paramref name="asyncDelegate"/>.</param>
     /// <param name="asyncDelegate">The <see cref="Func{TResult}"/> to invoke.</param>
     /// <returns>The <see cref="Task{TResult}"/> returned by the <paramref name="asyncDelegate"/>.</returns>
-    public static async Task DispatchAsync(this DispatcherObject dispatcherObject, Func<Task> asyncDelegate) => await dispatcherObject.Dispatcher.InvokeAsync(asyncDelegate);
+    public static async Task DispatchAsync(this DispatcherObject dispatcherObject, Func<Task> asyncDelegate) => await (await dispatcherObject.Dispatcher.InvokeAsync(asyncDelegate).Task.ConfigureAwait(false)).ConfigureAwait(false);
     /// <summary>
     /// Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
     /// </summary>
@@ -49,5 +49,5 @@ public static class DispatcherObjectExtensions
     /// <param name="dispatcherObject">The <see cref="DispatcherObject"/> of which the <see cref="Dispatcher"/> is used to invoke the <paramref name="asyncDelegate"/>.</param>
     /// <param name="asyncDelegate">The <see cref="Func{TResult}"/> to invoke.</param>
     /// <returns>The <see cref="Task{TResult}"/> returned by the <paramref name="asyncDelegate"/>.</returns>
-    public static async Task<T> DispatchAsync<T>(this DispatcherObject dispatcherObject, Func<Task<T>> asyncDelegate) => await await dispatcherObject.Dispatcher.InvokeAsync(asyncDelegate);
+    public static async Task<T> DispatchAsync<T>(this DispatcherObject dispatcherObject, Func<Task<T>> asyncDelegate) => await (await dispatcherObject.Dispatcher.InvokeAsync(asyncDelegate).Task.ConfigureAwait(false)).ConfigureAwait(false);
 }

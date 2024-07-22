@@ -72,7 +72,7 @@ public class PowerShellInterface : IShellInterface
 
         // Before returning, the working directory MUST be set to the current directory
         // Unfortunately, PS doesn't care about passing ProcessStartInfo.WorkingDirectory it seems
-        await instance.DispatchAsync($"Set-Location '{Environment.CurrentDirectory}'");
+        await instance.DispatchAsync($"Set-Location '{Environment.CurrentDirectory}'").ConfigureAwait(false);
         return instance;
     }
     private PowerShellInterface()
@@ -82,26 +82,25 @@ public class PowerShellInterface : IShellInterface
     public async Task<CommandDispatchResult> DispatchAsync(string input)
     {
         // 1st semaphore entry: write
-        await _syncSemaphore.WaitAsync();
+        await _syncSemaphore.WaitAsync().ConfigureAwait(false);
         try
         {
             await Task.Run(async () =>
             {
                 while (!Ready)
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(100).ConfigureAwait(false);
                 }
             });
-            await Process.StandardInput.WriteLineAsync(input);
-            await Process.StandardInput.FlushAsync();
+            await Process.StandardInput.WriteLineAsync(input).ConfigureAwait(false);
+            await Process.StandardInput.FlushAsync().ConfigureAwait(false);
 
             var readLines = TryReadOutput().Split(Environment.NewLine);
-            var commandDispatchResult = new CommandDispatchResult()
+            return new CommandDispatchResult()
             {
                 Input = input,
                 Output = string.Join(Environment.NewLine, readLines[0] == input ? readLines[1..] : readLines),
             };
-            return commandDispatchResult;
         }
         finally
         {
@@ -110,7 +109,7 @@ public class PowerShellInterface : IShellInterface
     }
     public async Task Close()
     {
-        await _syncSemaphore.WaitAsync();
+        await _syncSemaphore.WaitAsync().ConfigureAwait(false);
         try
         {
             Process.StandardInput.Close();
@@ -133,11 +132,11 @@ public class PowerShellInterface : IShellInterface
                 var readTask = Task.Run(async () =>
                 {
                     // 2nd semaphore entry: reading
-                    await _syncSemaphore.WaitAsync();
+                    await _syncSemaphore.WaitAsync().ConfigureAwait(false);
                     try
                     {
                         // Have to use async methods to make the operation cancellable
-                        var line = await StdOut.ReadLineAsync(cts.Token);
+                        var line = await StdOut.ReadLineAsync(cts.Token).ConfigureAwait(false);
                         if (line is not null)
                         {
                             lines.Add(line);
@@ -171,8 +170,8 @@ public class PowerShellInterface : IShellInterface
     #region public async ValueTask DisposeAsync()
     public async ValueTask DisposeAsync()
     {
-        await DispatchAsync("break");
-        await (Process.WaitForExitAsync() ?? Task.CompletedTask);
+        await DispatchAsync("break").ConfigureAwait(false);
+        await (Process.WaitForExitAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         Process.Dispose();
     }
     #endregion

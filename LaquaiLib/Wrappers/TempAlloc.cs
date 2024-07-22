@@ -469,8 +469,7 @@ public unsafe class TempAlloc : IDisposable
         var sb = new StringBuilder();
         for (var i = _size; i > 0; i -= 4)
         {
-            var slice = i - 4 < 0 ? data[..i] : data.Slice(i - 4, 4);
-            foreach (var b in slice)
+            foreach (var b in i - 4 < 0 ? data[..i] : data.Slice(i - 4, 4))
             {
                 sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }

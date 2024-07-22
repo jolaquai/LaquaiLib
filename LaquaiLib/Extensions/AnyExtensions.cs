@@ -102,7 +102,7 @@ public static class AnyExtensions
     /// </remarks>
     public static async ValueTask<T> With<T>(this T source, Func<T, ValueTask> action)
     {
-        await action(source);
+        await action(source).ConfigureAwait(false);
         return source;
     }
 }

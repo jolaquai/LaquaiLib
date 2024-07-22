@@ -25,7 +25,6 @@ public static class TestCore
             Initialize();
         }
 
-        var scope = provider.CreateAsyncScope();
-        return scope;
+        return provider.CreateAsyncScope();
     }
 }

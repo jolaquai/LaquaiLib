@@ -69,11 +69,11 @@ public class CommandInterface : IShellInterface
             // Let's not throw and just default to what actual cmd.exe does
             // throw new InvalidOperationException($"cmd.exe cannot operate in UNC paths.");
             var userprofile = Environment.ExpandEnvironmentVariables("%USERPROFILE%");
-            await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"");
+            await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"").ConfigureAwait(false);
         }
         else
         {
-            await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"");
+            await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"").ConfigureAwait(false);
         }
         return instance;
     }
@@ -84,26 +84,25 @@ public class CommandInterface : IShellInterface
     public async Task<CommandDispatchResult> DispatchAsync(string input)
     {
         // 1st semaphore entry: write
-        await _syncSemaphore.WaitAsync();
+        await _syncSemaphore.WaitAsync().ConfigureAwait(false);
         try
         {
             await Task.Run(async () =>
             {
                 while (!Ready)
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(100).ConfigureAwait(false);
                 }
             });
-            await Process.StandardInput.WriteLineAsync(input);
-            await Process.StandardInput.FlushAsync();
+            await Process.StandardInput.WriteLineAsync(input).ConfigureAwait(false);
+            await Process.StandardInput.FlushAsync().ConfigureAwait(false);
 
             var readLines = TryReadOutput().Split(Environment.NewLine);
-            var commandDispatchResult = new CommandDispatchResult()
+            return new CommandDispatchResult()
             {
                 Input = input,
                 Output = string.Join(Environment.NewLine, readLines[0] == input ? readLines[1..] : readLines),
             };
-            return commandDispatchResult;
         }
         finally
         {
@@ -112,7 +111,7 @@ public class CommandInterface : IShellInterface
     }
     public async Task Close()
     {
-        await _syncSemaphore.WaitAsync();
+        await _syncSemaphore.WaitAsync().ConfigureAwait(false);
         try
         {
             Process.StandardInput.Close();
@@ -135,11 +134,11 @@ public class CommandInterface : IShellInterface
                 var readTask = Task.Run(async () =>
                 {
                     // 2nd semaphore entry: reading
-                    await _syncSemaphore.WaitAsync();
+                    await _syncSemaphore.WaitAsync().ConfigureAwait(false);
                     try
                     {
                         // Have to use async methods to make the operation cancellable
-                        var line = await StdOut.ReadLineAsync(cts.Token);
+                        var line = await StdOut.ReadLineAsync(cts.Token).ConfigureAwait(false);
                         if (line is not null)
                         {
                             lines.Add(line);
@@ -173,8 +172,8 @@ public class CommandInterface : IShellInterface
     #region public async ValueTask DisposeAsync()
     public async ValueTask DisposeAsync()
     {
-        await DispatchAsync("break");
-        await (Process.WaitForExitAsync() ?? Task.CompletedTask);
+        await DispatchAsync("break").ConfigureAwait(false);
+        await (Process.WaitForExitAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         Process.Dispose();
     }
     #endregion

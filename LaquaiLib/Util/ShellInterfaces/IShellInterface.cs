@@ -36,6 +36,13 @@ public interface IShellInterface : IAsyncDisposable
     {
         get;
     }
+    /// <summary>
+    /// Indicates whether the underlying shell supports multiline commands; that is, whether the underlying shell behaves correctly when being passed a multiline command through <see cref="DispatchAsync(string)"/>, OR whether that method preprocesses the input to ensure that the shell behaves correctly. This may include wrapping the input in a block, using a different method to send the input or splitting the input into multiple commands.
+    /// </summary>
+    bool SupportsMultilineCommands
+    {
+        get;
+    }
 
     /// <summary>
     /// Sends a string to the standard input of the underlying shell, then closes the input stream to allow the script to execute.

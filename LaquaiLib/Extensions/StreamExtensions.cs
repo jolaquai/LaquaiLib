@@ -52,7 +52,7 @@ public static class StreamExtensions
     public static async Task<byte[]> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken = default)
     {
         var buffer = new byte[stream.Length - stream.Position];
-        await stream.ReadAsync(buffer, cancellationToken);
+        await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         return buffer;
     }
     /// <summary>
@@ -70,6 +70,6 @@ public static class StreamExtensions
         {
             throw new ArgumentException($"The provided {nameof(Memory<byte>)} is too small to hold the rest of the stream (can only accommodate {memory.Length}/{requiredSpace} bytes).");
         }
-        await stream.ReadAsync(memory, cancellationToken);
+        await stream.ReadAsync(memory, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -74,8 +74,7 @@ public static partial class IEnumerableExtensions
     public static IEnumerable<T> Ruffle<T>(this IEnumerable<T> source)
     {
         var (first, second) = source.Halve();
-        var ruffled = Interlace(first, second);
-        return ruffled;
+        return Interlace(first, second);
     }
     /// <summary>
     /// Interlaces the items of the specified sequences.

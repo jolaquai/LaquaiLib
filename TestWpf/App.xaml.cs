@@ -12,7 +12,7 @@ public partial class App : Application
     }
     private static async Task<MainWindow> Setup()
     {
-        var scope = await TestCore.TestCore.GetScope();
+        var scope = await TestCore.TestCore.GetScope().ConfigureAwait(false);
         var provider = scope.ServiceProvider;
         return new MainWindow(provider);
     }
