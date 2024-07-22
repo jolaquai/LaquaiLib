@@ -28,4 +28,7 @@
   <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" Type="C#" />
   <Folder Name="/Test/" />
   <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" Type="C#" />
+  <Folder Name="/Solution Items/Scripts/">
+    <File Path="Scripts\PackAll.ps1" />
+  </Folder>
 </Solution>

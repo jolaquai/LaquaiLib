@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-		<TargetFramework>net9.0-windows</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<LangVersion>preview</LangVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -24,6 +24,13 @@
 		<Description>Personal library.</Description>
 		<Copyright>(C) Joshua Laquai 20xx</Copyright>
 		<PackageDescription>Personal library. Contains core functionality shared among the other parts of LaquaiLib.</PackageDescription>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<IncludeSource>True</IncludeSource>
+		<IncludeSymbols>True</IncludeSymbols>
+		<PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
 	</PropertyGroup>
 
 </Project>

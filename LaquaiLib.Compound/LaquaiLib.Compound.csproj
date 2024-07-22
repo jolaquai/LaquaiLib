@@ -27,6 +27,13 @@
 		<Description>Personal library.</Description>
 		<Copyright>(C) Joshua Laquai 20xx</Copyright>
 		<PackageDescription>Personal library. Compounds all parts of LaquaiLib, adding references to all of them.</PackageDescription>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<IncludeSource>True</IncludeSource>
+		<IncludeSymbols>True</IncludeSymbols>
+		<PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
 	</PropertyGroup>
 
   <ItemGroup>

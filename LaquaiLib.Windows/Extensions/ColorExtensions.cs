@@ -1,4 +1,7 @@
-namespace LaquaiLib.Extensions;
+using LaquaiLib.Extensions;
+using LaquaiLib;
+
+namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
 /// Provides Extension Methods for the <see cref="Color"/> Type.

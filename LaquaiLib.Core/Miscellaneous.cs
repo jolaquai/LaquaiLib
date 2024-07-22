@@ -1,6 +1,8 @@
 using System.Numerics;
 
-namespace LaquaiLib;
+using LaquaiLib;
+
+namespace LaquaiLib.Core;
 
 /// <summary>
 /// Contains miscellaneous functionality.
