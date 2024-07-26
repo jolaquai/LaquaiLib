@@ -1,13 +1,11 @@
 using System.Diagnostics;
-using System.IO;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
+using LaquaiLib.Util.WpfForms;
 
 namespace TestConsole;
 
@@ -23,18 +21,18 @@ public partial class TestConsole
 
         await using (var scope = await TestCore.TestCore.GetScope())
         {
-            ActualMain(scope.ServiceProvider);
+            await ActualMain(scope.ServiceProvider).ConfigureAwait(false);
         }
     }
     private static void cw<T>(T obj) => Console.WriteLine(obj);
-    [STAThread]
-    public static void ActualMain(IServiceProvider serviceProvider)
+
+    public static async ValueTask ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
 
-        
+        ToolTip.ShowTooltip("Hello, World!", ToolTipDisplay.Center);
 
-        Task.Delay(-1).ConfigureAwait(false).GetAwaiter().GetResult();
+        await Task.Delay(-1);
     }
 }
 

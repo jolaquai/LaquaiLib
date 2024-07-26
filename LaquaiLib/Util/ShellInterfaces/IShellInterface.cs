@@ -59,4 +59,10 @@ public interface IShellInterface : IAsyncDisposable
     /// </summary>
     /// <returns>A <see cref="Task"/> that completes when the shell has terminated.</returns>
     Task Close();
+    /// <summary>
+    /// Returns a <see cref="Task"/> that completes when the shell is ready to receive input.
+    /// Note that it may never complete if the shell has been disposed or is uninitialized.
+    /// </summary>
+    /// <returns>The <see cref="Task"/> as described.</returns>
+    Task WhenReady();
 }

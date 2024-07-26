@@ -14,6 +14,7 @@
     <AnalysisMode>all</AnalysisMode>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
     <DebugType>embedded</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <Title>LaquaiLib.Core</Title>

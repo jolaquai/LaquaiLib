@@ -10,6 +10,7 @@
   </Folder>
   <Folder Name="/Solution Items/Scripts/">
     <File Path="Scripts\PackAll.ps1" />
+    <File Path="Scripts\SetVersions.ps1" />
   </Folder>
   <Folder Name="/Test/">
     <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\TestConsole\TestConsole.csproj" />
@@ -20,4 +21,7 @@
   <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Core\LaquaiLib.Core.csproj" />
   <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
   <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib\LaquaiLib.csproj" />
+  <Properties Name="Visual Studio">
+    <Property Name="OpenWith" Value="17" />
+  </Properties>
 </Solution>

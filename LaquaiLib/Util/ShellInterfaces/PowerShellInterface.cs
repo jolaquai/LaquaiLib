@@ -7,7 +7,7 @@ namespace LaquaiLib.Util.ShellInterfaces;
 /// <summary>
 /// Implements <see cref="IShellInterface"/> using a PowerShell instance.
 /// </summary>
-public class PowerShellInterface : IShellInterface
+public sealed class PowerShellInterface : IShellInterface
 {
     public Process Process { get; init; }
     public bool Ready => Process.StandardInput?.BaseStream?.CanWrite ?? false;
@@ -28,6 +28,7 @@ public class PowerShellInterface : IShellInterface
             }
         }
     }
+    public bool SupportsMultilineCommands => true;
 
     // Don't ever Write-Host in here, it will make consuming the output unnecessarily difficult.
     private static readonly string _command = Convert.ToBase64String(Encoding.Unicode.GetBytes("""
@@ -92,6 +93,16 @@ public class PowerShellInterface : IShellInterface
                     await Task.Delay(100).ConfigureAwait(false);
                 }
             });
+
+            if (input.Contains(Environment.NewLine))
+            {
+                input = $$$"""
+                    & {{
+                    {{{input}}}
+                    }}
+                    """;
+            }
+
             await Process.StandardInput.WriteLineAsync(input).ConfigureAwait(false);
             await Process.StandardInput.FlushAsync().ConfigureAwait(false);
 
@@ -117,6 +128,13 @@ public class PowerShellInterface : IShellInterface
         finally
         {
             _syncSemaphore.Release();
+        }
+    }
+    public async Task WhenReady()
+    {
+        while (!Ready)
+        {
+            await Task.Delay(100).ConfigureAwait(false);
         }
     }
 

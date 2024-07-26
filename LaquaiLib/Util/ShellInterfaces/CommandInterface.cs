@@ -6,7 +6,7 @@ namespace LaquaiLib.Util.ShellInterfaces;
 /// <summary>
 /// Implements <see cref="IShellInterface"/> using a <c>cmd.exe</c> instance.
 /// </summary>
-public class CommandInterface : IShellInterface
+public sealed class CommandInterface : IShellInterface
 {
     public Process Process { get; init; }
     public bool Ready => Process.StandardInput?.BaseStream?.CanWrite ?? false;
@@ -27,6 +27,7 @@ public class CommandInterface : IShellInterface
             }
         }
     }
+    public bool SupportsMultilineCommands => false;
 
     // Don't ever Write-Host in here, it will make consuming the output unnecessarily difficult.
     private static readonly string _command = """@echo off & :loop set /p "cmdline=" & call %cmdline% & goto loop""";
@@ -121,6 +122,13 @@ public class CommandInterface : IShellInterface
             _syncSemaphore.Release();
         }
     }
+    public async Task WhenReady()
+    {
+        while (!Ready)
+        {
+            await Task.Delay(100).ConfigureAwait(false);
+        }
+    }
 
     // This was part of the interface before, but since DispatchAsync now always returns the output of a command, calling this would cause more problems than it solves
     private string TryReadOutput()
@@ -176,5 +184,9 @@ public class CommandInterface : IShellInterface
         await (Process.WaitForExitAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         Process.Dispose();
     }
+
+    Task<CommandDispatchResult> IShellInterface.DispatchAsync(string input) => throw new NotImplementedException();
+    Task IShellInterface.Close() => throw new NotImplementedException();
+    ValueTask IAsyncDisposable.DisposeAsync() => throw new NotImplementedException();
     #endregion
 }

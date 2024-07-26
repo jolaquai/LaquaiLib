@@ -39,15 +39,25 @@ public static partial class FirstChanceExceptionHandlers
     /// </summary>
     public static void RegisterAll()
     {
+        if (!isRegistered)
+        {
+            foreach (var handler in _handlers)
+            {
+                AppDomain.CurrentDomain.FirstChanceException += handler;
+            }
+            isRegistered = true;
+        }
+    }
+    internal static void UnregisterAll()
+    {
         if (isRegistered)
         {
-            return;
+            foreach (var handler in _handlers)
+            {
+                AppDomain.CurrentDomain.FirstChanceException -= handler;
+            }
+            isRegistered = false;
         }
-        foreach (var handler in _handlers)
-        {
-            AppDomain.CurrentDomain.FirstChanceException += handler;
-        }
-        isRegistered = true;
     }
 
     private static string[] allPaths;
@@ -65,6 +75,15 @@ public static partial class FirstChanceExceptionHandlers
 
         switch (e.Exception)
         {
+            // This case must be handled in every FirstChanceException handler to prevent a StackOverflowException
+            case FirstChanceException fce:
+            {
+                // Unregister immediately when a FirstChanceException is encountered
+                UnregisterAll();
+                capture.Throw();
+                // Unreachable
+                throw fce;
+            }
             case EntryPointNotFoundException epnfEx:
             {
                 GetEntryPointNotFoundExceptionData(epnfEx, out var entryPoint, out var dllName);
@@ -151,16 +170,15 @@ public static partial class FirstChanceExceptionHandlers
                 var (searchFor, otherMatches) = possibleEntryPoints.Split(n => n.Length == entryPoint.Length + 1);
 
                 throw new FirstChanceException($"""
-                {e.Exception.Message}
-                Are you missing a value for LibraryImportAttribute.EntryPoint with an 'A' or 'W' suffix?
+                    {e.Exception.Message}
+                    Are you missing a value for LibraryImportAttribute.EntryPoint with an 'A' or 'W' suffix?
 
-                You were probably looking for one of these entry points:
-                {string.Join(Environment.NewLine, searchFor.Select(name => $"    - {name}"))}
+                    You were probably looking for one of these entry points:
+                    {string.Join(Environment.NewLine, searchFor.Select(name => $"    - {name}"))}
 
-                Other matching entry points in '{dllName}':
-                {string.Join(Environment.NewLine, otherMatches.Select(name => $"    - {name}"))}
-
-                """, e.Exception);
+                    Other matching entry points in '{dllName}':
+                    {string.Join(Environment.NewLine, otherMatches.Select(name => $"    - {name}"))}
+                    """, e.Exception);
             }
         }
     }
