@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
 using LaquaiLib.Util.WpfForms;
@@ -30,7 +31,12 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        ToolTip.ShowTooltip("Hello, World!", ToolTipDisplay.Center);
+        int[] ints = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        var fe = new FilterableEnumerator<int>(ints, i => i % 2 == 0);
+        foreach (var i in fe)
+        {
+            cw(i);
+        }
 
         await Task.Delay(-1);
     }
