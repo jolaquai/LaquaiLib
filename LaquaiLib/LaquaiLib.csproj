@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>1.1.0</PackageVersion>
+    <PackageVersion>1.1.1</PackageVersion>
     <FileVersion>$(PackageVersion)</FileVersion>
     <AssemblyVersion>$(FileVersion)</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
@@ -35,9 +35,8 @@
     <Compile Remove="Extensions\SpanSplitByCharEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CoreAudio" Version="1.37.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.5.24306.7" />
-    <PackageReference Include="System.Management" Version="9.0.0-preview.5.24306.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.6.24327.7" />
+    <PackageReference Include="System.Management" Version="9.0.0-preview.6.24327.7" />
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
   </ItemGroup>
   <ItemGroup>

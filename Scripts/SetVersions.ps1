@@ -3,7 +3,12 @@ $slnRoot = [System.IO.DirectoryInfo]::new((Get-Location)).Parent.FullName
 $packLoc = [System.IO.Path]::Combine($slnRoot, "Scripts", "pack")
 
 # Get all projects (they start with LaquaiLib)
-$projectDirs = Get-ChildItem -Path $slnRoot -Filter LaquaiLib* -Recurse -Directory
+[string[]]$projects = @(
+    "LaquaiLib.Core",
+    "LaquaiLib",
+    "LaquaiLib.Windows",
+    "LaquaiLib.Compound"
+)
 
 # Cmdline argument: Version to set to
 $targetVersion = $args[0]
@@ -12,7 +17,7 @@ $regex = [regex]::new("<PackageVersion>.*?<\/PackageVersion>", [System.Text.Regu
 
 # Visit each project directory, then set the version
 foreach ($project in $projects) {
-    Set-Location $project.FullName
+    Set-Location -Path ([System.IO.Path]::Combine($slnRoot, $project))
     
     $csproj = Get-ChildItem -Path $project.FullName -Filter *.csproj
     $csprojContent = Get-Content $csproj.FullName

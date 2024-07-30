@@ -1,6 +1,6 @@
 using CoreAudio;
 
-namespace LaquaiLib.Util.VolumeManager;
+namespace LaquaiLib.Windows.Util.VolumeManager;
 
 /// <summary>
 /// Implements a manager for creating <see cref="VolumeController"/>s.

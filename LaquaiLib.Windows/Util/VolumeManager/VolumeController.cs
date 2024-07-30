@@ -1,6 +1,8 @@
+using System.IO;
+
 using CoreAudio;
 
-namespace LaquaiLib.Util.VolumeManager;
+namespace LaquaiLib.Windows.Util.VolumeManager;
 
 /// <summary>
 /// Represents a controller for managing the volume of a specific window or process.
