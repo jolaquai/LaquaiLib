@@ -5,4 +5,5 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class SpanExtensions
 {
+    
 }

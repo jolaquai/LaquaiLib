@@ -2,11 +2,11 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Xml.Linq;
 
-using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Extensions;
+using LaquaiLib.Util;
 using LaquaiLib.Util.ExceptionManagement;
-using LaquaiLib.Util.WpfForms;
 
 namespace TestConsole;
 
@@ -31,11 +31,15 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        int[] ints = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        var fe = new FilterableEnumerator<int>(ints, i => i % 2 == 0);
-        foreach (var i in fe)
+        var data = new byte[100000];
+        var span = data.AsSpan();
+        for (var i = 0; i < data.Length / 9; i++)
         {
-            cw(i);
+            span = span
+                .FormatInto(0xffffffff)
+                .FormatInto((byte)0x55)
+                .FormatInto(0xffffffff)
+                ;
         }
 
         await Task.Delay(-1);

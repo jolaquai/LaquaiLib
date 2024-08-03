@@ -1,7 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -13,17 +13,15 @@
     <AnalysisLevel>preview-all</AnalysisLevel>
     <AnalysisMode>all</AnalysisMode>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    <UseWPF>True</UseWPF>
-    <UseWindowsForms>True</UseWindowsForms>
     <DebugType>embedded</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <Title>LaquaiLib.Windows</Title>
+    <Title>LaquaiLib.Oxml</Title>
     <Authors>Joshua Laquai</Authors>
     <Description>Personal library.</Description>
     <Copyright>(C) Joshua Laquai 20xx</Copyright>
-    <PackageDescription>Personal library. Contains functionality specifically for Windows. Adds references to Windows Forms and WPF.</PackageDescription>
+    <PackageDescription>Personal library. Contains functionality for working with the DocumentFormat.OpenXml specification (mostly the Wordprcoessing structure).</PackageDescription>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
@@ -33,10 +31,13 @@
     <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CoreAudio" Version="1.37.0" />
-    <PackageReference Include="System.Management" Version="9.0.0-preview.6.24327.7" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
     <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Util\" />
   </ItemGroup>
 </Project>

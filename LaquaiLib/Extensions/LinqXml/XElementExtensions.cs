@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace LaquaiLib.Extensions;
+namespace LaquaiLib.Extensions.LinqXml;
 
 /// <summary>
 /// Provides extension methods for the <see cref="XElement"/> Type.
@@ -13,7 +13,6 @@ public static class XElementExtensions
     /// <param name="source">The <see cref="XElement"/> to get the siblings of.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="XElement"/> containing the sibling elements of this node, in document order.</returns>
     public static IEnumerable<XElement> Siblings(this XElement source) => source.ElementsBeforeSelf().Concat(source.ElementsAfterSelf()).InDocumentOrder();
-
     /// <summary>
     /// Returns a collection of the sibling elements of this node, in document order. Only elements that have a matching <see cref="XName"/> are included in the collection.
     /// </summary>

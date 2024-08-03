@@ -13,14 +13,15 @@
     <File Path="Scripts\SetVersions.ps1" />
   </Folder>
   <Folder Name="/Test/">
-    <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\TestConsole\TestConsole.csproj" />
-    <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\TestCore\TestCore.csproj" />
-    <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\TestWpf\TestWpf.csproj" />
+    <Project Path="TestConsole\TestConsole.csproj" />
+    <Project Path="TestCore\TestCore.csproj" />
+    <Project Path="TestWpf\TestWpf.csproj" />
   </Folder>
-  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
-  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Core\LaquaiLib.Core.csproj" />
-  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
-  <Project Path="E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib\LaquaiLib.csproj" />
+  <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
+  <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" />
+  <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+  <Project Path="LaquaiLib\LaquaiLib.csproj" />
+  <Project Path="LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
   <Properties Name="Visual Studio">
     <Property Name="OpenWith" Value="17" />
   </Properties>

@@ -1,5 +1,3 @@
-using System.Management;
-
 namespace LaquaiLib.Streams;
 
 /// <summary>
@@ -11,28 +9,15 @@ public static class MemoryOrFileStream
     /// The number of bytes at which the stream will switch from a <see cref="MemoryStream"/> to a <see cref="FileStream"/>.
     /// </summary>
     /// <remarks>
-    /// You may freely change this value at runtime. Its initial value is 1/512th of the total physical memory of the system (e.g., if your system has 32 GB of total physical memory, this will initially have the value <c>32768 / 512 = 64 MB</c>). If total physical memory cannot be retrieved, the value will default to 64 MB.
+    /// You may freely change this value at runtime. Its initial value is 64 MB.
     /// </remarks>
     public static int Cutoff { get; set; } = ResetCutoff();
     /// <summary>
-    /// Resets the <see cref="Cutoff"/> to the initial value. See the documentation of <see cref="Cutoff"/> for more information.
+    /// Resets the <see cref="Cutoff"/> to the initial value.
     /// </summary>
     /// <returns>The new value of <see cref="Cutoff"/>.</returns>
     public static int ResetCutoff()
     {
-        try
-        {
-            using (var computerSystem = new ManagementObjectSearcher("SELECT TotalPhysicalMemory FROM Win32_ComputerSystem"))
-            {
-                foreach (var obj in computerSystem.Get())
-                {
-                    return Cutoff = Convert.ToInt32(obj["TotalPhysicalMemory"]) / 64;
-                }
-            }
-        }
-        catch
-        {
-        }
         return Cutoff = 64 * 1024 * 1024; // 64 MB
     }
 

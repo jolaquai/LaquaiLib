@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -11,6 +13,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains each element in the input sequence.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source;
     /// <summary>
     /// Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
@@ -18,6 +21,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
     /// <param name="source">The sequence of nested sequences to flatten.</param>
     /// <returns>A sequence that contains all the elements of the nested sequences.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(item => item);
     /// <summary>
     /// Returns the input sequence typed as <see cref="IOrderedEnumerable{TElement}"/> without actually changing the order of the items.
@@ -25,10 +29,8 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>The input sequence typed as <see cref="IOrderedEnumerable{TElement}"/>.</returns>
-    public static IOrderedEnumerable<T> AsOrdered<T>(this IEnumerable<T> source)
-    {
-        return (IOrderedEnumerable<T>)source;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IOrderedEnumerable<T> AsOrdered<T>(this IEnumerable<T> source) => (IOrderedEnumerable<T>)source;
 
     /// <summary>
     /// Halves the input sequence.
@@ -56,6 +58,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(Random.Shared);
     /// <summary>
     /// Shuffles the elements in the input sequence, using a specified <see cref="Random"/> instance.
@@ -64,6 +67,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <param name="random">The <see cref="Random"/> instance to use for shuffling.</param>
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) => source.OrderBy(_ => random.Next());
     /// <summary>
     /// Performs a Ruffle operation on the input sequence; that is, the sequence is halved, then the individual items are interlaced.
@@ -310,26 +314,15 @@ public static partial class IEnumerableExtensions
         }
 
         comparer ??= EqualityComparer<T>.Default;
-        try
+        // Can't HashSet<T> here, otherwise multiple equal elements in a sequence could cause false negatives, because those will only be counted once
+
+        var firstEnumerated = first.ToArray();
+        var secondEnumerated = second.ToArray();
+        if (firstEnumerated.Length != secondEnumerated.Length)
         {
-            var firstEnumerated = first.ToHashSet(comparer);
-            var secondEnumerated = second.ToHashSet(comparer);
-            if (firstEnumerated.Count != secondEnumerated.Count)
-            {
-                return false;
-            }
-            return firstEnumerated.SetEquals(secondEnumerated);
+            return false;
         }
-        catch
-        {
-            var firstEnumerated = first.ToArray();
-            var secondEnumerated = second.ToArray();
-            if (firstEnumerated.Length != secondEnumerated.Length)
-            {
-                return false;
-            }
-            return Array.TrueForAll(firstEnumerated, f => Array.Exists(secondEnumerated, s => comparer.Equals(f, s)));
-        }
+        return Array.TrueForAll(firstEnumerated, f => Array.Exists(secondEnumerated, s => comparer.Equals(f, s)));
     }
 
     /// <summary>

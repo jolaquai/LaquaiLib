@@ -12,63 +12,30 @@ namespace LaquaiLib.Util;
 public static class Processes
 {
     private static readonly Timer timer = new Timer(ConditionalRaiseEvents, null, Timeout.Infinite, 10);
-    private static IEnumerable<Process> _previousProcessList = GetAllProcesses();
-    private static readonly object _syncRoot = new object();
-
-    private static event Action<Process>? processStarted;
-    private static event Action<Process>? processStopped;
+    private static Process[] _previousProcessList = GetAllProcesses();
+    private static readonly Lock _syncRoot = new Lock();
 
     /// <summary>
     /// Returns a sequence of all processes running on the local computer.
     /// </summary>
-    public static IEnumerable<Process> GetAllProcesses() => Process.GetProcesses();
+    public static Process[] GetAllProcesses() => Process.GetProcesses();
 
     /// <summary>
     /// Occurs for each process that is started on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStarted {
-        add
-        {
-            lock (_syncRoot)
-            {
-                processStarted += value;
-            }
-        }
-        remove
-        {
-            lock (_syncRoot)
-            {
-                processStarted -= value;
-            }
-        }
-    }
+    public static event Action<Process>? ProcessStarted;
     /// <summary>
     /// Occurs for each process that is stopped on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStopped {
-        add
-        {
-            lock (_syncRoot)
-            {
-                processStopped += value;
-            }
-        }
-        remove
-        {
-            lock (_syncRoot)
-            {
-                processStopped -= value;
-            }
-        }
-    }
+    public static event Action<Process>? ProcessStopped;
 
     /// <summary>
     /// Removes all entries in the invocation lists of the events defined in <see cref="Processes"/>.
     /// </summary>
     public static void Clear()
     {
-        processStarted = null;
-        processStopped = null;
+        ProcessStarted = null;
+        ProcessStopped = null;
     }
     /// <summary>
     /// Starts raising the events defined in <see cref="Processes"/>.
@@ -91,12 +58,12 @@ public static class Processes
 
         foreach (var process in newProcesses)
         {
-            processStarted?.Invoke(process);
+            ProcessStarted?.Invoke(process);
         }
 
         foreach (var process in stoppedProcesses)
         {
-            processStopped?.Invoke(process);
+            ProcessStopped?.Invoke(process);
         }
 
         _previousProcessList = currentProcessList;

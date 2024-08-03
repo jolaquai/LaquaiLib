@@ -19,9 +19,9 @@ public static partial class Windows
     private static DateTime lastActiveWindowChange = DateTime.MinValue;
 
     /// <summary>
-    /// The <see cref="object"/> that is locked on when modifying collections in any of the "GetAll..." methods in <see cref="Windows"/>. <b>Callers should lock on this when accessing these collections as well, otherwise, exceptions may be thrown during enumeration.</b>
+    /// The <see cref="Lock"/> that is locked on when modifying collections in any of the "GetAll..." methods in <see cref="Windows"/>. <b>Callers should lock on this when accessing these collections as well, otherwise, exceptions may be thrown during enumeration.</b>
     /// </summary>
-    private static readonly object _syncRoot = new object();
+    private static readonly Lock _syncRoot = new Lock();
 
     static Windows()
     {
