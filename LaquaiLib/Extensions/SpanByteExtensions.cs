@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-using LaquaiLib.Util;
+﻿using System.Runtime.InteropServices;
 
 namespace LaquaiLib.Extensions;
 

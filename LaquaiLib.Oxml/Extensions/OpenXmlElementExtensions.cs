@@ -1,7 +1,5 @@
 ﻿using System.Xml.Linq;
 
-using LaquaiLib.Extensions.LinqXml;
-
 namespace LaquaiLib.Oxml.Extensions;
 
 /// <summary>

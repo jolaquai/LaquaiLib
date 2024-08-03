@@ -2,10 +2,8 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Xml.Linq;
 
 using LaquaiLib.Extensions;
-using LaquaiLib.Util;
 using LaquaiLib.Util.ExceptionManagement;
 
 namespace TestConsole;
@@ -31,16 +29,7 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        var data = new byte[100000];
-        var span = data.AsSpan();
-        for (var i = 0; i < data.Length / 9; i++)
-        {
-            span = span
-                .FormatInto(0xffffffff)
-                .FormatInto((byte)0x55)
-                .FormatInto(0xffffffff)
-                ;
-        }
+        
 
         await Task.Delay(-1);
     }
