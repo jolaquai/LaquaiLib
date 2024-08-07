@@ -29,7 +29,13 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        
+        while (true)
+        {
+            var gmod = Process.GetProcessesByName("hl2")[0];
+            Console.WriteLine($"{gmod.WorkingSet64 / 1024} kB");
+
+            await Task.Delay(500);
+        }
 
         await Task.Delay(-1);
     }
