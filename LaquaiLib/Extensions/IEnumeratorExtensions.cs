@@ -6,8 +6,7 @@
 public static class IEnumeratorExtensions
 {
     /// <summary>
-    /// Yields each element of <paramref name="source"/> so that it can be used within LINQ queries.
-    /// No full enumeration of <paramref name="source"/> is performed.
+    /// Consumes the specified <see cref="IEnumerator{T}"/> starting at its current position, yielding each element.
     /// </summary>
     /// <param name="source">The <see cref="IEnumerator{T}"/> to iterate over.</param>
     /// <returns>The elements of the <paramref name="source"/> as an <see cref="IEnumerable{T}"/>.</returns>

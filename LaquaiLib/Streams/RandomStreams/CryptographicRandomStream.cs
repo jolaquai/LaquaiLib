@@ -62,7 +62,7 @@ public class CryptographicRandomStream : RandomStream
         var exactly = (int)(destination.Length - destination.Position);
         using (var buffer = new TempArray<byte>(exactly))
         {
-            Read(buffer.Array, 0, exactly);
+            ReadExactly(buffer.Array, 0, exactly);
             destination.Write(buffer.Array, 0, exactly);
         }
     }
@@ -75,7 +75,7 @@ public class CryptographicRandomStream : RandomStream
     {
         using (var buffer = new TempArray<byte>(byteCount))
         {
-            Read(buffer.Array);
+            ReadExactly(buffer.Array);
             destination.Write(buffer.Array, 0, byteCount);
         }
     }

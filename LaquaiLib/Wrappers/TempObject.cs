@@ -15,12 +15,12 @@ public class TempObject<T> : IDisposable
     /// <summary>
     /// Initializes a new <see cref="TempObject{T}"/>.
     /// </summary>
-    /// <param name="parameters">The parameters to use to find a constructor for <typeparamref name="T"/>. If <see langword="null"/> or <c>0</c>-length, the parameterless constructor is used.</param>
-    public TempObject(params object?[]? parameters)
+    /// <param name="parameters">The parameters to use to find a constructor for <typeparamref name="T"/>. If <c>0</c>-length, the parameterless constructor is used.</param>
+    public TempObject(params ReadOnlySpan<object?> parameters)
     {
         try
         {
-            typeof(T).New(parameters is null || parameters.Length == 0 ? null : parameters);
+            typeof(T).New(parameters.Length == 0 ? null : parameters);
         }
         catch
         {

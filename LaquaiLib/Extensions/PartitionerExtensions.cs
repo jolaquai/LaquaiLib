@@ -14,17 +14,16 @@ public static class PartitionerExtensions
     /// <param name="partitioner">The <see cref="Partitioner{T}"/> to enumerate.</param>
     /// <param name="partitions">The number of partitions to request.</param>
     /// <returns>The <see cref="List{T}"/> of <see cref="List{T}"/>s containing the elements of each partition.</returns>
-    public static List<List<T>> ToList<T>(this Partitioner<T> partitioner, int partitions)
+    public static List<T[]> ToList<T>(this Partitioner<T> partitioner, int partitions)
     {
         ArgumentNullException.ThrowIfNull(partitioner);
 
-        var list = new List<List<T>>();
-        foreach (var item in partitioner.GetPartitions(partitions))
+        List<T[]> list = [];
+        foreach (var enumerator in partitioner.GetPartitions(partitions))
         {
-            var sublist = new List<T>();
-            while (item.MoveNext())
+            using (enumerator)
             {
-                sublist.Add(item.Current);
+                list.Add(enumerator.AsEnumerable().ToArray());
             }
         }
         return list;

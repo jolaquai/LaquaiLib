@@ -17,7 +17,7 @@ public class MultiStream : Stream, IDisposable
     /// Initializes a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
-    public MultiStream(params Stream[] streams)
+    public MultiStream(params ReadOnlySpan<Stream> streams)
     {
         _streams = [.. streams];
     }
@@ -38,22 +38,37 @@ public class MultiStream : Stream, IDisposable
     /// <param name="count">The number of <see cref="Stream"/>s to instantiate.</param>
     /// <param name="constructorParameters">A collection of parameters to pass to the constructor of the given <paramref name="streamType"/>. If no constructor with the passed parameter types exists, instantiation is attempted with the parameterless constructor.</param>
     /// <exception cref="ArgumentException">Thrown if the supplied <paramref name="streamType"/> does not inherit from <see cref="Stream"/>.</exception>
-    public MultiStream(Type streamType, int count, params object?[]? constructorParameters)
+    public MultiStream(Type streamType, int count, params ReadOnlySpan<object?> constructorParameters)
     {
-        if (!typeof(Stream).GetInheritingTypes().Contains(streamType))
+        if (!typeof(Stream).IsAssignableFrom(streamType))
         {
             throw new ArgumentException($"The given type '{streamType.Name}' must inherit from '{nameof(Stream)}'.", nameof(streamType));
         }
 
-        _streams = streamType.IsAssignableTo(typeof(MemoryStream))
-            ? Enumerable.Range(0, count).Select(_ => (Stream)new MemoryStream()).ToList()
-            : streamType.IsAssignableTo(typeof(FileStream))
-                ? Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose)).ToList()
-                : constructorParameters is not null
-                            ? constructorParameters.Length > 1
-                                        ? Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, constructorParameters)!).ToList()
-                                        : Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList()
-                            : throw new ArgumentException($"The given type '{streamType.Name}' could not be instantiated. The call was invalid.", nameof(streamType));
+        if (streamType.IsAssignableTo(typeof(MemoryStream)))
+        {
+            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new MemoryStream()).ToList();
+        }
+        else if (streamType.IsAssignableTo(typeof(FileStream)))
+        {
+            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose)).ToList();
+        }
+        else if (constructorParameters.Length > 1)
+        {
+            var parameters = constructorParameters.ToArray();
+            _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, parameters)!).ToList();
+        }
+        else
+        {
+            try
+            {
+                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList();
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException($"The given type '{streamType.Name}' could not be instantiated. The call was invalid.", nameof(streamType));
+            }
+        }
     }
 
     /// <summary>
@@ -81,7 +96,7 @@ public class MultiStream : Stream, IDisposable
     /// <exception cref="ArgumentException">Thrown if the supplied <paramref name="streamType"/> does not inherit from <see cref="Stream"/>.</exception>
     public MultiStream(Type streamType, int count, Func<int, object?[]?> constructorParameterFactory)
     {
-        if (!typeof(Stream).GetInheritingTypes().Contains(streamType))
+        if (!typeof(Stream).IsAssignableFrom(streamType))
         {
             throw new ArgumentException($"The given type '{streamType.Name}' must inherit from '{nameof(Stream)}'.", nameof(streamType));
         }
@@ -113,7 +128,8 @@ public class MultiStream : Stream, IDisposable
     /// </summary>
     public long[] Positions => _streams.Select(stream => stream.Position).ToArray();
     /// <inheritdoc/>
-    public override long Position {
+    public override long Position
+    {
         get => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
 
         set => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
@@ -187,7 +203,7 @@ public class MultiStream : Stream, IDisposable
     /// Releases the unmanaged and optionally the managed resources used by this <see cref="MultiStream"/> instance.
     /// </summary>
     /// <param name="disposing">Whether to release the managed resources used by this <see cref="MultiStream"/> instance.</param>
-    protected void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (!_disposed)
         {

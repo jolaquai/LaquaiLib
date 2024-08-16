@@ -31,21 +31,22 @@ public static class RandomMath
     /// </summary>
     /// <param name="numbers">The numbers to determine the GCD of.</param>
     /// <returns>The GCD of the given <paramref name="numbers"/>.</returns>
-    public static TInteger GCD<TInteger>(params TInteger[] numbers)
+    public static TInteger GCD<TInteger>(params ReadOnlySpan<TInteger> numbers)
         where TInteger : IBinaryInteger<TInteger>
     {
         if (numbers.Length == 1)
         {
             return numbers[0];
         }
-        numbers = Array.ConvertAll(numbers, n => n < TInteger.Zero ? -TInteger.One * n : n);
-        if (Array.Exists(numbers, n => n == TInteger.One))
+        var enumerated = numbers.ToArray();
+        enumerated = Array.ConvertAll(enumerated, n => n < TInteger.Zero ? -TInteger.One * n : n);
+        if (Array.Exists(enumerated, n => n == TInteger.One))
         {
             return TInteger.One;
         }
 
-        foreach (var g in Core.Miscellaneous.Range(numbers.Max(), TInteger.Zero, -TInteger.One)
-            .Where(g => numbers.All(n => n % g == TInteger.Zero)))
+        foreach (var g in Core.Miscellaneous.Range(enumerated.Max(), TInteger.Zero, -TInteger.One)
+            .Where(g => enumerated.All(n => n % g == TInteger.Zero)))
         {
             return g;
         }
@@ -53,20 +54,21 @@ public static class RandomMath
         return TInteger.One;
     }
 
-    public static TInteger LCM<TInteger>(params TInteger[] numbers)
+    public static TInteger LCM<TInteger>(params ReadOnlySpan<TInteger> numbers)
         where TInteger : IBinaryInteger<TInteger>
     {
         if (numbers.Length == 1)
         {
             return numbers[0];
         }
-        numbers = Array.ConvertAll(numbers, n => n < TInteger.Zero ? -TInteger.One * n : n);
-        if (Array.Exists(numbers, n => n == TInteger.Zero))
+        var enumerated = numbers.ToArray();
+        enumerated = Array.ConvertAll(enumerated, n => n < TInteger.Zero ? -TInteger.One * n : n);
+        if (Array.Exists(enumerated, n => n == TInteger.Zero))
         {
             return TInteger.Zero;
         }
 
-        return numbers.Aggregate((a, b) => a * b / GCD(a, b));
+        return enumerated.Aggregate((a, b) => a * b / GCD(a, b));
     }
 
     /// <summary>

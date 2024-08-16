@@ -19,7 +19,7 @@ public static class DispatcherObjectExtensions
     /// <param name="dispatcherObject">The <see cref="DispatcherObject"/> of which the <see cref="Dispatcher"/> is used to invoke the <paramref name="method"/>.</param>
     /// <param name="method">The <see cref="Delegate"/> to invoke.</param>
     /// <param name="arguments">The arguments to pass to the <paramref name="method"/>.</param>
-    public static void Dispatch(this DispatcherObject dispatcherObject, Delegate method, params object?[]? arguments) => dispatcherObject.Dispatcher.Invoke(method, arguments);
+    public static void Dispatch(this DispatcherObject dispatcherObject, Delegate method, params ReadOnlySpan<object?> arguments) => dispatcherObject.Dispatcher.Invoke(method, arguments.ToArray());
     /// <summary>
     /// Invokes the specified <paramref name="func"/> on the thread the <paramref name="dispatcherObject"/> was created on.
     /// </summary>

@@ -14,7 +14,7 @@ public interface IPath
     /// <inheritdoc cref="System.IO.Path.Combine(string, string, string, string)" />
     public string Combine(string path1, string path2, string path3, string path4);
     /// <inheritdoc cref="System.IO.Path.Combine(string[])" />
-    public string Combine(params string[] paths);
+    public string Combine(params ReadOnlySpan<string> paths);
     /// <inheritdoc cref="System.IO.Path.EndsInDirectorySeparator(ReadOnlySpan{char})" />
     public bool EndsInDirectorySeparator(ReadOnlySpan<char> path);
     /// <inheritdoc cref="System.IO.Path.EndsInDirectorySeparator(string)" />
@@ -80,7 +80,7 @@ public interface IPath
     /// <inheritdoc cref="System.IO.Path.Join(string, string, string)" />
     public string Join(string path1, string path2, string path3, string path4);
     /// <inheritdoc cref="System.IO.Path.Join(string[])" />
-    public string Join(params string[] paths);
+    public string Join(params ReadOnlySpan<string> paths);
     /// <inheritdoc cref="System.IO.Path.TrimEndingDirectorySeparator(string)" />
     public string TrimEndingDirectorySeparator(string path);
     /// <inheritdoc cref="System.IO.Path.TrimEndingDirectorySeparator(ReadOnlySpan{char})" />

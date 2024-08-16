@@ -15,7 +15,7 @@ public static class QueueExtensions
     /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from <paramref name="items"/> to.</param>
     /// <param name="item">The first item to add to <paramref name="queue"/>.</param>
     /// <param name="items">Any more items to add to <paramref name="queue"/>.</param>
-    public static void Enqueue<T>(this Queue<T> queue, T item, params T[] items)
+    public static void Enqueue<T>(this Queue<T> queue, T item, params ReadOnlySpan<T> items)
     {
         queue.Enqueue(item);
         foreach (var i in items)
@@ -45,7 +45,7 @@ public static class QueueExtensions
     /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from <paramref name="items"/> to.</param>
     /// <param name="item">The first item to add to <paramref name="queue"/>.</param>
     /// <param name="items">Any more items to add to <paramref name="queue"/>.</param>
-    public static void Enqueue<T>(this LimitedQueue<T> queue, T item, params T[] items)
+    public static void Enqueue<T>(this LimitedQueue<T> queue, T item, params ReadOnlySpan<T> items)
     {
         queue.Enqueue(item);
         foreach (var i in items)

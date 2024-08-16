@@ -2,6 +2,8 @@ using System.Collections;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+using LaquaiLib.Extensions;
+
 namespace LaquaiLib.Collections;
 
 /// <summary>
@@ -24,7 +26,8 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// <summary>
     /// Gets the number of nodes in the <see cref="Deque{T}"/>.
     /// </summary>
-    public int Count {
+    public int Count
+    {
         get
         {
             var i = 0;
@@ -60,19 +63,15 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// Initializes a new <see cref="Deque{T}"/> with nodes containing the specified values.
     /// </summary>
     /// <param name="values">The values to insert into the deque.</param>
-    public Deque(params T?[] values)
+    public Deque(params ReadOnlySpan<T?> values)
     {
-        ArgumentNullException.ThrowIfNull(values);
-
         foreach (var value in values)
         {
             AddLast(value);
         }
     }
-    /// <inheritdoc cref="Deque{T}(T[])"/>
-    public Deque(IEnumerable<T?> values) : this(values as T?[] ?? values.ToArray()) { }
     /// <summary>
-    /// Instantaites a new <see cref="Deque{T}"/> with the specified number of nodes that contain the default value of <typeparamref name="T"/>.
+    /// Initializes a new <see cref="Deque{T}"/> with the specified number of nodes that contain the default value of <typeparamref name="T"/>.
     /// </summary>
     /// <param name="nodes">The number of nodes to insert into the deque.</param>
     public Deque(int nodes)
@@ -80,6 +79,18 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
         for (var i = 0; i < nodes; i++)
         {
             AddLast(default(T));
+        }
+    }
+    /// <summary>
+    /// Initializes a new <see cref="Deque{T}"/> by creating copies of the nodes in the specified <see cref="LinkedList{T}"/>.
+    /// This copy operation is shallow; if <typeparamref name="T"/> is a reference type, only the references are copied.
+    /// </summary>
+    /// <param name="linkedList">The <see cref="LinkedList{T}"/> to copy nodes from.</param>
+    public Deque(LinkedList<T> linkedList)
+    {
+        foreach (var value in linkedList)
+        {
+            AddLast(value);
         }
     }
     #endregion
@@ -132,20 +143,24 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// </summary>
     /// <param name="value">The value to find.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that enumerates all nodes that contain the specified value.</returns>
-    public IEnumerable<DequeNode<T?>> FindAll(T? value)
+    public DequeNode<T?>[] FindAll(T? value)
     {
-        if (Head != null)
+        IEnumerable<DequeNode<T?>> FindAllImpl()
         {
-            var node = Head;
-            do
+            if (Head != null)
             {
-                if (node.Value?.Equals(value) is true)
+                var node = Head;
+                do
                 {
-                    yield return node;
-                }
-                node = node.Next;
-            } while (node != Head && node is not null);
+                    if (node.Value?.Equals(value) is true)
+                    {
+                        yield return node;
+                    }
+                    node = node.Next;
+                } while (node != Head && node is not null);
+            }
         }
+        return FindAllImpl().ToArray();
     }
     #endregion
 
@@ -454,7 +469,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// </summary>
     /// <param name="nodes">The nodes to remove.</param>
     /// <returns>The number of nodes that were removed.</returns>
-    public int RemoveNodes(params DequeNode<T?>[] nodes)
+    public int RemoveNodes(params ReadOnlySpan<DequeNode<T?>> nodes)
     {
         var removed = 0;
         var current = Head;
@@ -462,7 +477,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
         {
             do
             {
-                if (Array.IndexOf(nodes, current) > 0)
+                if (nodes.IndexOf(current) > 0)
                 {
                     RemoveNode(current);
                     removed++;
@@ -470,10 +485,9 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
                 current = current.Next;
             } while (current != Head && current is not null);
         }
+
         return removed;
     }
-    /// <inheritdoc cref="RemoveNodes(DequeNode{T}[])"/>"
-    public int RemoveNodes(IEnumerable<DequeNode<T?>> nodes) => RemoveNodes(nodes as DequeNode<T?>[] ?? nodes.ToArray());
     /// <summary>
     /// Detaches all nodes that contain the specified value from the <see cref="Deque{T}"/> and their neighbors.
     /// </summary>
@@ -483,11 +497,13 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
     /// <summary>
     /// Detaches the <see cref="Head"/> from the <see cref="Deque{T}"/> and its neighbors.
     /// </summary>
+    /// <returns>The value of the detached node.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
     public T? PopLeft() => RemoveNode(Head ?? throw new InvalidOperationException("The deque is empty.")).Value;
     /// <summary>
     /// Detaches the <see cref="Tail"/> from the <see cref="Deque{T}"/> and its neighbors.
     /// </summary>
+    /// <returns>The value of the detached node.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
     public T? PopRight() => RemoveNode(Tail ?? throw new InvalidOperationException("The deque is empty.")).Value;
     #endregion
@@ -523,6 +539,8 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
             } while (node != Head && node is not null);
         }
     }
+    public IEnumerator<DequeNode<T?>> EnumerateNodes() => ((IEnumerable<DequeNode<T?>>)this).GetEnumerator();
+    public IEnumerator<T?> EnumerateValues() => ((IEnumerable<T?>)this).GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<T?>)this).GetEnumerator();
     #endregion
 
@@ -540,7 +558,7 @@ public class Deque<T> : IEnumerable<DequeNode<T?>>, IEnumerable<T?>
 /// Represents a node in a <see cref="Deque{T}"/>.
 /// </summary>
 /// <typeparam name="T">The type of the value this node contains. It must be compatible with the type of the <see cref="Deque{T}"/> this node belongs to.</typeparam>
-public class DequeNode<T>
+public class DequeNode<T> : IEquatable<DequeNode<T>>
 {
     /// <summary>
     /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
@@ -596,6 +614,9 @@ public class DequeNode<T>
     /// Returns the value this node contains.
     /// </summary>
     public T? Value { get; set; }
+
+    public bool Equals(DequeNode<T>? other) => ReferenceEquals(this, other) || other?.Value?.Equals(Value) is true;
+    public override bool Equals(object obj) => Equals(obj as DequeNode<T>);
 
     /// <summary>
     /// Returns the string representation of the <see cref="Value"/> this node contains.

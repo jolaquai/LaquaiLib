@@ -22,7 +22,7 @@ public static class UriExtensions
     /// <param name="baseUri">The base <see cref="Uri"/> to combine with. May also be relative.</param>
     /// <param name="relative">Any number of <see langword="string"/>s or relative <see cref="Uri"/>s to combine with the base <see cref="Uri"/>. Must be relative.</param>
     /// <returns>A new <see cref="Uri"/> instance that is the result of combining the base <see cref="Uri"/> with the relative paths or <see cref="Uri"/>s.</returns>
-    public static Uri Combine(this Uri baseUri, params object[] relative)
+    public static Uri Combine(this Uri baseUri, params ReadOnlySpan<object> relative)
     {
         if (relative.Length == 0)
         {

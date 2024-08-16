@@ -12,7 +12,7 @@ namespace LaquaiLib.Interfaces;
 public interface INotifyCollectionChanged<TSelf, TItem> : INotifyCollectionChanged
     where TSelf : INotifyCollectionChanged<TSelf, TItem>
 {
-    public event EventHandler<TSelf, CollectionChangedEventArgs<TItem>>? CollectionChanged;
+    public new event EventHandler<TSelf, CollectionChangedEventArgs<TItem>>? CollectionChanged;
 
     event NotifyCollectionChangedEventHandler? INotifyCollectionChanged.CollectionChanged {
         add => CollectionChanged += (sender, e) => value?.Invoke(sender, (NotifyCollectionChangedEventArgs)e);

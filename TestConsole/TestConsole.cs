@@ -1,7 +1,13 @@
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
+
+using DocumentFormat.OpenXml.Bibliography;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
@@ -29,15 +35,7 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        while (true)
-        {
-            var gmod = Process.GetProcessesByName("hl2")[0];
-            Console.WriteLine($"{gmod.WorkingSet64 / 1024} kB");
-
-            await Task.Delay(500);
-        }
-
-        await Task.Delay(-1);
+        Debugger.Break();
     }
 }
 

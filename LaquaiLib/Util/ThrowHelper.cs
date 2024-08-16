@@ -17,18 +17,17 @@ public static class ThrowHelper
     /// <param name="constructorParamFactory">A <see cref="Func{T, TResult}"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="Array"/> of nullable <see cref="object"/>s (or <see langword="null"/>) which is passed to the constructor of the exception to throw. If it returns <see langword="null"/>, the exception type's parameterless constructor is invoked.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> the items must pass.</param>
     /// <param name="items">The items to test.</param>
-    public static void ThrowOnFirstOffender<TException, TTest>(Func<TTest, object?[]?> constructorParamFactory, Predicate<TTest> predicate, params TTest[] items)
+    public static void ThrowOnFirstOffender<TException, TTest>(Func<TTest, object?[]?> constructorParamFactory, Predicate<TTest> predicate, params ReadOnlySpan<TTest> items)
         where TException : Exception
     {
         ArgumentNullException.ThrowIfNull(typeof(TException));
         ArgumentNullException.ThrowIfNull(predicate);
-        ArgumentNullException.ThrowIfNull(items);
 
-        foreach (var item in items)
+        for (var i = 0; i < items.Length; i++)
         {
-            if (!predicate(item))
+            if (!predicate(items[i]))
             {
-                throw Activator.CreateInstance(typeof(TException), constructorParamFactory(item)).Cast<TException>();
+                throw Activator.CreateInstance(typeof(TException), constructorParamFactory(items[i])).Cast<TException>();
             }
         }
     }
@@ -40,16 +39,15 @@ public static class ThrowHelper
     /// <param name="exception">The <see cref="Exception"/> to throw.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> the items must pass.</param>
     /// <param name="items">The items to test.</param>
-    public static void ThrowOnFirstOffender<TException, TTest>(TException exception, Predicate<TTest> predicate, params TTest[] items)
+    public static void ThrowOnFirstOffender<TException, TTest>(TException exception, Predicate<TTest> predicate, params ReadOnlySpan<TTest> items)
         where TException : Exception
     {
         ArgumentNullException.ThrowIfNull(exception);
         ArgumentNullException.ThrowIfNull(predicate);
-        ArgumentNullException.ThrowIfNull(items);
 
-        foreach (var item in items)
+        for (var i = 0; i < items.Length; i++)
         {
-            if (!predicate(item))
+            if (!predicate(items[i]))
             {
                 throw exception;
             }
@@ -395,9 +393,8 @@ public static class ThrowHelper
     /// This does not accurately report the name of the argument which is <see langword="null"/>.
     /// </summary>
     /// <param name="objs">The objects to test.</param>
-    public static void ThrowOnNull(params object[] objs)
+    public static void ThrowOnNull(params ReadOnlySpan<object> objs)
     {
-        ArgumentNullException.ThrowIfNull(objs);
         for (var i = 0; i < objs.Length; i++)
         {
             var obj = objs[i];

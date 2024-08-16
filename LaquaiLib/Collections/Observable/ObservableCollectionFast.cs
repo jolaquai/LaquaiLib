@@ -101,17 +101,9 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified span.
     /// </summary>
     /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> from which the elements are copied.</param>
-    public ObservableCollectionFast(ReadOnlySpan<T> span)
+    public ObservableCollectionFast(params ReadOnlySpan<T> span)
     {
-        _items = new List<T>(span.ToArray());
-    }
-    /// <summary>
-    /// Initializes a new <see cref="ObservableCollection{T}"/> that contains the specified items and has a capacity equal to the number of items.
-    /// </summary>
-    /// <param name="items">The items for the list to contain.</param>
-    public ObservableCollectionFast(params T[] items)
-    {
-        _items = new List<T>(items);
+        _items = [.. span];
     }
     #endregion
 
@@ -269,45 +261,13 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// </summary>
     /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
     /// <param name="items">The objects to insert.</param>
-    public void InsertRangeSilent(int index, params T[] items) => _items.InsertRange(index, items);
-    /// <summary>
-    /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
-    /// </summary>
-    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
-    /// <param name="items">The objects to insert.</param>
-    public void InsertRangeSilent(int index, IEnumerable<T> items) => _items.InsertRange(index, items);
-    /// <summary>
-    /// Silently inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>. This causes no <see cref="NotifyCollectionChangedAction.Add"/> event to be fired.
-    /// </summary>
-    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
-    /// <param name="items">The objects to insert.</param>
-    public void InsertRangeSilent(int index, ReadOnlySpan<T> items) => _items.InsertRange(index, items);
+    public void InsertRangeSilent(int index, params ReadOnlySpan<T> items) => _items.InsertRange(index, items);
     /// <summary>
     /// Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
     /// </summary>
     /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
     /// <param name="items">The objects to insert.</param>
-    public void InsertRange(int index, params T[] items)
-    {
-        InsertRangeSilent(index, items);
-        RaiseCollectionChanged();
-    }
-    /// <summary>
-    /// Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
-    /// </summary>
-    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
-    /// <param name="items">The objects to insert.</param>
-    public void InsertRange(int index, IEnumerable<T> items)
-    {
-        InsertRangeSilent(index, items);
-        RaiseCollectionChanged();
-    }
-    /// <summary>
-    /// Inserts the specified <paramref name="items"/> into the collection at the specified <paramref name="index"/>.
-    /// </summary>
-    /// <param name="index">The zero-based index at which the <paramref name="items"/> should be inserted.</param>
-    /// <param name="items">The objects to insert.</param>
-    public void InsertRange(int index, ReadOnlySpan<T> items)
+    public void InsertRange(int index, params ReadOnlySpan<T> items)
     {
         InsertRangeSilent(index, items);
         RaiseCollectionChanged();

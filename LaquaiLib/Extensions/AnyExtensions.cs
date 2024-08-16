@@ -14,20 +14,18 @@ public static class AnyExtensions
     /// <param name="source">The first object to use for the comparison.</param>
     /// <param name="other">The remaining objects to use for the comparison.</param>
     /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
-    public static bool AllEqual<T>(this T source, params T[] other)
+    public static bool AllEqual<T>(this T source, params ReadOnlySpan<T> other)
     {
-        if (source is null || other.Any(o => o is null))
-        {
-            return source is null && other.All(o => o is null);
-        }
-
-        if (other.Length == 0)
+        var enumerated = other.ToArray();
+        if (enumerated.Length == 0)
         {
             throw new ArgumentException("Cannot compare to an empty array.", nameof(other));
         }
 
-        foreach (var elem in other)
+        // Enumerate and use for to avoid the IEnumerator
+        for (var i = 0; i < enumerated.Length; i++)
         {
+            var elem = enumerated[i];
             if (!source.Equals(elem))
             {
                 return false;
@@ -44,31 +42,23 @@ public static class AnyExtensions
     /// <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
     /// <param name="other">The remaining objects to use for the comparison..</param>
     /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
-    public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, params T[] other)
+    public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, params ReadOnlySpan<T> other)
     {
-        ArgumentNullException.ThrowIfNull(other);
         if (other.Length == 0)
         {
             throw new ArgumentException("Cannot compare to an empty array.", nameof(other));
         }
-        if (source is null || other.Any(o => o is null))
+        var enumerated = other.ToArray();
+        if (source is null || enumerated.Any(o => o is null))
         {
-            return source is null && other.All(o => o is null);
+            return source is null && enumerated.All(o => o is null);
         }
 
-        var src = transform(source);
-        foreach (var elem in other.Select(transform))
-        {
-            if (!src!.Equals(elem))
-            {
-                return false;
-            }
-        }
-        return true;
+        return transform(source)?.AllEqual(enumerated.Select(transform).ToArray()) is true;
     }
 
     /// <summary>
-    /// Checks whether a given input object is <see langword="null"/>. If not, it is marked to the compiler as non-<see langword="null"/> for the remainder of the scope.
+    /// Checks whether a given input object is <see langword="null"/>. If not, it is marked to the compiler as non-<see langword="null"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the input object.</typeparam>
     /// <param name="source">The input object.</param>

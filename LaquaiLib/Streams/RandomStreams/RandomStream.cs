@@ -137,7 +137,7 @@ public class RandomStream : Stream
         var exactly = (int)(destination.Length - destination.Position);
         using (var buffer = new TempArray<byte>(exactly))
         {
-            Read(buffer.Array, 0, exactly);
+            Read.ReadExactly(buffer.Array, 0, exactly);
             destination.Write(buffer.Array, 0, exactly);
         }
     }
@@ -152,14 +152,14 @@ public class RandomStream : Stream
         {
             while (destination.Length - destination.Position >= bufferSize)
             {
-                Read(buffer.Array);
+                Read.ReadExactly(buffer.Array);
                 destination.Write(buffer.Array);
             }
             var remaining = (int)(destination.Length - destination.Position);
             if (remaining > 0)
             {
                 var span = buffer.Array.AsSpan(0, remaining);
-                Read(span);
+                Read.ReadExactly(span);
                 destination.Write(span);
             }
         }

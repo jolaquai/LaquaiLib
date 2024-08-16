@@ -10,7 +10,7 @@ namespace LaquaiLib.Collections;
 /// <typeparam name="T">The type of elements in the set.</typeparam>
 internal class Set<T> : ISet<T>
 {
-    private readonly List<T> _backingStore;
+    private readonly List<T> _backingStore = [];
 
     public int Count => _backingStore.Count;
     public bool IsReadOnly => false;

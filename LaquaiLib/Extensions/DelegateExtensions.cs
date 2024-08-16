@@ -11,11 +11,12 @@ public static class DelegateExtensions
     /// <param name="del">The <see cref="Delegate"/> to execute.</param>
     /// <param name="onException">The <see cref="Action{T}"/> to execute when an exception occurs.</param>
     /// <param name="arguments">The arguments to pass to the <see cref="Delegate"/>.</param>
-    private static void OnException(this Delegate del, Action<Exception> onException, params object?[]? arguments)
+    public static void OnException<TDelegate>(this TDelegate del, Action<Exception> onException, params ReadOnlySpan<object?> arguments)
+        where TDelegate : Delegate
     {
         try
         {
-            del.DynamicInvoke(arguments);
+            del.DynamicInvoke(arguments.ToArray());
         }
         catch (Exception ex)
         {

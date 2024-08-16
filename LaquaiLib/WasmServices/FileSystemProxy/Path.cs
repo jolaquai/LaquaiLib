@@ -14,7 +14,7 @@ public class Path : IPath
     /// <inheritdoc cref="System.IO.Path.Combine(string, string, string, string)" />
     public string Combine(string path1, string path2, string path3, string path4) => System.IO.Path.Combine(path1, path2, path3, path4);
     /// <inheritdoc cref="System.IO.Path.Combine(string[])" />
-    public string Combine(string[] paths) => System.IO.Path.Combine(paths);
+    public string Combine(params ReadOnlySpan<string> paths) => System.IO.Path.Combine(paths);
     /// <inheritdoc cref="System.IO.Path.EndsInDirectorySeparator(ReadOnlySpan{char})" />
     public bool EndsInDirectorySeparator(ReadOnlySpan<char> path) => System.IO.Path.EndsInDirectorySeparator(path);
     /// <inheritdoc cref="System.IO.Path.EndsInDirectorySeparator(string)" />
@@ -80,7 +80,7 @@ public class Path : IPath
     /// <inheritdoc cref="System.IO.Path.Join(string, string, string)" />
     public string Join(string path1, string path2, string path3, string path4) => System.IO.Path.Join(path1, path2, path3, path4);
     /// <inheritdoc cref="System.IO.Path.Join(string[])" />
-    public string Join(string[] paths) => System.IO.Path.Join(paths);
+    public string Join(params ReadOnlySpan<string> paths) => System.IO.Path.Join(paths);
     /// <inheritdoc cref="System.IO.Path.TrimEndingDirectorySeparator(string)" />
     public string TrimEndingDirectorySeparator(string path) => System.IO.Path.TrimEndingDirectorySeparator(path);
     /// <inheritdoc cref="System.IO.Path.TrimEndingDirectorySeparator(ReadOnlySpan{char})" />

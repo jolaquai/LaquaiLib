@@ -45,7 +45,7 @@ public static class Assert
     /// <param name="other">The value to compare <paramref name="value"/> to.</param>
     /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
     /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-    /// <exception cref="AssertionFailureException">Thrown if <paramref name="value" /> is not greater than <paramrename="other" />.</exception>
+    /// <exception cref="AssertionFailureException{T}">Thrown if <paramref name="value" /> is not greater than <paramref name="other"/>.</exception>
     public static T IsGreaterThan<T>(T value, T other, string message = "") where T : IComparable<T>
     {
         return value.CompareTo(other) > 0

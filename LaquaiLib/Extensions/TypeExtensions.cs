@@ -13,101 +13,21 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static partial class TypeExtensions
 {
-    #region Type derivation / implementation stuff
-    /// <summary>
-    /// Returns a collection of all types that implement the supplied interface.
-    /// </summary>
-    /// <param name="type">The interface type to get the implementing types for.</param>
-    /// <returns>A collection of all types that implement the supplied interface.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="type"/> is not an interface type.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
-    public static IEnumerable<Type> GetInterfaceImplementingTypes(this Type type)
-    {
-        return !type.IsInterface
-            ? throw new ArgumentException("Supplied type must be an interface.", nameof(type))
-            : Assembly.GetAssembly(type) is Assembly assemblyOfInput
-            ? assemblyOfInput.GetTypes().Where(t => t.GetInterfaces().Contains(type))
-            : throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
-    }
-
-    /// <summary>
-    /// Returns a collection of all types that inherit from the supplied type.
-    /// </summary>
-    /// <param name="type">The type to get the options.Inheriting types for.</param>
-    /// <param name="anyDepth">Whether to include all types that inherit from the supplied type, regardless of hierarchy depth.</param>
-    /// <returns>A collection of all types that inherit from the supplied type.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
-    public static IEnumerable<Type> GetInheritingTypes(this Type type, bool anyDepth = false)
-    {
-        if (Assembly.GetAssembly(type) is not Assembly assemblyOfInput)
-        {
-            throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
-        }
-
-        var types = new List<Type>();
-        if (anyDepth)
-        {
-            var stack = new Stack<Type>();
-            stack.Push(type);
-            while (stack.Count > 0)
-            {
-                var current = stack.Pop();
-                types.Add(current);
-                foreach (var inheritingType in assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(current)))
-                {
-                    stack.Push(inheritingType);
-                }
-            }
-        }
-        else
-        {
-            types = assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type)).ToList();
-        }
-        return types.Except([type]).Distinct();
-    }
-
-    /// <summary>
-    /// Returns a collection of all types that inherit from the supplied type and are not abstract.
-    /// </summary>
-    /// <param name="type">The type to get the non-abstract options.Inheriting types for.</param>
-    /// <returns>A collection of all types that inherit from the supplied type and are not abstract.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
-    public static IEnumerable<Type> GetNonAbstractInheritingTypes(this Type type)
-    {
-        return Assembly.GetAssembly(type) is Assembly assemblyOfInput
-            ? assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type) && !t.IsAbstract)
-            : throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
-    }
-
-    /// <summary>
-    /// Returns a collection of all types that inherit from the supplied type and contain public constructors.
-    /// </summary>
-    /// <param name="type">The type to get the constructable options.Inheriting types for.</param>
-    /// <returns>A collection of all types that inherit from the supplied type and contain public constructors.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="type"/>'s assembly cannot be resolved.</exception>
-    public static IEnumerable<Type> GetConstructableInheritingTypes(this Type type)
-    {
-        return Assembly.GetAssembly(type) is Assembly assemblyOfInput
-            ? assemblyOfInput.GetTypes().Where(t => t.IsSubclassOf(type) && t.GetConstructors().Any(c => c.IsPublic))
-            : throw new ArgumentException("Supplied type must be part of an assembly.", nameof(type));
-    }
-    #endregion
-
     /// <summary>
     /// Attempts to instantiate a new object of the supplied <paramref name="type"/> using the given <paramref name="parameters"/>.
     /// </summary>
     /// <param name="type">A <see cref="Type"/> instance representing the type to instantiate.</param>
     /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
     /// <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
-    public static object? New(this Type type, params object?[]? parameters)
+    public static object? New(this Type type, params ReadOnlySpan<object?> parameters)
     {
         try
         {
-            if (parameters is null)
+            if (parameters.Length == 0)
             {
                 return Activator.CreateInstance(type);
             }
-            var types = parameters.Select(obj => obj?.GetType()).ToArray();
+            var types = parameters.ToArray(obj => obj?.GetType());
             return type.GetConstructor(types).New(parameters);
         }
         catch
@@ -244,51 +164,6 @@ public static partial class TypeExtensions
 
         return dict;
     }
-
-    /// <summary>
-    /// Determines whether an instance of this <see cref="Type"/> can be cast to the given <paramref name="other"/> <see cref="Type"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> of the instance to be cast.</param>
-    /// <param name="other">The <see cref="Type"/> to cast to.</param>
-    /// <returns><see langword="true"/> if an instance of <paramref name="type"/> can be cast to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
-    public static bool CanCastTo(this Type type, Type other)
-    {
-        try
-        {
-            Convert.ChangeType(Activator.CreateInstance(type), other);
-            return true;
-        }
-        catch (Exception ex)
-            when (ex is InvalidCastException
-                or FormatException
-                or OverflowException
-                or ArgumentNullException
-                or ArgumentException
-                or TargetInvocationException)
-        {
-            return false;
-        }
-        catch (Exception ex)
-            when (ex is MissingMethodException)
-        {
-            try
-            {
-                Convert.ChangeType(type.GetDefault(), other);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-    }
-    /// <summary>
-    /// Determines whether an instance of the given <paramref name="type"/> can be cast to this <see cref="Type"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to cast to.</param>
-    /// <param name="other">The <see cref="Type"/> of the instance to be cast.</param>
-    /// <returns><see langword="true"/> if an instance of <paramref name="other"/> can be cast to <paramref name="type"/>, otherwise <see langword="false"/>.</returns>
-    public static bool CanCastFrom(this Type type, Type other) => CanCastTo(other, type);
 
     #region Mappings
     private static readonly FrozenDictionary<TypeCode, TypeCode[]> _narrowingConversions = new Dictionary<TypeCode, TypeCode[]>()
@@ -449,25 +324,20 @@ public static partial class TypeExtensions
     /// <remarks>
     /// This method is not guaranteed to generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
     /// </remarks>
-    public static string Reflect(
-        this Type type,
-        ReflectionOptions? options = null
-    )
+    public static string Reflect(this Type type, ReflectionOptions options = default)
     {
-        options ??= ReflectionOptions.Default;
-
         var bindingFlags =
             BindingFlags.Public
             | BindingFlags.NonPublic
             | BindingFlags.Instance
             | BindingFlags.Static;
-        if (!options.Inherited)
+        if (!options.IncludeHierarchy)
         {
             bindingFlags |= BindingFlags.DeclaredOnly;
         }
 
         ArgumentNullException.ThrowIfNull(type);
-        if (type.IsSealed && options.Inherit is true)
+        if (type.IsSealed && options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
         {
             throw new TypeAccessException($"Cannot generate code for a type that inherits from sealed type '{type.GetFriendlyName()}'.");
         }
@@ -500,7 +370,7 @@ public static partial class TypeExtensions
                     itw.WriteLine();
                 }
 
-                if (options.Inherit is true)
+                if (options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
                 {
                     itw.WriteLine($" : {type.GetFriendlyName()}");
                 }
@@ -511,9 +381,9 @@ public static partial class TypeExtensions
                 itw.Indent++;
 
                 #region options.Inheriting is false
-                if (options.Inherit is false)
+                if (options.Inherit is ReflectionOptions.InheritanceBehavior.FieldDelegation)
                 {
-                    itw.WriteLine($"private readonly {type.GetFriendlyName()} _reflected = new {type.GetFriendlyName()}();");
+                    itw.WriteLine($"private readonly {type.GetFriendlyName()} _base = new {type.GetFriendlyName()}();");
                 }
                 #endregion
 
@@ -569,19 +439,17 @@ public static partial class TypeExtensions
                             itw.Write(" get => ");
                             switch (options.Inherit)
                             {
-                                case true
-                                    when !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit):
+                                case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit):
                                     itw.WriteLine($"base.{property.Name};");
                                     break;
-                                case false
-                                    when property.GetMethod.IsPublic:
-                                    itw.WriteLine($"this._reflected.{property.Name};");
+                                case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.GetMethod.IsPublic:
+                                    itw.WriteLine($"this._base.{property.Name};");
                                     break;
-                                case true:
-                                case false:
+                                case ReflectionOptions.InheritanceBehavior.Inherit:
+                                case ReflectionOptions.InheritanceBehavior.FieldDelegation:
                                     itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.get()' is not accessible.");""");
                                     break;
-                                case null:
+                                default:
                                     itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.get()' is not implemented.");""");
                                     break;
                             }
@@ -596,19 +464,17 @@ public static partial class TypeExtensions
                             itw.Write(" set => ");
                             switch (options.Inherit)
                             {
-                                case true
-                                    when !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit):
+                                case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit):
                                     itw.WriteLine($"base.{property.Name} = value;");
                                     break;
-                                case false
-                                    when property.SetMethod.IsPublic:
-                                    itw.WriteLine($"this._reflected.{property.Name} = value;");
+                                case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.SetMethod.IsPublic:
+                                    itw.WriteLine($"this._base.{property.Name} = value;");
                                     break;
-                                case true:
-                                case false:
+                                case ReflectionOptions.InheritanceBehavior.Inherit:
+                                case ReflectionOptions.InheritanceBehavior.FieldDelegation:
                                     itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.set()' is not accessible.");""");
                                     break;
-                                case null:
+                                default:
                                     itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.set()' is not implemented.");""");
                                     break;
                             }
@@ -626,7 +492,7 @@ public static partial class TypeExtensions
                 var methods = type
                     .GetMethods(bindingFlags)
                     .Where(m => !m.IsSpecialName
-                        && !FuncSignatureRegex().IsMatch(m.Name)
+                        && !UnspeakableMemberNameRegex().IsMatch(m.Name)
                         && (!options.IgnoreInaccessible
                             || !IsInaccessibleAsReflectedType(m.GetAccessibility(), options.Inherit)
                         )
@@ -670,19 +536,17 @@ public static partial class TypeExtensions
                     itw.Write(')');
                     switch (options.Inherit)
                     {
-                        case true
-                            when !IsInaccessibleAsReflectedType(accessibility, options.Inherit):
+                        case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(accessibility, options.Inherit):
                             itw.WriteLine($" => base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
                             break;
-                        case false
-                            when method.IsPublic:
-                            itw.WriteLine($" => this._reflected.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
+                        case ReflectionOptions.InheritanceBehavior.FieldDelegation when method.IsPublic:
+                            itw.WriteLine($" => this._base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
                             break;
-                        case true:
-                        case false:
+                        case ReflectionOptions.InheritanceBehavior.Inherit:
+                        case ReflectionOptions.InheritanceBehavior.FieldDelegation:
                             itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not accessible.");""");
                             break;
-                        case null:
+                        default:
                             itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not implemented.");""");
                             break;
                     }
@@ -709,30 +573,37 @@ public static partial class TypeExtensions
     private static string GetLeastAccessibleModifier(IEnumerable<string> modifiers)
     {
         var modifiersEnumerated = modifiers.ToArray();
+        if (modifiersEnumerated.Contains("private protected"))
+        {
+            return "private protected";
+        }
+        if (modifiersEnumerated.Contains("protected internal"))
+        {
+            return "protected internal";
+        }
         if (modifiersEnumerated.Contains("private")) // same type only
         {
             return "private";
         }
-        else
+        if (modifiersEnumerated.Contains("protected"))
         {
-            return modifiersEnumerated.Contains("private protected")
-                ? "private protected"
-                : modifiersEnumerated.Contains("protected")
-                    ? "protected"
-                    : modifiersEnumerated.Contains("internal")
-                        ? "internal"
-                        : modifiersEnumerated.Contains("protected internal") ? "protected internal" : "public";
+            return "protected";
         }
+        if (modifiersEnumerated.Contains("internal"))
+        {
+            return "internal";
+        }
+        return "public";
     }
-    private static bool IsInaccessibleAsReflectedType(string modifiers, bool? inheriting)
+    private static bool IsInaccessibleAsReflectedType(string modifiers, ReflectionOptions.InheritanceBehavior inheritance)
     {
         return modifiers.ToUpperInvariant() switch
         {
             "PRIVATE" => true,
             "PRIVATE PROTECTED" => true, // technically this COULD return true, but that would require the reflected type to be in the same assembly as the reflected type, which is... possible, but stupid
-            "PROTECTED" => inheriting is not true,
+            "PROTECTED" => inheritance is not ReflectionOptions.InheritanceBehavior.Inherit,
             "INTERNAL" => true,
-            "PROTECTED INTERNAL" => inheriting is not true,
+            "PROTECTED INTERNAL" => inheritance is not ReflectionOptions.InheritanceBehavior.Inherit,
             "PUBLIC" => false,
             _ => true
         };
@@ -874,5 +745,5 @@ public static partial class TypeExtensions
     <AppendFormatHelper>g__MoveNext|116_0(string, int[])
     */
     [GeneratedRegex(@"<.*?>\p{Ll}__(\p{L}|\p{Nd}|\||_)+?_\p{Nd}+?(?=\(.*?\))?", RegexOptions.ExplicitCapture)]
-    private static partial Regex FuncSignatureRegex();
+    private static partial Regex UnspeakableMemberNameRegex();
 }

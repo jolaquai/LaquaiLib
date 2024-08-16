@@ -32,6 +32,6 @@ public static class PropertyInfoExtensions
     {
         ArgumentNullException.ThrowIfNull(propertyInfo);
         var value = propertyInfo.GetValue(obj);
-        return value?.GetType().CanCastTo(typeof(T)) == true ? (T)value : default;
+        return value?.GetType().IsAssignableTo(typeof(T)) == true ? (T)value : default;
     }
 }

@@ -20,7 +20,25 @@ public static class StringExtensions
     /// <param name="source">The string to repeat.</param>
     /// <param name="count">The number of times to repeat <paramref name="source"/>.</param>
     /// <returns>A string consisting of <paramref name="source"/> repeated <paramref name="count"/> times.</returns>
-    public static string Repeat(this string source, int count) => string.Concat(Enumerable.Repeat(source, count));
+    public static string Repeat(this string source, int count)
+    {
+        var srcSpan = source.AsSpan();
+        var length = srcSpan.Length * count;
+
+        if (count < 3000)
+        {
+            // Benchmarking showed that Enumerable-based repetition is actually faster when the count is "relatively" low
+            return string.Concat(Enumerable.Repeat(source, count));
+        }
+
+        // However, Span-based repetition scales a LOT better for larger counts
+        Span<char> newStr = new char[length];
+        for (var i = 0; i < count; i += srcSpan.Length)
+        {
+            srcSpan.CopyTo(newStr[i..(i + srcSpan.Length)]);
+        }
+        return newStr.ToString();
+    }
 
     #region (Try)Replace overloads
     /// <summary>
@@ -167,8 +185,8 @@ public static class StringExtensions
     /// </summary>
     /// <param name="source">The <see cref="string"/> to modify.</param>
     /// <param name="remove">The <see cref="char"/>s to remove.</param>
-    /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
-    public static string Remove(this string source, params IEnumerable<char> remove) => string.Concat(source.Except(remove));
+    /// <returns>The original string with all occurrences of the <paramref name="remove"/> <see langword="char"/>s removed.</returns>
+    public static string Remove(this string source, params ReadOnlySpan<char> remove) => string.Concat(source.Except(remove.ToArray()));
     /// <summary>
     /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/> starting at the specified index.
     /// </summary>
@@ -176,7 +194,7 @@ public static class StringExtensions
     /// <param name="startIndex">The zero-based index at which to begin removing <see cref="char"/>s.</param>
     /// <param name="remove">The <see cref="char"/>s to remove.</param>
     /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
-    public static string Remove(this string source, int startIndex, params char[] remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
+    public static string Remove(this string source, int startIndex, params ReadOnlySpan<char> remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
 
     /// <summary>
     /// Removes all occurrences of the specified <see cref="string"/>s from this <see cref="string"/>.
@@ -184,7 +202,7 @@ public static class StringExtensions
     /// <param name="source">The <see cref="string"/> to modify.</param>
     /// <param name="remove">The <see cref="string"/>s to remove.</param>
     /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
-    public static string Remove(this string source, params string[] remove)
+    public static string Remove(this string source, params ReadOnlySpan<string> remove)
     {
         var ret = source;
         foreach (var r in remove)
@@ -200,7 +218,7 @@ public static class StringExtensions
     /// <param name="startIndex">The zero-based index at which to begin removing <see cref="string"/>s.</param>
     /// <param name="remove">The <see cref="string"/>s to remove.</param>
     /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
-    public static string Remove(this string source, int startIndex, params string[] remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
+    public static string Remove(this string source, int startIndex, params ReadOnlySpan<string> remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
     #endregion
 
     #region IndexOf... methods
