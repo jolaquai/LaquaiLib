@@ -43,7 +43,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// <summary>
     /// Initializes a new <see cref="TempArray{T}"/> with the given <paramref name="size"/> and initializes all elements with the given <paramref name="value"/>.
     /// </summary>
-    /// <param name="value">The value to initialize all elements with.</param>
+    /// <param name="value">The value to initialize all elements with. The assignment is shallow; if <typeparamref name="T"/> is a reference type, all elements will reference the same object.</param>
     /// <param name="size">The size of the array to create.</param>
     public TempArray(T value, int size)
     {
@@ -61,7 +61,8 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// <summary>
     /// The array of <typeparamref name="T"/> this <see cref="TempArray{T}"/> wraps.
     /// </summary>
-    public T[] Array {
+    public T[] Array
+    {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _array!);
@@ -88,7 +89,7 @@ public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquata
     /// <inheritdoc/>
     public bool IsReadOnly => _array!.IsReadOnly;
     /// <inheritdoc/>
-    public int Count => ((ICollection)_array!).Count;
+    public int Count => _array!.Length;
     /// <inheritdoc/>
     public bool IsSynchronized => _array!.IsSynchronized;
     /// <inheritdoc/>

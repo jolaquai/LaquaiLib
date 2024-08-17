@@ -137,7 +137,7 @@ public class RandomStream : Stream
         var exactly = (int)(destination.Length - destination.Position);
         using (var buffer = new TempArray<byte>(exactly))
         {
-            Read.ReadExactly(buffer.Array, 0, exactly);
+            ReadExactly(buffer.Array, 0, exactly);
             destination.Write(buffer.Array, 0, exactly);
         }
     }
@@ -152,14 +152,14 @@ public class RandomStream : Stream
         {
             while (destination.Length - destination.Position >= bufferSize)
             {
-                Read.ReadExactly(buffer.Array);
+                ReadExactly(buffer.Array);
                 destination.Write(buffer.Array);
             }
             var remaining = (int)(destination.Length - destination.Position);
             if (remaining > 0)
             {
                 var span = buffer.Array.AsSpan(0, remaining);
-                Read.ReadExactly(span);
+                ReadExactly(span);
                 destination.Write(span);
             }
         }
@@ -188,9 +188,9 @@ public class RandomStream : Stream
             if (remaining > 0)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await ReadAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
+                await ReadAsync(buffer.Array.AsMemory(0, remaining), cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
-                await destination.WriteAsync(buffer.Array, 0, remaining, cancellationToken).ConfigureAwait(false);
+                await destination.WriteAsync(buffer.Array.AsMemory(0, remaining), cancellationToken).ConfigureAwait(false);
             }
         }
     }

@@ -71,7 +71,7 @@ public class ObservableStream<T> : Stream
         }
 
         var oldPosition = Position;
-        var read = await _underlying.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+        var read = await _underlying.ReadAsync(buffer.AsMemory(offset, count), cancellationToken).ConfigureAwait(false);
         if (read > 0)
         {
             var memory = new ReadOnlyMemory<byte>(buffer, offset, read);
@@ -185,7 +185,7 @@ public class ObservableStream<T> : Stream
 
         var oldPosition = Position;
         var oldLength = Length;
-        await _underlying.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+        await _underlying.WriteAsync(buffer.AsMemory(offset, count), cancellationToken).ConfigureAwait(false);
 
         var memory = new ReadOnlyMemory<byte>(buffer, offset, count);
         DataWritten?.Invoke(this, new WrittenEventArgs(memory));
@@ -237,8 +237,8 @@ public class ObservableStream<T> : Stream
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
         while (Position != Length)
         {
-            var read = await ReadAsync(temp, 0, bufferSize, cancellationToken).ConfigureAwait(false);
-            await destination.WriteAsync(temp, 0, read, cancellationToken).ConfigureAwait(false);
+            var read = await ReadAsync(temp.AsMemory(0, bufferSize), cancellationToken).ConfigureAwait(false);
+            await destination.WriteAsync(temp.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
         }
         ArrayPool<byte>.Shared.Return(temp);
     }

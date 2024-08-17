@@ -208,7 +208,7 @@ public partial class MessageBoxFactory
     /// Asynchronously shows a message box using the specified <paramref name="configuration"/>.
     /// </summary>
     /// <param name="configuration">The <see cref="MessageBoxConfiguration"/> to use.</param>
-    /// <returns>A <see cref="Task{TResult}"/&gt;  that represents the user's interaction with the message box. It's <see cref="Task{TResult}.Result"/> is the result of that interaction.</returns>
+    /// <returns>A <see cref="Task{TResult}"/> that represents the user's interaction with the message box. It's <see cref="Task{TResult}.Result"/> is the result of that interaction.</returns>
     private Task<uint> ShowAsync(MessageBoxConfiguration configuration) => ShowAsync(configuration.OwnerHwnd, configuration.Text, configuration.Caption, configuration.Button, configuration.DefaultButton, configuration.Icon, configuration.Modality, configuration.OtherOptions);
     #endregion
 }
