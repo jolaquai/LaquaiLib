@@ -7,7 +7,8 @@ $packLoc = [System.IO.Path]::Combine($slnRoot, "Scripts", "pack")
     "LaquaiLib.Core",
     "LaquaiLib",
     "LaquaiLib.Windows",
-    "LaquaiLib.Compound"
+    "LaquaiLib.Compound",
+    "LaquaiLib.Oxml"
 )
 
 # Cmdline argument: Version to set to
