@@ -27,7 +27,7 @@ public static class ThrowHelper
         {
             if (!predicate(items[i]))
             {
-                throw Activator.CreateInstance(typeof(TException), constructorParamFactory(items[i])).Cast<TException>();
+                throw Activator.CreateInstance(typeof(TException), constructorParamFactory(items[i])).Cast<object, TException>();
             }
         }
     }

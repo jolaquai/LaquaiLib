@@ -23,7 +23,6 @@ public static class QueueExtensions
             queue.Enqueue(i);
         }
     }
-
     /// <summary>
     /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
     /// </summary>
@@ -53,7 +52,6 @@ public static class QueueExtensions
             queue.Enqueue(i);
         }
     }
-
     /// <summary>
     /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
     /// </summary>

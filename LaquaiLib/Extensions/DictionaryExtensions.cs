@@ -1,3 +1,6 @@
+using System.Collections.Concurrent;
+using System.Xml.Linq;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -72,6 +75,12 @@ public static class IDictionaryExtensions
             throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
         }
 
+        // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
+        if (source is ConcurrentDictionary<TKey, TValue> concurrent)
+        {
+            return concurrent.GetOrAdd(key, addValue);
+        }
+
         if (!source.TryGetValue(key, out var v))
         {
             source[key] = addValue;
@@ -101,6 +110,12 @@ public static class IDictionaryExtensions
             throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
         }
 
+        // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
+        if (source is ConcurrentDictionary<TKey, TValue> concurrent)
+        {
+            return concurrent.GetOrAdd(key, k => addValueFactory());
+        }
+
         if (!source.TryGetValue(key, out var v))
         {
             var addValue = addValueFactory();
@@ -112,19 +127,18 @@ public static class IDictionaryExtensions
             return v;
         }
     }
-
     /// <summary>
     /// Gets the value associated with the specified key or adds a new key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.
     /// </summary>
     /// <typeparam name="TKey">The type of the keys in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-    /// <typeparam name="TElement">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
+    /// <typeparam name="TValue">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to get the value from or add the value to. Must be mutable.</param>
     /// <param name="key">The key of the value to get or add.</param>
-    /// <param name="toAdd">The value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.</param>
+    /// <param name="addValue">The value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.</param>
     /// <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
     /// <returns><see langword="true"/> if the key was found in the <see cref="IDictionary{TKey, TValue}"/>, otherwise <see langword="false"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if the <see cref="IDictionary{TKey, TValue}"/> is not mutable.</exception>
-    public static bool GetOrAdd<TKey, TElement>(this IDictionary<TKey, TElement> source, TKey key, TElement toAdd, out TElement element)
+    public static bool GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, TValue addValue, out TValue element)
     {
         if (source.IsReadOnly)
         {
@@ -135,22 +149,29 @@ public static class IDictionaryExtensions
             return true;
         }
 
-        source.Add(key, toAdd);
-        element = toAdd;
+        // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
+        if (source is ConcurrentDictionary<TKey, TValue> concurrent)
+        {
+            element = concurrent.GetOrAdd(key, addValue);
+            return false;
+        }
+
+        source.Add(key, addValue);
+        element = addValue;
         return false;
     }
     /// <summary>
     /// Gets the value associated with the specified key or adds a new key/value pair produced by a factory to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.
     /// </summary>
     /// <typeparam name="TKey">The type of the keys in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-    /// <typeparam name="TElement">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
+    /// <typeparam name="TValue">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to get the value from or add the value to. Must be mutable.</param>
     /// <param name="key">The key of the value to get or add.</param>
-    /// <param name="toAdd">A factory <see cref="Func{TResult}"/> that produces the value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist. This overload is useful when constructing the value is expensive and should only be done when necessary.</param>
+    /// <param name="addValueFactory">A factory <see cref="Func{TResult}"/> that produces the value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist. This overload is useful when constructing the value is expensive and should only be done when necessary.</param>
     /// <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
     /// <returns><see langword="true"/> if the key was found in the <see cref="IDictionary{TKey, TValue}"/>, otherwise <see langword="false"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if the dictionary is not mutable.</exception>
-    public static bool GetOrAdd<TKey, TElement>(this IDictionary<TKey, TElement> source, TKey key, Func<TElement> toAdd, out TElement element)
+    public static bool GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> source, TKey key, Func<TValue> addValueFactory, out TValue element)
     {
         if (source.IsReadOnly)
         {
@@ -161,7 +182,14 @@ public static class IDictionaryExtensions
             return true;
         }
 
-        var newValue = toAdd();
+        // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
+        if (source is ConcurrentDictionary<TKey, TValue> concurrent)
+        {
+            element = concurrent.GetOrAdd(key, k => addValueFactory());
+            return false;
+        }
+
+        var newValue = addValueFactory();
         source.Add(key, newValue);
         element = newValue;
         return false;
@@ -187,6 +215,12 @@ public static class IDictionaryExtensions
             throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
         }
 
+        // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
+        if (source is ConcurrentDictionary<TKey, TValue> concurrent)
+        {
+            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
+        }
+
         source[key] = !source.TryGetValue(key, out var old) ? addValue : updateValueFactory(old);
     }
     /// <summary>
@@ -207,6 +241,12 @@ public static class IDictionaryExtensions
         if (source.IsReadOnly)
         {
             throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
+        }
+
+        // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
+        if (source is ConcurrentDictionary<TKey, TValue> concurrent)
+        {
+            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
         }
 
         source[key] = !source.TryGetValue(key, out var old) ? addValue : updateValueFactory(old, addValue);
@@ -230,6 +270,12 @@ public static class IDictionaryExtensions
         if (source.IsReadOnly)
         {
             throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
+        }
+
+        // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
+        if (source is ConcurrentDictionary<TKey, TValue> concurrent)
+        {
+            concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
         }
 
         source[key] = !source.TryGetValue(key, out var old) ? addValueFactory() : updateValueFactory(old);

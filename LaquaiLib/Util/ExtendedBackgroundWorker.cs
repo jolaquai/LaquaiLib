@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Util;
 
@@ -26,7 +25,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         {
             DoWork += doWork;
         }
-        else if (Unsafe.As<DoWorkEventHandler>(work) is DoWorkEventHandler _doWork)
+        else if (System.Runtime.CompilerServices.Unsafe.As<DoWorkEventHandler>(work) is DoWorkEventHandler _doWork)
         {
             DoWork += _doWork;
         }
@@ -58,7 +57,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
             {
                 DoWork += doWork;
             }
-            else if (Unsafe.As<DoWorkEventHandler>(w) is DoWorkEventHandler _doWork)
+            else if (System.Runtime.CompilerServices.Unsafe.As<DoWorkEventHandler>(w) is DoWorkEventHandler _doWork)
             {
                 DoWork += _doWork;
             }

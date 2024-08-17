@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Extensions;
 
@@ -94,5 +95,56 @@ public static class AnyExtensions
     {
         await action(source).ConfigureAwait(false);
         return source;
+    }
+
+    /// <summary>
+    /// Casts an instance of <typeparamref name="TFrom"/> to <typeparamref name="TFrom"/>.
+    /// </summary>
+    /// <typeparam name="TFrom">The type to cast <paramref name="obj"/> to.</typeparam>
+    /// <typeparam name="TTo">The type of <paramref name="obj"/>.</typeparam>
+    /// <param name="obj">The <typeparamref name="TFrom"/> instance to cast.</param>
+    /// <returns>An instance of <typeparamref name="TFrom"/> that has been produced by casting <paramref name="obj"/>.</returns>
+    public static TTo Cast<TFrom, TTo>(this TFrom obj)
+        where TFrom : allows ref struct
+        where TTo : allows ref struct
+    {
+        // Use As for reference types, additionally checking for assignment compatibility
+        if ((default(TFrom) is null || default(TTo) is null))
+        {
+            if (typeof(TTo).IsAssignableFrom(typeof(TFrom)))
+            {
+                return System.Runtime.CompilerServices.Unsafe.As<TFrom, TTo>(ref obj);
+            }
+            else
+            {
+                throw new InvalidCastException($"Cannot cast {typeof(TFrom)} to {typeof(TTo)}.");
+            }
+        }
+
+        unsafe
+        {
+            if (sizeof(TFrom) == sizeof(TTo))
+            {
+                // If the sizes are equal, just reinterpret the bits
+                // As far as casting unrelated struct types between each other, this is the same as using As
+                return System.Runtime.CompilerServices.Unsafe.BitCast<TFrom, TTo>(obj);
+            }
+        }
+        // We can't use As here, otherwise the "cast" will always succeed
+        throw new InvalidCastException($"Cannot cast {typeof(TFrom)} to {typeof(TTo)}.");
+    }
+    /// <summary>
+    /// Changes the type of an instance of <typeparamref name="TFrom"/> to <typeparamref name="TTo"/>, even for reference types.
+    /// </summary>
+    /// <typeparam name="TFrom">The type of <paramref name="obj"/>.</typeparam>
+    /// <typeparam name="TTo">The type to cast <paramref name="obj"/> to.</typeparam>
+    /// <param name="obj">The <see cref="object"/> to cast.</param>
+    /// <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="TTo"/> or the <see langword="default"/> value of <typeparamref name="TTo"/> if the cast failed.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static TTo As<TFrom, TTo>(this TFrom obj)
+        where TFrom : allows ref struct
+        where TTo : allows ref struct
+    {
+        return System.Runtime.CompilerServices.Unsafe.As<TFrom, TTo>(ref obj);
     }
 }
