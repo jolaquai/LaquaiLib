@@ -1,14 +1,7 @@
-using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
-
-using DocumentFormat.OpenXml.Bibliography;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
@@ -36,8 +29,17 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-
         Debugger.Break();
+    }
+
+    private static string ReplaceLegacy(string source, IEnumerable<string> searches, string replace)
+    {
+        var ret = source;
+        foreach (var search in searches)
+        {
+            ret = ret.Replace(search, replace);
+        }
+        return ret;
     }
 }
 

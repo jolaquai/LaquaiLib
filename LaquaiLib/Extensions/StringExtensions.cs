@@ -58,7 +58,7 @@ public static class StringExtensions
         return input;
     }
     /// <summary>
-    /// Creates a new string from this string with all occurrences <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
+    /// Creates a new string from this string with all occurrences of <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
     /// </summary>
     /// <param name="source">The string to perform replacements in.</param>
     /// <param name="search">The string to search for in <paramref name="source"/>.</param>
@@ -82,7 +82,7 @@ public static class StringExtensions
         return source;
     }
     /// <summary>
-    /// Creates a new string from this string with all occurrences <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
+    /// Creates a new string from this string with all occurrences of <paramref name="search"/> replaced with strings produced by <paramref name="replaceFactory"/>. Allows for stateful replacements.
     /// </summary>
     /// <param name="source">The string to perform replacements in.</param>
     /// <param name="search">The string to search for in <paramref name="source"/>.</param>
