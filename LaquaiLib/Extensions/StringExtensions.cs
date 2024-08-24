@@ -120,39 +120,6 @@ public static class StringExtensions
         replaced = source.Replace(search, replacement, stringComparison);
         return replaced.Equals(source, stringComparison);
     }
-    /// <summary>
-    /// Creates a new string from this string with all occurrences of any string that is not contained in <paramref name="except"/> replaced with <paramref name="replace"/>.
-    /// </summary>
-    /// <param name="source">The string to perform replacements in.</param>
-    /// <param name="except">A collection of strings to except from replacement in <paramref name="source"/>.</param>
-    /// <param name="replace">The replacement for occurrences of strings that are not in <paramref name="except"/>.</param>
-    /// <returns>A string as described.</returns>
-    public static string ReplaceExcept(this string source, IEnumerable<string> except, string replace)
-    {
-        var replacedChars = new HashSet<char>();
-        foreach (var exceptString in except)
-        {
-            foreach (var c in exceptString)
-            {
-                replacedChars.Add(c);
-            }
-        }
-
-        var result = new StringBuilder();
-        foreach (var c in source)
-        {
-            if (replacedChars.Contains(c))
-            {
-                result.Append(c);
-            }
-            else
-            {
-                result.Append(replace);
-            }
-        }
-
-        return result.ToString();
-    }
     #endregion
 
     /// <summary>
@@ -591,14 +558,14 @@ public static class StringExtensions
     /// <param name="source">The string to search.</param>
     /// <param name="transform">The function used to transform each line of the input string.</param>
     /// <returns>The transformed string.</returns>
-    public static string ForEachLine(this string source, Func<string, string> transform) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select(line => transform(line)));
+    public static string SelectLines(this string source, Func<string, string> transform) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select(line => transform(line)));
     /// <summary>
     /// Applies a <paramref name="transform"/> function to each line of a string, incorporating each line's index in the function.
     /// </summary>
     /// <param name="source">The string to search.</param>
     /// <param name="transform">The function used to transform each line of the input string.</param>
     /// <returns>The transformed string.</returns>
-    public static string ForEachLine(this string source, Func<string, int, string> transform) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select((line, index) => transform(line, index)));
+    public static string SelectLines(this string source, Func<string, int, string> transform) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select((line, index) => transform(line, index)));
     /// <summary>
     /// Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
     /// </summary>
@@ -606,7 +573,7 @@ public static class StringExtensions
     /// <param name="transform">The function used to transform each line of the input string.</param>
     /// <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
     /// <returns></returns>
-    public static string ForEachLine(this string source, Func<string, string> transform, Func<string, bool> predicate) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select(line => predicate(line) ? transform(line) : line));
+    public static string SelectLines(this string source, Func<string, string> transform, Func<string, bool> predicate) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select(line => predicate(line) ? transform(line) : line));
     /// <summary>
     /// Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>, incorporating each line's index in the functions. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
     /// </summary>
@@ -614,7 +581,7 @@ public static class StringExtensions
     /// <param name="transform">The function used to transform each line of the input string.</param>
     /// <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
     /// <returns></returns>
-    public static string ForEachLine(this string source, Func<string, int, string> transform, Func<string, int, bool> predicate) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select((line, index) => predicate(line, index) ? transform(line, index) : line));
+    public static string SelectLines(this string source, Func<string, int, string> transform, Func<string, int, bool> predicate) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select((line, index) => predicate(line, index) ? transform(line, index) : line));
 
     /// <summary>
     /// Executes an <paramref name="action"/> for each line of a <see langword="string"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line.

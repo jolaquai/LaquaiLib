@@ -530,7 +530,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
-    /// <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
+    /// <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
     public static T? OnlyOrDefault<T>(this IEnumerable<T> source, T defaultValue = default)
     {
         try
@@ -550,7 +550,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <param name="predicate">The condition to check for.</param>
     /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
-    /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no elements or more than one element.</returns>
+    /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
     public static T? OnlyOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate, T defaultValue = default)
     {
         try

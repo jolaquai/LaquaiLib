@@ -29,17 +29,12 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        Debugger.Break();
-    }
-
-    private static string ReplaceLegacy(string source, IEnumerable<string> searches, string replace)
-    {
-        var ret = source;
-        foreach (var search in searches)
+        foreach (var firefox in Process.GetProcessesByName("firefox"))
         {
-            ret = ret.Replace(search, replace);
+            firefox.PriorityClass = ProcessPriorityClass.High;
         }
-        return ret;
+
+        Debugger.Break();
     }
 }
 

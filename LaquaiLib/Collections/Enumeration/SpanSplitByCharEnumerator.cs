@@ -1,7 +1,7 @@
 ﻿namespace LaquaiLib.Collections.Enumeration;
 
 /// <summary>
-/// Implements the enumerator pattern to enumerate the segments in a source <see cref="ReadOnlySpan{T}"/> of <see langword="char"/>s that are separated by any of the <paramref name="char"/>s specified by <paramref name="chars"/>.
+/// Implements the enumerator pattern to enumerate the segments in a source <see cref="ReadOnlySpan{T}"/> of <see langword="char"/>s that are separated by any of the <see langword="char"/>s specified by <paramref name="chars"/>.
 /// </summary>
 /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
 /// <param name="chars">The <see langword="char"/>s to use as delimiters.</param>
