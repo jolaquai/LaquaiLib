@@ -165,6 +165,14 @@ public static class MemoryExtensions
     /// <param name="span">The source <see cref="ReadOnlySpan{T}"/> of <see langword="byte"/>.</param>
     /// <param name="ptr">The pointer to the position in the <paramref name="span"/> from which to read the value.</param>
     /// <returns>An instance of <typeparamref name="T"/> read from the <paramref name="span"/>.</returns>
+    /// <remarks>
+    /// There are several special-cased types.
+    /// <list type="bullet">
+    /// <item/><see langword="string"/>s are read using <see cref="ReadString(ReadOnlySpan{byte}, ref int, Encoding)"/> instead of pointer casts.
+    /// <item/><see langword="byte"/>s require no cast at all.
+    /// <item/><see langword="bool"/>s are normalized to hold a value of exactly <c>1</c> or <c>0</c>.
+    /// </list>
+    /// </remarks>
     /// <exception cref="ArgumentException">Thrown if <typeparamref name="T"/> is any reference type except <see langword="string"/>.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="span"/> is empty.</exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="ptr"/> lies outside the bounds of the <paramref name="span"/>.</exception>
@@ -185,11 +193,7 @@ public static class MemoryExtensions
         {
             throw new ArgumentException($"The pointer is outside the bounds of the span (length {span.Length}, pointer target is offset {ptr}).");
         }
-        int sizeOfT;
-        unsafe
-        {
-            sizeOfT = sizeof(T);
-        }
+        var sizeOfT = Marshal.SizeOf<T>();
         if (ptr + sizeOfT > span.Length)
         {
             throw new ArgumentException($"The requested value of type {typeOfT.Name} is too large to be read from the span (length {span.Length}, required range is [{ptr}..{ptr + sizeOfT}]).");
@@ -230,6 +234,14 @@ public static class MemoryExtensions
     /// <param name="memory">The source <see cref="ReadOnlyMemory{T}"/> of <see langword="byte"/>.</param>
     /// <param name="ptr">The pointer to the position in the <paramref name="memory"/> from which to read the value.</param>
     /// <returns>An instance of <typeparamref name="T"/> read from the <paramref name="memory"/>.</returns>
+    /// <remarks>
+    /// There are several special-cased types.
+    /// <list type="bullet">
+    /// <item/><see langword="string"/>s are read using <see cref="ReadString(ReadOnlySpan{byte}, ref int, Encoding)"/> instead of pointer casts.
+    /// <item/><see langword="byte"/>s require no cast at all.
+    /// <item/><see langword="bool"/>s are normalized to hold a value of exactly <c>1</c> or <c>0</c>.
+    /// </list>
+    /// </remarks>
     /// <exception cref="ArgumentException">Thrown if <typeparamref name="T"/> is any reference type except <see langword="string"/>.</exception>
     /// <exception cref="ArgumentException">Thrown if the <paramref name="memory"/> is empty.</exception>
     /// <exception cref="ArgumentException">Thrown if <paramref name="ptr"/> lies outside the bounds of the <paramref name="memory"/>.</exception>
