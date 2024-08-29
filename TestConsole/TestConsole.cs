@@ -29,11 +29,6 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        foreach (var firefox in Process.GetProcessesByName("firefox"))
-        {
-            firefox.PriorityClass = ProcessPriorityClass.High;
-        }
-
         Debugger.Break();
     }
 }

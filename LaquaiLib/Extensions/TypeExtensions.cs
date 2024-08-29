@@ -1,6 +1,8 @@
 using System.CodeDom.Compiler;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -35,7 +37,6 @@ public static partial class TypeExtensions
             return default;
         }
     }
-
     /// <summary>
     /// Returns a (potentially boxed) instance of the default value for the supplied type.
     /// </summary>
@@ -102,7 +103,6 @@ public static partial class TypeExtensions
 
         return dict;
     }
-
     /// <summary>
     /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all static fields and properties of the supplied type, optionally calling all parameterless methods that do not return void.
     /// </summary>
@@ -737,6 +737,184 @@ public static partial class TypeExtensions
         return AsKeyword(operateOn);
     }
     private static string AsKeyword(string type) => _typeKeywordMap.TryGetValue(type, out var keyword) ? keyword : type;
+
+    /// <summary>
+    /// Determines whether the specified <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to check.</param>
+    /// <param name="returnType">An <see langword="out"/> variable that receives the <see cref="Func{TResult}"/> <see langword="delegate"/> overload that the <paramref name="type"/> is assignable to, if any.</param>
+    /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
+    public static bool IsFunc(this Type type, [NotNullWhen(true)] out Type returnType)
+    {
+        returnType = null;
+        if (!type.IsGenericType)
+        {
+            return false;
+        }
+
+        var gtd = type.GetGenericTypeDefinition();
+        if (gtd == typeof(Func<>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+        else if (gtd == typeof(Func<,,,,,,,,,,,,,,,,>))
+        {
+            returnType = type;
+        }
+
+        if (returnType is not null)
+        {
+            returnType = returnType.GetGenericArguments()[^1];
+            return true;
+        }
+        return false;
+    }
+    /// <summary>
+    /// Determines whether the specified <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to check.</param>
+    /// <param name="takesParameters">Whether the <paramref name="type"/> takes parameters. If <see langword="false"/>, <paramref name="type"/> is not generic.</param>
+    /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
+    public static bool IsAction(this Type type, out bool takesParameters)
+    {
+        takesParameters = false;
+        if (type == typeof(Action))
+        {
+            return true;
+        }
+
+        takesParameters = true;
+        var gtd = type.GetGenericTypeDefinition();
+        if (gtd == typeof(Action<>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,,,,,,,>))
+        {
+            return true;
+        }
+        else if (gtd == typeof(Action<,,,,,,,,,,,,,,,>))
+        {
+            return true;
+        }
+        return false;
+    }
 
     /*
     System.String <<>m0>b__0_0(System.String)
