@@ -5,6 +5,7 @@ using System.Text.Json.Nodes;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
+using LaquaiLib.Util.WpfForms;
 
 namespace TestConsole;
 
@@ -28,6 +29,9 @@ public partial class TestConsole
     public static async ValueTask ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
+
+        while(true)
+        cw(string.Join(", ", VirtualKeyUtils.GetToggleState)));
 
         Debugger.Break();
     }

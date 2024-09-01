@@ -144,11 +144,17 @@ public static partial class VirtualKeyUtils
     public static bool GetKeyState(VirtualKey vk) => (Interop.GetKeyState((uint)vk) & Interop.msbShort) != 0;
     /// <summary>
     /// Gets the toggle state of the specified virtual key.
-    /// The return value is meaningless for keys that are not toggle keys.
     /// </summary>
     /// <param name="vk">The virtual key to get the toggle state of.</param>
     /// <returns><see langword="true"/> if the key is toggled on, otherwise <see langword="false"/>.</returns>
-    public static bool GetToggleState(VirtualKey vk) => (Interop.GetKeyState((uint)vk) & Interop.lsb) != 0;
+    public static bool GetToggleState(VirtualKey vk)
+    {
+        if (!Array.Exists(ToggleKeys, k => k == vk))
+            throw new ArgumentException("The specified virtual key is not a toggle key.", nameof(vk));
+
+        return (Interop.GetKeyState((uint)vk) & Interop.lsb) != 0;
+    }
+
     /// <summary>
     /// Returns an array all <see cref="VirtualKey"/>s that are currently pressed or toggled on if the key is a toggle key.
     /// </summary>

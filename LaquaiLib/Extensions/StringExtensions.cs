@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Extensions;
@@ -145,6 +146,57 @@ public static class StringExtensions
     /// <param name="source">The <see cref="string"/> to convert.</param>
     /// <returns><paramref name="source"/> in title case according to the invariant culture.</returns>
     public static string ToTitleInvariant(this string source) => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(source);
+
+    /// <summary>
+    /// "Transparently" splits a <see langword="string"/> at each match of the specified <see cref="Regex"/>; that is, the return value details both the <see langword="string"/>s that were split out of the original and the separators that were used to split them.
+    /// </summary>
+    /// <param name="source">The <see langword="string"/> to split.</param>
+    /// <param name="splitBy">A <see cref="Regex"/> instance that specifies the pattern to split by.</param>
+    /// <param name="options"><see cref="StringSplitOptions"/> to apply to the split operation.</param>
+    /// <returns>An array of tuples, each containing a split <see langword="string"/> and the separator that was used to split it.</returns>
+    public static (string Value, string Separator)[] TransparentSplit(this string source, Regex splitBy, StringSplitOptions options = StringSplitOptions.None)
+    {
+        var lastIndex = 0;
+        var matches = System.Runtime.CompilerServices.Unsafe.As<IEnumerable<Match>>(splitBy.Matches(source)).ToArray();
+        var result = new List<(string Value, string Separator)>(matches.Length);
+
+        for (var i = 0; i < matches.Length; i++)
+        {
+            var match = matches[i];
+            var separator = match.Value;
+            var value = source[lastIndex..match.Index];
+            if (options.HasFlag(StringSplitOptions.TrimEntries))
+            {
+                value = value.Trim();
+            }
+            result.Add((value, separator));
+            lastIndex = match.Index + separator.Length;
+        }
+
+        var lastValue = source[lastIndex..];
+        if (options != StringSplitOptions.RemoveEmptyEntries || !string.IsNullOrWhiteSpace(lastValue))
+        {
+            result.Add((lastValue, ""));
+        }
+
+        return result.ToArray();
+    }
+    /// <summary>
+    /// "Transparently" splits a <see langword="string"/> at each match of the specified <see cref="Regex"/>; that is, the return value details both the <see langword="string"/>s that were split out of the original and the separators that were used to split them.
+    /// </summary>
+    /// <param name="source">The <see langword="string"/> to split.</param>
+    /// <param name="options"><see cref="StringSplitOptions"/> to apply to the split operation.</param>
+    /// <param name="splitStrings">Any number of <see langword="string"/>s to split the original by. These are considered literals, not <see cref="Regex"/> patterns.</param>
+    /// <returns>An array of tuples, each containing a split <see langword="string"/> and the separator that was used to split it.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static (string Value, string Separator)[] TransparentSplit(this string source, StringSplitOptions options = StringSplitOptions.None, params string[] splitStrings)
+    {
+        // Maybe add more/other options to this? Would take careful considerations considering we don't know what's in splitStrings
+        // Regex.Escape feels like the safest option right now
+        // This is also slow as fuck from all points of view, but nothing we do here would speed it up (RegexOptions.Compiled etc.)
+        var regex = new Regex(string.Join("|", splitStrings.Select(Regex.Escape)), RegexOptions.ExplicitCapture);
+        return TransparentSplit(source, regex, options);
+    }
 
     #region Remove overloads
     /// <summary>
@@ -642,7 +694,6 @@ public static class StringExtensions
             index++;
         }
     }
-
     #endregion
 
     #region String similarity
