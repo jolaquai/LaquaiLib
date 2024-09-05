@@ -6,12 +6,13 @@ namespace LaquaiLib.Extensions;
 public static class ArrayExtensions
 {
     /// <summary>
-    /// Uses the default order to transform the <see cref="Array"/> of <typeparamref name="T"/> to an <see cref="IEnumerable{T}"/> of <typeparamref name="T"/>. This allows using Linq methods on multi-dimensional <see cref="Array"/>s.
+    /// Reinterprets the reference to <paramref name="source"/> as <see cref="IEnumerable{T}"/> of <typeparamref name="T"/>.
+    /// This allows using Linq methods on multi-dimensional <see cref="Array"/>s.
     /// </summary>
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
     /// <param name="source">The <see cref="Array"/> to transform.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> that contains the transformed elements from the input sequence.</returns>
-    public static IEnumerable<T> AsEnumerable<T>(this Array source) => Enumerable.Cast<T>(source);
+    public static IEnumerable<T> AsEnumerable<T>(this Array source) => System.Runtime.CompilerServices.Unsafe.As<IEnumerable<T>>(source);
 
     /// <summary>
     /// Splits the specified <paramref name="array"/> into two new <see cref="Array"/>s based on the given <paramref name="predicate"/>.
