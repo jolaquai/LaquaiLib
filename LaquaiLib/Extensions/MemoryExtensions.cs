@@ -85,28 +85,10 @@ public static class MemoryExtensions
     /// This can be used to chain calls to this method.
     /// </returns>
     /// <exception cref="ArgumentException">Thrown if the target <paramref name="memory"/> cannot accomodate the specified <paramref name="data"/> instance.</exception>
-    public static Memory<byte> FormatInto<T>(this Memory<byte> memory, T data, int index = 0)
-        where T : unmanaged
+    public static Memory<byte> FormatInto<T>(this Memory<byte> memory, T data, int index = 0) where T : unmanaged
     {
-        if (index > 0)
-        {
-            memory = memory[index..];
-        }
-
-        var size = Marshal.SizeOf(data);
-        if (memory.Length < size)
-        {
-            throw new ArgumentException($"The target {nameof(memory)} cannot accomodate the specified {nameof(data)} instance (need {size} bytes, have {memory.Length}).");
-        }
-
-        // Cool thing is, mem pointer magic does all of what we need to do here
-        unsafe
-        {
-            var bytes = MemoryMarshal.AsBytes(new ReadOnlySpan<T>(&data, 1));
-            bytes.CopyTo(memory.Span);
-        }
-
-        return memory[size..];
+        memory.Span.FormatInto(data, index);
+        return memory[Marshal.SizeOf(data)..];
     }
 
     /// <summary>
@@ -156,6 +138,7 @@ public static class MemoryExtensions
     /// Reading to the end of the <paramref name="memory"/> without encountering a <c>\0</c> <see langword="byte"/> is considered illegal behavior and will throw an exception.
     /// </remarks>
     /// <exception cref="ArgumentException">Thrown if the specified <paramref name="memory"/> ends before a null terminator was encountered.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string ReadString(this ReadOnlyMemory<byte> memory, ref int ptr, Encoding encoding = null) => memory.Span.ReadString(ref ptr, encoding);
 
     /// <summary>
@@ -248,4 +231,33 @@ public static class MemoryExtensions
     /// <exception cref="ArgumentException">Thrown if the requested value of type <typeparamref name="T"/> is too large to be read from the <paramref name="memory"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T Read<T>(this ReadOnlyMemory<byte> memory, ref int ptr) where T : struct => memory.Span.Read<T>(ref ptr);
+
+    /// <summary>
+    /// Reads <paramref name="count"/> consecutive values of type <typeparamref name="T"/> from the specified <paramref name="span"/> at the specified <paramref name="ptr"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the values to read.</typeparam>
+    /// <param name="span">The source <see cref="ReadOnlySpan{T}"/> of <see langword="byte"/>.</param>
+    /// <param name="ptr">The pointer to the position in the <paramref name="span"/> from which to read the values.</param>
+    /// <param name="count">The number of values to read.</param>
+    /// <returns>An array of <typeparamref name="T"/> of type <paramref name="count"/> read from the <paramref name="span"/>.</returns>
+    public static T[] Read<T>(this ReadOnlySpan<byte> span, ref int ptr, int count)
+        where T : struct
+    {
+        var ret = new T[count];
+        for (var i = 0; i < count; i++)
+        {
+            ret[i] = span.Read<T>(ref ptr);
+        }
+        return ret;
+    }
+    /// <summary>
+    /// Reads <paramref name="count"/> consecutive values of type <typeparamref name="T"/> from the specified <paramref name="memory"/> at the specified <paramref name="ptr"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the values to read.</typeparam>
+    /// <param name="memory">The source <see cref="ReadOnlyMemory{T}"/> of <see langword="byte"/>.</param>
+    /// <param name="ptr">The pointer to the position in the <paramref name="memory"/> from which to read the values.</param>
+    /// <param name="count">The number of values to read.</param>
+    /// <returns>An array of <typeparamref name="T"/> of type <paramref name="count"/> read from the <paramref name="memory"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T[] Read<T>(this ReadOnlyMemory<byte> memory, ref int ptr, int count) where T : struct => memory.Span.Read<T>(ref ptr, count);
 }

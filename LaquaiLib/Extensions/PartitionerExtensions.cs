@@ -25,7 +25,7 @@ public static class PartitionerExtensions
             {
                 list.Add(enumerator.AsEnumerable().ToArray());
             }
-        }
+        } 
         return list;
     }
     /// <summary>

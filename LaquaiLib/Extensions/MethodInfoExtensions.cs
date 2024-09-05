@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Extensions;
 
@@ -12,6 +13,7 @@ public static class MethodInfoExtensions
     /// </summary>
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is a property getter or setter.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsGetterOrSetter(this MethodInfo methodInfo) => IsGetter(methodInfo) || IsSetter(methodInfo);
 
     /// <summary>
@@ -19,12 +21,14 @@ public static class MethodInfoExtensions
     /// </summary>
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is a property getter.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsGetter(this MethodInfo methodInfo) => methodInfo.Name.StartsWith("get_") && methodInfo.GetParameters().Length == 0;
     /// <summary>
     /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is a property setter.
     /// </summary>
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is a property setter.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsSetter(this MethodInfo methodInfo) => methodInfo.Name.StartsWith("set_") && methodInfo.GetParameters().Length == 1;
 
     /// <summary>
@@ -32,6 +36,7 @@ public static class MethodInfoExtensions
     /// </summary>
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is an event subscription adder or remover.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAdderOrRemover(this MethodInfo methodInfo) => IsAdder(methodInfo) || IsRemover(methodInfo);
 
     /// <summary>
@@ -39,12 +44,14 @@ public static class MethodInfoExtensions
     /// </summary>
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is an event subscription adder.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAdder(this MethodInfo methodInfo) => methodInfo.Name.StartsWith("add_") && methodInfo.GetParameters().Length == 1;
     /// <summary>
     /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is an event subscription remover.
     /// </summary>
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is an event subscription remover.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsRemover(this MethodInfo methodInfo) => methodInfo.Name.StartsWith("remove_") && methodInfo.GetParameters().Length == 1;
 
     /// <summary>
@@ -52,6 +59,7 @@ public static class MethodInfoExtensions
     /// </summary>
     /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns>A value indicating whether the method is an accessor.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsAccessor(this MethodInfo methodInfo) => methodInfo.IsGetterOrSetter() || methodInfo.IsAdderOrRemover();
 
     /// <summary>
@@ -59,10 +67,17 @@ public static class MethodInfoExtensions
     /// </summary>
     /// <param name="methodInfo">The <see cref="MethodInfo"/> instance representing the method to check.</param>
     /// <returns><see langword="true"/> if the method is marked <see langword="extern"/>, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsExtern(this MethodInfo methodInfo) => methodInfo.GetMethodBody() is null;
+    /// <summary>
+    /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is marked <see langword="partial"/>.
+    /// </summary>
+    /// <param name="methodInfo">The <see cref="MethodInfo"/> instance representing the method to check.</param>
+    /// <returns><see langword="true"/> if the method is marked <see langword="partial"/>, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsPartial(this MethodInfo methodInfo)
     {
         var type = methodInfo.DeclaringType;
-        return type?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).Count(m => m.Name == methodInfo.Name || m.Name.IndexOf($"<{methodInfo.Name}>", StringComparison.OrdinalIgnoreCase) != -1) > 1;
+        return type?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).Count(m => m.Name == methodInfo.Name || m.Name.Contains($"<{methodInfo.Name}>", StringComparison.OrdinalIgnoreCase)) > 1;
     }
 }

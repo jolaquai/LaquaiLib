@@ -41,14 +41,8 @@ public static class ICollectionExtensions
     /// <exception cref="ArgumentException"></exception>
     public static Span<T> SpanOver<T>(this ICollection<T> collection, int start = 0, int length = 0)
     {
-        if (start < 0 || start >= collection.Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(start), "The start index is out of range.");
-        }
-        if (length < 0 || start + length > collection.Count)
-        {
-            throw new ArgumentOutOfRangeException(nameof(length), "The length is out of range.");
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(start);
+        ArgumentOutOfRangeException.ThrowIfNegative(length);
 
         if (collection is T[] arr)
         {
@@ -56,7 +50,7 @@ public static class ICollectionExtensions
         }
         if (collection is List<T> list && list.TryGetBackingStore(out var backingStore, out _, out var arrLength))
         {
-            if (length > arrLength)
+            if (start + length > arrLength)
             {
                 throw new ArgumentOutOfRangeException(nameof(length), "The length is out of range with respect to the backing store.");
             }

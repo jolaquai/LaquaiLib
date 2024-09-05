@@ -7,7 +7,7 @@ namespace LaquaiLib.Wrappers;
 /// <summary>
 /// Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.
 /// </summary>
-public unsafe class TempAlloc : IDisposable
+public unsafe struct TempAlloc : IDisposable
 {
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer.
@@ -126,7 +126,8 @@ public unsafe class TempAlloc : IDisposable
     /// </summary>
     /// <param name="index">An <see cref="Index"/> that represents the index of the byte to retrieve.</param>
     /// <returns>A pointer to the byte at the given <paramref name="index"/>.</returns>
-    public byte* this[Index index] {
+    public byte* this[Index index]
+    {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
@@ -138,7 +139,8 @@ public unsafe class TempAlloc : IDisposable
     /// </summary>
     /// <param name="range">A <see cref="Range"/> that represents the range of bytes to retrieve.</param>
     /// <returns>The created <see cref="Span{T}"/> of <see cref="byte"/> slice.</returns>
-    public Span<byte> this[Range range] {
+    public Span<byte> this[Range range]
+    {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
@@ -161,7 +163,8 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// The address of the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public nint Address {
+    public nint Address
+    {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
@@ -190,7 +193,8 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bytes.
     /// </summary>
-    public int Size {
+    public int Size
+    {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
@@ -200,7 +204,8 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bits.
     /// </summary>
-    public int Bits {
+    public int Bits
+    {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
@@ -210,7 +215,8 @@ public unsafe class TempAlloc : IDisposable
     /// <summary>
     /// A <see cref="Span{T}"/> of <see cref="byte"/> that represents the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public Span<byte> Data {
+    public Span<byte> Data
+    {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _size);
@@ -385,7 +391,7 @@ public unsafe class TempAlloc : IDisposable
                 }
             }
 
-            // The space between 'location' and the end of the data is now as larger or larger than 'replacement'
+            // The space between 'location' and the end of the data is now as large or larger than 'replacement'
             // 1. If 'shift', shift the bytes after 'location + replacement.Length' to the right by 'search.Length - replacement.Length' bytes, otherwise skip this step (because the bytes are overwritten instead)
             // 2. Replace 'data[location..location + replacement.Length]' with the 'replacement' bytes
             if (shift)
@@ -399,11 +405,7 @@ public unsafe class TempAlloc : IDisposable
             }
 
             // Replace 'data[location..location + search.Length]' with the 'replacement' bytes
-            for (var i = location; i < location + replacement.Length; i++)
-            {
-                data[i] = replacement[i - location];
-            }
-
+            replacement.CopyTo(data[location..(location + replacement.Length)]);
             return true;
         }
 
@@ -431,10 +433,7 @@ public unsafe class TempAlloc : IDisposable
 
             if (replacement.Length > 0)
             {
-                for (var i = location; i < location + replacement.Length; i++)
-                {
-                    data[i] = replacement[i];
-                }
+                replacement.CopyTo(data[location..(location + replacement.Length)]);
             }
 
             return true;
@@ -444,7 +443,7 @@ public unsafe class TempAlloc : IDisposable
     }
 
     /// <summary>
-    /// Serializes the contents of the memory region this <see cref="TempAlloc"/> wraps to a <see cref="string"/> of hexadecimal characters, grouped into 4-byte words.
+    /// Serializes the contents of the memory region this <see cref="TempAlloc"/> wraps to a <see cref="string"/> of hexadecimal characters, grouped into 4-byte words, grouped into 32-byte lines.
     /// </summary>
     /// <returns>The string as described.</returns>
     public string ToHexString()
@@ -455,6 +454,11 @@ public unsafe class TempAlloc : IDisposable
         {
             var slice = data[i..(i + 4 > _size ? _size : i + 4)];
             sb.Append(Convert.ToHexString(slice));
+            if ((i + 4) % 32 == 0)
+            {
+                sb.AppendLine();
+                continue;
+            }
             sb.Append(' ');
         }
         return sb.ToString().Trim(' ');
@@ -469,7 +473,7 @@ public unsafe class TempAlloc : IDisposable
         var sb = new StringBuilder();
         for (var i = _size; i > 0; i -= 4)
         {
-            foreach (var b in i - 4 < 0 ? data[..i] : data.Slice(i - 4, 4))
+            foreach (var b in i < 4 ? data[..i] : data.Slice(i - 4, 4))
             {
                 sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }
@@ -493,14 +497,6 @@ public unsafe class TempAlloc : IDisposable
         Marshal.FreeHGlobal(_address);
         _address = nint.Zero;
         _size = -1;
-    }
-
-    /// <summary>
-    /// Finalizes this <see cref="TempAlloc"/>.
-    /// </summary>
-    ~TempAlloc()
-    {
-        Dispose(false);
     }
 
     /// <inheritdoc/>

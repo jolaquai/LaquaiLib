@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -6,6 +8,7 @@ using System.Text.Json.Nodes;
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.ExceptionManagement;
 using LaquaiLib.Util.WpfForms;
+using LaquaiLib.Wrappers;
 
 namespace TestConsole;
 
@@ -30,8 +33,8 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        while(true)
-        cw(string.Join(", ", VirtualKeyUtils.GetToggleState)));
+        using var alloc = new TempAlloc(68);
+        Console.WriteLine(alloc.ToBinaryString());
 
         Debugger.Break();
     }
