@@ -1,14 +1,9 @@
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using LaquaiLib.Extensions;
-using LaquaiLib.Util.ExceptionManagement;
-using LaquaiLib.Util.WpfForms;
-using LaquaiLib.Wrappers;
 
 namespace TestConsole;
 
@@ -20,7 +15,7 @@ public partial class TestConsole
     [DebuggerStepThrough]
     private static async Task Main()
     {
-        FirstChanceExceptionHandlers.RegisterAll();
+        // FirstChanceExceptionHandlers.RegisterAll();
 
         await using (var scope = await TestCore.TestCore.GetScope())
         {
@@ -29,12 +24,9 @@ public partial class TestConsole
     }
     private static void cw<T>(T obj) => Console.WriteLine(obj);
 
-    public static async ValueTask ActualMain(IServiceProvider serviceProvider)
+    public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
-
-        using var alloc = new TempAlloc(68);
-        Console.WriteLine(alloc.ToBinaryString());
 
         Debugger.Break();
     }

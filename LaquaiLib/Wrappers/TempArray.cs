@@ -6,7 +6,7 @@ namespace LaquaiLib.Wrappers;
 /// <summary>
 /// Represents a temporary array of <typeparamref name="T"/> that is automatically cleared from memory when its wrapper object is disposed.
 /// </summary>
-public class TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquatable, IDisposable
+public ref struct TempArray<T> : ICloneable, IStructuralComparable, IStructuralEquatable, IDisposable
 {
     /// <summary>
     /// Initializes a new <see cref="TempArray{T}"/> with the given size. It is automatically rented from and returned to <see cref="ArrayPool{T}.Shared"/> upon disposal of this <see cref="TempArray{T}"/>, unless <see langword="false"/> is explicitly passed for <paramref name="allowPooledArray"/>.

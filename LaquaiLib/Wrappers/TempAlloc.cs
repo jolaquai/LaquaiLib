@@ -7,7 +7,7 @@ namespace LaquaiLib.Wrappers;
 /// <summary>
 /// Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.
 /// </summary>
-public unsafe struct TempAlloc : IDisposable
+public unsafe ref struct TempAlloc : IDisposable
 {
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer.
@@ -30,7 +30,7 @@ public unsafe struct TempAlloc : IDisposable
         _size = bytes;
         if (clear)
         {
-            Data.Clear();
+            Slice.Clear();
         }
     }
 
@@ -57,7 +57,7 @@ public unsafe struct TempAlloc : IDisposable
         _size = size;
         if (clear)
         {
-            Data.Clear();
+            Slice.Clear();
         }
     }
 
@@ -145,7 +145,7 @@ public unsafe struct TempAlloc : IDisposable
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
             var (start, length) = range.GetOffsetAndLength(_size);
-            return Data.Slice(start, length);
+            return Slice.Slice(start, length);
         }
     }
     /// <summary>
@@ -215,7 +215,7 @@ public unsafe struct TempAlloc : IDisposable
     /// <summary>
     /// A <see cref="Span{T}"/> of <see cref="byte"/> that represents the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public Span<byte> Data
+    public Span<byte> Slice
     {
         get
         {
@@ -264,7 +264,7 @@ public unsafe struct TempAlloc : IDisposable
     {
         ObjectDisposedException.ThrowIf(IsDisposed, _address);
 
-        var block = Data.Slice(offset, length).ToArray();
+        var block = Slice.Slice(offset, length).ToArray();
         try
         {
             fixed (byte* bytePtr = block)
@@ -296,13 +296,13 @@ public unsafe struct TempAlloc : IDisposable
     public void Clear()
     {
         ObjectDisposedException.ThrowIf(_address == nint.Zero && _size == -1, _address);
-        Data.Clear();
+        Slice.Clear();
     }
 
     /// <summary>
     /// Searches for the first occurrence of a given <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> in the memory region this <see cref="TempAlloc"/> wraps and replaces it with memory represented by another <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/>.
     /// </summary>
-    /// <param name="search">The sequence of bytes to find in <see cref="Data"/>.</param>
+    /// <param name="search">The sequence of bytes to find in <see cref="Slice"/>.</param>
     /// <param name="replacement">The sequence of bytes to replace the first occurrence of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
     /// <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
     /// <para/><list type="bullet">
@@ -342,7 +342,7 @@ public unsafe struct TempAlloc : IDisposable
     /// <summary>
     /// Searches for all occurrences of a given <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> in the memory region this <see cref="TempAlloc"/> wraps and replaces them with memory represented by another <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/>.
     /// </summary>
-    /// <param name="search">The sequence of bytes to find in <see cref="Data"/>.</param>
+    /// <param name="search">The sequence of bytes to find in <see cref="Slice"/>.</param>
     /// <param name="replacement">The sequence of bytes to replace the occurrences of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
     /// <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
     /// <para/><list type="bullet">
@@ -377,7 +377,7 @@ public unsafe struct TempAlloc : IDisposable
     }
     private bool ReplaceLonger(ReadOnlySpan<byte> search, ReadOnlySpan<byte> replacement, bool shift)
     {
-        var data = Data;
+        var data = Slice;
 
         if (data.IndexOf(search) is var location and >= 0)
         {
@@ -387,7 +387,7 @@ public unsafe struct TempAlloc : IDisposable
                 var newLength = data.Length + (replacement.Length - (data.Length - location));
                 if (Reallocate(newLength))
                 {
-                    data = Data;
+                    data = Slice;
                 }
             }
 
@@ -413,7 +413,7 @@ public unsafe struct TempAlloc : IDisposable
     }
     private bool ReplaceShorter(ReadOnlySpan<byte> search, ReadOnlySpan<byte> replacement, bool shift)
     {
-        var data = Data;
+        var data = Slice;
 
         if (data.IndexOf(search) is var location and >= 0)
         {
@@ -428,7 +428,7 @@ public unsafe struct TempAlloc : IDisposable
                     data[i - shiftAmount] = data[i];
                 }
                 Reallocate(data.Length - shiftAmount);
-                data = Data;
+                data = Slice;
             }
 
             if (replacement.Length > 0)
@@ -448,7 +448,7 @@ public unsafe struct TempAlloc : IDisposable
     /// <returns>The string as described.</returns>
     public string ToHexString()
     {
-        var data = Data;
+        var data = Slice;
         var sb = new StringBuilder();
         for (var i = 0; i < _size; i += 4)
         {
@@ -469,7 +469,7 @@ public unsafe struct TempAlloc : IDisposable
     /// <returns>The string as described.</returns>
     public string ToBinaryString()
     {
-        var data = Data;
+        var data = Slice;
         var sb = new StringBuilder();
         for (var i = _size; i > 0; i -= 4)
         {
@@ -491,9 +491,6 @@ public unsafe struct TempAlloc : IDisposable
     #region Dispose pattern
     private void Dispose(bool disposing)
     {
-        if (disposing)
-        { }
-
         Marshal.FreeHGlobal(_address);
         _address = nint.Zero;
         _size = -1;
@@ -502,7 +499,6 @@ public unsafe struct TempAlloc : IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
-        GC.SuppressFinalize(this);
         Dispose(true);
     }
 

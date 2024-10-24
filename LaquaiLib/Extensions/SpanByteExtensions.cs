@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace LaquaiLib.Extensions;
+﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="Span{T}"/> of <see langword="byte"/> type.

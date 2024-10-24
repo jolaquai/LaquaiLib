@@ -95,7 +95,7 @@ public static class FileSystemHelper
                 newPath =>
                 {
                     var newFilePath = newPath.Replace(source, newTopPath);
-                    File.Move(newPath, newFilePath);
+                    File.Move(newPath, newFilePath, allowExisting);
                 }
             );
         }

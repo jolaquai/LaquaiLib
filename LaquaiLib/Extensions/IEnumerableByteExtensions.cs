@@ -43,7 +43,7 @@ public static class IEnumerableByteExtensions
             throw new ArgumentException($"With a struct that is packed, the specified byte sequence must be exactly {structSize} bytes long.");
         }
         var mem = TempAlloc.Create<T>(true);
-        var span = mem.Data;
+        var span = mem.Slice;
 
         var byteSpan = enumerated.AsSpan();
 

@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -29,35 +31,27 @@ public static class ICollectionExtensions
             collection.Add(element);
         }
     }
-    /// <summary>
-    /// Attempts to create a <see cref="Span{T}"/> over the backing store of this <see cref="ICollection{T}"/>. This may fail if the backing store cannot be retrieved or is not an array.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the <see cref="ICollection{T}"/>.</typeparam>
-    /// <param name="collection">The <see cref="ICollection{T}"/> to create a <see cref="Span{T}"/> over.</param>
-    /// <param name="start">The index at which to start the <see cref="Span{T}"/>.</param>
-    /// <param name="length">The length of the <see cref="Span{T}"/>. If <see langword="null"/>, the <see cref="Span{T}"/> will extend to the end of the <paramref name="collection"/>.</param>
-    /// <returns>A <see cref="Span{T}"/> over the backing store of the <paramref name="collection"/>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="start"/> or <paramref name="length"/> is out of range.</exception>
-    /// <exception cref="ArgumentException"></exception>
-    public static Span<T> SpanOver<T>(this ICollection<T> collection, int start = 0, int length = 0)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(start);
-        ArgumentOutOfRangeException.ThrowIfNegative(length);
 
+    /// <summary>
+    /// Attempts to retrieve a <see langword="ref"/> to the element at the specified index in the <paramref name="collection"/>.
+    /// An <see cref="InvalidOperationException"/> is thrown if unsuccessful.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the <see cref="ICollection{T}"/>.</typeparam>
+    /// <param name="collection">The <see cref="ICollection{T}"/> to retrieve the element from.</param>
+    /// <param name="index">The index of the element to retrieve.</param>
+    /// <returns>A <see langword="ref"/> to the element at the specified index in the <paramref name="collection"/>.</returns>
+    public static ref T RefAt<T>(this ICollection<T> collection, int index)
+    {
         if (collection is T[] arr)
         {
-            return arr.AsSpan(start, length);
+            return ref arr[index];
         }
-        if (collection is List<T> list && list.TryGetBackingStore(out var backingStore, out _, out var arrLength))
+        if (collection is List<T> list)
         {
-            if (start + length > arrLength)
-            {
-                throw new ArgumentOutOfRangeException(nameof(length), "The length is out of range with respect to the backing store.");
-            }
-
-            return backingStore.AsSpan(start, length);
+            var span = CollectionsMarshal.AsSpan(list);
+            return ref span[index];
         }
 
-        throw new ArgumentException($"The type of the specified {nameof(collection)} is not supported (if you know the backing store of the type should be retrievable, please open an issue on GitHub).", nameof(collection));
+        throw new InvalidOperationException($"The type of the specified {nameof(collection)} is not supported.");
     }
 }

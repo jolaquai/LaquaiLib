@@ -37,4 +37,8 @@
         <ProjectReference Include="..\TestCore\TestCore.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Resources\" />
+    </ItemGroup>
+
 </Project>

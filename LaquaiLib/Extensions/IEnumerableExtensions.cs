@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace LaquaiLib.Extensions;
 
@@ -8,14 +9,6 @@ namespace LaquaiLib.Extensions;
 public static partial class IEnumerableExtensions
 {
     /// <summary>
-    /// Selects each element in the input sequence without transformation.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <returns>An <see cref="IEnumerable{T}"/> that contains each element in the input sequence.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<T> Select<T>(this IEnumerable<T> source) => source;
-    /// <summary>
     /// Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
@@ -23,15 +16,21 @@ public static partial class IEnumerableExtensions
     /// <returns>A sequence that contains all the elements of the nested sequences.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(item => item);
+
     /// <summary>
-    /// Returns the input sequence typed as <see cref="IOrderedEnumerable{TElement}"/> without actually changing the order of the items.
+    /// Splits a sequence of values into two sequences based on a predicate.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
-    /// <returns>The input sequence typed as <see cref="IOrderedEnumerable{TElement}"/>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IOrderedEnumerable<T> AsOrdered<T>(this IEnumerable<T> source) => (IOrderedEnumerable<T>)source;
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
+    /// <returns>A <see cref="Tuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
+    public static (IEnumerable<T> True, IEnumerable<T> False) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(predicate);
 
+        return (source.Where(predicate), source.WhereNot(predicate));
+    }
     /// <summary>
     /// Halves the input sequence.
     /// </summary>
@@ -41,7 +40,7 @@ public static partial class IEnumerableExtensions
     public static (T[] First, T[] Second) Halve<T>(this IEnumerable<T> source)
     {
         var enumerated = source.ToArray();
-        if (enumerated.Length is <= 1)
+        if (enumerated.Length is < 2)
         {
             throw new ArgumentException("The input sequence must contain at least two elements.", nameof(source));
         }
@@ -82,6 +81,7 @@ public static partial class IEnumerableExtensions
     }
     /// <summary>
     /// Interlaces the items of the specified sequences.
+    /// If the sequences are of unequal length, the remaining elements of the longer sequence will end up at the end of the resulting sequence.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequences.</typeparam>
     /// <param name="first">The first sequence to interlace.</param>
@@ -308,21 +308,33 @@ public static partial class IEnumerableExtensions
     /// <returns><see langword="true"/> if the two source sequences are of equal length and are equivalent, otherwise <see langword="false"/>. If one of the sequences is <see langword="null"/>, both sequences must be <see langword="null"/> to be considered equivalent.</returns>
     public static bool SequenceEquivalent<T>(this IEnumerable<T> first, IEnumerable<T> second, IEqualityComparer<T> comparer = null)
     {
-        if (first is null || second is null)
-        {
+        if (first == null || second == null)
             return first == second;
-        }
+
+        if (first.TryGetNonEnumeratedCount(out var firstCount) && second.TryGetNonEnumeratedCount(out var secondCount) && firstCount != secondCount)
+            return false;
 
         comparer ??= EqualityComparer<T>.Default;
-        // Can't HashSet<T> here, otherwise multiple equal elements in a sequence could cause false negatives, because those will only be counted once
 
-        var firstEnumerated = first.ToArray();
-        var secondEnumerated = second.ToArray();
-        if (firstEnumerated.Length != secondEnumerated.Length)
+        var counts = new Dictionary<T, int>(comparer);
+
+        foreach (var item in first)
         {
-            return false;
+            CollectionsMarshal.GetValueRefOrAddDefault(counts, item, out _)++;
         }
-        return Array.TrueForAll(firstEnumerated, f => Array.Exists(secondEnumerated, s => comparer.Equals(f, s)));
+
+        foreach (var item in second)
+        {
+            ref var count = ref CollectionsMarshal.GetValueRefOrNullRef(counts, item);
+            if (System.Runtime.CompilerServices.Unsafe.IsNullRef(count) || --count < 0)
+            {
+                // Item in second but not in first
+                return false;
+            }
+        }
+
+        // If counts is empty, sequences are equivalent
+        return true;
     }
 
     /// <summary>
@@ -357,7 +369,6 @@ public static partial class IEnumerableExtensions
             c++;
         }
     }
-
     /// <summary>
     /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
     /// </summary>
@@ -454,20 +465,6 @@ public static partial class IEnumerableExtensions
                 yield return item;
             }
         }
-    }
-    /// <summary>
-    /// Splits a sequence of values into two sequences based on a predicate.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
-    /// <returns>A <see cref="Tuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
-    public static (IEnumerable<T> True, IEnumerable<T> False) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(predicate);
-
-        return (source.Where(predicate), source.WhereNot(predicate));
     }
     /// <summary>
     /// Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
@@ -589,172 +586,5 @@ public static partial class IEnumerableExtensions
                     return defaultValue;
                 }
         }
-    }
-
-    /// <summary>
-    /// Sorts the elements of a sequence in ascending order according to a key extracted from each element.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
-    /// <returns>An <see cref="IOrderedEnumerable{TElement}"/> that iterates over the sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source, Func<T, int, T> keySelector)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keySelector);
-
-        var i = 0;
-        return source.OrderBy(e => keySelector(e, i++));
-    }
-    /// <summary>
-    /// Augments the sort order of a previously sorted sequence according to a key extracted from each element.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the sequence and produces a key to use for sorting.</param>
-    /// <returns>An <see cref="IOrderedEnumerable{TElement}"/> that iterates over the sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> source, Func<T, int, T> keySelector)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keySelector);
-
-        var i = 0;
-        return source.ThenBy(e => keySelector(e, i++));
-    }
-    /// <summary>
-    /// Sorts the elements of a sequence in descending order according to a key extracted from each element.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the original sequence and produces a key to use for sorting.</param>
-    /// <returns>An <see cref="IOrderedEnumerable{TElement}"/> that iterates over the sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> OrderByDescending<T>(this IEnumerable<T> source, Func<T, int, T> keySelector)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keySelector);
-
-        var i = 0;
-        return source.OrderByDescending(e => keySelector(e, i++));
-    }
-    /// <summary>
-    /// Augments the sort order of a previously sorted sequence according to a key extracted from each element.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and its index in the sequence and produces a key to use for sorting.</param>
-    /// <returns>An <see cref="IOrderedEnumerable{TElement}"/> that iterates over the sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> ThenByDescending<T>(this IOrderedEnumerable<T> source, Func<T, int, T> keySelector)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keySelector);
-
-        var i = 0;
-        return source.ThenByDescending(e => keySelector(e, i++));
-    }
-
-    /// <summary>
-    /// Orders the elements of a sequence in ascending order according to a key extracted from each element.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelectors">The <see cref="Func{T1, T2, TResult}"/>s that are passed each element of the input sequence produce a key to use for sorting.</param>
-    /// <returns>The ordered input sequence.</returns>
-    public static IOrderedEnumerable<T> OrderByMultiple<T>(this IEnumerable<T> source, params ReadOnlySpan<Func<T, T>> keySelectors)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        if (keySelectors.Length == 0)
-        {
-            return source.AsOrdered();
-        }
-        var ordered = source.OrderBy(keySelectors[0]);
-        foreach (var selector in keySelectors[1..])
-        {
-            ordered = ordered.ThenBy(selector);
-        }
-        return ordered.Select().AsOrdered();
-    }
-    /// <summary>
-    /// Orders the elements of a sequence in ascending order according to a key extracted from each element.
-    /// Each selector is passed the element and the index of that element from the last iteration.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keySelectors">The <see cref="Func{T1, T2, TResult}"/>s that are passed each element of the input sequence and its position from the last iteration and produce a key to use for sorting.</param>
-    /// <returns>The ordered input sequence.</returns>
-    public static IOrderedEnumerable<T> OrderByMultiple<T>(this IEnumerable<T> source, params ReadOnlySpan<Func<T, int, T>> keySelectors)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        if (keySelectors.Length == 0)
-        {
-            return source.AsOrdered();
-        }
-        var firstSelector = keySelectors[0];
-        var ordered = source.Index().OrderBy(tuple => firstSelector(tuple.Item, tuple.Index));
-        foreach (var selector in keySelectors[1..])
-        {
-            ordered = ordered.ThenBy(tuple => selector(tuple.Item, tuple.Index));
-        }
-        return ordered.Select(tuple => tuple.Item).AsOrdered();
-    }
-
-    /// <summary>
-    /// Sorts the elements of a sequence in ascending order according to another sequence that specifies the keys to use for sorting.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the sequences.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keys">The sequence that specifies the keys to use for sorting.</param>
-    /// <returns>The sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> source, IEnumerable<T> keys)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keys);
-
-        var enumeratedKeys = keys as IList<T> ?? keys.ToArray();
-        return source.OrderBy((_, i) => enumeratedKeys[i]);
-    }
-    /// <summary>
-    /// Augments the sort order of a previously sorted sequence using the specified sequence that specifies the keys to use for sorting.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the sequences.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keys">The sequence that specifies the keys to use for sorting.</param>
-    /// <returns>The sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> ThenBy<T>(this IOrderedEnumerable<T> source, IEnumerable<T> keys)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keys);
-
-        var enumeratedKeys = keys as IList<T> ?? keys.ToArray();
-        return source.ThenBy((_, i) => enumeratedKeys[i]);
-    }
-    /// <summary>
-    /// Sorts the elements of a sequence in descending order according to another sequence that specifies the keys to use for sorting.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the sequences.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keys">The sequence that specifies the keys to use for sorting.</param>
-    /// <returns>The sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> OrderByDescending<T>(this IEnumerable<T> source, IEnumerable<T> keys)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keys);
-
-        var enumeratedKeys = keys as IList<T> ?? keys.ToArray();
-        return source.OrderByDescending((_, i) => enumeratedKeys[i]);
-    }
-    /// <summary>
-    /// Augments the sort order of a previously sorted sequence using the specified sequence that specifies the keys to use for sorting.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the sequences.</typeparam>
-    /// <param name="source">The input sequence to sort.</param>
-    /// <param name="keys">The sequence that specifies the keys to use for sorting.</param>
-    /// <returns>The sorted input sequence.</returns>
-    public static IOrderedEnumerable<T> ThenByDescending<T>(this IOrderedEnumerable<T> source, IEnumerable<T> keys)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(keys);
-
-        var enumeratedKeys = keys as IList<T> ?? keys.ToArray();
-        return source.ThenByDescending((_, i) => enumeratedKeys[i]);
     }
 }
