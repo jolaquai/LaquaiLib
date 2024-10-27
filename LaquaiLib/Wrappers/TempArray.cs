@@ -133,39 +133,22 @@ public ref struct TempArray<T> : ICloneable, IStructuralComparable, IStructuralE
     public object Clone() => _array!.Clone();
 
     #region Dispose pattern
-    private void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            if (_array is not null)
-            {
-                for (var i = 0; i < _array.Length; i++)
-                {
-                    var disposable = _array[i] as IDisposable;
-                    disposable?.Dispose();
-                }
-                if (_isPooledInstance)
-                {
-                    _pool!.Return(_array, true);
-                }
-                _array = null;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Finalizes this <see cref="TempArray{T}"/>.
-    /// </summary>
-    ~TempArray()
-    {
-        Dispose(false);
-    }
-
     /// <inheritdoc/>
     public void Dispose()
     {
-        GC.SuppressFinalize(this);
-        Dispose(true);
+        if (_array is not null)
+        {
+            for (var i = 0; i < _array.Length; i++)
+            {
+                var disposable = _array[i] as IDisposable;
+                disposable?.Dispose();
+            }
+            if (_isPooledInstance)
+            {
+                _pool!.Return(_array, true);
+            }
+            _array = null;
+        }
     }
     #endregion
 }

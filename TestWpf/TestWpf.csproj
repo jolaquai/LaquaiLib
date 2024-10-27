@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
     <ProjectReference Include="..\TestCore\TestCore.csproj" />
     <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
   </ItemGroup>

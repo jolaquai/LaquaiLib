@@ -14,7 +14,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-    /// <param name="allowUnsafeMutation">Whether to allow the method to mutate the array without knowing whether all elements will fit. Defaults to <see langword="false"/>.</param>
+    /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the array if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>.</param>
     public static void Into<T>(this IEnumerable<T> source, T[] target, int startIndex = 0, bool allowUnsafeMutation = false)
     {
         switch (source)
@@ -169,7 +169,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Span{T}"/> to copy elements to.</param>
-    /// <param name="allowUnsafeMutation">Whether to allow the method to mutate the array without knowing whether all elements will fit. Defaults to <see langword="false"/>.</param>
+    /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the span if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>.</param>
     public static void Into<T>(this IEnumerable<T> source, Span<T> target, bool allowUnsafeMutation = false)
     {
         switch (source)

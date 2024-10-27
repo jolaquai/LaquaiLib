@@ -57,19 +57,7 @@ public ref struct TempObject<T> : IDisposable
         IsDisposed = true;
     }
 
-    /// <summary>
-    /// Finalizes this <see cref="TempObject{T}"/>.
-    /// </summary>
-    ~TempObject()
-    {
-        Dispose(false);
-    }
-
     /// <inheritdoc/>
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-        Dispose(true);
-    }
+    public void Dispose() => Dispose(true);
     #endregion
 }

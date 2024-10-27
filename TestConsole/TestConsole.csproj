@@ -33,6 +33,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
+        <ProjectReference Include="..\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
         <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
         <ProjectReference Include="..\TestCore\TestCore.csproj" />
     </ItemGroup>

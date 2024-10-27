@@ -98,17 +98,13 @@ public static partial class IEnumerableExtensions
     public static IOrderedEnumerable<T> OrderByMultiple<T>(this IEnumerable<T> source, params ReadOnlySpan<Func<T, int, T>> keySelectors)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (keySelectors.Length == 0)
-        {
-            return source.AsOrdered();
-        }
         var firstSelector = keySelectors[0];
         var ordered = source.Index().OrderBy(tuple => firstSelector(tuple.Item, tuple.Index));
         foreach (var selector in keySelectors[1..])
         {
             ordered = ordered.ThenBy(tuple => selector(tuple.Item, tuple.Index));
         }
-        return ordered.Select(tuple => tuple.Item).AsOrdered();
+        return (IOrderedEnumerable<T>)ordered.Select(tuple => tuple.Item);
     }
 
     /// <summary>

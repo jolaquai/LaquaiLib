@@ -489,17 +489,12 @@ public unsafe ref struct TempAlloc : IDisposable
     #endregion
 
     #region Dispose pattern
-    private void Dispose(bool disposing)
+    /// <inheritdoc/>
+    public void Dispose()
     {
         Marshal.FreeHGlobal(_address);
         _address = nint.Zero;
         _size = -1;
-    }
-
-    /// <inheritdoc/>
-    public void Dispose()
-    {
-        Dispose(true);
     }
 
     /// <summary>

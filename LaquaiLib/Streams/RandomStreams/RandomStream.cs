@@ -132,21 +132,8 @@ public class RandomStream : Stream
     /// Fills the specified <paramref name="destination"/> <see cref="Stream"/> with as many <see langword="byte"/>s as will fit.
     /// </summary>
     /// <param name="destination">The <see cref="Stream"/> to fill with random bytes.</param>
-    public new void CopyTo(Stream destination)
-    {
-        var exactly = (int)(destination.Length - destination.Position);
-        using (var buffer = new TempArray<byte>(exactly))
-        {
-            ReadExactly(buffer.Array, 0, exactly);
-            destination.Write(buffer.Array, 0, exactly);
-        }
-    }
-    /// <summary>
-    /// Fills the specified <paramref name="destination"/> <see cref="Stream"/> with as many <see langword="byte"/>s as will fit.
-    /// </summary>
-    /// <param name="destination">The <see cref="Stream"/> to fill with random bytes.</param>
     /// <param name="bufferSize">The size of the buffer to use for copying.</param>
-    public override void CopyTo(Stream destination, int bufferSize)
+    public override void CopyTo(Stream destination, int bufferSize = 4069)
     {
         using (var buffer = new TempArray<byte>(int.Min(bufferSize, (int)(destination.Length - destination.Position))))
         {
@@ -171,27 +158,5 @@ public class RandomStream : Stream
     /// <param name="bufferSize">The size of the buffer to use for copying.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
     /// <returns></returns>
-    public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-    {
-        using (var buffer = new TempArray<byte>(int.Min(bufferSize, (int)(destination.Length - destination.Position))))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            while (destination.Length - destination.Position >= bufferSize)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await ReadAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
-                await destination.WriteAsync(buffer.Array, cancellationToken).ConfigureAwait(false);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            var remaining = (int)(destination.Length - destination.Position);
-            if (remaining > 0)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await ReadAsync(buffer.Array.AsMemory(0, remaining), cancellationToken).ConfigureAwait(false);
-                cancellationToken.ThrowIfCancellationRequested();
-                await destination.WriteAsync(buffer.Array.AsMemory(0, remaining), cancellationToken).ConfigureAwait(false);
-            }
-        }
-    }
+    public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken) => await Task.Run(() => CopyTo(destination, bufferSize), cancellationToken).ConfigureAwait(false);
 }

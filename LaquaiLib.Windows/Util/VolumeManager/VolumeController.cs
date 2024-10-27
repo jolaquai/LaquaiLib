@@ -7,7 +7,7 @@ namespace LaquaiLib.Windows.Util.VolumeManager;
 /// <summary>
 /// Represents a controller for managing the volume of a specific window or process.
 /// </summary>
-public record class VolumeController
+public class VolumeController
 {
     private readonly string processNameOrTitle;
     /// <summary>

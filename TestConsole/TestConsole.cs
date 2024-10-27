@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.Windows;
 
 namespace TestConsole;
 
@@ -12,8 +13,14 @@ namespace TestConsole;
 /// </summary>
 public partial class TestConsole
 {
+    [STAThread]
+    private static void Main()
+    {
+        Main2().ConfigureAwait(false).GetAwaiter().GetResult();
+    }
+
     [DebuggerStepThrough]
-    private static async Task Main()
+    private static async Task Main2()
     {
         // FirstChanceExceptionHandlers.RegisterAll();
 
@@ -27,6 +34,8 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
+
+        var window = LowLevelWindow.CreateInvisible();
 
         Debugger.Break();
     }
