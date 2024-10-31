@@ -10,6 +10,7 @@ public static class AnyExtensions
 {
     /// <summary>
     /// Checks whether a number of objects are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
+    /// Comparing to an empty collection is considered equal.
     /// </summary>
     /// <typeparam name="T">The Type of the objects to compare.</typeparam>
     /// <param name="source">The first object to use for the comparison.</param>
@@ -17,45 +18,81 @@ public static class AnyExtensions
     /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
     public static bool AllEqual<T>(this T source, params ReadOnlySpan<T> other)
     {
-        var enumerated = other.ToArray();
-        if (enumerated.Length == 0)
-        {
-            throw new ArgumentException("Cannot compare to an empty array.", nameof(other));
-        }
+        if (other.Length == 0) return true;
 
-        // Enumerate and use for to avoid the IEnumerator
-        for (var i = 0; i < enumerated.Length; i++)
+        for (var i = 0; i < other.Length; i++)
         {
-            var elem = enumerated[i];
-            if (!source.Equals(elem))
-            {
-                return false;
-            }
+            var elem = other[i];
+            if (source is null && elem is not null) return false;
+            if (!source.Equals(elem)) return false;
         }
         return true;
     }
+    /// <summary>
+    /// Checks whether a number of objects are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
+    /// Comparing to an empty collection is considered equal.
+    /// </summary>
+    /// <typeparam name="T">The Type of the objects to compare.</typeparam>
+    /// <param name="source">The first object to use for the comparison.</param>
+    /// <param name="enumerable">The objects to use for the comparison. Enumeration will cease if an object is encountered that is not equal to <paramref name="source"/>.</param>
+    /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
+    public static bool AllEqual<T>(this T source, IEnumerable<T> enumerable)
+    {
+        // Carry the extra bool around to check for an empty enumerable
+        var compared = false;
+        foreach (var elem in enumerable)
+        {
+            compared = true;
+            if (source is null && elem is not null) return false;
+            else if (!source.Equals(elem)) return false;
+        }
+        return compared;
+    }
+
     /// <summary>
     /// Invokes a <paramref name="transform"/> function on a <paramref name="source"/> and any <paramref name="other"/> objects and checks whether the results are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>. In this case, <paramref name="transform"/> is never invoked.
     /// </summary>
     /// <typeparam name="T">The Type of the input objects.</typeparam>
     /// <typeparam name="TCompare">The Type of the results <paramref name="transform"/> yields.</typeparam>
-    /// <param name="source">The first object to use for the comparison..</param>
+    /// <param name="source">The first object to use for the comparison.</param>
     /// <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
-    /// <param name="other">The remaining objects to use for the comparison..</param>
+    /// <param name="other">The remaining objects to use for the comparison.</param>
     /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
     public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, params ReadOnlySpan<T> other)
     {
-        if (other.Length == 0)
-        {
-            throw new ArgumentException("Cannot compare to an empty array.", nameof(other));
-        }
-        var enumerated = other.ToArray();
-        if (source is null || enumerated.Any(o => o is null))
-        {
-            return source is null && enumerated.All(o => o is null);
-        }
+        if (other.Length == 0) return true;
 
-        return transform(source)?.AllEqual(enumerated.Select(transform).ToArray()) is true;
+        var sourceTransformed = transform(source);
+        for (var i = 0; i < other.Length; i++)
+        {
+            var elem = other[i];
+            if (sourceTransformed is null && elem is not null) return false;
+            if (!sourceTransformed.Equals(elem)) return false;
+        }
+        return true;
+    }
+    /// <summary>
+    /// Invokes a <paramref name="transform"/> function on a <paramref name="source"/> and any other objects and checks whether the results are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the input objects.</typeparam>
+    /// <typeparam name="TCompare">The Type of the results <paramref name="transform"/> yields.</typeparam>
+    /// <param name="source">The first object to use for the comparison.</param>
+    /// <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
+    /// <param name="enumerable">The remaining objects to use for the comparison.</param>
+    /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
+    public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, IEnumerable<T> enumerable)
+    {
+        // Carry the extra bool around to check for an empty enumerable
+        var compared = false;
+        var sourceTransformed = transform(source);
+        foreach (var elem in enumerable)
+        {
+            compared = true;
+            var elemTransformed = transform(elem);
+            if (sourceTransformed is null && elemTransformed is not null) return false;
+            else if (!sourceTransformed.Equals(elemTransformed)) return false;
+        }
+        return compared;
     }
 
     /// <summary>
@@ -91,7 +128,7 @@ public static class AnyExtensions
     /// <remarks>
     /// While not tremendously useful, this method can be used to effectively limit variable scopes or chain calls to the same object like when using a builder pattern.
     /// </remarks>
-    public static async ValueTask<T> With<T>(this T source, Func<T, ValueTask> action)
+    public static async Task<T> With<T>(this T source, Func<T, Task> action)
     {
         await action(source).ConfigureAwait(false);
         return source;
@@ -109,7 +146,7 @@ public static class AnyExtensions
         where TTo : allows ref struct
     {
         // Use As for reference types, additionally checking for assignment compatibility
-        if ((default(TFrom) is null || default(TTo) is null))
+        if (default(TFrom) is null || default(TTo) is null)
         {
             if (typeof(TTo).IsAssignableFrom(typeof(TFrom)))
             {
@@ -120,7 +157,6 @@ public static class AnyExtensions
                 throw new InvalidCastException($"Cannot cast {typeof(TFrom)} to {typeof(TTo)}.");
             }
         }
-
         unsafe
         {
             if (sizeof(TFrom) == sizeof(TTo))

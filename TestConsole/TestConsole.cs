@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using LaquaiLib.Extensions;
-using LaquaiLib.Windows;
 
 namespace TestConsole;
 
@@ -27,6 +26,7 @@ public partial class TestConsole
         await using (var scope = await TestCore.TestCore.GetScope())
         {
             await ActualMain(scope.ServiceProvider).ConfigureAwait(false);
+            Debugger.Break();
         }
     }
     private static void cw<T>(T obj) => Console.WriteLine(obj);
@@ -34,10 +34,9 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
-
-        var window = LowLevelWindow.CreateInvisible();
-
-        Debugger.Break();
+        cw(typeof(TestConsole).GetMethod("ActualMain").IsPartial());
+        var methodInfo = typeof(TestConsole).GetMethod("TestPartial");
+        cw(methodInfo.IsPartial());
     }
 }
 

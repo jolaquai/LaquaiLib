@@ -8,7 +8,7 @@
     <File Path=".gitignore" />
     <File Path="README.md" />
   </Folder>
-  <Folder Name="/Solution Items/Scripts/">
+  <Folder Name="/Solution Items/Scripts/" Id="eb4a6ed1-506c-a9c3-2245-c7e44ed24a1b">
     <File Path="Scripts\PackAll.ps1" />
     <File Path="Scripts\SetVersions.ps1" />
   </Folder>
@@ -19,10 +19,8 @@
   </Folder>
   <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
   <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" />
+  <Project Path="LaquaiLib.EF/LaquaiLib.EF.csproj" Id="7bc7e0bf-d17e-4a86-ac78-d5b5a28f16d9" />
+  <Project Path="LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
   <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
   <Project Path="LaquaiLib\LaquaiLib.csproj" />
-  <Project Path="LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
-  <Properties Name="Visual Studio">
-    <Property Name="OpenWith" Value="17" />
-  </Properties>
 </Solution>

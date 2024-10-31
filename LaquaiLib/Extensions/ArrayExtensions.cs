@@ -11,8 +11,8 @@ public static class ArrayExtensions
     /// </summary>
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
     /// <param name="source">The <see cref="Array"/> to transform.</param>
-    /// <returns>An <see cref="IEnumerable{T}"/> that contains the transformed elements from the input sequence.</returns>
-    public static IEnumerable<T> AsEnumerable<T>(this Array source) => System.Runtime.CompilerServices.Unsafe.As<IEnumerable<T>>(source);
+    /// <returns>The reinterpreted reference to <paramref name="source"/>.</returns>
+    public static IEnumerable<T> CastEnumerable<T>(this Array source) => System.Runtime.CompilerServices.Unsafe.As<IEnumerable<T>>(source);
 
     /// <summary>
     /// Splits the specified <paramref name="array"/> into two new <see cref="Array"/>s based on the given <paramref name="predicate"/>.
