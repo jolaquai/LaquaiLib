@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.Util;
+using LaquaiLib.Util.Misc;
 
 namespace TestConsole;
 
@@ -29,14 +32,20 @@ public partial class TestConsole
             Debugger.Break();
         }
     }
-    private static void cw<T>(T obj) => Console.WriteLine(obj);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void cw(object obj) => Console.WriteLine(obj);
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
-        cw(typeof(TestConsole).GetMethod("ActualMain").IsPartial());
-        var methodInfo = typeof(TestConsole).GetMethod("TestPartial");
-        cw(methodInfo.IsPartial());
+
+        var sw = Stopwatch.StartNew();
+        await foreach (var item in FileSystemHelper.EnumerateDirectoryStructureMatches(@"steamapps\common"))
+        {
+            cw(item);
+        }
+        sw.Stop();
+        cw(sw.Elapsed.ToString("c"));
     }
 }
 
