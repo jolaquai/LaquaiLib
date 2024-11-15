@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
+using LaquaiLib.Core;
 using LaquaiLib.Extensions;
 using LaquaiLib.Util;
 using LaquaiLib.Util.Misc;
@@ -18,17 +19,11 @@ public partial class TestConsole
     [STAThread]
     private static void Main()
     {
-        Main2().ConfigureAwait(false).GetAwaiter().GetResult();
-    }
-
-    [DebuggerStepThrough]
-    private static async Task Main2()
-    {
         // FirstChanceExceptionHandlers.RegisterAll();
 
-        await using (var scope = await TestCore.TestCore.GetScope())
+        using (var scope = TestCore.TestCore.GetScope().ConfigureAwait(false).GetAwaiter().GetResult())
         {
-            await ActualMain(scope.ServiceProvider).ConfigureAwait(false);
+            ActualMain(scope.ServiceProvider).ConfigureAwait(false).GetAwaiter().GetResult();
             Debugger.Break();
         }
     }
@@ -39,13 +34,23 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        var sw = Stopwatch.StartNew();
-        await foreach (var item in FileSystemHelper.EnumerateDirectoryStructureMatches(@"steamapps\common"))
+        var myStr = StringUtility.CreateString(13, span =>
         {
-            cw(item);
-        }
-        sw.Stop();
-        cw(sw.Elapsed.ToString("c"));
+            span[0] = 'H';
+            span[1] = 'e';
+            span[2] = 'l';
+            span[3] = 'l';
+            span[4] = 'o';
+            span[5] = ',';
+            span[6] = ' ';
+            span[7] = 'w';
+            span[8] = 'o';
+            span[9] = 'r';
+            span[10] = 'l';
+            span[11] = 'd';
+            span[12] = '!';
+        });
+        Console.WriteLine(myStr);
     }
 }
 

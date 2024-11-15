@@ -5,6 +5,7 @@ namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Provides a way to access a managed instance of <typeparamref name="T"/> from unmanaged memory.
+/// Any <see langword="unsafe"/> members of this type should only be called when <typeparamref name="T"/> is an <see langword="unmanaged"/> type.
 /// </summary>
 /// <typeparam name="T">The type of the object to be referenced.</typeparam>
 public readonly struct GCHandle<T> : IDisposable
@@ -26,16 +27,8 @@ public readonly struct GCHandle<T> : IDisposable
     /// Initializes a new <see cref="GCHandle{T}"/> that represents the specified instance of <typeparamref name="T"/>.
     /// </summary>
     /// <param name="value">The object to be referenced.</param>
-    public GCHandle(T value)
-    {
-        Handle = GCHandle.Alloc(value);
-    }
-    /// <summary>
-    /// Initializes a new <see cref="GCHandle{T}"/> that represents the specified instance of <typeparamref name="T"/>.
-    /// </summary>
-    /// <param name="value">The object to be referenced.</param>
     /// <param name="type">The <see cref="GCHandleType"/> of the object to be referenced.</param>
-    public GCHandle(T value, GCHandleType type)
+    public GCHandle(T value, GCHandleType type = GCHandleType.Normal)
     {
         Handle = GCHandle.Alloc(value, type);
     }
@@ -43,10 +36,22 @@ public readonly struct GCHandle<T> : IDisposable
     /// Initializes a new <see cref="GCHandle{T}"/> from a handle to a managed object.
     /// </summary>
     /// <param name="ptr">The handle to a managed object.</param>
-    public GCHandle(nint? ptr)
+    /// <param name="type">The <see cref="GCHandleType"/> of the object to be referenced.</param>
+    public GCHandle(nint ptr, GCHandleType type = GCHandleType.Pinned)
     {
-        ArgumentNullException.ThrowIfNull(ptr);
-        Handle = GCHandle.FromIntPtr((nint)ptr);
+        unsafe
+        {
+            Handle = GCHandle.Alloc(*(T*)ptr, type);
+        }
+    }
+    /// <summary>
+    /// Initializes a new <see cref="GCHandle{T}"/> from a pointer to an object.
+    /// </summary>
+    /// <param name="ptr">The pointer to an object.</param>
+    /// <param name="type">The <see cref="GCHandleType"/> of the object to be referenced.</param>
+    public unsafe GCHandle(T* ptr, GCHandleType type = GCHandleType.Pinned)
+    {
+        Handle = GCHandle.Alloc(*ptr, type);
     }
     /// <summary>
     /// Initializes a new <see cref="GCHandle{T}"/> typed <typeparamref name="T"/> from an existing untyped handle to a managed object.
@@ -60,6 +65,10 @@ public readonly struct GCHandle<T> : IDisposable
 
     /// <inheritdoc cref="GCHandle.AddrOfPinnedObject"/>
     public nint AddrOfPinnedObject() => Handle.AddrOfPinnedObject();
+    /// <summary>
+    /// Obtains a pointer to the pinned object.
+    /// </summary>
+    public unsafe T* Pointer => (T*)AddrOfPinnedObject();
 
     /// <summary>
     /// Returns the untyped <see cref="GCHandle"/> a typed <see cref="GCHandle{T}"/> represents.

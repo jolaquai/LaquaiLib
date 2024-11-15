@@ -2,6 +2,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using LaquaiLib.Core;
+using LaquaiLib.Wrappers;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -231,7 +234,6 @@ public static class MemoryExtensions
     /// <exception cref="ArgumentException">Thrown if the requested value of type <typeparamref name="T"/> is too large to be read from the <paramref name="memory"/>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T Read<T>(this ReadOnlyMemory<byte> memory, ref int ptr) where T : struct => memory.Span.Read<T>(ref ptr);
-
     /// <summary>
     /// Reads <paramref name="count"/> consecutive values of type <typeparamref name="T"/> from the specified <paramref name="span"/> at the specified <paramref name="ptr"/>.
     /// </summary>
@@ -260,4 +262,28 @@ public static class MemoryExtensions
     /// <returns>An array of <typeparamref name="T"/> of type <paramref name="count"/> read from the <paramref name="memory"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T[] Read<T>(this ReadOnlyMemory<byte> memory, ref int ptr, int count) where T : struct => memory.Span.Read<T>(ref ptr, count);
+
+    /// <summary>
+    /// Converts a <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> to its equivalent string representation that is encoded with uppercase hex characters.
+    /// </summary>
+    /// <param name="bytes">The <see cref="byte"/> span to convert.</param>
+    /// <returns>The string as described.</returns>
+    /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
+    public static string ToHexString(this ReadOnlySpan<byte> bytes)
+    {
+        var str = StringUtility.AllocString(bytes.Length * 2);
+        using (var pin = PinWrapper.Pin(str))
+        {
+            var span = pin.AsSpan(str.Length);
+            Convert.TryToHexString(bytes, span, out _);
+        }
+        return str;
+    }
+    /// <summary>
+    /// Converts a <see cref="ReadOnlyMemory{T}"/> of <see cref="byte"/> to its equivalent string representation that is encoded with uppercase hex characters.
+    /// </summary>
+    /// <param name="bytes">The <see cref="byte"/> memory to convert.</param>
+    /// <returns>The string as described.</returns>
+    /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
+    public static string ToHexString(this ReadOnlyMemory<byte> bytes) => bytes.Span.ToHexString();
 }

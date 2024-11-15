@@ -33,7 +33,10 @@
     <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.6.24327.7" />
+    <None Remove="Util\FileSystemHelper.cs~RFd7ab6d.TMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
     <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
   </ItemGroup>

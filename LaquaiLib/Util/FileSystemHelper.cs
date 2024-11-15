@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Runtime.CompilerServices;
 
 using LaquaiLib.Extensions;
@@ -106,6 +107,7 @@ public static class FileSystemHelper
         }
     }
 
+    private static readonly Lazy<char[]> _invalidPathChars = new Lazy<char[]>(Path.GetInvalidFileNameChars);
     /// <summary>
     /// Asynchronously enumerates the file system and attempts to find a directory structure that matches the one specified.
     /// Generally, the more specific the directory structure, the faster the search will complete.
@@ -115,8 +117,8 @@ public static class FileSystemHelper
     /// <param name="driveType">If <paramref name="root"/> is <see langword="null"/>, allows specifying which kinds of drives to search. The default is <see cref="DriveType.Fixed"/>. Note that searching network drives may take a significant amount of time.</param>
     /// <param name="maxRecursionDepth">Limits the depth of recursion when searching for the directory structure. The default is <see cref="int.MaxValue"/>.</param>
     /// <returns>An <see cref="IAsyncEnumerable{T}"/> that enumerates the full paths of directories that match the specified structure.</returns>
-    /// <exception cref="IOException">Thrown when the root directory does not exist.</exception>
-    /// <exception cref="ArgumentException">Thrown when the directory structure or root directory is invalid.</exception>
+    /// <exception cref="IOException">Thrown if the root directory does not exist.</exception>
+    /// <exception cref="ArgumentException">Thrown if the directory structure or root directory is invalid.</exception>
     public static IAsyncEnumerable<string> EnumerateDirectoryStructureMatches(
         string dirStructure,
         string root = null,
@@ -125,7 +127,7 @@ public static class FileSystemHelper
     )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dirStructure);
-        if (Path.IsPathRooted(dirStructure)) throw new ArgumentException("The directory structure must be a well-formed relative path to a directory.", nameof(dirStructure));
+        if (Path.IsPathRooted(dirStructure) || dirStructure.AsSpan().IndexOfAny(_invalidPathChars.Value) > -1) throw new ArgumentException("The directory structure must be a well-formed relative path to a directory.", nameof(dirStructure));
 
         if (driveType is not null && !string.IsNullOrWhiteSpace(root))
         {
@@ -167,5 +169,58 @@ public static class FileSystemHelper
                 .Select(d => ExamineRootImpl(dirStructure, d.Name, maxRecursionDepth))
                 .ToArray()
         );
+    }
+
+    /// <summary>
+    /// Enumerates all subdirectories of the specified <paramref name="directory"/> and moves the entire contents to the specified root.
+    /// </summary>
+    /// <param name="directory">The directory to process.</param>
+    /// <returns>A <see cref="Task"/> that completes when the operation is finished.</returns>
+    public static Task UnpackDirectory(string directory)
+    {
+        if (!Directory.Exists(directory)) throw new DirectoryNotFoundException($"Directory '{directory}' does not exist.");
+
+        var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
+        // Filter out the files that are already in the root directory
+        files = files.Except(Directory.GetFiles(directory)).ToArray();
+        if (files.Length == 0) return Task.CompletedTask;
+
+        var names = files.Select(f => Path.GetFileName(f)).ToArray();
+        var newPaths = names.Select(n => Path.Combine(directory, n)).ToArray();
+        if (newPaths.FirstOrDefault(File.Exists) is string existing) throw new IOException($"The file '{existing}' already exists. Move cannot be completed.");
+        if (names.Distinct().Count() < names.Length) throw new IOException("Multiple files with the same name exist in the directory structure.");
+
+        return Parallel.ForAsync(0, files.Length, async (i, _) =>
+        {
+            var file = files[i];
+            var newFile = newPaths[i];
+            File.Move(file, newFile);
+        });
+    }
+
+    /// <summary>
+    /// Fills the specified <see cref="Span{T}"/> with the characters that are not allowed in file names. Must be at least 41 characters long.
+    /// </summary>
+    /// <param name="destination">The span to fill.</param>
+    public static void GetInvalidFileNameChars(Span<char> destination)
+    {
+        if (destination.Length < 41) throw new ArgumentException("Destination span is too short.", nameof(destination));
+
+        GetInvalidPathChars(destination[..33]);
+        ((ReadOnlySpan<char>)['\"', '<', '>', ':', '*', '?', '\\', '/']).CopyTo(destination);
+    }
+    /// <summary>
+    /// Fills the specified <see cref="Span{T}"/> with the characters that are not allowed in path names. Must be at least 33 characters long.
+    /// </summary>
+    /// <param name="destination">The span to fill.</param>
+    public static void GetInvalidPathChars(Span<char> destination)
+    {
+        if (destination.Length < 33) throw new ArgumentException("Destination span is too short.", nameof(destination));
+        ((ReadOnlySpan<char>)['|', '\0',
+            (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
+            (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20,
+            (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30,
+            (char)31
+        ]).CopyTo(destination);
     }
 }
