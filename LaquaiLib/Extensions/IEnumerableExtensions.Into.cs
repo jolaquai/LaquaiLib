@@ -8,14 +8,18 @@ namespace LaquaiLib.Extensions;
 public static partial class IEnumerableExtensions
 {
     /// <summary>
-    /// Copies the elements of the input sequence into the specified <see cref="Array"/>, starting at the specified index.
+    /// Copies the elements of the input sequence into the specified <see cref="Array"/>, starting at the specified
+    /// index.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-    /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the array if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>.</param>
-    public static void Into<T>(this IEnumerable<T> source, T[] target, int startIndex = 0, bool allowUnsafeMutation = false)
+    /// <param name="allowUnsafeMutation">
+    /// Whether the method is allowed to begin mutating the array if it is unable to ascertain whether all elements will
+    /// fit. Defaults to <see langword="false"/>.
+    /// </param>
+    public static int Into<T>(this IEnumerable<T> source, T[] target, int startIndex = 0, bool allowUnsafeMutation = false)
     {
         switch (source)
         {
@@ -29,7 +33,7 @@ public static partial class IEnumerableExtensions
                 }
                 var dest = target.AsSpan(startIndex, length);
                 src.CopyTo(dest);
-                break;
+                return src.Length;
             }
             case ICollection<T> collection:
             {
@@ -38,7 +42,7 @@ public static partial class IEnumerableExtensions
                     throw new ArgumentException("The destination array cannot accommodate the source collection.", nameof(target));
                 }
                 collection.CopyTo(target, startIndex);
-                break;
+                return collection.Count;
             }
             case IReadOnlyList<T> list:
                 if (startIndex + list.Count > target.Length)
@@ -49,7 +53,7 @@ public static partial class IEnumerableExtensions
                 {
                     target[startIndex++] = list[i];
                 }
-                break;
+                return list.Count;
             case IReadOnlyCollection<T> coll:
             {
                 if (startIndex + coll.Count > target.Length)
@@ -61,10 +65,11 @@ public static partial class IEnumerableExtensions
                 {
                     dest[startIndex++] = item;
                 }
-                break;
+                return dest.Length;
             }
             default:
             {
+                var start = startIndex;
                 if (source.TryGetNonEnumeratedCount(out var length))
                 {
                     if (startIndex + length > target.Length)
@@ -85,20 +90,22 @@ public static partial class IEnumerableExtensions
                         target[startIndex++] = item;
                     }
                 }
-                break;
+                return startIndex - start;
             }
         }
     }
+
     /// <summary>
-    /// Copies the elements of the input sequence into the specified <see cref="List{T}"/>, starting at the specified index.
-    /// The <see cref="List{T}"/> will be resized if the input sequence contains more elements than the <see cref="List{T}"/>'s current capacity.
-    /// Efficient <see cref="Span{T}"/>-based copying is employed when possible, otherwise falling back to <see cref="List{T}.AddRange(IEnumerable{T})"/>.
+    /// Copies the elements of the input sequence into the specified <see cref="List{T}"/>, starting at the specified
+    /// index. The <see cref="List{T}"/> will be resized if the input sequence contains more elements than the <see
+    /// cref="List{T}"/>'s current capacity. Efficient <see cref="Span{T}"/>-based copying is employed when possible,
+    /// otherwise falling back to <see cref="List{T}.AddRange(IEnumerable{T})"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-    public static void Into<T>(this IEnumerable<T> source, List<T> target, int startIndex = 0)
+    public static int Into<T>(this IEnumerable<T> source, List<T> target, int startIndex = 0)
     {
         switch (source)
         {
@@ -112,7 +119,7 @@ public static partial class IEnumerableExtensions
                 }
                 var dest = target.AsSpan(startIndex, length);
                 src.CopyTo(dest);
-                break;
+                return length;
             }
             case IReadOnlyList<T> list:
             {
@@ -125,7 +132,7 @@ public static partial class IEnumerableExtensions
                 {
                     target[startIndex++] = list[i];
                 }
-                break;
+                return length;
             }
             case IReadOnlyCollection<T> collection:
             {
@@ -139,7 +146,7 @@ public static partial class IEnumerableExtensions
                 {
                     dest[startIndex++] = item;
                 }
-                break;
+                return length;
             }
             default:
             {
@@ -150,28 +157,41 @@ public static partial class IEnumerableExtensions
                         CollectionsMarshal.SetCount(target, startIndex + length);
                     }
                     var dest = target.AsSpan(startIndex, length);
+                    var start = startIndex;
                     foreach (var item in source)
                     {
                         dest[startIndex++] = item;
                     }
+                    return startIndex - start;
                 }
                 else
                 {
+                    var start = target.Count;
                     target.AddRange(source);
+                    return target.Count - start;
                 }
-                break;
             }
         }
     }
+
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Span{T}"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Span{T}"/> to copy elements to.</param>
-    /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the span if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>.</param>
-    public static void Into<T>(this IEnumerable<T> source, Span<T> target, bool allowUnsafeMutation = false)
+    /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
+    /// <param name="allowUnsafeMutation">
+    /// Whether the method is allowed to begin mutating the span if it is unable to ascertain whether all elements will
+    /// fit. Defaults to <see langword="false"/>.
+    /// </param>
+    public static int Into<T>(this IEnumerable<T> source, Span<T> target, int startIndex = 0, bool allowUnsafeMutation = false)
     {
+        if (startIndex > 0)
+        {
+            target = target[startIndex..];
+        }
+
         switch (source)
         {
             case List<T> other:
@@ -183,7 +203,7 @@ public static partial class IEnumerableExtensions
                     throw new ArgumentException("The destination span cannot accommodate the source collection.", nameof(target));
                 }
                 src.CopyTo(target);
-                break;
+                return length;
             }
             case IReadOnlyList<T> list:
             {
@@ -196,7 +216,7 @@ public static partial class IEnumerableExtensions
                 {
                     target[i] = list[i];
                 }
-                break;
+                return length;
             }
             case IReadOnlyCollection<T> collection:
             {
@@ -210,17 +230,17 @@ public static partial class IEnumerableExtensions
                 {
                     target[i++] = item;
                 }
-                break;
+                return length;
             }
             default:
             {
+                var i = 0;
                 if (source.TryGetNonEnumeratedCount(out var length))
                 {
                     if (length > target.Length)
                     {
                         throw new ArgumentException("The destination span cannot accommodate the source collection.", nameof(target));
                     }
-                    var i = 0;
                     foreach (var item in source)
                     {
                         target[i++] = item;
@@ -229,81 +249,102 @@ public static partial class IEnumerableExtensions
                 else if (allowUnsafeMutation)
                 {
                     // dangerous fallback since it will mutate the array without knowing whether all elements will fit
-                    var i = 0;
                     foreach (var item in source)
                     {
                         target[i++] = item;
                     }
                 }
-                break;
+                return i;
             }
         }
     }
+
     /// <summary>
-    /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the specified <paramref name="valueFactory"/> to generate values for each key.
+    /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the
+    /// specified <paramref name="valueFactory"/> to generate values for each key.
     /// </summary>
     /// <typeparam name="TKey">The Type of the keys in the input sequence.</typeparam>
     /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Dictionary{TKey, TValue}"/> to copy elements to.</param>
-    /// <param name="valueFactory">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a value for the corresponding key.</param>
-    /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
-    public static void Into<TKey, TValue>(this IEnumerable<TKey> source, Dictionary<TKey, TValue> target, Func<TKey, TValue> valueFactory, bool overwrite = false)
+    /// <param name="valueFactory">
+    /// A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a value for the
+    /// corresponding key.
+    /// </param>
+    /// <param name="overwrite">
+    /// Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see
+    /// langword="false"/>.
+    /// </param>
+    public static int Into<TKey, TValue>(this IEnumerable<TKey> source, Dictionary<TKey, TValue> target, Func<TKey, TValue> valueFactory, bool overwrite = false)
     {
+        var i = 0;
         foreach (var key in source)
         {
             ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(target, key, out var exists);
             if (!exists || overwrite)
             {
+                i++;
                 dest = valueFactory(key);
             }
         }
+        return i;
     }
+
     /// <summary>
-    /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the specified <paramref name="keySelector"/> to generate keys for each value.
+    /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the
+    /// specified <paramref name="keySelector"/> to generate keys for each value.
     /// </summary>
     /// <typeparam name="TKey">The Type of the keys in the input sequence.</typeparam>
     /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Dictionary{TKey, TValue}"/> to copy elements to.</param>
-    /// <param name="keySelector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a key for the corresponding value.</param>
-    /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
-    public static void Into<TKey, TValue>(this IEnumerable<TValue> source, Dictionary<TKey, TValue> target, Func<TValue, TKey> keySelector, bool overwrite = false)
+    /// <param name="keySelector">
+    /// A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a key for the
+    /// corresponding value.
+    /// </param>
+    /// <param name="overwrite">
+    /// Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see
+    /// langword="false"/>.
+    /// </param>
+    public static int Into<TKey, TValue>(this IEnumerable<TValue> source, Dictionary<TKey, TValue> target, Func<TValue, TKey> keySelector, bool overwrite = false)
     {
+        var i = 0;
         foreach (var value in source)
         {
             var key = keySelector(value);
             ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(target, key, out var exists);
             if (!exists || overwrite)
             {
+                i++;
                 dest = value;
             }
         }
+        return i;
     }
+
     /// <summary>
-    /// Copies the elements of the input sequence into the specified <see cref="ICollection{T}"/>.
-    /// Efficient overloads of this method are used, if possible.
+    /// Copies the elements of the input sequence into the specified <see cref="ICollection{T}"/>. Efficient overloads
+    /// of this method are used, if possible.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="ICollection{T}"/> to copy elements to.</param>
-    public static void Into<T>(this IEnumerable<T> source, ICollection<T> target)
+    public static int Into<T>(this IEnumerable<T> source, ICollection<T> target)
     {
         switch (target)
         {
             case T[] arr:
-                source.Into(arr);
-                break;
+                return source.Into(arr);
             case List<T> list:
-                source.Into(list);
-                break;
+                return source.Into(list);
         }
 
         var targetType = target.GetType();
         if (targetType.GetMethod("AddRange", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance) is System.Reflection.MethodInfo method)
         {
+            var count = target.Count;
             method.Invoke(target, [source]);
-            return;
+            return target.Count - count;
         }
 
         if (target.IsReadOnly)
@@ -311,9 +352,12 @@ public static partial class IEnumerableExtensions
             throw new InvalidOperationException("The target collection is read-only.");
         }
 
+        var i = 0;
         foreach (var item in source)
         {
+            i++;
             target.Add(item);
         }
+        return i;
     }
 }
