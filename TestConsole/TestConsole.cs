@@ -34,23 +34,7 @@ public partial class TestConsole
     {
         _ = serviceProvider;
 
-        var myStr = StringUtility.CreateString(13, span =>
-        {
-            span[0] = 'H';
-            span[1] = 'e';
-            span[2] = 'l';
-            span[3] = 'l';
-            span[4] = 'o';
-            span[5] = ',';
-            span[6] = ' ';
-            span[7] = 'w';
-            span[8] = 'o';
-            span[9] = 'r';
-            span[10] = 'l';
-            span[11] = 'd';
-            span[12] = '!';
-        });
-        Console.WriteLine(myStr);
+        
     }
 }
 

@@ -19,6 +19,7 @@ public static partial class IEnumerableExtensions
     /// Whether the method is allowed to begin mutating the array if it is unable to ascertain whether all elements will
     /// fit. Defaults to <see langword="false"/>.
     /// </param>
+    /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<T>(this IEnumerable<T> source, T[] target, int startIndex = 0, bool allowUnsafeMutation = false)
     {
         switch (source)
@@ -94,7 +95,6 @@ public static partial class IEnumerableExtensions
             }
         }
     }
-
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="List{T}"/>, starting at the specified
     /// index. The <see cref="List{T}"/> will be resized if the input sequence contains more elements than the <see
@@ -105,6 +105,11 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
+    /// <returns>The number of elements written to the target collection.</returns>
+    /// <remarks>
+    /// <paramref name="startIndex"/> defaults to <c>0</c>, meaning items will be overwritten from the beginning of the <see cref="List{T}"/>. To force appending them, explicitly pass the current <see cref="List{T}.Count"/> of <paramref name="target"/>.
+    /// <para/>Note that this method inherently exposes unsafe behavior, such as results from setting <paramref name="startIndex"/> to a value greater than the current <see cref="List{T}.Count"/>. Unassigned elements are left in an undefined state.
+    /// </remarks>
     public static int Into<T>(this IEnumerable<T> source, List<T> target, int startIndex = 0)
     {
         switch (source)
@@ -173,7 +178,6 @@ public static partial class IEnumerableExtensions
             }
         }
     }
-
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Span{T}"/>.
     /// </summary>
@@ -185,13 +189,13 @@ public static partial class IEnumerableExtensions
     /// Whether the method is allowed to begin mutating the span if it is unable to ascertain whether all elements will
     /// fit. Defaults to <see langword="false"/>.
     /// </param>
+    /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<T>(this IEnumerable<T> source, Span<T> target, int startIndex = 0, bool allowUnsafeMutation = false)
     {
         if (startIndex > 0)
         {
             target = target[startIndex..];
         }
-
         switch (source)
         {
             case List<T> other:
@@ -258,7 +262,6 @@ public static partial class IEnumerableExtensions
             }
         }
     }
-
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the
     /// specified <paramref name="valueFactory"/> to generate values for each key.
@@ -275,21 +278,25 @@ public static partial class IEnumerableExtensions
     /// Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see
     /// langword="false"/>.
     /// </param>
+    /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<TKey, TValue>(this IEnumerable<TKey> source, Dictionary<TKey, TValue> target, Func<TKey, TValue> valueFactory, bool overwrite = false)
     {
         var i = 0;
         foreach (var key in source)
         {
             ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(target, key, out var exists);
-            if (!exists || overwrite)
+            if (overwrite)
             {
                 i++;
                 dest = valueFactory(key);
             }
+            else if (exists)
+            {
+                throw new InvalidOperationException("The target dictionary already contains a value for the specified key and 'overwrite' is set to false.");
+            }
         }
         return i;
     }
-
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the
     /// specified <paramref name="keySelector"/> to generate keys for each value.
@@ -306,6 +313,7 @@ public static partial class IEnumerableExtensions
     /// Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see
     /// langword="false"/>.
     /// </param>
+    /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<TKey, TValue>(this IEnumerable<TValue> source, Dictionary<TKey, TValue> target, Func<TValue, TKey> keySelector, bool overwrite = false)
     {
         var i = 0;
@@ -313,15 +321,18 @@ public static partial class IEnumerableExtensions
         {
             var key = keySelector(value);
             ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(target, key, out var exists);
-            if (!exists || overwrite)
+            if (overwrite)
             {
                 i++;
                 dest = value;
             }
+            else if (exists)
+            {
+                throw new InvalidOperationException("The target dictionary already contains a value for the specified key and 'overwrite' is set to false.");
+            }
         }
         return i;
     }
-
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="ICollection{T}"/>. Efficient overloads
     /// of this method are used, if possible.
@@ -329,6 +340,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="ICollection{T}"/> to copy elements to.</param>
+    /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<T>(this IEnumerable<T> source, ICollection<T> target)
     {
         switch (target)
@@ -342,6 +354,7 @@ public static partial class IEnumerableExtensions
         var targetType = target.GetType();
         if (targetType.GetMethod("AddRange", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance) is System.Reflection.MethodInfo method)
         {
+            // Assumes sane behavior of that method
             var count = target.Count;
             method.Invoke(target, [source]);
             return target.Count - count;

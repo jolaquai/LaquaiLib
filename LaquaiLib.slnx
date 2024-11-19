@@ -5,6 +5,7 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Solution Items/">
+    <File Path=".filenesting.json" />
     <File Path=".gitignore" />
     <File Path="README.md" />
   </Folder>
