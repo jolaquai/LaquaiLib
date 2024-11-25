@@ -33,7 +33,6 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;
-
         
     }
 }
@@ -68,16 +67,16 @@ public class DiscordWebhookApiClient : HttpClient
         public double type { get; init; }
         public string channel_id { get; init; }
         public string content { get; init; }
-        public dynamic?[] attachments { get; init; }
-        public dynamic?[] embeds { get; init; }
+        public dynamic[] attachments { get; init; }
+        public dynamic[] embeds { get; init; }
         public string timestamp { get; init; }
-        public dynamic? edited_timestamp { get; init; }
+        public dynamic edited_timestamp { get; init; }
         public double flags { get; init; }
-        public dynamic?[] components { get; init; }
+        public dynamic[] components { get; init; }
         public string id { get; init; }
         public user author { get; init; }
-        public dynamic?[] mentions { get; init; }
-        public dynamic?[] mention_roles { get; init; }
+        public dynamic[] mentions { get; init; }
+        public dynamic[] mention_roles { get; init; }
         public bool pinned { get; init; }
         public bool mention_everyone { get; init; }
         public bool tts { get; init; }
@@ -108,13 +107,13 @@ public class DiscordWebhookApiClient : HttpClient
     {
         public string id { get; init; }
         public string username { get; init; }
-        public dynamic? avatar { get; init; }
+        public dynamic avatar { get; init; }
         public string discriminator { get; init; }
         public double public_flags { get; init; }
         public double flags { get; init; }
         public bool bot { get; init; }
-        public dynamic? global_name { get; init; }
-        public dynamic? clan { get; init; }
+        public dynamic global_name { get; init; }
+        public dynamic clan { get; init; }
     }
 }
 
@@ -125,14 +124,14 @@ public class DynamicTypeBuilder(JsonObject root)
 {
     public static string Build(JsonObject root) => new DynamicTypeBuilder(root).GenerateRecords();
 
-    private class JsonProperty(string propKey, JsonObject? act, bool alreadyDeserialized) : IEquatable<JsonProperty>
+    private class JsonProperty(string propKey, JsonObject act, bool alreadyDeserialized) : IEquatable<JsonProperty>
     {
         public string PropKey { get; init; } = propKey;
-        public JsonObject? Act { get; init; } = act;
+        public JsonObject Act { get; init; } = act;
         public bool AlreadyDeserialized { get; set; } = alreadyDeserialized;
 
-        public bool Equals(JsonProperty? other) => PropKey == other?.PropKey;
-        public override bool Equals(object? obj) => Equals(obj as JsonProperty);
+        public bool Equals(JsonProperty other) => PropKey == other?.PropKey;
+        public override bool Equals(object obj) => Equals(obj as JsonProperty);
         public override int GetHashCode() => PropKey.GetHashCode();
     }
 
@@ -174,7 +173,7 @@ public class DynamicTypeBuilder(JsonObject root)
             return ret;
         });
     }
-    private static string GetNodeType(JsonNode? node, HashSet<JsonProperty> furtherTypes)
+    private static string GetNodeType(JsonNode node, HashSet<JsonProperty> furtherTypes)
     {
         if (new StackTrace().FrameCount > 100)
         {

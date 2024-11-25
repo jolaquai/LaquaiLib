@@ -24,7 +24,7 @@ public class TempDirectory : IDisposable
         }
     }
 
-    private string? _path;
+    private string _path;
 
     /// <summary>
     /// The path to the file this <see cref="TempDirectory"/> wraps.

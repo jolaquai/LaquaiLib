@@ -40,7 +40,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
     /// <param name="work">A <see cref="Delegate"/> that encapsulates a method that is executed when the <see cref="ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with the specified <paramref name="args"/> is used.</param>
     /// <param name="args">The arguments to pass to the <paramref name="work"/> delegate or <see langword="null"/> if the delegate does not take any arguments.</param>
     /// <remarks>This constructor forces wrapping of the passed <paramref name="work"/> delegate in a <see cref="DoWorkEventHandler"/> delegate, even if it is already explicitly convertible to <see cref="DoWorkEventHandler"/>. Use the <see cref="ExtendedBackgroundWorker(Delegate)"/> constructor to avoid this.</remarks>
-    public ExtendedBackgroundWorker(Delegate work, params ReadOnlySpan<object?> args) : this()
+    public ExtendedBackgroundWorker(Delegate work, params ReadOnlySpan<object> args) : this()
     {
         var enumerated = args.ToArray();
         DoWork += (sender, e) => work.DynamicInvoke(enumerated);
@@ -72,7 +72,7 @@ public class ExtendedBackgroundWorker : BackgroundWorker
     /// </summary>
     /// <param name="work">The <see cref="Delegate"/>s that encapsulate methods that are executed when the <see cref="ExtendedBackgroundWorker"/> is started. Delegates explicitly convertible to <see cref="DoWorkEventHandler"/> are cast and queued as work as such, otherwise dynamic invocation with no parameters is used.</param>
     /// <param name="args">The arguments to pass to the <paramref name="work"/> delegates or <see langword="null"/> if the delegates do not take any arguments.</param>
-    public ExtendedBackgroundWorker(IEnumerable<Delegate> work, IEnumerable<object?>? args) : this()
+    public ExtendedBackgroundWorker(IEnumerable<Delegate> work, IEnumerable<object> args) : this()
     {
         var theArgs = args?.ToArray();
         foreach (var w in work)

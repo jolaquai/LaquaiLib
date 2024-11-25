@@ -5,7 +5,7 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <LangVersion>preview</LangVersion>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
     <Platforms>AnyCPU;x64;x86</Platforms>

@@ -18,7 +18,7 @@ public partial class MessageBoxFactory
     /// <param name="modality">The <see cref="Modality"/> value to use.</param>
     /// <param name="otherOptions">The <see cref="OtherOptions"/> value to use.</param>
     /// <returns>The result of the message box.</returns>
-    public uint Show(nint? ownerHwnd = null, string? text = null, string? caption = null, uint? button = null, uint? defaultButton = null, uint? icon = null, uint? modality = null, uint? otherOptions = 0)
+    public uint Show(nint? ownerHwnd = null, string text = null, string caption = null, uint? button = null, uint? defaultButton = null, uint? icon = null, uint? modality = null, uint? otherOptions = 0)
     {
         ownerHwnd ??= OwnerHwnd;
         text ??= Text;
@@ -120,7 +120,7 @@ public partial class MessageBoxFactory
     /// <param name="modality">The <see cref="Modality"/> value to use.</param>
     /// <param name="otherOptions">The <see cref="OtherOptions"/> value to use.</param>
     /// <returns>A <see cref="Task{TResult}"/> that represents the user's interaction with the message box. It's <see cref="Task{TResult}.Result"/> is the result of that interaction.</returns>
-    private Task<uint> ShowAsync(nint? ownerHwnd = null, string? text = null, string? caption = null, uint? button = null, uint? defaultButton = null, uint? icon = null, uint? modality = null, uint? otherOptions = 0)
+    private Task<uint> ShowAsync(nint? ownerHwnd = null, string text = null, string caption = null, uint? button = null, uint? defaultButton = null, uint? icon = null, uint? modality = null, uint? otherOptions = 0)
     {
         ownerHwnd ??= OwnerHwnd;
         text ??= Text;

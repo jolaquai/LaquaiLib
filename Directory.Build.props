@@ -1,0 +1,5 @@
+<Project>
+    <PropertyGroup>
+        <CoreNoWarn>$(NoWarn);CS8714</CoreNoWarn>
+    </PropertyGroup>
+</Project>

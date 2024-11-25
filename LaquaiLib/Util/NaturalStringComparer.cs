@@ -16,7 +16,7 @@ public class NaturalStringComparer : IComparer<string>
     /// <param name="x">The first string to compare.</param>
     /// <param name="y">The second string to compare.</param>
     /// <returns>A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>.</returns>
-    public int Compare(string? x, string? y)
+    public int Compare(string x, string y)
     {
         if (x == y)
         {

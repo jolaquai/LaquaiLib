@@ -55,7 +55,7 @@ public static partial class StringExtensions
     /// <param name="source">The <see cref="string"/> to convert.</param>
     /// <param name="culture">The <see cref="CultureInfo"/> to use for casing rules.</param>
     /// <returns><paramref name="source"/> in title case according to <paramref name="culture"/>.</returns>
-    public static string ToTitle(this string source, CultureInfo? culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(source);
+    public static string ToTitle(this string source, CultureInfo culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(source);
     /// <summary>
     /// Converts the specified input string to title case according to the rules of the invariant culture.
     /// </summary>
@@ -282,7 +282,7 @@ public static partial class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search));
         }
-        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
     }
     /// <summary>
     /// Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters. The search starts at a specified character position.
@@ -298,7 +298,7 @@ public static partial class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search, startIndex));
         }
-        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
     }
     /// <summary>
     /// Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings.
@@ -313,7 +313,7 @@ public static partial class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search));
         }
-        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
     }
     /// <summary>
     /// Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
@@ -329,7 +329,7 @@ public static partial class StringExtensions
         {
             indexLists.Add(source.IndicesOf(search, startIndex));
         }
-        return indexLists.Aggregate(Enumerable.Empty<int>(), (seed, next) => seed = seed.Concat(next), seed => seed.Distinct()).Order();
+        return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
     }
     #endregion
 
@@ -419,6 +419,7 @@ public static partial class StringExtensions
     /// <param name="source">The string to search.</param>
     /// <param name="excepts">A sequence of strings to except.</param>
     /// <param name="startIndex">The search starting position.</param>
+    /// <param name="stringComparison">A <see cref="StringComparison"/> value specifying the comparison behavior.</param>
     /// <returns>The zero-based index position of the first occurrence in this instance where any string other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
     public static int IndexOfAnyExcept(this string source, ReadOnlySpan<string> excepts, int startIndex, StringComparison stringComparison = StringComparison.CurrentCulture)
     {
@@ -495,6 +496,7 @@ public static partial class StringExtensions
     /// </summary>
     /// <param name="source">The string to search.</param>
     /// <param name="excepts">A sequence of characters to except.</param>
+    /// <param name="stringComparison">A <see cref="StringComparison"/> value specifying the comparison behavior.</param>
     /// <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOfAnyExcept(this string source, ReadOnlySpan<string> excepts, StringComparison stringComparison = StringComparison.CurrentCulture)
     {
@@ -514,6 +516,7 @@ public static partial class StringExtensions
     /// <param name="source">The string to search.</param>
     /// <param name="excepts">A sequence of characters to except.</param>
     /// <param name="startIndex">The search starting position.</param>
+    /// <param name="stringComparison">A <see cref="StringComparison"/> value specifying the comparison behavior.</param>
     /// <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
     public static IEnumerable<int> IndicesOfAnyExcept(this string source, ReadOnlySpan<string> excepts, int startIndex, StringComparison stringComparison = StringComparison.CurrentCulture)
     {
@@ -630,7 +633,7 @@ public static partial class StringExtensions
     /// <param name="second">The second <see cref="string"/> to use for the comparison.</param>
     /// <param name="stringComparer">A <see cref="StringComparer"/> instance to use when comparing the <see cref="string"/>s. Defaults to <see cref="StringComparer.OrdinalIgnoreCase"/>.</param>
     /// <returns>The computed similarity as described.</returns>
-    public static double GetSimilarity(this string first, string second, StringComparer? stringComparer = null)
+    public static double GetSimilarity(this string first, string second, StringComparer stringComparer = null)
     {
         ArgumentNullException.ThrowIfNull(second);
 
@@ -648,7 +651,7 @@ public static partial class StringExtensions
             return 1;
         }
 
-        return (double)first.Select(c => c.ToString()).Intersect(second.Select(c => c.ToString()), stringComparer).Count() / new List<string>() { first, second }.Max(str => str.Length);
+        return (double)first.Select(static c => c.ToString()).Intersect(second.Select(static c => c.ToString()), stringComparer).Count() / new List<string>() { first, second }.Max(static str => str.Length);
     }
     #endregion
 
@@ -701,7 +704,7 @@ public static partial class StringExtensions
     /// Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s.
     /// </summary>
     /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to search.</param>
-    /// <param name="strings">The <paramref name="string"/>s to search for.</param>
+    /// <param name="strings">The <see langword="string"/>s to search for.</param>
     /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the strings. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
     /// <returns>The number of occurrences of any of the <paramref name="strings"/> in the input <see cref="ReadOnlySpan{T}"/>.</returns>
     public static int FindCount(this ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)

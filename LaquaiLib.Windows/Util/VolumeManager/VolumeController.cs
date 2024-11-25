@@ -9,18 +9,17 @@ namespace LaquaiLib.Windows.Util.VolumeManager;
 /// </summary>
 public class VolumeController
 {
-    private readonly string processNameOrTitle;
     /// <summary>
     /// The name of the process or window title this handler targets.
     /// </summary>
     public required string ProcessNameOrTitle {
-        get => processNameOrTitle;
+        get;
         init
         {
-            processNameOrTitle = value;
+            field = value;
 
-            processNameOrTitle = processNameOrTitle.Trim();
-            processNameOrTitle = Path.GetFileNameWithoutExtension(processNameOrTitle);
+            field = field.Trim();
+            field = Path.GetFileNameWithoutExtension(field);
         }
     }
     /// <summary>

@@ -18,13 +18,16 @@ public static class AnyExtensions
     /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
     public static bool AllEqual<T>(this T source, params ReadOnlySpan<T> other)
     {
-        if (other.Length == 0) return true;
+        if (other.Length == 0)
+            return true;
 
         for (var i = 0; i < other.Length; i++)
         {
             var elem = other[i];
-            if (source is null && elem is not null) return false;
-            if (!source.Equals(elem)) return false;
+            if (source is null && elem is not null)
+                return false;
+            if (!source.Equals(elem))
+                return false;
         }
         return true;
     }
@@ -43,8 +46,10 @@ public static class AnyExtensions
         foreach (var elem in enumerable)
         {
             compared = true;
-            if (source is null && elem is not null) return false;
-            else if (!source.Equals(elem)) return false;
+            if (source is null && elem is not null)
+                return false;
+            else if (!source.Equals(elem))
+                return false;
         }
         return compared;
     }
@@ -60,14 +65,17 @@ public static class AnyExtensions
     /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
     public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, params ReadOnlySpan<T> other)
     {
-        if (other.Length == 0) return true;
+        if (other.Length == 0)
+            return true;
 
         var sourceTransformed = transform(source);
         for (var i = 0; i < other.Length; i++)
         {
             var elem = other[i];
-            if (sourceTransformed is null && elem is not null) return false;
-            if (!sourceTransformed.Equals(elem)) return false;
+            if (sourceTransformed is null && elem is not null)
+                return false;
+            if (!sourceTransformed.Equals(elem))
+                return false;
         }
         return true;
     }
@@ -89,8 +97,10 @@ public static class AnyExtensions
         {
             compared = true;
             var elemTransformed = transform(elem);
-            if (sourceTransformed is null && elemTransformed is not null) return false;
-            else if (!sourceTransformed.Equals(elemTransformed)) return false;
+            if (sourceTransformed is null && elemTransformed is not null)
+                return false;
+            else if (!sourceTransformed.Equals(elemTransformed))
+                return false;
         }
         return compared;
     }
@@ -134,6 +144,7 @@ public static class AnyExtensions
         return source;
     }
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
     /// <summary>
     /// Casts an instance of <typeparamref name="TFrom"/> to <typeparamref name="TFrom"/>.
     /// </summary>
@@ -169,6 +180,8 @@ public static class AnyExtensions
         // We can't use As here, otherwise the "cast" will always succeed
         throw new InvalidCastException($"Cannot cast {typeof(TFrom)} to {typeof(TTo)}.");
     }
+#pragma warning restore CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
     /// <summary>
     /// Changes the type of an instance of <typeparamref name="TFrom"/> to <typeparamref name="TTo"/>, even for reference types.
     /// </summary>
@@ -180,7 +193,5 @@ public static class AnyExtensions
     public static TTo As<TFrom, TTo>(this TFrom obj)
         where TFrom : allows ref struct
         where TTo : allows ref struct
-    {
-        return System.Runtime.CompilerServices.Unsafe.As<TFrom, TTo>(ref obj);
-    }
+        => System.Runtime.CompilerServices.Unsafe.As<TFrom, TTo>(ref obj);
 }

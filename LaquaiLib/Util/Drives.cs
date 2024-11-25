@@ -24,7 +24,7 @@ public static class Drives
     {
         GetAllDrives(previousDriveList);
         GetAllCdDrives(previousReadyCdList);
-        previousReadyCdList.KeepOnly(drive => drive.IsReady);
+        previousReadyCdList.KeepOnly(static drive => drive.IsReady);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public static class Drives
         lock (SyncRoot)
         {
             GetAllDrives(existing);
-            existing.KeepOnly(drv => drv.DriveType == DriveType.CDRom);
+            existing.KeepOnly(static drv => drv.DriveType == DriveType.CDRom);
         }
     }
 
@@ -68,34 +68,34 @@ public static class Drives
         lock (SyncRoot)
         {
             GetAllDrives(existing);
-            existing.KeepOnly(drv => drv.DriveType == DriveType.Removable);
+            existing.KeepOnly(static drv => drv.DriveType == DriveType.Removable);
         }
     }
 
     /// <summary>
     /// Occurs when a drive is connected to the system.
     /// </summary>
-    public static event Action<DriveInfo>? DriveConnected;
+    public static event Action<DriveInfo> DriveConnected;
     /// <summary>
     /// Occurs when a drive is disconnected from the system.
     /// </summary>
-    public static event Action<DriveInfo>? DriveDisconnected;
+    public static event Action<DriveInfo> DriveDisconnected;
     /// <summary>
     /// Occurs when a removable drive (such as a USB drive) is connected to the system.
     /// </summary>
-    public static event Action<DriveInfo>? RemovableDriveConnected;
+    public static event Action<DriveInfo> RemovableDriveConnected;
     /// <summary>
     /// Occurs when a removable drive (such as a USB drive) is disconnected from the system.
     /// </summary>
-    public static event Action<DriveInfo>? RemovableDriveDisconnected;
+    public static event Action<DriveInfo> RemovableDriveDisconnected;
     /// <summary>
     /// Occurs when a disc is inserted into a drive.
     /// </summary>
-    public static event Action<DriveInfo>? DiscInserted;
+    public static event Action<DriveInfo> DiscInserted;
     /// <summary>
     /// Occurs when a disc is ejected from a drive.
     /// </summary>
-    public static event Action<DriveInfo>? DiscEjected;
+    public static event Action<DriveInfo> DiscEjected;
 
     /// <summary>
     /// Removes all entries in the invocation lists of the events defined in <see cref="Drives"/>.
@@ -122,7 +122,7 @@ public static class Drives
     /// Raises the events defined in <see cref="Drives"/> if their conditions are met.
     /// </summary>
     /// <param name="state">Unused / ignored unconditionally.</param>
-    private static void ConditionalRaiseEvents(object? state)
+    private static void ConditionalRaiseEvents(object state)
     {
         #region Removable
         if (RemovableDriveConnected is not null
@@ -131,9 +131,9 @@ public static class Drives
             var currentRemovableDriveList = new List<DriveInfo>();
             GetAllRemovableDrives(currentRemovableDriveList);
             var newRemovableDrives =
-                currentRemovableDriveList.ExceptBy(previousRemovableList, drv => drv.Name);
+                currentRemovableDriveList.ExceptBy(previousRemovableList, static drv => drv.Name);
             var removedRemovableDrives =
-                previousRemovableList.ExceptBy(currentRemovableDriveList, drv => drv.Name);
+                previousRemovableList.ExceptBy(currentRemovableDriveList, static drv => drv.Name);
 
             foreach (var drive in newRemovableDrives)
             {
@@ -154,10 +154,10 @@ public static class Drives
         {
             var currentReadyCdList = new List<DriveInfo>();
             GetAllCdDrives(currentReadyCdList);
-            currentReadyCdList.KeepOnly(cdDrv => cdDrv.IsReady);
+            currentReadyCdList.KeepOnly(static cdDrv => cdDrv.IsReady);
 
-            var insertedCds = currentReadyCdList.ExceptBy(previousReadyCdList, drv => drv.IsReady);
-            var ejectedCds = previousReadyCdList.ExceptBy(currentReadyCdList, drv => drv.IsReady);
+            var insertedCds = currentReadyCdList.ExceptBy(previousReadyCdList, static drv => drv.IsReady);
+            var ejectedCds = previousReadyCdList.ExceptBy(currentReadyCdList, static drv => drv.IsReady);
 
             foreach (var drive in insertedCds)
             {
@@ -181,11 +181,11 @@ public static class Drives
             var currentDriveList = new List<DriveInfo>();
             GetAllDrives(currentDriveList);
             var newDrives =
-                currentDriveList.ExceptBy(previousDriveList, drv => drv.Name)
-                                .Where(drv => drv.DriveType is not (DriveType.Removable or DriveType.CDRom));
+                currentDriveList.ExceptBy(previousDriveList, static drv => drv.Name)
+                                .Where(static drv => drv.DriveType is not (DriveType.Removable or DriveType.CDRom));
             var removedDrives =
-                previousDriveList.ExceptBy(currentDriveList, drv => drv.Name)
-                                 .Where(drv => drv.DriveType is not (DriveType.Removable or DriveType.CDRom));
+                previousDriveList.ExceptBy(currentDriveList, static drv => drv.Name)
+                                 .Where(static drv => drv.DriveType is not (DriveType.Removable or DriveType.CDRom));
 
             foreach (var drive in newDrives)
             {

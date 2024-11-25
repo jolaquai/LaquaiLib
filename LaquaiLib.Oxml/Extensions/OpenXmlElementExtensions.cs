@@ -22,7 +22,7 @@ public static class OpenXmlElementExtensions
     /// <param name="element">The element to check.</param>
     /// <param name="potentialParent">The potential parent to check against.</param>
     /// <returns><see langword="true"/> if <paramref name="element"/> is the only child of <paramref name="potentialParent"/>, otherwise <see langword="false"/>.</returns>
-    public static bool IsOnlyChildOf(this OpenXmlElement element, OpenXmlElement? potentialParent)
+    public static bool IsOnlyChildOf(this OpenXmlElement element, OpenXmlElement potentialParent)
     {
         if (element.Parent != potentialParent)
         {
@@ -34,7 +34,7 @@ public static class OpenXmlElementExtensions
         }
 
         var children = element.Parent.ChildElements
-            .Where(c => !c.GetType().Name.EndsWith("Properties", StringComparison.Ordinal))
+            .Where(static c => !c.GetType().Name.EndsWith("Properties", StringComparison.Ordinal))
         .ToArray();
 
         return element.Parent.ChildElements.Count == 1;
@@ -84,7 +84,7 @@ public static class OpenXmlElementExtensions
     }
     private static void RemoveRsid(XElement xElement)
     {
-        foreach (var attribute in xElement.Attributes().Where(a => a.Name.LocalName.StartsWith("rsid", StringComparison.OrdinalIgnoreCase)).ToArray())
+        foreach (var attribute in xElement.Attributes().Where(static a => a.Name.LocalName.StartsWith("rsid", StringComparison.OrdinalIgnoreCase)).ToArray())
         {
             attribute.Remove();
         }
@@ -95,11 +95,11 @@ public static class OpenXmlElementExtensions
     }
     private static void RemoveNamespaces(XElement xElement)
     {
-        foreach (var attribute in xElement.Attributes().Where(a => a.IsNamespaceDeclaration).ToArray())
+        foreach (var attribute in xElement.Attributes().Where(static a => a.IsNamespaceDeclaration).ToArray())
         {
             attribute.Remove();
         }
-        foreach (var attribute in xElement.Attributes().Where(a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.None).ToArray())
+        foreach (var attribute in xElement.Attributes().Where(static a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.None).ToArray())
         {
             xElement.SetAttributeValue(attribute.Name.LocalName, attribute.Value);
             attribute.Remove();
@@ -205,5 +205,5 @@ public static class OpenXmlElementExtensions
     /// <param name="elements">The elements to clone.</param>
     /// <returns>The created clones.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static OpenXmlElement[] CloneAll(this IEnumerable<OpenXmlElement> elements) => elements.Select(e => e.CloneNode(true)).ToArray();
+    public static OpenXmlElement[] CloneAll(this IEnumerable<OpenXmlElement> elements) => elements.Select(static e => e.CloneNode(true)).ToArray();
 }

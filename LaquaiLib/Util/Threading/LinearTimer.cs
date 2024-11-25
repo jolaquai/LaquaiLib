@@ -14,49 +14,48 @@ public class LinearTimer
     /// Gets or sets the state object that is passed to the callback when it is invoked.
     /// May be freely changed, even while the timer is running, with changes being reflected upon the next invocation of the callback.
     /// </summary>
-    public object? State { get; set; }
+    public object State { get; set; }
 
-    private TimeSpan interval;
     /// <summary>
     /// Gets or sets the minimal interval between invocations of the callback.
     /// Assigning this will stop the timer.
     /// </summary>
     public TimeSpan Interval
     {
-        get => interval;
+        get;
         set
         {
-            interval = value;
+            field = value;
             timer ??= new System.Threading.Timer(Execute);
             timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
-    private TimeSpan waitOnStart;
+
     /// <summary>
     /// Gets or sets the delay before the first invocation of the callback when the timer is started.
     /// Assigning this will stop the timer.
     /// </summary>
     public TimeSpan WaitOnStart
     {
-        get => waitOnStart;
+        get;
         set
         {
-            waitOnStart = value;
+            field = value;
             timer ??= new System.Threading.Timer(Execute);
             timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
-    private Action<object?> callback;
+
     /// <summary>
     /// Gets or sets the callback method to invoke periodically.
     /// Assigning this will stop the timer.
     /// </summary>
-    public Action<object?> Callback
+    public Action<object> Callback
     {
-        get => callback;
+        get;
         set
         {
-            callback = value;
+            field = value;
             timer ??= new System.Threading.Timer(Execute);
             timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
@@ -96,14 +95,14 @@ public class LinearTimer
     /// </summary>
     /// <param name="callback">The callback method to invoke periodically.</param>
     /// <param name="interval">A <see cref="TimeSpan"/> instance that represents the interval between invocations of the callback.</param>
-    public LinearTimer(Action<object?> callback, TimeSpan interval) : this(callback, interval, interval) { }
+    public LinearTimer(Action<object> callback, TimeSpan interval) : this(callback, interval, interval) { }
     /// <summary>
     /// Initializes a new <see cref="LinearTimer"/> with the specified interval and initial delay.
     /// </summary>
     /// <param name="callback">The callback method to invoke periodically.</param>
     /// <param name="interval">A <see cref="TimeSpan"/> instance that represents the interval between invocations of the callback.</param>
     /// <param name="waitOnStart">A <see cref="TimeSpan"/> instance that represents the delay before the first invocation of the callback.</param>
-    public LinearTimer(Action<object?> callback, TimeSpan interval, TimeSpan waitOnStart)
+    public LinearTimer(Action<object> callback, TimeSpan interval, TimeSpan waitOnStart)
     {
         Callback = callback;
         Interval = interval;
@@ -114,21 +113,21 @@ public class LinearTimer
     /// </summary>
     /// <param name="callback">The callback method to invoke periodically.</param>
     /// <param name="milliseconds">The number of milliseconds that represents the interval between invocations of the callback.</param>
-    public LinearTimer(Action<object?> callback, long milliseconds) : this(callback, TimeSpan.FromMilliseconds(milliseconds), TimeSpan.FromMilliseconds(milliseconds)) { }
+    public LinearTimer(Action<object> callback, long milliseconds) : this(callback, TimeSpan.FromMilliseconds(milliseconds), TimeSpan.FromMilliseconds(milliseconds)) { }
     /// <summary>
     /// Initializes a new <see cref="LinearTimer"/> with the specified interval and initial delay.
     /// </summary>
     /// <param name="callback">The callback method to invoke periodically.</param>
     /// <param name="milliseconds">The number of milliseconds that represents the interval between invocations of the callback.</param>
     /// <param name="waitOnStart">The number of milliseconds that represents the delay before the first invocation of the callback.</param>
-    public LinearTimer(Action<object?> callback, long milliseconds, long waitOnStart) : this(callback, TimeSpan.FromMilliseconds(milliseconds), TimeSpan.FromMilliseconds(waitOnStart)) { }
+    public LinearTimer(Action<object> callback, long milliseconds, long waitOnStart) : this(callback, TimeSpan.FromMilliseconds(milliseconds), TimeSpan.FromMilliseconds(waitOnStart)) { }
 
     private int lastAssignedContinuationId = -1;
     /// <summary>
     /// Begins invoking the callback periodically.
     /// </summary>
     public void Start() => timer.Change(WaitOnStart, Interval);
-    private void Execute(object? state)
+    private void Execute(object state)
     {
         _ = state;
 

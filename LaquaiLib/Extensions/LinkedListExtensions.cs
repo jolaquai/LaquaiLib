@@ -15,7 +15,7 @@ public static class LinkedListNodeExtensions
     /// <typeparam name="T">The type of the elements in the <see cref="LinkedList{T}"/>.</typeparam>
     /// <param name="node">The node to get the next node of.</param>
     /// <returns>The next node as described, or whatever <see cref="LinkedListNode{T}.Next"/> returns if <paramref name="node"/> is not the last node. This can be <see langword="null"/>.</returns>
-    public static LinkedListNode<T>? DequeNext<T>(this LinkedListNode<T> node)
+    public static LinkedListNode<T> DequeNext<T>(this LinkedListNode<T> node)
     {
         ArgumentNullException.ThrowIfNull(node);
 
@@ -30,7 +30,7 @@ public static class LinkedListNodeExtensions
     /// <typeparam name="T">The type of the elements in the <see cref="LinkedList{T}"/>.</typeparam>
     /// <param name="node">The node to get the previous node of.</param>
     /// <returns>The previous node as described, or whatever <see cref="LinkedListNode{T}.Previous"/> returns if <paramref name="node"/> is not the first node. This can be <see langword="null"/>.</returns>
-    public static LinkedListNode<T>? DequePrevious<T>(this LinkedListNode<T> node)
+    public static LinkedListNode<T> DequePrevious<T>(this LinkedListNode<T> node)
     {
         ArgumentNullException.ThrowIfNull(node);
 

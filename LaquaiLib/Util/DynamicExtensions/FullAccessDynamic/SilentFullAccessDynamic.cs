@@ -20,7 +20,7 @@ namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
 /// <typeparam name="T">The type of the object to wrap.</typeparam>
 public class SilentFullAccessDynamic<T> : DynamicObject
 {
-    private readonly T? _instance;
+    private readonly T _instance;
     private readonly Type _instanceType = typeof(T);
     private const BindingFlags publicInstance = BindingFlags.Instance | BindingFlags.Public;
     private const BindingFlags anyInstance = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -39,8 +39,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         _instance = instance;
     }
     /// <inheritdoc/>
-
-    public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object? result)
+    public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
     {
         if (_instance is null)
         {
@@ -76,7 +75,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             var itemType = item.GetType();
             return itemType.Namespace + '.' + itemType.Name;
         })) + ')';
-        MethodInfo? method;
+        MethodInfo method;
         if (_memberCache.TryGetValue(key, out var value) && value is MethodInfo info)
         {
             method = info;
@@ -97,12 +96,12 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         return true;
     }
     /// <inheritdoc/>
-    public override bool TryGetMember(GetMemberBinder binder, out object? result)
+    public override bool TryGetMember(GetMemberBinder binder, out object result)
     {
         var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name;
 
-        PropertyInfo? prop = null;
-        FieldInfo? field = null;
+        PropertyInfo prop = null;
+        FieldInfo field = null;
         if (_memberCache.TryGetValue(key, out var value))
         {
             switch (value)
@@ -123,7 +122,6 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             prop ??= GetFirstNonNull(bf => _instanceType.GetProperty(binder.Name, bf));
             if (prop is not null)
             {
-
                 var propValue = prop.GetValue(_instance);
                 result = propValue is null ? null : (object)SilentFullAccessDynamicFactory.Create(prop.PropertyType, propValue);
                 _memberCache[key] = prop;
@@ -168,8 +166,8 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             return true;
         }
 
-        PropertyInfo? prop = null;
-        FieldInfo? field = null;
+        PropertyInfo prop = null;
+        FieldInfo field = null;
         if (_memberCache.TryGetValue(binder.Name, out var member))
         {
             if (member is PropertyInfo propInfo)
@@ -199,7 +197,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         return true;
     }
     /// <inheritdoc/>
-    public override bool TryConvert(ConvertBinder binder, out object? result)
+    public override bool TryConvert(ConvertBinder binder, out object result)
     {
         if (binder.Type.IsAssignableFrom(_instanceType))
         {
@@ -212,7 +210,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         //throw new InvalidCastException($"Cannot cast object of type '{_instanceType.FullName}' to '{binder.Type.FullName}'.");
     }
     /// <inheritdoc/>
-    public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object? result)
+    public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
     {
         if (_instance is null)
         {
@@ -232,7 +230,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         return true;
     }
     /// <inheritdoc/>
-    public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object? value)
+    public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
     {
         if (_instance is null)
         {
@@ -249,7 +247,7 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         return true;
     }
     /// <inheritdoc/>
-    public override bool TryInvoke(InvokeBinder binder, object?[]? args, out object? result)
+    public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
     {
         switch (_instance)
         {
@@ -265,20 +263,20 @@ public class SilentFullAccessDynamic<T> : DynamicObject
         }
     }
     /// <inheritdoc/>
-    public override IEnumerable<string> GetDynamicMemberNames() => _instanceType.GetProperties(bindingFlags).Select(p => p.Name);
+    public override IEnumerable<string> GetDynamicMemberNames() => _instanceType.GetProperties(bindingFlags).Select(static p => p.Name);
 
     /// <summary>
     /// Returns the underlying <typeparamref name="T"/> instance.
     /// </summary>
     /// <returns>The underlying <typeparamref name="T"/> instance.</returns>
-    public T? Unwrap() => _instance;
+    public T Unwrap() => _instance;
 
     /// <summary>
     /// Executes a <see cref="Func{T, TResult}"/> that is passed each <see cref="BindingFlags"/> value in order of preference, and returns the result of the first non-null invocation.
     /// </summary>
     /// <param name="func">The function to execute.</param>
     /// <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
-    private static TMember? GetFirstNonNull<TMember>(Func<BindingFlags, TMember?> func)
+    private static TMember GetFirstNonNull<TMember>(Func<BindingFlags, TMember> func)
     {
         return func(publicStatic)
             ?? func(anyStatic)
@@ -286,12 +284,11 @@ public class SilentFullAccessDynamic<T> : DynamicObject
             ?? func(anyInstance);
     }
     /// <inheritdoc/>
-
-    public override bool Equals(object? obj) => Equals(Unwrap(), obj);
+    public override bool Equals(object obj) => Equals(Unwrap(), obj);
     /// <inheritdoc/>
-    public static bool operator ==(SilentFullAccessDynamic<T> left, object? right) => Equals(left.Unwrap(), right);
+    public static bool operator ==(SilentFullAccessDynamic<T> left, object right) => Equals(left.Unwrap(), right);
     /// <inheritdoc/>
-    public static bool operator !=(SilentFullAccessDynamic<T> left, object? right) => !(left == right);
+    public static bool operator !=(SilentFullAccessDynamic<T> left, object right) => !(left == right);
     /// <inheritdoc/>
     public override int GetHashCode() => Unwrap()?.GetHashCode() ?? 0;
 }

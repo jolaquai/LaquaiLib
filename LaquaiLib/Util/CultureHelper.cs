@@ -20,8 +20,8 @@ public static partial class CultureHelper
     public static double SimilarityThreshold { get; set; } = 0.7;
 
     private static readonly FrozenDictionary<string, CultureInfo[]> _cultureMap = CultureInfo.GetCultures(CultureTypes.AllCultures)
-            .GroupBy(ci => ci.Name.Split('-')[0])
-            .ToFrozenDictionary(ci => ci.Key, ci => ci.ToArray());
+            .GroupBy(static ci => ci.Name.Split('-')[0])
+            .ToFrozenDictionary(static ci => ci.Key, static ci => ci.ToArray());
 
     private static readonly Regex _similarityCleanerRegex = GetSimilarityCleanerRegex();
 
@@ -35,9 +35,9 @@ public static partial class CultureHelper
 
     private static readonly FrozenDictionary<string[], TimeZoneInfo> _timeZoneMap = TimeZoneInfo
         .GetSystemTimeZones()
-        .ToFrozenDictionary(tz => tz.DisplayName
+        .ToFrozenDictionary(static tz => tz.DisplayName
             .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(split => split.Trim('(', ')', ',', ' '))
+            .Select(static split => split.Trim('(', ')', ',', ' '))
             .ToArray());
 
     /// <summary>
@@ -59,7 +59,7 @@ public static partial class CultureHelper
     /// <item/>"Natural" preferences (such as the expectation that <c>United States</c> should return the <see cref="CultureInfo"/> for <c>en-US</c> and not <c>chr-US</c>) cannot be taken into account. As such, you may use <see cref="CultureInfoOverrides"/> to manually cater to preferences within your application.
     /// </list>
     /// </remarks>
-    public static CultureInfo? ResolveToCultureInfo(string? data)
+    public static CultureInfo ResolveToCultureInfo(string data)
     {
         if (data is not null && CultureInfoOverrides.TryGetValue(data, out var overrideCulture))
         {
@@ -176,7 +176,7 @@ public static partial class CultureHelper
     /// </list>
     /// </param>
     /// <returns>A <see cref="TimeZoneInfo"/> instance that matches the given data, or <see langword="null"/> if no match was found.</returns>
-    public static TimeZoneInfo? ResolveToTimeZoneInfo(string? data)
+    public static TimeZoneInfo ResolveToTimeZoneInfo(string data)
     {
         if (string.IsNullOrWhiteSpace(data) || data.Equals("Utc", StringComparison.OrdinalIgnoreCase))
         {
@@ -197,7 +197,7 @@ public static partial class CultureHelper
         }
         catch { }
 
-        Task<TimeZoneInfo?>[] tasks =
+        Task<TimeZoneInfo>[] tasks =
         [
             Task.Run(() =>
             {

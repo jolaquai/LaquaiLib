@@ -5,16 +5,16 @@
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Solution Items/">
-    <File Path=".filenesting.json" />
     <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
     <File Path="README.md" />
+    <Project Path="TestBenchmark/TestBenchmark.csproj" Id="67a16bf2-5dd2-4e44-8dd0-ecb61bc80936" />
   </Folder>
   <Folder Name="/Solution Items/Scripts/" Id="eb4a6ed1-506c-a9c3-2245-c7e44ed24a1b">
     <File Path="Scripts\PackAll.ps1" />
     <File Path="Scripts\SetVersions.ps1" />
   </Folder>
   <Folder Name="/Test/">
-    <Project Path="TestBenchmark/TestBenchmark.csproj" Id="67a16bf2-5dd2-4e44-8dd0-ecb61bc80936" />
     <Project Path="TestConsole\TestConsole.csproj" />
     <Project Path="TestCore\TestCore.csproj" />
     <Project Path="TestWpf\TestWpf.csproj" />

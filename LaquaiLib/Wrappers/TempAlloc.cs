@@ -483,8 +483,17 @@ public unsafe ref struct TempAlloc : IDisposable
     }
 
     #region Operators
+    /// <summary>
+    /// Implicitly converts a <see cref="TempAlloc"/> instance to an <see langword="nint"/> representing the address of the memory region it wraps.
+    /// </summary>
     public static implicit operator nint(TempAlloc alloc) => alloc.Address;
+    /// <summary>
+    /// Implicitly converts a <see cref="TempAlloc"/> instance to a <see langword="nuint"/> representing the address of the memory region it wraps.
+    /// </summary>
     public static implicit operator nuint(TempAlloc alloc) => (nuint)alloc.Address;
+    /// <summary>
+    /// Implicitly converts a <see cref="TempAlloc"/> instance to a <see langword="void"/>* representing the address of the memory region it wraps.
+    /// </summary>
     public static implicit operator void*(TempAlloc alloc) => (void*)alloc.Address;
     #endregion
 

@@ -3,16 +3,26 @@ using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Streams;
 
+/// <summary>
+/// Implements a <see cref="Stream"/> that provides  by wrapping another.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class ObservableStream<T> : Stream
     where T : Stream
 {
     private readonly T _underlying;
 
+    /// <inheritdoc/>
     public override bool CanRead => _underlying.CanRead;
+    /// <inheritdoc/>
     public override bool CanSeek => _underlying.CanSeek;
+    /// <inheritdoc/>
     public override bool CanWrite => _underlying.CanWrite;
+    /// <inheritdoc/>
     public override long Length => _underlying.Length;
-    public override long Position {
+    /// <inheritdoc/>
+    public override long Position
+    {
         get => _underlying.Position;
         set
         {
@@ -27,16 +37,19 @@ public class ObservableStream<T> : Stream
         }
     }
 
+    /// <inheritdoc/>
     public override void Flush()
     {
         _underlying.Flush();
         Flushed?.Invoke(this, EventArgs.Empty);
     }
+    /// <inheritdoc/>
     public override async Task FlushAsync(CancellationToken cancellationToken)
     {
         await _underlying.FlushAsync(cancellationToken).ConfigureAwait(false);
         Flushed?.Invoke(this, EventArgs.Empty);
     }
+    /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count)
     {
         if (count <= 0)
@@ -59,6 +72,7 @@ public class ObservableStream<T> : Stream
 
         return read;
     }
+    /// <inheritdoc/>
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
     {
         if (count <= 0)
@@ -81,6 +95,7 @@ public class ObservableStream<T> : Stream
 
         return read;
     }
+    /// <inheritdoc/>
     public override int Read(Span<byte> buffer)
     {
         if (buffer.Length == 0)
@@ -95,12 +110,14 @@ public class ObservableStream<T> : Stream
 
         return read;
     }
+    /// <inheritdoc/>
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         DataRead?.Invoke(this, new ReadEventArgs(buffer));
         return buffer.Length;
     }
+    /// <inheritdoc/>
     public override int ReadByte()
     {
         if (Position == Length)
@@ -117,6 +134,7 @@ public class ObservableStream<T> : Stream
         }
         return theByte;
     }
+    /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin = SeekOrigin.Begin)
     {
         // Bail if the position doesn't actually change
@@ -138,6 +156,7 @@ public class ObservableStream<T> : Stream
         }
         return newPos;
     }
+    /// <inheritdoc/>
     public override void SetLength(long value)
     {
         if (Length == value)
@@ -149,6 +168,7 @@ public class ObservableStream<T> : Stream
         _underlying.SetLength(value);
         Resized?.Invoke(this, new ResizedEventArgs(oldLength, Length));
     }
+    /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
     {
         if (count <= 0)
@@ -172,6 +192,7 @@ public class ObservableStream<T> : Stream
             Resized?.Invoke(this, new ResizedEventArgs(oldLength, Length));
         }
     }
+    /// <inheritdoc/>
     public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
     {
         if (count <= 0)
@@ -195,6 +216,7 @@ public class ObservableStream<T> : Stream
             Resized?.Invoke(this, new ResizedEventArgs(oldLength, Length));
         }
     }
+    /// <inheritdoc/>
     public override void Write(ReadOnlySpan<byte> buffer)
     {
         var temp = ArrayPool<byte>.Shared.Rent(buffer.Length);
@@ -205,11 +227,13 @@ public class ObservableStream<T> : Stream
             ArrayPool<byte>.Shared.Return(temp);
         }
     }
+    /// <inheritdoc/>
     public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         await _underlying.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
         DataWritten?.Invoke(this, new WrittenEventArgs(buffer));
     }
+    /// <inheritdoc/>
     public override void WriteByte(byte value)
     {
         var prevPosition = Position;
@@ -222,6 +246,7 @@ public class ObservableStream<T> : Stream
             Resized?.Invoke(this, new ResizedEventArgs(oldLength, Length));
         }
     }
+    /// <inheritdoc/>
     public override void CopyTo(Stream destination, int bufferSize)
     {
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
@@ -232,6 +257,7 @@ public class ObservableStream<T> : Stream
         }
         ArrayPool<byte>.Shared.Return(temp);
     }
+    /// <inheritdoc/>
     public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken = default)
     {
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
@@ -249,23 +275,23 @@ public class ObservableStream<T> : Stream
     /// <summary>
     /// Occurs when the stream is flushed.
     /// </summary>
-    public event EventHandler? Flushed;
+    public event EventHandler Flushed;
     /// <summary>
     /// Occurs when data is read from the stream.
     /// </summary>
-    public event EventHandler<ReadEventArgs>? DataRead;
+    public event EventHandler<ReadEventArgs> DataRead;
     /// <summary>
     /// Occurs when the stream is seeked, irrespective of whether this was part of a write or read operation, a call to <see cref="Seek(long, SeekOrigin)"/> or a direct change of the <see cref="Position"/> property.
     /// </summary>
-    public event EventHandler<SeekedEventArgs>? Seeked;
+    public event EventHandler<SeekedEventArgs> Seeked;
     /// <summary>
     /// Occurs when data is written to the stream.
     /// </summary>
-    public event EventHandler<WrittenEventArgs>? DataWritten;
+    public event EventHandler<WrittenEventArgs> DataWritten;
     /// <summary>
     /// Occurs when the stream is resized, that is, an operation causes <see cref="Length"/> to change.
     /// </summary>
-    public event EventHandler<ResizedEventArgs>? Resized;
+    public event EventHandler<ResizedEventArgs> Resized;
 
     /// <summary>
     /// Initializes a new <see cref="ObservableStream{T}"/> instance by wrapping an existing <see cref="Stream"/>.
@@ -277,6 +303,7 @@ public class ObservableStream<T> : Stream
     }
 
     private bool disposed;
+    /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
         if (disposed)
@@ -294,6 +321,7 @@ public class ObservableStream<T> : Stream
 
         disposed = true;
     }
+    /// <inheritdoc/>
     public override async ValueTask DisposeAsync()
     {
         await _underlying.DisposeAsync().ConfigureAwait(false);

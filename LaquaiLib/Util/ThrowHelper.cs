@@ -17,7 +17,7 @@ public static class ThrowHelper
     /// <param name="constructorParamFactory">A <see cref="Func{T, TResult}"/> that is passed the first item in <paramref name="items"/> which does not match the given <paramref name="predicate"/> and returns an <see cref="Array"/> of nullable <see cref="object"/>s (or <see langword="null"/>) which is passed to the constructor of the exception to throw. If it returns <see langword="null"/>, the exception type's parameterless constructor is invoked.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> the items must pass.</param>
     /// <param name="items">The items to test.</param>
-    public static void ThrowOnFirstOffender<TException, TTest>(Func<TTest, object?[]?> constructorParamFactory, Predicate<TTest> predicate, params ReadOnlySpan<TTest> items)
+    public static void ThrowOnFirstOffender<TException, TTest>(Func<TTest, object[]> constructorParamFactory, Predicate<TTest> predicate, params ReadOnlySpan<TTest> items)
         where TException : Exception
     {
         ArgumentNullException.ThrowIfNull(typeof(TException));

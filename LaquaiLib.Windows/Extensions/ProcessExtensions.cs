@@ -14,12 +14,12 @@ public static partial class ProcessExtensions
     /// </summary>
     /// <param name="process">A <see cref="Process"/> instance.</param>
     /// <returns>The command line of the specified <see cref="Process"/> or <see langword="null"/> if it could not be retrieved.</returns>
-    public static string? GetCommandLine(this Process process)
+    public static string GetCommandLine(this Process process)
     {
         if (process.StartInfo is ProcessStartInfo psi)
         {
             return psi.ArgumentList.Count > 0
-                ? $"\"{psi.FileName}\" {string.Join(' ', psi.ArgumentList.Select(a => '"' + a + '"'))}"
+                ? $"\"{psi.FileName}\" {string.Join(' ', psi.ArgumentList.Select(static a => '"' + a + '"'))}"
                 : $"\"{psi.FileName}\" {psi.Arguments}";
         }
         {

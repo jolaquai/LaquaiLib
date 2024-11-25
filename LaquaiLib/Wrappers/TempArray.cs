@@ -33,7 +33,7 @@ public ref struct TempArray<T> : ICloneable, IStructuralComparable, IStructuralE
     /// </summary>
     /// <param name="array">The array of <typeparamref name="T"/> to wrap with this <see cref="TempArray{T}"/>.</param>
     /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to return the array to when this <see cref="TempArray{T}"/> is disposed. May be <see langword="null"/> to indicate that the passed <paramref name="array"/> is not from any <see cref="ArrayPool{T}"/>.</param>
-    public TempArray(T[] array, ArrayPool<T>? arrayPool = null)
+    public TempArray(T[] array, ArrayPool<T> arrayPool = null)
     {
         _array = array;
         _pool = arrayPool;
@@ -54,9 +54,9 @@ public ref struct TempArray<T> : ICloneable, IStructuralComparable, IStructuralE
         }
     }
 
-    private T[]? _array;
+    private T[] _array;
     private readonly bool _isPooledInstance;
-    private readonly ArrayPool<T>? _pool;
+    private readonly ArrayPool<T> _pool;
 
     /// <summary>
     /// The array of <typeparamref name="T"/> this <see cref="TempArray{T}"/> wraps.
@@ -95,25 +95,25 @@ public ref struct TempArray<T> : ICloneable, IStructuralComparable, IStructuralE
     /// <inheritdoc/>
     public object SyncRoot => _array!.SyncRoot;
     /// <inheritdoc/>
-    public T? this[int index] { get => (T?)((IList)_array!)[index]; set => ((IList)_array!)[index] = value; }
+    public T this[int index] { get => (T)((IList)_array!)[index]; set => ((IList)_array!)[index] = value; }
     /// <inheritdoc/>
-    public bool Equals(object? other, IEqualityComparer comparer) => ((IStructuralEquatable)_array!).Equals(other, comparer);
+    public bool Equals(object other, IEqualityComparer comparer) => ((IStructuralEquatable)_array!).Equals(other, comparer);
     /// <inheritdoc/>
     public int GetHashCode(IEqualityComparer comparer) => ((IStructuralEquatable)_array!).GetHashCode(comparer);
     /// <inheritdoc/>
-    public int CompareTo(object? other, IComparer comparer) => ((IStructuralComparable)_array!).CompareTo(other, comparer);
+    public int CompareTo(object other, IComparer comparer) => ((IStructuralComparable)_array!).CompareTo(other, comparer);
     /// <inheritdoc/>
-    public int Add(object? value) => ((IList)_array!).Add(value);
+    public int Add(object value) => ((IList)_array!).Add(value);
     /// <inheritdoc/>
     public void Clear() => ((IList)_array!).Clear();
     /// <inheritdoc/>
-    public bool Contains(object? value) => ((IList)_array!).Contains(value);
+    public bool Contains(object value) => ((IList)_array!).Contains(value);
     /// <inheritdoc/>
-    public int IndexOf(object? value) => ((IList)_array!).IndexOf(value);
+    public int IndexOf(object value) => ((IList)_array!).IndexOf(value);
     /// <inheritdoc/>
-    public void Insert(int index, object? value) => ((IList)_array!).Insert(index, value);
+    public void Insert(int index, object value) => ((IList)_array!).Insert(index, value);
     /// <inheritdoc/>
-    public void Remove(object? value) => ((IList)_array!).Remove(value);
+    public void Remove(object value) => ((IList)_array!).Remove(value);
     /// <inheritdoc/>
     public void RemoveAt(int index) => ((IList)_array!).RemoveAt(index);
     /// <inheritdoc/>

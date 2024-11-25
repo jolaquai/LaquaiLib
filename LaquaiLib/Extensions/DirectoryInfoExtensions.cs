@@ -11,7 +11,7 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="name">A relative directory path to search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/> if it exists, otherwise <see langword="null"/>.</returns>
-    public static DirectoryInfo? Directory(this DirectoryInfo di, string name)
+    public static DirectoryInfo Directory(this DirectoryInfo di, string name)
     {
         ArgumentNullException.ThrowIfNull(di);
         if (di.Exists)
@@ -30,7 +30,7 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="DirectoryInfo"/> instance for the subdirectory identified by a path consisting of subdirectory <paramref name="names"/> if it exists, otherwise <see langword="null"/>.</returns>
-    public static DirectoryInfo? Directory(this DirectoryInfo di, params ReadOnlySpan<string> names) => di.Directory(Path.Combine(names));
+    public static DirectoryInfo Directory(this DirectoryInfo di, params ReadOnlySpan<string> names) => di.Directory(Path.Combine(names));
     /// <summary>
     /// Creates a new <see cref="DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/>, creating the entire directory structure it does not exist.
     /// </summary>
@@ -61,7 +61,7 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="name">A relative file path to search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="FileInfo"/> instance for the file identified by <paramref name="name"/> if it exists, otherwise <see langword="null"/>.</returns>
-    public static FileInfo? File(this DirectoryInfo di, string name)
+    public static FileInfo File(this DirectoryInfo di, string name)
     {
         ArgumentNullException.ThrowIfNull(di);
         if (di.Exists)
@@ -80,7 +80,7 @@ public static class DirectoryInfoExtensions
     /// <param name="di">The <see cref="DirectoryInfo"/> instance to use as the current directory.</param>
     /// <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="FileInfo"/> instance for the file identified by a path consisting of subdirectory <paramref name="names"/> if it exists, otherwise <see langword="null"/>.</returns>
-    public static FileInfo? File(this DirectoryInfo di, params ReadOnlySpan<string> names) => di.File(Path.Combine(names));
+    public static FileInfo File(this DirectoryInfo di, params ReadOnlySpan<string> names) => di.File(Path.Combine(names));
     /// <summary>
     /// Creates a <see cref="FileInfo"/> instance for the file identified by <paramref name="name"/>, creating the entire directory structure and the file itself if any part of it does not exist.
     /// </summary>

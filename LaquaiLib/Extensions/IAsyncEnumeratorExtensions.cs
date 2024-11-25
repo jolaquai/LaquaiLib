@@ -19,12 +19,20 @@ public static class IAsyncEnumeratorExtensions
     /// <param name="source">The <see cref="IAsyncEnumerator{T}"/> to start with.</param>
     /// <param name="with">The <see cref="IAsyncEnumerator{T}"/> instances to chain together.</param>
     /// <returns>An <see cref="IAsyncEnumerator{T}"/> implementation that iterates over each <paramref name="source"/> and <paramref name="with"/> in turn.</returns>
-    public static IAsyncEnumerator<T> Chain<T>(this IAsyncEnumerator<T> source, params ReadOnlySpan<IAsyncEnumerator<T>> with) => new AsyncEnumeratorCombiner<T>([source, .. with]);
+    public static IAsyncEnumerator<T> Chain<T>(this IAsyncEnumerator<T> source, params ReadOnlySpan<IAsyncEnumerator<T>> with)
+    {
+        if (source is AsyncEnumeratorCombiner<T> combiner)
+        {
+            combiner.AddIterators(with);
+            return combiner;
+        }
+        return new AsyncEnumeratorCombiner<T>([source, .. with]);
+    }
 }
 
-file struct AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators) : IAsyncEnumerator<T>
+file struct AsyncEnumeratorCombiner<T>(params ReadOnlySpan<IAsyncEnumerator<T>> iterators) : IAsyncEnumerator<T>
 {
-    private readonly IAsyncEnumerator<T>[] _iterators = iterators;
+    private IAsyncEnumerator<T>[] _iterators = [.. iterators];
     public T Current { get; private set; }
     public readonly async ValueTask DisposeAsync()
     {
@@ -45,4 +53,5 @@ file struct AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators) :
         }
         return false;
     }
+    internal void AddIterators(params ReadOnlySpan<IAsyncEnumerator<T>> with) => _iterators = [.. _iterators, .. with];
 }

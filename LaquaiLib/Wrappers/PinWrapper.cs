@@ -92,10 +92,12 @@ internal readonly unsafe ref struct PinWrapper<T> : IDisposable
 }
 
 /// <summary>
-/// Contains factory methods for <see cref="PinWrapper{T}"/>.
+/// Contains factory methods for specific types of <see cref="PinWrapper{T}"/>.
+/// For general cases, use <see cref="PinWrapper{T}"/> directly.
 /// </summary>
 public static class PinWrapper
 {
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
     /// <summary>
     /// Pins a pointer to the specified <see langword="string"/> and wraps it in a <see cref="PinWrapper{T}"/>.
     /// This is equivalent to the statement <c>fixed (char* ptr = str)</c>.
@@ -103,4 +105,5 @@ public static class PinWrapper
     /// <param name="str">The <see langword="string"/> to pin.</param>
     /// <returns>The created <see cref="PinWrapper{T}"/>.</returns>
     internal static unsafe PinWrapper<char> Pin(string str) => new PinWrapper<char>(new GCHandle<char>((char*)&str));
+#pragma warning restore CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 }

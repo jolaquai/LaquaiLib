@@ -44,11 +44,11 @@ public struct FilterableEnumerator<T>
     /// </summary>
     /// <param name="items">The items to iterate over.</param>
     /// <param name="predicate">The predicate to filter the items by. If <see langword="null"/>, this instance will iterate over all items in the collection.</param>
-    public FilterableEnumerator(IEnumerable<T> items, Func<T, bool>? predicate) : this(predicate is null ? items : items.Where(predicate))
+    public FilterableEnumerator(IEnumerable<T> items, Func<T, bool> predicate) : this(predicate is null ? items : items.Where(predicate))
     {
     }
     /// <inheritdoc cref="FilterableEnumerator{T}.FilterableEnumerator(IEnumerable{T}, Func{T, bool}?)"/>
-    public FilterableEnumerator(IEnumerable<T> items, Func<T, int, bool>? predicate) : this(predicate is null ? items : items.Where(predicate))
+    public FilterableEnumerator(IEnumerable<T> items, Func<T, int, bool> predicate) : this(predicate is null ? items : items.Where(predicate))
     {
     }
 }

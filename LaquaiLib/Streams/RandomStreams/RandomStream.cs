@@ -10,7 +10,7 @@ namespace LaquaiLib.Streams.RandomStreams;
 /// </summary>
 public class RandomStream : Stream
 {
-    protected Random random;
+    private readonly Random random;
 
     /// <summary>
     /// Initializes a new <see cref="RandomStream"/>.

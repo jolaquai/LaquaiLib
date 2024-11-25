@@ -23,7 +23,7 @@ public static class UsingWrapper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UsingWrapper<T> Use<T>(T instance)
         where T : IDisposable
-        => new UsingWrapper<T>(instance, instance => instance.Dispose());
+        => new UsingWrapper<T>(instance, static instance => instance.Dispose());
     /// <summary>
     /// Creates a new <see cref="UsingWrapper{T}"/> instance for the given instance of <typeparamref name="T"/>.
     /// </summary>
@@ -93,7 +93,7 @@ public struct UsingWrapper<T> : IDisposable
         // Anyway, point is, Dispose() shouldn't be called more than once, and calling Dispose() manually or through a 'using' first and then having ProcessExit call it again is bad design
         AppDomain.CurrentDomain.ProcessExit -= Dispose;
     }
-    private void Dispose(object? sender, EventArgs e) => Dispose();
+    private void Dispose(object sender, EventArgs e) => Dispose();
 
     /// <summary>
     /// Converts a <see cref="UsingWrapper{T}"/> instance to the wrapped instance. The wrapper instance is lost if not kept track of separately

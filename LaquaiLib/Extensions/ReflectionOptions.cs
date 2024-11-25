@@ -8,7 +8,7 @@ public readonly struct ReflectionOptions()
     /// <summary>
     /// The namespace into which the generated type(s) should be placed. If <see langword="null"/> or empty, the code is generated without a namespace declaration.
     /// </summary>
-    public string? Namespace { get; init; }
+    public string Namespace { get; init; }
     /// <summary>
     /// How interaction with the reflected type is to be outlined in the generated code. Defaults to <see cref="InheritanceBehavior.FieldDelegation"/>.
     /// </summary>

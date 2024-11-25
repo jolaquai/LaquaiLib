@@ -12,14 +12,14 @@ public sealed class DetachedDequeNodeException<T> : Exception
         get;
     }
     /// <inheritdoc cref="Exception.InnerException"/>
-    public new Exception? InnerException
+    public new Exception InnerException
     {
         get;
     }
     /// <summary>
     /// The <see cref="DequeNode{T}"/> that is not attached to a <see cref="Deque{T}"/>.
     /// </summary>
-    public DequeNode<T?> Node
+    public DequeNode<T> Node
     {
         get;
     }
@@ -31,13 +31,24 @@ public sealed class DetachedDequeNodeException<T> : Exception
         get;
     }
 
-    public DetachedDequeNodeException(DequeNode<T?> node, OffenseKind offense)
+    /// <summary>
+    /// Initializes a new <see cref="DetachedDequeNodeException{T}"/> with the offending <paramref name="node"/> and the kind of <paramref name="offense"/> that caused this exception to be thrown.
+    /// </summary>
+    /// <param name="node">The detached <see cref="DequeNode{T}"/>.</param>
+    /// <param name="offense">The kind of offense that <paramref name="node"/> committed which caused this exception to be thrown.</param>
+    public DetachedDequeNodeException(DequeNode<T> node, OffenseKind offense)
     {
         Message = GetOffenseString(offense);
         Node = node;
         Offense = offense;
     }
-    public DetachedDequeNodeException(DequeNode<T?> node, OffenseKind offense, Exception innerException) : this(node, offense)
+    /// <summary>
+    /// Initializes a new <see cref="DetachedDequeNodeException{T}"/> with the offending <paramref name="node"/>, the kind of <paramref name="offense"/> that caused this exception to be thrown, and an <paramref name="innerException"/>.
+    /// </summary>
+    /// <param name="node">The detached <see cref="DequeNode{T}"/>.</param>
+    /// <param name="offense">The kind of offense that <paramref name="node"/> committed which caused this exception to be thrown.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
+    public DetachedDequeNodeException(DequeNode<T> node, OffenseKind offense, Exception innerException) : this(node, offense)
     {
         InnerException = innerException;
     }
@@ -46,11 +57,11 @@ public sealed class DetachedDequeNodeException<T> : Exception
     {
         return offense switch
         {
-            OffenseKind.NoDeque => $"The specified {nameof(DequeNode<T?>)} is not attached to a {nameof(Deque<T?>)}.",
-            OffenseKind.NoNext => $"The specified {nameof(DequeNode<T?>)} is missing a reference to its next node.",
-            OffenseKind.NoPrevious => $"The specified {nameof(DequeNode<T?>)} is missing a reference to its previous node.",
-            OffenseKind.InconsistentNext => $"The specified {nameof(DequeNode<T?>)}'s next node does not have a reference to the specified {nameof(DequeNode<T?>)} as its previous node.",
-            OffenseKind.InconsistentPrevious => $"The specified {nameof(DequeNode<T?>)}'s previous node does not have a reference to the specified {nameof(DequeNode<T?>)} as its next node.",
+            OffenseKind.NoDeque => $"The specified {nameof(DequeNode<T>)} is not attached to a {nameof(Deque<T>)}.",
+            OffenseKind.NoNext => $"The specified {nameof(DequeNode<T>)} is missing a reference to its next node.",
+            OffenseKind.NoPrevious => $"The specified {nameof(DequeNode<T>)} is missing a reference to its previous node.",
+            OffenseKind.InconsistentNext => $"The specified {nameof(DequeNode<T>)}'s next node does not have a reference to the specified {nameof(DequeNode<T>)} as its previous node.",
+            OffenseKind.InconsistentPrevious => $"The specified {nameof(DequeNode<T>)}'s previous node does not have a reference to the specified {nameof(DequeNode<T>)} as its next node.",
             _ => throw new ArgumentOutOfRangeException(nameof(offense), offense, $"The specified {nameof(OffenseKind)} is not supported.")
         };
     }
@@ -61,6 +72,10 @@ public sealed class DetachedDequeNodeException<T> : Exception
     [Flags]
     public enum OffenseKind
     {
+        /// <summary>
+        /// Indicates that the kind of offense is undefined.
+        /// </summary>
+        Undefined = 0,
         /// <summary>
         /// Indicates that <see cref="Node"/> is not attached to a <see cref="Deque{T}"/>.
         /// </summary>

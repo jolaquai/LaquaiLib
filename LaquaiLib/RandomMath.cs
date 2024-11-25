@@ -24,7 +24,7 @@ public static class RandomMath
     /// <param name="n">The last input value to the function.</param>
     /// <param name="fn">The function that calculates the output values given the input values.</param>
     /// <returns>The product of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
-    public static double Product(double x, double n, Func<double, double> fn) => Core.Miscellaneous.Range(x, n, 1).Select(fn).Aggregate(1d, (seed, res) => seed *= res);
+    public static double Product(double x, double n, Func<double, double> fn) => Core.Miscellaneous.Range(x, n, 1).Select(fn).Aggregate(1d, static (seed, res) => seed *= res);
 
     /// <summary>
     /// Determines the greatest common divisor of a series of numbers.
@@ -54,6 +54,12 @@ public static class RandomMath
         return TInteger.One;
     }
 
+    /// <summary>
+    /// Calculates the least common multiple of a series of numbers.
+    /// </summary>
+    /// <typeparam name="TInteger">The type of the numbers to calculate the LCM of.</typeparam>
+    /// <param name="numbers">The numbers to calculate the LCM of.</param>
+    /// <returns>The LCM of the given <paramref name="numbers"/>.</returns>
     public static TInteger LCM<TInteger>(params ReadOnlySpan<TInteger> numbers)
         where TInteger : IBinaryInteger<TInteger>
     {
@@ -62,13 +68,13 @@ public static class RandomMath
             return numbers[0];
         }
         var enumerated = numbers.ToArray();
-        enumerated = Array.ConvertAll(enumerated, n => n < TInteger.Zero ? -TInteger.One * n : n);
-        if (Array.Exists(enumerated, n => n == TInteger.Zero))
+        enumerated = Array.ConvertAll(enumerated, static n => n < TInteger.Zero ? -TInteger.One * n : n);
+        if (Array.Exists(enumerated, static n => n == TInteger.Zero))
         {
             return TInteger.Zero;
         }
 
-        return enumerated.Aggregate((a, b) => a * b / GCD(a, b));
+        return enumerated.Aggregate(static (a, b) => a * b / GCD(a, b));
     }
 
     /// <summary>

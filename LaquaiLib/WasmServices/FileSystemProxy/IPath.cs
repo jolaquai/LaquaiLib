@@ -20,7 +20,7 @@ public interface IPath
     /// <inheritdoc cref="System.IO.Path.EndsInDirectorySeparator(string)" />
     public bool EndsInDirectorySeparator(string path);
     /// <inheritdoc cref="System.IO.Path.GetDirectoryName(string)" />
-    public string? GetDirectoryName(string path);
+    public string GetDirectoryName(string path);
     /// <inheritdoc cref="System.IO.Path.GetDirectoryName(ReadOnlySpan{char})" />
     public ReadOnlySpan<char> GetDirectoryName(ReadOnlySpan<char> path);
     /// <inheritdoc cref="System.IO.Path.GetExtension(string)" />
@@ -44,7 +44,7 @@ public interface IPath
     /// <inheritdoc cref="System.IO.Path.GetInvalidPathChars()" />
     public char[] GetInvalidPathChars();
     /// <inheritdoc cref="System.IO.Path.GetPathRoot(string)" />
-    public string? GetPathRoot(string path);
+    public string GetPathRoot(string path);
     /// <inheritdoc cref="System.IO.Path.GetPathRoot(ReadOnlySpan{char})" />
     public ReadOnlySpan<char> GetPathRoot(ReadOnlySpan<char> path);
     /// <inheritdoc cref="System.IO.Path.GetRandomFileName()" />

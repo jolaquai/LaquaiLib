@@ -10,7 +10,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// If explicitly <see langword="null"/>, an empty line is written (i.e. without the default formatting including a timestamp).
     /// If this contains multiple lines, each line is written separately. For each but the first, padding is added to align the text with the first line, after the timestamp.
     /// </summary>
-    public readonly string? Message { get; }
+    public readonly string Message { get; }
     /// <summary>
     /// The timestamp of the message.
     /// </summary>
@@ -25,7 +25,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// The default <see cref="MessageType"/> is <see cref="MessageType.Info"/> and its <see cref="Timestamp"/> is set to <see cref="DateTime.Now"/>.
     /// </summary>
     /// <param name="message">The text of the message.</param>
-    public LoggerMessage(string? message)
+    public LoggerMessage(string message)
     {
         Message = message;
         Timestamp = DateTime.Now;
@@ -36,7 +36,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// </summary>
     /// <param name="message">The text of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public LoggerMessage(string? message, MessageType type)
+    public LoggerMessage(string message, MessageType type)
     {
         Message = message;
         Timestamp = DateTime.Now;
@@ -48,7 +48,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// <param name="message">The text of the message.</param>
     /// <param name="timestamp">The timestamp of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public LoggerMessage(string? message, DateTime timestamp, MessageType type)
+    public LoggerMessage(string message, DateTime timestamp, MessageType type)
     {
         Message = message;
         Timestamp = timestamp;
@@ -58,7 +58,7 @@ public readonly struct LoggerMessage : IEquatable<LoggerMessage>
     /// <inheritdoc/>
     public bool Equals(LoggerMessage other) => Message == other.Message && Timestamp.Equals(other.Timestamp) && Type == other.Type;
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => obj is LoggerMessage lm && Equals(lm);
+    public override bool Equals(object obj) => obj is LoggerMessage lm && Equals(lm);
     /// <inheritdoc/>
     public override int GetHashCode()
     {

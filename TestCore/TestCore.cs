@@ -18,13 +18,13 @@ public static class TestCore
         initialized = true;
     }
 
-    public static async Task<AsyncServiceScope> GetScope()
+    public static Task<AsyncServiceScope> GetScope()
     {
         if (!initialized)
         {
             Initialize();
         }
 
-        return provider.CreateAsyncScope();
+        return Task.FromResult(provider.CreateAsyncScope());
     }
 }

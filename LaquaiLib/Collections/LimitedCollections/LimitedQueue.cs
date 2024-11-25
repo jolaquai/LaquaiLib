@@ -6,22 +6,20 @@ namespace LaquaiLib.Collections.LimitedCollections;
 /// <typeparam name="T">The Type of the items in the collection.</typeparam>
 public class LimitedQueue<T> : Queue<T>
 {
-    private int _capacity = int.MaxValue;
-
     /// <summary>
     /// The capacity of this <see cref="LimitedQueue{T}"/>.
     /// </summary>
     public new int Capacity {
-        get => _capacity;
+        get;
         set
         {
-            if (value < _capacity)
+            if (value < field)
             {
                 Reduce(value);
             }
-            _capacity = value;
+            field = value;
         }
-    }
+    } = int.MaxValue;
 
     /// <summary>
     /// Initializes a new empty <see cref="LimitedQueue{T}"/> with the default maximum capacity.

@@ -20,7 +20,7 @@ public static partial class TypeExtensions
     /// <param name="type">A <see cref="Type"/> instance representing the type to instantiate.</param>
     /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
     /// <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
-    public static object? New(this Type type, params ReadOnlySpan<object?> parameters)
+    public static object New(this Type type, params ReadOnlySpan<object> parameters)
     {
         try
         {
@@ -28,7 +28,7 @@ public static partial class TypeExtensions
             {
                 return Activator.CreateInstance(type);
             }
-            var types = parameters.ToArray(obj => obj?.GetType());
+            var types = parameters.ToArray(static obj => obj?.GetType());
             return type.GetConstructor(types).New(parameters);
         }
         catch
@@ -41,7 +41,7 @@ public static partial class TypeExtensions
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to get the default value for.</param>
     /// <returns>The default value for the supplied type.</returns>
-    public static object? GetDefault(this Type type) => type.IsValueType ? Activator.CreateInstance(type) : (type == typeof(string) ? string.Empty : null);
+    public static object GetDefault(this Type type) => type.IsValueType ? Activator.CreateInstance(type) : (type == typeof(string) ? string.Empty : null);
 
     /// <summary>
     /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all instance fields and properties of the supplied type from the given object, optionally calling all parameterless methods that do not return void.
@@ -50,12 +50,12 @@ public static partial class TypeExtensions
     /// <param name="obj">The object to use to collect the values from.</param>
     /// <param name="callMethods">Whether to call all parameterless methods that do not return void instead of adding all method names to the output dictionary. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
     /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
-    public static Dictionary<string, object?> GetInstanceValues(this Type type, object obj, bool callMethods = false)
+    public static Dictionary<string, object> GetInstanceValues(this Type type, object obj, bool callMethods = false)
     {
-        var dict = new Dictionary<string, object?>();
+        var dict = new Dictionary<string, object>();
         var members = type.GetMembers();
 
-        foreach (var memberInfo in members.Where(member => member.MemberType is MemberTypes.Field
+        foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
             or MemberTypes.Property
             or MemberTypes.Method))
         {
@@ -80,7 +80,7 @@ public static partial class TypeExtensions
                     }
                     else
                     {
-                        dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))}", null);
+                        dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))}", null);
                     }
                     break;
                 case MemberTypes.Constructor:
@@ -108,12 +108,12 @@ public static partial class TypeExtensions
     /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
     /// <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
     /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
-    public static Dictionary<string, object?> GetStaticValues(this Type type, bool callMethods = false)
+    public static Dictionary<string, object> GetStaticValues(this Type type, bool callMethods = false)
     {
-        var dict = new Dictionary<string, object?>();
+        var dict = new Dictionary<string, object>();
         var members = type.GetMembers(BindingFlags.Public | BindingFlags.Static);
 
-        foreach (var memberInfo in members.Where(member => member.MemberType is MemberTypes.Field
+        foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
             or MemberTypes.Property
             or MemberTypes.Method))
         {
@@ -140,7 +140,7 @@ public static partial class TypeExtensions
                         }
                         else
                         {
-                            dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))})", null);
+                            dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))})", null);
                         }
                     }
                     break;
@@ -232,8 +232,8 @@ public static partial class TypeExtensions
         var ret = (Type.GetTypeCode(first), Type.GetTypeCode(second));
 
         ThrowHelper.ThrowOnFirstOffender<ArgumentNullException, TypeCode>(
-            _ => ["Type must be a numeric primitive type."],
-            item => item is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String,
+            static _ => ["Type must be a numeric primitive type."],
+            static item => item is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String,
             ret.Item1,
             ret.Item2
         );
@@ -728,7 +728,7 @@ public static partial class TypeExtensions
             {
                 operateOn = operateOn[..tickAt];
             }
-            var args = string.Join(", ", type.GetGenericArguments().Select(t => t.GetFriendlyName()));
+            var args = string.Join(", ", type.GetGenericArguments().Select(static t => t.GetFriendlyName()));
 
             return $"{operateOn}<{args}>";
         }

@@ -9,10 +9,15 @@ namespace LaquaiLib.Util.ShellInterfaces;
 /// </summary>
 public sealed class PowerShellInterface : IShellInterface
 {
+    /// <inheritdoc/>
     public Process Process { get; init; }
+    /// <inheritdoc/>
     public bool Ready => Process.StandardInput?.BaseStream?.CanWrite ?? false;
-    public StreamReader? StdOut => Process.StandardOutput;
-    public StreamReader? StdErr => Process.StandardError;
+    /// <inheritdoc/>
+    public StreamReader StdOut => Process.StandardOutput;
+    /// <inheritdoc/>
+    public StreamReader StdErr => Process.StandardError;
+    /// <inheritdoc/>
     public bool Exists
     {
         get
@@ -28,6 +33,7 @@ public sealed class PowerShellInterface : IShellInterface
             }
         }
     }
+    /// <inheritdoc/>
     public bool SupportsMultilineCommands => true;
 
     // Don't ever Write-Host in here, it will make consuming the output unnecessarily difficult.
@@ -79,7 +85,7 @@ public sealed class PowerShellInterface : IShellInterface
     private PowerShellInterface()
     {
     }
-
+    /// <inheritdoc/>
     public async Task<CommandDispatchResult> DispatchAsync(string input)
     {
         // 1st semaphore entry: write
@@ -118,6 +124,7 @@ public sealed class PowerShellInterface : IShellInterface
             _syncSemaphore.Release();
         }
     }
+    /// <inheritdoc/>
     public async Task Close()
     {
         await _syncSemaphore.WaitAsync().ConfigureAwait(false);
@@ -130,6 +137,7 @@ public sealed class PowerShellInterface : IShellInterface
             _syncSemaphore.Release();
         }
     }
+    /// <inheritdoc/>
     public async Task WhenReady()
     {
         while (!Ready)
@@ -184,7 +192,7 @@ public sealed class PowerShellInterface : IShellInterface
         }
         return string.Join(Environment.NewLine, lines).Trim();
     }
-
+    /// <inheritdoc/>
     #region public async ValueTask DisposeAsync()
     public async ValueTask DisposeAsync()
     {

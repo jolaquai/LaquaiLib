@@ -16,7 +16,7 @@ public static class XNodeExtensions
     /// <remarks>
     /// Because this overload may insert multiple elements, the returned reference is to the removed element and not to one of the inserted elements.
     /// </remarks>
-    public static XNode ReplaceWith(this XNode source, params ReadOnlySpan<object?> content)
+    public static XNode ReplaceWith(this XNode source, params ReadOnlySpan<object> content)
     {
         source.AddAfterSelf(content.ToArray());
         source.Remove();

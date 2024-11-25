@@ -9,7 +9,7 @@ namespace LaquaiLib.Windows.Util;
 /// </summary>
 public partial class TaskbarProgress
 {
-    private readonly TaskbarItemInfo? _taskbar;
+    private readonly TaskbarItemInfo _taskbar;
 
     /// <summary>
     /// Initializes a new <see cref="TaskbarProgress"/> with reference to a specified <paramref name="window"/>.

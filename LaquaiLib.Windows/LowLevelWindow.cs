@@ -11,12 +11,13 @@ public abstract class LowLevelWindow : Window
     /// <summary>
     /// Retrieves the <see cref="HwndSource"/> of the window.
     /// </summary>
-    protected HwndSource? HwndSource => field ??= PresentationSource.FromVisual(this) as HwndSource;
+    protected HwndSource HwndSource => field ??= PresentationSource.FromVisual(this) as HwndSource;
     /// <summary>
     /// Retrieves the handle of the window.
     /// </summary>
     protected nint Handle => HwndSource.Handle;
 
+    /// <inheritdoc/>
     protected sealed override void OnSourceInitialized(EventArgs e)
     {
         base.OnSourceInitialized(e);

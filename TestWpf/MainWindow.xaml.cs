@@ -19,7 +19,7 @@ public partial class MainWindow : LowLevelWindow
         InitializeComponent();
     }
 
-    private async void MainWindow_Loaded(object sender, RoutedEventArgs e) { }
+    private void MainWindow_Loaded(object sender, RoutedEventArgs e) { }
     public override nint OnMessageReceived(MSG message, ref bool handled)
     {
         switch (message.message)

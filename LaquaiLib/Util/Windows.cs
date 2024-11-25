@@ -14,7 +14,7 @@ public static partial class Windows
 {
     private static readonly Timer _timer = new Timer(ConditionalRaiseEvents, null, Timeout.Infinite, 10);
     private static List<string> previousWindowList = [];
-    private static string? previousActiveWindowTitle = GetActiveWindowTitle();
+    private static string previousActiveWindowTitle = GetActiveWindowTitle();
     private static nint? previousActiveWindowHandle = GetActiveWindowHandle();
     private static DateTime lastActiveWindowChange = DateTime.MinValue;
 
@@ -56,7 +56,7 @@ public static partial class Windows
     public delegate bool EnumWindowsProc(nint hWnd, nint lParam);
 
     [return: MaybeNull]
-    private static string? GetWindowText(nint hWnd)
+    private static string GetWindowText(nint hWnd)
     {
         const int nChars = 256;
         var buff = new StringBuilder(nChars);
@@ -74,7 +74,7 @@ public static partial class Windows
     /// </summary>
     /// <returns>The title of the currently active window or <see langword="null"/> if no window is active or the retrieval failed.</returns>
     [return: MaybeNull]
-    public static string? GetActiveWindowTitle() => GetForegroundWindow() is nint handle ? GetWindowText(handle) : null;
+    public static string GetActiveWindowTitle() => GetForegroundWindow() is nint handle ? GetWindowText(handle) : null;
     /// <summary>
     /// Retrieves the PID of the process that owns the currently active window.
     /// </summary>
@@ -192,15 +192,15 @@ public static partial class Windows
         return true;
     }
 
-    private static event WindowEvent? activeWindowChanged;
-    private static event WindowEvent? windowCreated;
-    private static event WindowEvent? windowDestroyed;
+    private static event WindowEvent activeWindowChanged;
+    private static event WindowEvent windowCreated;
+    private static event WindowEvent windowDestroyed;
 
     /// <summary>
     /// Occurs when the active window changes.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the current active window is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent? ActiveWindowChanged {
+    public static event WindowEvent ActiveWindowChanged {
         add
         {
             lock (_syncRoot)
@@ -226,7 +226,7 @@ public static partial class Windows
     /// Occurs when a new window is created / opened.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent? WindowCreated {
+    public static event WindowEvent WindowCreated {
         add
         {
             lock (_syncRoot)
@@ -247,7 +247,7 @@ public static partial class Windows
     /// Occurs when a window is destroyed / closed.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent? WindowDestroyed {
+    public static event WindowEvent WindowDestroyed {
         add
         {
             lock (_syncRoot)
@@ -270,7 +270,7 @@ public static partial class Windows
     /// </summary>
     /// <param name="handle">The handle of the window. If <see langword="null"/>, the handle could not be obtained.</param>
     /// <param name="title">The title of the window. If <see langword="null"/>, the title could not be obtained.</param>
-    public delegate void WindowEvent(nint? handle, string? title);
+    public delegate void WindowEvent(nint? handle, string title);
 
     /// <summary>
     /// Removes all entries in the invocation lists of the events defined in <see cref="Windows"/>.
@@ -294,7 +294,7 @@ public static partial class Windows
     /// Raises the events defined in <see cref="Windows"/> if their conditions are met.
     /// </summary>
     /// <param name="state">Unused / ignored unconditionally.</param>
-    private static void ConditionalRaiseEvents(object? state)
+    private static void ConditionalRaiseEvents(object state)
     {
         // The title AND handle must be different to avoid raising the event for the same window infinitely often if just the title changes
         var now = DateTime.Now;
@@ -611,6 +611,12 @@ public static partial class Windows
         #endregion
 
         private static void RefreshWindow(nint hWnd) => SetWindowPos(hWnd, 0, 0, 0, 0, 0, 0x0010 | 0x0002 | 0x0200 | 0x0004 | 0x0001);
+        /// <summary>
+        /// Sets the style of the specified window to the specified <paramref name="windowStyle"/>.
+        /// </summary>
+        /// <param name="hWnd">The handle of the window to set the style of.</param>
+        /// <param name="windowStyle">A <see cref="WindowStyles"/> value specifying the style to set.</param>
+        /// <returns><see langword="true"/> if the operation succeeded, otherwise <see langword="false"/>.</returns>
         public static bool WindowSetStyle(nint hWnd, WindowStyles windowStyle)
         {
             Marshal.SetLastPInvokeError(0);
@@ -620,6 +626,12 @@ public static partial class Windows
             RefreshWindow(hWnd);
             return functionSucceeded && !lastErrorModified;
         }
+        /// <summary>
+        /// Sets the extended style of the specified window to the specified <paramref name="extendedWindowStyle"/>.
+        /// </summary>
+        /// <param name="hWnd">The handle of the window to set the extended style of.</param>
+        /// <param name="extendedWindowStyle">An <see cref="ExtendedWindowStyles"/> value specifying the extended style to set.</param>
+        /// <returns><see langword="true"/> if the operation succeeded, otherwise <see langword="false"/>.</returns>
         public static bool WindowSetStyle(nint hWnd, ExtendedWindowStyles extendedWindowStyle)
         {
             Marshal.SetLastPInvokeError(0);
@@ -660,13 +672,17 @@ public static partial class Windows
             internal static partial bool FlashWindowEx(FLASHWINFO flashwInfo);
         }
 
-        public static void SetFlashing()
-        {
-        }
+        /// <summary>
+        /// Flashes the specified window <paramref name="count"/> times.
+        /// </summary>
+        /// <param name="count">The number of times to flash the window.</param>
         public static void SetFlashing(uint count = 1)
         {
             _ = count;
         }
+        /// <summary>
+        /// Stops the flashing of the specified window.
+        /// </summary>
         public static void StopFlashing()
         {
         }

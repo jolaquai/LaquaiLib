@@ -14,7 +14,7 @@ public static class ConstructorInfoExtensions
     /// <param name="ctorInfo">The <see cref="ConstructorInfo"/> that identifies a constructor of the type to instantiate.</param>
     /// <param name="parameters">The parameters to pass to the constructor.</param>
     /// <returns>An instance of the type <paramref name="ctorInfo"/> belongs to, or <see langword="null"/> if the constructor could not be invoked.</returns>
-    public static object? New(this ConstructorInfo ctorInfo, params ReadOnlySpan<object> parameters)
+    public static object New(this ConstructorInfo ctorInfo, params ReadOnlySpan<object> parameters)
     {
         try
         {
@@ -32,11 +32,11 @@ public static class ConstructorInfoExtensions
     /// <param name="ctorInfo">The <see cref="ConstructorInfo"/> that identifies a constructor of the type to instantiate.</param>
     /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> if the constructor has no parameters.</param>
     /// <returns>An instance of <typeparamref name="T"/>, or <see langword="null"/> if the constructor could not be invoked.</returns>
-    public static T? New<T>(this ConstructorInfo ctorInfo, params ReadOnlySpan<object?> parameters)
+    public static T New<T>(this ConstructorInfo ctorInfo, params ReadOnlySpan<object> parameters)
     {
         try
         {
-            return (T?)ctorInfo.Invoke(parameters.ToArray());
+            return (T)ctorInfo.Invoke(parameters.ToArray());
         }
         catch
         {
@@ -67,12 +67,12 @@ public static class ConstructorInfoExtensions
         {
             throw new ArgumentException($"""
                 The type specified for {nameof(TDelegate)} does not match the constructor's signature. The return type and all parameters must match exactly:
-                    Delegate:    delegate({string.Join(", ", tDelegateParams.Select(p => p.ParameterType.Namespace + '.' + p.ParameterType.Name))}) => {tDelegateReturn.Namespace + '.' + tDelegateReturn.Name}
-                    Constructor: .ctor({string.Join(", ", ctorParams.Select(p => p.ParameterType.Namespace + '.' + p.ParameterType.Name))}) => {ctorInfo.DeclaringType.Namespace + '.' + ctorInfo.DeclaringType.Name}
+                    Delegate:    delegate({string.Join(", ", tDelegateParams.Select(static p => p.ParameterType.Namespace + '.' + p.ParameterType.Name))}) => {tDelegateReturn.Namespace + '.' + tDelegateReturn.Name}
+                    Constructor: .ctor({string.Join(", ", ctorParams.Select(static p => p.ParameterType.Namespace + '.' + p.ParameterType.Name))}) => {ctorInfo.DeclaringType.Namespace + '.' + ctorInfo.DeclaringType.Name}
                 """, nameof(TDelegate));
         }
 
-        var paramExprs = ctorParams.Select(p => Expression.Parameter(p.ParameterType)).ToArray();
+        var paramExprs = ctorParams.Select(static p => Expression.Parameter(p.ParameterType)).ToArray();
         var newExpr = Expression.New(ctorInfo, paramExprs);
         return Expression.Lambda<TDelegate>(newExpr, paramExprs).Compile();
     }

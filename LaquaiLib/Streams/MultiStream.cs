@@ -38,7 +38,7 @@ public class MultiStream : Stream, IDisposable
     /// <param name="count">The number of <see cref="Stream"/>s to instantiate.</param>
     /// <param name="constructorParameters">A collection of parameters to pass to the constructor of the given <paramref name="streamType"/>. If no constructor with the passed parameter types exists, instantiation is attempted with the parameterless constructor.</param>
     /// <exception cref="ArgumentException">Thrown if the supplied <paramref name="streamType"/> does not inherit from <see cref="Stream"/>.</exception>
-    public MultiStream(Type streamType, int count, params ReadOnlySpan<object?> constructorParameters)
+    public MultiStream(Type streamType, int count, params ReadOnlySpan<object> constructorParameters)
     {
         if (!typeof(Stream).IsAssignableFrom(streamType))
         {
@@ -94,7 +94,7 @@ public class MultiStream : Stream, IDisposable
     /// <param name="count">The number of <see cref="Stream"/>s to instantiate.</param>
     /// <param name="constructorParameterFactory">A <see cref="Func{T, TResult}"/> that takes an <see cref="int"/> and returns a collection of parameters to pass to the constructor of the given <paramref name="streamType"/>. If no constructor with the passed parameter types exists, instantiation is attempted with the parameterless constructor.</param>
     /// <exception cref="ArgumentException">Thrown if the supplied <paramref name="streamType"/> does not inherit from <see cref="Stream"/>.</exception>
-    public MultiStream(Type streamType, int count, Func<int, object?[]?> constructorParameterFactory)
+    public MultiStream(Type streamType, int count, Func<int, object[]> constructorParameterFactory)
     {
         if (!typeof(Stream).IsAssignableFrom(streamType))
         {
@@ -108,25 +108,25 @@ public class MultiStream : Stream, IDisposable
     /// <summary>
     /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be read from.
     /// </summary>
-    public override bool CanRead => _streams.Select(stream => stream.CanRead).All();
+    public override bool CanRead => _streams.Select(static stream => stream.CanRead).All();
     /// <summary>
     /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be seeked.
     /// </summary>
-    public override bool CanSeek => _streams.Select(stream => stream.CanSeek).All();
+    public override bool CanSeek => _streams.Select(static stream => stream.CanSeek).All();
     /// <summary>
     /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be written to.
     /// </summary>
-    public override bool CanWrite => _streams.Select(stream => stream.CanWrite).All();
+    public override bool CanWrite => _streams.Select(static stream => stream.CanWrite).All();
     /// <summary>
     /// A collection of <see cref="long"/>s that indicate the lengths of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public long[] Lengths => _streams.Select(stream => stream.Length).ToArray();
+    public long[] Lengths => _streams.Select(static stream => stream.Length).ToArray();
     /// <inheritdoc/>
     public override long Length => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Length)}. Use {nameof(Lengths)} instead.");
     /// <summary>
     /// A collection of <see cref="long"/>s taht indicate the current positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public long[] Positions => _streams.Select(stream => stream.Position).ToArray();
+    public long[] Positions => _streams.Select(static stream => stream.Position).ToArray();
     /// <inheritdoc/>
     public override long Position
     {
@@ -137,7 +137,7 @@ public class MultiStream : Stream, IDisposable
     /// <summary>
     /// Flushes all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public override void Flush() => _streams.ForEach(stream => stream.Flush());
+    public override void Flush() => _streams.ForEach(static stream => stream.Flush());
     /// <summary>
     /// Seeks all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
@@ -177,13 +177,13 @@ public class MultiStream : Stream, IDisposable
     /// </summary>
     /// <param name="text">The text to write.</param>
     /// <param name="encoding">The <see cref="Encoding"/> to use to obtain the <see cref="byte"/>s of the characters.</param>
-    public void Write(string text, Encoding? encoding = null) => _streams.ForEach(stream => stream.Write((encoding ?? Encoding.Default).GetBytes(text)));
+    public void Write(string text, Encoding encoding = null) => _streams.ForEach(stream => stream.Write((encoding ?? Encoding.Default).GetBytes(text)));
     /// <summary>
     /// Writes <paramref name="text"/>, followed by the current line terminator to all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance using the given <paramref name="encoding"/>.
     /// </summary>
     /// <param name="text">The text to write.</param>
     /// <param name="encoding">The <see cref="Encoding"/> to use to obtain the <see cref="byte"/>s of the characters.</param>
-    public void WriteLine(string text, Encoding? encoding = null) => _streams.ForEach(stream => stream.Write((encoding ?? Encoding.Default).GetBytes(text + Environment.NewLine)));
+    public void WriteLine(string text, Encoding encoding = null) => _streams.ForEach(stream => stream.Write((encoding ?? Encoding.Default).GetBytes(text + Environment.NewLine)));
 
     /// <summary>
     /// Unconditionally throws an <see cref="InvalidOperationException"/>.

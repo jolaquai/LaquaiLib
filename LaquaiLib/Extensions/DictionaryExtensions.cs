@@ -36,12 +36,12 @@ public static class IDictionaryExtensions
         where TKey : notnull
         where TValue : notnull
     {
-        var grouping = source.GroupBy(kv => kv.Value);
+        var grouping = source.GroupBy(static kv => kv.Value);
         return grouping.Aggregate(
             new Dictionary<TValue, IEnumerable<TKey>>(),
-            (acc, grouping) =>
+            static (acc, grouping) =>
             {
-                acc.Add(grouping.Key, grouping.Select(x => x.Key));
+                acc.Add(grouping.Key, grouping.Select(static x => x.Key));
                 return acc;
             }
         );

@@ -362,8 +362,8 @@ public struct ToolTipHandle
     /// <summary>
     /// Initializes a new instance of the <see cref="ToolTipHandle"/> <see langword="struct"/>.
     /// </summary>
+    /// <param name="tooltipHwnd">The unmanaged handle to the tooltip window.</param>
     /// <param name="lpszText">The unmanaged handle to the tooltip text.</param>
-    /// <param name="lParam">The unmanaged handle to the tooltip parameters.</param>
     /// <param name="displayTime">The length of time to display the tooltip for. The instance of <see cref="ToolTipHandle"/> initialized with this value will automatically dispose after this time has elapsed.</param>
     public ToolTipHandle(nint tooltipHwnd, nint lpszText, TimeSpan displayTime)
     {

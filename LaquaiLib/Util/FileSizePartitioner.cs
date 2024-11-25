@@ -18,7 +18,7 @@ public class FileSizePartitioner : Partitioner<string>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FileSizePartitioner(IEnumerable<string> paths)
     {
-        _files = paths.ToFrozenDictionary(path => path, path => new FileInfo(path));
+        _files = paths.ToFrozenDictionary(static path => path, static path => new FileInfo(path));
     }
     /// <summary>
     /// Initializes a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
@@ -27,7 +27,7 @@ public class FileSizePartitioner : Partitioner<string>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)
     {
-        _files = fileInfos.ToFrozenDictionary(fi => fi.FullName);
+        _files = fileInfos.ToFrozenDictionary(static fi => fi.FullName);
     }
 
     /// <summary>
@@ -40,8 +40,8 @@ public class FileSizePartitioner : Partitioner<string>
     {
         partitionCount--;
 
-        var ordered = _files.OrderByDescending(pair => pair.Value.Length);
-        var totalSize = ordered.Sum(pair => pair.Value.Length);
+        var ordered = _files.OrderByDescending(static pair => pair.Value.Length);
+        var totalSize = ordered.Sum(static pair => pair.Value.Length);
         var partitions = new List<IEnumerator<string>>(partitionCount);
 
         var partitionSize = (int)Math.Ceiling((double)totalSize / partitionCount);

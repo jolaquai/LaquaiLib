@@ -10,17 +10,14 @@ namespace LaquaiLib.Streams.RandomStreams;
 /// </summary>
 public class CryptographicRandomStream : RandomStream
 {
-    private readonly RandomNumberGenerator rng;
+    private readonly RandomNumberGenerator rng = RandomNumberGenerator.Create();
     /// <summary>
     /// Initializes a new <see cref="CryptographicRandomStream"/>.
     /// </summary>
     public CryptographicRandomStream()
     {
-        random = null!;
-        rng = RandomNumberGenerator.Create();
     }
     /// <inheritdoc/>
-
     public override int Read(byte[] buffer, int offset, int count) => Read(buffer.AsSpan(offset, count));
     /// <summary>
     /// Fills the specified buffer with random bytes.

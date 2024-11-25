@@ -29,11 +29,11 @@ public static class FullAccessDynamicFactory
     /// <param name="type">The type of the object to wrap.</param>
     /// <returns>A new instance of <see cref="FullAccessDynamic{T}"/> that has the specified <paramref name="type"/> and wraps a new instance of that type.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static dynamic? Create(Type type)
+    public static dynamic Create(Type type)
     {
         return type == typeof(void)
             ? null
-            : (dynamic?)Activator.CreateInstance(typeof(FullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [Activator.CreateInstance(type)], null);
+            : (dynamic)Activator.CreateInstance(typeof(FullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [Activator.CreateInstance(type)], null);
     }
     /// <summary>
     /// Creates a new instance of <see cref="FullAccessDynamic{T}"/> that has the specified <paramref name="type"/> and wraps the specified object <paramref name="instance"/>. This may be <see langword="null"/>.
@@ -42,11 +42,11 @@ public static class FullAccessDynamicFactory
     /// <param name="instance">The instance to wrap.</param>
     /// <returns>A new instance of <see cref="FullAccessDynamic{T}"/> that has the specified <paramref name="type"/> and wraps the specified object <paramref name="instance"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static dynamic? Create(Type type, object? instance)
+    public static dynamic Create(Type type, object instance)
     {
         return type == typeof(void)
             ? null
-            : (dynamic?)Activator.CreateInstance(typeof(FullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [instance], null);
+            : (dynamic)Activator.CreateInstance(typeof(FullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [instance], null);
     }
 
     /// <summary>

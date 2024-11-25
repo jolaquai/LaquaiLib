@@ -23,9 +23,9 @@ public static class IAsyncEnumerableExtensions
 }
 
 // Combines multiple IAsyncEnumerable<T> instances into a single one by just iterating over each one in turn
-file readonly struct AsyncEnumerableCombiner<T>(params IAsyncEnumerable<T>[] iterators) : IAsyncEnumerable<T>
+file struct AsyncEnumerableCombiner<T>(params ReadOnlySpan<IAsyncEnumerable<T>> iterators) : IAsyncEnumerable<T>
 {
-    private readonly IAsyncEnumerable<T>[] _iterators = iterators;
+    private IAsyncEnumerable<T>[] _iterators = [.. iterators];
     public readonly async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
         foreach (var iterator in _iterators)
@@ -36,4 +36,5 @@ file readonly struct AsyncEnumerableCombiner<T>(params IAsyncEnumerable<T>[] ite
             }
         }
     }
+    internal void AddIterators(params ReadOnlySpan<IAsyncEnumerable<T>> with) => _iterators = [.. _iterators, .. with];
 }

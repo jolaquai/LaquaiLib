@@ -11,7 +11,7 @@ public static class DelegateExtensions
     /// <param name="del">The <see cref="Delegate"/> to execute.</param>
     /// <param name="onException">The <see cref="Action{T}"/> to execute when an exception occurs.</param>
     /// <param name="arguments">The arguments to pass to the <see cref="Delegate"/>.</param>
-    public static void OnException<TDelegate>(this TDelegate del, Action<Exception> onException, params ReadOnlySpan<object?> arguments)
+    public static void OnException<TDelegate>(this TDelegate del, Action<Exception> onException, params ReadOnlySpan<object> arguments)
         where TDelegate : Delegate
     {
         try

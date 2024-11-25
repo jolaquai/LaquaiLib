@@ -23,14 +23,14 @@ public class TempFile : IDisposable
     /// </summary>
     /// <param name="path">The path to the file to wrap with this <see cref="TempFile"/>.</param>
     /// <param name="fileExtension">The file extension for this <see cref="TempFile"/>. This is the extension <paramref name="path"/> is changed to before opening the file stream. If <see langword="null"/> or white space, the existing extension in <paramref name="path"/> is kept.</param>
-    public TempFile(string path, string? fileExtension)
+    public TempFile(string path, string fileExtension)
     {
         _path = string.IsNullOrWhiteSpace(fileExtension) ? path : System.IO.Path.ChangeExtension(path, fileExtension);
         _stream = new(_path, FileMode.OpenOrCreate);
     }
 
-    private string? _path;
-    private FileStream? _stream;
+    private string _path;
+    private FileStream _stream;
 
     /// <summary>
     /// The path to the file this <see cref="TempFile"/> wraps.

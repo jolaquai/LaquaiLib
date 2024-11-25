@@ -46,13 +46,13 @@ public static class AsyncLogger
     /// Initializes the <see cref="AsyncLogger"/> using the given <paramref name="thread"/> as its parent.
     /// </summary>
     /// <param name="thread">The thread to use as the parent thread. May be <see langword="null"/> to explicitly leave the <see cref="AsyncLogger"/> running, even after all other threads have exited.</param>
-    public static void Initialize(Thread? thread)
+    public static void Initialize(Thread thread)
     {
         _messageQueueHandler.Start(thread);
         initialized = true;
     }
 
-    private static void MessageQueueHandlerProc(object? state)
+    private static void MessageQueueHandlerProc(object state)
     {
         var parent = state as Thread;
 
@@ -118,27 +118,27 @@ public static class AsyncLogger
     /// </summary>
     /// <param name="message">The object to convert to a string and use as the text of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public static void QueueMessage(object? message, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message?.ToString(), DateTime.Now, type));
+    public static void QueueMessage(object message, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message?.ToString(), DateTime.Now, type));
     /// <summary>
     /// Creates and queues a new <see cref="LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
     /// </summary>
     /// <param name="message">The object to convert to a string and use as the text of the message.</param>
     /// <param name="timestamp">The timestamp of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public static void QueueMessage(object? message, DateTime timestamp, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message?.ToString(), timestamp, type));
+    public static void QueueMessage(object message, DateTime timestamp, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message?.ToString(), timestamp, type));
     /// <summary>
     /// Creates and queues a new <see cref="LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>. Its <see cref="LoggerMessage.Timestamp"/> is set to <see cref="DateTime.Now"/>.
     /// </summary>
     /// <param name="message">The text of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public static void QueueMessage(string? message, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message, DateTime.Now, type));
+    public static void QueueMessage(string message, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message, DateTime.Now, type));
     /// <summary>
     /// Creates and queues a new <see cref="LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
     /// </summary>
     /// <param name="message">The text of the message.</param>
     /// <param name="timestamp">The timestamp of the message.</param>
     /// <param name="type">The type of the message.</param>
-    public static void QueueMessage(string? message, DateTime timestamp, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message, timestamp, type));
+    public static void QueueMessage(string message, DateTime timestamp, MessageType type = MessageType.Info) => QueueMessage(new LoggerMessage(message, timestamp, type));
     /// <summary>
     /// Creates and queues a new multi-line <see cref="LoggerMessage"/> with the given <paramref name="lines"/> and <paramref name="type"/>.
     /// </summary>
@@ -178,9 +178,15 @@ public static class AsyncLogger
     /// <summary>
     /// Creates a <see cref="Task"/> that completes when the message queue is empty.
     /// </summary>
-    public static async Task FlushAsync()
+    public static Task FlushAsync()
     {
-        while (Processing) ;
+        return Task.Run(async () =>
+        {
+            while (Processing)
+            {
+                await Task.Delay(10).ConfigureAwait(false);
+            }
+        });
     }
     /// <summary>
     /// Blocks the calling thread until the message queue is empty.

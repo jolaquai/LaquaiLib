@@ -18,8 +18,8 @@ public static partial class FirstChanceExceptionHandlers
     {
         _handlers = typeof(FirstChanceExceptionHandlers)
             .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
-            .Where(handler => !handler.IsConstructor && handler.Name != "RegisterAll")
-            .Select(handler =>
+            .Where(static handler => !handler.IsConstructor && handler.Name != "RegisterAll")
+            .Select(static handler =>
             {
                 try
                 {
@@ -69,7 +69,7 @@ public static partial class FirstChanceExceptionHandlers
     /// <param name="sender">Ignored.</param>
     /// <param name="e">The <see cref="FirstChanceExceptionEventArgs"/> instance containing the event data.</param>
     /// <exception cref="FirstChanceException">Thrown when an <see cref="EntryPointNotFoundException"/> is caught. Contains additional information about the DLL and entry point.</exception>
-    public static void WrapEntryPointNotFoundException(object? sender, FirstChanceExceptionEventArgs e)
+    public static void WrapEntryPointNotFoundException(object sender, FirstChanceExceptionEventArgs e)
     {
         var capture = ExceptionDispatchInfo.Capture(e.Exception);
 

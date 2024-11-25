@@ -69,7 +69,7 @@ public class ObservableValue<T>
     /// <remarks>
     /// If you require access to the previous and the new value immediately upon change, use <see cref="ValueChanged"/> instead.
     /// </remarks>
-    public event PropertyChangedEventHandler? PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
     /// <summary>
     /// Sets the value.
@@ -118,13 +118,13 @@ public class ObservableValue<T>
 
     #region Interface implementations
     /// <inheritdoc/>
-    public int CompareTo(ObservableValue<T>? other) => Comparer.Compare(Value, other.Value);
+    public int CompareTo(ObservableValue<T> other) => Comparer.Compare(Value, other.Value);
     /// <inheritdoc/>
-    public bool Equals(ObservableValue<T>? other) => Equals(Value, other.Value);
+    public bool Equals(ObservableValue<T> other) => Equals(Value, other.Value);
     /// <inheritdoc/>
-    public int CompareTo(T? other) => Comparer.Compare(Value, other);
+    public int CompareTo(T other) => Comparer.Compare(Value, other);
     /// <inheritdoc/>
-    public bool Equals(T? other) => Equals(Value, other);
+    public bool Equals(T other) => Equals(Value, other);
 
     /// <summary>
     /// Creates a copy of this <see cref="ObservableValue{T}"/> with the same initial value as this one's current value.
@@ -166,7 +166,7 @@ public class ObservableValue<T>
 
     #region Equality / comparison overrides
     /// <inheritdoc/>
-    public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is not null && obj is ObservableValue<T> observableValue && Equals(observableValue));
+    public override bool Equals(object obj) => ReferenceEquals(this, obj) || (obj is not null && obj is ObservableValue<T> observableValue && Equals(observableValue));
 
     /// <inheritdoc/>
     public override int GetHashCode() => Value.GetHashCode();

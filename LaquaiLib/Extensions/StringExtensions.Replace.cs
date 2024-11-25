@@ -51,7 +51,7 @@ public static partial class StringExtensions
     /// <param name="replaceFactory">A <see cref="Func{TResult}"/> that produces the replacement for occurrences of <paramref name="search"/>. It is called once for each occurrence of <paramref name="search"/> and passed the previous iteration's produced replacement or <see langword="null"/> on the first invocation.</param>
     /// <param name="recurse"><see langword="true"/> to not skip the substring produced by <paramref name="replaceFactory"/> calls when searching for the next occurrence of <paramref name="search"/>. <b>If <paramref name="replaceFactory"/> always returns strings containing <paramref name="search"/>, this will result in an infinite loop.</b> Defaults to <see langword="false"/> for this very reason.</param>
     /// <returns>The string with replacements as described.</returns>
-    public static string Replace(this string source, string search, Func<string?, string> replaceFactory, bool recurse = false)
+    public static string Replace(this string source, string search, Func<string, string> replaceFactory, bool recurse = false)
     {
         var index = source.IndexOf(search);
         var searchLen = search.Length;

@@ -17,7 +17,7 @@ public static class MessageBoxDefaultButton
     /// </summary>
     public const uint Button3 = 0x200;
     /// <summary>
-    /// Specifies that the fourth button on the message box is the default button. This requires the Help button to be present (see <see cref="MessageBoxOtherOptions.HelpButton"/>).
+    /// Specifies that the fourth button on the message box is the default button. This requires the Help button to be present (<see cref="MessageBoxButton.HelpButton"/>).
     /// </summary>
     public const uint ButtonHelp = 0x400;
 }

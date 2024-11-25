@@ -21,5 +21,9 @@ public static class DelegateProgress
 /// <param name="action">The delegate to proxy <see cref="Report(T)"/> invocations to.</param>
 public class DelegateProgress<T>(Action<T> action) : IProgress<T>
 {
-    public void Report(T value) => action(value);
+    /// <summary>
+    /// Reports the specified <paramref name="progress"/> value.
+    /// </summary>
+    /// <param name="progress">The value to report.</param>
+    public void Report(T progress) => action(progress);
 }

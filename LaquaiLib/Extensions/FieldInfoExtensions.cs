@@ -14,7 +14,7 @@ public static class FieldInfoExtensions
     /// <param name="fieldInfo">The <see cref="FieldInfo"/> instance representing the field to retrieve the value of.</param>
     /// <param name="obj">The <see cref="object"/> instance to retrieve the value from. May be <see langword="null"/> if <paramref name="fieldInfo"/> represents a field that is static.</param>
     /// <returns>The value of the field represented by this <paramref name="fieldInfo"/> typed as <typeparamref name="T"/>.</returns>
-    public static T GetValue<T>(this FieldInfo fieldInfo, object? obj)
+    public static T GetValue<T>(this FieldInfo fieldInfo, object obj)
     {
         ArgumentNullException.ThrowIfNull(fieldInfo);
         var value = fieldInfo.GetValue(obj);
@@ -28,7 +28,7 @@ public static class FieldInfoExtensions
     /// <param name="fieldInfo">The <see cref="FieldInfo"/> instance representing the field to retrieve the value of.</param>
     /// <param name="obj">The <see cref="object"/> instance to retrieve the value from. May be <see langword="null"/> if <paramref name="fieldInfo"/> represents a field that is static.</param>
     /// <returns>The value of the field represented by this <paramref name="fieldInfo"/> typed as <typeparamref name="T"/> if the field exists and its could be cast to <typeparamref name="T"/>, otherwise <c>default</c>.</returns>
-    public static T? GetValueOrDefault<T>(this FieldInfo fieldInfo, object? obj)
+    public static T GetValueOrDefault<T>(this FieldInfo fieldInfo, object obj)
     {
         ArgumentNullException.ThrowIfNull(fieldInfo);
         var value = fieldInfo.GetValue(obj);

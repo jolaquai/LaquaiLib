@@ -8,21 +8,20 @@ namespace LaquaiLib.Util.WpfForms;
 /// </summary>
 public static partial class VirtualKeyUtils
 {
-    private static VirtualKey[]? toggleKeys;
     /// <summary>
     /// Gets an array of <see cref="VirtualKey"/> values that represent toggle keys.
     /// </summary>
-    public static VirtualKey[] ToggleKeys => toggleKeys ??=
+    public static VirtualKey[] ToggleKeys => field ??=
     [
         VirtualKey.VK_CAPITAL,
         VirtualKey.VK_NUMLOCK,
         VirtualKey.VK_SCROLL
     ];
-    private static VirtualKey[]? normalKeys;
+
     /// <summary>
     /// Gets an array of <see cref="VirtualKey"/> values that represent all keys that are not a toggle key.
     /// </summary>
-    public static VirtualKey[] NormalKeys => normalKeys ??= Enum.GetValues<VirtualKey>().Except(ToggleKeys).ToArray();
+    public static VirtualKey[] NormalKeys => field ??= Enum.GetValues<VirtualKey>().Except(ToggleKeys).ToArray();
 
     private static partial class Interop
     {
@@ -30,8 +29,7 @@ public static partial class VirtualKeyUtils
         internal const byte msgByte = 0x80;
         internal const ushort msbShort = 0x8000;
 
-        private static byte[]? _keyboardStateBuffer;
-        internal static byte[] KeyboardStateBuffer => _keyboardStateBuffer ??= new byte[256];
+        internal static byte[] KeyboardStateBuffer => field ??= new byte[256];
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static partial bool GetKeyboardState([Out] byte[] lpKeyState);
@@ -114,7 +112,7 @@ public static partial class VirtualKeyUtils
     /// <param name="vk">The virtual key code to translate.</param>
     /// <param name="cultureInfo">The <see cref="CultureInfo"/> instance to use for the translation. It specifies the keyboard layout to use, which influences the actual character of <c>VK_OEM_*</c> keys. If omitted, <see cref="CultureInfo.CurrentCulture"/> is used.</param>
     /// <returns>The Unicode character that corresponds to the specified virtual key code, or <see langword="null"/> if the key does not correspond to a character or the translation has failed.</returns>
-    public static string? GetOemKeyData(VirtualKey vk, CultureInfo? cultureInfo = null)
+    public static string GetOemKeyData(VirtualKey vk, CultureInfo cultureInfo = null)
     {
         cultureInfo ??= CultureInfo.CurrentCulture;
 
@@ -133,7 +131,7 @@ public static partial class VirtualKeyUtils
     public static VirtualKey[] GetPressedKeys()
     {
         var keys = Enum.GetValues<VirtualKey>();
-        return Array.FindAll(keys, vk => (Interop.GetKeyState((uint)vk) & Interop.msgByte) != 0);
+        return Array.FindAll(keys, static vk => (Interop.GetKeyState((uint)vk) & Interop.msgByte) != 0);
     }
     /// <summary>
     /// Gets the state of the specified virtual key.

@@ -199,7 +199,7 @@ public partial class ScreenCapture
     /// <summary>
     /// Occurs when this <see cref="ScreenCapture"/> captures the configured region, but only if <see cref="Predicate"/> is satisfied.
     /// </summary>
-    public event EventHandler<ScreenCaptureEventArgs>? Captured;
+    public event EventHandler<ScreenCaptureEventArgs> Captured;
 
     /// <summary>
     /// The predicate that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.
@@ -257,7 +257,7 @@ public partial class ScreenCapture
     {
         var rect = Screen.PrimaryScreen!.Bounds;
         ScaleCoordinates(Screen.AllScreens.ToList().IndexOf(Screen.PrimaryScreen), false, ref rect);
-        Predicate = () => true;
+        Predicate = static () => true;
         InitTimer();
     }
 
@@ -280,7 +280,7 @@ public partial class ScreenCapture
     public ScreenCapture(Rectangle region)
     {
         Region = region;
-        Predicate = () => true;
+        Predicate = static () => true;
         InitTimer();
     }
 
@@ -306,7 +306,7 @@ public partial class ScreenCapture
     public ScreenCapture(int x1, int y1, int x2, int y2)
     {
         Region = new(x1, y1, x2 - x1, y2 - y1);
-        Predicate = () => true;
+        Predicate = static () => true;
         InitTimer();
     }
 
@@ -333,7 +333,7 @@ public partial class ScreenCapture
     {
         var rect = Screen.AllScreens[monitor].Bounds;
         ScaleCoordinates(monitor, false, ref rect);
-        Predicate = () => true;
+        Predicate = static () => true;
         InitTimer();
     }
 

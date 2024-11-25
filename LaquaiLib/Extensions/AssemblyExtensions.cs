@@ -7,5 +7,4 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class AssemblyExtensions
 {
-
 }

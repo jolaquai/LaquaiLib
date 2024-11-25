@@ -10,13 +10,13 @@ public ref struct TempObject<T> : IDisposable
     /// <summary>
     /// The instance of <typeparamref name="T"/> wrapped by this <see cref="TempObject{T}"/> instance.
     /// </summary>
-    public T? Value { get; private set; }
+    public T Value { get; private set; }
 
     /// <summary>
     /// Initializes a new <see cref="TempObject{T}"/> by using the specified <paramref name="parameters"/> to find and invoke a constructor for type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="parameters">The parameters to use to find a constructor for <typeparamref name="T"/>. If <c>0</c>-length, the parameterless constructor is used.</param>
-    public TempObject(params ReadOnlySpan<object?> parameters)
+    public TempObject(params ReadOnlySpan<object> parameters)
     {
         try
         {

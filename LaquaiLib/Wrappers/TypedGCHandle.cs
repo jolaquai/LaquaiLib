@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace LaquaiLib.Wrappers;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
 /// <summary>
 /// Provides a way to access a managed instance of <typeparamref name="T"/> from unmanaged memory.
 /// Any <see langword="unsafe"/> members of this type should only be called when <typeparamref name="T"/> is an <see langword="unmanaged"/> type.
@@ -101,7 +103,7 @@ public readonly struct GCHandle<T> : IDisposable
     public static explicit operator nint?(GCHandle<T> handle) => (nint)handle.Handle;
 
     /// <inheritdoc/>
-    public override bool Equals([NotNullWhen(true)] object? obj) => obj is GCHandle<T> handle && this == handle;
+    public override bool Equals([NotNullWhen(true)] object obj) => obj is GCHandle<T> handle && this == handle;
     /// <inheritdoc/>
     public override int GetHashCode() => base.GetHashCode();
 

@@ -20,7 +20,7 @@ public class Path : IPath
     /// <inheritdoc cref="System.IO.Path.EndsInDirectorySeparator(string)" />
     public bool EndsInDirectorySeparator(string path) => System.IO.Path.EndsInDirectorySeparator(path);
     /// <inheritdoc cref="System.IO.Path.GetDirectoryName(string)" />
-    public string? GetDirectoryName(string path) => System.IO.Path.GetDirectoryName(path);
+    public string GetDirectoryName(string path) => System.IO.Path.GetDirectoryName(path);
     /// <inheritdoc cref="System.IO.Path.GetDirectoryName(ReadOnlySpan{char})" />
     public ReadOnlySpan<char> GetDirectoryName(ReadOnlySpan<char> path) => System.IO.Path.GetDirectoryName(path);
     /// <inheritdoc cref="System.IO.Path.GetExtension(string)" />
@@ -44,7 +44,7 @@ public class Path : IPath
     /// <inheritdoc cref="System.IO.Path.GetInvalidPathChars()" />
     public char[] GetInvalidPathChars() => System.IO.Path.GetInvalidPathChars();
     /// <inheritdoc cref="System.IO.Path.GetPathRoot(string)" />
-    public string? GetPathRoot(string path) => System.IO.Path.GetPathRoot(path);
+    public string GetPathRoot(string path) => System.IO.Path.GetPathRoot(path);
     /// <inheritdoc cref="System.IO.Path.GetPathRoot(ReadOnlySpan{char})" />
     public ReadOnlySpan<char> GetPathRoot(ReadOnlySpan<char> path) => System.IO.Path.GetPathRoot(path);
     /// <inheritdoc cref="System.IO.Path.GetRandomFileName()" />

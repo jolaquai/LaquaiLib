@@ -2,47 +2,35 @@
 
 namespace LaquaiLib.Util.ShellInterfaces;
 
+/// <summary>
+/// Defines a type that interfaces and handles communication with a shell (such as PowerShell).
+/// </summary>
 public interface IShellInterface : IAsyncDisposable
 {
     /// <summary>
     /// Gets the <see cref="System.Diagnostics.Process"/> component that represents the underlying shell.
     /// </summary>
-    protected Process? Process { get; }
+    protected Process Process { get; }
     /// <summary>
     /// Gets the standard output stream of the underlying PowerShell instance.
     /// </summary>
-    StreamReader? StdOut
-    {
-        get;
-    }
+    StreamReader StdOut { get; }
     /// <summary>
     /// Gets the standard error stream of the underlying PowerShell instance.
     /// </summary>
-    StreamReader? StdErr
-    {
-        get;
-    }
+    StreamReader StdErr { get; }
     /// <summary>
     /// Indicates whether the underlying shell is ready to receive input.
     /// </summary>
-    bool Ready
-    {
-        get;
-    }
+    bool Ready { get; }
     /// <summary>
     /// Indicates whether the underlying shell still exists.
     /// </summary>
-    bool Exists
-    {
-        get;
-    }
+    bool Exists { get; }
     /// <summary>
     /// Indicates whether the underlying shell supports multiline commands; that is, whether the underlying shell behaves correctly when being passed a multiline command through <see cref="DispatchAsync(string)"/>, OR whether that method preprocesses the input to ensure that the shell behaves correctly. This may include wrapping the input in a block, using a different method to send the input or splitting the input into multiple commands.
     /// </summary>
-    bool SupportsMultilineCommands
-    {
-        get;
-    }
+    bool SupportsMultilineCommands { get; }
 
     /// <summary>
     /// Sends a string to the standard input of the underlying shell, then closes the input stream to allow the script to execute.

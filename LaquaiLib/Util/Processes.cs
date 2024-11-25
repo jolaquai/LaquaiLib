@@ -23,11 +23,11 @@ public static class Processes
     /// <summary>
     /// Occurs for each process that is started on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStarted;
+    public static event Action<Process> ProcessStarted;
     /// <summary>
     /// Occurs for each process that is stopped on the local computer.
     /// </summary>
-    public static event Action<Process>? ProcessStopped;
+    public static event Action<Process> ProcessStopped;
 
     /// <summary>
     /// Removes all entries in the invocation lists of the events defined in <see cref="Processes"/>.
@@ -50,11 +50,11 @@ public static class Processes
     /// Raises the events defined in <see cref="Processes"/> if their conditions are met.
     /// </summary>
     /// <param name="state">Unused / ignored unconditionally.</param>
-    private static void ConditionalRaiseEvents(object? state)
+    private static void ConditionalRaiseEvents(object state)
     {
         var currentProcessList = GetAllProcesses();
-        var newProcesses = currentProcessList.ExceptBy(_previousProcessList, proc => proc.Id);
-        var stoppedProcesses = _previousProcessList.ExceptBy(currentProcessList, proc => proc.Id);
+        var newProcesses = currentProcessList.ExceptBy(_previousProcessList, static proc => proc.Id);
+        var stoppedProcesses = _previousProcessList.ExceptBy(currentProcessList, static proc => proc.Id);
 
         foreach (var process in newProcesses)
         {

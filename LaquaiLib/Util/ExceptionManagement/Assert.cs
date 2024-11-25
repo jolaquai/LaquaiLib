@@ -26,7 +26,7 @@ public static class Assert
     /// <typeparam name="T">The type of the value to operate on.</typeparam>
     /// <param name="value">The value to assert to be not <see langword="null"/>.</param>
     /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-    public static T? IsNull<T>(T value, string message = "") where T : class => value is null ? value : throw new AssertionFailureException<T>(value, message);
+    public static T IsNull<T>(T value, string message = "") where T : class => value is null ? value : throw new AssertionFailureException<T>(value, message);
     /// <summary>
     /// Asserts that a specified value is not <see langword="null"/>.
     /// If it is, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
@@ -96,21 +96,21 @@ public static class Assert
     /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
     public static T IsEqualTo<T>(T value, T other, string message = "") where T : IComparable<T> => value.CompareTo(other) == 0 ? value : throw new AssertionFailureException<T>(value, message);
     /// <summary>
-    /// Asserts that a specified value is not equal to another value.
-    /// If it is not, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
-    /// </summary>
-    /// <typeparam name="T">The type of the values to operate on.</typeparam>
-    /// <param name="value">The value to assert to be within the range of <paramref name="min"/> and <paramref name="max"/>.</param>
-    /// <param name="other">The value to compare <paramref name="value"/> to.</param>
-    /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-    /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-    public static T IsNotEqualTo<T>(T value, T other, string message = "") where T : IComparable<T> => value.CompareTo(other) != 0 ? value : throw new AssertionFailureException<T>(value, message);
-    /// <summary>
     /// Asserts that a specified value is in a specified range.
     /// If it is not, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
     /// </summary>
     /// <typeparam name="T">The type of the values to operate on.</typeparam>
     /// <param name="value">The value to assert to be greater than or equal to <paramref name="other"/>.</param>
+    /// <param name="other">The value to compare <paramref name="value"/> to.</param>
+    /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
+    /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
+    public static T IsNotEqualTo<T>(T value, T other, string message = "") where T : IComparable<T> => value.CompareTo(other) != 0 ? value : throw new AssertionFailureException<T>(value, message);
+    /// <summary>
+    /// Asserts that a specified value is not equal to another value.
+    /// If it is not, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
+    /// </summary>
+    /// <typeparam name="T">The type of the values to operate on.</typeparam>
+    /// <param name="value">The value to assert to be within the range of <paramref name="min"/> and <paramref name="max"/>.</param>
     /// <param name="min">The inclusive lower bound of the range to compare <paramref name="value"/> to.</param>
     /// <param name="max">The inclusive upper bound of the range to compare <paramref name="value"/> to.</param>
     /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>

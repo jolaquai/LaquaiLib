@@ -7,6 +7,8 @@ using LaquaiLib.Wrappers;
 
 namespace LaquaiLib.Extensions;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
 /// <summary>
 /// Provides extension methods for the <see cref="Span{T}"/>, <see cref="ReadOnlySpan{T}"/>, <see cref="Memory{T}"/> and <see cref="ReadOnlyMemory{T}"/> types.
 /// </summary>

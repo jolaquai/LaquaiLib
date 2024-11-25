@@ -14,7 +14,7 @@ public static class MessageBox
 
     #region Synchronous
     /// <inheritdoc cref="MessageBoxFactory.Show(nint?, string?, string?, uint?, uint?, uint?, uint?, uint?)"/>
-    public static uint Show(nint? ownerHwnd = null, string? text = null, string? caption = null, uint? button = null, uint? defaultButton = null, uint? icon = null, uint? modality = null, uint? otherOptions = 0) => Factory.Show(ownerHwnd, text, caption, button, defaultButton, icon, modality, otherOptions);
+    public static uint Show(nint? ownerHwnd = null, string text = null, string caption = null, uint? button = null, uint? defaultButton = null, uint? icon = null, uint? modality = null, uint? otherOptions = 0) => Factory.Show(ownerHwnd, text, caption, button, defaultButton, icon, modality, otherOptions);
     /// <inheritdoc cref="MessageBoxFactory.Show(string)"/>
     public static uint Show(string text) => Factory.Show(text);
     /// <inheritdoc cref="MessageBoxFactory.Show(string, string)"/>

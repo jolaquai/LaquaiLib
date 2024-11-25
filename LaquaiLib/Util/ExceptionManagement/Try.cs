@@ -23,7 +23,7 @@ public static class Try
     /// <param name="defaultValue">The value to return if <paramref name="method"/> fails.</param>
     /// <param name="method">The <see cref="Func{TResult}"/> to execute.</param>
     /// <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise <typeparamref name="T"/>'s <c>default</c> value.</returns>
-    public static T? ExecuteOrDefault<T>(T? defaultValue, Func<T?> method)
+    public static T ExecuteOrDefault<T>(T defaultValue, Func<T> method)
     {
         try
         {
@@ -42,7 +42,7 @@ public static class Try
     /// <param name="defaultValueFactory">The <see cref="Func{TResult}"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
     /// <param name="method">The <see cref="Func{TResult}"/> to execute.</param>
     /// <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
-    public static T? ExecuteOrDefault<T>(Func<T?> defaultValueFactory, Func<T?> method)
+    public static T ExecuteOrDefault<T>(Func<T> defaultValueFactory, Func<T> method)
     {
         try
         {
@@ -65,7 +65,7 @@ public static class Try
     /// <param name="methods">The methods to try.</param>
     /// <returns>The value of the first method that doesn't throw an exception.</returns>
     /// <exception cref="AggregateException">Thrown if all methods throw an exception.</exception>
-    public static T? First<T>(params ReadOnlySpan<Func<T?>> methods)
+    public static T First<T>(params ReadOnlySpan<Func<T>> methods)
     {
         // Preallocate the list to avoid resizing
         var exceptions = new List<Exception>(methods.Length);
@@ -94,7 +94,7 @@ public static class Try
     /// <param name="test">The <see cref="Action{T}"/> to test each item with.</param>
     /// <param name="items">The items to test.</param>
     /// <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for.</returns>
-    public static T? First<T>(Action<T?> test, params ReadOnlySpan<T?> items)
+    public static T First<T>(Action<T> test, params ReadOnlySpan<T> items)
     {
         var exceptions = new List<Exception>(items.Length);
         for (var i = 0; i < items.Length; i++)
@@ -123,7 +123,7 @@ public static class Try
     /// <param name="defaultValue">The default value to return if all methods throw an exception.</param>
     /// <param name="methods">The methods to try.</param>
     /// <returns>The first value returned by a method that doesn't throw an exception, or the default value if all methods throw an exception.</returns>
-    public static T? FirstOrDefault<T>(T? defaultValue, params ReadOnlySpan<Func<T?>> methods)
+    public static T FirstOrDefault<T>(T defaultValue, params ReadOnlySpan<Func<T>> methods)
     {
         for (var i = 0; i < methods.Length; i++)
         {
@@ -143,7 +143,7 @@ public static class Try
     /// <param name="defaultValueFactory">The <see cref="Func{TResult}"/> that returns the default value to propagate if all <paramref name="methods"/> throw an exception. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
     /// <param name="methods">The methods to try.</param>
     /// <returns>The first value returned by a method that doesn't throw an exception, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
-    public static T? FirstOrDefault<T>(Func<T?> defaultValueFactory, params ReadOnlySpan<Func<T?>> methods)
+    public static T FirstOrDefault<T>(Func<T> defaultValueFactory, params ReadOnlySpan<Func<T>> methods)
     {
         for (var i = 0; i < methods.Length; i++)
         {
@@ -169,7 +169,7 @@ public static class Try
     /// <param name="test">The <see cref="Action{T}"/> to test each item with.</param>
     /// <param name="items">The items to test.</param>
     /// <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise <paramref name="defaultValue"/>.</returns>
-    public static T? FirstOrDefault<T>(T? defaultValue, Action<T?> test, params ReadOnlySpan<T?> items)
+    public static T FirstOrDefault<T>(T defaultValue, Action<T> test, params ReadOnlySpan<T> items)
     {
         for (var i = 0; i < items.Length; i++)
         {
@@ -192,7 +192,7 @@ public static class Try
     /// <param name="test">The <see cref="Action{T}"/> to test each item with.</param>
     /// <param name="items">The items to test.</param>
     /// <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.</returns>
-    public static T? FirstOrDefault<T>(Func<T?> defaultValueFactory, Action<T?> test, params ReadOnlySpan<T?> items)
+    public static T FirstOrDefault<T>(Func<T> defaultValueFactory, Action<T> test, params ReadOnlySpan<T> items)
     {
         for (var i = 0; i < items.Length; i++)
         {

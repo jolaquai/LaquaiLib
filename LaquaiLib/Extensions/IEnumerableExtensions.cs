@@ -15,7 +15,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The sequence of nested sequences to flatten.</param>
     /// <returns>A sequence that contains all the elements of the nested sequences.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(item => item);
+    public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(static item => item);
 
     /// <summary>
     /// Splits a sequence of values into two sequences based on a predicate.
@@ -212,15 +212,8 @@ public static partial class IEnumerableExtensions
     }
 
     #region Mode
-    private struct ModeModel<TSource, TSelect>
-    {
-        public readonly TSource OriginalValue;
-        public readonly TSelect SelectedValue;
-        public int CountBySelect;
-    }
-
     /// <summary>
-    /// Determines the mode of a sequence of values from a given key extracted from each value; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
+    /// Determines the mode of a sequence of values from a given key extracted from each value (that is, the value that appears most frequently). If multiple items share the highest frequency, the first one encountered is returned.
     /// </summary>
     /// <typeparam name="TSource">The Type of the elements in <paramref name="source"/>.</typeparam>
     /// <typeparam name="TSelect">The Type of the elements <paramref name="selector"/> produces.</typeparam>
@@ -251,11 +244,11 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Determines the mode of a sequence of values; that is, the value that appears most frequently. If multiple items share the highest frequency, the first one encountered is returned.
+    /// Determines the mode of a sequence of values (that is, the value that appears most frequently). If multiple items share the highest frequency, the first one encountered is returned.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in <paramref name="source"/>.</typeparam>
     /// <param name="source">The sequence of values to determine the mode of.</param>
-    /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> of <typeparamref name="TSelect"/> to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
+    /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
     /// <returns>The mode of <paramref name="source"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
     public static T Mode<T>(this IEnumerable<T> source, IEqualityComparer<T> equalityComparer = null)
@@ -326,7 +319,7 @@ public static partial class IEnumerableExtensions
         foreach (var item in second)
         {
             ref var count = ref CollectionsMarshal.GetValueRefOrNullRef(counts, item);
-            if (System.Runtime.CompilerServices.Unsafe.IsNullRef(count) || --count < 0)
+            if (System.Runtime.CompilerServices.Unsafe.IsNullRef(ref count) || --count < 0)
             {
                 // Item in second but not in first
                 return false;
@@ -476,7 +469,7 @@ public static partial class IEnumerableExtensions
     /// <remarks>
     /// <typeparamref name="TDerived"/> is not constrained with regards to <typeparamref name="TSource"/>, so that consuming code needn't check for type relationships before calling this method.
     /// </remarks>
-    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source) => typeof(TDerived).IsAssignableTo(typeof(TSource)) ? source.Where(i => i is not TDerived) : source;
+    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source) => typeof(TDerived).IsAssignableTo(typeof(TSource)) ? source.Where(static i => i is not TDerived) : source;
 
     /// <summary>
     /// For each element in the <paramref name="source"/> sequence, combines it with each value from an<paramref name="other"/> sequence using a specified <paramref name="selector"/> function.
@@ -528,7 +521,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
     /// <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
-    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, T defaultValue = default)
+    public static T OnlyOrDefault<T>(this IEnumerable<T> source, T defaultValue = default)
     {
         try
         {
@@ -548,7 +541,7 @@ public static partial class IEnumerableExtensions
     /// <param name="predicate">The condition to check for.</param>
     /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
     /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
-    public static T? OnlyOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate, T defaultValue = default)
+    public static T OnlyOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate, T defaultValue = default)
     {
         try
         {
@@ -568,7 +561,7 @@ public static partial class IEnumerableExtensions
     /// <param name="i">The index of the element to retrieve.</param>
     /// <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
     /// <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
-    public static T? ElementAtOrDefault<T>(this IEnumerable<T> source, int i, T defaultValue = default)
+    public static T ElementAtOrDefault<T>(this IEnumerable<T> source, int i, T defaultValue = default)
     {
         switch (source)
         {
