@@ -145,6 +145,55 @@ public static class OpenXmlElementExtensions
         var end = Math.Max(index1, index2);
         return children[start..(end + 1)];
     }
+    
+    /// <summary>
+    /// Enumerates the <see cref="OpenXmlElement"/>s that lie between <paramref name="element"/> and the <paramref name="last"/> element. Neither is included in the enumeration.
+    /// </summary>
+    /// <param name="element">The element to start from.</param>
+    /// <param name="last">The element to stop at.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that enumerates the elements as specified.</returns>
+    public static IEnumerable<OpenXmlElement> ElementsUpTo(this OpenXmlElement element, OpenXmlElement last)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+        ArgumentNullException.ThrowIfNull(last);
+    
+        return Impl();
+    
+        IEnumerable<OpenXmlElement> Impl()
+        {
+            var current = element.NextSibling();
+            while (current != null && current != last)
+            {
+                yield return current;
+                current = current.NextSibling();
+            }
+        }
+    }
+    /// <summary>
+    /// Enumerates the <see cref="OpenXmlElement"/>s of type <typeparamref name="T"/> that lie between <paramref name="element"/> and the <paramref name="last"/> element. Neither is included in the enumeration.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="OpenXmlElement"/> to enumerate.</typeparam>
+    /// <param name="element">The element to start from.</param>
+    /// <param name="last">The element to stop at.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> that enumerates the elements as specified.</returns>
+    public static IEnumerable<T> ElementsUpTo<T>(this OpenXmlElement element, OpenXmlElement last)
+        where T : OpenXmlElement
+    {
+        ArgumentNullException.ThrowIfNull(element);
+        ArgumentNullException.ThrowIfNull(last);
+    
+        return Impl();
+    
+        IEnumerable<T> Impl()
+        {
+            var current = element.NextSibling<T>();
+            while (current != null && current != last)
+            {
+                yield return current;
+                current = current.NextSibling<T>();
+            }
+        }
+    }
 
     /// <summary>
     /// Replaces the specified element with new content. The new element must not have parents.
