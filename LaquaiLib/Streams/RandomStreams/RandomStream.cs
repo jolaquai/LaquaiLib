@@ -139,13 +139,13 @@ public class RandomStream : Stream
         {
             while (destination.Length - destination.Position >= bufferSize)
             {
-                ReadExactly(buffer.Array);
-                destination.Write(buffer.Array);
+                ReadExactly(buffer.Span);
+                destination.Write(buffer.Span);
             }
             var remaining = (int)(destination.Length - destination.Position);
             if (remaining > 0)
             {
-                var span = buffer.Array.AsSpan(0, remaining);
+                var span = buffer.Span[..remaining];
                 ReadExactly(span);
                 destination.Write(span);
             }

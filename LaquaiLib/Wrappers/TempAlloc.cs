@@ -226,7 +226,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// Whether this <see cref="TempAlloc"/> has been disposed.
     /// </summary>
-    public bool IsDisposed => _address == nint.Zero && _size == -1;
+    public readonly bool IsDisposed => _address == nint.Zero && _size == -1;
 
     /// <summary>
     /// Resizes the memory region this <see cref="TempAlloc"/> wraps.

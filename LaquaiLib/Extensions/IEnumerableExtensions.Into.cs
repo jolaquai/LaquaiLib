@@ -16,8 +16,7 @@ public static partial class IEnumerableExtensions
     /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
     /// <param name="allowUnsafeMutation">
-    /// Whether the method is allowed to begin mutating the array if it is unable to ascertain whether all elements will
-    /// fit. Defaults to <see langword="false"/>.
+    /// Whether the method is allowed to begin mutating the array if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>.
     /// </param>
     /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<T>(this IEnumerable<T> source, T[] target, int startIndex = 0, bool allowUnsafeMutation = false)
@@ -279,33 +278,52 @@ public static partial class IEnumerableExtensions
     /// langword="false"/>.
     /// </param>
     /// <returns>The number of elements written to the target collection.</returns>
-    public static int Into<TKey, TValue>(this IEnumerable<TKey> source, Dictionary<TKey, TValue> target, Func<TKey, TValue> valueFactory, bool overwrite = false)
+    public static int Into<TKey, TValue>(this IEnumerable<TKey> source, IDictionary<TKey, TValue> target, Func<TKey, TValue> valueFactory, bool overwrite = false)
     {
         var i = 0;
-        foreach (var key in source)
+        if (target is Dictionary<TKey, TValue> concreteDict)
         {
-            ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(target, key, out var exists);
-            if (overwrite)
+            foreach (var key in source)
             {
-                i++;
-                dest = valueFactory(key);
+                ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                if (overwrite || !exists)
+                {
+                    i++;
+                    dest = valueFactory(key);
+                }
+                else if (exists)
+                {
+                    throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
+                }
             }
-            else if (exists)
+        }
+        else
+        {
+            foreach (var key in source)
             {
-                throw new InvalidOperationException("The target dictionary already contains a value for the specified key and 'overwrite' is set to false.");
+                var exists = target.ContainsKey(key);
+                if (overwrite || !exists)
+                {
+                    i++;
+                    target[key] = valueFactory(key);
+                }
+                else if (exists)
+                {
+                    throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
+                }
             }
         }
         return i;
     }
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the
-    /// specified <paramref name="keySelector"/> to generate keys for each value.
+    /// specified <paramref name="keyFactory"/> to generate keys for each value.
     /// </summary>
     /// <typeparam name="TKey">The Type of the keys in the input sequence.</typeparam>
     /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Dictionary{TKey, TValue}"/> to copy elements to.</param>
-    /// <param name="keySelector">
+    /// <param name="keyFactory">
     /// A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a key for the
     /// corresponding value.
     /// </param>
@@ -314,21 +332,41 @@ public static partial class IEnumerableExtensions
     /// langword="false"/>.
     /// </param>
     /// <returns>The number of elements written to the target collection.</returns>
-    public static int Into<TKey, TValue>(this IEnumerable<TValue> source, Dictionary<TKey, TValue> target, Func<TValue, TKey> keySelector, bool overwrite = false)
+    public static int Into<TKey, TValue>(this IEnumerable<TValue> source, IDictionary<TKey, TValue> target, Func<TValue, TKey> keyFactory, bool overwrite = false)
     {
         var i = 0;
-        foreach (var value in source)
+        if (target is Dictionary<TKey, TValue> concreteDict)
         {
-            var key = keySelector(value);
-            ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(target, key, out var exists);
-            if (overwrite)
+            foreach (var value in source)
             {
-                i++;
-                dest = value;
+                var key = keyFactory(value);
+                ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                if (overwrite || !exists)
+                {
+                    i++;
+                    dest = value;
+                }
+                else if (exists)
+                {
+                    throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
+                }
             }
-            else if (exists)
+        }
+        else
+        {
+            foreach (var value in source)
             {
-                throw new InvalidOperationException("The target dictionary already contains a value for the specified key and 'overwrite' is set to false.");
+                var key = keyFactory(value);
+                var exists = target.ContainsKey(key);
+                if (overwrite || !exists)
+                {
+                    i++;
+                    target[key] = value;
+                }
+                else if (exists)
+                {
+                    throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
+                }
             }
         }
         return i;

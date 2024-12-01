@@ -59,8 +59,8 @@ public class CryptographicRandomStream : RandomStream
     {
         using (var buffer = new TempArray<byte>(byteCount))
         {
-            ReadExactly(buffer.Array);
-            destination.Write(buffer.Array, 0, byteCount);
+            ReadExactly(buffer.Span);
+            destination.Write(buffer.Span);
         }
     }
     /// <summary>
