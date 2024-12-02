@@ -25,12 +25,14 @@ public partial class TestConsole
         using (var scope = TestCore.TestCore.GetScope().ConfigureAwait(false).GetAwaiter().GetResult())
         {
             ActualMain(scope.ServiceProvider).ConfigureAwait(false).GetAwaiter().GetResult();
-            Debugger.Break();
+            // Debugger.Break();
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void cw(object obj) => Console.WriteLine(obj);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void cw<T>(IEnumerable<T> enumerable) => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         _ = serviceProvider;

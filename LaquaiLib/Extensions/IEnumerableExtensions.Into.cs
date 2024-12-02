@@ -102,7 +102,7 @@ public static partial class IEnumerableExtensions
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The sequence to copy elements from.</param>
-    /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
+    /// <param name="target">The <see cref="List{T}"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
     /// <returns>The number of elements written to the target collection.</returns>
     /// <remarks>
@@ -177,6 +177,14 @@ public static partial class IEnumerableExtensions
             }
         }
     }
+    /// <summary>
+    /// Adds the elements of the input sequence to the end of the specified <see cref="List{T}"/>. The <see cref="List{T}"/> will be resized if the input sequence contains more elements than the <see cref="List{T}"/>'s current capacity (beyond its count). Efficient <see cref="Span{T}"/>-based copying is employed when possible, otherwise falling back to <see cref="List{T}.AddRange(IEnumerable{T})"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The sequence to copy elements from.</param>
+    /// <param name="target">The <see cref="List{T}"/> to copy elements to.</param>
+    /// <returns>The number of elements written to the target collection.</returns>
+    public static int AddTo<T>(this IEnumerable<T> source, List<T> target) => source.Into(target, target.Count);
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Span{T}"/>.
     /// </summary>
