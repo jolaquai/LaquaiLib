@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 using LaquaiLib.Collections.Enumeration;
+using LaquaiLib.Extensions;
 
 namespace LaquaiLib.Collections.Observable;
 
@@ -233,10 +234,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     {
         ArgumentNullException.ThrowIfNull(collection);
 
-        foreach (var item in collection)
-        {
-            AddSilent(item);
-        }
+        collection.AddTo(items);
         RaiseCollectionChanged();
     }
     /// <summary>
