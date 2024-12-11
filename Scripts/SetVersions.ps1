@@ -8,7 +8,9 @@ $packLoc = [System.IO.Path]::Combine($slnRoot, "Scripts", "pack")
     "LaquaiLib",
     "LaquaiLib.Windows",
     "LaquaiLib.Compound",
-    "LaquaiLib.Oxml"
+    "LaquaiLib.Oxml",
+    "LaquaiLib.EF",
+    "LaquaiLib.DependencyInjection"
 )
 
 # Cmdline argument: Version to set to
@@ -26,3 +28,6 @@ foreach ($project in $projects) {
     $csprojContent = $regex.Replace($csprojContent, "<PackageVersion>$targetVersion</PackageVersion>")
     [System.Xml.Linq.XElement]::Parse($csprojContent).Save($csproj.FullName)
 }
+
+# Move back to the scripts
+Set-Location -Path "$slnRoot\Scripts"

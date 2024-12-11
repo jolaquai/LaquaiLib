@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>1.1.2</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
     <FileVersion>$(PackageVersion)</FileVersion>
     <AssemblyVersion>$(FileVersion)</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>

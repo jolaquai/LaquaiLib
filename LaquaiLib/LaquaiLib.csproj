@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>1.1.2</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
     <FileVersion>$(PackageVersion)</FileVersion>
     <AssemblyVersion>$(FileVersion)</AssemblyVersion>
     <Version>$(AssemblyVersion)</Version>
@@ -36,16 +36,5 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
     <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="false">
-    <Reference Include="Microsoft.Office.Interop.Word">
-      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Word\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Word.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Vbe.Interop">
-      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.Vbe.Interop\15.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll</HintPath>
-    </Reference>
-    <Reference Include="office">
-      <HintPath>C:\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\OFFICE.DLL</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>
