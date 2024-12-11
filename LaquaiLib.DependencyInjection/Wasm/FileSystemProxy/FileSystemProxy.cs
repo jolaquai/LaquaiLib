@@ -1,4 +1,4 @@
-namespace LaquaiLib.WasmServices.FileSystemProxy;
+namespace LaquaiLib.DependencyInjection.Wasm.FileSystemProxy;
 
 /// <summary>
 /// Implements the <see cref="IFileSystemProxy"/> interface, which allows direct file system access from a Blazor WebAssembly application by proxying functionality from <see cref="System.IO"/>.

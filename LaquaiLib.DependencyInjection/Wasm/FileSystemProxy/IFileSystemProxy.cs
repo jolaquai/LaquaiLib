@@ -1,4 +1,4 @@
-namespace LaquaiLib.WasmServices.FileSystemProxy;
+namespace LaquaiLib.DependencyInjection.Wasm.FileSystemProxy;
 
 /// <summary>
 /// Exposes access to the file system by proxy in a Blazor WebAssembly application.

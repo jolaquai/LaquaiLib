@@ -31,12 +31,15 @@ public static partial class StringExtensions
         }
 
         // However, Span-based repetition scales a LOT better for larger counts
-        Span<char> newStr = new char[length];
+        var arr = ArrayPool<char>.Shared.Rent(length);
+        var newStr = arr.AsSpan(0, length);
         for (var i = 0; i < count; i += srcSpan.Length)
         {
             srcSpan.CopyTo(newStr[i..(i + srcSpan.Length)]);
         }
-        return newStr.ToString();
+        var str = newStr.ToString();
+        ArrayPool<char>.Shared.Return(arr);
+        return str;
     }
 
     /// <summary>

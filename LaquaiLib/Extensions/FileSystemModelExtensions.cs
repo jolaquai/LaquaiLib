@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides extension methods for the <see cref="DirectoryInfo"/> Type.
 /// </summary>
-public static class DirectoryInfoExtensions
+public static class FileSystemModelExtensions
 {
     /// <summary>
     /// Creates a new <see cref="DirectoryInfo"/> instance for the subdirectory identified by <paramref name="name"/> if it exists, otherwise returns <see langword="null"/>.
@@ -92,7 +92,7 @@ public static class DirectoryInfoExtensions
         ArgumentNullException.ThrowIfNull(di);
         var file = new FileInfo(Path.Combine(di.FullName, name));
         var dir = file.Directory;
-        if (dir.Exists is not true)
+        if (!dir.Exists)
         {
             dir.Create();
         }
@@ -109,4 +109,11 @@ public static class DirectoryInfoExtensions
     /// <param name="names">Any number of directory names to join and search for under the directory represented by <paramref name="di"/>.</param>
     /// <returns>A <see cref="FileInfo"/> instance for the file identified by a path consisting of subdirectory <paramref name="names"/>.</returns>
     public static FileInfo MakeFile(this DirectoryInfo di, params ReadOnlySpan<string> names) => di.MakeFile(Path.Combine(names));
+
+    /// <summary>
+    /// Opens an existing file with read-write access, creating it if it does not exist.
+    /// </summary>
+    /// <param name="fi">The <see cref="FileInfo"/> instance representing the file to open.</param>
+    /// <returns>A <see cref="FileStream"/> instance for the file represented by <paramref name="fi"/>.</returns>
+    public static FileStream Write(this FileInfo fi) => fi.Open(FileMode.Create);
 }

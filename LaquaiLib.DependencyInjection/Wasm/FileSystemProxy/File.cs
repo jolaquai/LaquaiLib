@@ -2,7 +2,7 @@ using System.Text;
 
 using Microsoft.Win32.SafeHandles;
 
-namespace LaquaiLib.WasmServices.FileSystemProxy;
+namespace LaquaiLib.DependencyInjection.Wasm.FileSystemProxy;
 
 /// <summary>
 /// Implements the <see cref="IFile"/> interface for use in the <see cref="IFileSystemProxy"/>.

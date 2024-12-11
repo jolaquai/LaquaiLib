@@ -21,6 +21,7 @@
   </Folder>
   <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
   <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" />
+  <Project Path="LaquaiLib.DependencyInjection/LaquaiLib.DependencyInjection.csproj" Id="0af7bc36-e21f-45c5-8813-f993e244a6ba" />
   <Project Path="LaquaiLib.EF/LaquaiLib.EF.csproj" Id="7bc7e0bf-d17e-4a86-ac78-d5b5a28f16d9" />
   <Project Path="LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
   <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" />

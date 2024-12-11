@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace LaquaiLib.WasmServices.FileSystemProxy;
+namespace LaquaiLib.DependencyInjection.Wasm.FileSystemProxy;
 
 /// <summary>
 /// Exposes access to the <see cref="System.IO.File"/> class by proxy in a Blazor WebAssembly application.
