@@ -1,42 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>1.2.0</PackageVersion>
-    <FileVersion>$(PackageVersion)</FileVersion>
-    <AssemblyVersion>$(FileVersion)</AssemblyVersion>
-    <Version>$(AssemblyVersion)</Version>
+    <PackageVersion>$(CoreVersion)</PackageVersion>
+    <FileVersion>$(CoreVersion)</FileVersion>
+    <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
+    <Version>$(CoreVersion)</Version>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <AnalysisMode>all</AnalysisMode>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    <UseWPF>True</UseWPF>
-    <UseWindowsForms>True</UseWindowsForms>
     <DebugType>embedded</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(CoreNoWarn)</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <Title>LaquaiLib.Compound</Title>
-    <Authors>Joshua Laquai</Authors>
-    <Description>Personal library.</Description>
-    <Copyright>(C) Joshua Laquai 20xx</Copyright>
-    <PackageDescription>Personal library. Compounds all parts of LaquaiLib, adding references to all of them.</PackageDescription>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>$(CoreAuthors)</Authors>
+    <Description>$(CoreDescription)</Description>
+    <Copyright>(C) $(CoreAuthors) 20xx</Copyright>
+    <PackageDescription>Compounds all parts of LaquaiLib, adding references to all of them (except LaquaiLib.Windows).</PackageDescription>
+    
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
-    <PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
+    <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
+    <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
-    <ProjectReference Include="..\LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
-    <ProjectReference Include="..\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
     <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
+    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <ProjectReference Include="..\LaquaiLib.DependencyInjection\LaquaiLib.DependencyInjection.csproj" />
+    <ProjectReference Include="..\LaquaiLib.EF\LaquaiLib.EF.csproj" />
+    <ProjectReference Include="..\LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
   </ItemGroup>
 </Project>

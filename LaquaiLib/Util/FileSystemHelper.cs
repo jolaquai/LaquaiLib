@@ -128,7 +128,9 @@ public static class FileSystemHelper
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dirStructure);
         if (Path.IsPathRooted(dirStructure) || dirStructure.AsSpan().IndexOfAny(_invalidPathChars.Value) > -1)
+        {
             throw new ArgumentException("The directory structure must be a well-formed relative path to a directory.", nameof(dirStructure));
+        }
 
         if (driveType is not null && !string.IsNullOrWhiteSpace(root))
         {
@@ -139,7 +141,9 @@ public static class FileSystemHelper
         {
             var dir = new DirectoryInfo(root);
             if (!dir.Exists)
+            {
                 return AsyncEnumerableWrapper<string>.Empty;
+            }
 
             return new AsyncEnumerableWrapper<string>(dir
                 .EnumerateDirectories("*", new EnumerationOptions()
@@ -158,9 +162,14 @@ public static class FileSystemHelper
         if (!string.IsNullOrWhiteSpace(root))
         {
             if (!Path.IsPathRooted(root))
+            {
                 throw new ArgumentException("The root directory must be a well-formed absolute path to a directory.", nameof(root));
+            }
+
             if (!Directory.Exists(root))
+            {
                 throw new IOException($"Directory '{root}' does not exist.");
+            }
 
             return ExamineRootImpl(dirStructure, root, maxRecursionDepth);
         }
@@ -183,20 +192,29 @@ public static class FileSystemHelper
     public static Task UnpackDirectory(string directory)
     {
         if (!Directory.Exists(directory))
+        {
             throw new DirectoryNotFoundException($"Directory '{directory}' does not exist.");
+        }
 
         var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
         // Filter out the files that are already in the root directory
         files = files.Except(Directory.GetFiles(directory)).ToArray();
         if (files.Length == 0)
+        {
             return Task.CompletedTask;
+        }
 
         var names = files.Select(f => Path.GetFileName(f)).ToArray();
         var newPaths = names.Select(n => Path.Combine(directory, n)).ToArray();
         if (newPaths.FirstOrDefault(File.Exists) is string existing)
+        {
             throw new IOException($"The file '{existing}' already exists. Move cannot be completed.");
+        }
+
         if (names.Distinct().Count() < names.Length)
+        {
             throw new IOException("Multiple files with the same name exist in the directory structure.");
+        }
 
         return Task.Run(() => Parallel.For(0, files.Length, i =>
         {
@@ -213,7 +231,9 @@ public static class FileSystemHelper
     public static void FillInvalidFileNameChars(Span<char> destination)
     {
         if (destination.Length < 41)
+        {
             throw new ArgumentException("Destination span is too short.", nameof(destination));
+        }
 
         FillInvalidPathChars(destination[..33]);
         ((ReadOnlySpan<char>)['\"', '<', '>', ':', '*', '?', '\\', '/']).CopyTo(destination);
@@ -225,8 +245,9 @@ public static class FileSystemHelper
     public static void FillInvalidPathChars(Span<char> destination)
     {
         if (destination.Length < 33)
+        {
             throw new ArgumentException("Destination span is too short.", nameof(destination));
-        ((ReadOnlySpan<char>)['|', '\0',
+        } ((ReadOnlySpan<char>)['|', '\0',
             (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
             (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20,
             (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30,

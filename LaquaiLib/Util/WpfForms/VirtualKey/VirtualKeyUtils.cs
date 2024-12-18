@@ -148,7 +148,9 @@ public static partial class VirtualKeyUtils
     public static bool GetToggleState(VirtualKey vk)
     {
         if (!Array.Exists(ToggleKeys, k => k == vk))
+        {
             throw new ArgumentException("The specified virtual key is not a toggle key.", nameof(vk));
+        }
 
         return (Interop.GetKeyState((uint)vk) & Interop.lsb) != 0;
     }

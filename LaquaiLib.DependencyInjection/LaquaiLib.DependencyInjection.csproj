@@ -6,10 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>1.2.0</PackageVersion>
-    <FileVersion>$(PackageVersion)</FileVersion>
-    <AssemblyVersion>$(FileVersion)</AssemblyVersion>
-    <Version>$(AssemblyVersion)</Version>
+    <PackageVersion>$(CoreVersion)</PackageVersion>
+    <FileVersion>$(CoreVersion)</FileVersion>
+    <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
+    <Version>$(CoreVersion)</Version>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <AnalysisMode>all</AnalysisMode>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
@@ -19,22 +19,19 @@
   </PropertyGroup>
   <PropertyGroup>
     <Title>LaquaiLib.DependencyInjection</Title>
-    <Authors>Joshua Laquai</Authors>
-    <Description>Personal library.</Description>
-    <Copyright>(C) Joshua Laquai 20xx</Copyright>
+    <Authors>$(CoreAuthors)</Authors>
+    <Description>$(CoreDescription)</Description>
+    <Copyright>(C) $(CoreAuthors) 20xx</Copyright>
     <PackageDescription>Personal library. Exposes services to be used with a dependency injection container such as Microsoft's Microsoft.Extensions.DependencyInjection and surrounding utilities such as Microsoft.Extensions.Hosting.</PackageDescription>
     <PackageId>$(Title)</PackageId>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
-    <PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
+    <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
+    <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="ExternalRunner\ExternalRunnerService1.cs" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
     <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />

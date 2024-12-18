@@ -5,12 +5,13 @@
         <TargetFramework>net9.0-windows</TargetFramework>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
-        <!--<UseWindowsForms>true</UseWindowsForms>
-        <UseWPF>true</UseWPF>-->
+        <UseWindowsForms>true</UseWindowsForms>
+        <UseWPF>true</UseWPF>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Platforms>AnyCPU;x64;x86</Platforms>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 
         <DebugType>embedded</DebugType>
 
@@ -22,9 +23,9 @@
         <PackageReference Include="adb" Version="33.0.3" />
         <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
         <PackageReference Include="DiscUtils" Version="0.16.13" />
-        <PackageReference Include="DocumentFormat.OpenXml" Version="3.1.1" />
+        <PackageReference Include="DocumentFormat.OpenXml" Version="3.2.0" />
         <PackageReference Include="HtmlAgilityPack" Version="1.11.71" />
-        <PackageReference Include="Lnk" Version="1.3.8" />
+        <PackageReference Include="Lnk" Version="1.4.0" />
         <PackageReference Include="MediaDevices" Version="1.10.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -32,9 +33,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
+        <ProjectReference Include="..\LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
         <ProjectReference Include="..\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
-        <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
         <ProjectReference Include="..\TestCore\TestCore.csproj" />
     </ItemGroup>
 

@@ -302,10 +302,14 @@ public static partial class IEnumerableExtensions
     public static bool SequenceEquivalent<T>(this IEnumerable<T> first, IEnumerable<T> second, IEqualityComparer<T> comparer = null)
     {
         if (first == null || second == null)
+        {
             return first == second;
+        }
 
         if (first.TryGetNonEnumeratedCount(out var firstCount) && second.TryGetNonEnumeratedCount(out var secondCount) && firstCount != secondCount)
+        {
             return false;
+        }
 
         comparer ??= EqualityComparer<T>.Default;
 

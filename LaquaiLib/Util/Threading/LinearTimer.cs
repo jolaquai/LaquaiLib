@@ -131,7 +131,10 @@ public class LinearTimer
     {
         _ = state;
 
-        if (execution?.IsCompleted == false && !QueueCallback) return;
+        if (execution?.IsCompleted == false && !QueueCallback)
+        {
+            return;
+        }
 
         if (execution?.IsCompleted != false)
         {

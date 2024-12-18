@@ -6,10 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>1.2.0</PackageVersion>
-    <FileVersion>$(PackageVersion)</FileVersion>
-    <AssemblyVersion>$(FileVersion)</AssemblyVersion>
-    <Version>$(AssemblyVersion)</Version>
+    <PackageVersion>$(CoreVersion)</PackageVersion>
+    <FileVersion>$(CoreVersion)</FileVersion>
+    <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
+    <Version>$(CoreVersion)</Version>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <AnalysisMode>all</AnalysisMode>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
@@ -19,15 +19,14 @@
   </PropertyGroup>
   <PropertyGroup>
     <Title>LaquaiLib.EF</Title>
-    <Authors>Joshua Laquai</Authors>
-    <Description>Personal library.</Description>
-    <Copyright>(C) Joshua Laquai 20xx</Copyright>
-    <PackageDescription>Personal library. Contains functionality for working with EFCore.</PackageDescription>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>$(CoreAuthors)</Authors>
+    <Description>$(CoreDescription)</Description>
+    <Copyright>(C) $(CoreAuthors) 20xx</Copyright>
+    <PackageDescription>Contains functionality for working with EFCore.</PackageDescription>
     <IncludeSource>True</IncludeSource>
     <IncludeSymbols>True</IncludeSymbols>
-    <PackageProjectUrl>https://github.com/jolaquai/LaquaiLib</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/jolaquai/LaquaiLib</RepositoryUrl>
+    <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
+    <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
   </PropertyGroup>

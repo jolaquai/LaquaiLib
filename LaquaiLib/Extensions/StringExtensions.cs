@@ -180,14 +180,21 @@ public static partial class StringExtensions
         List<int> ret = [];
         var span = source.AsSpan(startIndex);
         var find = span.IndexOf(search);
-        if (find == -1) return Array.Empty<int>();
+        if (find == -1)
+        {
+            return Array.Empty<int>();
+        }
+
         ret.Add(find);
 
         while (true)
         {
             span = span[(find + 1)..];
             find = span.IndexOf(search);
-            if (find == -1) break;
+            if (find == -1)
+            {
+                break;
+            }
 
             ret.Add(find + ret[^1] + 1);
         }

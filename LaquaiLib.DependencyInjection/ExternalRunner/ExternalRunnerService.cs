@@ -75,7 +75,11 @@ public class ExternalRunnerService : BackgroundService
     /// <inheritdoc/>
     public override void Dispose()
     {
-        if (disposed) return;
+        if (disposed)
+        {
+            return;
+        }
+
         disposed = true;
 
         GC.SuppressFinalize(this);

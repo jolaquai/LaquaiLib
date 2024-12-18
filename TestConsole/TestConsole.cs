@@ -1,16 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-
-using LaquaiLib.Core;
-using LaquaiLib.Extensions;
-using LaquaiLib.Util;
-using LaquaiLib.Util.Misc;
-
-namespace TestConsole;
+﻿namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -35,7 +23,7 @@ public partial class TestConsole
     private static void cw<T>(IEnumerable<T> enumerable) => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
-        _ = serviceProvider;
+        var client = serviceProvider.GetRequiredService<HttpClient>();
     }
 }
 
@@ -64,6 +52,7 @@ public class DiscordWebhookApiClient : HttpClient
         return await JsonSerializer.DeserializeAsync<webhookmessage>(resStream).ConfigureAwait(false);
     }
 
+#pragma warning disable IDE1006 // Naming Styles
     public class webhookmessage
     {
         public double type { get; init; }
@@ -117,6 +106,7 @@ public class DiscordWebhookApiClient : HttpClient
         public dynamic global_name { get; init; }
         public dynamic clan { get; init; }
     }
+#pragma warning restore IDE1006 // Naming Styles
 }
 
 /// <summary>
@@ -137,7 +127,7 @@ public class DynamicTypeBuilder(JsonObject root)
         public override int GetHashCode() => PropKey.GetHashCode();
     }
 
-    private string GenerateRecordsImpl(JsonObject node, HashSet<JsonProperty> furtherTypesToConstruct)
+    private static string GenerateRecordsImpl(JsonObject node, HashSet<JsonProperty> furtherTypesToConstruct)
     {
         var sb = new StringBuilder();
         sb.AppendLine("public class __reflected{{{n}}}");

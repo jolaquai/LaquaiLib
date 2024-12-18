@@ -24,7 +24,7 @@ foreach ($project in $projects) {
     
     $csproj = Get-ChildItem -Path $project.FullName -Filter *.csproj
     $csprojContent = Get-Content $csproj.FullName
-    # Only need to set <PackageVersion>, the rest reference $(PackageVersion)
+    # Only need to set <PackageVersion>, the rest reference $(CoreVersion)
     $csprojContent = $regex.Replace($csprojContent, "<PackageVersion>$targetVersion</PackageVersion>")
     [System.Xml.Linq.XElement]::Parse($csprojContent).Save($csproj.FullName)
 }
