@@ -28,7 +28,7 @@ public class MultiStream : Stream, IDisposable
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
     public MultiStream(IEnumerable<Stream> streams)
     {
-        _streams = streams.ToList();
+        _streams = [.. streams];
     }
 
     /// <summary>
@@ -47,22 +47,22 @@ public class MultiStream : Stream, IDisposable
 
         if (streamType.IsAssignableTo(typeof(MemoryStream)))
         {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new MemoryStream()).ToList();
+            _streams = [.. Enumerable.Range(0, count).Select(_ => (Stream)new MemoryStream())];
         }
         else if (streamType.IsAssignableTo(typeof(FileStream)))
         {
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose)).ToList();
+            _streams = [.. Enumerable.Range(0, count).Select(_ => (Stream)new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose))];
         }
         else if (constructorParameters.Length > 1)
         {
             var parameters = constructorParameters.ToArray();
-            _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, parameters)!).ToList();
+            _streams = [.. Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType, parameters)!)];
         }
         else
         {
             try
             {
-                _streams = Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!).ToList();
+                _streams = [.. Enumerable.Range(0, count).Select(_ => (Stream)Activator.CreateInstance(streamType)!)];
             }
             catch (Exception)
             {
@@ -120,13 +120,13 @@ public class MultiStream : Stream, IDisposable
     /// <summary>
     /// A collection of <see cref="long"/>s that indicate the lengths of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public long[] Lengths => _streams.Select(static stream => stream.Length).ToArray();
+    public long[] Lengths => [.. _streams.Select(static stream => stream.Length)];
     /// <inheritdoc/>
     public override long Length => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Length)}. Use {nameof(Lengths)} instead.");
     /// <summary>
     /// A collection of <see cref="long"/>s taht indicate the current positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public long[] Positions => _streams.Select(static stream => stream.Position).ToArray();
+    public long[] Positions => [.. _streams.Select(static stream => stream.Position)];
     /// <inheritdoc/>
     public override long Position
     {

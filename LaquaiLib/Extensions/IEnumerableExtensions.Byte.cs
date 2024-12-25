@@ -8,7 +8,7 @@ namespace LaquaiLib.Extensions;
 /// <summary>
 /// Provides extension methods for the <see cref="IEnumerable{T}"/> of <see cref="byte"/> Type.
 /// </summary>
-public static class IEnumerableByteExtensions
+public static class IEnumerableExtensionsByte
 {
     /// <summary>
     /// Using the specified <see cref="byte"/> sequence, creates a new <typeparamref name="T"/> instance.
@@ -34,7 +34,7 @@ public static class IEnumerableByteExtensions
             //throw new ArgumentException("The struct type to marshal the specified bytes into must be packed explicitly to find memory boundaries.");
         }
 
-        var enumerated = enumerable as byte[] ?? enumerable.ToArray();
+        var enumerated = enumerable as byte[] ?? [.. enumerable];
         var fields = typeof(T).GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         var structSize = Marshal.SizeOf<T>();
 

@@ -98,7 +98,7 @@ public static partial class StringExtensions
             result.Add((lastValue, ""));
         }
 
-        return result.ToArray();
+        return [.. result];
     }
     /// <summary>
     /// "Transparently" splits a <see langword="string"/> at each match of the specified <see cref="Regex"/>; that is, the return value details both the <see langword="string"/>s that were split out of the original and the separators that were used to split them.

@@ -1,3 +1,4 @@
+using System.Diagnostics.Tracing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -161,7 +162,8 @@ public static partial class IEnumerableExtensions
             }
             return GetRangeImpl();
         }
-        return source.ToArray()[range];
+        var rng = range.GetRange(source.Count()).ToArray();
+        return source.Index().Where(t => rng.Contains(t.Index)).Select(t => t.Item);
     }
 
     /// <summary>
@@ -232,7 +234,7 @@ public static partial class IEnumerableExtensions
             return source.Mode();
         }
 
-        var enumerated = source as TSource[] ?? source.ToArray();
+        var enumerated = source as TSource[] ?? [.. source];
         if (enumerated.Length != 0)
         {
             return default;
@@ -256,7 +258,7 @@ public static partial class IEnumerableExtensions
         ArgumentNullException.ThrowIfNull(source);
         equalityComparer ??= EqualityComparer<T>.Default;
 
-        var enumerated = source as T[] ?? source.ToArray();
+        var enumerated = source as T[] ?? [.. source];
         return enumerated.Length == 0 ? default : enumerated.MaxBy(item => source.Count(item2 => equalityComparer.Equals(item, item2)));
     }
     #endregion
@@ -301,17 +303,23 @@ public static partial class IEnumerableExtensions
     /// <returns><see langword="true"/> if the two source sequences are of equal length and are equivalent, otherwise <see langword="false"/>. If one of the sequences is <see langword="null"/>, both sequences must be <see langword="null"/> to be considered equivalent.</returns>
     public static bool SequenceEquivalent<T>(this IEnumerable<T> first, IEnumerable<T> second, IEqualityComparer<T> comparer = null)
     {
+        // 
         if (first == null || second == null)
         {
             return first == second;
         }
-
+        if (ReferenceEquals(first, second))
+        {
+            return true;
+        }
         if (first.TryGetNonEnumeratedCount(out var firstCount) && second.TryGetNonEnumeratedCount(out var secondCount) && firstCount != secondCount)
         {
             return false;
         }
 
         comparer ??= EqualityComparer<T>.Default;
+
+        // The issue with this is that counts matter, meaning that HashSets created from the sequences may be equivalent, but that does not prove that the source sequences are
 
         var counts = new Dictionary<T, int>(comparer);
 
@@ -343,12 +351,7 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
     /// <returns>The transformed elements.</returns>
     public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate, Func<T, T> selector)
-    {
-        foreach (var item in source)
-        {
-            yield return predicate(item) ? selector(item) : item;
-        }
-    }
+        => source.Select(item => predicate(item) ? selector(item) : item);
     /// <summary>
     /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
     /// </summary>
@@ -358,14 +361,7 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
     /// <returns>The transformed elements.</returns>
     public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> source, Func<T, int, bool> predicate, Func<T, int, T> selector)
-    {
-        var c = 0;
-        foreach (var item in source)
-        {
-            yield return predicate(item, c) ? selector(item, c) : item;
-            c++;
-        }
-    }
+        => source.Select((item, index) => predicate(item, index) ? selector(item, index) : item);
     /// <summary>
     /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
     /// </summary>
@@ -376,15 +372,7 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
     /// <returns>The transformed elements.</returns>
     public static IEnumerable<TResult> SelectOnlyWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, Func<TSource, TResult> selector)
-    {
-        foreach (var item in source)
-        {
-            if (predicate(item))
-            {
-                yield return selector(item);
-            }
-        }
-    }
+        => source.Where(predicate).Select(selector);
     /// <summary>
     /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
     /// </summary>
@@ -395,17 +383,7 @@ public static partial class IEnumerableExtensions
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
     /// <returns>The transformed elements.</returns>
     public static IEnumerable<TResult> SelectOnlyWhere<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, bool> predicate, Func<TSource, int, TResult> selector)
-    {
-        var c = 0;
-        foreach (var item in source)
-        {
-            if (predicate(item, c))
-            {
-                yield return selector(item, c);
-            }
-            c++;
-        }
-    }
+        => source.Where(predicate).Select(selector);
 
     /// <summary>
     /// Blits the elements in the input sequence into a sequence of bytes.
@@ -583,5 +561,73 @@ public static partial class IEnumerableExtensions
                     return defaultValue;
                 }
         }
+    }
+
+    /// <summary>
+    /// Builds a <see cref="Dictionary{TKey, TValue}"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The first half of the elements are used as keys, the second half as values.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
+    /// <exception cref="ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
+    public static Dictionary<T, T> BuildDictionaryLinear<T>(this IEnumerable<T> source)
+    {
+        var enumerated = source as IReadOnlyList<T> ?? [.. source];
+        if (enumerated.Count == 0 || enumerated.Count % 2 != 0)
+        {
+            throw new ArgumentException("The input sequence must contain an even number of elements.", nameof(source));
+        }
+        var result = new Dictionary<T, T>();
+        var halfI = enumerated.Count / 2;
+        for (var i = 0; i < enumerated.Count; i += 2)
+        {
+            result[enumerated[i]] = enumerated[i + halfI];
+        }
+        return result;
+    }
+    /// <summary>
+    /// Builds a <see cref="Dictionary{TKey, TValue}"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The elements are considered to be repeating key-value pairs.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
+    /// <exception cref="ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
+    public static Dictionary<T, T> BuildDictionaryZipped<T>(this IEnumerable<T> source)
+    {
+        var enumerated = source as IReadOnlyList<T> ?? [.. source];
+        if (enumerated.Count == 0 || enumerated.Count % 2 != 0)
+        {
+            throw new ArgumentException("The input sequence must contain a positive and even number of elements.", nameof(source));
+        }
+        var result = new Dictionary<T, T>();
+        for (var i = 0; i < enumerated.Count; i += 2)
+        {
+            result[enumerated[i]] = enumerated[i + 1];
+        }
+        return result;
+    }
+    /// <summary>
+    /// Builds a <see cref="Dictionary{TKey, TValue}"/> from two separate input sequences representing the keys and values respectively.
+    /// </summary>
+    /// <typeparam name="TKey">The Type of the keys in the input sequence.</typeparam>
+    /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
+    /// <param name="keys">The sequence of keys.</param>
+    /// <param name="values">The sequence of values.</param>
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequences.</returns
+    /// <exception cref="ArgumentException">Thrown if the input sequences do not have the same length.</exception>
+    public static Dictionary<TKey, TValue> BuildDictionary<TKey, TValue>(this IEnumerable<TKey> keys, IEnumerable<TValue> values)
+    {
+        var keysEnumerated = keys as IReadOnlyList<TKey> ?? [.. keys];
+        var valuesEnumerated = values as IReadOnlyList<TValue> ?? [.. values];
+        if (keysEnumerated.Count != valuesEnumerated.Count)
+        {
+            throw new ArgumentException("The input sequences must have the same length.", nameof(keys));
+        }
+        var result = new Dictionary<TKey, TValue>();
+        for (var i = 0; i < keysEnumerated.Count; i++)
+        {
+            result[keysEnumerated[i]] = valuesEnumerated[i];
+        }
+        return result;
     }
 }

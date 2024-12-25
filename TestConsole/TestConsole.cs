@@ -24,6 +24,10 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
+
+        int[] ints1 = [1, 2, 3, 4];
+        int[] ints2 = [4, 1, 2, 3];
+        cw(ints1.SequenceEquivalent(ints2));
     }
 }
 

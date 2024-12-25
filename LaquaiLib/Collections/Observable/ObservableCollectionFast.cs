@@ -148,7 +148,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         set
         {
             var (offset, length) = range.GetOffsetAndLength(Count);
-            var materialized = value as T[] ?? value.ToArray();
+            var materialized = value as T[] ?? [.. value];
             for (var i = offset; i < offset + length; i++)
             {
                 this[i] = materialized[i - offset];

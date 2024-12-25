@@ -51,7 +51,7 @@ public class LimitedQueue<T> : Queue<T>
     /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="collection"/>.</exception>
     public LimitedQueue(IEnumerable<T> collection, int capacity) : this(collection)
     {
-        if (capacity < (collection as T[] ?? collection.ToArray()).Length)
+        if (capacity < (collection as T[] ?? [.. collection]).Length)
         {
             throw new ArgumentException($"The passed initial {nameof(capacity)} may not be smaller than the number of items in the passed {nameof(collection)}.", nameof(capacity));
         }

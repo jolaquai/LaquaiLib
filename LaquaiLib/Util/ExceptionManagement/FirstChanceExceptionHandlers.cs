@@ -16,7 +16,7 @@ public static partial class FirstChanceExceptionHandlers
 
     static FirstChanceExceptionHandlers()
     {
-        _handlers = typeof(FirstChanceExceptionHandlers)
+        _handlers = [.. typeof(FirstChanceExceptionHandlers)
             .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
             .Where(static handler => !handler.IsConstructor && handler.Name != "RegisterAll")
             .Select(static handler =>
@@ -29,8 +29,7 @@ public static partial class FirstChanceExceptionHandlers
                 {
                     throw new InvalidOperationException($"The method {handler.Name} must be a valid {nameof(EventHandler<FirstChanceExceptionEventArgs>)} with the signature `void delegate(object?, {nameof(FirstChanceExceptionEventArgs)}) or it failed to register.");
                 }
-            })
-            .ToArray();
+            })];
     }
 
     private static bool isRegistered;
@@ -94,14 +93,14 @@ public static partial class FirstChanceExceptionHandlers
                 .. Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User).Split(Path.PathSeparator),
                 .. Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine).Split(Path.PathSeparator)
                 ];
-                allPaths = allPaths.Select(p => p.Trim()).Distinct().OrderDescending().ToArray();
+                allPaths = [.. allPaths.Select(p => p.Trim()).Distinct().OrderDescending()];
                 pathExts ??=
                 [
                     .. Environment.GetEnvironmentVariable("PATHEXT", EnvironmentVariableTarget.Process).Split(Path.PathSeparator),
                 .. Environment.GetEnvironmentVariable("PATHEXT", EnvironmentVariableTarget.User).Split(Path.PathSeparator),
                 .. Environment.GetEnvironmentVariable("PATHEXT", EnvironmentVariableTarget.Machine).Split(Path.PathSeparator)
                 ];
-                pathExts = pathExts.Select(p => p.Trim()).Distinct().OrderDescending().ToArray();
+                pathExts = [.. pathExts.Select(p => p.Trim()).Distinct().OrderDescending()];
 
                 var fullPath = "";
                 foreach (var path in allPaths)

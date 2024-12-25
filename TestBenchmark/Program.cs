@@ -1,8 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
-using LaquaiLib.Util;
-
 namespace TestBenchmark;
 
 internal class Program

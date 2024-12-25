@@ -160,7 +160,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
                 } while (node != Head && node is not null);
             }
         }
-        return FindAllImpl().ToArray();
+        return [.. FindAllImpl()];
     }
     #endregion
 

@@ -254,5 +254,5 @@ public static class OpenXmlElementExtensions
     /// <param name="elements">The elements to clone.</param>
     /// <returns>The created clones.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static OpenXmlElement[] CloneAll(this IEnumerable<OpenXmlElement> elements) => elements.Select(static e => e.CloneNode(true)).ToArray();
+    public static OpenXmlElement[] CloneAll(this IEnumerable<OpenXmlElement> elements) => [.. elements.Select(static e => e.CloneNode(true))];
 }

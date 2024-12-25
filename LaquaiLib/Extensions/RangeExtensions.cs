@@ -17,6 +17,17 @@ public static class RangeExtensions
             : Enumerable.Range(range.Start.Value, range.End.Value - range.Start.Value);
     }
     /// <summary>
+    /// Returns an <see cref="IEnumerable{T}"/> of <see cref="int"/>s that are within the given <paramref name="range"/>, calculating the required indices from the given <paramref name="length"/>.
+    /// </summary>
+    /// <param name="range">The <see cref="Range"/> to get the range from.</param>
+    /// <param name="length">The length of the range to reference.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="int"/>s that are within the given <paramref name="range"/>.</returns>
+    public static IEnumerable<int> GetRange(this Range range, int length)
+    {
+        var (offs, len) = range.GetOffsetAndLength(length);
+        return Enumerable.Range(offs, len);
+    }
+    /// <summary>
     /// Returns an <see cref="IEnumerator{T}"/> of <see cref="int"/>s that may be used to iterate through the numbers within the given <paramref name="range"/>.
     /// </summary>
     /// <param name="range">The <see cref="Range"/> to get the range from.</param>

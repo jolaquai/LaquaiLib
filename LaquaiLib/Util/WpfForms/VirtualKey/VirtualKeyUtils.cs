@@ -21,7 +21,7 @@ public static partial class VirtualKeyUtils
     /// <summary>
     /// Gets an array of <see cref="VirtualKey"/> values that represent all keys that are not a toggle key.
     /// </summary>
-    public static VirtualKey[] NormalKeys => field ??= Enum.GetValues<VirtualKey>().Except(ToggleKeys).ToArray();
+    public static VirtualKey[] NormalKeys => field ??= [.. Enum.GetValues<VirtualKey>().Except(ToggleKeys)];
 
     private static partial class Interop
     {

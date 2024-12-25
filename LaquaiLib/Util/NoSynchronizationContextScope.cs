@@ -9,7 +9,7 @@ namespace LaquaiLib.Util;
 /// <para/><b>Warning!</b> Selectively enabling using <see cref="Task.ConfigureAwait(bool)"/> and passing <see langword="true"/> is not possible since the context is removed from <see cref="SynchronizationContext"/>. Use with caution.
 /// <para/><b>Warning!</b> This utility is implicitly not thread-safe for... obvious reasons. If not disposed, the previous <see cref="SynchronizationContext"/> will never be restored.
 /// </summary>
-public ref struct NoSynchronizationContextScope : IDisposable
+public readonly struct NoSynchronizationContextScope : IDisposable
 {
     private readonly SynchronizationContext _previousContext;
     /// <summary>

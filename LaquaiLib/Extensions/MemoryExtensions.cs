@@ -12,7 +12,7 @@ namespace LaquaiLib.Extensions;
 /// <summary>
 /// Provides extension methods for the <see cref="Span{T}"/>, <see cref="ReadOnlySpan{T}"/>, <see cref="Memory{T}"/> and <see cref="ReadOnlyMemory{T}"/> types.
 /// </summary>
-public static class MemoryExtensions
+public static partial class MemoryExtensions
 {
     /// <summary>
     /// Converts the elements of a <see cref="ReadOnlySpan{T}"/> using a <paramref name="selector"/> function.
@@ -42,6 +42,52 @@ public static class MemoryExtensions
     /// <returns>The array of the results.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TResult[] ToArray<TSource, TResult>(this ReadOnlyMemory<TSource> memory, Func<TSource, TResult> selector) => memory.Span.ToArray(selector);
+
+    /// <summary>
+    /// Splits the specified <paramref name="ros"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="ros">The <see cref="ReadOnlySpan{T}"/> to split.</param>
+    /// <param name="whereTrue">The <see cref="Span{T}"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
+    /// <param name="whereFalse">The <see cref="Span{T}"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
+    /// <remarks>
+    /// <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="ros"/>'s length.
+    /// If they are too small, an <see cref="IndexOutOfRangeException"/> will be thrown by the runtime.
+    /// </remarks>
+    public static void Split<T>(this ReadOnlySpan<T> ros, Span<T> whereTrue, Span<T> whereFalse, Func<T, bool> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        var trueIndex = 0;
+        var falseIndex = 0;
+        for (var i = 0; i < ros.Length; i++)
+        {
+            if (predicate(ros[i]))
+            {
+                whereTrue[trueIndex] = ros[i];
+                trueIndex++;
+            }
+            else
+            {
+                whereFalse[falseIndex] = ros[i];
+                falseIndex++;
+            }
+        }
+    }
+    /// <summary>
+    /// Splits the specified <paramref name="rom"/> into the specified destination <see cref="Memory{T}"/>s based on the given <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="rom">The <see cref="ReadOnlyMemory{T}"/> to split.</param>
+    /// <param name="whereTrue">The <see cref="Memory{T}"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
+    /// <param name="whereFalse">The <see cref="Memory{T}"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
+    /// <remarks>
+    /// <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="rom"/>'s length.
+    /// If they are too small, an <see cref="IndexOutOfRangeException"/> will be thrown by the runtime.
+    /// </remarks>
+    public static void Split<T>(this ReadOnlyMemory<T> rom, Memory<T> whereTrue, Memory<T> whereFalse, Func<T, bool> predicate) => rom.Span.Split(whereTrue.Span, whereFalse.Span, predicate);
 
     /// <summary>
     /// Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.

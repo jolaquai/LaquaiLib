@@ -1,9 +1,6 @@
 ﻿namespace LaquaiLib.Extensions;
 
-/// <summary>
-/// Provides extension methods for the <see cref="IEnumerable{T}"/> Type.
-/// </summary>
-public static partial class IEnumerableExtensions
+partial class IEnumerableExtensions
 {
     /// <summary>
     /// Sorts the elements of a sequence in ascending order according to a key extracted from each element.

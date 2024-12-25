@@ -22,7 +22,7 @@ public class ExternalRunnerService : BackgroundService
         _options = options.Value;
         _scope = services.CreateScope();
         _serviceProvider = _scope.ServiceProvider;
-        _runners = _serviceProvider.GetServices<IExternalRunner>().ToArray();
+        _runners = [.. _serviceProvider.GetServices<IExternalRunner>()];
 
         EnsureNoPowerShellConflicts();
         EnsureAllExternalsHandled();

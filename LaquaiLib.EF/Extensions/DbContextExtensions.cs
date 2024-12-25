@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-
-namespace LaquaiLib.EF.Extensions;
+﻿namespace LaquaiLib.EF.Extensions;
 
 /// <summary>
 /// Provides Extension Methods for <see cref="DbContext"/>.

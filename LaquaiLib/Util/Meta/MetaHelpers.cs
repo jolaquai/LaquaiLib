@@ -30,7 +30,7 @@ public static class MetaHelpers
         var drives = Array.ConvertAll(Array.FindAll(DriveInfo.GetDrives(), static di => di.DriveType is DriveType.Fixed and not DriveType.Network), static di => Path.TrimEndingDirectorySeparator(di.Name));
         static string GetUnrooted(string path) => path.StartsWith(Path.DirectorySeparatorChar) ? path[1..] : path[3..];
         string[] programFiles = [architecture.HasFlag(Architecture.x64) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) : null, architecture.HasFlag(Architecture.x86) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) : null];
-        programFiles = drives.Join(programFiles.Where(static pf => pf is not null), static (drive, programFile) => Path.Combine(drive, GetUnrooted(programFile))).ToArray();
+        programFiles = [.. drives.Join(programFiles.Where(static pf => pf is not null), static (drive, programFile) => Path.Combine(drive, GetUnrooted(programFile)))];
         var vsVersions = Array.ConvertAll(versions.GetFlags(), static flag => flag.GetDescription());
         var vsEditions = Array.ConvertAll(edition.GetFlags(), static flag => flag.GetDescription());
 
@@ -72,7 +72,7 @@ public static class MetaHelpers
         var drives = Array.ConvertAll(Array.FindAll(DriveInfo.GetDrives(), di => di.DriveType is DriveType.Fixed and not DriveType.Network), di => Path.TrimEndingDirectorySeparator(di.Name));
         static string GetUnrooted(string path) => path.StartsWith(Path.DirectorySeparatorChar) ? path[1..] : path[3..];
         string[] programFiles = [architecture.HasFlag(Architecture.x64) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) : null, architecture.HasFlag(Architecture.x86) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) : null];
-        programFiles = drives.Join(programFiles.Where(pf => pf is not null), (drive, programFile) => Path.Combine(drive, GetUnrooted(programFile))).ToArray();
+        programFiles = [.. drives.Join(programFiles.Where(pf => pf is not null), (drive, programFile) => Path.Combine(drive, GetUnrooted(programFile)))];
         var vsVersions = Array.ConvertAll(versions.GetFlags(), flag => flag.GetDescription());
         var vsEditions = Array.ConvertAll(edition.GetFlags(), flag => flag.GetDescription());
 
@@ -100,6 +100,6 @@ public static class MetaHelpers
         }
         Task.WhenAll(tasks).ConfigureAwait(false).GetAwaiter().GetResult();
 
-        return tasks.Where(t => t.Result is not null).Select(t => t.Result).ToArray();
+        return [.. tasks.Where(t => t.Result is not null).Select(t => t.Result)];
     }
 }

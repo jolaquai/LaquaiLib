@@ -2,10 +2,7 @@
 
 namespace LaquaiLib.Extensions;
 
-/// <summary>
-/// Provides extension methods for the <see cref="IEnumerable{T}"/> Type.
-/// </summary>
-public static partial class IEnumerableExtensions
+partial class IEnumerableExtensions
 {
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Array"/>, starting at the specified

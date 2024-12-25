@@ -1,5 +1,4 @@
 using System.Buffers;
-using System.Runtime.CompilerServices;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.Misc;
@@ -198,7 +197,7 @@ public static class FileSystemHelper
 
         var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
         // Filter out the files that are already in the root directory
-        files = files.Except(Directory.GetFiles(directory)).ToArray();
+        files = [.. files.Except(Directory.GetFiles(directory))];
         if (files.Length == 0)
         {
             return Task.CompletedTask;

@@ -5,7 +5,7 @@ namespace LaquaiLib.Extensions;
 /// <summary>
 /// Provides extension methods for the <see cref="Uri"/> Type.
 /// </summary>
-public static class UriExtensions
+public static partial class UriExtensions
 {
     /// <summary>
     /// Returns the route component of the <see cref="Uri"/>.
@@ -14,7 +14,6 @@ public static class UriExtensions
     /// <param name="request">The <see cref="Uri"/> to get the route from.</param>
     /// <returns>The route component of the <see cref="Uri"/>.</returns>
     public static string GetRoute(this Uri request) => request.AbsolutePath;
-
     /// <summary>
     /// Combines this <see cref="Uri"/> instance with multiple relative paths or <see cref="Uri"/>.
     /// This is intended to replicate <see cref="Path.Combine(string[])"/> for <see cref="Uri"/> instances.
@@ -30,8 +29,9 @@ public static class UriExtensions
         }
 
         var sb = new StringBuilder(baseUri.ToString().TrimEnd('/') + '/');
-        foreach (var r in relative)
+        for (var i = 0; i < relative.Length; i++)
         {
+            var r = relative[i];
             if (r is not ((Uri and { IsAbsoluteUri: false }) or string))
             {
                 throw new ArgumentException($"One of the specified arguments was not of type {typeof(Uri)} or string, or specified an absolute URI.");

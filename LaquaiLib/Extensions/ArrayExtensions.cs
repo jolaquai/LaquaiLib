@@ -15,41 +15,6 @@ public static class ArrayExtensions
     public static IEnumerable<T> CastEnumerable<T>(this Array source) => System.Runtime.CompilerServices.Unsafe.As<IEnumerable<T>>(source);
 
     /// <summary>
-    /// Splits the specified <paramref name="array"/> into two new <see cref="Array"/>s based on the given <paramref name="predicate"/>.
-    /// </summary>
-    /// <typeparam name="T">The Type of the items in the array.</typeparam>
-    /// <param name="array">The <see cref="Array"/> to split.</param>
-    /// <param name="true">The <see cref="Array"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
-    /// <param name="false">The <see cref="Array"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
-    /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
-    /// <remarks>
-    /// <paramref name="true"/> and <paramref name="false"/>'s lengths are not checked against <paramref name="array"/>'s length. If they are too small, an <see cref="IndexOutOfRangeException"/> will be thrown by the runtime.
-    /// </remarks>
-    public static void Split<T>(T[] array, T[] @true, T[] @false, Func<T, bool> predicate)
-    {
-        ArgumentNullException.ThrowIfNull(array);
-        ArgumentNullException.ThrowIfNull(@true);
-        ArgumentNullException.ThrowIfNull(@false);
-        ArgumentNullException.ThrowIfNull(predicate);
-
-        var trueIndex = 0;
-        var falseIndex = 0;
-        for (var i = 0; i < array.Length; i++)
-        {
-            if (predicate(array[i]))
-            {
-                @true[trueIndex] = array[i];
-                trueIndex++;
-            }
-            else
-            {
-                @false[falseIndex] = array[i];
-                falseIndex++;
-            }
-        }
-    }
-
-    /// <summary>
     /// Attempts to retrieve the element at the specified index from the array if that index is valid for the array.
     /// </summary>
     /// <typeparam name="T">The type of the array elements.</typeparam>
@@ -82,5 +47,132 @@ public static class ArrayExtensions
             return array[i];
         }
         return defaultValue;
+    }
+
+    /// <summary>
+    /// Initializes the specified <paramref name="array"/> with the given <paramref name="value"/>.
+    /// The assignment is shallow; reference types will be initialized with the same reference.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="value">The value to initialize the array with.</param>
+    public static void Initialize<T>(this T[] array, T value)
+    {
+        for (var i = 0; i < array.Length; i++)
+        {
+            array[i] = value;
+        }
+    }
+    /// <summary>
+    /// Initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    public static void Initialize<T>(this T[] array, Func<T> factory)
+    {
+        for (var i = 0; i < array.Length; i++)
+        {
+            array[i] = factory();
+        }
+    }
+    /// <summary>
+    /// Initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>. It is passed the previous iteration's value.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    public static void Initialize<T>(this T[] array, Func<T, T> factory)
+    {
+        T last = default;
+        for (var i = 0; i < array.Length; i++)
+        {
+            last = array[i] = factory(last);
+        }
+    }
+    /// <summary>
+    /// Initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>. It is passed the index in the array that is being initialized.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    public static void Initialize<T>(this T[] array, Func<int, T> factory)
+    {
+        for (var i = 0; i < array.Length; i++)
+        {
+            array[i] = factory(i);
+        }
+    }
+    /// <summary>
+    /// Initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>. It is passed the index in the array that is being initialized and the previous iteration's value.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    public static void Initialize<T>(this T[] array, Func<int, T, T> factory)
+    {
+        T last = default;
+        for (var i = 0; i < array.Length; i++)
+        {
+            last = array[i] = factory(i, last);
+        }
+    }
+    /// <summary>
+    /// Asynchronously initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public static async Task InitializeAsync<T>(this T[] array, Func<Task<T>> factory)
+    {
+        for (var i = 0; i < array.Length; i++)
+        {
+            array[i] = await factory();
+        }
+    }
+    /// <summary>
+    /// Asynchronously initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>. It is passed the previous iteration's value.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public static async Task InitializeAsync<T>(this T[] array, Func<T, Task<T>> factory)
+    {
+        T last = default;
+        for (var i = 0; i < array.Length; i++)
+        {
+            last = array[i] = await factory(last);
+        }
+    }
+    /// <summary>
+    /// Asynchronously initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>. It is passed the index in the array that is being initialized.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public static async Task InitializeAsync<T>(this T[] array, Func<int, Task<T>> factory)
+    {
+        for (var i = 0; i < array.Length; i++)
+        {
+            array[i] = await factory(i);
+        }
+    }
+    /// <summary>
+    /// Asynchronously initializes the specified <paramref name="array"/> using the given <paramref name="factory"/>. It is passed the index in the array that is being initialized and the previous iteration's value.
+    /// </summary>
+    /// <typeparam name="T">The Type of the items in the array.</typeparam>
+    /// <param name="array">The <see cref="Array"/> of <typeparamref name="T"/> to initialize.</param>
+    /// <param name="factory">The factory method that produces the values to initialize the array with.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public static async Task InitializeAsync<T>(this T[] array, Func<int, T, Task<T>> factory)
+    {
+        T last = default;
+        for (var i = 0; i < array.Length; i++)
+        {
+            last = array[i] = await factory(i, last);
+        }
     }
 }
