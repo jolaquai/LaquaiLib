@@ -25,9 +25,9 @@ public partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        int[] ints1 = [1, 2, 3, 4];
-        int[] ints2 = [4, 1, 2, 3];
-        cw(ints1.SequenceEquivalent(ints2));
+        IEnumerable<int> ints1 = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4];
+        using var temp = ints1.Select(i => i++).GetTempArray();
+        ;
     }
 }
 

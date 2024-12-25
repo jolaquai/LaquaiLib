@@ -53,6 +53,19 @@ public ref struct TempArray<T> : IDisposable
             _array[i] = value;
         }
     }
+    /// <summary>
+    /// Initializes a new <see cref="TempArray{T}"/> with the elements of the specified <paramref name="items"/> collection. The array is rented from the specified <paramref name="arrayPool"/> or <see cref="ArrayPool{T}.Shared"/> if <see langword="null"/>.
+    /// </summary>
+    /// <param name="items">The collection of elements to initialize the array with.</param>
+    /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to rent the array from. May be <see langword="null"/> to rent from <see cref="ArrayPool{T}.Shared"/>.</param>
+    public TempArray(IEnumerable<T> items, ArrayPool<T> arrayPool = null)
+    {
+        var renter = new ArrayRenter(items, arrayPool ?? ArrayPool<T>.Shared);
+        _requestedSize = renter.Count;
+        _array = renter.Array;
+        _pool = arrayPool;
+        _isPooledInstance = _pool is not null;
+    }
 
     private readonly int _requestedSize;
     private T[] _array;
@@ -95,4 +108,38 @@ public ref struct TempArray<T> : IDisposable
         }
     }
     #endregion
+
+    // Helper struct that rents its backing store(s) from ArrayPool<T>.Shared, growing like a normal List<T> until it has exhaused the input IEnumerable<T>
+    // The current array is then returned; the caller is then responsible for returning it to the pool
+    internal readonly struct ArrayRenter
+    {
+        public int Count { get; }
+        public T[] Array { get; }
+
+        public ArrayRenter(IEnumerable<T> items, ArrayPool<T> pool)
+        {
+            // Cheap path for known collections
+            if (items is ICollection<T> coll)
+            {
+                Array = pool.Rent(coll.Count);
+                Count = coll.Count;
+                coll.CopyTo(Array, 0);
+                return;
+            }
+
+            Array = pool.Rent(2);
+            Count = 0;
+            foreach (var item in items)
+            {
+                if (Count == Array.Length)
+                {
+                    var newArray = pool.Rent((Array.Length - 1) << 1);
+                    Array.CopyTo(newArray);
+                    pool.Return(Array);
+                    Array = newArray;
+                }
+                Array[Count++] = item;
+            }
+        }
+    }
 }

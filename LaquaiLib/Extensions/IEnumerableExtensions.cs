@@ -24,7 +24,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
-    /// <returns>A <see cref="Tuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
+    /// <returns>A <see cref="ValueTuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
     public static (IEnumerable<T> True, IEnumerable<T> False) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(source);
@@ -50,7 +50,7 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Shuffles the elements in the input sequence.
+    /// Shuffles the elements in the input sequence using <see cref="Random.Shared"/>.
     /// </summary>
     /// <remarks>
     /// If the calling code already has an instance of <see cref="Random"/>, it should use the <see cref="Shuffle{T}(IEnumerable{T}, Random)"/> overload.
@@ -69,17 +69,6 @@ public static partial class IEnumerableExtensions
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) => source.OrderBy(_ => random.Next());
-    /// <summary>
-    /// Performs a Ruffle operation on the input sequence; that is, the sequence is halved, then the individual items are interlaced.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <returns>The sequence after the operation has been performed.</returns>
-    public static IEnumerable<T> Ruffle<T>(this IEnumerable<T> source)
-    {
-        var (first, second) = source.Halve();
-        return Interlace(first, second);
-    }
     /// <summary>
     /// Interlaces the items of the specified sequences.
     /// If the sequences are of unequal length, the remaining elements of the longer sequence will end up at the end of the resulting sequence.
@@ -114,7 +103,7 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Performs the specified <paramref name="action"/> on each element of the source collection.
+    /// Executes the specified <paramref name="action"/> on each element of the source collection.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
     /// <param name="source">The source collection to iterate over.</param>
@@ -127,7 +116,7 @@ public static partial class IEnumerableExtensions
         }
     }
     /// <summary>
-    /// Performs the specified <paramref name="action"/> on each element of the source collection, incorporating each element's index in the <see cref="Action{T1, T2}"/>.
+    /// Executes the specified <paramref name="action"/> on each element of the source collection, incorporating each element's index in the <see cref="Action{T1, T2}"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
     /// <param name="source">The source collection to iterate over.</param>
@@ -138,6 +127,33 @@ public static partial class IEnumerableExtensions
         foreach (var element in source)
         {
             action(element, c++);
+        }
+    }
+    /// <summary>
+    /// Asynchronously executes the specified <paramref name="func"/> on each element of the source collection.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
+    /// <param name="source">The source collection to iterate over.</param>
+    /// <param name="func">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
+    public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> func)
+    {
+        foreach (var element in source)
+        {
+            await func(element);
+        }
+    }
+    /// <summary>
+    /// Asynchronously executes the specified <paramref name="func"/> on each element of the source collection, incorporating each element's index in the <see cref="Func{T1, T2, T3}"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
+    /// <param name="source">The source collection to iterate over.</param>
+    /// <param name="func">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
+    public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, int, Task> func)
+    {
+        var c = 0;
+        foreach (var element in source)
+        {
+            await func(element, c++);
         }
     }
 
