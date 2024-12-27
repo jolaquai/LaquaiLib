@@ -1,4 +1,9 @@
-﻿namespace TestConsole;
+﻿using System.Buffers;
+using System.IO;
+
+using LaquaiLib.Streams.RandomStreams;
+
+namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -24,10 +29,6 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-
-        IEnumerable<int> ints1 = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4];
-        using var temp = ints1.Select(i => i++).GetTempArray();
-        ;
     }
 }
 

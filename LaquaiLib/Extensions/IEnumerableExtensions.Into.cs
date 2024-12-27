@@ -422,44 +422,4 @@ partial class IEnumerableExtensions
         }
         return i;
     }
-
-    /// <summary>
-    /// Uses pooled arrays from the specified <paramref name="arrayPool"/> to enumerate the input sequence.
-    /// The caller is then responsible for returning the array to that pool.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The sequence to enumerate.</param>
-    /// <param name="itemCount">An <see langword="out"/> <see langword="int"/> reference that receives the number of elements written to the array. This should be used to construct a <see cref="Span{T}"/> or other view of the array. Reading elements beyond this count is undefined behavior.</param>
-    /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to rent arrays from. Defaults to <see cref="ArrayPool{T}.Shared"/>.</param>
-    /// <returns>The array containing the elements of the input sequence.</returns>
-    /// <remarks>
-    /// Consider using <see cref="GetTempArray{T}(IEnumerable{T}, ArrayPool{T})"/> inside a <see langword="using"/> statement to ensure the array is returned to the pool.
-    /// </remarks>
-    public static T[] RentArray<T>(this IEnumerable<T> source, out int itemCount, ArrayPool<T> arrayPool = null)
-    {
-        arrayPool ??= ArrayPool<T>.Shared;
-        if (source.TryGetNonEnumeratedCount(out itemCount))
-        {
-            // Use the ArrayPool directly to rent the array
-            var arr = arrayPool.Rent(itemCount);
-            source.Into(arr);
-            return arr;
-        }
-        else
-        {
-            // Use TempArray's helper struct to rent the array and return it
-            var arrRenter = new TempArray<T>.ArrayRenter(source, arrayPool);
-            itemCount = arrRenter.Count;
-            return arrRenter.Array;
-        }
-    }
-    /// <summary>
-    /// Creates a <see cref="TempArray{T}"/> that wraps the input sequence, renting an array from the specified <paramref name="arrayPool"/> or <see cref="ArrayPool{T}.Shared"/> if <see langword="null"/>.
-    /// This only provides access to the elements written to the array through <see cref="TempArray{T}.Span"/>.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The sequence to enumerate.</param>
-    /// <param name="arrayPool">The <see cref="ArrayPool{T}"/> to rent arrays from. Defaults to <see cref="ArrayPool{T}.Shared"/>.</param>
-    /// <returns>A <see cref="TempArray{T}"/> that wraps the input sequence.</returns>
-    public static TempArray<T> GetTempArray<T>(this IEnumerable<T> source, ArrayPool<T> arrayPool = null) => new TempArray<T>(source, arrayPool);
 }
