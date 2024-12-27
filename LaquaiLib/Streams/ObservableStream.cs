@@ -396,3 +396,26 @@ public static class ObservableStreamFactory
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ObservableStream<FileStream> Create(string path, FileStreamOptions fileStreamOptions) => new ObservableStream<FileStream>(File.Open(path, fileStreamOptions));
 }
+
+/// <summary>
+/// Provides data for the <see cref="ObservableStream{T}.DataWritten"/> event.
+/// </summary>
+/// <param name="Data">A readonly view of the data that was written.</param>
+public record class WrittenEventArgs(ReadOnlyMemory<byte> Data);
+/// <summary>
+/// Provides data about the <see cref="ObservableStream{T}.Seeked"/> event.
+/// </summary>
+/// <param name="OldPosition">The old position of the stream before the seek operation.</param>
+/// <param name="NewPosition">The new position of the stream after the seek operation.</param>
+public record class SeekedEventArgs(long OldPosition, long NewPosition);
+/// <summary>
+/// Provides data for the <see cref="ObservableStream{T}.Resized"/> event.
+/// </summary>
+/// <param name="OldLength">The old length of the stream before the resize operation.</param>
+/// <param name="NewLength">The new length of the stream after the resize operation.</param>
+public record class ResizedEventArgs(long OldLength, long NewLength);
+/// <summary>
+/// Provides data for the <see cref="ObservableStream{T}.DataRead"/> event.
+/// </summary>
+/// <param name="Data">A readonly view of the data that was read.</param>
+public record class ReadEventArgs(ReadOnlyMemory<byte> Data);

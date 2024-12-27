@@ -1,6 +1,9 @@
 ﻿using System.Buffers;
 using System.IO;
 
+using Iced.Intel;
+
+using LaquaiLib.Streams;
 using LaquaiLib.Streams.RandomStreams;
 
 namespace TestConsole;
