@@ -1,12 +1,4 @@
-﻿using System.Buffers;
-using System.IO;
-
-using Iced.Intel;
-
-using LaquaiLib.Streams;
-using LaquaiLib.Streams.RandomStreams;
-
-namespace TestConsole;
+﻿namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -32,6 +24,7 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
+        
     }
 }
 

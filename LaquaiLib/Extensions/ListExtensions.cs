@@ -27,21 +27,6 @@ public static class ListExtensions
     }
 
     /// <summary>
-    /// Extracts a range of elements from this <see cref="List{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
-    /// <param name="list">The <see cref="List{T}"/> to extract elements from.</param>
-    /// <param name="range">A <see cref="Range"/> instance that indicates where the items to be extracted are located in the <paramref name="list"/>.</param>
-    public static IEnumerable<T> GetRange<T>(this IList<T> list, Range range)
-    {
-        var (offset, length) = range.GetOffsetAndLength(list.Count);
-        for (var i = offset; i < offset + length; i++)
-        {
-            yield return list[i];
-        }
-    }
-
-    /// <summary>
     /// Removes all elements from this <see cref="List{T}"/> that match the conditions defined by the specified <paramref name="predicate"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
@@ -70,7 +55,12 @@ public static class ListExtensions
     /// <param name="list">The <see cref="List{T}"/> to retrieve the backing array from.</param>
     /// <param name="range">The <see cref="Range"/> that indicates the portion of the backing array to be retrieved.</param>
     /// <returns>A <see cref="Span{T}"/> over the backing array of the specified <paramref name="list"/>.</returns>
-    public static Span<T> AsSpan<T>(this List<T> list, Range range) => list.AsSpan()[range];
+    public static Span<T> AsSpan<T>(this List<T> list, Range range)
+    {
+        // Do it this way instead of using the range in Span's indexer, because that would need to actually calculate stuff, and since the Span's length and the List<T>'s Count are both known here, the compiler is probably gonna be able to optimize this better
+        var (offset, length) = range.GetOffsetAndLength(list.Count);
+        return list.AsSpan()[offset..(offset + length)];
+    }
 
     /// <summary>
     /// Increases the capacity of the <paramref name="list"/> so it can hold at least <paramref name="count"/> elements in addition to its current <see cref="List{T}.Count"/>.

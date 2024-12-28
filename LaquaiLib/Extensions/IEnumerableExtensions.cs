@@ -110,9 +110,43 @@ public static partial class IEnumerableExtensions
     /// <param name="action">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
     {
-        foreach (var element in source)
+        switch (source)
         {
-            action(element);
+            case T[] array:
+            {
+                var src = array.AsSpan();
+                for (var i = 0; i < src.Length; i++)
+                {
+                    action(src[i]);
+                }
+                return;
+            }
+            case List<T> other:
+            {
+                var src = other.AsSpan();
+                for (var i = 0; i < src.Length; i++)
+                {
+                    action(src[i]);
+                }
+                return;
+            }
+            case IReadOnlyList<T> list:
+            {
+                var length = list.Count;
+                for (var i = 0; i < length; i++)
+                {
+                    action(list[i]);
+                }
+                return;
+            }
+            default:
+            {
+                foreach (var element in source)
+                {
+                    action(element);
+                }
+                return;
+            }
         }
     }
     /// <summary>
@@ -123,10 +157,44 @@ public static partial class IEnumerableExtensions
     /// <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
     public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
     {
-        var c = 0;
-        foreach (var element in source)
+        switch (source)
         {
-            action(element, c++);
+            case T[] array:
+            {
+                SpanForEach(array.AsSpan());
+                return;
+            }
+            case List<T> other:
+            {
+                SpanForEach(other.AsSpan());
+                return;
+            }
+            case IReadOnlyList<T> list:
+            {
+                var length = list.Count;
+                for (var i = 0; i < length; i++)
+                {
+                    action(list[i], i);
+                }
+                return;
+            }
+            default:
+            {
+                var i = 0;
+                foreach (var element in source)
+                {
+                    action(element, i++);
+                }
+                return;
+            }
+        }
+
+        void SpanForEach(Span<T> src)
+        {
+            for (var i = 0; i < src.Length; i++)
+            {
+                action(src[i], i);
+            }
         }
     }
     /// <summary>
@@ -137,9 +205,42 @@ public static partial class IEnumerableExtensions
     /// <param name="func">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
     public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, Task> func)
     {
-        foreach (var element in source)
+        switch (source)
         {
-            await func(element);
+            case T[] array:
+            {
+                for (var i = 0; i < array.Length; i++)
+                {
+                    await func(array[i]);
+                }
+                return;
+            }
+            case List<T> other:
+            {
+                var src = other.AsSpan();
+                for (var i = 0; i < src.Length; i++)
+                {
+                    await func(src[i]);
+                }
+                return;
+            }
+            case IReadOnlyList<T> list:
+            {
+                var length = list.Count;
+                for (var i = 0; i < length; i++)
+                {
+                    await func(list[i]);
+                }
+                return;
+            }
+            default:
+            {
+                foreach (var element in source)
+                {
+                    await func(element);
+                }
+                return;
+            }
         }
     }
     /// <summary>
@@ -150,10 +251,43 @@ public static partial class IEnumerableExtensions
     /// <param name="func">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
     public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, int, Task> func)
     {
-        var c = 0;
-        foreach (var element in source)
+        switch (source)
         {
-            await func(element, c++);
+            case T[] array:
+            {
+                for (var i = 0; i < array.Length; i++)
+                {
+                    await func(array[i], i);
+                }
+                return;
+            }
+            case List<T> other:
+            {
+                var src = other.AsSpan();
+                for (var i = 0; i < src.Length; i++)
+                {
+                    await func(src[i], i);
+                }
+                return;
+            }
+            case IReadOnlyList<T> list:
+            {
+                var length = list.Count;
+                for (var i = 0; i < length; i++)
+                {
+                    await func(list[i], i);
+                }
+                return;
+            }
+            default:
+            {
+                var i = 0;
+                foreach (var element in source)
+                {
+                    await func(element, i++);
+                }
+                return;
+            }
         }
     }
 
