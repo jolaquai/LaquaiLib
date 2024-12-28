@@ -215,19 +215,17 @@ public static partial class IEnumerableExtensions
                 }
                 return;
             }
-            case List<T> other:
+            case List<T> list:
             {
-                var src = other.AsSpan();
-                for (var i = 0; i < src.Length; i++)
+                for (var i = 0; i < list.Count; i++)
                 {
-                    await func(src[i]);
+                    await func(list[i]);
                 }
                 return;
             }
             case IReadOnlyList<T> list:
             {
-                var length = list.Count;
-                for (var i = 0; i < length; i++)
+                for (var i = 0; i < list.Count; i++)
                 {
                     await func(list[i]);
                 }
@@ -261,19 +259,17 @@ public static partial class IEnumerableExtensions
                 }
                 return;
             }
-            case List<T> other:
+            case List<T> list:
             {
-                var src = other.AsSpan();
-                for (var i = 0; i < src.Length; i++)
+                for (var i = 0; i < list.Count; i++)
                 {
-                    await func(src[i], i);
+                    await func(list[i], i);
                 }
                 return;
             }
             case IReadOnlyList<T> list:
             {
-                var length = list.Count;
-                for (var i = 0; i < length; i++)
+                for (var i = 0; i < list.Count; i++)
                 {
                     await func(list[i], i);
                 }
