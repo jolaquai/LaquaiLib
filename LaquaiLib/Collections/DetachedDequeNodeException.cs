@@ -57,11 +57,11 @@ public sealed class DetachedDequeNodeException<T> : Exception
     {
         return offense switch
         {
-            OffenseKind.NoDeque => $"The specified {nameof(DequeNode<T>)} is not attached to a {nameof(Deque<T>)}.",
-            OffenseKind.NoNext => $"The specified {nameof(DequeNode<T>)} is missing a reference to its next node.",
-            OffenseKind.NoPrevious => $"The specified {nameof(DequeNode<T>)} is missing a reference to its previous node.",
-            OffenseKind.InconsistentNext => $"The specified {nameof(DequeNode<T>)}'s next node does not have a reference to the specified {nameof(DequeNode<T>)} as its previous node.",
-            OffenseKind.InconsistentPrevious => $"The specified {nameof(DequeNode<T>)}'s previous node does not have a reference to the specified {nameof(DequeNode<T>)} as its next node.",
+            OffenseKind.NoDeque => $"The specified {nameof(DequeNode<>)} is not attached to a {nameof(Deque<>)}.",
+            OffenseKind.NoNext => $"The specified {nameof(DequeNode<>)} is missing a reference to its next node.",
+            OffenseKind.NoPrevious => $"The specified {nameof(DequeNode<>)} is missing a reference to its previous node.",
+            OffenseKind.InconsistentNext => $"The specified {nameof(DequeNode<>)}'s next node does not have a reference to the specified {nameof(DequeNode<>)} as its previous node.",
+            OffenseKind.InconsistentPrevious => $"The specified {nameof(DequeNode<>)}'s previous node does not have a reference to the specified {nameof(DequeNode<>)} as its next node.",
             _ => throw new ArgumentOutOfRangeException(nameof(offense), offense, $"The specified {nameof(OffenseKind)} is not supported.")
         };
     }

@@ -88,7 +88,7 @@ internal readonly unsafe ref struct PinWrapper<T> : IDisposable
     public readonly void Dispose() => _handle.Dispose();
 
     /// <inheritdoc/>
-    public override readonly string ToString() => $"{nameof(PinWrapper<T>)}<{typeof(T).Namespace}.{typeof(T).Name}> at 0x{Convert.ToString((nint)Pointer, 16).ToUpperInvariant()}->{Target}";
+    public override readonly string ToString() => $"{nameof(PinWrapper<>)}<{typeof(T).Namespace}.{typeof(T).Name}> at 0x{Convert.ToString((nint)Pointer, 16).ToUpperInvariant()}->{Target}";
 }
 
 /// <summary>

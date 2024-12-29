@@ -180,7 +180,7 @@ public static class AsyncLogger
     /// </summary>
     public static Task FlushAsync()
     {
-        return Task.Run(async () =>
+        return Task.Run(static async () =>
         {
             while (Processing)
             {

@@ -2,6 +2,8 @@ using System.Diagnostics.Tracing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+using Microsoft.VisualBasic;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -70,12 +72,12 @@ public static partial class IEnumerableExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) => source.OrderBy(_ => random.Next());
     /// <summary>
-    /// Interlaces the items of the specified sequences.
+    /// Returns an <see cref="IEnumerable{T}"/> that enumerates the elements of the input sequences is turn; that is, the first element of the first sequence, the first element of the second sequence, the second element of the first sequence, the second element of the second sequence, and so on.
     /// If the sequences are of unequal length, the remaining elements of the longer sequence will end up at the end of the resulting sequence.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequences.</typeparam>
-    /// <param name="first">The first sequence to interlace.</param>
-    /// <param name="second">The second sequence to interlace.</param>
+    /// <param name="first">The first sequence.</param>
+    /// <param name="second">The second sequence.</param>
     /// <returns>A single sequence that contains the elements of both input sequences, interlaced.</returns>
     public static IEnumerable<T> Interlace<T>(this IEnumerable<T> first, IEnumerable<T> second)
     {
@@ -361,7 +363,8 @@ public static partial class IEnumerableExtensions
 
     #region Mode
     /// <summary>
-    /// Determines the mode of a sequence of values from a given key extracted from each value (that is, the value that appears most frequently). If multiple items share the highest frequency, the first one encountered is returned.
+    /// Determines the mode of a sequence of values from a given key extracted from each value (that is, the value that appears most frequently).
+    /// If multiple items share the highest frequency, the first one encountered is returned.
     /// </summary>
     /// <typeparam name="TSource">The Type of the elements in <paramref name="source"/>.</typeparam>
     /// <typeparam name="TSelect">The Type of the elements <paramref name="selector"/> produces.</typeparam>
@@ -375,20 +378,37 @@ public static partial class IEnumerableExtensions
         ArgumentNullException.ThrowIfNull(source);
         equalityComparer ??= EqualityComparer<TSelect>.Default;
 
+        using var enumerator = source.GetEnumerator();
+        // This call is technically more expensive than !.Any(), but since we need the enumerator anyway, might as well use it
+        if (!enumerator.MoveNext())
+        {
+            throw new ArgumentException("Sequence contains no elements.", nameof(source));
+        }
         if (selector is null)
         {
             return source.Mode();
         }
 
-        var enumerated = source as TSource[] ?? [.. source];
-        if (enumerated.Length != 0)
-        {
-            return default;
-        }
-        var converted = enumerated.Select(selector).ToArray();
+        var freqs = new Dictionary<TSelect, (int count, TSource elem)>();
+        var current = enumerator.Current;
+        freqs[selector(current)] = (1, current);
 
-        var i = 0;
-        return source.MaxBy(_ => converted.Count(item2 => equalityComparer.Equals(item2, converted[i++])));
+        var maxCount = 1;
+        var mode = current;
+
+        while (enumerator.MoveNext())
+        {
+            current = enumerator.Current;
+            var key = selector(current);
+            ref var tuple = ref CollectionsMarshal.GetValueRefOrAddDefault(freqs, key, out _);
+            if (++tuple.count > maxCount)
+            {
+                maxCount = tuple.count;
+                mode = current;
+            }
+        }
+
+        return mode;
     }
 
     /// <summary>
@@ -404,8 +424,18 @@ public static partial class IEnumerableExtensions
         ArgumentNullException.ThrowIfNull(source);
         equalityComparer ??= EqualityComparer<T>.Default;
 
-        var enumerated = source as T[] ?? [.. source];
-        return enumerated.Length == 0 ? default : enumerated.MaxBy(item => source.Count(item2 => equalityComparer.Equals(item, item2)));
+        if (!source.Any())
+        {
+            throw new ArgumentException("Sequence contains no elements.", nameof(source));
+        }
+
+        // We can steal the implementation from EnumerableExtensions.MapCounts since that's basically all this is
+        var countsMap = new Dictionary<T, int>(equalityComparer);
+        foreach (var item in source)
+        {
+            CollectionsMarshal.GetValueRefOrAddDefault(countsMap, item, out _)++;
+        }
+        return countsMap.MaxBy(static pair => pair.Value).Key;
     }
     #endregion
 

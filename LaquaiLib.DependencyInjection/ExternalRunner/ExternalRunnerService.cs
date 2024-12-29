@@ -56,8 +56,8 @@ public class ExternalRunnerService : BackgroundService
     private void EnsureExternalsExist()
     {
         var missing = _options.Externals
-            .Select(t => t.Item1)
-            .Where(path => !File.Exists(path));
+            .Select(static t => t.Item1)
+            .Where(static path => !File.Exists(path));
         if (missing.Any())
         {
             throw new FileNotFoundException($"The following external objects do not exist:{Environment.NewLine}{string.Join(Environment.NewLine, missing)}");
@@ -65,7 +65,7 @@ public class ExternalRunnerService : BackgroundService
     }
     private void EnsureNoPowerShellConflicts()
     {
-        if (Array.FindIndex(_runners, r => r is PowerShellScriptRunner) > -1 && Array.FindIndex(_runners, r => r is PwshScriptRunner) > -1)
+        if (Array.FindIndex(_runners, static r => r is PowerShellScriptRunner) > -1 && Array.FindIndex(_runners, static r => r is PwshScriptRunner) > -1)
         {
             throw new InvalidOperationException($"Cannot have both a {nameof(PowerShellScriptRunner)} and a {nameof(PwshScriptRunner)} registered.");
         }

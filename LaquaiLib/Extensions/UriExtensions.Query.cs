@@ -92,7 +92,7 @@ internal readonly struct QueryBuilder
 
     public readonly Uri Build()
     {
-        var query = _components.Count == 0 ? "" : '?' + string.Join('&', _components.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+        var query = _components.Count == 0 ? "" : '?' + string.Join('&', _components.Select(static kvp => $"{kvp.Key}={kvp.Value}"));
         return new Uri(_uri.GetLeftPart(UriPartial.Path) + query);
     }
 }

@@ -62,6 +62,7 @@ public static class ListExtensions
         return list.AsSpan()[offset..(offset + length)];
     }
 
+    // this should be used as cautiously as CollectionsMarshal.SetCount itself since it may expose garbage data if the entire Span isn't filled
     /// <summary>
     /// Increases the capacity of the <paramref name="list"/> so it can hold at least <paramref name="count"/> elements in addition to its current <see cref="List{T}.Count"/>.
     /// </summary>

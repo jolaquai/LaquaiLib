@@ -1,4 +1,8 @@
 using System.Collections.Concurrent;
+using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
+
+using Microsoft.VisualBasic;
 
 namespace LaquaiLib.Extensions;
 
@@ -71,7 +75,7 @@ public static class IDictionaryExtensions
         ArgumentNullException.ThrowIfNull(key);
         if (source.IsReadOnly)
         {
-            throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
+            throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
         }
 
         // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
@@ -106,7 +110,7 @@ public static class IDictionaryExtensions
         ArgumentNullException.ThrowIfNull(addValueFactory);
         if (source.IsReadOnly)
         {
-            throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
+            throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
         }
 
         // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
@@ -211,7 +215,7 @@ public static class IDictionaryExtensions
         ArgumentNullException.ThrowIfNull(updateValueFactory);
         if (source.IsReadOnly)
         {
-            throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
+            throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
         }
 
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
@@ -239,7 +243,7 @@ public static class IDictionaryExtensions
         ArgumentNullException.ThrowIfNull(updateValueFactory);
         if (source.IsReadOnly)
         {
-            throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
+            throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
         }
 
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
@@ -268,7 +272,7 @@ public static class IDictionaryExtensions
         ArgumentNullException.ThrowIfNull(updateValueFactory);
         if (source.IsReadOnly)
         {
-            throw new ArgumentException($"The {nameof(IDictionary<TKey, TValue>)} must be mutable.", nameof(source));
+            throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
         }
 
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
@@ -279,4 +283,76 @@ public static class IDictionaryExtensions
 
         source[key] = !source.TryGetValue(key, out var old) ? addValueFactory() : updateValueFactory(old);
     }
+
+    /// <summary>
+    /// Returns a <see langword="ref"/> into the storage of the specified <paramref name="dictionary"/> if the key-value pair was present, otherwise returns a <see langword="null"/> <see langword="ref"/>.
+    /// If <paramref name="existed"/> is <see langword="false"/> when control returns to the caller, using the returned <see langword="ref"/> is undefined behavior and will likely result in a <see cref="NullReferenceException"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
+    /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
+    /// <param name="dictionary">The <see cref="Dictionary{TKey, TValue}"/> to get the value from.</param>
+    /// <param name="key">The key of the value to get.</param>
+    /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
+    /// <returns>A <see langword="ref"/> into the storage of the <paramref name="dictionary"/> if the key-value pair was present, otherwise a <see langword="null"/> <see langword="ref"/>.</returns>
+    public static ref TValue GetValueRefOrNullRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, out bool existed)
+        where TKey : notnull
+    {
+        ArgumentNullException.ThrowIfNull(dictionary);
+        ArgumentNullException.ThrowIfNull(key);
+        ref var reference = ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
+        existed = System.Runtime.CompilerServices.Unsafe.IsNullRef(ref reference);
+        return ref reference;
+    }
+    /// <summary>
+    /// Checks if the specified <paramref name="dictionary"/> contains a key-value pair with the specified <paramref name="key"/>, adds one with the specified <paramref name="value"/> if not and returns a <see langword="ref"/> into its storage.
+    /// </summary>
+    /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
+    /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
+    /// <param name="dictionary">The <see cref="Dictionary{TKey, TValue}"/> to get the value from or add to.</param>
+    /// <param name="key">The key of the value to get or add.</param>
+    /// <param name="value">The value to add to the <paramref name="dictionary"/> if the key does not exist.</param>
+    /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
+    /// <returns>A <see langword="ref"/> into the storage of the <paramref name="dictionary"/>.</returns>
+    public static ref TValue GetValueRefOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value, out bool existed)
+    {
+        ArgumentNullException.ThrowIfNull(dictionary);
+        ArgumentNullException.ThrowIfNull(key);
+        ref var reference = ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
+        if (!existed)
+        {
+            reference = value;
+        }
+        return ref reference;
+    }
+    /// <summary>
+    /// Checks if the specified <paramref name="dictionary"/> contains a key-value pair with the specified <paramref name="key"/>, adds one with the value produced by <paramref name="valueFactory"/> if not and returns a <see langword="ref"/> into its storage.
+    /// </summary>
+    /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
+    /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
+    /// <param name="dictionary">The <see cref="Dictionary{TKey, TValue}"/> to get the value from or add to.</param>
+    /// <param name="key">The key of the value to get or add.</param>
+    /// <param name="valueFactory">A factory <see cref="Func{TResult}"/> that produces the value to add to the <paramref name="dictionary"/> if the key does not exist.</param>
+    /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
+    /// <returns>A <see langword="ref"/> into the storage of the <paramref name="dictionary"/>.</returns>
+    public static ref TValue GetValueRefOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, Func<TValue> valueFactory, out bool existed)
+    {
+        ArgumentNullException.ThrowIfNull(dictionary);
+        ArgumentNullException.ThrowIfNull(key);
+        ref var reference = ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
+        if (!existed)
+        {
+            reference = valueFactory();
+        }
+        return ref reference;
+    }
+
+    // Expose the Dictionary<,> methods in CollectionsMarshal as extensions
+    /// <inheritdoc cref="CollectionsMarshal.GetValueRefOrNullRef{TKey, TValue}(Dictionary{TKey, TValue}, TKey)"/>"
+    public static ref TValue GetValueRefOrNullRef<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key) => ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
+    /// <inheritdoc cref="CollectionsMarshal.GetValueRefOrAddDefault{TKey, TValue}(Dictionary{TKey, TValue}, TKey, out bool)"/>
+    public static ref TValue GetValueRefOrNullRef<TKey, TValue, TAlternateKey>(this Dictionary<TKey, TValue>.AlternateLookup<TAlternateKey> dictionary, TAlternateKey key) => ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
+    /// <inheritdoc cref="CollectionsMarshal.GetValueRefOrAddDefault{TKey, TValue}(Dictionary{TKey, TValue}, TKey, out bool)"/>
+    public static ref TValue GetValueRefOrAddDefault<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, out bool existed) => ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
+    /// <inheritdoc cref="CollectionsMarshal.GetValueRefOrAddDefault{TKey, TValue}(Dictionary{TKey, TValue}, TKey, out bool)"/>
+    public static ref TValue GetValueRefOrAddDefault<TKey, TValue, TAlternateKey>(this Dictionary<TKey, TValue>.AlternateLookup<TAlternateKey> dictionary, TAlternateKey key, out bool existed) => ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
 }

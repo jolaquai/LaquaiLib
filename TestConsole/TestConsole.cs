@@ -24,7 +24,11 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-        
+        int[] ints = [1, 2, 3, 4, 5, 6];
+        foreach (var item in ints.AsMemory())
+        {
+            cw(item);
+        }
     }
 }
 

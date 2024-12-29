@@ -39,7 +39,7 @@ public static class StreamExtensions
         var requiredSpace = stream.Length - stream.Position;
         if (span.Length < requiredSpace)
         {
-            throw new ArgumentException($"The provided {nameof(Span<byte>)} is too small to hold the rest of the stream (can only accommodate {span.Length}/{requiredSpace} bytes).");
+            throw new ArgumentException($"The provided {nameof(Span<>)} is too small to hold the rest of the stream (can only accommodate {span.Length}/{requiredSpace} bytes).");
         }
         stream.ReadExactly(span);
     }
@@ -68,7 +68,7 @@ public static class StreamExtensions
         var requiredSpace = stream.Length - stream.Position;
         if (memory.Length < requiredSpace)
         {
-            throw new ArgumentException($"The provided {nameof(Memory<byte>)} is too small to hold the rest of the stream (can only accommodate {memory.Length}/{requiredSpace} bytes).");
+            throw new ArgumentException($"The provided {nameof(Memory<>)} is too small to hold the rest of the stream (can only accommodate {memory.Length}/{requiredSpace} bytes).");
         }
         await stream.ReadAsync(memory, cancellationToken).ConfigureAwait(false);
     }

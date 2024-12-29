@@ -108,7 +108,7 @@ public readonly struct GCHandle<T> : IDisposable
     public override int GetHashCode() => base.GetHashCode();
 
     /// <inheritdoc/>
-    public override string ToString() => $"{nameof(GCHandle<T>)} at 0x{Convert.ToString(value: (nint)this, 16).ToUpperInvariant()}";
+    public override string ToString() => $"{nameof(GCHandle<>)} at 0x{Convert.ToString(value: (nint)this, 16).ToUpperInvariant()}";
 
     #region Dispose pattern
     /// <summary>

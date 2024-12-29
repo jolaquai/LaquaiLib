@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Core;
 using LaquaiLib.Wrappers;
 
@@ -44,50 +45,51 @@ public static partial class MemoryExtensions
     public static TResult[] ToArray<TSource, TResult>(this ReadOnlyMemory<TSource> memory, Func<TSource, TResult> selector) => memory.Span.ToArray(selector);
 
     /// <summary>
-    /// Splits the specified <paramref name="ros"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
+    /// Splits the specified <paramref name="span"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
-    /// <param name="ros">The <see cref="ReadOnlySpan{T}"/> to split.</param>
+    /// <param name="span">The <see cref="ReadOnlySpan{T}"/> to split.</param>
     /// <param name="whereTrue">The <see cref="Span{T}"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
     /// <param name="whereFalse">The <see cref="Span{T}"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
     /// <remarks>
-    /// <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="ros"/>'s length.
+    /// <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="span"/>'s length.
     /// If they are too small, an <see cref="IndexOutOfRangeException"/> will be thrown by the runtime.
     /// </remarks>
-    public static void Split<T>(this ReadOnlySpan<T> ros, Span<T> whereTrue, Span<T> whereFalse, Func<T, bool> predicate)
+    public static void Split<T>(this ReadOnlySpan<T> span, Span<T> whereTrue, Span<T> whereFalse, Func<T, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(predicate);
 
         var trueIndex = 0;
         var falseIndex = 0;
-        for (var i = 0; i < ros.Length; i++)
+        for (var i = 0; i < span.Length; i++)
         {
-            if (predicate(ros[i]))
+            if (predicate(span[i]))
             {
-                whereTrue[trueIndex] = ros[i];
+                whereTrue[trueIndex] = span[i];
                 trueIndex++;
             }
             else
             {
-                whereFalse[falseIndex] = ros[i];
+                whereFalse[falseIndex] = span[i];
                 falseIndex++;
             }
         }
     }
     /// <summary>
-    /// Splits the specified <paramref name="rom"/> into the specified destination <see cref="Memory{T}"/>s based on the given <paramref name="predicate"/>.
+    /// Splits the specified <paramref name="memory"/> into the specified destination <see cref="Memory{T}"/>s based on the given <paramref name="predicate"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
-    /// <param name="rom">The <see cref="ReadOnlyMemory{T}"/> to split.</param>
+    /// <param name="memory">The <see cref="ReadOnlyMemory{T}"/> to split.</param>
     /// <param name="whereTrue">The <see cref="Memory{T}"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
     /// <param name="whereFalse">The <see cref="Memory{T}"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
     /// <remarks>
-    /// <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="rom"/>'s length.
+    /// <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="memory"/>'s length.
     /// If they are too small, an <see cref="IndexOutOfRangeException"/> will be thrown by the runtime.
     /// </remarks>
-    public static void Split<T>(this ReadOnlyMemory<T> rom, Memory<T> whereTrue, Memory<T> whereFalse, Func<T, bool> predicate) => rom.Span.Split(whereTrue.Span, whereFalse.Span, predicate);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Split<T>(this ReadOnlyMemory<T> memory, Memory<T> whereTrue, Memory<T> whereFalse, Func<T, bool> predicate) => memory.Span.Split(whereTrue.Span, whereFalse.Span, predicate);
 
     /// <summary>
     /// Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.
@@ -136,6 +138,7 @@ public static partial class MemoryExtensions
     /// This can be used to chain calls to this method.
     /// </returns>
     /// <exception cref="ArgumentException">Thrown if the target <paramref name="memory"/> cannot accomodate the specified <paramref name="data"/> instance.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<byte> FormatInto<T>(this Memory<byte> memory, T data, int index = 0) where T : unmanaged
     {
         memory.Span.FormatInto(data, index);
@@ -334,4 +337,35 @@ public static partial class MemoryExtensions
     /// <returns>The string as described.</returns>
     /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
     public static string ToHexString(this ReadOnlyMemory<byte> bytes) => bytes.Span.ToHexString();
+
+    // Since Span cannot and Memory does not implement IEnumerable, proxy these using a method
+    // System.Text.Json does this for enumerating over arrays or the properties of an object, too
+    /// <summary>
+    /// Gets a <see cref="SpanEnumerator{T}"/> for the specified <see cref="Span{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the span.</typeparam>
+    /// <param name="span">The span to enumerate.</param>
+    /// <returns>The enumerator for the specified span.</returns>
+    public static SpanEnumerator<T> GetEnumerator<T>(this Span<T> span) => new SpanEnumerator<T>(span);
+    /// <summary>
+    /// Gets a <see cref="SpanEnumerator{T}"/> for the specified <see cref="ReadOnlySpan{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the span.</typeparam>
+    /// <param name="span">The span to enumerate.</param>
+    /// <returns>The enumerator for the specified span.</returns>
+    public static SpanEnumerator<T> GetEnumerator<T>(this ReadOnlySpan<T> span) => new SpanEnumerator<T>(span);
+    /// <summary>
+    /// Gets a <see cref="MemoryEnumerator{T}"/> for the specified <see cref="Memory{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the memory.</typeparam>
+    /// <param name="memory">The memory to enumerate.</param>
+    /// <returns>The enumerator for the specified memory.</returns>
+    public static MemoryEnumerator<T> GetEnumerator<T>(this Memory<T> memory) => new MemoryEnumerator<T>(memory);
+    /// <summary>
+    /// Gets a <see cref="MemoryEnumerator{T}"/> for the specified <see cref="ReadOnlyMemory{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements in the memory.</typeparam>
+    /// <param name="memory">The memory to enumerate.</param>
+    /// <returns>The enumerator for the specified memory.</returns>
+    public static MemoryEnumerator<T> GetEnumerator<T>(this ReadOnlyMemory<T> memory) => new MemoryEnumerator<T>(memory);
 }

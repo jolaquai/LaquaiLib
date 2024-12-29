@@ -27,7 +27,7 @@ public static partial class FirstChanceExceptionHandlers
                 }
                 catch
                 {
-                    throw new InvalidOperationException($"The method {handler.Name} must be a valid {nameof(EventHandler<FirstChanceExceptionEventArgs>)} with the signature `void delegate(object?, {nameof(FirstChanceExceptionEventArgs)}) or it failed to register.");
+                    throw new InvalidOperationException($"The method {handler.Name} must be a valid {nameof(EventHandler<>)} with the signature `void delegate(object?, {nameof(FirstChanceExceptionEventArgs)}) or it failed to register.");
                 }
             })];
     }
