@@ -1,7 +1,8 @@
 <Project>
     <PropertyGroup>
         <CoreNoWarn>$(NoWarn);CS8714</CoreNoWarn>
-        <CoreVersion>1.2.1</CoreVersion>
+        <CoreVersion>1.2.2</CoreVersion>
+        <CorePackageOutput>$(SolutionDir)Scripts\pack</CorePackageOutput>
 
         <CoreAuthors>Joshua Laquai</CoreAuthors>
         <CoreDescription>Personal libary.</CoreDescription>

@@ -29,7 +29,8 @@
     <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
     <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageOutputPath>$(CorePackageOutput)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />

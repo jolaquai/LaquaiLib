@@ -31,7 +31,8 @@
     <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
     <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageOutputPath>..\..\LaquaiLib\Scripts\pack</PackageOutputPath>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageOutputPath>$(CorePackageOutput)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CoreAudio" Version="1.40.0" />

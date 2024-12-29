@@ -1,0 +1,1 @@
+nuget push *.symbols.nupkg -Source nuget -NonInteractive -SkipDuplicate

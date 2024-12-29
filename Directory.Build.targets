@@ -1,0 +1,5 @@
+<Project>
+    <Target Name="DeleteNonSymbolPackages" AfterTargets="Build">
+        <Exec IgnoreExitCode="True" Command="pwsh -Command &quot;Remove-Item -Path $(CorePackageOutput)\*.nupkg -Exclude *symbols.nupkg -Force&quot;" />
+    </Target>
+</Project>
