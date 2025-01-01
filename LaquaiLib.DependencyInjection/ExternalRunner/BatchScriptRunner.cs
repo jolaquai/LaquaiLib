@@ -3,22 +3,21 @@
 namespace LaquaiLib.DependencyInjection.ExternalRunner;
 
 /// <summary>
-/// Implements <see cref="ExternalRunner"/> for Python scripts.
+/// Implements <see cref="ExternalRunner"/> for Batch scripts.
 /// </summary>
-public class PythonScriptRunner : ExternalRunner
+public class BatchScriptRunner : ExternalRunner
 {
     /// <inheritdoc/>
-    public override bool CanHandle(string path) => Path.GetExtension(path).Equals(".py", StringComparison.OrdinalIgnoreCase);
+    public override bool CanHandle(string path) => Path.GetExtension(path).ToUpperInvariant() is ".BAT" or ".CMD";
     /// <inheritdoc/>
     public override Task RunAsync(string path, string[] args, CancellationToken stoppingToken)
     {
         var psi = new ProcessStartInfo()
         {
-            FileName = "python",
+            FileName = path,
             UseShellExecute = false,
             CreateNoWindow = true
         };
-        psi.ArgumentList.Add(path);
         for (var i = 0; i < args.Length; i++)
         {
             psi.ArgumentList.Add(args[i]);

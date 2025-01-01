@@ -1,4 +1,8 @@
-﻿namespace TestConsole;
+﻿using LaquaiLib.Util;
+using LaquaiLib.Util.ExceptionManagement;
+using LaquaiLib.Util.Misc;
+
+namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -24,11 +28,15 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-        int[] ints = [1, 2, 3, 4, 5, 6];
-        foreach (var item in ints.AsMemory())
-        {
-            cw(item);
-        }
+        var url = "https://youtu.be/xZcRUARiLdY";
+        var results = new string[4];
+        await Task.WhenAll(
+            Task.Run(async () => results[0] = await client.GetStringAsync(url)),
+            Task.Run(async () => results[1] = await client.GetStringAsync(url)),
+            Task.Run(async () => results[2] = await client.GetStringAsync(url)),
+            Task.Run(async () => results[3] = await client.GetStringAsync(url))
+        );
+        ;
     }
 }
 

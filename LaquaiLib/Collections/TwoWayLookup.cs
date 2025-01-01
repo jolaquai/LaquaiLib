@@ -30,7 +30,9 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         Reverse = reverseImpl;
     }
 
+    /// <inheritdoc/>
     protected IDictionary<T1, T2> Forward { get; }
+    /// <inheritdoc/>
     protected IDictionary<T2, T1> Reverse { get; }
 
     /// <summary>

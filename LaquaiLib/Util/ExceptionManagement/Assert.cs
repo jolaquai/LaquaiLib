@@ -18,6 +18,19 @@ public static class Assert
     /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails.</param>
     /// <returns>The result of the invocation of <paramref name="condition"/> if it is <see langword="true"/>, otherwise an <see cref="AssertionFailureException{T}"/> is thrown.</returns>
     public static bool That(Func<bool> condition, string message) => condition() ? true : throw new AssertionFailureException<bool>(false, message);
+    /// <summary>
+    /// Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="AssertionFailureException{T}"/> is thrown.
+    /// </summary>
+    /// <param name="condition">The condition to assert to be <see langword="true"/>.</param>
+    /// <returns>The result of the invocation of <paramref name="condition"/> if it is <see langword="true"/>, otherwise an <see cref="AssertionFailureException{T}"/> is thrown.</returns>
+    public static bool That(bool condition) => condition ? true : throw new AssertionFailureException<bool>(false);
+    /// <summary>
+    /// Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
+    /// </summary>
+    /// <param name="condition">The condition to assert to be <see langword="true"/>.</param>
+    /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails.</param>
+    /// <returns><see langword="true"/> if <paramref name="condition"/> is <see langword="true"/>, otherwise an <see cref="AssertionFailureException{T}"/> is thrown.</returns>
+    public static bool That(bool condition, string message) => condition ? true : throw new AssertionFailureException<bool>(false, message);
 
     /// <summary>
     /// Asserts that a specified value is <see langword="null"/>.
