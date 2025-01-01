@@ -65,7 +65,7 @@ public class ExternalRunnerService : BackgroundService
     }
     private void EnsureNoPowerShellConflicts()
     {
-        if (Array.FindIndex(_runners, static r => r is PowerShellScriptRunner) > -1 && Array.FindIndex(_runners, static r => r is PwshScriptRunner) > -1)
+        if (Array.Exists(_runners, static r => r is PowerShellScriptRunner) && Array.Exists(_runners, static r => r is PwshScriptRunner))
         {
             throw new InvalidOperationException($"Cannot have both a {nameof(PowerShellScriptRunner)} and a {nameof(PwshScriptRunner)} registered.");
         }

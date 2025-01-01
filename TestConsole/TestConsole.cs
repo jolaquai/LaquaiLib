@@ -1,4 +1,8 @@
-﻿namespace TestConsole;
+﻿using LaquaiLib.Util;
+using LaquaiLib.Util.ExceptionManagement;
+using LaquaiLib.Util.Misc;
+
+namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -24,11 +28,7 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-        int[] ints = [1, 2, 3, 4, 5, 6];
-        foreach (var item in ints.AsMemory())
-        {
-            cw(item);
-        }
+        ;
     }
 }
 

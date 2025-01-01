@@ -11,26 +11,38 @@ public class NullStream : Stream
     /// </summary>
     public static Stream Instance { get; } = new NullStream();
 
+    /// <inheritdoc/>
     public override bool CanRead { get; } = true;
+    /// <inheritdoc/>
     public override bool CanSeek { get; } = true;
+    /// <inheritdoc/>
     public override bool CanWrite { get; } = true;
+    /// <inheritdoc/>
     public override long Length { get; }
+    /// <inheritdoc/>
     public override long Position
     {
         get => 0;
         set { }
     }
+    /// <inheritdoc/>
     public override bool CanTimeout { get; }
+    /// <inheritdoc/>
     public override int ReadTimeout
     {
         get => 0;
         set { }
     }
 
+    /// <inheritdoc/>
     public override void Flush() { }
+    /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count) => 0;
+    /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin) => 0;
+    /// <inheritdoc/>
     public override void SetLength(long value) { }
+    /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count) { }
 }
 
@@ -40,23 +52,32 @@ public class NullStream : Stream
 /// </summary>
 public class ExceptStream : Stream
 {
+    /// <inheritdoc/>
     public override bool CanRead { get; }
+    /// <inheritdoc/>
     public override bool CanSeek { get; }
+    /// <inheritdoc/>
     public override bool CanWrite { get; }
+    /// <inheritdoc/>
     public override long Length { get; }
+    /// <inheritdoc/>
     public override long Position
     {
         get => 0;
         set { }
     }
+    /// <inheritdoc/>
     public override bool CanTimeout { get; }
+    /// <inheritdoc/>
     public override int ReadTimeout
     {
         get => 0;
         set { }
     }
 
+    /// <inheritdoc/>
     public override void Flush() => throw new NotSupportedException();
+    /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count)
     {
         if (count == 0)
@@ -65,8 +86,11 @@ public class ExceptStream : Stream
         }
         throw new NotSupportedException();
     }
+    /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+    /// <inheritdoc/>
     public override void SetLength(long value) => throw new NotSupportedException();
+    /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
     {
         if (count == 0)

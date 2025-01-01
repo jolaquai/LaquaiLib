@@ -789,7 +789,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
     /// <param name="keys">The sequence of keys.</param>
     /// <param name="values">The sequence of values.</param>
-    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequences.</returns
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequences.</returns>
     /// <exception cref="ArgumentException">Thrown if the input sequences do not have the same length.</exception>
     public static Dictionary<TKey, TValue> BuildDictionary<TKey, TValue>(this IEnumerable<TKey> keys, IEnumerable<TValue> values)
     {
