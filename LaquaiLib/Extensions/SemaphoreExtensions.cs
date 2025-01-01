@@ -6,7 +6,7 @@
 public static class SemaphoreExtensions
 {
     /// <summary>
-    /// Represents a single entry into the specified <paramref name="semaphore"/>.
+    /// Represents <paramref name="count"/> entries into the specified <paramref name="semaphore"/>.
     /// </summary>
     public struct SemaphoreEntry(Semaphore semaphore, int count = 1) : IDisposable
     {

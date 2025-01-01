@@ -37,33 +37,29 @@ public class LimitedConcurrencyTaskScheduler : TaskScheduler
         _tasks.Add(task);
         if (Interlocked.Increment(ref _delegatesQueuedOrRunning) <= _maxDegreeOfParallelism)
         {
-            NotifyThreadPoolOfPendingWork();
+            ThreadPool.UnsafeQueueUserWorkItem(_ =>
+            {
+                Interlocked.Increment(ref _delegatesQueuedOrRunning);
+                try
+                {
+                    while (_tasks.TryTake(out var task, Timeout.Infinite))
+                    {
+                        TryExecuteTask(task);
+                    }
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _delegatesQueuedOrRunning);
+                }
+            }, null);
         }
     }
     /// <inheritdoc/>
     protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued) => (!taskWasPreviouslyQueued || TryDequeue(task)) && TryExecuteTask(task);
-    private void NotifyThreadPoolOfPendingWork()
-    {
-        ThreadPool.UnsafeQueueUserWorkItem(_ =>
-        {
-            Interlocked.Increment(ref _delegatesQueuedOrRunning);
-            try
-            {
-                while (_tasks.TryTake(out var task, Timeout.Infinite))
-                {
-                    TryExecuteTask(task);
-                }
-            }
-            finally
-            {
-                Interlocked.Decrement(ref _delegatesQueuedOrRunning);
-            }
-        }, null);
-    }
     /// <inheritdoc/>
     protected override bool TryDequeue(Task task) => _tasks.TryTake(out _);
     /// <inheritdoc/>
-    protected override IEnumerable<Task> GetScheduledTasks() => _tasks.ToArray();
+    protected override IEnumerable<Task> GetScheduledTasks() => _tasks;
     /// <inheritdoc/>
     public override int MaximumConcurrencyLevel => _maxDegreeOfParallelism;
 }

@@ -13,7 +13,8 @@ public class ObservableValue<T>
     /// <summary>
     /// The current value.
     /// </summary>
-    public T Value {
+    public T Value
+    {
         get
         {
             RaiseValueRead(value);
@@ -82,7 +83,7 @@ public class ObservableValue<T>
     /// </summary>
     /// <param name="newValue">The new value to set.</param>
     /// <returns>The new value.</returns>
-    public T SetSilent(T newValue) => value = newValue;
+    protected T SetSilent(T newValue) => value = newValue;
     /// <summary>
     /// Determines if a value has been set.
     /// </summary>
@@ -90,15 +91,15 @@ public class ObservableValue<T>
     /// <remarks>A value has been "set" if the current value is non-<see langword="null"/>. This also counts for primitive types.</remarks>
     public bool HasValue() => Value != null;
     /// <summary>
-    /// Queries the value.
+    /// Gets the value.
     /// </summary>
     /// <returns>The current value.</returns>
-    public T Query() => Value;
+    public T Get() => Value;
     /// <summary>
-    /// Queries the value without raising a <see cref="PropertyRead"/> event.
+    /// Gets the value without raising a <see cref="PropertyRead"/> event.
     /// </summary>
     /// <returns>The current value.</returns>
-    public T QuerySilent() => value;
+    protected T GetSilent() => value;
 
     /// <summary>
     /// Raises the <see cref="PropertyRead"/> event.
@@ -200,13 +201,15 @@ public class ValueChangedEventArgs<T> : EventArgs
     /// <summary>
     /// The value before the change.
     /// </summary>
-    public T OldValue {
+    public T OldValue
+    {
         get;
     }
     /// <summary>
     /// The value after the change.
     /// </summary>
-    public T NewValue {
+    public T NewValue
+    {
         get;
     }
 
@@ -231,7 +234,8 @@ public class ValueReadEventArgs<T> : EventArgs
     /// <summary>
     /// The value the reader received.
     /// </summary>
-    public T Value {
+    public T Value
+    {
         get;
     }
 

@@ -22,11 +22,17 @@ public static class ICollectionExtensions
             return;
         }
 
-        var temp = collection.Where(element => predicate(element)).ToArray();
-        collection.Clear();
-        foreach (var element in temp)
+        if (collection is List<T> list)
         {
-            collection.Add(element);
+            ListExtensions.KeepOnly(list, predicate);
+            return;
+        }
+
+        var newItems = collection.Where(item => predicate(item)).ToArray();
+        collection.Clear();
+        for (var i = 0; i < newItems.Length; i++)
+        {
+            collection.Add(newItems[i]);
         }
     }
 }

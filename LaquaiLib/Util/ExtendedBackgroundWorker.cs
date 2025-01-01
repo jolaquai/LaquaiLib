@@ -25,10 +25,6 @@ public class ExtendedBackgroundWorker : BackgroundWorker
         {
             DoWork += doWork;
         }
-        else if (System.Runtime.CompilerServices.Unsafe.As<DoWorkEventHandler>(work) is DoWorkEventHandler _doWork)
-        {
-            DoWork += _doWork;
-        }
         else
         {
             DoWork += (sender, e) => work.DynamicInvoke(null);
@@ -40,10 +36,9 @@ public class ExtendedBackgroundWorker : BackgroundWorker
     /// <param name="work">A <see cref="Delegate"/> that encapsulates a method that is executed when the <see cref="ExtendedBackgroundWorker"/> is started. If explicitly convertible to <see cref="DoWorkEventHandler"/>, it is cast and queued as work as such, otherwise dynamic invocation with the specified <paramref name="args"/> is used.</param>
     /// <param name="args">The arguments to pass to the <paramref name="work"/> delegate or <see langword="null"/> if the delegate does not take any arguments.</param>
     /// <remarks>This constructor forces wrapping of the passed <paramref name="work"/> delegate in a <see cref="DoWorkEventHandler"/> delegate, even if it is already explicitly convertible to <see cref="DoWorkEventHandler"/>. Use the <see cref="ExtendedBackgroundWorker(Delegate)"/> constructor to avoid this.</remarks>
-    public ExtendedBackgroundWorker(Delegate work, params ReadOnlySpan<object> args) : this()
+    public ExtendedBackgroundWorker(Delegate work, params object[] args) : this()
     {
-        var enumerated = args.ToArray();
-        DoWork += (sender, e) => work.DynamicInvoke(enumerated);
+        DoWork += (sender, e) => work.DynamicInvoke(args);
     }
     /// <summary>
     /// Initializes a new <see cref="ExtendedBackgroundWorker"/> that, by default, supports progress reporting and cancellation and executes the work represented by the <paramref name="work"/> delegates when started.
@@ -56,10 +51,6 @@ public class ExtendedBackgroundWorker : BackgroundWorker
             if (w is DoWorkEventHandler doWork)
             {
                 DoWork += doWork;
-            }
-            else if (System.Runtime.CompilerServices.Unsafe.As<DoWorkEventHandler>(w) is DoWorkEventHandler _doWork)
-            {
-                DoWork += _doWork;
             }
             else
             {

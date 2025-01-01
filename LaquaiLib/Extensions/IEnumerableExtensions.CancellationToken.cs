@@ -31,24 +31,29 @@ public static class IEnumerableExtensionsCancellationToken
             return Task.CompletedTask;
         }
 
-        var asList = tokens as IReadOnlyList<CancellationToken> ?? [.. tokens];
-        var remaining = asList.Count - asList.Count(t => t.IsCancellationRequested);
-        if (remaining == 0)
+        using var uncancelled = tokens.Where(t => !t.IsCancellationRequested).GetEnumerator();
+        if (!uncancelled.MoveNext())
         {
             return Task.CompletedTask;
         }
 
         var tcs = new TaskCompletionSource();
-        foreach (var token in asList)
+        var remaining = 0;
+        do
         {
-            _ = token.Register(() =>
+            if (uncancelled.Current.IsCancellationRequested)
+            {
+                continue;
+            }
+            remaining++;
+            _ = uncancelled.Current.Register(() =>
             {
                 if (Interlocked.Decrement(ref remaining) == 0)
                 {
                     _ = tcs.TrySetResult();
                 }
             });
-        }
+        } while (uncancelled.MoveNext());
 
         return tcs.Task;
     }

@@ -20,7 +20,7 @@ public static partial class TypeExtensions
     /// <param name="type">A <see cref="Type"/> instance representing the type to instantiate.</param>
     /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
     /// <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
-    public static object New(this Type type, params ReadOnlySpan<object> parameters)
+    public static object New(this Type type, params object[] parameters)
     {
         try
         {
@@ -315,7 +315,7 @@ public static partial class TypeExtensions
     // TODO: Exclude all members with weird names that match FuncSignatureRegex or similar
     // (e.g. automatic private backing fields)
     /// <summary>
-    /// Reflects the entirety of this <see cref="Type"/> and generates .NET 8.0 code that can be used to replicate it.
+    /// Reflects the entirety of this <see cref="Type"/> and generates C# code that can be used to replicate it.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to reflect.</param>
     /// <param name="options.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="NotImplementedException"/>s.</param>
@@ -728,7 +728,7 @@ public static partial class TypeExtensions
             {
                 operateOn = operateOn[..tickAt];
             }
-            var args = string.Join(", ", type.GetGenericArguments().Select(static t => t.GetFriendlyName()));
+            var args = string.Join(", ", type.GetGenericArguments().Select(GetFriendlyName));
 
             return $"{operateOn}<{args}>";
         }
@@ -923,4 +923,25 @@ public static partial class TypeExtensions
     */
     [GeneratedRegex(@"<.*?>\p{Ll}__(\p{L}|\p{Nd}|\||_)+?_\p{Nd}+?(?=\(.*?\))?", RegexOptions.ExplicitCapture)]
     private static partial Regex UnspeakableMemberNameRegex();
+
+    /// <summary>
+    /// Finds <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible (i.e. that are not <see langword="interface"/>s, <see langword="abstract"/> or <see langword="static"/>).
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to find constructible subtypes of.</param>
+    /// <param name="assembly">The <see cref="Assembly"/> to search in. If <see langword="null"/>, the assembly of the specified <paramref name="type"/> is used.</param>
+    /// <returns>An <see cref="Array"/> of <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible.</returns>
+    public static Type[] FindConstructibleSubtypes(this Type type, Assembly assembly = null)
+    {
+        assembly ??= type.Assembly;
+        // RCS1256 says this is an invalid null check because the parameter is optional with the default set to null, BUT we compound-assigned type's assembly
+        // If THAT is null, something's wrong anyway
+        ArgumentNullException.ThrowIfNull(assembly);
+
+        return [.. assembly.GetTypes()
+            .Where(t => t.IsAssignableTo(type)
+                && !t.IsAbstract
+                && !t.IsInterface
+                && t.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Length > 0 // cannot be static if it has constructors
+        )];
+    }
 }

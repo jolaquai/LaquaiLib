@@ -28,7 +28,6 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-        ;
     }
 }
 
@@ -58,6 +57,7 @@ public class DiscordWebhookApiClient : HttpClient
     }
 
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CS8981 // Naming Styles
     public class webhookmessage
     {
         public double type { get; init; }
@@ -112,6 +112,7 @@ public class DiscordWebhookApiClient : HttpClient
         public dynamic clan { get; init; }
     }
 #pragma warning restore IDE1006 // Naming Styles
+#pragma warning restore CS8981 // Naming Styles
 }
 
 /// <summary>

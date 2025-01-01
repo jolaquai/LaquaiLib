@@ -14,11 +14,11 @@ public static class ConstructorInfoExtensions
     /// <param name="ctorInfo">The <see cref="ConstructorInfo"/> that identifies a constructor of the type to instantiate.</param>
     /// <param name="parameters">The parameters to pass to the constructor.</param>
     /// <returns>An instance of the type <paramref name="ctorInfo"/> belongs to, or <see langword="null"/> if the constructor could not be invoked.</returns>
-    public static object New(this ConstructorInfo ctorInfo, params ReadOnlySpan<object> parameters)
+    public static object New(this ConstructorInfo ctorInfo, params object[] parameters)
     {
         try
         {
-            return ctorInfo.Invoke(parameters.ToArray());
+            return ctorInfo.Invoke(parameters);
         }
         catch
         {
@@ -32,11 +32,11 @@ public static class ConstructorInfoExtensions
     /// <param name="ctorInfo">The <see cref="ConstructorInfo"/> that identifies a constructor of the type to instantiate.</param>
     /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> if the constructor has no parameters.</param>
     /// <returns>An instance of <typeparamref name="T"/>, or <see langword="null"/> if the constructor could not be invoked.</returns>
-    public static T New<T>(this ConstructorInfo ctorInfo, params ReadOnlySpan<object> parameters)
+    public static T New<T>(this ConstructorInfo ctorInfo, params object[] parameters)
     {
         try
         {
-            return (T)ctorInfo.Invoke(parameters.ToArray());
+            return (T)ctorInfo.Invoke(parameters);
         }
         catch
         {
@@ -50,7 +50,7 @@ public static class ConstructorInfoExtensions
     /// <typeparam name="TDelegate">The type of delegate to create. Must be a <see cref="Func{TResult}"/> overload.</typeparam>
     /// <param name="ctorInfo">The <see cref="ConstructorInfo"/> representing an instance constructor of a type.</param>
     /// <returns>The created delegate.</returns>
-    /// <exception cref="ArgumentException">Thrown if the type specified for <typeparamref name="TDelegate"/> is not a <see cref="System.Func{TResult}"/> overload.</exception>
+    /// <exception cref="ArgumentException">Thrown if the type specified for <typeparamref name="TDelegate"/> is not a <see cref="Func{TResult}"/> overload.</exception>
     /// <exception cref="ArgumentException">Thrown if the type specified for <typeparamref name="TDelegate"/> does not match the constructor's signature</exception>
     public static TDelegate CreateDelegate<TDelegate>(this ConstructorInfo ctorInfo)
         where TDelegate : Delegate

@@ -42,7 +42,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     /// Initializes a new <see cref="DelayingHttpMessageHandler"/> with the specified minimum delay between requests that uses the specified <paramref name="innerHandler"/> to delegate requests to.
     /// </summary>
     /// <param name="minimumDelay">The minimum delay between requests.</param>
-    /// <param name="innerHandler">The inner handler to delegate sending requests to.
+    /// <param name="innerHandler">The inner handler to delegate sending requests to.</param>
     public DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandler innerHandler) : base(innerHandler)
     {
         minDelay = minimumDelay.Ticks;

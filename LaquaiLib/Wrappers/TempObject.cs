@@ -16,11 +16,11 @@ public ref struct TempObject<T> : IDisposable
     /// Initializes a new <see cref="TempObject{T}"/> by using the specified <paramref name="parameters"/> to find and invoke a constructor for type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="parameters">The parameters to use to find a constructor for <typeparamref name="T"/>. If <c>0</c>-length, the parameterless constructor is used.</param>
-    public TempObject(params ReadOnlySpan<object> parameters)
+    public TempObject(params object[] parameters)
     {
         try
         {
-            typeof(T).New(parameters.Length == 0 ? null : parameters);
+            Value = (T)typeof(T).New(parameters.Length == 0 ? null : parameters);
         }
         catch
         {
