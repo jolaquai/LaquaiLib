@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Util.Threading;
 
 /// <summary>
 /// Disables marshalling of asynchronous continuations back to it for this thread for the duration of the scope.

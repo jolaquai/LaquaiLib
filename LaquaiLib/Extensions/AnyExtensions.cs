@@ -168,7 +168,7 @@ public static class AnyExtensions
 
 #pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
     /// <summary>
-    /// Casts an instance of <typeparamref name="TFrom"/> to <typeparamref name="TFrom"/>.
+    /// Casts an instance of <typeparamref name="TFrom"/> to <typeparamref name="TTo"/>.
     /// </summary>
     /// <typeparam name="TFrom">The type to cast <paramref name="obj"/> to.</typeparam>
     /// <typeparam name="TTo">The type of <paramref name="obj"/>.</typeparam>
@@ -205,15 +205,13 @@ public static class AnyExtensions
 #pragma warning restore CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 
     /// <summary>
-    /// Changes the type of an instance of <typeparamref name="TFrom"/> to <typeparamref name="TTo"/>, even for reference types.
+    /// Changes the type of an instance to <typeparamref name="T"/>.
     /// </summary>
-    /// <typeparam name="TFrom">The type of <paramref name="obj"/>.</typeparam>
-    /// <typeparam name="TTo">The type to cast <paramref name="obj"/> to.</typeparam>
+    /// <typeparam name="T">The type to cast <paramref name="obj"/> to.</typeparam>
     /// <param name="obj">The <see cref="object"/> to cast.</param>
-    /// <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="TTo"/> or the <see langword="default"/> value of <typeparamref name="TTo"/> if the cast failed.</returns>
+    /// <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="T"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TTo As<TFrom, TTo>(this TFrom obj)
-        where TFrom : allows ref struct
-        where TTo : allows ref struct
-        => System.Runtime.CompilerServices.Unsafe.As<TFrom, TTo>(ref obj);
+    public static T As<T>(this object obj)
+        where T : class
+        => System.Runtime.CompilerServices.Unsafe.As<T>(obj);
 }

@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Util.Threading;
+﻿using LaquaiLib.Extensions;
+
+namespace LaquaiLib.Util.Threading;
 
 /// <summary>
 /// Implements a timer that periodically invokes a callback while guaranteeing that no two invocations of that callback overlap.
@@ -152,4 +154,134 @@ public class LinearTimer
     /// Stops invoking the callback periodically.
     /// </summary>
     public void Stop() => timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+}
+
+/// <summary>
+/// Implements a timer that periodically invokes one or more callbacks asynchronously.
+/// </summary>
+/// <remarks>
+/// This implementation uses <see cref="PeriodicTimer"/> for signaling and a <see cref="Task"/> for efficient ticking. It is important the 
+/// </remarks>
+public class AsyncTimer : IDisposable
+{
+    private bool? invoke = false;
+    private PeriodicTimer timer;
+    private readonly Task run;
+
+    /// <summary>
+    /// Gets or sets the interval between invocations of the callback.
+    /// </summary>
+    public TimeSpan Period
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                timer.Period = value;
+            }
+        }
+    }
+    /// <summary>
+    /// Gets or sets the state object passed to the 
+    /// </summary>
+    public object State { get; set; }
+
+    /// <summary>
+    /// Allows registering or unregistering a callback that is invoked periodically.
+    /// </summary>
+    public event Func<object, Task> Callback;
+
+    /// <summary>
+    /// Initializes a new <see cref="AsyncTimer"/> with the specified interval.
+    /// </summary>
+    /// <param name="interval">The interval between invocations of the callback.</param>
+    public AsyncTimer(TimeSpan interval) : this(interval, null, [])
+    {
+    }
+    /// <summary>
+    /// Initializes a new <see cref="AsyncTimer"/> with the specified interval and state.
+    /// </summary>
+    /// <param name="interval">The interval between invocations of the callback.</param>
+    /// <param name="callback">The state object passed to the callback on each invocation.</param>
+    public AsyncTimer(TimeSpan interval, Func<object, Task> callback) : this(interval, null, [callback])
+    {
+    }
+    /// <summary>
+    /// Initializes a new <see cref="AsyncTimer"/> with the specified interval and state and registers the specified callbacks for invocation.
+    /// </summary>
+    /// <param name="interval">The interval between invocations of the callback.</param>
+    /// <param name="state">The state object passed to the callback on each invocation.</param>
+    /// <param name="callbacks">The callbacks to invoke periodically.</param>
+    public AsyncTimer(TimeSpan interval, object state, ReadOnlySpan<Func<object, Task>> callbacks)
+    {
+        State = state;
+        for (var i = 0; i < callbacks.Length; i++)
+        {
+            Callback += callbacks[i];
+        }
+        timer = new PeriodicTimer(interval);
+        run = Task.Run(async () =>
+        {
+            while (invoke is not null)
+            {
+                if (timer is not null && await timer.WaitForNextTickAsync())
+                {
+                    // No need to cast
+                    var callbacks = AnyExtensions.As<Func<object, Task>[]>(Callback.GetInvocationList());
+                    await Task.WhenAll(callbacks.Select(callback => callback(State)));
+                }
+            }
+        });
+    }
+    /// <summary>
+    /// Creates and starts a new <see cref="AsyncTimer"/> with the specified interval.
+    /// </summary>
+    /// <param name="interval">The interval between invocations of the callback.</param>
+    public static AsyncTimer Start(TimeSpan interval)
+    {
+        var timer = new AsyncTimer(interval);
+        timer.Start();
+        return timer;
+    }
+    /// <summary>
+    /// Creates and starts a new <see cref="AsyncTimer"/> with the specified interval and callback.
+    /// </summary>
+    /// <param name="interval">The interval between invocations of the callback.</param>
+    /// <param name="callback">The state object passed to the callback on each invocation.</param>
+    public static AsyncTimer Start(TimeSpan interval, Func<object, Task> callback)
+    {
+        var timer = new AsyncTimer(interval, callback);
+        timer.Start();
+        return timer;
+    }
+    /// <summary>
+    /// Creates and starts a new <see cref="AsyncTimer"/> with the specified interval and state and registers the specified callbacks for invocation.
+    /// </summary>
+    /// <param name="interval">The interval between invocations of the callback.</param>
+    /// <param name="state">The state object passed to the callback on each invocation.</param>
+    /// <param name="callbacks">The callbacks to invoke periodically.</param>
+    public static AsyncTimer Start(TimeSpan interval, object state, ReadOnlySpan<Func<object, Task>> callbacks)
+    {
+        var timer = new AsyncTimer(interval, state, callbacks);
+        timer.Start();
+        return timer;
+    }
+
+    public void Dispose()
+    {
+        invoke = null;
+        timer.Dispose();
+        timer = null;
+    }
+
+    /// <summary>
+    /// Starts invoking the callback(s) periodically.
+    /// </summary>
+    public void Start() => invoke = true;
+    /// <summary>
+    /// Stops invoking the callback(s) periodically.
+    /// </summary>
+    public void Stop() => invoke = false;
 }

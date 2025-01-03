@@ -40,5 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
   </ItemGroup>
 </Project>

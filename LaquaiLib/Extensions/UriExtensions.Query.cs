@@ -55,6 +55,7 @@ internal readonly struct QueryBuilder
 {
     private readonly Uri _uri;
     private readonly Dictionary<string, string> _components;
+    private readonly bool _disableEscaping;
 
     public readonly object this[string name]
     {
@@ -67,12 +68,16 @@ internal readonly struct QueryBuilder
             }
             else
             {
-                _components[name] = value as string ?? value.ToString();
+                var data = value as string ?? value.ToString();
+                _components[name] = _disableEscaping ? data : Uri.EscapeDataString(data);
             }
         }
     }
 
-    public QueryBuilder(Uri uri)
+    /// <summary>
+    /// Allows creation of a <see cref="QueryBuilder"/> that does not escape values for query parameters when setting them.
+    /// </summary>
+    internal QueryBuilder(Uri uri, bool disableEscaping)
     {
         _uri = uri;
         _components = [];
@@ -88,6 +93,15 @@ internal readonly struct QueryBuilder
                 _components[name.ToString()] = value.ToString();
             }
         }
+
+        _disableEscaping = disableEscaping;
+    }
+    /// <summary>
+    /// Creates a <see cref="QueryBuilder"/> that escapes values for query parameters when setting them.
+    /// Assumes correct escaping for existing query parameters, otherwise the % signs would be escaped.
+    /// </summary>
+    public QueryBuilder(Uri uri) : this(uri, false)
+    {
     }
 
     public readonly Uri Build()

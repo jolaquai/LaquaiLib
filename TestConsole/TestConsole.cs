@@ -1,6 +1,4 @@
-﻿using LaquaiLib.Util;
-using LaquaiLib.Util.ExceptionManagement;
-using LaquaiLib.Util.Misc;
+﻿using LaquaiLib.Util.Threading;
 
 namespace TestConsole;
 
@@ -28,6 +26,14 @@ public partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
+
+        var timer = AsyncTimer.Start(TimeSpan.FromSeconds(1));
+        var thing = Task.Delay(15000).ContinueWith(_ => Environment.Exit(0));
+        _ = Task.Delay(5000).ContinueWith(_ => timer.Dispose());
+        timer.Callback += async state => Console.WriteLine("Tick 1");
+        timer.Callback += async state => Console.WriteLine("Tick 2");
+
+        await thing;
     }
 }
 
