@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Interop;
 
+using LaquaiLib.Util.WpfForms;
 using LaquaiLib.Windows;
 
 namespace TestWpf;
@@ -20,13 +21,13 @@ public partial class MainWindow : LowLevelWindow
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e) { }
-    public override nint OnMessageReceived(MSG message, ref bool handled)
+    protected override nint OnMessageReceived(MSG message, ref bool handled)
     {
         switch (message.message)
         {
-            case 0x0100: // WM_KEYDOWN
+            case (int)WindowMessage.WM_KEYDOWN:
             {
-                if (message.wParam == 0x1B) // VK_ESCAPE
+                if (message.wParam == (nint)VirtualKey.VK_ESCAPE)
                 {
                     Close();
                     handled = true;

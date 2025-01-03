@@ -43,5 +43,5 @@ public abstract class LowLevelWindow : Window
     /// <param name="message">A <see cref="MSG"/> struct representing the message.</param>
     /// <param name="handled">A <see langword="ref"/> <see cref="bool"/> that should be set to <see langword="true"/> if the message was handled.</param>
     /// <returns>A return value dependent on the message. Check the MSDN documentation on the message you are processing to determine the appropriate return value(s).</returns>
-    public virtual nint OnMessageReceived(MSG message, ref bool handled) => nint.Zero;
+    protected virtual nint OnMessageReceived(MSG message, ref bool handled) => nint.Zero;
 }
