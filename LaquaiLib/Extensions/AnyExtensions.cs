@@ -166,9 +166,9 @@ public static class AnyExtensions
         return source;
     }
 
-#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
     /// <summary>
     /// Casts an instance of <typeparamref name="TFrom"/> to <typeparamref name="TTo"/>.
+    /// Throws 
     /// </summary>
     /// <typeparam name="TFrom">The type to cast <paramref name="obj"/> to.</typeparam>
     /// <typeparam name="TTo">The type of <paramref name="obj"/>.</typeparam>
@@ -190,22 +190,20 @@ public static class AnyExtensions
                 throw new InvalidCastException($"Cannot cast {typeof(TFrom)} to {typeof(TTo)}.");
             }
         }
-        unsafe
+
+        if (System.Runtime.CompilerServices.Unsafe.SizeOf<TFrom>() == System.Runtime.CompilerServices.Unsafe.SizeOf<TTo>())
         {
-            if (sizeof(TFrom) == sizeof(TTo))
-            {
-                // If the sizes are equal, just reinterpret the bits
-                // As far as casting unrelated struct types between each other, this is the same as using As
-                return System.Runtime.CompilerServices.Unsafe.BitCast<TFrom, TTo>(obj);
-            }
+            // If the sizes are equal, just reinterpret the bits
+            // As far as casting structs between each other, this is the same as using As
+            return System.Runtime.CompilerServices.Unsafe.BitCast<TFrom, TTo>(obj);
         }
+
         // We can't use As here, otherwise the "cast" will always succeed
         throw new InvalidCastException($"Cannot cast {typeof(TFrom)} to {typeof(TTo)}.");
     }
-#pragma warning restore CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 
     /// <summary>
-    /// Changes the type of an instance to <typeparamref name="T"/>.
+    /// Changes the type of a reference to a <see langword="class"/> instance to <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">The type to cast <paramref name="obj"/> to.</typeparam>
     /// <param name="obj">The <see cref="object"/> to cast.</param>

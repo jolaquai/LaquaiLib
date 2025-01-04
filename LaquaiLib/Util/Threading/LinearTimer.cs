@@ -158,9 +158,10 @@ public class LinearTimer
 
 /// <summary>
 /// Implements a timer that periodically invokes one or more callbacks asynchronously.
+/// Callbacks that take longer to return that the configured period will cause ticks to be combined.
 /// </summary>
 /// <remarks>
-/// This implementation uses <see cref="PeriodicTimer"/> for signaling and a <see cref="Task"/> for efficient ticking. It is important the 
+/// This implementation uses <see cref="PeriodicTimer"/> for signaling and a <see cref="Task"/> for efficient ticking. It is important the instance be disposed when no longer needed to prevent resource leaks.
 /// </remarks>
 public class AsyncTimer : IDisposable
 {
@@ -229,7 +230,7 @@ public class AsyncTimer : IDisposable
                 if (timer is not null && await timer.WaitForNextTickAsync())
                 {
                     // No need to cast
-                    var callbacks = AnyExtensions.As<Func<object, Task>[]>(Callback.GetInvocationList());
+                    var callbacks = Callback.GetInvocationList<Func<object, Task>>();
                     await Task.WhenAll(callbacks.Select(callback => callback(State)));
                 }
             }

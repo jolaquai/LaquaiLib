@@ -1,4 +1,6 @@
-﻿using LaquaiLib.Util.Threading;
+﻿using System.Collections;
+
+using LaquaiLib.Util.Threading;
 
 namespace TestConsole;
 
@@ -10,7 +12,7 @@ public partial class TestConsole
     [STAThread]
     private static void Main()
     {
-        // FirstChanceExceptionHandlers.RegisterAll();
+        // FirstChanceExceptionHandlers.RegisterAll(); 
 
         using (var scope = TestCore.TestCore.GetScope().ConfigureAwait(false).GetAwaiter().GetResult())
         {
@@ -27,16 +29,16 @@ public partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var timer = AsyncTimer.Start(TimeSpan.FromSeconds(1));
-        var thing = Task.Delay(15000).ContinueWith(_ => Environment.Exit(0));
-        _ = Task.Delay(5000).ContinueWith(_ => timer.Dispose());
-        timer.Callback += async state => Console.WriteLine("Tick 1");
-        timer.Callback += async state => Console.WriteLine("Tick 2");
+        var trace = new StackTrace(true);
+        var frame = trace.GetFrame(0);
+        var frames = trace.GetFrames(0, 2);
+        var last = trace.GetLastFrame();
 
-        await thing;
+        ;
     }
 }
 
+#region Discord
 public class DiscordWebhookApiClient : HttpClient
 {
     private readonly string _query;
@@ -205,3 +207,5 @@ public class DynamicTypeBuilder(JsonObject root)
         }
     }
 }
+
+#endregion
