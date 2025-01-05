@@ -222,6 +222,7 @@ public static class IDictionaryExtensions
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
             concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
+            return;
         }
 
         source[key] = !source.TryGetValue(key, out var old) ? addValue : updateValueFactory(old);
@@ -250,6 +251,7 @@ public static class IDictionaryExtensions
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
             concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
+            return;
         }
 
         source[key] = !source.TryGetValue(key, out var old) ? addValue : updateValueFactory(old, addValue);
@@ -279,6 +281,7 @@ public static class IDictionaryExtensions
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
             concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
+            return;
         }
 
         source[key] = !source.TryGetValue(key, out var old) ? addValueFactory() : updateValueFactory(old);
