@@ -212,7 +212,6 @@ public static class IDictionaryExtensions
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(key);
-        ArgumentNullException.ThrowIfNull(updateValueFactory);
         if (source.IsReadOnly)
         {
             throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
@@ -225,7 +224,16 @@ public static class IDictionaryExtensions
             return;
         }
 
-        source[key] = !source.TryGetValue(key, out var old) ? addValue : updateValueFactory(old);
+        if (!source.TryGetValue(key, out var old))
+        {
+            source[key] = addValue;
+        }
+        else
+        {
+            // Validate null only when needed
+            ArgumentNullException.ThrowIfNull(updateValueFactory);
+            source[key] = updateValueFactory(old);
+        }
     }
     /// <summary>
     /// Adds a key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not already exist. Otherwise, a factory <see cref="Func{T1, T2, TResult}"/> that produces a new value is invoked with the existing value and <paramref name="addValue"/>.
@@ -241,7 +249,6 @@ public static class IDictionaryExtensions
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(key);
-        ArgumentNullException.ThrowIfNull(updateValueFactory);
         if (source.IsReadOnly)
         {
             throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
@@ -254,7 +261,16 @@ public static class IDictionaryExtensions
             return;
         }
 
-        source[key] = !source.TryGetValue(key, out var old) ? addValue : updateValueFactory(old, addValue);
+        if (!source.TryGetValue(key, out var old))
+        {
+            source[key] = addValue;
+        }
+        else
+        {
+            // Validate null only when needed
+            ArgumentNullException.ThrowIfNull(updateValueFactory);
+            source[key] = updateValueFactory(old, addValue);
+        }
     }
     /// <summary>
     /// Adds a key/value pair to the <see cref="IDictionary{TKey, TValue}"/> where the value is produced by <paramref name="addValueFactory"/> if the key does not already exist. Otherwise, a factory <see cref="Func{T, TResult}"/> that produces a new value is invoked with the existing value.
@@ -270,8 +286,6 @@ public static class IDictionaryExtensions
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(key);
-        ArgumentNullException.ThrowIfNull(addValueFactory);
-        ArgumentNullException.ThrowIfNull(updateValueFactory);
         if (source.IsReadOnly)
         {
             throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
@@ -284,7 +298,17 @@ public static class IDictionaryExtensions
             return;
         }
 
-        source[key] = !source.TryGetValue(key, out var old) ? addValueFactory() : updateValueFactory(old);
+        // Validate null only when needed
+        if (!source.TryGetValue(key, out var old))
+        {
+            ArgumentNullException.ThrowIfNull(addValueFactory);
+            source[key] = addValueFactory();
+        }
+        else
+        {
+            ArgumentNullException.ThrowIfNull(updateValueFactory);
+            source[key] = updateValueFactory(old);
+        }
     }
 
     /// <summary>
