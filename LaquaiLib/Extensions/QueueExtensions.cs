@@ -13,14 +13,12 @@ public static class QueueExtensions
     /// </summary>
     /// <typeparam name="T">The Type of the items in the collection.</typeparam>
     /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from <paramref name="items"/> to.</param>
-    /// <param name="item">The first item to add to <paramref name="queue"/>.</param>
-    /// <param name="items">Any more items to add to <paramref name="queue"/>.</param>
-    public static void Enqueue<T>(this Queue<T> queue, T item, params ReadOnlySpan<T> items)
+    /// <param name="items">The items to add to <paramref name="queue"/>.</param>
+    public static void EnqueueRange<T>(this Queue<T> queue, params ReadOnlySpan<T> items)
     {
-        queue.Enqueue(item);
-        foreach (var i in items)
+        for (var i = 0; i < items.Length; i++)
         {
-            queue.Enqueue(i);
+            queue.Enqueue(items[i]);
         }
     }
     /// <summary>
@@ -29,27 +27,24 @@ public static class QueueExtensions
     /// <typeparam name="T">The Type of the items in the collection.</typeparam>
     /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from the <paramref name="collection"/> to.</param>
     /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
-    public static void Enqueue<T>(this Queue<T> queue, IEnumerable<T> collection)
+    public static void EnqueueRange<T>(this Queue<T> queue, IEnumerable<T> collection)
     {
         foreach (var item in collection)
         {
             queue.Enqueue(item);
         }
     }
-
     /// <summary>
     /// Adds items to the end of the <see cref="Queue{T}"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the items in the collection.</typeparam>
     /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from <paramref name="items"/> to.</param>
-    /// <param name="item">The first item to add to <paramref name="queue"/>.</param>
-    /// <param name="items">Any more items to add to <paramref name="queue"/>.</param>
-    public static void Enqueue<T>(this LimitedQueue<T> queue, T item, params ReadOnlySpan<T> items)
+    /// <param name="items">The items to add to <paramref name="queue"/>.</param>
+    public static void EnqueueRange<T>(this LimitedQueue<T> queue, params ReadOnlySpan<T> items)
     {
-        queue.Enqueue(item);
-        foreach (var i in items)
+        for (var i = 0; i < items.Length; i++)
         {
-            queue.Enqueue(i);
+            queue.Enqueue(items[i]);
         }
     }
     /// <summary>
@@ -58,7 +53,7 @@ public static class QueueExtensions
     /// <typeparam name="T">The Type of the items in the collection.</typeparam>
     /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from the <paramref name="collection"/> to.</param>
     /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
-    public static void Enqueue<T>(this LimitedQueue<T> queue, IEnumerable<T> collection)
+    public static void EnqueueRange<T>(this LimitedQueue<T> queue, IEnumerable<T> collection)
     {
         foreach (var item in collection)
         {

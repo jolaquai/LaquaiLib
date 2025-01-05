@@ -48,11 +48,11 @@ public static class StreamExtensions
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to read from.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
-    /// <returns>A <see cref="Task{T}"/> that represents the asynchronous read operation and proxies for the read bytes.</returns>
+    /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous read operation and resolves to the bytes read.</returns>
     public static async Task<byte[]> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken = default)
     {
         var buffer = new byte[stream.Length - stream.Position];
-        await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        await stream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
         return buffer;
     }
     /// <summary>
@@ -61,8 +61,7 @@ public static class StreamExtensions
     /// <param name="stream">The <see cref="Stream"/> to read from.</param>
     /// <param name="memory">A <see cref="Memory{T}"/> of <see cref="byte"/> to read into.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous read operation.</returns>
     public static async Task ReadToEndAsync(this Stream stream, Memory<byte> memory, CancellationToken cancellationToken = default)
     {
         var requiredSpace = stream.Length - stream.Position;
@@ -70,6 +69,6 @@ public static class StreamExtensions
         {
             throw new ArgumentException($"The provided {nameof(Memory<>)} is too small to hold the rest of the stream (can only accommodate {memory.Length}/{requiredSpace} bytes).");
         }
-        await stream.ReadAsync(memory, cancellationToken).ConfigureAwait(false);
+        await stream.ReadExactlyAsync(memory, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -115,5 +115,5 @@ public static class FileSystemModelExtensions
     /// </summary>
     /// <param name="fi">The <see cref="FileInfo"/> instance representing the file to open.</param>
     /// <returns>A <see cref="FileStream"/> instance for the file represented by <paramref name="fi"/>.</returns>
-    public static FileStream Write(this FileInfo fi) => fi.Open(FileMode.Create);
+    public static FileStream Open(this FileInfo fi) => fi.Open(FileMode.Create);
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 using CommandLine;
 
@@ -33,8 +34,6 @@ public static partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-
-
 
         ;
     }

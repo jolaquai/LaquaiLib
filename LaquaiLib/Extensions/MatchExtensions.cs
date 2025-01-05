@@ -1,4 +1,4 @@
-using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace LaquaiLib.Extensions;
@@ -8,6 +8,9 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class MatchExtensions
 {
+    [UnsafeAccessor(UnsafeAccessorKind.Field)]
+    private static extern ref Regex _regex(Match match);
+
     /// <summary>
     /// Retrieves the <see cref="Regex"/> instance that was used to create this <see cref="Match"/>.
     /// </summary>
@@ -16,6 +19,7 @@ public static class MatchExtensions
     public static Regex GetRegex(this Match match)
     {
         ArgumentNullException.ThrowIfNull(match);
-        return typeof(Match).GetField("_regex", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue<Regex>(match);
+        // Throw away the ref
+        return _regex(match);
     }
 }
