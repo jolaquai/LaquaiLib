@@ -33,6 +33,12 @@ public class NullStream : Stream
         get => 0;
         set { }
     }
+    /// <inheritdoc/>
+    public override int WriteTimeout
+    {
+        get => 0;
+        set { }
+    }
 
     /// <inheritdoc/>
     public override void Flush() { }
@@ -63,16 +69,22 @@ public class ExceptStream : Stream
     /// <inheritdoc/>
     public override long Position
     {
-        get => 0;
-        set { }
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
     }
     /// <inheritdoc/>
     public override bool CanTimeout { get; }
     /// <inheritdoc/>
     public override int ReadTimeout
     {
-        get => 0;
-        set { }
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
+    }
+    /// <inheritdoc/>
+    public override int WriteTimeout
+    {
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
     }
 
     /// <inheritdoc/>

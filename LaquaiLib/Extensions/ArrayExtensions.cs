@@ -1,4 +1,4 @@
-using System.Drawing;
+using LaquaiLib.Collections.Enumeration;
 
 namespace LaquaiLib.Extensions;
 
@@ -14,7 +14,7 @@ public static class ArrayExtensions
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
     /// <param name="source">The <see cref="Array"/> to transform.</param>
     /// <returns>The reinterpreted reference to <paramref name="source"/>.</returns>
-    public static IEnumerable<T> CastEnumerable<T>(this Array source) => System.Runtime.CompilerServices.Unsafe.As<IEnumerable<T>>(source);
+    public static IEnumerable<T> AsEnumerable<T>(this Array source) => new MultiDimArrayEnumerator<T>(source);
 
     /// <summary>
     /// Attempts to retrieve the element at the specified index from the array if that index is valid for the array.

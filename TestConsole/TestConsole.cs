@@ -1,5 +1,10 @@
 ﻿using System.Collections;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
+using CommandLine;
+
+using LaquaiLib.Streams.RandomStreams;
 using LaquaiLib.Util.Threading;
 
 namespace TestConsole;
@@ -7,7 +12,7 @@ namespace TestConsole;
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
 /// </summary>
-public partial class TestConsole
+public static partial class TestConsole
 {
     [STAThread]
     private static void Main()
@@ -22,17 +27,14 @@ public partial class TestConsole
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void cw(object obj) => Console.WriteLine(obj);
+    private static void cw(this object obj) => Console.WriteLine(obj);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void cw<T>(IEnumerable<T> enumerable) => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var trace = new StackTrace(true);
-        var frame = trace.GetFrame(0);
-        var frames = trace.GetFrames(0, 2);
-        var last = trace.GetLastFrame();
+
 
         ;
     }

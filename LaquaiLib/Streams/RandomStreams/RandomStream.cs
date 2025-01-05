@@ -1,14 +1,13 @@
-// TODO: Make this generic and able to return arbitrary types, not just bytes
-
-
 namespace LaquaiLib.Streams.RandomStreams;
 
 /// <summary>
 /// Represents a <see cref="Stream"/> that generates random bytes upon reading from it.
 /// It comes in two variants: <see cref="RandomStream"/> for applications that do not require cryptographic security and <see cref="CryptographicRandomStream"/>.
 /// </summary>
-public class RandomStream : NullStream
+public class RandomStream : ExceptStream
 {
+    public override bool CanRead => base.CanRead;
+
     /// <summary>
     /// Exposes a <see cref="System.Random"/> instance derived types may use.
     /// If unused, should be set to <see langword="null"/>.
@@ -43,7 +42,11 @@ public class RandomStream : NullStream
     /// <summary>
     /// The position in the <see cref="Stream"/>. This is irrelevant for <see cref="RandomStream"/>. Its position will never change.
     /// </summary>
-    public override long Position { get; set; } = 0;
+    public override long Position
+    {
+        get => 0;
+        set { }
+    }
 
     /// <summary>
     /// Fills the specified buffer with random bytes.
