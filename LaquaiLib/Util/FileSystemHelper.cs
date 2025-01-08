@@ -74,33 +74,37 @@ public static class FileSystemHelper
         }
 
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
-        var parallelOptions = new ParallelOptions()
-        {
-            CancellationToken = cancellationToken,
-            MaxDegreeOfParallelism = maxDegreeOfParallelism
-        };
+        var partitions = partitioner.GetPartitions(maxDegreeOfParallelism);
 
         if (copy)
         {
-            Parallel.ForEach(
-                partitioner,
-                parallelOptions,
-                newPath =>
+            _ = Parallel.ForEach(
+                partitions,
+                pathEnumerator =>
                 {
-                    var newFilePath = newPath.Replace(source, newTopPath);
-                    File.Copy(newPath, newFilePath, allowExisting);
+                    while (pathEnumerator.MoveNext())
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var current = pathEnumerator.Current;
+                        var newFilePath = current.Replace(source, newTopPath);
+                        File.Copy(current, newFilePath, allowExisting);
+                    }
                 }
             );
         }
         else
         {
-            Parallel.ForEach(
-                partitioner,
-                parallelOptions,
-                newPath =>
+            _ = Parallel.ForEach(
+                partitions,
+                pathEnumerator =>
                 {
-                    var newFilePath = newPath.Replace(source, newTopPath);
-                    File.Move(newPath, newFilePath, allowExisting);
+                    while (pathEnumerator.MoveNext())
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        var current = pathEnumerator.Current;
+                        var newFilePath = current.Replace(source, newTopPath);
+                        File.Move(current, newFilePath, allowExisting);
+                    }
                 }
             );
         }
