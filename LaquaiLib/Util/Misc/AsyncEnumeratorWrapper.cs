@@ -36,5 +36,9 @@ public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from) : IAsyncEn
         return ValueTask.CompletedTask;
     }
     /// <inheritdoc/>
-    public ValueTask<bool> MoveNextAsync() => new ValueTask<bool>(_from.MoveNext());
+    public async ValueTask<bool> MoveNextAsync()
+    {
+        var from = _from;
+        return await Task.Run(from.MoveNext).ConfigureAwait(false);
+    }
 }

@@ -148,10 +148,7 @@ public static class FileSystemHelper
 
         if (!string.IsNullOrWhiteSpace(root))
         {
-            if (!Path.IsPathRooted(root))
-            {
-                throw new ArgumentException("The root directory must be a well-formed absolute path to a directory.", nameof(root));
-            }
+            root = Path.GetFullPath(root);
 
             if (!Directory.Exists(root))
             {
