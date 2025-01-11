@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using LaquaiLib.Util;
+
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="DirectoryInfo"/> Type.
@@ -116,4 +118,29 @@ public static class FileSystemModelExtensions
     /// <param name="fi">The <see cref="FileInfo"/> instance representing the file to open.</param>
     /// <returns>A <see cref="FileStream"/> instance for the file represented by <paramref name="fi"/>.</returns>
     public static FileStream Open(this FileInfo fi) => fi.Open(FileMode.Create);
+
+    /// <summary>
+    /// Determines whether the directory represented by <paramref name="di"/> is a base of the directory represented by <paramref name="comp"/>.
+    /// </summary>
+    /// <param name="di">A <see cref="DirectoryInfo"/> instance representing a directory.</param>
+    /// <param name="comp">The <see cref="DirectoryInfo"/> instance to compare against.</param>
+    /// <returns><see langword="true"/> if <paramref name="di"/> is a base of <paramref name="comp"/>, otherwise <see langword="false"/>.</returns>
+    public static bool IsBaseOf(this DirectoryInfo di, DirectoryInfo comp)
+    {
+        ArgumentNullException.ThrowIfNull(di);
+        ArgumentNullException.ThrowIfNull(comp);
+        return FileSystemHelper.IsBaseOf(di.FullName, comp.FullName);
+    }
+    /// <summary>
+    /// Determines whether the directory represented by <paramref name="di"/> is a base of the directory represented by <paramref name="comp"/>.
+    /// </summary>
+    /// <param name="di">A <see cref="DirectoryInfo"/> instance representing a directory.</param>
+    /// <param name="comp">The path of the directory to compare against.</param>
+    /// <returns><see langword="true"/> if <paramref name="di"/> is a base of <paramref name="comp"/>, otherwise <see langword="false"/>.</returns>
+    public static bool IsBaseOf(this DirectoryInfo di, string comp)
+    {
+        ArgumentNullException.ThrowIfNull(di);
+        ArgumentNullException.ThrowIfNull(comp);
+        return FileSystemHelper.IsBaseOf(di.FullName, comp);
+    }
 }

@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using CommandLine;
 
 using LaquaiLib.Streams.RandomStreams;
+using LaquaiLib.Unsafe;
+using LaquaiLib.Util;
 using LaquaiLib.Util.Threading;
 
 namespace TestConsole;
@@ -34,6 +36,12 @@ public static partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
+
+        var proc = Process.GetProcessesByName("Random").First();
+        using var pma = new ProcessMemoryAccessor(proc);
+        var t = pma.Find(987231489745489734ul);
+        ;
+        pma.Write(t, 0, 2ul);
 
         ;
     }

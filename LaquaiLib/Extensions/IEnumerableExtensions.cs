@@ -479,7 +479,6 @@ public static partial class IEnumerableExtensions
     /// <returns><see langword="true"/> if the two source sequences are of equal length and are equivalent, otherwise <see langword="false"/>. If one of the sequences is <see langword="null"/>, both sequences must be <see langword="null"/> to be considered equivalent.</returns>
     public static bool SequenceEquivalent<T>(this IEnumerable<T> first, IEnumerable<T> second, IEqualityComparer<T> comparer = null)
     {
-        // 
         if (first == null || second == null)
         {
             return first == second;
@@ -598,6 +597,16 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
+    /// Filters a sequence of values based on a predicate if <paramref name="expr"/> is <see langword="true"/>, otherwise returns exactly the input sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence to filter.</param>
+    /// <param name="expr">A value that determines whether the input sequence should be filtered.</param>
+    /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
+    /// <returns>The filtered input sequence if <paramref name="expr"/> is <see langword="true"/>, otherwise the input sequence as is.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static IEnumerable<T> IfWhere<T>(this IEnumerable<T> source, bool expr, Func<T, bool> predicate) => expr ? source.Where(predicate) : source;
+    /// <summary>
     /// Filters a sequence of values based on a predicate. The predicate's result is inverted.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
@@ -607,16 +616,7 @@ public static partial class IEnumerableExtensions
     /// <remarks>
     /// This has essentially no purpose but to avoid the need to create a lambda that inverts the result of the predicate.
     /// </remarks>
-    public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-    {
-        foreach (var item in source)
-        {
-            if (!predicate(item))
-            {
-                yield return item;
-            }
-        }
-    }
+    public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> source, Func<T, bool> predicate) => source.Where(i => !predicate(i));
     /// <summary>
     /// Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
     /// </summary>
@@ -654,6 +654,14 @@ public static partial class IEnumerableExtensions
             }
         }
     }
+
+    /// <summary>
+    /// Indexes the elements in the input sequence; that is, each element is paired with its number of occurrences in the sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>A sequence of key-value pairs where the key is an element from the input sequence and the value is the number of occurrences of that element in the input sequence.</returns>
+    public static IEnumerable<KeyValuePair<T, int>> Indexed<T>(this IEnumerable<T> source) => source.CountBy(i => i);
 
     /// <summary>
     /// Determines if a sequence is empty.
@@ -737,6 +745,23 @@ public static partial class IEnumerableExtensions
                     return defaultValue;
                 }
         }
+    }
+
+    /// <summary>
+    /// Determines whether the majority of a sequence's elements satisfy a condition.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="predicate">The condition to check for.</param>
+    /// <returns><see langword="true"/> if the majority of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
+    public static bool Majority<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        if (!source.TryGetNonEnumeratedCount(out var total))
+        {
+            total = source.Count();
+        }
+        var count = source.Count(predicate);
+        return count > total / 2;
     }
 
     /// <summary>

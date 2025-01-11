@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 using LaquaiLib.Extensions;
 
@@ -68,4 +69,17 @@ public static class Processes
 
         _previousProcessList = currentProcessList;
     }
+
+    /// <summary>
+    /// Gets all processes whose name contains the specified string.
+    /// </summary>
+    /// <param name="name">The string to search for in the process names.</param>
+    /// <returns>An array of processes whose name contains the specified string.</returns>
+    public static Process[] FindProcesses(string name) => [.. Process.GetProcesses().Where(p => p.ProcessName.Contains(name, StringComparison.OrdinalIgnoreCase))];
+    /// <summary>
+    /// Gets all processes whose name matches the specified regular expression.
+    /// </summary>
+    /// <param name="regex">The regular expression to match against the process names.</param>
+    /// <returns>An array of processes whose name matches the specified regular expression.</returns>
+    public static Process[] FindProcesses(Regex regex) => [.. GetAllProcesses().Where(proc => regex.IsMatch(proc.ProcessName))];
 }
