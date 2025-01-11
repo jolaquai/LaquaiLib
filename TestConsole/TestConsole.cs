@@ -42,9 +42,6 @@ public static partial class TestConsole
 
         ;
     }
-
-    [GeneratedRegex(@"url = (?>(.+)\n)")]
-    private static partial Regex UrlRegex();
 }
 
 #region Discord
