@@ -136,7 +136,8 @@ public static class FileSystemHelper
                 {
                     IgnoreInaccessible = true,
                     RecurseSubdirectories = maxRecursionDepth > 0,
-                    MaxRecursionDepth = maxRecursionDepth
+                    MaxRecursionDepth = maxRecursionDepth,
+                    AttributesToSkip = FileAttributes.None
                 })
                 .AsParallel()
                 .Where(d => d.FullName.EndsWith(dirStructure, StringComparison.OrdinalIgnoreCase))

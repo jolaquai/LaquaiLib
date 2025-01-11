@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -37,14 +38,13 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var proc = Process.GetProcessesByName("Random").First();
-        using var pma = new ProcessMemoryAccessor(proc);
-        var t = pma.Find(987231489745489734ul);
-        ;
-        pma.Write(t, 0, 2ul);
+        
 
         ;
     }
+
+    [GeneratedRegex(@"url = (?>(.+)\n)")]
+    private static partial Regex UrlRegex();
 }
 
 #region Discord
