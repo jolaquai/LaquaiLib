@@ -338,34 +338,38 @@ public static partial class MemoryExtensions
     /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
     public static string ToHexString(this ReadOnlyMemory<byte> bytes) => bytes.Span.ToHexString();
 
-    // Since Span cannot and Memory does not implement IEnumerable, proxy these using a method
-    // System.Text.Json does this for enumerating over arrays or the properties of an object, too
     /// <summary>
-    /// Gets a <see cref="SpanEnumerator{T}"/> for the specified <see cref="Span{T}"/>.
+    /// Gets the index of the first occurrence of the specified <paramref name="item"/> in the <paramref name="span"/>.
+    /// The type specified need not implement <see cref="IEquatable{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the span.</typeparam>
-    /// <param name="span">The span to enumerate.</param>
-    /// <returns>The enumerator for the specified span.</returns>
-    public static SpanEnumerator<T> GetEnumerator<T>(this Span<T> span) => new SpanEnumerator<T>(span);
+    /// <param name="span">The span to search.</param>
+    /// <param name="item">The item to find.</param>
+    /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> to use for comparing elements. If omitted, <see cref="EqualityComparer{T}.Default"/> is used.</param>
+    /// <returns>The index of the first occurrence of the specified <paramref name="item"/> in the <paramref name="span"/> or <c>-1</c> if the item was not found.</returns>
+    /// <remarks>
+    /// This method is not optimized like the framework-provided <see cref="Span{T}"/> methods.
+    /// </remarks>
+    public static int IndexOf<T>(this ReadOnlySpan<T> span, T item, IEqualityComparer<T> comparer = null)
+    {
+        comparer ??= EqualityComparer<T>.Default;
+        for (var i = 0; i < span.Length; i++)
+        {
+            if (comparer.Equals(span[i], item))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
     /// <summary>
-    /// Gets a <see cref="SpanEnumerator{T}"/> for the specified <see cref="ReadOnlySpan{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of the elements in the span.</typeparam>
-    /// <param name="span">The span to enumerate.</param>
-    /// <returns>The enumerator for the specified span.</returns>
-    public static SpanEnumerator<T> GetEnumerator<T>(this ReadOnlySpan<T> span) => new SpanEnumerator<T>(span);
-    /// <summary>
-    /// Gets a <see cref="MemoryEnumerator{T}"/> for the specified <see cref="Memory{T}"/>.
+    /// Gets the index of the first occurrence of the specified <paramref name="item"/> in the <paramref name="memory"/>.
+    /// The type specified need not implement <see cref="IEquatable{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of the elements in the memory.</typeparam>
-    /// <param name="memory">The memory to enumerate.</param>
-    /// <returns>The enumerator for the specified memory.</returns>
-    public static MemoryEnumerator<T> GetEnumerator<T>(this Memory<T> memory) => new MemoryEnumerator<T>(memory);
-    /// <summary>
-    /// Gets a <see cref="MemoryEnumerator{T}"/> for the specified <see cref="ReadOnlyMemory{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of the elements in the memory.</typeparam>
-    /// <param name="memory">The memory to enumerate.</param>
-    /// <returns>The enumerator for the specified memory.</returns>
-    public static MemoryEnumerator<T> GetEnumerator<T>(this ReadOnlyMemory<T> memory) => new MemoryEnumerator<T>(memory);
+    /// <param name="memory">The memory to search.</param>
+    /// <param name="item">The item to find.</param>
+    /// <param name="comparer">The <see cref="IEqualityComparer{T}"/> to use for comparing elements. If omitted, <see cref="Comparer{T}.Default"/> is used.</param>
+    /// <returns>The index of the first occurrence of the specified <paramref name="item"/> in the <paramref name="memory"/> or <c>-1</c> if the item was not found.</returns>
+    public static int IndexOf<T>(this ReadOnlyMemory<T> memory, T item, IEqualityComparer<T> comparer = null) => memory.Span.IndexOf(item, comparer);
 }

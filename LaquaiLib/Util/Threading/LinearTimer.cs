@@ -165,6 +165,7 @@ public class LinearTimer
 /// </remarks>
 public class AsyncTimer : IDisposable
 {
+    // this is nullable on purpose to double up as a cancellation token
     private bool? invoke = false;
     private PeriodicTimer timer;
     private readonly Task run;
@@ -215,13 +216,14 @@ public class AsyncTimer : IDisposable
     /// <param name="interval">The interval between invocations of the callback.</param>
     /// <param name="state">The state object passed to the callback on each invocation.</param>
     /// <param name="callbacks">The callbacks to invoke periodically.</param>
-    public AsyncTimer(TimeSpan interval, object state, ReadOnlySpan<Func<object, Task>> callbacks)
+    public AsyncTimer(TimeSpan interval, object state, params ReadOnlySpan<Func<object, Task>> callbacks)
     {
         State = state;
         for (var i = 0; i < callbacks.Length; i++)
         {
             Callback += callbacks[i];
         }
+
         timer = new PeriodicTimer(interval);
         run = Task.Run(async () =>
         {
@@ -263,7 +265,7 @@ public class AsyncTimer : IDisposable
     /// <param name="interval">The interval between invocations of the callback.</param>
     /// <param name="state">The state object passed to the callback on each invocation.</param>
     /// <param name="callbacks">The callbacks to invoke periodically.</param>
-    public static AsyncTimer Start(TimeSpan interval, object state, ReadOnlySpan<Func<object, Task>> callbacks)
+    public static AsyncTimer Start(TimeSpan interval, object state, params ReadOnlySpan<Func<object, Task>> callbacks)
     {
         var timer = new AsyncTimer(interval, state, callbacks);
         timer.Start();

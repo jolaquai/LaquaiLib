@@ -10,6 +10,7 @@ using LaquaiLib.Streams.RandomStreams;
 using LaquaiLib.Unsafe;
 using LaquaiLib.Util;
 using LaquaiLib.Util.Threading;
+using LaquaiLib.Util.WpfForms;
 
 namespace TestConsole;
 
@@ -21,7 +22,7 @@ public static partial class TestConsole
     [STAThread]
     private static void Main()
     {
-        // FirstChanceExceptionHandlers.RegisterAll(); 
+        // FirstChanceExceptionHandlers.RegisterAll();
 
         using (var scope = TestCore.TestCore.GetScope().ConfigureAwait(false).GetAwaiter().GetResult())
         {
@@ -37,8 +38,6 @@ public static partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-
-        
 
         ;
     }

@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace LaquaiLib.Collections.Enumeration;
 
+#pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
+
 /// <summary>
 /// Implements the enumerator pattern to enumerate the elements of a multidimensional array sequentially.
 /// </summary>
@@ -47,7 +49,7 @@ public unsafe struct MultiDimArrayEnumerator<T> : IEnumerable<T>, IEnumerator<T>
     public readonly IEnumerator<T> GetEnumerator() => this;
     readonly IEnumerator IEnumerable.GetEnumerator() => this;
 
-    public void Dispose()
+    public readonly void Dispose()
     {
         _handle.Free();
         GC.SuppressFinalize(this);
