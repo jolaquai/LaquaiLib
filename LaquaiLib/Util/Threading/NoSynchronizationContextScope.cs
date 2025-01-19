@@ -20,6 +20,8 @@ public readonly struct NoSynchronizationContextScope : IDisposable
         _previousContext = SynchronizationContext.Current;
         SynchronizationContext.SetSynchronizationContext(null);
     }
-    /// <inheritdoc/>
+    /// <summary>
+    /// Leaves the scope and restores the previous <see cref="SynchronizationContext"/> if it was not <see langword="null"/>.
+    /// </summary>
     public readonly void Dispose() => SynchronizationContext.SetSynchronizationContext(_previousContext);
 }

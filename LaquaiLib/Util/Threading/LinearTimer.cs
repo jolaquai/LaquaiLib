@@ -186,7 +186,7 @@ public class AsyncTimer : IDisposable
         }
     }
     /// <summary>
-    /// Gets or sets the state object passed to the 
+    /// Gets or sets the state object passed to the callback on each invocation.
     /// </summary>
     public object State { get; set; }
 
@@ -274,6 +274,7 @@ public class AsyncTimer : IDisposable
 
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
         invoke = null;
         timer.Dispose();
         timer = null;

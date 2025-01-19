@@ -1,4 +1,7 @@
-﻿namespace LaquaiLib.Util;
+﻿using System.Numerics;
+using System.Security.Cryptography;
+
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Contains helper methods for arrays.
@@ -12,12 +15,12 @@ public static class ArrayHelper
     /// <param name="itemsArrays">The arrays of items to sort.</param>
     public static void Sort<TKey>(TKey[] keys, params object[][] itemsArrays) => Sort(keys, null, itemsArrays);
     /// <summary>
-    /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of items arrays using the specified <paramref name="comparer"/>.
+    /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/>.
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="comparer">The comparer to use for sorting the keys.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
-    public static void Sort<TKey>(TKey[] keys, IComparer<TKey> comparer, params object[][] itemsArrays)
+    public static void Sort<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays)
     {
         comparer ??= Comparer<TKey>.Default;
 
@@ -25,7 +28,7 @@ public static class ArrayHelper
         ArgumentNullException.ThrowIfNull(itemsArrays);
         if (itemsArrays.Length == 0)
         {
-            throw new ArgumentException("At least one items array must be passed.");
+            return; // Nothing to sort
         }
 
         var keysLength = keys.Length;
@@ -34,12 +37,8 @@ public static class ArrayHelper
             throw new ArgumentException("The length of the keys array must be equal to the length of all items arrays.");
         }
 
-        var indices = new int[keysLength];
-        for (var i = 0; i < keysLength; i++)
-        {
-            indices[i] = i;
-        }
-
+        // Enumerable.Range is vectorized
+        var indices = Enumerable.Range(0, keysLength).ToArray();
         Array.Sort(keys, indices, comparer);
 
         // If the indices array didn't change (it's SequenceEquals to the original ascending ints), then leave early
@@ -49,7 +48,7 @@ public static class ArrayHelper
         }
 
         // Since we know all the passed arrays have the same length, we can use the same temp array for all of them in turn
-        var temp = new object[keysLength];
+        var temp = new TValue[keysLength];
         for (var i = 0; i < itemsArrays.Length; i++)
         {
             // Copy the current array to the temp array

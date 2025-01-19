@@ -5,7 +5,7 @@ namespace LaquaiLib.Collections.Enumeration;
 /// </summary>
 /// <typeparam name="T">The type of the elements in the <see cref="ReadOnlyMemory{T}"/>.</typeparam>
 /// <param name="memory">The <see cref="ReadOnlyMemory{T}"/> to enumerate.</param>
-public ref struct MemoryEnumerator<T>(ReadOnlyMemory<T> memory)
+public struct MemoryEnumerator<T>(ReadOnlyMemory<T> memory)
 {
     private readonly ReadOnlyMemory<T> _memory = memory;
     private int _index = -1;

@@ -1,18 +1,4 @@
-﻿using System.Collections;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text.RegularExpressions;
-
-using CommandLine;
-
-using LaquaiLib.Streams.RandomStreams;
-using LaquaiLib.Unsafe;
-using LaquaiLib.Util;
-using LaquaiLib.Util.Threading;
-using LaquaiLib.Util.WpfForms;
-
-namespace TestConsole;
+﻿namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -39,7 +25,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        ;
+        ; 
     }
 }
 

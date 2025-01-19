@@ -83,7 +83,11 @@ public static class RandomMath
     /// <param name="number">The number to round.</param>
     /// <param name="multiple">The number a multiple of which <paramref name="number"/> is to be rounded to.</param>
     /// <returns><paramref name="number"/> rounded to a multiple of <paramref name="multiple"/>.</returns>
-    public static double RoundToMultiple(double number, double multiple = 1) => Math.Round(number * multiple) / multiple;
+    public static double RoundToMultiple(double number, double multiple = 1)
+    {
+        // Skip the extra step if Math.Round is enough
+        return multiple == 1d ? Math.Round(number) : Math.Round(number * multiple) / multiple;
+    }
 
     /// <summary>
     /// Smooths two functions over a given interval using a smoothing function that is a linear combination of the two functions.
@@ -136,7 +140,7 @@ public static class RandomMath
         /// <param name="y">The <c>y</c>-coordinate of the point to trace the circle around.</param>
         /// <param name="radius">The radius of the circle.</param>
         /// <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
-        /// <returns>A <see cref="Tuple{T1, T2}"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
+        /// <returns>A <see cref="ValueTuple{T1, T2}"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
         public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double radius, double resolution = 360) => EllipseAround(x, y, radius, radius, resolution);
     }
 }

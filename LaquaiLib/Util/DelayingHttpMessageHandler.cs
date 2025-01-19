@@ -29,7 +29,10 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     /// </summary>
     public DateTime NextCallAllowed => new DateTime(nextCallAllowed);
 
-    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+    // Could use a Lock here too, which would be more efficient, but since we need cancellation support on the potential wait, we use a SemaphoreSlim
+    private readonly SemaphoreSlim _semaphore;
+    // Also allocate a static one if consumers request an instance that contributes to the global delayed handler pool
+    private static readonly SemaphoreSlim _globalSemaphore = new SemaphoreSlim(1, 1);
 
     /// <summary>
     /// Initializes a new <see cref="DelayingHttpMessageHandler"/> with the specified minimum delay between requests that uses a default <see cref="HttpClientHandler"/> to delegate requests to.
@@ -43,9 +46,23 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     /// </summary>
     /// <param name="minimumDelay">The minimum delay between requests.</param>
     /// <param name="innerHandler">The inner handler to delegate sending requests to.</param>
-    public DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandler innerHandler) : base(innerHandler)
+    public DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandler innerHandler) : this(minimumDelay, innerHandler, false)
+    {
+    }
+    /// <summary>
+    /// Initializes a new <see cref="DelayingHttpMessageHandler"/> with the specified minimum delay between requests that uses the specified <paramref name="innerHandler"/> to delegate requests to.
+    /// </summary>
+    /// <param name="minimumDelay">The minimum delay between requests.</param>
+    /// <param name="innerHandler">The inner handler to delegate sending requests to.</param>
+    /// <param name="asGlobalHandler">Whether to observe a global semaphore for all instances created with this set to <see langword="true"/> or observe a local semaphore for this instance.</param>
+    /// <remarks>
+    /// This constructor is useful when many <see cref="HttpClient"/>s target the same server and should share the same delay between requests. Setting <paramref name="asGlobalHandler"/> to <see langword="true"/> synchronizes the delay between all instances created this way.
+    /// </remarks>
+    public DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandler innerHandler, bool asGlobalHandler) : base(innerHandler)
     {
         minDelay = minimumDelay.Ticks;
+        // Use a global semaphore if requested, otherwise create a new one
+        _semaphore = asGlobalHandler ? _globalSemaphore : new SemaphoreSlim(1, 1);
     }
 
     /// <summary>
