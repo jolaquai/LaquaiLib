@@ -15,6 +15,12 @@ public static class IEnumerableExtensionsCancellationToken
         var tcs = new TaskCompletionSource<CancellationToken>();
         foreach (var token in tokens)
         {
+            if (token.IsCancellationRequested)
+            {
+                _ = tcs.TrySetResult(token);
+                return tcs.Task;
+            }
+
             _ = token.Register(() => tcs.TrySetResult(token));
         }
         return tcs.Task;
