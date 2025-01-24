@@ -86,7 +86,7 @@ public static class RandomMath
     public static double RoundToMultiple(double number, double multiple = 1)
     {
         // Skip the extra step if Math.Round is enough
-        return multiple == 1d ? Math.Round(number) : Math.Round(number * multiple) / multiple;
+        return multiple == 1d ? Numerics.Round(number) : Numerics.Round(number * multiple) / multiple;
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public static class RandomMath
     /// <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
     /// <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of a smoothing function that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => InterpolateLinear(f, g, x => x > xEnd ? 1 : (x < xStart ? 0 : Math.Pow(x - xStart, 2) / (Math.Pow(x - xStart, 2) + Math.Pow(xEnd - x, 2))), xStart, xEnd);
+    public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => InterpolateLinear(f, g, x => x > xEnd ? 1 : (x < xStart ? 0 : Numerics.Pow(x - xStart, 2) / (Numerics.Pow(x - xStart, 2) + Numerics.Pow(xEnd - x, 2))), xStart, xEnd);
 
     /// <summary>
     /// Contains methods that use trigonometric functions.
@@ -131,7 +131,7 @@ public static class RandomMath
         /// <param name="rCos">The "vertical" radius of the ellipse. If equal to <paramref name="rSin"/>, the ellipse is a circle. In that case, use <see cref="EllipseAround(double, double, double, double)"/> instead.</param>
         /// <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
         /// <returns>A <see cref="Tuple{T1, T2}"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an ellipse with the specified radii <paramref name="rSin"/> and <paramref name="rCos"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
-        public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double rCos, double resolution = 360) => (new Func<double, double>(d => (rSin * Math.Sin(d / resolution * (2 * Math.PI))) + x), new Func<double, double>(d => (rCos * -Math.Cos(d / resolution * (2 * Math.PI))) + y));
+        public static (Func<double, double> Sin, Func<double, double> Cos) EllipseAround(double x, double y, double rSin, double rCos, double resolution = 360) => (new Func<double, double>(d => (rSin * Numerics.Sin(d / resolution * (2 * Numerics.PI))) + x), new Func<double, double>(d => (rCos * -Numerics.Cos(d / resolution * (2 * Numerics.PI))) + y));
 
         /// <summary>
         /// Returns the <c>sin</c> and <c>cos</c> functions that, together, trace a circle with specified radius and a given smoothness around a point.

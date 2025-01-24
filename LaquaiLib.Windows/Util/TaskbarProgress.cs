@@ -64,7 +64,7 @@ public partial class TaskbarProgress
         steps = steps > duration ? duration : steps;
         var wait = TimeSpan.FromMilliseconds(duration) / steps;
 
-        static double RoundToMultiple(double value, double multiple) => Math.Round(value / multiple) * multiple;
+        static double RoundToMultiple(double value, double multiple) => Numerics.Round(value / multiple) * multiple;
 
         var values =
             Core.Miscellaneous.Range(from, to, (to - from) / steps)

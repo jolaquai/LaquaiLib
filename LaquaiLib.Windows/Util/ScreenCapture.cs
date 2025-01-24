@@ -36,7 +36,7 @@ public partial class ScreenCapture
             bool Callback(nint hDesktop, nint hdc, ref Rect pRect, int dwData)
             {
                 GetScaleFactorForMonitor(hDesktop, out var scale);
-                scales.Add(Math.Round(scale / 100d / 0.25) * 0.25);
+                scales.Add(Numerics.Round(scale / 100d / 0.25) * 0.25);
                 // scales.Add(scale / 100d);
 
                 return true;

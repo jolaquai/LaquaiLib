@@ -44,7 +44,7 @@ public class FileSizePartitioner : Partitioner<string>
         var totalSize = ordered.Sum(static pair => pair.Value.Length);
         var partitions = new List<IEnumerator<string>>(partitionCount);
 
-        var partitionSize = (int)Math.Ceiling((double)totalSize / partitionCount);
+        var partitionSize = (int)Numerics.Ceiling((double)totalSize / partitionCount);
         var currentPartition = new List<string>();
         var currentSize = 0L;
 

@@ -141,8 +141,8 @@ public static class OpenXmlElementExtensions
             throw new ArgumentException($"{nameof(child2)} must be a child of {nameof(element)}.", nameof(child2));
         }
 
-        var start = Math.Min(index1, index2);
-        var end = Math.Max(index1, index2);
+        var start = Numerics.Min(index1, index2);
+        var end = Numerics.Max(index1, index2);
         return children[start..(end + 1)];
     }
     
