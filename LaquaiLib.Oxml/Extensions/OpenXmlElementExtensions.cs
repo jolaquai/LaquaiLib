@@ -207,7 +207,7 @@ public static class OpenXmlElementExtensions
         where TFrom : OpenXmlElement
         where TTo : OpenXmlElement
     {
-        element.InsertAfterSelf(newElement);
+        _ = element.InsertAfterSelf(newElement);
         element.Remove();
         return newElement;
     }
@@ -226,7 +226,7 @@ public static class OpenXmlElementExtensions
     {
         for (var i = newElements.Length - 1; i >= 0; i--)
         {
-            element.InsertAfterSelf(newElements[i]);
+            _ = element.InsertAfterSelf(newElements[i]);
         }
         element.Remove();
         return element;
@@ -245,7 +245,7 @@ public static class OpenXmlElementExtensions
         var i = index.GetOffset(element.ChildElements.Count);
         foreach (var newElement in newElements)
         {
-            element.InsertAt(newElement, i++);
+            _ = element.InsertAt(newElement, i++);
         }
     }
     /// <summary>

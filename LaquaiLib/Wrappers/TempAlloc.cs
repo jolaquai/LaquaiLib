@@ -427,7 +427,7 @@ public unsafe ref struct TempAlloc : IDisposable
                 {
                     data[i - shiftAmount] = data[i];
                 }
-                Reallocate(data.Length - shiftAmount);
+                _ = Reallocate(data.Length - shiftAmount);
                 data = Slice;
             }
 
@@ -453,13 +453,13 @@ public unsafe ref struct TempAlloc : IDisposable
         for (var i = 0; i < _size; i += 4)
         {
             var slice = data[i..(i + 4 > _size ? _size : i + 4)];
-            sb.Append(Convert.ToHexString(slice));
+            _ = sb.Append(Convert.ToHexString(slice));
             if ((i + 4) % 32 == 0)
             {
-                sb.AppendLine();
+                _ = sb.AppendLine();
                 continue;
             }
-            sb.Append(' ');
+            _ = sb.Append(' ');
         }
         return sb.ToString().Trim(' ');
     }
@@ -475,9 +475,9 @@ public unsafe ref struct TempAlloc : IDisposable
         {
             foreach (var b in i < 4 ? data[..i] : data.Slice(i - 4, 4))
             {
-                sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
+                _ = sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }
-            sb.Insert(0, ' ');
+            _ = sb.Insert(0, ' ');
         }
         return sb.ToString().Trim(' ');
     }

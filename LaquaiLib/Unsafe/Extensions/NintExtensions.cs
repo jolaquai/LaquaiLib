@@ -32,8 +32,5 @@ public static unsafe class NintExtensions
     /// <param name="length">The length of the <see cref="Span{T}"/>.</param>
     /// <returns>The constructed <see cref="Span{T}"/>.</returns>
     public static Span<T> AsSpan<T>(this nint address, int length)
-        where T : unmanaged
-    {
-        return new Span<T>((void*)address, length);
-    }
+        where T : unmanaged => new Span<T>((void*)address, length);
 }

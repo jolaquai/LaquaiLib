@@ -1,10 +1,8 @@
 ﻿using System.Collections;
 using System.Numerics;
-using System.Runtime.Intrinsics;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Interfaces;
-using LaquaiLib.Util.ExceptionManagement;
 
 namespace LaquaiLib.Numerics;
 
@@ -185,7 +183,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         IReadOnlySpanProvider<T> spanProvider = null;
         try
         {
-            _data.TryGetReadOnlySpan(out spanProvider, out ReadOnlySpan<T> ros);
+            _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
             ros.Slice(row * Columns, Columns).CopyTo(result);
         }
         finally
@@ -234,7 +232,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         IReadOnlySpanProvider<T> spanProvider = null;
         try
         {
-            _data.TryGetReadOnlySpan(out spanProvider, out ReadOnlySpan<T> ros);
+            _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
             for (var i = 0; i < Rows; i++)
             {
                 result[i] = new T[Columns];
@@ -391,7 +389,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             IReadOnlySpanProvider<T> rosProvider = null;
             try
             {
-                _data.TryGetReadOnlySpan(out rosProvider, out ReadOnlySpan<T> ros);
+                _ = _data.TryGetReadOnlySpan(out rosProvider, out ReadOnlySpan<T> ros);
 
                 bool IsAllZerosFrom(ReadOnlySpan<T> span, int row)
                 {
@@ -1126,7 +1124,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             IReadOnlySpanProvider<T> spanProvider = null;
             try
             {
-                _data.TryGetReadOnlySpan(out spanProvider, out ReadOnlySpan<T> ros);
+                _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
                 if (ros.Length >= 8)
                 {
                     ros = ros[^8..];
@@ -1147,7 +1145,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             IReadOnlySpanProvider<T> spanProvider = null;
             try
             {
-                _data.TryGetReadOnlySpan(out spanProvider, out ReadOnlySpan<T> ros);
+                _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
                 if (ros.Length >= 8)
                 {
                     ros = ros[^8..];

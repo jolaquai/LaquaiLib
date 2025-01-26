@@ -146,24 +146,24 @@ public class DynamicTypeBuilder(JsonObject root)
     private static string GenerateRecordsImpl(JsonObject node, HashSet<JsonProperty> furtherTypesToConstruct)
     {
         var sb = new StringBuilder();
-        sb.AppendLine("public class __reflected{{{n}}}");
-        sb.AppendLine("{");
+        _ = sb.AppendLine("public class __reflected{{{n}}}");
+        _ = sb.AppendLine("{");
 
         foreach (var (name, value) in node)
         {
-            sb.AppendLine($"    public {GetNodeType(value, furtherTypesToConstruct)} {name} {{ get; init; }}");
+            _ = sb.AppendLine($"    public {GetNodeType(value, furtherTypesToConstruct)} {name} {{ get; init; }}");
         }
 
-        sb.AppendLine("}");
+        _ = sb.AppendLine("}");
 
-        sb.AppendLine();
+        _ = sb.AppendLine();
         for (var i = 0; i < furtherTypesToConstruct.Count; i++)
         {
             var jProp = furtherTypesToConstruct.FirstOrDefault();
             if (jProp?.Act is not null && !jProp.AlreadyDeserialized)
             {
                 jProp.AlreadyDeserialized = true;
-                sb.AppendLine(GenerateRecordsImpl(jProp.Act, furtherTypesToConstruct));
+                _ = sb.AppendLine(GenerateRecordsImpl(jProp.Act, furtherTypesToConstruct));
             }
         }
 
@@ -200,7 +200,7 @@ public class DynamicTypeBuilder(JsonObject root)
             case JsonValueKind.Array:
                 return GetNodeType(node?.AsArray().FirstOrDefault(), furtherTypes) + "[]";
             case JsonValueKind.Object:
-                furtherTypes.Add(new JsonProperty(node.GetPath(), node?.AsObject(), false));
+                _ = furtherTypes.Add(new JsonProperty(node.GetPath(), node?.AsObject(), false));
                 return node.GetPropertyName();
             case null:
                 return "dynamic?";

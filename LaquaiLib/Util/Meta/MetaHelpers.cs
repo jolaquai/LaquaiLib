@@ -98,7 +98,7 @@ public static class MetaHelpers
                 }
             }
         }
-        Task.WhenAll(tasks).ConfigureAwait(false).GetAwaiter().GetResult();
+        _ = Task.WhenAll(tasks).ConfigureAwait(false).GetAwaiter().GetResult();
 
         return [.. tasks.Where(t => t.Result is not null).Select(t => t.Result)];
     }

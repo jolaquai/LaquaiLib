@@ -1,16 +1,14 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
-using LaquaiLib.Extensions;
-
 namespace TestBenchmark;
 
 internal class Program
 {
-    static void Main()
+    private static void Main()
     {
-        BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).RunAllJoined();
-        Console.ReadLine();
+        _ = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).RunAllJoined();
+        _ = Console.ReadLine();
     }
 }
 

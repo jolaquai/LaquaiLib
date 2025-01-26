@@ -21,7 +21,7 @@ public static class DbSetExtensions
             return existing;
         }
         var newEntity = await factory().ConfigureAwait(false);
-        set.Add(newEntity);
+        _ = set.Add(newEntity);
         return newEntity;
     }
 }

@@ -16,10 +16,7 @@ public static class MemoryOrFileStream
     /// Resets the <see cref="Cutoff"/> to the initial value.
     /// </summary>
     /// <returns>The new value of <see cref="Cutoff"/>.</returns>
-    public static int ResetCutoff()
-    {
-        return Cutoff = 64 * 1024 * 1024; // 64 MB
-    }
+    public static int ResetCutoff() => Cutoff = 64 * 1024 * 1024; // 64 MB
 
     /// <summary>
     /// Creates a new <see cref="Stream"/> with the given expected payload size.
@@ -43,7 +40,7 @@ public static class MemoryOrFileStream
     {
         if (fromBeginning)
         {
-            other.Seek(0, SeekOrigin.Begin);
+            _ = other.Seek(0, SeekOrigin.Begin);
         }
         var stream = Create((int)other.Length);
         other.CopyTo(stream);

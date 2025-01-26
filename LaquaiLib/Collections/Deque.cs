@@ -67,7 +67,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         foreach (var value in values)
         {
-            AddLast(value);
+            _ = AddLast(value);
         }
     }
     /// <summary>
@@ -78,7 +78,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         for (var i = 0; i < nodes; i++)
         {
-            AddLast(default(T));
+            _ = AddLast(default(T));
         }
     }
     /// <summary>
@@ -90,7 +90,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         foreach (var value in linkedList)
         {
-            AddLast(value);
+            _ = AddLast(value);
         }
     }
     #endregion
@@ -255,7 +255,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         else
         {
             // Otherwise make this node the new head
-            AddBefore(Head, node);
+            _ = AddBefore(Head, node);
         }
 
         node.Deque = this;
@@ -294,7 +294,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         else
         {
             // Otherwise, make this node the new tail
-            AddAfter(Tail!, node);
+            _ = AddAfter(Tail!, node);
         }
 
         node.Deque = this;
@@ -479,7 +479,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
             {
                 if (nodes.IndexOf(current) > 0)
                 {
-                    RemoveNode(current);
+                    _ = RemoveNode(current);
                     removed++;
                 }
                 current = current.Next;
@@ -558,7 +558,9 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// </summary>
     /// <returns>The newly constructed <see cref="LinkedList{T}"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#pragma warning disable IDE0306 // Simplify collection initialization
     public LinkedList<T> ToLinkedList() => new LinkedList<T>(this);
+#pragma warning restore IDE0306 // Simplify collection initialization
     #endregion
 }
 

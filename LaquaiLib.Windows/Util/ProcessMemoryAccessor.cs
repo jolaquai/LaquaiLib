@@ -54,7 +54,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     public ProcessMemoryAccessor(int pid)
     {
         Process.EnterDebugMode();
-        Interlocked.Increment(ref _instanceCount);
+        _ = Interlocked.Increment(ref _instanceCount);
 
         _pid = pid;
         EnsureAllowTarget();
@@ -384,10 +384,9 @@ internal partial class ProcessMemoryAccessor : IDisposable
     {
         var main = Path.GetDirectoryName(_process.MainModule.FileName);
 
-        _modules = _process.Modules.Cast<ProcessModule>()
+        _modules = [.. _process.Modules.Cast<ProcessModule>()
             .IfWhere(!AllowSystemModules, m => !FileSystemHelper.IsBaseOf("C:\\Windows", m.FileName))
-            .IfWhere(!AllowForeignModules, m => FileSystemHelper.IsBaseOf(main, m.FileName))
-            .ToArray();
+            .IfWhere(!AllowForeignModules, m => FileSystemHelper.IsBaseOf(main, m.FileName))];
 
         var count = _modules.Length;
         _moduleNames = new string[count];
@@ -411,7 +410,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
         if (_handle != nint.Zero)
         {
-            Interop.CloseHandle(_handle);
+            _ = Interop.CloseHandle(_handle);
             _handle = nint.Zero;
         }
     }

@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-using System.Security.Cryptography;
-
-namespace LaquaiLib.Util;
+﻿namespace LaquaiLib.Util;
 
 /// <summary>
 /// Contains helper methods for arrays.

@@ -1,8 +1,5 @@
-using System.Diagnostics.Tracing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
-using Microsoft.VisualBasic;
 
 namespace LaquaiLib.Extensions;
 
@@ -389,7 +386,7 @@ public static partial class IEnumerableExtensions
             return source.Mode();
         }
 
-        var freqs = new Dictionary<TSelect, (int count, TSource elem)>();
+        var freqs = new Dictionary<TSelect, (int count, TSource elem)>(equalityComparer);
         var current = enumerator.Current;
         freqs[selector(current)] = (1, current);
 

@@ -1,14 +1,8 @@
-﻿using System.Buffers;
-using System.Diagnostics.Tracing;
-using System.Net.Http.Headers;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-using LaquaiLib.Wrappers;
+﻿using System.Runtime.InteropServices;
 
 namespace LaquaiLib.Extensions;
 
-partial class IEnumerableExtensions
+public partial class IEnumerableExtensions
 {
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Array"/>, starting at the specified
@@ -405,7 +399,7 @@ partial class IEnumerableExtensions
         {
             // Assumes sane behavior of that method
             var count = target.Count;
-            method.Invoke(target, [source]);
+            _ = method.Invoke(target, [source]);
             return target.Count - count;
         }
 

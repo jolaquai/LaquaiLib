@@ -1,6 +1,6 @@
 ﻿namespace LaquaiLib.Extensions;
 
-partial class IEnumerableExtensions
+public partial class IEnumerableExtensions
 {
     /// <summary>
     /// Sorts the elements of a sequence in ascending order according to a key extracted from each element.

@@ -29,7 +29,7 @@ public class LinearTimer
         {
             field = value;
             timer ??= new System.Threading.Timer(Execute);
-            timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -44,7 +44,7 @@ public class LinearTimer
         {
             field = value;
             timer ??= new System.Threading.Timer(Execute);
-            timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -59,7 +59,7 @@ public class LinearTimer
         {
             field = value;
             timer ??= new System.Threading.Timer(Execute);
-            timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -146,7 +146,7 @@ public class LinearTimer
         {
             // Don't assign to execution here, otherwise we'll end up with infinite continuations
             // Would defeat the purpose of the timer, wunnit now
-            execution.ContinueWith(_ => Execute(null), TaskContinuationOptions.ExecuteSynchronously);
+            _ = execution.ContinueWith(_ => Execute(null), TaskContinuationOptions.ExecuteSynchronously);
             lastAssignedContinuationId = execution.Id;
         }
     }

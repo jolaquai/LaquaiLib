@@ -116,7 +116,7 @@ public static partial class VirtualKeyUtils
     {
         cultureInfo ??= CultureInfo.CurrentCulture;
 
-        Interop.GetKeyboardState(Interop.KeyboardStateBuffer);
+        _ = Interop.GetKeyboardState(Interop.KeyboardStateBuffer);
 
         var keyboardLayout = cultureInfo.KeyboardLayoutId;
         var receiver = new string('\0', 2);
@@ -184,6 +184,6 @@ public static partial class VirtualKeyUtils
             }
             offset++;
         }
-        return arr.Where(static x => (x & msb) == msb).Select(static x => (VirtualKey)(x & ~msb)).ToArray();
+        return [.. arr.Where(static x => (x & msb) == msb).Select(static x => (VirtualKey)(x & ~msb))];
     }
 }

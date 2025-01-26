@@ -25,7 +25,7 @@ public static class StreamExtensions
     public static byte[] ToArray(this Stream stream)
     {
         var buffer = new byte[stream.Length];
-        stream.Seek(0, SeekOrigin.Begin);
+        _ = stream.Seek(0, SeekOrigin.Begin);
         stream.ReadExactly(buffer);
         return buffer;
     }

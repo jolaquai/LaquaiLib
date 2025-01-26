@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Management;
 
-using LaquaiLib.Extensions;
-
 namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>

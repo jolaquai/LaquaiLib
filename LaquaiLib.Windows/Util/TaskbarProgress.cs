@@ -89,7 +89,8 @@ public partial class TaskbarProgress
     /// <summary>
     /// Gets or sets the current value of the taskbar progress bar.
     /// </summary>
-    public double Value {
+    public double Value
+    {
         get => _taskbar!.ProgressValue;
         set => _taskbar!.ProgressValue = value;
     }

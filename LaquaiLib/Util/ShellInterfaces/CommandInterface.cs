@@ -66,7 +66,7 @@ public sealed class CommandInterface : IShellInterface
                 EnableRaisingEvents = true
             }
         };
-        instance.Process.Start();
+        _ = instance.Process.Start();
 
         // Before returning, the working directory MUST be set to the current directory
         // Unfortunately, PS doesn't care about passing ProcessStartInfo.WorkingDirectory it seems
@@ -75,19 +75,18 @@ public sealed class CommandInterface : IShellInterface
         {
             // Let's not throw and just default to what actual cmd.exe does
             // throw new InvalidOperationException($"cmd.exe cannot operate in UNC paths.");
-            var userprofile = Environment.ExpandEnvironmentVariables("%USERPROFILE%");
-            await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"").ConfigureAwait(false);
+            _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"").ConfigureAwait(false);
         }
         else
         {
-            await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"").ConfigureAwait(false);
+            _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"").ConfigureAwait(false);
         }
         return instance;
     }
     private CommandInterface()
     {
     }
-/// <inheritdoc/>
+    /// <inheritdoc/>
     public async Task<CommandDispatchResult> DispatchAsync(string input)
     {
         // 1st semaphore entry: write
@@ -113,7 +112,7 @@ public sealed class CommandInterface : IShellInterface
         }
         finally
         {
-            _syncSemaphore.Release();
+            _ = _syncSemaphore.Release();
         }
     }
     /// <inheritdoc/>
@@ -126,7 +125,7 @@ public sealed class CommandInterface : IShellInterface
         }
         finally
         {
-            _syncSemaphore.Release();
+            _ = _syncSemaphore.Release();
         }
     }
     /// <inheritdoc/>
@@ -166,10 +165,10 @@ public sealed class CommandInterface : IShellInterface
                     }
                     finally
                     {
-                        _syncSemaphore.Release();
+                        _ = _syncSemaphore.Release();
                     }
                 }, cts.Token);
-                readTask.Wait(300);
+                _ = readTask.Wait(300);
                 if (!readTask.IsCompleted)
                 {
                     cts.Cancel();
@@ -184,11 +183,11 @@ public sealed class CommandInterface : IShellInterface
         }
         return string.Join(Environment.NewLine, lines).Trim();
     }
-/// <inheritdoc/>
+    /// <inheritdoc/>
     #region public async ValueTask DisposeAsync()
     public async ValueTask DisposeAsync()
     {
-        await DispatchAsync("break").ConfigureAwait(false);
+        _ = await DispatchAsync("break").ConfigureAwait(false);
         await (Process.WaitForExitAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         Process.Dispose();
     }

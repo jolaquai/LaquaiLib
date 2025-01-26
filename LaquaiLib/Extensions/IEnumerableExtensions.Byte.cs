@@ -24,7 +24,7 @@ public static class IEnumerableExtensionsByte
             default:
             {
                 Span<byte> bytes = stackalloc byte[System.Runtime.CompilerServices.Unsafe.SizeOf<T>()];
-                enumerable.Into(bytes);
+                _ = enumerable.Into(bytes);
                 return MemoryMarshal.Read<T>(bytes);
             }
         }

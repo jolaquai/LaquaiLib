@@ -2,7 +2,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Core;
 using LaquaiLib.Wrappers;
 
@@ -141,7 +140,7 @@ public static partial class MemoryExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Memory<byte> FormatInto<T>(this Memory<byte> memory, T data, int index = 0) where T : unmanaged
     {
-        memory.Span.FormatInto(data, index);
+        _ = memory.Span.FormatInto(data, index);
         return memory[Marshal.SizeOf(data)..];
     }
 
@@ -326,7 +325,7 @@ public static partial class MemoryExtensions
         using (var pin = PinWrapper.Pin(str))
         {
             var span = pin.AsSpan(str.Length);
-            Convert.TryToHexString(bytes, span, out _);
+            _ = Convert.TryToHexString(bytes, span, out _);
         }
         return str;
     }

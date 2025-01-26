@@ -1,8 +1,5 @@
 using System.Collections.Concurrent;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
-
-using Microsoft.VisualBasic;
 
 namespace LaquaiLib.Extensions;
 
@@ -220,7 +217,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
+            _ = concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
             return;
         }
 
@@ -257,7 +254,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
+            _ = concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
             return;
         }
 
@@ -294,7 +291,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
+            _ = concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
             return;
         }
 

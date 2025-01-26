@@ -1,6 +1,4 @@
-﻿using LaquaiLib.Util;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace TestCore;
 
@@ -12,8 +10,8 @@ public static class TestCore
     {
         var services = new ServiceCollection();
 
-        services.AddSingleton<HttpClient>();
-        services.AddSingleton(Random.Shared);
+        _ = services.AddSingleton<HttpClient>();
+        _ = services.AddSingleton(Random.Shared);
 
         provider = services.BuildServiceProvider(true);
 

@@ -1,6 +1,6 @@
 ﻿namespace LaquaiLib.Extensions;
 
-partial class MemoryExtensions
+public partial class MemoryExtensions
 {
     /// <summary>
     /// Fills the specified <paramref name="span"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.

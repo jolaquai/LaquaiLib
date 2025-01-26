@@ -1,6 +1,6 @@
 ﻿namespace LaquaiLib.Extensions;
 
-partial class UriExtensions
+public partial class UriExtensions
 {
     /// <summary>
     /// Creates a new <see cref="Uri"/> with the specified query parameter set.
@@ -64,7 +64,7 @@ internal readonly struct QueryBuilder
         {
             if (value is null)
             {
-                _components.Remove(name);
+                _ = _components.Remove(name);
             }
             else
             {

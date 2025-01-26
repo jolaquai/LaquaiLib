@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace LaquaiLib.Util;
 
@@ -82,7 +81,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
         }
         finally
         {
-            _semaphore.Release();
+            _ = _semaphore.Release();
         }
 
         return base.Send(request, cancellationToken);
@@ -104,7 +103,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
         }
         finally
         {
-            _semaphore.Release();
+            _ = _semaphore.Release();
         }
 
         return await base.SendAsync(request, cancellationToken);

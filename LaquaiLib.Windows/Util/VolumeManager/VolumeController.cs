@@ -12,7 +12,8 @@ public class VolumeController
     /// <summary>
     /// The name of the process or window title this handler targets.
     /// </summary>
-    public required string ProcessNameOrTitle {
+    public required string ProcessNameOrTitle
+    {
         get;
         init
         {

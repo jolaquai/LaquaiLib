@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace LaquaiLib.Extensions;
 
-partial class IEnumerableExtensions
+public partial class IEnumerableExtensions
 {
     /// <summary>
     /// Determines if a sequence contains less than the specified number of elements.

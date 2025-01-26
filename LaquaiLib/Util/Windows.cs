@@ -102,7 +102,7 @@ public static partial class Windows
 
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -129,7 +129,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -154,7 +154,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -186,7 +186,7 @@ public static partial class Windows
         var handles = handle.Target;
         lock (handles.SyncRoot)
         {
-            handles.Add(hWnd);
+            _ = handles.Add(hWnd);
         }
 
         return true;
@@ -200,7 +200,8 @@ public static partial class Windows
     /// Occurs when the active window changes.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the current active window is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent ActiveWindowChanged {
+    public static event WindowEvent ActiveWindowChanged
+    {
         add
         {
             lock (_syncRoot)
@@ -226,7 +227,8 @@ public static partial class Windows
     /// Occurs when a new window is created / opened.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent WindowCreated {
+    public static event WindowEvent WindowCreated
+    {
         add
         {
             lock (_syncRoot)
@@ -247,7 +249,8 @@ public static partial class Windows
     /// Occurs when a window is destroyed / closed.
     /// </summary>
     /// <remarks>Before a delegate is added to this event's invocation list, the list of currently existent windows is stored internally to prevent immediately having the event fire.</remarks>
-    public static event WindowEvent WindowDestroyed {
+    public static event WindowEvent WindowDestroyed
+    {
         add
         {
             lock (_syncRoot)
@@ -676,10 +679,7 @@ public static partial class Windows
         /// Flashes the specified window <paramref name="count"/> times.
         /// </summary>
         /// <param name="count">The number of times to flash the window.</param>
-        public static void SetFlashing(uint count = 1)
-        {
-            _ = count;
-        }
+        public static void SetFlashing(uint count = 1) => _ = count;
         /// <summary>
         /// Stops the flashing of the specified window.
         /// </summary>

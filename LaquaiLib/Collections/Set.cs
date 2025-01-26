@@ -80,11 +80,11 @@ internal class Set<T> : ISet<T>
         {
             if (Contains(item))
             {
-                Remove(item);
+                _ = Remove(item);
             }
             else
             {
-                Add(item);
+                _ = Add(item);
             }
         }
     }

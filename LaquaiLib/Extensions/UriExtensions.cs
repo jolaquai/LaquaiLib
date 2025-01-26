@@ -36,7 +36,7 @@ public static partial class UriExtensions
             {
                 throw new ArgumentException($"One of the specified arguments was not of type {typeof(Uri)} or string, or specified an absolute URI.");
             }
-            sb.Append(r.ToString().TrimEnd('/') + '/');
+            _ = sb.Append(r.ToString().TrimEnd('/') + '/');
         }
         return new Uri(sb.ToString().TrimEnd('/'));
     }

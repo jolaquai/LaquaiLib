@@ -19,13 +19,15 @@ public static class PartitionerExtensions
         ArgumentNullException.ThrowIfNull(partitioner);
 
         List<T[]> list = [];
-        foreach (var enumerator in partitioner.GetPartitions(partitions))
+        var partitionEnumerators = partitioner.GetPartitions(partitions);
+        for (var i = 0; i < partitionEnumerators.Count; i++)
         {
+            var enumerator = partitionEnumerators[i];
             using (enumerator)
             {
                 list.Add([.. enumerator.AsEnumerable()]);
             }
-        } 
+        }
         return list;
     }
     /// <summary>

@@ -37,19 +37,19 @@ public class LimitedConcurrencyTaskScheduler : TaskScheduler
         _tasks.Add(task);
         if (Interlocked.Increment(ref _delegatesQueuedOrRunning) <= _maxDegreeOfParallelism)
         {
-            ThreadPool.UnsafeQueueUserWorkItem(_ =>
+            _ = ThreadPool.UnsafeQueueUserWorkItem(_ =>
             {
-                Interlocked.Increment(ref _delegatesQueuedOrRunning);
+                _ = Interlocked.Increment(ref _delegatesQueuedOrRunning);
                 try
                 {
                     while (_tasks.TryTake(out var task, Timeout.Infinite))
                     {
-                        TryExecuteTask(task);
+                        _ = TryExecuteTask(task);
                     }
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _delegatesQueuedOrRunning);
+                    _ = Interlocked.Decrement(ref _delegatesQueuedOrRunning);
                 }
             }, null);
         }

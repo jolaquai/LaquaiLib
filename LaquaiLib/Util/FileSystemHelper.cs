@@ -63,11 +63,11 @@ public static class FileSystemHelper
         }
 
         // Create the directory structure first
-        Directory.CreateDirectory(destination);
+        _ = Directory.CreateDirectory(destination);
         foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
         {
             var newDirPath = dirPath.Replace(source, destination);
-            Directory.CreateDirectory(newDirPath);
+            _ = Directory.CreateDirectory(newDirPath);
         }
 
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
