@@ -141,11 +141,11 @@ public static class OpenXmlElementExtensions
             throw new ArgumentException($"{nameof(child2)} must be a child of {nameof(element)}.", nameof(child2));
         }
 
-        var start = Numerics.Min(index1, index2);
-        var end = Numerics.Max(index1, index2);
+        var start = Math.Min(index1, index2);
+        var end = Math.Max(index1, index2);
         return children[start..(end + 1)];
     }
-    
+
     /// <summary>
     /// Enumerates the <see cref="OpenXmlElement"/>s that lie between <paramref name="element"/> and the <paramref name="last"/> element. Neither is included in the enumeration.
     /// </summary>
@@ -156,9 +156,9 @@ public static class OpenXmlElementExtensions
     {
         ArgumentNullException.ThrowIfNull(element);
         ArgumentNullException.ThrowIfNull(last);
-    
+
         return Impl();
-    
+
         IEnumerable<OpenXmlElement> Impl()
         {
             var current = element.NextSibling();
@@ -181,9 +181,9 @@ public static class OpenXmlElementExtensions
     {
         ArgumentNullException.ThrowIfNull(element);
         ArgumentNullException.ThrowIfNull(last);
-    
+
         return Impl();
-    
+
         IEnumerable<T> Impl()
         {
             var current = element.NextSibling<T>();

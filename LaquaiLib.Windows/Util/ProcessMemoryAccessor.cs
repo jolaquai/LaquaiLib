@@ -219,7 +219,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
             for (var offset = 0; offset < regionSize; offset += chunkSize)
             {
-                var sizeToRead = Numerics.Min(chunkSize, regionSize - offset);
+                var sizeToRead = Math.Min(chunkSize, regionSize - offset);
                 var readSpan = arr.AsSpan(leftover, sizeToRead);
 
                 if (!Interop.ReadProcessMemory(_handle, baseAddress + offset, readSpan, out var bytesRead))
@@ -237,7 +237,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
                 }
 
                 // Keep final overlap bytes for next iteration
-                leftover = Numerics.Min(overlap, bytesRead);
+                leftover = Math.Min(overlap, bytesRead);
                 combinedSpan.Slice(bytesRead - leftover, leftover).CopyTo(arr.AsSpan(0, leftover));
             }
         }

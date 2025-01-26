@@ -213,8 +213,8 @@ public static partial class TypeExtensions
         { "System.UInt16", "ushort" },
         { "System.Int32", "int" },
         { "System.UInt32", "uint" },
-        { "System.nint", "nint" },
-        { "System.Unint", "nuint" },
+        { "System.IntPtr", "nint" },
+        { "System.UIntPtr", "nuint" },
         { "System.Int64", "long" },
         { "System.UInt64", "ulong" },
         { "System.Single", "float" },
@@ -222,7 +222,25 @@ public static partial class TypeExtensions
         { "System.Decimal", "decimal" },
         { "System.String", "string" },
         { "System.Object", "object" },
-        { "System.Void", "void" }
+        { "System.Void", "void" },
+        { "Boolean", "bool" },
+        { "Char", "char" },
+        { "SByte", "sbyte" },
+        { "Byte", "byte" },
+        { "Int16", "short" },
+        { "UInt16", "ushort" },
+        { "Int32", "int" },
+        { "UInt32", "uint" },
+        { "IntPtr", "nint" },
+        { "UIntPtr", "nuint" },
+        { "Int64", "long" },
+        { "UInt64", "ulong" },
+        { "Single", "float" },
+        { "Double", "double" },
+        { "Decimal", "decimal" },
+        { "String", "string" },
+        { "Object", "object" },
+        { "Void", "void" },
     }.ToFrozenDictionary();
     #endregion
 
@@ -735,7 +753,12 @@ public static partial class TypeExtensions
 
         return AsKeyword(operateOn);
     }
-    private static string AsKeyword(string type) => _typeKeywordMap.TryGetValue(type, out var keyword) ? keyword : type;
+    /// <summary>
+    /// Converts a type name to its C# keyword, if it exists.
+    /// </summary>
+    /// <param name="type">The type name to convert.</param>
+    /// <returns>The type name as a C# keyword, if it exists, otherwise the original type name.</returns>
+    public static string AsKeyword(string type) => _typeKeywordMap.TryGetValue(type, out var keyword) ? keyword : type;
 
     /// <summary>
     /// Determines whether the specified <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload.

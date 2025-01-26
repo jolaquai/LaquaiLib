@@ -1,4 +1,6 @@
-﻿namespace TestConsole;
+﻿using LaquaiLib.Numerics;
+
+namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -25,7 +27,16 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        ; 
+        var mat = new Matrix<decimal>(new decimal[,]
+        {
+            { 0m, 0m, 0m },
+            { 4m, 5m, 0m },
+            { 7m, 8m, 9m },
+        });
+        var rowEchelonForm = mat.GetReducedRowEchelonForm();
+        _ = rowEchelonForm.Rank;
+
+        ;
     }
 }
 
