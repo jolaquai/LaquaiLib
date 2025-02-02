@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageVersion>$(CoreVersion)</PackageVersion>
+    <FileVersion>$(CoreVersion)</FileVersion>
+    <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
+    <Version>$(CoreVersion)</Version>
+    <AnalysisLevel>preview-all</AnalysisLevel>
+    <AnalysisMode>all</AnalysisMode>
+    <EnablePreviewFeatures>True</EnablePreviewFeatures>
+    <DebugType>embedded</DebugType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(CoreNoWarn)</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Title>LaquaiLib</Title>
+    <Authors>$(CoreAuthors)</Authors>
+    <Description>$(CoreDescription)</Description>
+    <Copyright>(C) $(CoreAuthors) 20xx</Copyright>
+    <PackageDescription>Personal library. Contains analyzers.</PackageDescription>
+    <PackageId>$(Title)</PackageId>
+    
+    <IncludeSource>True</IncludeSource>
+    <IncludeSymbols>True</IncludeSymbols>
+    <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
+    <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageOutputPath>$(CorePackageOutput)</PackageOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" PrivateAssets="all" IncludeAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.12.0" PrivateAssets="all" IncludeAssets="all" />
+</ItemGroup>
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>obj\Generated</CompilerGeneratedFilesOutputPath>
+  </PropertyGroup>
+</Project>

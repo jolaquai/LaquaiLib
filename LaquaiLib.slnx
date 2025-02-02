@@ -20,10 +20,12 @@
     <Project Path="TestCore\TestCore.csproj" />
     <Project Path="TestWpf\TestWpf.csproj" />
   </Folder>
+  <Project Path="LaquaiLib.Analyzers/LaquaiLib.Analyzers.csproj" Id="85d7011f-6162-403a-b68b-5f4464f3adf6" />
   <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
   <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" />
   <Project Path="LaquaiLib.DependencyInjection/LaquaiLib.DependencyInjection.csproj" Id="0af7bc36-e21f-45c5-8813-f993e244a6ba" />
   <Project Path="LaquaiLib.EF/LaquaiLib.EF.csproj" Id="7bc7e0bf-d17e-4a86-ac78-d5b5a28f16d9" />
+  <Project Path="LaquaiLib.Generators/LaquaiLib.Generators.csproj" Id="471284f4-3ee8-462f-8a15-f01e3a9179cf" />
   <Project Path="LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
   <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
   <Project Path="LaquaiLib\LaquaiLib.csproj" />

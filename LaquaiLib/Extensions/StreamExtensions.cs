@@ -3,7 +3,7 @@ namespace LaquaiLib.Extensions;
 /// <summary>
 /// Provides extension methods for the <see cref="Stream"/> Type.
 /// </summary>
-public static class StreamExtensions
+public static partial class StreamExtensions
 {
     /// <summary>
     /// Reads all bytes from the current position to the end of the <see cref="Stream"/> and advances the position within it to the end.

@@ -1,4 +1,8 @@
-﻿using LaquaiLib.Numerics;
+﻿using System.IO;
+using System.Windows.Input.Manipulations;
+
+using LaquaiLib.Numerics;
+using LaquaiLib.Util;
 
 namespace TestConsole;
 
@@ -22,20 +26,16 @@ public static partial class TestConsole
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void cw(this object obj) => Console.WriteLine(obj);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void cw<T>(IEnumerable<T> enumerable) => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
+    private static void cw<T>(this IEnumerable<T> enumerable) => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var mat = new Matrix<decimal>(new decimal[,]
-        {
-            { 0m, 0m, 0m },
-            { 4m, 5m, 0m },
-            { 7m, 8m, 9m },
-        });
-        var rowEchelonForm = mat.GetReducedRowEchelonForm();
-        _ = rowEchelonForm.Rank;
+        int[] keys = [6,5,4,3,2,1];
+        string[] names = ["a", "b", "c","d","e","f"];
+        int[] values = [2,1,4,3,6,5];
 
+        ArrayHelper.SortDescending(keys, names, values);
         ;
     }
 }

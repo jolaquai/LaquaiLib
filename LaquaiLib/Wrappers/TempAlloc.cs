@@ -2,12 +2,14 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using LaquaiLib.Interfaces;
+
 namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.
 /// </summary>
-public unsafe ref struct TempAlloc : IDisposable
+public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
 {
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer.
@@ -18,22 +20,18 @@ public unsafe ref struct TempAlloc : IDisposable
         _address = Marshal.AllocHGlobal(bytes);
         _size = bytes;
     }
-
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
     /// </summary>
     /// <param name="bytes">The amount of bytes to allocate.</param>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-    public TempAlloc(int bytes, bool clear)
+    public TempAlloc(int bytes, bool clear) : this(bytes)
     {
-        _address = Marshal.AllocHGlobal(bytes);
-        _size = bytes;
         if (clear)
         {
-            Slice.Clear();
+            Span.Clear();
         }
     }
-
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> as a wrapper around existing allocated memory.
     /// </summary>
@@ -44,7 +42,6 @@ public unsafe ref struct TempAlloc : IDisposable
         _address = address;
         _size = size;
     }
-
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> as a wrapper around existing allocated memory.
     /// </summary>
@@ -57,7 +54,7 @@ public unsafe ref struct TempAlloc : IDisposable
         _size = size;
         if (clear)
         {
-            Slice.Clear();
+            Span.Clear();
         }
     }
 
@@ -66,18 +63,14 @@ public unsafe ref struct TempAlloc : IDisposable
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TempAlloc Create<T>()
-        where T : struct => new TempAlloc(Marshal.SizeOf<T>());
-
+    public static TempAlloc Create<T>() where T : struct => new TempAlloc(Marshal.SizeOf<T>());
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>, optionally clearing any previous data.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TempAlloc Create<T>(bool clear)
-        where T : struct => new TempAlloc(Marshal.SizeOf<T>(), clear);
-
+    public static TempAlloc Create<T>(bool clear) where T : struct => new TempAlloc(Marshal.SizeOf<T>(), clear);
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
@@ -91,7 +84,6 @@ public unsafe ref struct TempAlloc : IDisposable
             ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
             : new TempAlloc(Marshal.SizeOf<T>() * count);
     }
-
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
@@ -106,7 +98,6 @@ public unsafe ref struct TempAlloc : IDisposable
             ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
             : new TempAlloc(Marshal.SizeOf<T>() * count, clear);
     }
-
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> for the
     /// </summary>
@@ -126,7 +117,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// </summary>
     /// <param name="index">An <see cref="Index"/> that represents the index of the byte to retrieve.</param>
     /// <returns>A pointer to the byte at the given <paramref name="index"/>.</returns>
-    public byte* this[Index index]
+    public readonly byte* this[Index index]
     {
         get
         {
@@ -139,13 +130,13 @@ public unsafe ref struct TempAlloc : IDisposable
     /// </summary>
     /// <param name="range">A <see cref="Range"/> that represents the range of bytes to retrieve.</param>
     /// <returns>The created <see cref="Span{T}"/> of <see cref="byte"/> slice.</returns>
-    public Span<byte> this[Range range]
+    public readonly Span<byte> this[Range range]
     {
         get
         {
             ObjectDisposedException.ThrowIf(IsDisposed, _address);
             var (start, length) = range.GetOffsetAndLength(_size);
-            return Slice.Slice(start, length);
+            return Span.Slice(start, length);
         }
     }
     /// <summary>
@@ -154,7 +145,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <param name="start">The start index of the slice.</param>
     /// <param name="length">The length of the slice.</param>
     /// <returns>The created <see cref="Span{T}"/> of <see cref="byte"/> slice.</returns>
-    public Span<byte> this[int start, int length] => this[start..length];
+    public readonly Span<byte> this[int start, int length] => this[start..length];
     #endregion
 
     private nint _address;
@@ -163,7 +154,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// The address of the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public nint Address
+    public readonly nint Address
     {
         get
         {
@@ -174,7 +165,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// Returns the address of the memory region this <see cref="TempAlloc"/> wraps as a pointer to an unspecified type.
     /// </summary>
-    public void* GetPointer()
+    public readonly void* GetPointer()
     {
         ObjectDisposedException.ThrowIf(IsDisposed, _address);
         return (void*)_address;
@@ -184,7 +175,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// </summary>
     /// <typeparam name="T">The unmanaged <see cref="Type"/> to cast the pointer to.</typeparam>
     /// <returns>The pointer as specified.</returns>
-    public T* GetPointer<T>()
+    public readonly T* GetPointer<T>()
         where T : unmanaged
     {
         ObjectDisposedException.ThrowIf(IsDisposed, _address);
@@ -193,7 +184,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bytes.
     /// </summary>
-    public int Size
+    public readonly int Size
     {
         get
         {
@@ -204,7 +195,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// The size of the memory region this <see cref="TempAlloc"/> wraps in bits.
     /// </summary>
-    public int Bits
+    public readonly int Bits
     {
         get
         {
@@ -215,7 +206,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// A <see cref="Span{T}"/> of <see cref="byte"/> that represents the memory region this <see cref="TempAlloc"/> wraps.
     /// </summary>
-    public Span<byte> Slice
+    public readonly Span<byte> Span
     {
         get
         {
@@ -252,7 +243,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to cast the contents of the memory region to.</typeparam>
     /// <returns>The entire contents of the memory region this <see cref="TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
-    public T As<T>() => As<T>(0, _size);
+    public readonly T As<T>() => As<T>(0, _size);
     /// <summary>
     /// Attempts to cast the content of a slice of the memory region this <see cref="TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
     /// </summary>
@@ -260,11 +251,11 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <param name="offset">The offset at which to start the slice.</param>
     /// <param name="length">The length of the slice.</param>
     /// <returns>The contents of the slice of the memory region this <see cref="TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
-    public T As<T>(int offset, int length)
+    public readonly T As<T>(int offset, int length)
     {
         ObjectDisposedException.ThrowIf(IsDisposed, _address);
 
-        var block = Slice.Slice(offset, length).ToArray();
+        var block = Span.Slice(offset, length).ToArray();
         try
         {
             fixed (byte* bytePtr = block)
@@ -293,16 +284,16 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// Clears the memory region this <see cref="TempAlloc"/> wraps (sets all bytes to zero).
     /// </summary>
-    public void Clear()
+    public readonly void Clear()
     {
         ObjectDisposedException.ThrowIf(_address == nint.Zero && _size == -1, _address);
-        Slice.Clear();
+        Span.Clear();
     }
 
     /// <summary>
     /// Searches for the first occurrence of a given <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> in the memory region this <see cref="TempAlloc"/> wraps and replaces it with memory represented by another <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/>.
     /// </summary>
-    /// <param name="search">The sequence of bytes to find in <see cref="Slice"/>.</param>
+    /// <param name="search">The sequence of bytes to find in <see cref="Span"/>.</param>
     /// <param name="replacement">The sequence of bytes to replace the first occurrence of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
     /// <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
     /// <para/><list type="bullet">
@@ -342,7 +333,7 @@ public unsafe ref struct TempAlloc : IDisposable
     /// <summary>
     /// Searches for all occurrences of a given <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> in the memory region this <see cref="TempAlloc"/> wraps and replaces them with memory represented by another <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/>.
     /// </summary>
-    /// <param name="search">The sequence of bytes to find in <see cref="Slice"/>.</param>
+    /// <param name="search">The sequence of bytes to find in <see cref="Span"/>.</param>
     /// <param name="replacement">The sequence of bytes to replace the occurrences of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
     /// <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
     /// <para/><list type="bullet">
@@ -377,7 +368,7 @@ public unsafe ref struct TempAlloc : IDisposable
     }
     private bool ReplaceLonger(ReadOnlySpan<byte> search, ReadOnlySpan<byte> replacement, bool shift)
     {
-        var data = Slice;
+        var data = Span;
 
         if (data.IndexOf(search) is var location and >= 0)
         {
@@ -387,7 +378,7 @@ public unsafe ref struct TempAlloc : IDisposable
                 var newLength = data.Length + (replacement.Length - (data.Length - location));
                 if (Reallocate(newLength))
                 {
-                    data = Slice;
+                    data = Span;
                 }
             }
 
@@ -413,7 +404,7 @@ public unsafe ref struct TempAlloc : IDisposable
     }
     private bool ReplaceShorter(ReadOnlySpan<byte> search, ReadOnlySpan<byte> replacement, bool shift)
     {
-        var data = Slice;
+        var data = Span;
 
         if (data.IndexOf(search) is var location and >= 0)
         {
@@ -428,7 +419,7 @@ public unsafe ref struct TempAlloc : IDisposable
                     data[i - shiftAmount] = data[i];
                 }
                 _ = Reallocate(data.Length - shiftAmount);
-                data = Slice;
+                data = Span;
             }
 
             if (replacement.Length > 0)
@@ -446,9 +437,9 @@ public unsafe ref struct TempAlloc : IDisposable
     /// Serializes the contents of the memory region this <see cref="TempAlloc"/> wraps to a <see cref="string"/> of hexadecimal characters, grouped into 4-byte words, grouped into 32-byte lines.
     /// </summary>
     /// <returns>The string as described.</returns>
-    public string ToHexString()
+    public readonly string ToHexString()
     {
-        var data = Slice;
+        var data = Span;
         var sb = new StringBuilder();
         for (var i = 0; i < _size; i += 4)
         {
@@ -467,9 +458,9 @@ public unsafe ref struct TempAlloc : IDisposable
     /// Serializes the contents of the memory region this <see cref="TempAlloc"/> wraps to a <see cref="string"/> of binary characters, grouped into 32-bit words.
     /// </summary>
     /// <returns>The string as described.</returns>
-    public string ToBinaryString()
+    public readonly string ToBinaryString()
     {
-        var data = Slice;
+        var data = Span;
         var sb = new StringBuilder();
         for (var i = _size; i > 0; i -= 4)
         {

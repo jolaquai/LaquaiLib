@@ -272,6 +272,7 @@ public class AsyncTimer : IDisposable
         return timer;
     }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         GC.SuppressFinalize(this);

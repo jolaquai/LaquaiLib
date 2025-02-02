@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
+using LaquaiLib.Interfaces;
+
 namespace LaquaiLib.Wrappers;
 
 #pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
@@ -10,7 +12,7 @@ namespace LaquaiLib.Wrappers;
 /// Any <see langword="unsafe"/> members of this type should only be called when <typeparamref name="T"/> is an <see langword="unmanaged"/> type.
 /// </summary>
 /// <typeparam name="T">The type of the object to be referenced.</typeparam>
-public readonly struct GCHandle<T> : IDisposable
+public readonly struct GCHandle<T> : ISpanProvider<byte>, IDisposable
 {
     /// <summary>
     /// The wrapped untyped <see cref="GCHandle"/>.
@@ -71,6 +73,10 @@ public readonly struct GCHandle<T> : IDisposable
     /// Obtains a pointer to the pinned object.
     /// </summary>
     public unsafe T* Pointer => (T*)AddrOfPinnedObject();
+    /// <summary>
+    /// Gets a <see cref="Span{T}"/> over the data of the pinned object.
+    /// </summary>
+    public readonly unsafe Span<byte> Span => new((byte*)Pointer, Marshal.SizeOf<T>());
 
     /// <summary>
     /// Returns the untyped <see cref="GCHandle"/> a typed <see cref="GCHandle{T}"/> represents.

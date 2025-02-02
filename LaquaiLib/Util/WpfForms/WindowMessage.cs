@@ -493,6 +493,7 @@ public enum WindowMessage
     /// Sent to an application when the IME changes composition status as a result of a keystroke. A window receives this message through its WindowProc function.
     /// </summary>
     WM_IME_COMPOSITION = 0x010F,
+    /// <inheritdoc/>
     WM_IME_KEYLAST = WM_IME_COMPOSITION,
     /// <summary>
     /// The WM_INITDIALOG message is sent to the dialog box procedure immediately before a dialog box is displayed. Dialog box procedures typically use this message to initialize controls and carry out any other initialization tasks that affect the appearance of the dialog box.
@@ -823,7 +824,9 @@ public enum WindowMessage
     /// The WM_WTSSESSION_CHANGE message notifies applications of changes in session state.
     /// </summary>
     WM_WTSSESSION_CHANGE = 0x02B1,
+    /// <inheritdoc/>
     WM_TABLET_FIRST = 0x02c0,
+    /// <inheritdoc/>
     WM_TABLET_LAST = 0x02df,
     /// <summary>
     /// The WM_DISPLAYCHANGE message is sent when the effective dots per inch (dpi) for a window has changed. The DPI is the scale factor for a window.
@@ -958,11 +961,17 @@ public enum WindowMessage
     /// Sent to request extended title bar information. A window receives this message through its WindowProc function.
     /// </summary>
     WM_GETTITLEBARINFOEX = 0x033F,
+    /// <inheritdoc/>
     WM_HANDHELDFIRST = 0x0358,
+    /// <inheritdoc/>
     WM_HANDHELDLAST = 0x035F,
+    /// <inheritdoc/>
     WM_AFXFIRST = 0x0360,
+    /// <inheritdoc/>
     WM_AFXLAST = 0x037F,
+    /// <inheritdoc/>
     WM_PENWINFIRST = 0x0380,
+    /// <inheritdoc/>
     WM_PENWINLAST = 0x038F,
     /// <summary>
     /// The WM_USER constant is used by applications to help define private messages for use by private window classes, usually of the form WM_USER+X, where X is an integer value.

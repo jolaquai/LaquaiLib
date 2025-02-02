@@ -6,6 +6,7 @@ namespace LaquaiLib.Streams.RandomStreams;
 /// </summary>
 public class RandomStream : ExceptStream
 {
+    /// <inheritdoc/>
     public override bool CanRead => base.CanRead;
 
     /// <summary>
