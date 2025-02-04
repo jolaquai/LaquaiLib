@@ -1,8 +1,4 @@
 ﻿using System.IO;
-using System.Windows.Input.Manipulations;
-
-using LaquaiLib.Numerics;
-using LaquaiLib.Util;
 
 namespace TestConsole;
 
@@ -31,11 +27,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        int[] keys = [6,5,4,3,2,1];
-        string[] names = ["a", "b", "c","d","e","f"];
-        int[] values = [2,1,4,3,6,5];
-
-        ArrayHelper.SortDescending(keys, names, values);
+        var file = typeof(File).Reflect(ReflectionOptions.Default with { Inherit = ReflectionOptions.InheritanceBehavior.None });
         ;
     }
 }

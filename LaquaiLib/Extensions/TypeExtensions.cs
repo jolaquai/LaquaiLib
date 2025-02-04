@@ -330,8 +330,7 @@ public static partial class TypeExtensions
     /// <returns><see langword="true"/> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
     public static bool HasWideningConversion(this Type type, Type other) => type.HasConsistentWideningConversion(other) || type.HasLossyWideningConversion(other);
 
-    // TODO: Exclude all members with weird names that match FuncSignatureRegex or similar
-    // (e.g. automatic private backing fields)
+#warning TODO: Support not just classes, make this work for structs, interfaces etc. as well
     /// <summary>
     /// Reflects the entirety of this <see cref="Type"/> and generates C# code that can be used to replicate it.
     /// </summary>
@@ -339,7 +338,7 @@ public static partial class TypeExtensions
     /// <param name="options.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="NotImplementedException"/>s.</param>
     /// <returns>A <see cref="string"/> containing the generated code.</returns>
     /// <remarks>
-    /// This method is not guaranteed to generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
+    /// It is almost guaranteed that this method will not generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
     /// </remarks>
     public static string Reflect(this Type type, ReflectionOptions options = default)
     {
@@ -354,239 +353,284 @@ public static partial class TypeExtensions
         }
 
         ArgumentNullException.ThrowIfNull(type);
+        var friendlyTypeName = type.GetFriendlyName();
+
         if (type.IsSealed && options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
         {
-            throw new TypeAccessException($"Cannot generate code for a type that inherits from sealed type '{type.GetFriendlyName()}'.");
+            throw new TypeAccessException($"Cannot generate code for a type that inherits from sealed type '{friendlyTypeName}'.");
         }
 
         using (var sw = new StringWriter())
+        using (var itw = new IndentedTextWriter(sw, "    "))
         {
-            using (var itw = new IndentedTextWriter(sw, "    "))
+            if (!string.IsNullOrWhiteSpace(options.Namespace))
             {
-                if (!string.IsNullOrWhiteSpace(options.Namespace))
+                itw.WriteLine($"namespace {options.Namespace};");
+            }
+
+            #region Type Declaration
+            itw.WriteLine($"""
+                /// <summary>
+                /// [Reflected from {friendlyTypeName} (Assembly '{type.Assembly.GetName().Name}')]
+                /// </summary>
+                """);
+            itw.Write($"public class {type.Name}");
+
+            if (type.IsGenericType)
+            {
+                itw.Write("<");
+                itw.Write(string.Join(", ", type.GetGenericArguments().Select(t => t.FullName)));
+                itw.Write(">");
+            }
+            else
+            {
+                itw.WriteLine();
+            }
+
+            if (options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
+            {
+                itw.WriteLine($" : {friendlyTypeName}");
+            }
+            #endregion
+
+            itw.WriteLine("{");
+
+            itw.Indent++;
+
+            #region options.Inheriting is ReflectionOptions.InheritanceBehavior.FieldDelegation
+            if (options.Inherit is ReflectionOptions.InheritanceBehavior.FieldDelegation)
+            {
+                itw.WriteLine($"private readonly {friendlyTypeName} _base = new {friendlyTypeName}();");
+            }
+            #endregion
+
+            #region Fields
+            foreach (var field in type.GetFields(bindingFlags))
+            {
+                var accessibility = field.GetAccessibility();
+                if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
                 {
-                    itw.WriteLine($"namespace {options.Namespace};");
+                    continue;
                 }
 
-                #region Type Declaration
-                itw.WriteLine($"""
-                    /// <summary>
-                    /// [Reflected from {type.GetFriendlyName()} (Assembly '{type.Assembly.GetName().Name}')]
-                    /// </summary>
-                    """);
-                itw.Write($"public class {type.Name}");
-
-                if (type.IsGenericType)
+                // If the field is anything above or equal to protected, it's prooooobably gonna have a documentation comment
+                // Since fields cannot be made virtual though, the interitance relationship doesn't matter
+                if (options.AddXmlDocCrefs && accessibility.Equals("public", StringComparison.OrdinalIgnoreCase))
                 {
-                    itw.Write("<");
-                    itw.Write(string.Join(", ", type.GetGenericArguments().Select(t => t.FullName)));
-                    itw.Write(">");
-                }
-                else
-                {
-                    itw.WriteLine();
+                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{field.Name}" />""");
                 }
 
-                if (options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
+                itw.Write(accessibility);
+                itw.Write(' ');
+                if (field.IsStatic)
                 {
-                    itw.WriteLine($" : {type.GetFriendlyName()}");
+                    itw.Write("static ");
                 }
-                #endregion
+                itw.Write(field.FieldType.GetFriendlyName());
+                itw.Write(' ');
+                itw.Write(field.Name);
+                itw.WriteLine(';');
+            }
+            #endregion
 
+            itw.WriteLine();
+
+            #region Properties
+            foreach (var property in type.GetProperties(bindingFlags))
+            {
+                var accessibility = property.GetAccessibility();
+                if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
+                {
+                    continue;
+                }
+
+                // If the property is anything above or equal to protected, it's prooooobably gonna have a documentation comment
+                if (options.AddXmlDocCrefs && (accessibility.Equals("public", StringComparison.OrdinalIgnoreCase) || (AccessibilityIsAtLeastFamily(accessibility) && !type.IsSealed)))
+                {
+                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{property.Name}" />""");
+                }
+
+                itw.Write(accessibility);
+                itw.Write(' ');
+                if (property.GetMethod?.IsStatic is true || property.SetMethod?.IsStatic is true)
+                {
+                    itw.Write("static ");
+                }
+                itw.Write(property.PropertyType.GetFriendlyName());
+                itw.Write(' ');
+                itw.WriteLine(property.Name);
                 itw.WriteLine("{");
 
                 itw.Indent++;
-
-                #region options.Inheriting is false
-                if (options.Inherit is ReflectionOptions.InheritanceBehavior.FieldDelegation)
+                if (property.GetMethod is not null)
                 {
-                    itw.WriteLine($"private readonly {type.GetFriendlyName()} _base = new {type.GetFriendlyName()}();");
-                }
-                #endregion
-
-                #region Fields
-                foreach (var field in type.GetFields(bindingFlags))
-                {
-                    var accessibility = field.GetAccessibility();
-                    if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
+                    var getAccessibility = property.GetMethod.GetAccessibility();
+                    if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit))
                     {
-                        continue;
-                    }
-                    itw.Write(accessibility);
-                    itw.Write(' ');
-                    if (field.IsStatic)
-                    {
-                        itw.Write("static ");
-                    }
-                    itw.Write(field.FieldType.GetFriendlyName());
-                    itw.Write(' ');
-                    itw.Write(field.Name);
-                    itw.WriteLine(';');
-                }
-                #endregion
-
-                itw.WriteLine();
-
-                #region Properties
-                foreach (var property in type.GetProperties(bindingFlags))
-                {
-                    var accessibility = property.GetAccessibility();
-                    if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
-                    {
-                        continue;
-                    }
-                    itw.Write(accessibility);
-                    itw.Write(' ');
-                    if (property.GetMethod?.IsStatic is true || property.SetMethod?.IsStatic is true)
-                    {
-                        itw.Write("static ");
-                    }
-                    itw.Write(property.PropertyType.GetFriendlyName());
-                    itw.Write(' ');
-                    itw.WriteLine(property.Name);
-                    itw.WriteLine("{");
-
-                    itw.Indent++;
-                    if (property.GetMethod is not null)
-                    {
-                        var getAccessibility = property.GetMethod.GetAccessibility();
-                        if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit))
+                        itw.Write(getAccessibility);
+                        itw.Write(" get => ");
+                        switch (options.Inherit)
                         {
-                            itw.Write(getAccessibility);
-                            itw.Write(" get => ");
-                            switch (options.Inherit)
-                            {
-                                case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit):
-                                    itw.WriteLine($"base.{property.Name};");
-                                    break;
-                                case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.GetMethod.IsPublic:
-                                    itw.WriteLine($"this._base.{property.Name};");
-                                    break;
-                                case ReflectionOptions.InheritanceBehavior.Inherit:
-                                case ReflectionOptions.InheritanceBehavior.FieldDelegation:
-                                    itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.get()' is not accessible.");""");
-                                    break;
-                                default:
-                                    itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.get()' is not implemented.");""");
-                                    break;
-                            }
+                            case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit):
+                                itw.WriteLine($"base.{property.Name};");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.GetMethod.IsPublic:
+                                itw.WriteLine($"this._base.{property.Name};");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.Inherit:
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.get()' is not accessible.");""");
+                                break;
+                            default:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.get()' is not implemented.");""");
+                                break;
                         }
                     }
-                    if (property.SetMethod is not null)
+                }
+                if (property.SetMethod is not null)
+                {
+                    var setAccessibility = property.SetMethod.GetAccessibility();
+                    if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit))
                     {
-                        var setAccessibility = property.SetMethod.GetAccessibility();
                         itw.Write(setAccessibility);
-                        if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit))
+                        itw.Write(" set => ");
+                        switch (options.Inherit)
                         {
-                            itw.Write(" set => ");
-                            switch (options.Inherit)
-                            {
-                                case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit):
-                                    itw.WriteLine($"base.{property.Name} = value;");
-                                    break;
-                                case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.SetMethod.IsPublic:
-                                    itw.WriteLine($"this._base.{property.Name} = value;");
-                                    break;
-                                case ReflectionOptions.InheritanceBehavior.Inherit:
-                                case ReflectionOptions.InheritanceBehavior.FieldDelegation:
-                                    itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.set()' is not accessible.");""");
-                                    break;
-                                default:
-                                    itw.WriteLine($"""throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{property.Name}.set()' is not implemented.");""");
-                                    break;
-                            }
+                            case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit):
+                                itw.WriteLine($"base.{property.Name} = value;");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.SetMethod.IsPublic:
+                                itw.WriteLine($"this._base.{property.Name} = value;");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.Inherit:
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.set()' is not accessible.");""");
+                                break;
+                            default:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.set()' is not implemented.");""");
+                                break;
                         }
                     }
-                    itw.Indent--;
-
-                    itw.WriteLine("}");
                 }
-                #endregion
+                itw.Indent--;
 
-                itw.WriteLine();
+                itw.WriteLine("}");
+            }
+            #endregion
 
-                #region Methods
-                var methods = type
-                    .GetMethods(bindingFlags)
-                    .Where(m => !m.IsSpecialName
-                        && !UnspeakableMemberNameRegex().IsMatch(m.Name)
-                        && (!options.IgnoreInaccessible
-                            || !IsInaccessibleAsReflectedType(m.GetAccessibility(), options.Inherit)
-                        )
+            itw.WriteLine();
+
+            #region Methods
+            var methods = type
+                .GetMethods(bindingFlags)
+                .Where(m => !m.IsSpecialName
+                    && !UnspeakableMemberNameRegex().IsMatch(m.Name)
+                    && (!options.IgnoreInaccessible
+                        || !IsInaccessibleAsReflectedType(m.GetAccessibility(), options.Inherit)
                     )
-                    .OrderBy(m => m.IsPrivate)          // private
-                    .ThenBy(m => m.IsFamilyOrAssembly)  // private protected
-                    .ThenBy(m => m.IsFamily)            // protected
-                    .ThenBy(m => m.IsAssembly)          // internal
-                    .ThenBy(m => m.IsFamilyAndAssembly) // protected internal
-                    .ThenBy(m => m.IsPublic)            // public
-                    .ThenBy(m => m.Name)                // name
-                    .ThenBy(m => m.IsGenericMethod)     // generic?
-                    .ToArray();
-                foreach (var method in methods)
-                {
-                    var accessibility = method.GetAccessibility();
-                    // Determine if the generic method requires an unsafe context
-                    var unsafeRequired = method.GetParameters().Any(p => p.ParameterType.IsPointer);
+                )
+                .OrderBy(m => m.IsPrivate)          // private
+                .ThenBy(m => m.IsFamilyOrAssembly)  // private protected
+                .ThenBy(m => m.IsFamily)            // protected
+                .ThenBy(m => m.IsAssembly)          // internal
+                .ThenBy(m => m.IsFamilyAndAssembly) // protected internal
+                .ThenBy(m => m.IsPublic)            // public
+                .ThenBy(m => m.Name)                // name
+                .ThenBy(m => m.IsGenericMethod)     // generic?
+                .ToArray();
+            foreach (var method in methods)
+            {
+                var accessibility = method.GetAccessibility();
+                // Determine if the generic method requires an unsafe context
+                var unsafeRequired = method.GetParameters().Any(p => p.ParameterType.IsPointer);
 
-                    itw.Write(accessibility);
-                    itw.Write(' ');
-                    if (method.IsStatic)
-                    {
-                        itw.Write("static ");
-                    }
-                    if (unsafeRequired)
-                    {
-                        itw.Write("unsafe ");
-                    }
-                    itw.Write(method.ReturnType.GetFriendlyName());
-                    itw.Write(' ');
-                    itw.Write(method.Name);
+                // If the method is anything above or equal to protected, it's prooooobably gonna have a documentation comment
+                if (options.AddXmlDocCrefs && (accessibility.Equals("public", StringComparison.OrdinalIgnoreCase) || (AccessibilityIsAtLeastFamily(accessibility) && !type.IsSealed)))
+                {
+                    itw.Write($"""/// <inheritdoc cref="{friendlyTypeName}.{method.Name}""");
 
                     if (method.IsGenericMethod)
                     {
-                        itw.Write($"<{string.Join(", ", method.GetGenericArguments().Select(t => t.Name))}>");
+                        var genericTypeParams = method.GetGenericArguments();
+                        itw.Write('{');
+                        itw.Write(string.Join(", ", genericTypeParams.Select(t => t.Name)));
+                        itw.Write('}');
                     }
 
                     itw.Write('(');
-                    itw.Write(string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.GetFriendlyName()} {p.Name}")));
+                    itw.Write(string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
                     itw.Write(')');
-                    switch (options.Inherit)
-                    {
-                        case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(accessibility, options.Inherit):
-                            itw.WriteLine($" => base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
-                            break;
-                        case ReflectionOptions.InheritanceBehavior.FieldDelegation when method.IsPublic:
-                            itw.WriteLine($" => this._base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
-                            break;
-                        case ReflectionOptions.InheritanceBehavior.Inherit:
-                        case ReflectionOptions.InheritanceBehavior.FieldDelegation:
-                            itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not accessible.");""");
-                            break;
-                        default:
-                            itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{type.GetFriendlyName()}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not implemented.");""");
-                            break;
-                    }
-                }
-                #endregion
 
-                if (options.Deep)
+                    itw.WriteLine("\" />");
+                }
+
+                itw.Write(accessibility);
+                itw.Write(' ');
+                if (method.IsStatic)
                 {
-                    foreach (var nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
-                    {
-                        itw.WriteLine();
-                        itw.WriteLine(nestedType.Reflect(options));
-                    }
+                    itw.Write("static ");
+                }
+                if (unsafeRequired)
+                {
+                    itw.Write("unsafe ");
+                }
+                itw.Write(method.ReturnType.GetFriendlyName());
+                itw.Write(' ');
+                itw.Write(method.Name);
+
+                if (method.IsGenericMethod)
+                {
+                    itw.Write($"<{string.Join(", ", method.GetGenericArguments().Select(t => t.Name))}>");
                 }
 
-                itw.Indent--;
-                itw.WriteLine("}");
+                itw.Write('(');
+                itw.Write(string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.GetFriendlyName()} {p.Name}")));
+                itw.Write(')');
+                switch (options.Inherit)
+                {
+                    case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(accessibility, options.Inherit):
+                        itw.WriteLine($" => base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
+                        break;
+                    case ReflectionOptions.InheritanceBehavior.FieldDelegation when method.IsPublic:
+                        itw.WriteLine($" => this._base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
+                        break;
+                    case ReflectionOptions.InheritanceBehavior.Inherit:
+                    case ReflectionOptions.InheritanceBehavior.FieldDelegation:
+                        itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{friendlyTypeName}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not accessible.");""");
+                        break;
+                    default:
+                        itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{friendlyTypeName}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not implemented.");""");
+                        break;
+                }
             }
+            #endregion
+
+            if (options.Deep)
+            {
+                foreach (var nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic))
+                {
+                    itw.WriteLine();
+                    itw.WriteLine(nestedType.Reflect(options));
+                }
+            }
+
+            itw.Indent--;
+            itw.WriteLine("}");
 
             return sw.ToString();
         }
     }
 
+    private static bool AccessibilityIsAtLeastFamily(string accessibility) => accessibility.ToUpperInvariant() switch
+    {
+        "public" => true,
+        "protected" => true,
+        "internal" => false,
+        "private" => false,
+        "private protected" => true,
+        "protected internal" => true,
+        _ => false
+    };
     private static string GetLeastAccessibleModifier(IEnumerable<string> modifiers)
     {
         var modifiersEnumerated = modifiers.ToArray();
@@ -711,7 +755,13 @@ public static partial class TypeExtensions
         }
         return "private";
     }
-    private static string GetFriendlyName(this Type type)
+
+    /// <summary>
+    /// Constructs a more easily readable name for the specified <see cref="Type"/>.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to construct a more easily readable name for.</param>
+    /// <returns>A more easily readable name for the specified <see cref="Type"/>.</returns>
+    public static string GetFriendlyName(this Type type)
     {
         var operateOn = type.FullName ?? type.Namespace + '.' + type.Name;
         if (type.IsGenericParameter)

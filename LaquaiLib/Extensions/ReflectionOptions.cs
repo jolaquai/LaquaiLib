@@ -29,11 +29,15 @@ public readonly struct ReflectionOptions()
     /// Setting this to <see langword="false"/> is helpful when you intend to supply custom implementations for inaccessible members, otherwise this will pollute your generated code with <see cref="NotImplementedException"/> (inside methods which potentially cannot be called from outside the generated type).
     /// </remarks>
     public bool IgnoreInaccessible { get; init; } = true;
+    /// <summary>
+    /// Whether to add an XML documentation comment to the generated code. Defaults to <see langword="true"/>.
+    /// </summary>
+    public bool AddXmlDocCrefs { get; init; } = true;
 
     /// <summary>
     /// Returns a cached instance of <see cref="ReflectionOptions"/> with the default behavior.
     /// </summary>
-    public static ReflectionOptions Default { get; }
+    public static ReflectionOptions Default { get; } = new ReflectionOptions();
 
     /// <summary>
     /// Specifies the behavior of inheritance for the generated type.
