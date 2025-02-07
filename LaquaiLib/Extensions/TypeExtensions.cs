@@ -621,7 +621,7 @@ public static partial class TypeExtensions
         }
     }
 
-    private static bool AccessibilityIsAtLeastFamily(string accessibility) => accessibility.ToUpperInvariant() switch
+    internal static bool AccessibilityIsAtLeastFamily(string accessibility) => accessibility.ToUpperInvariant() switch
     {
         "public" => true,
         "protected" => true,
@@ -631,7 +631,7 @@ public static partial class TypeExtensions
         "protected internal" => true,
         _ => false
     };
-    private static string GetLeastAccessibleModifier(IEnumerable<string> modifiers)
+    internal static string GetLeastAccessibleModifier(IEnumerable<string> modifiers)
     {
         var modifiersEnumerated = modifiers.ToArray();
         if (modifiersEnumerated.Contains("private protected"))
@@ -656,7 +656,7 @@ public static partial class TypeExtensions
         }
         return "public";
     }
-    private static bool IsInaccessibleAsReflectedType(string modifiers, ReflectionOptions.InheritanceBehavior inheritance)
+    internal static bool IsInaccessibleAsReflectedType(string modifiers, ReflectionOptions.InheritanceBehavior inheritance)
     {
         return modifiers.ToUpperInvariant() switch
         {
@@ -669,7 +669,7 @@ public static partial class TypeExtensions
             _ => true
         };
     }
-    private static string GetAccessibility(MethodBase methodBase)
+    internal static string GetAccessibility(MethodBase methodBase)
     {
         return methodBase switch
         {
@@ -682,7 +682,7 @@ public static partial class TypeExtensions
             _ => "private"
         };
     }
-    private static string GetAccessibility(FieldInfo fieldInfo)
+    internal static string GetAccessibility(FieldInfo fieldInfo)
     {
         return fieldInfo switch
         {
@@ -695,7 +695,7 @@ public static partial class TypeExtensions
             _ => "private"
         };
     }
-    private static string GetAccessibility(Type type)
+    internal static string GetAccessibility(Type type)
     {
         return type switch
         {
@@ -709,7 +709,7 @@ public static partial class TypeExtensions
             _ => "private"
         };
     }
-    private static string GetAccessibility(this MemberInfo member)
+    internal static string GetAccessibility(this MemberInfo member)
     {
         ArgumentNullException.ThrowIfNull(member);
         if (member is PropertyInfo propertyInfo)

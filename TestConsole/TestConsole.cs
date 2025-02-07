@@ -1,7 +1,10 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 
 using LaquaiLib.Collections.LimitedCollections;
 using LaquaiLib.Util.Threading;
+
+using Microsoft.Diagnostics.Tracing.Parsers.Clr;
 
 namespace TestConsole;
 
@@ -30,15 +33,28 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var task = ExtendedDebugTask.Run(async () =>
+        var path = @"E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib\Extensions\ALinq\";
+        var linqMethods = typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static).GroupBy(m => m.Name);
+        // Create a cs file with a template for each method in the Enumerable class
+        if (Directory.Exists(path))
         {
-            using var response = await client.GetAsync("https://example.org").ConfigureAwait(false);
-            // Work...
-            await Task.Delay(1000);
-            throw new Exception();
-        });
+            Directory.Delete(path, true);
+        }
+        Directory.CreateDirectory(path);
+        foreach (var (name, overloads) in linqMethods)
+        {
+            var template = $$"""
+                namespace LaquaiLib.Extensions.ALinq;
+                
+                // Provides parallel extensions for the System.Linq.Enumerable.{{name}} family of methods.
+                public static partial class IEnumerableExtensions
+                {
+                {{string.Join(Environment.NewLine, overloads.Select(static o => LaquaiLib.Extensions.MethodInfoExtensions.GetSignatureString(o, returnTypeFactory: t => $"System.Threading.Tasks.Task<{t}>")).Select(static str => $"    {str}"))}}
+                }
+                """;
 
-        await task;
+            await File.WriteAllTextAsync(Path.Combine(path, $"{name}.cs"), template).ConfigureAwait(false);
+        }
 
         ;
     }

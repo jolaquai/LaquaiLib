@@ -6,6 +6,17 @@ namespace LaquaiLib.Extensions;
 public static class IGroupingExtensions
 {
     /// <summary>
+    /// Deconstructs an <see cref="IGrouping{TKey, TElement}"/> into its <see cref="IGrouping{TKey, TElement}.Key"/> and elements as an <see cref="IEnumerable{T}"/>.
+    /// </summary>
+    /// <typeparam name="TKey">The Type of the key of the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
+    /// <typeparam name="TElement">The Type of the elements of the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
+    /// <param name="grouping">The <see cref="IGrouping{TKey, TElement}"/> to deconstruct.</param>
+    /// <param name="key">An <see langword="out"/> variable that will be assigned the <see cref="IGrouping{TKey, TElement}.Key"/> of the <see cref="IGrouping{TKey, TElement}"/>.</param>
+    /// <param name="elements">An <see langword="out"/> variable that will be assigned the elements of the <see cref="IGrouping{TKey, TElement}"/> as an <see cref="IEnumerable{T}"/>.</param>
+    public static void Deconstruct<TKey, TElement>(this IGrouping<TKey, TElement> grouping, out TKey key, out IEnumerable<TElement> elements)
+        => (key, elements) = (grouping.Key, grouping);
+
+    /// <summary>
     /// Constructs a <see cref="Dictionary{TKey, TValue}"/> from an <see cref="IEnumerable{T}"/> of <see cref="IGrouping{TKey, TElement}"/>. The keys of the dictionary are the <see cref="IGrouping{TKey, TElement}.Key"/>s of the <see cref="IGrouping{TKey, TElement}"/>s, and the values are the values of the <see cref="IGrouping{TKey, TElement}"/>s as <see cref="List{T}"/>s to allow for adding more values.
     /// </summary>
     /// <typeparam name="TKey">The Type of the keys of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
