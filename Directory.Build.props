@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <CoreNoWarn>$(NoWarn);CS8714;IDE0290;IDE0045;IDE0046</CoreNoWarn>
-        <CoreVersion>1.2.3</CoreVersion>
+        <CoreVersion>1.2.4</CoreVersion>
         <CorePackageOutput>$(SolutionDir)Scripts\pack</CorePackageOutput>
 
         <CoreAuthors>Joshua Laquai</CoreAuthors>
