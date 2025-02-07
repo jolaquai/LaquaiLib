@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System.Reflection;
+
+using LaquaiLib.Collections.LimitedCollections;
+using LaquaiLib.Util.Threading;
 
 namespace TestConsole;
 
@@ -27,7 +30,16 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var file = typeof(File).Reflect(ReflectionOptions.Default with { Inherit = ReflectionOptions.InheritanceBehavior.None });
+        var task = ExtendedDebugTask.Run(async () =>
+        {
+            using var response = await client.GetAsync("https://example.org").ConfigureAwait(false);
+            // Work...
+            await Task.Delay(1000);
+            throw new Exception();
+        });
+
+        await task;
+
         ;
     }
 }

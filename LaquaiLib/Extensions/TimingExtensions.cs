@@ -38,6 +38,8 @@ public static class TimingExtensions
     public static DateTime NextWeekday(this DateTime startAt, DateTime? timeComponent = null, bool includeSaturdays = false)
         => NextWeekday(startAt, timeComponent is not null ? TimeOnly.FromDateTime(timeComponent.Value) : null, includeSaturdays);
 
+
+
     /// <summary>
     /// Returns an awaiter that will asynchronously wait until the given <see cref="DateTime"/> is reached.
     /// </summary>

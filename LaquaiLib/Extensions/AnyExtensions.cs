@@ -1,5 +1,13 @@
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json.Serialization;
+
+using LaquaiLib.Util;
 
 namespace LaquaiLib.Extensions;
 
@@ -212,4 +220,148 @@ public static class AnyExtensions
     public static T As<T>(this object obj)
         where T : class
         => System.Runtime.CompilerServices.Unsafe.As<T>(obj);
+
+    private static readonly MethodInfo _deepCopyTemplate = typeof(AnyExtensions).GetMethod(nameof(DeepCopy), BindingFlags.Static | BindingFlags.Public);
+    private static readonly Type _typeofString = typeof(string);
+    private static readonly Type _typeofObject = typeof(object);
+    /// <summary>
+    /// Creates an exact copy of an object, including all nested objects, that is independent of the original object.
+    /// </summary>
+    /// <typeparam name="T">The Type of the object to copy.</typeparam>
+    /// <param name="source">The object to copy.</param>
+    /// <param name="depth">The maximum recursion depth to copy nested objects.</param>
+    /// <param name="useRoundTripSerialization">Whether to use a serialization-deserialization round trip to create the copy instead of employing reflection. Note that this may behave differently for certain types if certain fields or properties are not serializable or were marked with <see cref="NonSerializedAttribute"/>, <see cref="JsonIgnoreAttribute"/> or similar.</param>
+    /// <returns>An exact copy of <paramref name="source"/>.</returns>
+    public static T DeepCopy<T>(this T source, int depth, bool useRoundTripSerialization = false)
+    {
+        if (depth < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(depth), "Reached maximum recursion depth.");
+        }
+
+        if (source is null)
+        {
+            return (T)(object)null;
+        }
+
+        if (source is ICloneable cloneable)
+        {
+            return (T)cloneable.Clone();
+        }
+
+        var typeofT = typeof(T);
+        T clone;
+    getUninitializedInstance:
+        if (typeofT.IsValueType)
+        {
+            System.Runtime.CompilerServices.Unsafe.SkipInit(out clone);
+        }
+        else if (typeofT.IsInterface || typeofT.IsAbstract)
+        {
+            typeofT = source.GetType();
+            goto getUninitializedInstance;
+        }
+        else
+        {
+            clone = (T)RuntimeHelpers.GetUninitializedObject(typeofT);
+        }
+
+        var fields = typeofT.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToHashSet();
+        var baseType = typeofT.BaseType;
+        while (baseType != _typeofObject)
+        {
+            fields.UnionWith(baseType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
+            baseType = baseType.BaseType;
+        }
+        var fieldMap = fields.ToDictionary(f => f, f => f.DeclaringType);
+
+        foreach (var (field, asType) in fieldMap)
+        {
+            object assignValue = null;
+            if (field.FieldType.IsArray)
+            {
+                var arrayUnderlyingType = field.FieldType.GetElementType();
+                // Allocate an array of the same type and deep copy each element
+                if (arrayUnderlyingType.IsValueType || arrayUnderlyingType == _typeofString)
+                {
+                    // ...except for structs because of copy assignment
+                    var array = field.GetValue(source) as Array;
+                    if (array is not null)
+                    {
+                        assignValue = array.Clone();
+                    }
+                }
+                else
+                {
+                    var array = (Array)field.GetValue(source);
+                    var arrayClone = (Array)array.Clone();
+                    // Since we can't make assumptions about the rank or length(s) of the Array, we have to defensively iterate the entire thing
+                    using (var read = array.GetReadOnlySpanProvider<object>())
+                    using (var write = arrayClone.GetSpanProvider<object>())
+                    {
+                        var readSpan = read.ReadOnlySpan;
+                        var writeSpan = write.Span;
+
+                        for (var i = 0; i < readSpan.Length; i++)
+                        {
+                            writeSpan[i] = DeepCopy(readSpan[i], depth - 1);
+                        }
+                    }
+
+                    assignValue = arrayClone;
+                }
+            }
+            else if (field.FieldType.IsValueType || field.FieldType == _typeofString)
+            {
+                assignValue = field.GetValue(source);
+            }
+            else
+            {
+                var value = field.GetValue(source);
+                var generic = _deepCopyTemplate.MakeGenericMethod(field.FieldType);
+                assignValue = generic.Invoke(null, [value, depth - 1, useRoundTripSerialization]);
+            }
+
+            if (typeofT != asType)
+            {
+                var setter = CreateFieldSetter(field);
+                setter(clone, assignValue);
+            }
+            else
+            {
+                field.SetValue(clone, assignValue);
+            }
+        }
+
+        return clone;
+    }
+    private static Action<object, object> CreateFieldSetter(FieldInfo field)
+    {
+        ArgumentNullException.ThrowIfNull(field);
+
+        var dm = new DynamicMethod(
+            "Set" + field.Name,
+            null,
+            [typeof(object), typeof(object)],
+            field.DeclaringType,
+            true);
+
+        var il = dm.GetILGenerator();
+        il.Emit(OpCodes.Ldarg_0);
+        il.Emit(OpCodes.Castclass, field.DeclaringType);
+        il.Emit(OpCodes.Ldarg_1);
+        if (field.FieldType.IsValueType)
+        {
+            il.Emit(OpCodes.Unbox_Any, field.FieldType);
+        }
+        else
+        {
+            il.Emit(OpCodes.Castclass, field.FieldType);
+        }
+
+        il.Emit(OpCodes.Stfld, field);
+        il.Emit(OpCodes.Ret);
+
+        return dm.CreateDelegate<Action<object, object>>();
+    }
 }

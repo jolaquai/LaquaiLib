@@ -834,4 +834,14 @@ public static partial class IEnumerableExtensions
         }
         return result;
     }
+
+    /// <summary>
+    /// Builds a <see cref="Dictionary{TKey, TValue}"/> from the input sequence, using the specified <paramref name="valueFactory"/> to generate values for each key.
+    /// </summary>
+    /// <typeparam name="TKey">The Type of the keys in the input sequence.</typeparam>
+    /// <typeparam name="TValue">The Type of the values in the output dictionary.</typeparam>
+    /// <param name="keys">The input sequence of keys.</param>
+    /// <param name="valueFactory">The <see cref="Func{T, TResult}"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
+    /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
+    public static Dictionary<TKey, TValue> MapTo<TKey, TValue>(this IEnumerable<TKey> keys, Func<TKey, TValue> valueFactory) => keys.ToDictionary(key => key, valueFactory);
 }
