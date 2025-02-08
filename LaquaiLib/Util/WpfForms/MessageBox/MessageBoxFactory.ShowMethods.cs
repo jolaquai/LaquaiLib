@@ -134,7 +134,7 @@ public partial class MessageBoxFactory
         var tcs = new TaskCompletionSource<uint>();
         var msgBoxThread = new Thread(state =>
         {
-            Thread.CurrentThread.Name = nameof(WpfForms.MessageBox.MessageBoxFactory) + '.' + nameof(ShowAsync);
+            Thread.CurrentThread.Name = nameof(MessageBoxFactory) + '.' + nameof(ShowAsync);
             var result = Interop.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | MessageBoxModality.Application | otherOptions.Value);
             tcs.SetResult(result);
         });

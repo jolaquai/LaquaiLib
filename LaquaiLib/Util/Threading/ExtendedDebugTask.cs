@@ -14,13 +14,13 @@ namespace LaquaiLib.Util.Threading;
 public static class ExtendedDebugTaskExtensions
 {
     /// <summary>
-    /// Creates a new <see cref="ExtendedDebugTask"/> that wraps the specified <see cref="System.Threading.Tasks.Task"/>.
+    /// Creates a new <see cref="ExtendedDebugTask"/> that wraps the specified <see cref="Task"/>.
     /// </summary>
     /// <param name="task">The task to wrap.</param>
     /// <returns>The wrapped task.</returns>
     public static ExtendedDebugTask AsDebuggable(this Task task) => new(task);
     /// <summary>
-    /// Creates a new <see cref="ExtendedDebugTask{TResult}"/> that wraps the specified <see cref="System.Threading.Tasks.Task{TResult}"/>.
+    /// Creates a new <see cref="ExtendedDebugTask{TResult}"/> that wraps the specified <see cref="Task{TResult}"/>.
     /// </summary>
     /// <typeparam name="TResult">The type of the result produced by the task.</typeparam>
     /// <param name="task">The task to wrap.</param>
@@ -108,49 +108,34 @@ public class ExtendedDebugTask(Task task)
     /// </summary>
     /// <param name="action">The action to execute.</param>
     /// <returns>The started task.</returns>
-    public static ExtendedDebugTask Run(Action action) => new(System.Threading.Tasks.Task.Run(action));
+    public static ExtendedDebugTask Run(Action action) => new(Task.Run(action));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified action.
     /// </summary>
     /// <param name="action">The action to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
     /// <returns>The started task.</returns>
-    public static ExtendedDebugTask Run(Action action, CancellationToken cancellationToken) => new(System.Threading.Tasks.Task.Run(action, cancellationToken));
+    public static ExtendedDebugTask Run(Action action, CancellationToken cancellationToken) => new(Task.Run(action, cancellationToken));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified action.
     /// </summary>
     /// <param name="function">The action to execute.</param>
     /// <returns>The started task.</returns>
-    public static ExtendedDebugTask Run(Func<Task> function) => new(System.Threading.Tasks.Task.Run(function));
+    public static ExtendedDebugTask Run(Func<Task> function) => new(Task.Run(function));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified action.
     /// </summary>
     /// <param name="function">The action to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
     /// <returns>The started task.</returns>
-    public static ExtendedDebugTask Run(Func<Task> function, CancellationToken cancellationToken) => new(System.Threading.Tasks.Task.Run(function, cancellationToken));
+    public static ExtendedDebugTask Run(Func<Task> function, CancellationToken cancellationToken) => new(Task.Run(function, cancellationToken));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
     /// </summary>
     /// <typeparam name="TResult">The return type of the task.</typeparam>
     /// <param name="function">The function to execute.</param>
     /// <returns>The started task.</returns>
-    public static ExtendedDebugTask<TResult> Run<TResult>(Func<TResult> function) => new(System.Threading.Tasks.Task.Run(function));
-    /// <summary>
-    /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
-    /// </summary>
-    /// <typeparam name="TResult">The return type of the task.</typeparam>
-    /// <param name="function">The function to execute.</param>
-    /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
-    /// <returns>The started task.</returns>
-    public static ExtendedDebugTask<TResult> Run<TResult>(Func<TResult> function, CancellationToken cancellationToken) => new(System.Threading.Tasks.Task.Run(function, cancellationToken));
-    /// <summary>
-    /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
-    /// </summary>
-    /// <typeparam name="TResult">The return type of the task.</typeparam>
-    /// <param name="function">The function to execute.</param>
-    /// <returns>The started task.</returns>
-    public static ExtendedDebugTask<TResult> Run<TResult>(Func<Task<TResult>> function) => new(System.Threading.Tasks.Task.Run(function));
+    public static ExtendedDebugTask<TResult> Run<TResult>(Func<TResult> function) => new(Task.Run(function));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
     /// </summary>
@@ -158,7 +143,22 @@ public class ExtendedDebugTask(Task task)
     /// <param name="function">The function to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
     /// <returns>The started task.</returns>
-    public static ExtendedDebugTask<TResult> Run<TResult>(Func<Task<TResult>> function, CancellationToken cancellationToken) => new(System.Threading.Tasks.Task.Run(function, cancellationToken));
+    public static ExtendedDebugTask<TResult> Run<TResult>(Func<TResult> function, CancellationToken cancellationToken) => new(Task.Run(function, cancellationToken));
+    /// <summary>
+    /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of the task.</typeparam>
+    /// <param name="function">The function to execute.</param>
+    /// <returns>The started task.</returns>
+    public static ExtendedDebugTask<TResult> Run<TResult>(Func<Task<TResult>> function) => new(Task.Run(function));
+    /// <summary>
+    /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
+    /// </summary>
+    /// <typeparam name="TResult">The return type of the task.</typeparam>
+    /// <param name="function">The function to execute.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
+    /// <returns>The started task.</returns>
+    public static ExtendedDebugTask<TResult> Run<TResult>(Func<Task<TResult>> function, CancellationToken cancellationToken) => new(Task.Run(function, cancellationToken));
 
     /// <summary>
     /// Gets the current instance typed as <see cref="System.Threading.Tasks.Task"/>.
@@ -320,9 +320,9 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
 #endregion
 
 /// <summary>
-/// Wraps a <see cref="System.Threading.Tasks.Task{TResult}"/> to provide additional debugging information.
+/// Wraps a <see cref="Task{TResult}"/> to provide additional debugging information.
 /// </summary>
-/// <param name="task">The <see cref="System.Threading.Tasks.Task{TResult}"/> to wrap.</param>
+/// <param name="task">The <see cref="Task{TResult}"/> to wrap.</param>
 [StackTraceHidden]
 [DebuggerStepThrough]
 public class ExtendedDebugTask<TResult>(Task<TResult> task)

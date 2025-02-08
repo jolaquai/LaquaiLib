@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -82,24 +83,26 @@ public static class MethodInfoExtensions
         return type?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).Count(m => m.Name == methodInfo.Name || m.Name.Contains($"<{methodInfo.Name}>", StringComparison.OrdinalIgnoreCase)) > 1;
     }
 
+    public delegate void BodyGenerator(IndentedTextWriter writer, string accessibility, IReadOnlyList<string> modifiers, string returnType, string methodName, IReadOnlyList<string> genericParameters, IReadOnlyList<(string Type, string Name, object DefaultValue)> parameters);
     /// <summary>
-    /// Gets a string representation of the signature of the method represented by the specified <see cref="MethodInfo"/>.
+    /// Gets a string representation of the signature of the method represented by the specified <see cref="MethodInfo"/>, optionally applying any transforms as specified by the provided factory methods or generating a body.
     /// </summary>
     /// <param name="method">The <see cref="MethodInfo"/> instance representing the method.</param>
     /// <returns>A string representation of the method's signature.</returns>
-    public static string GetSignatureString(this MethodInfo method,
-        Func<string, string> accessibilityFactory = null,
-        Action<HashSet<string>> modifiersFactory = null,
-        Func<string, string> returnTypeFactory = null,
-        Action<HashSet<string>> genericParametersFactory = null,
-        Func<string, string> nameFactory = null,
-        Func<HashSet<(string, string)>> parametersFactory = null
+    public static string RebuildMethod(this MethodInfo method,
+        Func<string, string> accessibilityTransform = null,
+        Action<List<string>> modifiersTransform = null,
+        Func<string, string> returnTypeTransform = null,
+        Action<List<string>> genericParametersTransform = null,
+        Func<string, string> nameTransform = null,
+        Action<List<(string, string, object)>> parametersTransform = null,
+        BodyGenerator bodyGenerator = null
     )
     {
         var accessibility = method.GetAccessibility();
-        if (accessibilityFactory is not null)
+        if (accessibilityTransform is not null)
         {
-            accessibility = accessibilityFactory(accessibility);
+            accessibility = accessibilityTransform(accessibility);
         }
 
         // Determine if the generic method requires an unsafe context
@@ -107,7 +110,7 @@ public static class MethodInfoExtensions
 
         var sb = new StringBuilder();
 
-        var modifiers = new HashSet<string>();
+        var modifiers = new List<string>();
 #pragma warning disable IDE0058 // Expression value is never used
         if (method.IsStatic)
         {
@@ -126,9 +129,9 @@ public static class MethodInfoExtensions
             modifiers.Add("virtual");
         }
 
-        if (modifiersFactory is not null)
+        if (modifiersTransform is not null)
         {
-            modifiersFactory(modifiers);
+            modifiersTransform(modifiers);
         }
 
         sb.Append(accessibility);
@@ -136,9 +139,9 @@ public static class MethodInfoExtensions
         sb.AppendJoin(' ', modifiers);
 
         var returnType = method.ReturnType.GetFriendlyName();
-        if (returnTypeFactory is not null)
+        if (returnTypeTransform is not null)
         {
-            returnType = returnTypeFactory(returnType);
+            returnType = returnTypeTransform(returnType);
         }
 
         sb.Append(' ');
@@ -146,32 +149,33 @@ public static class MethodInfoExtensions
         sb.Append(' ');
 
         var methodName = method.Name;
-        if (nameFactory is not null)
+        if (nameTransform is not null)
         {
-            methodName = nameFactory(methodName);
+            methodName = nameTransform(methodName);
         }
         sb.Append(methodName);
 
+        List<string> genericParameters = null;
         if (method.IsGenericMethod)
         {
-            var genericParameters = method.GetGenericArguments().Select(t => t.Name).ToHashSet();
-            if (genericParametersFactory is not null)
+            genericParameters = method.GetGenericArguments().Select(t => t.Name).ToList();
+            if (genericParametersTransform is not null)
             {
-                genericParametersFactory(genericParameters);
+                genericParametersTransform(genericParameters);
             }
 
             sb.Append($"<{string.Join(", ", genericParameters)}>");
         }
 
-        var parameters = method.GetParameters().Select(p => (p.ParameterType.GetFriendlyName(), p.Name)).ToHashSet();
-        if (parametersFactory is not null)
+        var parameters = method.GetParameters().Select(p => (p.ParameterType.GetFriendlyName(), p.Name, p.DefaultValue)).ToList();
+        if (parametersTransform is not null)
         {
-            parameters = parametersFactory();
+            parametersTransform(parameters);
         }
 
         sb.Append('(');
         var first = true;
-        foreach (var (type, name) in parameters)
+        foreach (var (type, name, defaultValue) in parameters)
         {
             if (!first)
             {
@@ -182,9 +186,26 @@ public static class MethodInfoExtensions
             sb.Append(type);
             sb.Append(' ');
             sb.Append(name);
+
+            if (defaultValue is not (null or DBNull))
+            {
+                sb.Append(" = ");
+                sb.Append(defaultValue);
+            }
         }
         sb.Append(')');
-        sb.Append(';');
+
+        if (bodyGenerator is not null)
+        {
+            using var writer = new StringWriter(sb);
+            using var itw = new IndentedTextWriter(writer, "    ");
+            bodyGenerator(itw, accessibility, modifiers, returnType, methodName, genericParameters, parameters);
+            sb.AppendLine();
+        }
+        else
+        {
+            sb.Append(';');
+        }
 #pragma warning restore IDE0058 // Expression value is never used
 
         return sb.ToString();

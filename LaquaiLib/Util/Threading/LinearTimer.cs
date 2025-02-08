@@ -28,7 +28,7 @@ public class LinearTimer
         set
         {
             field = value;
-            timer ??= new System.Threading.Timer(Execute);
+            timer ??= new Timer(Execute);
             _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
@@ -43,7 +43,7 @@ public class LinearTimer
         set
         {
             field = value;
-            timer ??= new System.Threading.Timer(Execute);
+            timer ??= new Timer(Execute);
             _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
@@ -58,12 +58,12 @@ public class LinearTimer
         set
         {
             field = value;
-            timer ??= new System.Threading.Timer(Execute);
+            timer ??= new Timer(Execute);
             _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
 
-    private System.Threading.Timer timer;
+    private Timer timer;
     private Task execution;
 
     /// <summary>

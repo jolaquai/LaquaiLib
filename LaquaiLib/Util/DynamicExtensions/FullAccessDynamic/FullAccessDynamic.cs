@@ -140,7 +140,7 @@ public class FullAccessDynamic<T> : DynamicObject
                 var fieldValue = field.GetValue(_instance);
                 result = fieldValue is null
                     ? null
-                    : (object)LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
+                    : (object)FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
                 _memberCache[key] = field;
                 return true;
             }
@@ -224,7 +224,7 @@ public class FullAccessDynamic<T> : DynamicObject
             var itemValue = itemProp.GetValue(_instance, indexes);
             result = itemValue is null
                 ? null
-                : (object)LaquaiLib.Util.DynamicExtensions.FullAccessDynamic.FullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
+                : (object)FullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
             return true;
         }
 

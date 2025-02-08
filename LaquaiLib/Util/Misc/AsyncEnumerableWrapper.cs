@@ -2,7 +2,7 @@
 
 /// <summary>
 /// Wraps an <see cref="IEnumerable{T}"/> as an <see cref="IAsyncEnumerable{T}"/> to allow asynchronous consumption.
-/// May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream.
+/// May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream or when every enumerator step is expensive.
 /// </summary>
 /// <typeparam name="T">The Type of elements the <see cref="IEnumerable{T}"/> yields.</typeparam>
 /// <param name="from">The <see cref="IEnumerable{T}"/> to wrap.</param>
@@ -18,5 +18,5 @@ public readonly struct AsyncEnumerableWrapper<T>(IEnumerable<T> from) : IAsyncEn
 
     private readonly IEnumerable<T> _from = from;
     /// <inheritdoc/>
-    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new AsyncEnumeratorWrapper<T>(_from.GetEnumerator());
+    public readonly IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new AsyncEnumeratorWrapper<T>(_from.GetEnumerator());
 }

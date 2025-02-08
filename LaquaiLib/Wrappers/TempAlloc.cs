@@ -466,7 +466,7 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
         {
             foreach (var b in i < 4 ? data[..i] : data.Slice(i - 4, 4))
             {
-                _ = sb.Insert(0, System.Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
+                _ = sb.Insert(0, Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }
             _ = sb.Insert(0, ' ');
         }

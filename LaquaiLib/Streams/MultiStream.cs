@@ -48,7 +48,7 @@ public class MultiStream : Stream, IDisposable
     /// </summary>
     public long[] Lengths => [.. _streams.Select(static stream => stream.Length)];
     /// <inheritdoc/>
-    public override long Length => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Length)}. Use {nameof(Lengths)} instead.");
+    public override long Length => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Length)}. Use {nameof(Lengths)} instead.");
     /// <summary>
     /// A collection of <see cref="long"/>s taht indicate the current positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
@@ -56,9 +56,9 @@ public class MultiStream : Stream, IDisposable
     /// <inheritdoc/>
     public override long Position
     {
-        get => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
+        get => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
 
-        set => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
+        set => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
     }
     /// <summary>
     /// Flushes all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
@@ -103,7 +103,7 @@ public class MultiStream : Stream, IDisposable
     /// Unconditionally throws an <see cref="InvalidOperationException"/>.
     /// </summary>
     [DoesNotReturn]
-    public override int Read(byte[] buffer, int offset, int count) => throw new InvalidOperationException($"{nameof(LaquaiLib.Streams.MultiStream)} does not support using {nameof(Stream.Read)}.");
+    public override int Read(byte[] buffer, int offset, int count) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Read)}.");
     /// <inheritdoc cref="SetLengths(long)"/>
     public override void SetLength(long value) => SetLengths(value);
 

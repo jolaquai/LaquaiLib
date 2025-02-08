@@ -2,12 +2,10 @@
 
 /// <summary>
 /// Wraps an <see cref="IEnumerator{T}"/> as an <see cref="IAsyncEnumerator{T}"/> to allow asynchronous consumption.
-/// May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream.
+/// Every <see cref="MoveNextAsync"/> call is awaited in a new <see cref="Task" />.
+/// May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream or when every enumerator step is expensive.
 /// </summary>
 /// <typeparam name="T">The Type of elements the <see cref="IEnumerator{T}"/> yields.</typeparam>
-/// <remarks>
-/// Initializes a new instance of the <see cref="AsyncEnumeratorWrapper{T}"/> <see langword="struct"/> using an existing <see cref="IEnumerator{T}"/>.
-/// </remarks>
 /// <param name="from">The <see cref="IEnumerator{T}"/> to wrap.</param>
 public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from) : IAsyncEnumerator<T>
 {

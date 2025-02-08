@@ -172,7 +172,7 @@ public readonly struct Vector<T> : IEnumerable<T>,
             throw new InvalidOperationException($"The dot product is only defined for vectors of the same dimension. Use {nameof(DotProductUnequal)} to allow for vectors of different dimensions.");
         }
         var vals = _coordinates;
-        return RandomMath.Sum<int, T>(1, _coordinates.Length, i => vals[i] * other._coordinates[i]);
+        return RandomMath.Sum(1, _coordinates.Length, i => vals[i] * other._coordinates[i]);
     }
     /// <summary>
     /// Calculates the dot product (scalar product) of this <see cref="Vector{T}"/> and another, allowing for <see cref="Vector{T}"/>s of different dimensions.

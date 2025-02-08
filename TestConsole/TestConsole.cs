@@ -1,10 +1,25 @@
-﻿using System.IO;
+﻿using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Reflection;
 
+using DiscUtils.BootConfig;
+
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Charts;
+
+using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
+
+using DocumentFormat.OpenXml.Spreadsheet;
+
 using LaquaiLib.Collections.LimitedCollections;
+using LaquaiLib.Extensions.ALinq;
 using LaquaiLib.Util.Threading;
 
 using Microsoft.Diagnostics.Tracing.Parsers.Clr;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TestConsole;
 
@@ -33,28 +48,79 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var path = @"E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib\Extensions\ALinq\";
-        var linqMethods = typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static).GroupBy(m => m.Name);
-        // Create a cs file with a template for each method in the Enumerable class
-        if (Directory.Exists(path))
-        {
-            Directory.Delete(path, true);
-        }
-        Directory.CreateDirectory(path);
-        foreach (var (name, overloads) in linqMethods)
-        {
-            var template = $$"""
-                namespace LaquaiLib.Extensions.ALinq;
-                
-                // Provides parallel extensions for the System.Linq.Enumerable.{{name}} family of methods.
-                public static partial class IEnumerableExtensions
-                {
-                {{string.Join(Environment.NewLine, overloads.Select(static o => LaquaiLib.Extensions.MethodInfoExtensions.GetSignatureString(o, returnTypeFactory: t => $"System.Threading.Tasks.Task<{t}>")).Select(static str => $"    {str}"))}}
-                }
-                """;
+        //var path = @"E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib\Extensions\ALinq\";
+        //var linqMethods = typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static)
+        //    .GroupBy(m => m.Name)
+        //    .IntersectBy([
+        //        "Aggregate",
+        //        "AggregateBy",
+        //        "All",
+        //        "Any",
+        //        "Average",
+        //        "Contains",
+        //        "Count",
+        //        "CountBy",
+        //        "DefaultIfEmpty",
+        //        "ElementAt",
+        //        "ElementAtOrDefault",
+        //        "First",
+        //        "FirstOrDefault",
+        //        "Last",
+        //        "LastOrDefault",
+        //        "LongCount",
+        //        "Max",
+        //        "MaxBy",
+        //        "Min",
+        //        "MinBy",
+        //        "SequenceEqual",
+        //        "Single",
+        //        "SingleOrDefault",
+        //        "Sum",
+        //        "ToArray",
+        //        "ToDictionary",
+        //        "ToHashSet",
+        //        "ToList",
+        //        "ToLookup"], g => g.Key)
+        //    .ToArray();
+        //// Create a cs file with a template for each method in the Enumerable class
+        //if (Directory.Exists(path))
+        //{
+        //    Directory.Delete(path, true);
+        //}
+        //Directory.CreateDirectory(path);
+        //foreach (var (name, overloads) in linqMethods)
+        //{
+        //    var template = $$"""
+        //        namespace LaquaiLib.Extensions.ALinq;
 
-            await File.WriteAllTextAsync(Path.Combine(path, $"{name}.cs"), template).ConfigureAwait(false);
-        }
+        //        // Provides parallel extensions for the System.Linq.Enumerable.{{name}} family of methods.
+        //        public static partial class IEnumerableExtensions
+        //        {
+        //        {{string.Join(Environment.NewLine, overloads.Select(static o => LaquaiLib.Extensions.MethodInfoExtensions.RebuildMethod(o,
+        //            returnTypeTransform: t => $"System.Threading.Tasks.Task<{t}>",
+        //            nameTransform: t => $"{t}Async",
+        //            parametersTransform: static list =>
+        //            {
+        //                var copy = list[0];
+        //                copy.Item1 = "this " + list[0].Item1;
+        //                list[0] = copy;
+        //                list.Add(("System.Threading.CancellationToken", "cancellationToken", "default"));
+        //            },
+        //            bodyGenerator: static (writer, accessibility, modifiers, returnType, methodName, genericParameters, parameters) =>
+        //            {
+        //                writer.Write($"""
+
+        //                            => System.Threading.Tasks.Task.Run(() => {parameters[0].Name}.{methodName[..^5]}({string.Join(", ", parameters.Skip(1).Take(parameters.Count - 2).Select(p => p.Name))}), cancellationToken);
+        //                    """);
+        //            }
+        //            )).Select(static str => $"    {str}"))}}
+        //        }
+        //        """;
+
+        //    await File.WriteAllTextAsync(Path.Combine(path, $"{name}.cs"), template).ConfigureAwait(false);
+        //}
+
+
 
         ;
     }

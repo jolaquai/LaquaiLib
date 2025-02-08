@@ -1,6 +1,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+using LaquaiLib.Util.Misc;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -633,32 +635,6 @@ public static partial class IEnumerableExtensions
     public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source) => typeof(TDerived).IsAssignableTo(typeof(TSource)) ? source.Where(static i => i is not TDerived) : source;
 
     /// <summary>
-    /// For each element in the <paramref name="source"/> sequence, combines it with each value from an<paramref name="other"/> sequence using a specified <paramref name="selector"/> function.
-    /// This is essentially a cross join and may yield a large number of non-sensical results if the input sequences are large.
-    /// </summary>
-    /// <typeparam name="TSource">The Type of the elements in the input sequence.</typeparam>
-    /// <typeparam name="TOther">The Type of the elements in the other sequence.</typeparam>
-    /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <param name="other">The other sequence.</param>
-    /// <param name="selector">The <see cref="Func{T1, T2, TResult}"/> that is passed each element of the input sequence and each element of the other sequence and produces a new value.</param>
-    /// <returns>A sequence that contains the new values produced by the selector function.</returns>
-    public static IEnumerable<TResult> Join<TSource, TOther, TResult>(this IEnumerable<TSource> source, IEnumerable<TOther> other, Func<TSource, TOther, TResult> selector)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(other);
-        ArgumentNullException.ThrowIfNull(selector);
-
-        foreach (var item in source)
-        {
-            foreach (var otherItem in other)
-            {
-                yield return selector(item, otherItem);
-            }
-        }
-    }
-
-    /// <summary>
     /// Indexes the elements in the input sequence; that is, each element is paired with its number of occurrences in the sequence.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
@@ -844,4 +820,12 @@ public static partial class IEnumerableExtensions
     /// <param name="valueFactory">The <see cref="Func{T, TResult}"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
     public static Dictionary<TKey, TValue> MapTo<TKey, TValue>(this IEnumerable<TKey> keys, Func<TKey, TValue> valueFactory) => keys.ToDictionary(key => key, valueFactory);
+
+    /// <summary>
+    /// Returns an <see cref="IAsyncEnumerable{T}"/> wrapper around the specified <see cref="IEnumerable{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the <see cref="IEnumerable{T}"/>.</typeparam>
+    /// <param name="source">The <see cref="IEnumerable{T}"/> to wrap.</param>
+    /// <returns>The <paramref name="source"/> as an <see cref="IAsyncEnumerable{T}"/>.</returns>
+    public static IAsyncEnumerable<T> AsAsynchronous<T>(this IEnumerable<T> source) => new AsyncEnumerableWrapper<T>(source);
 }
