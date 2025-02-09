@@ -27,6 +27,7 @@
   <Project Path="LaquaiLib.EF/LaquaiLib.EF.csproj" Id="7bc7e0bf-d17e-4a86-ac78-d5b5a28f16d9" />
   <Project Path="LaquaiLib.Generators/LaquaiLib.Generators.csproj" Id="471284f4-3ee8-462f-8a15-f01e3a9179cf" />
   <Project Path="LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
+  <Project Path="LaquaiLib.Subprocess/LaquaiLib.Subprocess.csproj" Id="4c2d7b28-f035-41d7-bbd5-499c1a6f2dbf" />
   <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
   <Project Path="LaquaiLib\LaquaiLib.csproj" />
 </Solution>

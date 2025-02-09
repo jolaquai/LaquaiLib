@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LaquaiLib.Collections;
 
@@ -15,6 +16,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     where T1 : notnull
     where T2 : notnull
 {
+    #region Declared members
     /// <summary>
     /// Initializes an empty <see cref="TwoWayLookup{T1, T2}"/>.
     /// </summary>
@@ -177,21 +179,19 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// Removes an entry from the lookup table by its key. An exception is thrown if there is no entry with the given key.
     /// </summary>
     /// <param name="key">The key of the entry.</param>
-    public void RemoveForward(T1 key)
+    public bool RemoveForward(T1 key)
     {
         var rev = Forward[key];
-        _ = Reverse.Remove(rev);
-        _ = Forward.Remove(key);
+        return Reverse.Remove(rev) || !Forward.Remove(key);
     }
     /// <summary>
     /// Removes an entry from the lookup table by its value. An exception is thrown if there is no entry with the given value.
     /// </summary>
     /// <param name="value">The value of the entry.</param>
-    public void RemoveReverse(T2 value)
+    public bool RemoveReverse(T2 value)
     {
         var forw = Reverse[value];
-        _ = Forward.Remove(forw);
-        _ = Reverse.Remove(value);
+        return Forward.Remove(forw) || !Reverse.Remove(value);
     }
     /// <summary>
     /// Attempts to remove an entry from the lookup table by its key.
@@ -252,8 +252,8 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// </summary>
     /// <returns>An enumerator that can be used to iterate through the reverse collection.</returns>
     public IEnumerator<KeyValuePair<T2, T1>> GetReverseEnumerator() => Reverse.GetEnumerator();
-
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Forward).GetEnumerator();
+    #endregion
 }
 
 /// <summary>
