@@ -1,10 +1,13 @@
 using System.Buffers;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Extensions;
+
+using static System.MemoryExtensions;
 
 namespace LaquaiLib.Extensions;
 
@@ -667,15 +670,6 @@ public static partial class StringExtensions
 
     #region Span shit
     /// <summary>
-    /// Returns a <see cref="SpanSplitByCharEnumerator"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s that are separated by any of the <see langword="char"/>s specified by <paramref name="chars"/>.
-    /// </summary>
-    /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
-    /// <param name="chars">The <see langword="char"/>s to use as delimiters.</param>
-    /// <returns>The created <see cref="SpanSplitByCharEnumerator"/>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SpanSplitByCharEnumerator EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<char> chars)
-        => new SpanSplitByCharEnumerator(source, chars);
-    /// <summary>
     /// Enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s that are separated by any of the <see langword="string"/>s specified by <paramref name="strings"/>.
     /// </summary>
     /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
@@ -683,7 +677,7 @@ public static partial class StringExtensions
     /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ReadOnlySpan{T}"/>s representing the segments of the input <see cref="ReadOnlySpan{T}"/>.</returns>
     /// <remarks>
-    /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits(ReadOnlySpan{char}, ReadOnlySpan{char})"/> instead.
+    /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits{T}(ReadOnlySpan{T}, ReadOnlySpan{T})"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static SpanSplitByStringEnumerator EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)

@@ -1,4 +1,3 @@
-
 using LaquaiLib.Collections.LimitedCollections;
 
 namespace LaquaiLib.Extensions;

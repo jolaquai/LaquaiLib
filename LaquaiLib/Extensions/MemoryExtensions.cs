@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Core;
 using LaquaiLib.Wrappers;
 
@@ -89,6 +90,47 @@ public static partial class MemoryExtensions
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Split<T>(this ReadOnlyMemory<T> memory, Memory<T> whereTrue, Memory<T> whereFalse, Func<T, bool> predicate) => memory.Span.Split(whereTrue.Span, whereFalse.Span, predicate);
+
+    /// <summary>
+    /// Returns a <see cref="SpanSplitEnumerator{T}"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/>s that are separated by any of the <typeparamref name="T"/>s specified by <paramref name="splits"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
+    /// <param name="splits">The <see langword="t"/>s to use as delimiters.</param>
+    /// <returns>The created <see cref="SpanSplitEnumerator{T}"/>.</returns>
+    /// <remarks><typeparamref name="T"/> must implement <see cref="IEquatable{T}"/>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SpanSplitEnumerator<T> EnumerateSplits<T>(this ReadOnlySpan<T> source, ReadOnlySpan<T> splits) where T : IEquatable<T>
+        => new SpanSplitEnumerator<T>(source, splits);
+    /// <summary>
+    /// Returns a <see cref="SpanSplitEnumerator{T}"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/>s that are separated by the specified <paramref name="sequence"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
+    /// <param name="sequence">The sequence of <typeparamref name="T"/>s to use as a delimiter.</param>
+    /// <returns>The created <see cref="SpanSplitEnumerator{T}"/>.</returns>
+    /// <remarks><typeparamref name="T"/> must implement <see cref="IEquatable{T}"/>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static SpanSplitBySequenceEnumerator<T> EnumerateSplitsBySequence<T>(this ReadOnlySpan<T> source, ReadOnlySpan<T> sequence) where T : IEquatable<T>
+        => new SpanSplitBySequenceEnumerator<T>(source, sequence);
+    /// <summary>
+    /// Returns a <see cref="SpanSplitEnumerator{T}"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/>s that are separated by any of the <typeparamref name="T"/>s specified by <paramref name="splits"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
+    /// <param name="splits">The <see langword="t"/>s to use as delimiters.</param>
+    /// <returns>The created <see cref="SpanSplitEnumerator{T}"/>.</returns>
+    /// <remarks><typeparamref name="T"/> needn't implement <see cref="IEquatable{T}"/>. This has the unfortunate side effect of being significantly slower than the generic version that requires <see cref="IEquatable{T}"/>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static GeneralSpanSplitEnumerator<T> EnumerateSplitsGeneral<T>(this ReadOnlySpan<T> source, ReadOnlySpan<T> splits)
+        => new GeneralSpanSplitEnumerator<T>(source, splits);
+    /// <summary>
+    /// Returns a <see cref="SpanSplitEnumerator{T}"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/>s that are separated by the specified <paramref name="sequence"/>.
+    /// </summary>
+    /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
+    /// <param name="sequence">The sequence of <typeparamref name="T"/>s to use as a delimiter.</param>
+    /// <returns>The created <see cref="SpanSplitEnumerator{T}"/>.</returns>
+    /// <remarks><typeparamref name="T"/> needn't implement <see cref="IEquatable{T}"/>. This has the unfortunate side effect of being significantly slower than the generic version that requires <see cref="IEquatable{T}"/>.</remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static GeneralSpanSplitBySequenceEnumerator<T> EnumerateSplitsBySequenceGeneral<T>(this ReadOnlySpan<T> source, ReadOnlySpan<T> sequence)
+        => new GeneralSpanSplitBySequenceEnumerator<T>(source, sequence);
 
     /// <summary>
     /// Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.

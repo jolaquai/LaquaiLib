@@ -83,13 +83,32 @@ public static class MethodInfoExtensions
         return type?.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).Count(m => m.Name == methodInfo.Name || m.Name.Contains($"<{methodInfo.Name}>", StringComparison.OrdinalIgnoreCase)) > 1;
     }
 
+    /// <summary>
+    /// Represents a method that may be called by <see cref="RebuildMethod(MethodInfo, bool, Func{string, string}, Action{List{string}}, Func{string, string}, Action{List{string}}, Func{string, string}, Action{List{ValueTuple{string, string, object}}}, BodyGenerator)"/> to generate the body of a method to be rebuilt.
+    /// </summary>
+    /// <param name="writer">An <see cref="IndentedTextWriter"/> instance to write the method body to.</param>
+    /// <param name="accessibility">The accessibility of the method.</param>
+    /// <param name="modifiers">The modifiers of the method.</param>
+    /// <param name="returnType">The return type of the method.</param>
+    /// <param name="methodName">The name of the method.</param>
+    /// <param name="genericParameters">The generic parameters of the method.</param>
+    /// <param name="parameters">The parameters of the method.</param>
     public delegate void BodyGenerator(IndentedTextWriter writer, string accessibility, IReadOnlyList<string> modifiers, string returnType, string methodName, IReadOnlyList<string> genericParameters, IReadOnlyList<(string Type, string Name, object DefaultValue)> parameters);
     /// <summary>
     /// Gets a string representation of the signature of the method represented by the specified <see cref="MethodInfo"/>, optionally applying any transforms as specified by the provided factory methods or generating a body.
     /// </summary>
     /// <param name="method">The <see cref="MethodInfo"/> instance representing the method.</param>
+    /// <param name="inheritdoc">Whether to include an <c>inheritdoc</c> tag above the actual method.</param>
+    /// <param name="accessibilityTransform">A transform to apply to the method's accessibility.</param>
+    /// <param name="modifiersTransform">A transform to apply to the method's modifiers.</param>
+    /// <param name="returnTypeTransform">A transform to apply to the method's return type.</param>
+    /// <param name="genericParametersTransform">A transform to apply to the method's generic parameters.</param>
+    /// <param name="nameTransform">A transform to apply to the method's name.</param>
+    /// <param name="parametersTransform">A transform to apply to the method's parameters.</param>
+    /// <param name="bodyGenerator">A factory method to generate the method's body.</param>
     /// <returns>A string representation of the method's signature.</returns>
     public static string RebuildMethod(this MethodInfo method,
+        bool inheritdoc = true,
         Func<string, string> accessibilityTransform = null,
         Action<List<string>> modifiersTransform = null,
         Func<string, string> returnTypeTransform = null,
@@ -108,10 +127,31 @@ public static class MethodInfoExtensions
         // Determine if the generic method requires an unsafe context
         var unsafeRequired = method.GetParameters().Any(p => p.ParameterType.IsPointer);
 
+#pragma warning disable IDE0058 // Expression value is never used
         var sb = new StringBuilder();
 
+        var friendlyTypeName = method.DeclaringType.GetFriendlyName();
+        if (inheritdoc)
+        {
+            sb.Append($"""/// <inheritdoc cref="{friendlyTypeName}.{method.Name}""");
+
+            if (method.IsGenericMethod)
+            {
+                var genericTypeParams = method.GetGenericArguments();
+                sb.Append('{');
+                sb.Append(string.Join(", ", genericTypeParams.Select(t => t.Name)));
+                sb.Append('}');
+            }
+
+            sb.Append('(');
+            sb.Append(string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
+            sb.Append(')');
+
+            sb.AppendLine("\" />");
+        }
+        sb.Append("    ");
+
         var modifiers = new List<string>();
-#pragma warning disable IDE0058 // Expression value is never used
         if (method.IsStatic)
         {
             modifiers.Add("static");

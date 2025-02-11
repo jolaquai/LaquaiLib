@@ -760,10 +760,20 @@ public static partial class TypeExtensions
     /// Constructs a more easily readable name for the specified <see cref="Type"/>.
     /// </summary>
     /// <param name="type">The <see cref="Type"/> to construct a more easily readable name for.</param>
+    /// <param name="includeNamespace">Whether to include the namespace in the name.</param>
     /// <returns>A more easily readable name for the specified <see cref="Type"/>.</returns>
-    public static string GetFriendlyName(this Type type)
+    public static string GetFriendlyName(this Type type, bool includeNamespace = true)
     {
-        var operateOn = type.FullName ?? type.Namespace + '.' + type.Name;
+        string operateOn;
+        if (includeNamespace)
+        {
+            operateOn = type.FullName ?? type.Namespace + '.' + type.Name;
+        }
+        else
+        {
+            operateOn = type.Name;
+        }
+
         if (type.IsGenericParameter)
         {
             return type.Name;
@@ -796,7 +806,7 @@ public static partial class TypeExtensions
             {
                 operateOn = operateOn[..tickAt];
             }
-            var args = string.Join(", ", type.GetGenericArguments().Select(GetFriendlyName));
+            var args = string.Join(", ", type.GetGenericArguments().Select(t => t.GetFriendlyName()));
 
             return $"{operateOn}<{args}>";
         }
