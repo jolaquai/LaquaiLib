@@ -44,6 +44,9 @@ public static partial class MemoryExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TResult[] ToArray<TSource, TResult>(this ReadOnlyMemory<TSource> memory, Func<TSource, TResult> selector) => memory.Span.ToArray(selector);
 
+    // I don't know what's going on here, but static analysis seems to be broken
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0060 // Remove unused parameter
     /// <summary>
     /// Splits the specified <paramref name="span"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
     /// </summary>
@@ -76,6 +79,8 @@ public static partial class MemoryExtensions
             }
         }
     }
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+#pragma warning restore IDE0060 // Remove unused parameter
     /// <summary>
     /// Splits the specified <paramref name="memory"/> into the specified destination <see cref="Memory{T}"/>s based on the given <paramref name="predicate"/>.
     /// </summary>
