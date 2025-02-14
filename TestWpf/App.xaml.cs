@@ -7,7 +7,7 @@ public partial class App : Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
-        MainWindow = Setup().ConfigureAwait(false).GetAwaiter().GetResult();
+        MainWindow = Setup().GetAwaiter().GetResult();
         MainWindow.Visibility = Visibility.Visible;
     }
     private static async Task<MainWindow> Setup()

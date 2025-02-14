@@ -191,5 +191,5 @@ public static class AsyncLogger
     /// <summary>
     /// Blocks the calling thread until the message queue is empty.
     /// </summary>
-    public static void Flush() => FlushAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+    public static void Flush() => FlushAsync().GetAwaiter().GetResult();
 }

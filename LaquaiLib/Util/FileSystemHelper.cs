@@ -1,14 +1,17 @@
 using System.Buffers;
+using System.Linq;
+using System.Security.AccessControl;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Util.Misc;
 
 namespace LaquaiLib.Util;
 
+// This partial part implements general-purpose methods and some custom stuff.
 /// <summary>
 /// Provides methods and events for working with files and directories.
 /// </summary>
-public static class FileSystemHelper
+public static partial class FileSystemHelper
 {
     /// <summary>
     /// In parallel, migrates the contents of a directory from one location to another.
@@ -17,23 +20,26 @@ public static class FileSystemHelper
     /// <param name="destination">The directory that <paramref name="source"/> will be moved or copied to.</param>
     /// <param name="copy">Replicate the directory and its contents at the source location instead of moving it.</param>
     /// <param name="allowExisting">Whether to allow the destination directory to already exist and contain files and whether to allow overwriting existing files.</param>
-    /// <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow.</param>
+    /// <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow. Defaults to the number of logical processors on the machine.</param>
+    /// <param name="restorePermissionsAndAttributes">Whether to restore the permissions and attributes of the files and directories after moving or copying them. Defaults to <see langword="false"/> and may incur a large performance penalty if <see langword="true"/>.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
     /// <remarks>
     /// This method uses <see cref="FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
-    /// <para/>When the files are not moved or copied cross-device (such as from one drive to another), the operation can be completed significantly faster.
+    /// <para/>The process requires approximately <c><paramref name="maxDegreeOfParallelism"/> * 2^17 KB</c> of memory.
     /// </remarks>
-    public static void MigrateDirectory(
+    public static Task MigrateDirectory(
         string source,
         string destination,
         bool copy = false,
         bool allowExisting = false,
         int maxDegreeOfParallelism = -1,
+        bool restorePermissionsAndAttributes = false,
         CancellationToken cancellationToken = default
     )
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(destination);
+        ArgumentOutOfRangeException.ThrowIfZero(maxDegreeOfParallelism);
         if (maxDegreeOfParallelism < 0)
         {
             maxDegreeOfParallelism = Environment.ProcessorCount;
@@ -68,30 +74,210 @@ public static class FileSystemHelper
         {
             var newDirPath = dirPath.Replace(source, destination);
             _ = Directory.CreateDirectory(newDirPath);
+
+            if (OperatingSystem.IsWindows())
+            {
+                if (restorePermissionsAndAttributes)
+                {
+                    var srcSecurity = new DirectoryInfo(dirPath).GetAccessControl();
+                    var di = new DirectoryInfo(newDirPath);
+                    ReplacePermissions(di, srcSecurity);
+                }
+            }
         }
 
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
         var partitions = partitioner.GetPartitions(maxDegreeOfParallelism);
 
-        _ = Parallel.ForEach(
-            partitions,
-            pathEnumerator =>
+        return Task.WhenAll(partitions.Select(p => Task.Run(async () =>
+        {
+            // Local copy so the reference doesn't change from under us
+            var pathEnumerator = p;
+            while (pathEnumerator.MoveNext())
             {
-                while (pathEnumerator.MoveNext())
+                var fileSrc = pathEnumerator.Current;
+                var fileDest = fileSrc.Replace(source, destination);
+
+                if (!allowExisting && File.Exists(fileDest))
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    var current = pathEnumerator.Current;
-                    var newFilePath = current.Replace(source, destination);
-                    if (copy)
+                    throw new IOException($"Destination file '{fileDest}' already exists.");
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                await using (var sourceFs = File.OpenRead(fileSrc))
+                await using (var destFs = File.Create(fileDest))
+                {
+                    await sourceFs.CopyToAsync(destFs, cancellationToken);
+                }
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // If requested, restore the permissions and attributes
+                if (restorePermissionsAndAttributes)
+                {
+                    var srcAttribs = File.GetAttributes(fileSrc);
+                    File.SetAttributes(fileDest, srcAttribs);
+
+                    if (OperatingSystem.IsWindows())
                     {
-                        File.Copy(current, newFilePath, allowExisting);
-                    }
-                    else
-                    {
-                        File.Move(current, newFilePath, allowExisting);
+                        var srcSecurity = new FileInfo(fileSrc).GetAccessControl();
+                        var fi = new FileInfo(fileDest);
+                        ReplacePermissions(fi, srcSecurity);
                     }
                 }
-            });
+
+                if (!copy)
+                {
+                    File.Delete(fileSrc);
+                }
+            }
+        }, cancellationToken))).ContinueWith(_ => Directory.Delete(source, true), cancellationToken);
+        // I know that's ugly as hell but I'm not making this method async for a single meaningless await
+    }
+
+#pragma warning disable CA1416 // Validate platform compatibility
+    /// <summary>
+    /// Removes all access rules and audit rules from the specified <see cref="FileSystemInfo"/> and replaces them with the rules from the specified <see cref="FileSystemSecurity"/>.
+    /// </summary>
+    /// <param name="fsi">A <see cref="FileInfo"/> or <see cref="DirectoryInfo"/> instance to modify.</param>
+    /// <param name="takePermissionsFrom">The <see cref="FileSystemSecurity"/> instance to copy the permissions from.</param>
+    /// <exception cref="PlatformNotSupportedException">Thrown when the method is called on a non-Windows platform.</exception>
+    /// <exception cref="ArgumentException">Thrown when the <paramref name="fsi"/> or <paramref name="takePermissionsFrom"/> is not a valid type or the combination is invalid.</exception>
+    public static void ReplacePermissions(FileSystemInfo fsi, FileSystemSecurity takePermissionsFrom)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            throw new PlatformNotSupportedException("This method is only supported on Windows.");
+        }
+
+        switch (fsi)
+        {
+            case FileInfo fi when takePermissionsFrom is FileSecurity fs:
+                ReplacePermissionsImpl(fi, fs);
+                break;
+            case DirectoryInfo di when takePermissionsFrom is DirectorySecurity ds:
+                ReplacePermissionsImpl(di, ds);
+                break;
+            default:
+                throw new ArgumentException("Invalid FileSystemInfo or FileSystemSecurity type or the combination passed is invalid.");
+        }
+    }
+    private static void ReplacePermissionsImpl(FileInfo target, FileSecurity copyFrom)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+
+        var sec = target.GetAccessControl();
+        foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
+        {
+            sec.RemoveAccessRule(rule);
+        }
+        foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
+        {
+            sec.RemoveAccessRule(rule);
+        }
+        foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
+        {
+            sec.RemoveAuditRule(rule);
+        }
+        foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
+        {
+            sec.RemoveAuditRule(rule);
+        }
+
+        // Now copy the rules from the source
+        foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
+        {
+            sec.AddAccessRule(rule);
+        }
+        foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
+        {
+            sec.AddAccessRule(rule);
+        }
+        foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
+        {
+            sec.AddAuditRule(rule);
+        }
+        foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
+        {
+            sec.AddAuditRule(rule);
+        }
+
+        if (copyFrom.GetSecurityDescriptorBinaryForm() is byte[] secDesc)
+        {
+            sec.SetSecurityDescriptorBinaryForm(secDesc);
+        }
+
+        // Run this anyway to cover anything not explicitly copied
+        target.SetAccessControl(sec);
+    }
+    private static void ReplacePermissionsImpl(DirectoryInfo target, DirectorySecurity copyFrom)
+    {
+        ArgumentNullException.ThrowIfNull(target);
+
+        var sec = target.GetAccessControl();
+        foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
+        {
+            sec.RemoveAccessRule(rule);
+        }
+        foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
+        {
+            sec.RemoveAccessRule(rule);
+        }
+        foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
+        {
+            sec.RemoveAuditRule(rule);
+        }
+        foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
+        {
+            sec.RemoveAuditRule(rule);
+        }
+
+        // Now copy the rules from the source
+        foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
+        {
+            sec.AddAccessRule(rule);
+        }
+        foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
+        {
+            sec.AddAccessRule(rule);
+        }
+        foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
+        {
+            sec.AddAuditRule(rule);
+        }
+        foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
+        {
+            sec.AddAuditRule(rule);
+        }
+
+        if (copyFrom.GetSecurityDescriptorBinaryForm() is byte[] secDesc)
+        {
+            sec.SetSecurityDescriptorBinaryForm(secDesc);
+        }
+
+        // Run this anyway to cover anything not explicitly copied
+        target.SetAccessControl(sec);
+    }
+#pragma warning restore CA1416 // Validate platform compatibility
+
+    /// <summary>
+    /// Asynchronously reads the file at <paramref name="path"/> into a <see cref="MemoryStream"/>, then deletes the file. It then only exists in memory.
+    /// </summary>
+    /// <param name="path">The path to the file to cut.</param>
+    /// <returns>A <see cref="MemoryStream"/> containing the file data.</returns>
+    public static async Task<MemoryStream> CutFileAsync(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        var ms = new MemoryStream();
+        {
+            var fileStream = File.OpenRead(path);
+            await using (fileStream.ConfigureAwait(false))
+            {
+                await fileStream.CopyToAsync(ms);
+            }
+        }
+        File.Delete(path);
+        return ms;
     }
 
     /// <summary>
@@ -113,7 +299,7 @@ public static class FileSystemHelper
     )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dirStructure);
-        if (Path.IsPathRooted(dirStructure) || dirStructure.AsSpan().IndexOfAny(_invalidPathChars) > -1)
+        if (Path.IsPathRooted(dirStructure) || dirStructure.AsSpan().IndexOfAny(InvalidPathChars) > -1)
         {
             throw new ArgumentException("The directory structure must be a well-formed relative path to a directory.", nameof(dirStructure));
         }
@@ -221,8 +407,8 @@ public static class FileSystemHelper
         return compUri.IsBaseOf(pathUri);
     }
 
-    private static ReadOnlySpan<char> _invalidFileNameChars => ['\"', '<', '>', ':', '*', '?', '\\', '/'];
-    private static ReadOnlySpan<char> _invalidPathChars => ['|', '\0',
+    private static ReadOnlySpan<char> InvalidFileNameChars => ['\"', '<', '>', ':', '*', '?', '\\', '/'];
+    private static ReadOnlySpan<char> InvalidPathChars => ['|', '\0',
         (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
         (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20,
         (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30,
@@ -240,7 +426,7 @@ public static class FileSystemHelper
         }
 
         FillInvalidPathChars(destination[..33]);
-        _invalidFileNameChars.CopyTo(destination[33..41]);
+        InvalidFileNameChars.CopyTo(destination[33..41]);
     }
     /// <summary>
     /// Fills the specified <see cref="Span{T}"/> with the characters that are not allowed in path names. Must be at least 33 characters long.
@@ -252,6 +438,6 @@ public static class FileSystemHelper
         {
             throw new ArgumentException("Destination span is too short.", nameof(destination));
         }
-        _invalidPathChars.CopyTo(destination);
+        InvalidPathChars.CopyTo(destination);
     }
 }

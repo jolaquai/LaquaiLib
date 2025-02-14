@@ -1,5 +1,9 @@
 ﻿using System.IO;
 using System.Reflection;
+using System.Security.AccessControl;
+
+using LaquaiLib.Extensions.ALinq;
+using LaquaiLib.Util;
 
 namespace TestConsole;
 
@@ -13,9 +17,9 @@ public static partial class TestConsole
     {
         // FirstChanceExceptionHandlers.RegisterAll();
 
-        using (var scope = TestCore.TestCore.GetScope().ConfigureAwait(false).GetAwaiter().GetResult())
+        using (var scope = TestCore.TestCore.GetScope().GetAwaiter().GetResult())
         {
-            ActualMain(scope.ServiceProvider).ConfigureAwait(false).GetAwaiter().GetResult();
+            ActualMain(scope.ServiceProvider).GetAwaiter().GetResult();
             // Debugger.Break();
         }
     }
@@ -27,83 +31,6 @@ public static partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-
-        #region
-        var path = @"E:\PROGRAMMING\Projects\C#\LaquaiLib\LaquaiLib\Extensions\ALinq\";
-        var linqMethods = typeof(Enumerable).GetMethods(BindingFlags.Public | BindingFlags.Static)
-            .GroupBy(m => m.Name)
-            .IntersectBy([
-                "Aggregate",
-                "AggregateBy",
-                "All",
-                "Any",
-                "Average",
-                "Contains",
-                "Count",
-                "CountBy",
-                "DefaultIfEmpty",
-                "ElementAt",
-                "ElementAtOrDefault",
-                "First",
-                "FirstOrDefault",
-                "Last",
-                "LastOrDefault",
-                "LongCount",
-                "Max",
-                "MaxBy",
-                "Min",
-                "MinBy",
-                "SequenceEqual",
-                "Single",
-                "SingleOrDefault",
-                "Sum",
-                "ToArray",
-                "ToDictionary",
-                "ToHashSet",
-                "ToList",
-                "ToLookup"], g => g.Key)
-            .ToArray();
-        // Create a cs file with a template for each method in the Enumerable class
-        if (Directory.Exists(path))
-        {
-            Directory.Delete(path, true);
-        }
-        Directory.CreateDirectory(path);
-        foreach (var (name, overloads) in linqMethods)
-        {
-            var template = $$"""
-                namespace LaquaiLib.Extensions.ALinq;
-
-                /// <summary>
-                /// Provides parallel extensions for the Enumerable.{{name}} family of methods.
-                /// Note that none of these methods parallelize the consumption of the query, it is merely started in a new <see cref="Task" />.
-                /// </summary>
-                public static partial class IEnumerableExtensions
-                {
-                {{string.Join(Environment.NewLine, overloads.Select(static o => LaquaiLib.Extensions.MethodInfoExtensions.RebuildMethod(o,
-                    returnTypeTransform: t => $"Task<{t}>",
-                    nameTransform: t => $"{t}Async",
-                    parametersTransform: static list =>
-                    {
-                        var copy = list[0];
-                        copy.Item1 = "this " + list[0].Item1;
-                        list[0] = copy;
-                        list.Add(("CancellationToken", "cancellationToken", "default"));
-                    },
-                    bodyGenerator: static (writer, accessibility, modifiers, returnType, methodName, genericParameters, parameters) =>
-                    {
-                        writer.Write($"""
-
-                                    => Task.Run(() => {parameters[0].Name}.{methodName[..^5]}({string.Join(", ", parameters.Skip(1).Take(parameters.Count - 2).Select(p => p.Name))}), cancellationToken);
-                            """);
-                    }
-                    )).Select(static str => $"    {str}"))}}
-                }
-                """;
-
-            await File.WriteAllTextAsync(Path.Combine(path, $"{name}.cs"), template).ConfigureAwait(false);
-        }
-        #endregion
 
         ;
     }
