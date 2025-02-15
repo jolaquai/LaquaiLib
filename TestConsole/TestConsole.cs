@@ -32,6 +32,8 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
+        
+
         ;
     }
 }
