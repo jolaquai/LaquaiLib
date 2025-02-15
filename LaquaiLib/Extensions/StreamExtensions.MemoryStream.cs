@@ -26,8 +26,108 @@ public static partial class StreamExtensions
     /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
     /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
     /// </remarks>
-    // Obviously don't ever ref-return this
     public static Span<byte> AsSpan(this MemoryStream stream) => stream._buffer();
+    /// <summary>
+    /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="start">The starting index of the slice.</param>
+    /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
+    /// </remarks>
+    public static Span<byte> AsSpan(this MemoryStream stream, Index start) => stream._buffer().AsSpan(start);
+    /// <summary>
+    /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="start">The starting index of the slice.</param>
+    /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
+    /// </remarks>
+    public static Span<byte> AsSpan(this MemoryStream stream, int start) => stream._buffer().AsSpan(start);
+    /// <summary>
+    /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="range">The range in the backing storage to get a <see cref="Span{T}"/> over.</param>
+    /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
+    /// </remarks>
+    public static Span<byte> AsSpan(this MemoryStream stream, Range range) => stream._buffer().AsSpan(range);
+    /// <summary>
+    /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="start">The starting index of the slice.</param>
+    /// <param name="length">The length of the slice.</param>
+    /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
+    /// </remarks>
+    public static Span<byte> AsSpan(this MemoryStream stream, int start, int length) => stream._buffer().AsSpan(start, length);
+    /// <summary>
+    /// Gets a <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <returns>A <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
+    /// </remarks>
+    public static Memory<byte> AsMemory(this MemoryStream stream) => stream._buffer();
+    /// <summary>
+    /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="start">The starting index of the slice.</param>
+    /// <returns>A <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
+    /// </remarks>
+    public static Memory<byte> AsMemory(this MemoryStream stream, Index start) => stream._buffer().AsMemory(start);
+    /// <summary>
+    /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="start">The starting index of the slice.</param>
+    /// <returns>A <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
+    /// </remarks>
+    public static Memory<byte> AsMemory(this MemoryStream stream, int start) => stream._buffer().AsMemory(start);
+    /// <summary>
+    /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="range">The range in the backing storage to get a <see cref="Memory{T}"/> over.</param>
+    /// <returns>A <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
+    /// </remarks>
+    public static Memory<byte> AsMemory(this MemoryStream stream, Range range) => stream._buffer().AsMemory(range);
+    /// <summary>
+    /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to get the backing storage of.</param>
+    /// <param name="start">The starting index of the slice.</param>
+    /// <param name="length">The length of the slice.</param>
+    /// <returns>A <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+    /// <remarks>
+    /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+    /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
+    /// </remarks>
+    public static Memory<byte> AsMemory(this MemoryStream stream, int start, int length) => stream._buffer().AsMemory(start, length);
+
     /// <summary>
     /// Creates and returns an exact copy of this <see cref="MemoryStream"/>; its backing store references the same byte array as the original stream.
     /// It is, of course, capable of maintaining its own position and length within that array.

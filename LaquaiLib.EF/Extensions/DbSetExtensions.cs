@@ -13,6 +13,9 @@ public static class DbSetExtensions
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that defines the conditions of the entity to search for. If multiple entities fulfill the conditions, the first match is returned, so it is advisable to incorporate <typeparamref name="TEntity"/>'s primary key(s) in the conditions.</param>
     /// <param name="factory">A <see cref="Func{TResult}"/> that asynchronously creates a new entity if no entity is found.</param>
     /// <returns>The found or created entity.</returns>
+    /// <remarks>
+    /// This method does not persist changes to the database.
+    /// </remarks>
     public static async Task<TEntity> GetOrAdd<TEntity>(this DbSet<TEntity> set, Func<TEntity, bool> selector, Func<Task<TEntity>> factory)
         where TEntity : class
     {
@@ -23,5 +26,28 @@ public static class DbSetExtensions
         var newEntity = await factory().ConfigureAwait(false);
         _ = set.Add(newEntity);
         return newEntity;
+    }
+    /// <summary>
+    /// Adds the specified <paramref name="entity"/> object to the <see cref="DbSet{TEntity}"/> if no entity with the specified <paramref name="keys"/> is found. Otherwise, it updates the existing entity found by the specified <paramref name="keys"/> with the specified <paramref name="entity"/> object.
+    /// </summary>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="set">The <see cref="DbSet{TEntity}"/> to add or update the entity in.</param>
+    /// <param name="entity">The actual entity object to add or update.</param>
+    /// <param name="keys">The primary key(s) of the entity to search for.</param>
+    /// <returns>The existing entity from the database (which will not yet reflect the changes made to the <paramref name="entity"/> object) if an entity with the specified <paramref name="keys"/> is found, otherwise <paramref name="entity"/> object itself.</returns>
+    /// <remarks>
+    /// This method does not persist changes to the database.
+    /// </remarks>
+    public static TEntity AddOrUpdate<TEntity>(this DbSet<TEntity> set, TEntity entity, params object[] keys)
+        where TEntity : class
+    {
+        var existing = set.Find(keys);
+        if (existing is not null)
+        {
+            _ = set.Update(entity);
+            return existing;
+        }
+        _ = set.Add(entity);
+        return entity;
     }
 }

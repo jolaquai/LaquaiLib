@@ -36,6 +36,20 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
-    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <PackageReference Include="MessagePack" Version="3.1.3" />
+    <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RuntimeResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RuntimeResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="RuntimeResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RuntimeResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
