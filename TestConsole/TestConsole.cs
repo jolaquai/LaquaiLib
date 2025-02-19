@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Security.AccessControl;
 
+using LaquaiLib.Collections;
 using LaquaiLib.Extensions.ALinq;
 using LaquaiLib.Util;
 
@@ -32,7 +33,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        
+        var mkd = new MultiKeyDictionary<string>();
 
         ;
     }
