@@ -34,6 +34,7 @@ public static partial class TestConsole
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
         var mkd = new MultiKeyDictionary<string>();
+        mkd.EnumerateValues
 
         ;
     }

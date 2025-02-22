@@ -10,14 +10,15 @@ namespace LaquaiLib.Collections;
 
 /// <summary>
 /// Implements a dictionary that maps keys and specific orders of those keys to values.
-/// </summary/// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+/// </summary>
+/// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
 /// <remarks>
 /// <see langword="struct"/>s used for the keys in this dictionary will be boxed. This incurs an allocation and performance penalty.
 /// </remarks>
 public class MultiKeyDictionary<TValue>
 {
-    [DoesNotReturn]
-    private static void ThrowKeysNotFoundException() => throw new KeyNotFoundException("The specified keys combination was not found.");
+    [DoesNotReturn] private static void ThrowKeysNotFoundException() => throw new KeyNotFoundException("The specified keys combination was not found.");
+    [DoesNotReturn] private static void ThrowKeysAlreadyExistsException() => throw new InvalidOperationException("The specified keys combination already exists in the dictionary.");
 
     private Dictionary<object, TValue> _one;
     private Dictionary<(object, object), TValue> _two;
@@ -68,14 +69,19 @@ public class MultiKeyDictionary<TValue>
     /// <summary>
     /// Checks whether a backing storage for the specified number of keys is allocated and allocates it if not.
     /// </summary>
-    /// <returns><see langword="true"/> if the backing storage was allocated by the call to this method, otherwise <see langword="false"/> (i.e. the backing storage was already allocated).</returns>
-    private bool TryAllocate(int keyCount)
+    /// <param name="keyCount">The number of keys to allocate the backing storage for.</param>
+    /// <returns><see langword="false"/> if the backing storage needed to be allocated by the call to this method, otherwise <see langword="true"/> (i.e. the backing storage was already allocated).</returns>
+    /// <remarks>
+    /// Multiple calls to this method have no effect after the backing storage has been allocated. To clear the backing storage associated with the specified <paramref name="keyCount"/>, use <see cref="Clear(int)"/>.
+    /// </remarks>
+    public bool TryAllocate(int keyCount)
     {
-        Debug.Assert(keyCount > 0);
+        ArgumentOutOfRangeException.ThrowIfNegative(keyCount);
+        ArgumentOutOfRangeException.ThrowIfZero(keyCount);
 
         if (IsAllocated(keyCount))
         {
-            return false;
+            return true;
         }
 
         switch (keyCount)
@@ -91,10 +97,10 @@ public class MultiKeyDictionary<TValue>
             case > 8 when _many is null:
                 Allocate(0, keyCount);
                 // Enables fast paths in getter methods since a newly allocated dictionary cannot possible contain the sought key
-                return true;
+                return false;
         }
 
-        return false;
+        return true;
     }
     private void Allocate(int capacity, int keyCount)
     {
@@ -103,31 +109,31 @@ public class MultiKeyDictionary<TValue>
 
         switch (keyCount)
         {
-            case 1:
+            case 1 when _one is null:
                 _one = new(capacity);
                 break;
-            case 2:
+            case 2 when _two is null:
                 _two = new(capacity);
                 break;
-            case 3:
+            case 3 when _three is null:
                 _three = new(capacity);
                 break;
-            case 4:
+            case 4 when _four is null:
                 _four = new(capacity);
                 break;
-            case 5:
+            case 5 when _five is null:
                 _five = new(capacity);
                 break;
-            case 6:
+            case 6 when _six is null:
                 _six = new(capacity);
                 break;
-            case 7:
+            case 7 when _seven is null:
                 _seven = new(capacity);
                 break;
-            case 8:
+            case 8 when _eight is null:
                 _eight = new(capacity);
                 break;
-            default:
+            case > 8 when _many is null:
                 _many = new(capacity);
                 _manyLookup = _many.GetAlternateLookup<ReadOnlySpan<object>>();
                 break;
@@ -150,11 +156,7 @@ public class MultiKeyDictionary<TValue>
     /// <param name="keys">The keys to get or set the value for.</param>
     /// <returns>The value associated with the specified keys.</returns>
     public TValue GetValue(object[] keys) => GetValue(keys.AsSpan());
-    /// <summary>
-    /// Gets the value associated with the specified keys.
-    /// </summary>
-    /// <param name="keys">The keys to get or set the value for.</param>
-    /// <returns>The value associated with the specified keys.</returns>
+    /// <inheritdoc cref="GetValue(object[])"/>
     public TValue GetValue(ReadOnlySpan<object> keys)
     {
         if (!TryGetValue(keys, out var value))
@@ -170,17 +172,12 @@ public class MultiKeyDictionary<TValue>
     /// <param name="value">An <see langword="out"/> variable that receives the value associated with the specified keys.</param>
     /// <returns>The value associated with the specified keys.</returns>
     public bool TryGetValue(object[] keys, out TValue value) => TryGetValue(keys.AsSpan(), out value);
-    /// <summary>
-    /// Gets the value associated with the specified keys.
-    /// </summary>
-    /// <param name="keys">The keys to get or set the value for.</param>
-    /// <param name="value">An <see langword="out"/> variable that receives the value associated with the specified keys.</param>
-    /// <returns>The value associated with the specified keys.</returns>
+    /// <inheritdoc cref="TryGetValue(object[], out TValue)"/>
     public bool TryGetValue(ReadOnlySpan<object> keys, out TValue value)
     {
         ArgumentOutOfRangeException.ThrowIfZero(keys.Length);
 
-        if (TryAllocate(keys.Length))
+        if (!TryAllocate(keys.Length))
         {
             value = default;
             return false;
@@ -203,12 +200,7 @@ public class MultiKeyDictionary<TValue>
     /// <param name="value">The value to associate with the specified keys.</param>
     /// <returns>The value associated with the specified keys.</returns>
     public void SetValue(object[] keys, TValue value) => SetValue(keys.AsSpan(), value);
-    /// <summary>
-    /// Sets the value associated with the specified keys.
-    /// </summary>
-    /// <param name="keys">The keys to get or set the value for.</param>
-    /// <param name="value">The value to associate with the specified keys.</param>
-    /// <returns>The value associated with the specified keys.</returns>
+    /// <inheritdoc cref="SetValue(object[], TValue)"/>
     public void SetValue(ReadOnlySpan<object> keys, TValue value)
     {
         ArgumentOutOfRangeException.ThrowIfZero(keys.Length);
@@ -219,10 +211,99 @@ public class MultiKeyDictionary<TValue>
         ref var theRef = ref GetRef(keys, true, out _);
         theRef = value;
     }
+    /// <summary>
+    /// Sets the value associated with the specified keys if that combination does not already exist.
+    /// If it does, an <see cref="ArgumentException"/> is thrown.
+    /// </summary>
+    /// <param name="keys">The keys to set the value for.</param>
+    /// <param name="value">The value to associate with the specified keys.</param>
     public void Add(object[] keys, TValue value) => Add(keys.AsSpan(), value);
+    /// <inheritdoc cref="Add(object[], TValue)"/>
     public void Add(ReadOnlySpan<object> keys, TValue value)
     {
-            
+        if (!TryAdd(keys, value))
+        {
+            ThrowKeysAlreadyExistsException();
+        }
+    }
+    /// <summary>
+    /// Sets the value associated with the specified keys if that combination does not already exist.
+    /// </summary>
+    /// <param name="keys">The keys to set the value for.</param>
+    /// <param name="value">The value to associate with the specified keys.</param>
+    /// <returns><see langword="true"/> if the call to this method added the key-value pair, otherwise <see langword="false"/> (that is, the key combination already existed).</returns>
+    public bool TryAdd(object[] keys, TValue value) => TryAdd(keys.AsSpan(), value);
+    /// <inheritdoc cref="TryAdd(object[], TValue)"/>
+    public bool TryAdd(ReadOnlySpan<object> keys, TValue value)
+    {
+        ref var theRef = ref GetRef(keys, true, out var existed);
+        if (existed)
+        {
+            return false;
+        }
+        theRef = value;
+        return true;
+    }
+
+    /// <summary>
+    /// Removes all values from the backing storage.
+    /// </summary>
+    public void Clear()
+    {
+        _one?.Clear();
+        _two?.Clear();
+        _three?.Clear();
+        _four?.Clear();
+        _five?.Clear();
+        _six?.Clear();
+        _seven?.Clear();
+        _eight?.Clear();
+        _many?.Clear();
+    }
+    /// <summary>
+    /// Clears the backing storage associated with the specified number of keys.
+    /// </summary>
+    /// <param name="keyCount">The number of keys to clear the backing storage for.</param>
+    public void Clear(int keyCount)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(keyCount);
+        ArgumentOutOfRangeException.ThrowIfZero(keyCount);
+
+        if (!IsAllocated(keyCount))
+        {
+            return;
+        }
+
+        switch (keyCount)
+        {
+            case 1:
+                _one.Clear();
+                break;
+            case 2:
+                _two.Clear();
+                break;
+            case 3:
+                _three.Clear();
+                break;
+            case 4:
+                _four.Clear();
+                break;
+            case 5:
+                _five.Clear();
+                break;
+            case 6:
+                _six.Clear();
+                break;
+            case 7:
+                _seven.Clear();
+                break;
+            case 8:
+                _eight.Clear();
+                break;
+            default:
+                _many.Clear();
+                break;
+        }
     }
 
     // This is the workhorse method that does all the accesses, pretty much everything else just delegates to this, then does some post-processing
@@ -240,7 +321,47 @@ public class MultiKeyDictionary<TValue>
 
         if (addDefault)
         {
-            if (TryAllocate(keys.Length);
+            // Fast path if the dictionary is not even allocated
+            if (!IsAllocated(keys.Length))
+            {
+                existed = false;
+                return ref SrcsUnsafe.NullRef<TValue>();
+            }
+
+            switch (keys.Length)
+            {
+                case 1:
+                    ref var theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_one, keys[0], out existed);
+                    return ref theRef;
+                case 2:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_two, (keys[0], keys[1]), out existed);
+                    return ref theRef;
+                case 3:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_three, (keys[0], keys[1], keys[2]), out existed);
+                    return ref theRef;
+                case 4:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_four, (keys[0], keys[1], keys[2], keys[3]), out existed);
+                    return ref theRef;
+                case 5:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_five, (keys[0], keys[1], keys[2], keys[3], keys[4]), out existed);
+                    return ref theRef;
+                case 6:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_six, (keys[0], keys[1], keys[2], keys[3], keys[4], keys[5]), out existed);
+                    return ref theRef;
+                case 7:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_seven, (keys[0], keys[1], keys[2], keys[3], keys[4], keys[5], keys[6]), out existed);
+                    return ref theRef;
+                case 8:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_eight, (keys[0], keys[1], keys[2], keys[3], keys[4], keys[5], keys[6], keys[7]), out existed);
+                    return ref theRef;
+                default:
+                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_manyLookup, keys, out existed);
+                    return ref theRef;
+            }
+        }
+        else
+        {
+            // Unfortunately no fast path for this case
 
             switch (keys.Length)
             {
@@ -279,45 +400,6 @@ public class MultiKeyDictionary<TValue>
                 default:
                     theRef = ref CollectionsMarshal.GetValueRefOrNullRef(_manyLookup, keys);
                     existed = !SrcsUnsafe.IsNullRef(ref theRef);
-                    return ref theRef;
-            }
-        }
-        else
-        {
-            if (!IsAllocated(keys.Length))
-            {
-                existed = false;
-                return ref SrcsUnsafe.NullRef<TValue>();
-            }
-
-            switch (keys.Length)
-            {
-                case 1:
-                    ref var theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_one, keys[0], out existed);
-                    return ref theRef;
-                case 2:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_two, (keys[0], keys[1]), out existed);
-                    return ref theRef;
-                case 3:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_three, (keys[0], keys[1], keys[2]), out existed);
-                    return ref theRef;
-                case 4:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_four, (keys[0], keys[1], keys[2], keys[3]), out existed);
-                    return ref theRef;
-                case 5:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_five, (keys[0], keys[1], keys[2], keys[3], keys[4]), out existed);
-                    return ref theRef;
-                case 6:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_six, (keys[0], keys[1], keys[2], keys[3], keys[4], keys[5]), out existed);
-                    return ref theRef;
-                case 7:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_seven, (keys[0], keys[1], keys[2], keys[3], keys[4], keys[5], keys[6]), out existed);
-                    return ref theRef;
-                case 8:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_eight, (keys[0], keys[1], keys[2], keys[3], keys[4], keys[5], keys[6], keys[7]), out existed);
-                    return ref theRef;
-                default:
-                    theRef = ref CollectionsMarshal.GetValueRefOrAddDefault(_manyLookup, keys, out existed);
                     return ref theRef;
             }
         }
@@ -508,5 +590,79 @@ public class MultiKeyDictionary<TValue>
             theRef = valueFactory();
         }
         return ref theRef;
+    }
+
+    /// <summary>
+    /// Enumerates all values in the dictionary, regardless of the number of keys used to store them.
+    /// </summary>
+    /// <returns>An <see cref="IEnumerable{T}"/> of all values in the dictionary.</returns>
+    public IEnumerable<TValue> Values
+    {
+        get
+        {
+            if (_one is not null)
+            {
+                foreach (var value in _one.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_two is not null)
+            {
+                foreach (var value in _two.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_three is not null)
+            {
+                foreach (var value in _three.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_four is not null)
+            {
+                foreach (var value in _four.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_five is not null)
+            {
+                foreach (var value in _five.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_six is not null)
+            {
+                foreach (var value in _six.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_seven is not null)
+            {
+                foreach (var value in _seven.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_eight is not null)
+            {
+                foreach (var value in _eight.Values)
+                {
+                    yield return value;
+                }
+            }
+            if (_many is not null)
+            {
+                foreach (var value in _many.Values)
+                {
+                    yield return value;
+                }
+            }
+        }
     }
 }
