@@ -36,6 +36,7 @@
         <ProjectReference Include="..\LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
         <ProjectReference Include="..\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
         <ProjectReference Include="..\TestCore\TestCore.csproj" />
+        <ProjectReference Include="E:\PROGRAMMING\Projects\C#\Subprocess\Subprocess\Subprocess.csproj" />
     </ItemGroup>
 
     <ItemGroup>

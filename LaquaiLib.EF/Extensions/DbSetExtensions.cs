@@ -28,7 +28,8 @@ public static class DbSetExtensions
         return newEntity;
     }
     /// <summary>
-    /// Adds the specified <paramref name="entity"/> object to the <see cref="DbSet{TEntity}"/> if no entity with the specified <paramref name="keys"/> is found. Otherwise, it updates the existing entity found by the specified <paramref name="keys"/> with the specified <paramref name="entity"/> object.
+    /// Adds the specified <paramref name="entity"/> object to the <see cref="DbSet{TEntity}"/> if no entity with the specified <paramref name="keys"/> is found.
+    /// Otherwise, it updates the existing entity found by the specified <paramref name="keys"/> with the specified <paramref name="entity"/> object.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="set">The <see cref="DbSet{TEntity}"/> to add or update the entity in.</param>
@@ -37,10 +38,12 @@ public static class DbSetExtensions
     /// <returns>The existing entity from the database (which will not yet reflect the changes made to the <paramref name="entity"/> object) if an entity with the specified <paramref name="keys"/> is found, otherwise <paramref name="entity"/> object itself.</returns>
     /// <remarks>
     /// This method does not persist changes to the database.
+    /// <para/>To prevent double-adding entities, <paramref name="entity"/> is attached to the <see cref="DbSet{TEntity}"/> before anything else is done.
     /// </remarks>
     public static TEntity AddOrUpdate<TEntity>(this DbSet<TEntity> set, TEntity entity, params object[] keys)
         where TEntity : class
     {
+        set.Attach(entity);
         var existing = set.Find(keys);
         if (existing is not null)
         {

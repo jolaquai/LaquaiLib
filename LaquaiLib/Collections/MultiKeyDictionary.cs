@@ -14,11 +14,12 @@ namespace LaquaiLib.Collections;
 /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
 /// <remarks>
 /// <see langword="struct"/>s used for the keys in this dictionary will be boxed. This incurs an allocation and performance penalty.
+/// <para/>The <see langword="string"/> keys <c>"foo"</c> and <c>"bar"</c> are, used by themselves, entirely independent of the key combinations <c>("foo", "bar")</c> and <c>("bar", "foo")</c>.
 /// </remarks>
 public class MultiKeyDictionary<TValue>
 {
-    [DoesNotReturn] private static void ThrowKeysNotFoundException() => throw new KeyNotFoundException("The specified keys combination was not found.");
-    [DoesNotReturn] private static void ThrowKeysAlreadyExistsException() => throw new InvalidOperationException("The specified keys combination already exists in the dictionary.");
+    [DoesNotReturn] private static void ThrowKeysNotFoundException() => throw new KeyNotFoundException("The specified key combination was not found.");
+    [DoesNotReturn] private static void ThrowKeysAlreadyExistsException() => throw new InvalidOperationException("The specified key combination already exists in the dictionary.");
 
     private Dictionary<object, TValue> _one;
     private Dictionary<(object, object), TValue> _two;
@@ -31,6 +32,7 @@ public class MultiKeyDictionary<TValue>
     // Beyond 8 (which fits into a default ValueTuple), switch to an array-based dictionary instead
     private Dictionary<object[], TValue> _many;
     private Dictionary<object[], TValue>.AlternateLookup<ReadOnlySpan<object>> _manyLookup;
+    private int KeySum => (_one?.Count ?? 0) + (_two?.Count ?? 0) + (_three?.Count ?? 0) + (_four?.Count ?? 0) + (_five?.Count ?? 0) + (_six?.Count ?? 0) + (_seven?.Count ?? 0) + (_eight?.Count ?? 0) + (_many?.Count ?? 0);
 
     /// <summary>
     /// Initializes a new <see cref="MultiKeyDictionary{TValue}"/> with no backing storage allocated.
@@ -52,15 +54,15 @@ public class MultiKeyDictionary<TValue>
 
         switch (keyCount)
         {
-            case 1 when _one is null:
-            case 2 when _two is null:
-            case 3 when _three is null:
-            case 4 when _four is null:
-            case 5 when _five is null:
-            case 6 when _six is null:
-            case 7 when _seven is null:
-            case 8 when _eight is null:
-            case > 8 when _many is null:
+            case 1 when _one is not null:
+            case 2 when _two is not null:
+            case 3 when _three is not null:
+            case 4 when _four is not null:
+            case 5 when _five is not null:
+            case 6 when _six is not null:
+            case 7 when _seven is not null:
+            case 8 when _eight is not null:
+            case > 8 when _many is not null:
                 return true;
             default:
                 return false;
@@ -145,7 +147,7 @@ public class MultiKeyDictionary<TValue>
     /// </summary>
     /// <param name="keys">The keys to get or set the value for.</param>
     /// <returns>The value associated with the specified keys.</returns>
-    public TValue this[ReadOnlySpan<object> keys]
+    public TValue this[params ReadOnlySpan<object> keys]
     {
         get => GetValue(keys);
         set => SetValue(keys, value);
@@ -592,6 +594,81 @@ public class MultiKeyDictionary<TValue>
         return ref theRef;
     }
 
+    /// <summary>
+    /// Creates an array of all keys in the dictionary (that is, the array is a shallow copy of the keys).
+    /// </summary>
+    public object[] Keys
+    {
+        get
+        {
+            var keys = new object[KeySum];
+            var index = 0;
+            if (_one is not null)
+            {
+                foreach (var key in _one.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_two is not null)
+            {
+                foreach (var key in _two.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_three is not null)
+            {
+                foreach (var key in _three.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_four is not null)
+            {
+                foreach (var key in _four.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_five is not null)
+            {
+                foreach (var key in _five.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_six is not null)
+            {
+                foreach (var key in _six.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_seven is not null)
+            {
+                foreach (var key in _seven.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_eight is not null)
+            {
+                foreach (var key in _eight.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            if (_many is not null)
+            {
+                foreach (var key in _many.Keys)
+                {
+                    keys[index++] = key;
+                }
+            }
+            return keys;
+        }
+    }
     /// <summary>
     /// Enumerates all values in the dictionary, regardless of the number of keys used to store them.
     /// </summary>

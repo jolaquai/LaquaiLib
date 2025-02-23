@@ -1,11 +1,12 @@
 <Project>
     <PropertyGroup>
         <CoreNoWarn>$(NoWarn);CS8714;IDE0290;IDE0045;IDE0046</CoreNoWarn>
-        <CoreVersion>1.3.1</CoreVersion>
+        <CoreVersion>1.3.2</CoreVersion>
         <CorePackageOutput>$(SolutionDir)Scripts\pack</CorePackageOutput>
 
         <CoreAuthors>Joshua Laquai</CoreAuthors>
         <CoreDescription>Personal libary.</CoreDescription>
         <CoreUrl>https://github.com/jolaquai/LaquaiLib</CoreUrl>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
     </PropertyGroup>
 </Project>

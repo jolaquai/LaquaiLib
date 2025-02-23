@@ -820,9 +820,24 @@ public static partial class IEnumerableExtensions
     /// <param name="valueFactory">The <see cref="Func{T, TResult}"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
     public static Dictionary<TKey, TValue> MapTo<TKey, TValue>(this IEnumerable<TKey> keys, Func<TKey, TValue> valueFactory) => keys.ToDictionary(key => key, valueFactory);
+    /// <summary>
+    /// Maps every element in the input sequence to a single value in the specified <paramref name="second"/> sequence. A <paramref name="predicate"/> decides
+    /// </summary>
+    /// <typeparam name="TFirst">The Type of the elements in the <paramref name="first"/> sequence.</typeparam>
+    /// <typeparam name="TSecond">The Type of the elements in the <paramref name="second"/> sequence.</typeparam>
+    /// <param name="first">The first sequence.</param>
+    /// <param name="second">The second sequence.</param>
+    /// <param name="predicate">A <see cref="Func{T1, T2, TResult}"/> that, in turn, is passed an element from the <paramref name="first"/> sequence and an element from the <paramref name="second"/> sequence and determines whether they should be paired. It must return <see langword="true"/> for exactly one combination.</param>
+    /// <returns>An <see cref="IEnumerable{T}"/> of tuples where each tuple contains an element from the <paramref name="first"/> sequence and an element from the <paramref name="second"/> sequence, the combination of which satisfied the <paramref name="predicate"/>.</returns>
+    public static IEnumerable<(TFirst, TSecond)> Correlate<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, bool> predicate)
+    {
+        var mat = second as IReadOnlyCollection<TSecond> ?? second.ToArray();
+        return first.Select(f => (f, mat.Single(s => predicate(f, s))));
+    }
 
     /// <summary>
     /// Returns an <see cref="IAsyncEnumerable{T}"/> wrapper around the specified <see cref="IEnumerable{T}"/>.
+    /// <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> or similar). Instead, use the corresponding aggregation methods from <see cref="ALinq.IEnumerableExtensions"/> such as <see cref="ALinq.IEnumerableExtensions.ToListAsync{TSource}(IEnumerable{TSource}, CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="IEnumerator{T}"/> are expected to be computationally expensive or time-consuming; every <c>MoveNext</c> call is wrapped in a new <see cref="Task"/> and <see langword="await"/>ed. To reduce overhead, usage of the asynchronous methods in <see cref="ALinq.IEnumerableExtensions"/> is recommended (which batch the entire enumeration and potential allocation of the aggregation result into a single <see cref="Task"/>).
     /// </summary>
     /// <typeparam name="T">The type of elements in the <see cref="IEnumerable{T}"/>.</typeparam>
     /// <param name="source">The <see cref="IEnumerable{T}"/> to wrap.</param>

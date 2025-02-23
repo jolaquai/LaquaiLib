@@ -1,6 +1,4 @@
-﻿using System.Buffers;
-
-namespace LaquaiLib.Collections.Enumeration;
+﻿namespace LaquaiLib.Collections.Enumeration;
 
 /// <summary>
 /// Implements the enumerator pattern to enumerate the segments in a source <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> that are separated by any of the values specified by <paramref name="splits"/>. <typeparamref name="T"/> must implement <see cref="IEquatable{T}"/>.

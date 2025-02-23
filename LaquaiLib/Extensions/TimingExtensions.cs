@@ -39,10 +39,10 @@ public static class TimingExtensions
         => NextWeekday(startAt, timeComponent is not null ? TimeOnly.FromDateTime(timeComponent.Value) : null, includeSaturdays);
 
     /// <summary>
-    /// Returns an awaiter that will asynchronously wait until the given <see cref="DateTime"/> is reached.
+    /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateTime"/> is reached.
     /// </summary>
     /// <param name="dateTime">The <see cref="DateTime"/> to wait for.</param>
-    /// <returns>A <see cref="TaskAwaiter"/> instance that can be awaited.</returns>
+    /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
     public static TaskAwaiter GetAwaiter(this DateTime dateTime)
     {
         var now = DateTime.Now;
@@ -53,10 +53,10 @@ public static class TimingExtensions
         return Task.CompletedTask.GetAwaiter();
     }
     /// <summary>
-    /// Returns an awaiter that will asynchronously wait until the given <see cref="DateTimeOffset"/> is reached.
+    /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateTimeOffset"/> is reached.
     /// </summary>
     /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> to wait for.</param>
-    /// <returns>A <see cref="TaskAwaiter"/> instance that can be awaited.</returns>
+    /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
     public static TaskAwaiter GetAwaiter(this DateTimeOffset dateTimeOffset)
     {
         var now = DateTimeOffset.Now;
@@ -67,22 +67,22 @@ public static class TimingExtensions
         return Task.CompletedTask.GetAwaiter();
     }
     /// <summary>
-    /// Returns an awaiter that will asynchronously wait until the given <see cref="DateOnly"/> at midnight is reached.
+    /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateOnly"/> at midnight is reached.
     /// </summary>
     /// <param name="dateOnly">The <see cref="DateOnly"/> to wait for.</param>
-    /// <returns>A <see cref="TaskAwaiter"/> instance that can be awaited.</returns>
+    /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
     public static TaskAwaiter GetAwaiter(this DateOnly dateOnly) => GetAwaiter(dateOnly.ToDateTime(TimeOnly.MinValue));
     /// <summary>
-    /// Returns an awaiter that will asynchronously wait until the given <see cref="TimeOnly"/> on the current day is reached.
+    /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="TimeOnly"/> on the current day is reached.
     /// </summary>
     /// <param name="timeOnly">The <see cref="TimeOnly"/> to wait for.</param>
-    /// <returns>A <see cref="TaskAwaiter"/> instance that can be awaited.</returns>
+    /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
     public static TaskAwaiter GetAwaiter(this TimeOnly timeOnly) => GetAwaiter(DateTime.Today.AddTicks(timeOnly.Ticks));
     /// <summary>
-    /// Returns an awaiter that will asynchronously wait until the given <see cref="TimeSpan"/>, starting from now, has passed.
+    /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="TimeSpan"/>, starting from now, has passed.
     /// </summary>
     /// <param name="timeSpan">The <see cref="TimeSpan"/> to wait for.</param>
-    /// <returns>A <see cref="TaskAwaiter"/> instance that can be awaited.</returns>
+    /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
     /// <remarks>
     /// This is essentially just a shorthand for creating a <see cref="Task.Delay(TimeSpan)"/> call.
     /// </remarks>

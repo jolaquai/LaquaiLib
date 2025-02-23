@@ -1,5 +1,6 @@
 using System.Buffers;
-using System.Linq;
+using System.Diagnostics;
+using System.IO.Compression;
 using System.Security.AccessControl;
 
 using LaquaiLib.Extensions;
@@ -27,7 +28,7 @@ public static partial class FileSystemHelper
     /// This method uses <see cref="FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
     /// <para/>The process requires approximately <c><paramref name="maxDegreeOfParallelism"/> * 2^17 KB</c> of memory.
     /// </remarks>
-    public static Task MigrateDirectory(
+    public static Task MigrateDirectoryAsync(
         string source,
         string destination,
         bool copy = false,
@@ -37,36 +38,7 @@ public static partial class FileSystemHelper
         CancellationToken cancellationToken = default
     )
     {
-        ArgumentNullException.ThrowIfNull(source);
-        ArgumentNullException.ThrowIfNull(destination);
-        ArgumentOutOfRangeException.ThrowIfZero(maxDegreeOfParallelism);
-        if (maxDegreeOfParallelism < 0)
-        {
-            maxDegreeOfParallelism = Environment.ProcessorCount;
-        }
-
-        if (!Directory.Exists(source))
-        {
-            throw new ArgumentException($"Directory '{source}' does not exist.", nameof(source));
-        }
-        if (!allowExisting && Directory.Exists(destination))
-        {
-            throw new ArgumentException($"Directory '{destination}' already exists.", nameof(destination));
-        }
-        if (source.Equals(destination, StringComparison.OrdinalIgnoreCase))
-        {
-            throw new ArgumentException("Source and destination are the same.");
-        }
-
-        // We can't use string.Contains to check for subdirectory relationship since one being prefixed by the other is not the same as being a subdirectory
-        if (IsBaseOf(source, destination))
-        {
-            throw new ArgumentException("Source is a subdirectory of the destination.", nameof(source));
-        }
-        if (IsBaseOf(destination, source))
-        {
-            throw new ArgumentException("Destination is a subdirectory of the source.", nameof(destination));
-        }
+        ValidateMigrateArguments(source, destination, allowExisting, ref maxDegreeOfParallelism);
 
         // Create the directory structure first
         _ = Directory.CreateDirectory(destination);
@@ -130,8 +102,160 @@ public static partial class FileSystemHelper
                     File.Delete(fileSrc);
                 }
             }
-        }, cancellationToken))).ContinueWith(_ => Directory.Delete(source, true), cancellationToken);
+        }, cancellationToken))).ContinueWith(_ =>
+        {
+            if (!copy)
+            {
+                Directory.Delete(source, true);
+            }
+        }, cancellationToken);
         // I know that's ugly as hell but I'm not making this method async for a single meaningless await
+    }
+    /// <summary>
+    /// Migrates the contents of a directory from one location to another while employing the common trick of first compressing, then moving and decompressing the data.
+    /// </summary>
+    /// <param name="source">The directory to move.</param>
+    /// <param name="destination">The directory that <paramref name="source"/> will be moved or copied to.</param>
+    /// <param name="copy">Replicate the directory and its contents at the source location instead of moving it.</param>
+    /// <param name="allowExisting">Whether to allow the destination directory to already exist and contain files and whether to allow overwriting existing files.</param>
+    /// <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow. Defaults to the number of logical processors on the machine.</param>
+    /// <param name="restorePermissionsAndAttributes">Whether to restore the permissions and attributes of the files and directories after moving or copying them. Defaults to <see langword="false"/> and may incur a large performance penalty if <see langword="true"/>.</param>
+    /// <param name="compressionLevel">The level of compression to apply to the files. Defaults to <see cref="CompressionLevel.Optimal"/>.</param>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
+    /// <remarks>
+    /// This method uses <see cref="FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
+    /// <para/>There are few cases where this method could realistically perform better than <see cref="MigrateDirectoryAsync(string, string, bool, bool, int, bool, CancellationToken)"/>; the additional compression/decompression overhead will likely only pay off when transferring over a slow network or to or from very slow storage media (that is, any situation where I/O is the bottleneck, instead of CPU).
+    /// </remarks>
+    public static Task MigrateDirectoryAsArchiveAsync(
+        string source,
+        string destination,
+        bool copy = false,
+        bool allowExisting = false,
+        int maxDegreeOfParallelism = -1,
+        bool restorePermissionsAndAttributes = false,
+        CompressionLevel compressionLevel = CompressionLevel.Optimal,
+        CancellationToken cancellationToken = default
+    )
+    {
+        ValidateMigrateArguments(source, destination, allowExisting, ref maxDegreeOfParallelism);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        // First, create the directory structure
+        _ = Directory.CreateDirectory(destination);
+        foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
+        {
+            var newDirPath = dirPath.Replace(source, destination);
+            _ = Directory.CreateDirectory(newDirPath);
+            if (OperatingSystem.IsWindows())
+            {
+                if (restorePermissionsAndAttributes)
+                {
+                    var srcSecurity = new DirectoryInfo(dirPath).GetAccessControl();
+                    var di = new DirectoryInfo(newDirPath);
+                    ReplacePermissions(di, srcSecurity);
+                }
+            }
+        }
+
+        var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
+        var partitions = partitioner.GetPartitions(maxDegreeOfParallelism);
+
+        return Task.WhenAll(partitions.Select(p => Task.Run(async () =>
+        {
+            // Use a single intermediary stream for all files in this partition, since nobody but us will touch it
+            var intermediary = new MemoryStream();
+            // Local copy so the reference doesn't change from under us
+            var pathEnumerator = p;
+
+            while (pathEnumerator.MoveNext())
+            {
+                var fileSrc = pathEnumerator.Current;
+                var fileDest = fileSrc.Replace(source, destination);
+
+                if (!allowExisting && File.Exists(fileDest))
+                {
+                    throw new IOException($"Destination file '{fileDest}' already exists.");
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                // Lots of stream overhead + compression and decompression for every file, but (ideally) less data to move around
+                intermediary.SetLength(0);
+                await using (var sourceFs = File.OpenRead(fileSrc))
+                await using (var destFs = File.Create(fileDest))
+                {
+                    await using (var compStream = new DeflateStream(intermediary, compressionLevel, true))
+                    {
+                        await sourceFs.CopyToAsync(compStream, cancellationToken);
+                    }
+                    intermediary.Position = 0;
+                    await using (var decompStream = new DeflateStream(intermediary, CompressionMode.Decompress))
+                    {
+                        await decompStream.CopyToAsync(destFs, cancellationToken);
+                    }
+                    await sourceFs.CopyToAsync(destFs, cancellationToken);
+                }
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // If requested, restore the permissions and attributes
+                if (restorePermissionsAndAttributes)
+                {
+                    var srcAttribs = File.GetAttributes(fileSrc);
+                    File.SetAttributes(fileDest, srcAttribs);
+
+                    if (OperatingSystem.IsWindows())
+                    {
+                        var srcSecurity = new FileInfo(fileSrc).GetAccessControl();
+                        var fi = new FileInfo(fileDest);
+                        ReplacePermissions(fi, srcSecurity);
+                    }
+                }
+
+                if (!copy)
+                {
+                    File.Delete(fileSrc);
+                }
+            }
+        }, cancellationToken))).ContinueWith(_ =>
+        {
+            if (!copy)
+            {
+                Directory.Delete(source, true);
+            }
+        }, cancellationToken);
+    }
+
+    private static void ValidateMigrateArguments(string source, string destination, bool allowExisting, ref int maxDegreeOfParallelism)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(destination);
+        ArgumentOutOfRangeException.ThrowIfZero(maxDegreeOfParallelism);
+        if (maxDegreeOfParallelism < 0)
+        {
+            maxDegreeOfParallelism = Debugger.IsAttached ? 1 : Environment.ProcessorCount;
+        }
+
+        if (!Directory.Exists(source))
+        {
+            throw new ArgumentException($"Directory '{source}' does not exist.", nameof(source));
+        }
+        if (!allowExisting && Directory.Exists(destination))
+        {
+            throw new ArgumentException($"Directory '{destination}' already exists.", nameof(destination));
+        }
+        if (source.Equals(destination, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("Source and destination are the same.");
+        }
+
+        // We can't use string.Contains to check for subdirectory relationship since one being prefixed by the other is not the same as being a subdirectory
+        if (IsBaseOf(source, destination))
+        {
+            throw new ArgumentException("Source is a subdirectory of the destination.", nameof(source));
+        }
+        if (IsBaseOf(destination, source))
+        {
+            throw new ArgumentException("Destination is a subdirectory of the source.", nameof(destination));
+        }
     }
 
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -259,6 +383,25 @@ public static partial class FileSystemHelper
     }
 #pragma warning restore CA1416 // Validate platform compatibility
 
+    /// <summary>
+    /// Reads the file at <paramref name="path"/> into a <see cref="MemoryStream"/>, then deletes the file. It then only exists in memory.
+    /// </summary>
+    /// <param name="path">The path to the file to cut.</param>
+    /// <returns>A <see cref="MemoryStream"/> containing the file data.</returns>
+    public static MemoryStream CutFile(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        var ms = new MemoryStream();
+        {
+            using (var fileStream = File.OpenRead(path))
+            {
+                fileStream.CopyTo(ms);
+            }
+        }
+        File.Delete(path);
+        return ms;
+    }
     /// <summary>
     /// Asynchronously reads the file at <paramref name="path"/> into a <see cref="MemoryStream"/>, then deletes the file. It then only exists in memory.
     /// </summary>

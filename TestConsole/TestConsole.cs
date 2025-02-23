@@ -1,10 +1,6 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Security.AccessControl;
+﻿using System.Collections.Concurrent;
 
-using LaquaiLib.Collections;
-using LaquaiLib.Extensions.ALinq;
-using LaquaiLib.Util;
+using Subprocess;
 
 namespace TestConsole;
 
@@ -18,6 +14,7 @@ public static partial class TestConsole
     {
         // FirstChanceExceptionHandlers.RegisterAll();
 
+        Thread.CurrentThread.Name = "[MAIN]";
         using (var scope = TestCore.TestCore.GetScope().GetAwaiter().GetResult())
         {
             ActualMain(scope.ServiceProvider).GetAwaiter().GetResult();
@@ -33,9 +30,15 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var mkd = new MultiKeyDictionary<string>();
+        var sp = await Subprocess.Subprocess.RunAsync(typeof(TestConsole).GetMethod(nameof(MySubprocessCallback)), []);
 
         ;
+    }
+
+    public static async Task<int> MySubprocessCallback(BlockingCollection<string> messages, object[] args, CancellationToken ct)
+    {
+        System.IO.File.WriteAllText(@"C:\test.txt", "Hello from my Subprocess!");
+        return 0;
     }
 }
 
