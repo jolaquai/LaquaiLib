@@ -1,7 +1,8 @@
 <Project>
     <PropertyGroup>
         <CoreFramework>net9.0</CoreFramework>
-        <PackageOutput>$(SolutionDir)Scripts\pack</PackageOutput>
+        <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
         <CoreVersion>1.3.3</CoreVersion>
         <PackageVersion>$(CoreVersion)</PackageVersion>
@@ -18,8 +19,6 @@
         <PackageId>$(Title)</PackageId>
         <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <PackageOutputPath>$(CorePackageOutput)</PackageOutputPath>
     </PropertyGroup>
 
     <PropertyGroup>
