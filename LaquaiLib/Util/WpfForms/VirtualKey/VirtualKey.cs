@@ -1,8 +1,5 @@
 namespace LaquaiLib.Util.WpfForms;
 
-#pragma warning disable CA1069 // Enums values should not be duplicated
-#pragma warning disable CA1707 // Identifiers should not contain underscores
-
 /// <summary>
 /// Provides the virtual key code constants without requiring WPF or Forms references.
 /// Taken directly from <seealso href="https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes"/>.

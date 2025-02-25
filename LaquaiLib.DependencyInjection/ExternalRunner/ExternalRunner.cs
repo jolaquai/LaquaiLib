@@ -22,7 +22,7 @@ public abstract class ExternalRunner : IExternalRunner
         var process = Process.Start(psi);
 
         var stopTask = stoppingToken.WhenCancelled();
-        var terminateTask = process.WaitForExitAsync();
+        var terminateTask = process.WaitForExitAsync(stoppingToken);
         if (await Task.WhenAny(stopTask, terminateTask) != terminateTask)
         {
             process.Kill();

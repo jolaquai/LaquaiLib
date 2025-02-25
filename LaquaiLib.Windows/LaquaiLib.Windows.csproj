@@ -1,42 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>$(CoreVersion)</PackageVersion>
-    <FileVersion>$(CoreVersion)</FileVersion>
-    <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
-    <Version>$(CoreVersion)</Version>
-    <AnalysisLevel>preview-all</AnalysisLevel>
-    <AnalysisMode>all</AnalysisMode>
-    <EnablePreviewFeatures>True</EnablePreviewFeatures>
+    <TargetFramework>$(CoreFramework)-windows</TargetFramework>
     <UseWPF>True</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
-    <DebugType>embedded</DebugType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(CoreNoWarn)</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
+
     <Title>LaquaiLib.Windows</Title>
-    <Authors>$(CoreAuthors)</Authors>
-    <Description>$(CoreDescription)</Description>
-    <Copyright>(C) $(CoreAuthors) 20xx</Copyright>
     <PackageDescription>Contains functionality specifically for Windows. Adds references to Windows Forms and WPF.</PackageDescription>
-    
-    <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
-    <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
-    <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>$(CorePackageOutput)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CoreAudio" Version="1.40.0" />
-    <PackageReference Include="System.Management" Version="9.0.0" />
+    <PackageReference Include="System.Management" Version="9.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />

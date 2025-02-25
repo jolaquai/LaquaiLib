@@ -324,6 +324,12 @@ public class ObservableStream<T> : Stream
     /// <inheritdoc/>
     public override async ValueTask DisposeAsync()
     {
+        if (disposed)
+        {
+            return;
+        }
+
+        GC.SuppressFinalize(this);
         await _underlying.DisposeAsync().ConfigureAwait(false);
 
         disposed = true;

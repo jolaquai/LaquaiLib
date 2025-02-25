@@ -1,8 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-using Subprocess;
-
-namespace TestConsole;
+﻿namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -30,15 +26,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var sp = await Subprocess.Subprocess.RunAsync(typeof(TestConsole).GetMethod(nameof(MySubprocessCallback)), []);
-
         ;
-    }
-
-    public static async Task<int> MySubprocessCallback(BlockingCollection<string> messages, object[] args, CancellationToken ct)
-    {
-        System.IO.File.WriteAllText(@"C:\test.txt", "Hello from my Subprocess!");
-        return 0;
     }
 }
 

@@ -11,7 +11,7 @@ namespace LaquaiLib.Collections.LimitedCollections;
 /// <typeparam name="T">The Type of the items in the collection.</typeparam>
 public sealed class LimitedQueue<T> : IReadOnlyCollection<T>
 {
-    protected static ArgumentException NeedCapacityGreaterThanInitialItemsException => new ArgumentException($"The passed initial capacity may not be smaller than the number of items passed to create the {nameof(LimitedQueue<>)} with.");
+    private static ArgumentException NeedCapacityGreaterThanInitialItemsException => new ArgumentException($"The passed initial capacity may not be smaller than the number of items passed to create the {nameof(LimitedQueue<>)} with.");
 
     private Queue<T> queue;
 
@@ -194,7 +194,7 @@ public sealed class LimitedQueue<T> : IReadOnlyCollection<T>
 /// </remarks>
 public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
 {
-    protected static ArgumentException NeedCapacityGreaterThanInitialItemsException => new ArgumentException($"The passed initial capacity may not be smaller than the number of items passed to create the {nameof(ConcurrentLimitedQueue<>)} with.");
+    private static ArgumentException NeedCapacityGreaterThanInitialItemsException => new ArgumentException($"The passed initial capacity may not be smaller than the number of items passed to create the {nameof(ConcurrentLimitedQueue<>)} with.");
 
     // there is no way around a lock to prevent the data race between queue.Count and Capacity since both are freely mutable
     private readonly Lock _lock = new Lock();

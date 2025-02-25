@@ -1,7 +1,5 @@
 ﻿namespace LaquaiLib.Util.ExceptionManagement;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
 /// <summary>
 /// Defines constants for some common HResults.
 /// Stolen straight from the .NET runtime source (see <see href="https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/HResults.cs"/>.

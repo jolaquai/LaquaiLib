@@ -8,43 +8,43 @@ public static partial class IEnumerableExtensions
 {
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{int})" />
     public static Task<double> AverageAsync(this IEnumerable<int> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{long})" />
     public static Task<double> AverageAsync(this IEnumerable<long> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{float})" />
     public static Task<float> AverageAsync(this IEnumerable<float> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{double})" />
     public static Task<double> AverageAsync(this IEnumerable<double> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{decimal})" />
     public static Task<decimal> AverageAsync(this IEnumerable<decimal> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{int?})" />
     public static Task<double?> AverageAsync(this IEnumerable<int?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{long?})" />
     public static Task<double?> AverageAsync(this IEnumerable<long?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{float?})" />
     public static Task<float?> AverageAsync(this IEnumerable<float?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{double?})" />
     public static Task<double?> AverageAsync(this IEnumerable<double?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average(IEnumerable{decimal?})" />
     public static Task<decimal?> AverageAsync(this IEnumerable<decimal?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Average(), cancellationToken);
+        => Task.Run(source.Average, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, int})" />
     public static Task<double> AverageAsync<TSource>(this IEnumerable<TSource> source, Func<TSource, int> selector, CancellationToken cancellationToken = default)

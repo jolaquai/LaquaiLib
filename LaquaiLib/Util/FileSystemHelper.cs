@@ -8,6 +8,8 @@ using LaquaiLib.Util.Misc;
 
 namespace LaquaiLib.Util;
 
+#pragma warning disable CA1416
+
 // This partial part implements general-purpose methods and some custom stuff.
 /// <summary>
 /// Provides methods and events for working with files and directories.
@@ -258,7 +260,6 @@ public static partial class FileSystemHelper
         }
     }
 
-#pragma warning disable CA1416 // Validate platform compatibility
     /// <summary>
     /// Removes all access rules and audit rules from the specified <see cref="FileSystemInfo"/> and replaces them with the rules from the specified <see cref="FileSystemSecurity"/>.
     /// </summary>
@@ -292,19 +293,19 @@ public static partial class FileSystemHelper
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
 
         // Now copy the rules from the source
@@ -340,19 +341,19 @@ public static partial class FileSystemHelper
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
 
         // Now copy the rules from the source
@@ -381,7 +382,6 @@ public static partial class FileSystemHelper
         // Run this anyway to cover anything not explicitly copied
         target.SetAccessControl(sec);
     }
-#pragma warning restore CA1416 // Validate platform compatibility
 
     /// <summary>
     /// Reads the file at <paramref name="path"/> into a <see cref="MemoryStream"/>, then deletes the file. It then only exists in memory.

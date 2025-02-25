@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>$(CoreFramework)-windows</TargetFramework>
     <LangVersion>preview</LangVersion>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
     <Nullable>disable</Nullable>

@@ -43,7 +43,7 @@ public static class DbSetExtensions
     public static TEntity AddOrUpdate<TEntity>(this DbSet<TEntity> set, TEntity entity, params object[] keys)
         where TEntity : class
     {
-        set.Attach(entity);
+        _ = set.Attach(entity);
         var existing = set.Find(keys);
         if (existing is not null)
         {

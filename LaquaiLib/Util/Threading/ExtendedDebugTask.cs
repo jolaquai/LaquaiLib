@@ -169,18 +169,18 @@ public class ExtendedDebugTask(Task task)
     /// </summary>
     /// <param name="continueOnCapturedContext">Whether to attempt to marshal the continuation back to the original context captured.</param>
     /// <returns>An awaitable object.</returns>
-    public new ConfiguredExtendedDebugTaskAwaitable ConfigureAwait(bool continueOnCapturedContext) => new(Task, this, _creationStack, continueOnCapturedContext);
+    public ConfiguredExtendedDebugTaskAwaitable ConfigureAwait(bool continueOnCapturedContext) => new(Task, this, _creationStack, continueOnCapturedContext);
     /// <summary>
     /// Gets an awaitable object that allows for configured awaits on the wrapped <see cref="System.Threading.Tasks.Task"/>.
     /// </summary>
     /// <param name="options">Options for configuring the await.</param>
     /// <returns>An awaitable object.</returns>
-    public new ConfiguredExtendedDebugTaskAwaitable ConfigureAwait(ConfigureAwaitOptions options) => new(Task, this, _creationStack, options);
+    public ConfiguredExtendedDebugTaskAwaitable ConfigureAwait(ConfigureAwaitOptions options) => new(Task, this, _creationStack, options);
     /// <summary>
     /// Gets an awaiter for this task.
     /// </summary>
     /// <returns>The awaiter.</returns>
-    public new ExtendedDebugTaskAwaiter GetAwaiter() => new(Task.GetAwaiter(), this, _creationStack);
+    public ExtendedDebugTaskAwaiter GetAwaiter() => new(Task.GetAwaiter(), this, _creationStack);
 }
 
 #region ExtendedDebugTaskAwaiter
@@ -189,7 +189,7 @@ public class ExtendedDebugTask(Task task)
 /// </summary>
 [StackTraceHidden]
 [DebuggerStepThrough]
-public struct ExtendedDebugTaskAwaiter : INotifyCompletion
+public readonly struct ExtendedDebugTaskAwaiter : INotifyCompletion
 {
     private readonly TaskAwaiter _awaiter;
     private readonly ExtendedDebugTask _edt;
@@ -214,7 +214,7 @@ public struct ExtendedDebugTaskAwaiter : INotifyCompletion
     public readonly bool IsCompleted => _awaiter.IsCompleted;
 
     public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
-    public void GetResult()
+    public readonly void GetResult()
     {
         var awaitStack = new StackTrace(true);
 
@@ -270,7 +270,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
     /// </summary>
     [StackTraceHidden]
     [DebuggerStepThrough]
-    public struct ConfiguredExtendedDebugTaskAwaiter : INotifyCompletion
+    public readonly struct ConfiguredExtendedDebugTaskAwaiter : INotifyCompletion
     {
         // I know this is ugly as hell, but we need to be compatible with all sorts of Task variants
         private readonly ConfiguredTaskAwaitable.ConfiguredTaskAwaiter _awaiter;
@@ -295,7 +295,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
         public readonly bool IsCompleted => _awaiter.IsCompleted;
 
         public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
-        public void GetResult()
+        public readonly void GetResult()
         {
             var awaitStack = new StackTrace(true);
 
@@ -446,18 +446,18 @@ public class ExtendedDebugTask<TResult>(Task<TResult> task)
     /// </summary>
     /// <param name="continueOnCapturedContext">Whether to attempt to marshal the continuation back to the original context captured.</param>
     /// <returns>An awaitable object.</returns>
-    public new ConfiguredExtendedDebugTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext) => new(Task, this, _creationStack, continueOnCapturedContext);
+    public ConfiguredExtendedDebugTaskAwaitable<TResult> ConfigureAwait(bool continueOnCapturedContext) => new(Task, this, _creationStack, continueOnCapturedContext);
     /// <summary>
     /// Gets an awaitable object that allows for configured awaits on the wrapped <see cref="System.Threading.Tasks.Task"/>.
     /// </summary>
     /// <param name="options">Options for configuring the await.</param>
     /// <returns>An awaitable object.</returns>
-    public new ConfiguredExtendedDebugTaskAwaitable<TResult> ConfigureAwait(ConfigureAwaitOptions options) => new(Task, this, _creationStack, options);
+    public ConfiguredExtendedDebugTaskAwaitable<TResult> ConfigureAwait(ConfigureAwaitOptions options) => new(Task, this, _creationStack, options);
     /// <summary>
     /// Gets an awaiter for this task.
     /// </summary>
     /// <returns>The awaiter.</returns>
-    public new ExtendedDebugTaskAwaiter<TResult> GetAwaiter() => new(Task.GetAwaiter(), this, _creationStack);
+    public ExtendedDebugTaskAwaiter<TResult> GetAwaiter() => new(Task.GetAwaiter(), this, _creationStack);
 }
 
 #region ExtendedDebugTaskAwaiter
@@ -466,7 +466,7 @@ public class ExtendedDebugTask<TResult>(Task<TResult> task)
 /// </summary>
 [StackTraceHidden]
 [DebuggerStepThrough]
-public struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
+public readonly struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
 {
     private readonly TaskAwaiter<TResult> _awaiter;
     private readonly ExtendedDebugTask<TResult> _edt;
@@ -490,7 +490,7 @@ public struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
     public readonly bool IsCompleted => _awaiter.IsCompleted;
 
     public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
-    public TResult GetResult()
+    public readonly TResult GetResult()
     {
         var awaitStack = new StackTrace(true);
 
@@ -546,7 +546,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
     /// </summary>
     [StackTraceHidden]
     [DebuggerStepThrough]
-    public struct ConfiguredExtendedDebugTaskAwaiter : INotifyCompletion
+    public readonly struct ConfiguredExtendedDebugTaskAwaiter : INotifyCompletion
     {
         // I know this is ugly as hell, but we need to be compatible with all sorts of Task variants
         private readonly ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter _awaiter;
@@ -571,7 +571,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
         public readonly bool IsCompleted => _awaiter.IsCompleted;
 
         public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
-        public TResult GetResult()
+        public readonly TResult GetResult()
         {
             var awaitStack = new StackTrace(true);
 

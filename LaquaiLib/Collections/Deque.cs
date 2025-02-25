@@ -558,9 +558,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// </summary>
     /// <returns>The newly constructed <see cref="LinkedList{T}"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#pragma warning disable IDE0306 // Simplify collection initialization
     public LinkedList<T> ToLinkedList() => new LinkedList<T>(this);
-#pragma warning restore IDE0306 // Simplify collection initialization
     #endregion
 }
 
