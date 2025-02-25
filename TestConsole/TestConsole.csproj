@@ -5,7 +5,7 @@
         <TargetFramework>$(CoreFramework)-windows</TargetFramework>
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>
-        <Platforms>AnyCPU;x64;x86</Platforms>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>

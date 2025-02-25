@@ -1,1 +1,1 @@
-nuget push *.symbols.nupkg -Source nuget -NonInteractive -SkipDuplicate
+nuget push .\pack\*.symbols.nupkg -Source nuget -NonInteractive -SkipDuplicate

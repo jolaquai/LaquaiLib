@@ -3,19 +3,9 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>$(CoreFramework)</TargetFramework>
-        <LangVersion>preview</LangVersion>
-        <EnablePreviewFeatures>True</EnablePreviewFeatures>
-        <!--<UseWindowsForms>true</UseWindowsForms>
-        <UseWPF>true</UseWPF>-->
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Platforms>AnyCPU;x64;x86</Platforms>
 
-        <DebugType>embedded</DebugType>
-
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>obj\Generated</CompilerGeneratedFilesOutputPath>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>

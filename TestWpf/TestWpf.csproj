@@ -3,12 +3,9 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>$(CoreFramework)-windows</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    <Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
-    <Platforms>AnyCPU;x64;x86</Platforms>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

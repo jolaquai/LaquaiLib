@@ -34,6 +34,7 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <AnalysisLevel>preview-all</AnalysisLevel>
         <AnalysisMode>all</AnalysisMode>
+        <Platforms>AnyCPU;x64;x86</Platforms>
 
         <NoWarn>$(NoWarn);CS8714;IDE0290;IDE0045;IDE0046</NoWarn>
 
