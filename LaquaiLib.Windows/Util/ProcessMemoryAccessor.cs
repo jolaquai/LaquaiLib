@@ -285,7 +285,6 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
         // VirtualQueryEx the location to ensure we can write to it
 
-
         // If reversal is requested, reverse the byte sequence
         if (reverseLittleEndian && BitConverter.IsLittleEndian)
         {

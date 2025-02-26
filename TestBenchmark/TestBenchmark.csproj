@@ -2,20 +2,10 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
-        <LangVersion>preview</LangVersion>
-        <EnablePreviewFeatures>True</EnablePreviewFeatures>
-        <!--<UseWindowsForms>true</UseWindowsForms>
-        <UseWPF>true</UseWPF>-->
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <TargetFramework>$(CoreFramework)</TargetFramework>
         <Platforms>AnyCPU;x64;x86</Platforms>
 
-        <DebugType>embedded</DebugType>
-
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>obj\Generated</CompilerGeneratedFilesOutputPath>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>

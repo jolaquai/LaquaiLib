@@ -8,43 +8,43 @@ public static partial class IEnumerableExtensions
 {
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{int})" />
     public static Task<int> MaxAsync(this IEnumerable<int> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{long})" />
     public static Task<long> MaxAsync(this IEnumerable<long> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{int?})" />
     public static Task<int?> MaxAsync(this IEnumerable<int?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{long?})" />
     public static Task<long?> MaxAsync(this IEnumerable<long?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{double})" />
     public static Task<double> MaxAsync(this IEnumerable<double> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{double?})" />
     public static Task<double?> MaxAsync(this IEnumerable<double?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{float})" />
     public static Task<float> MaxAsync(this IEnumerable<float> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{float?})" />
     public static Task<float?> MaxAsync(this IEnumerable<float?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{decimal})" />
     public static Task<decimal> MaxAsync(this IEnumerable<decimal> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max(IEnumerable{decimal?})" />
     public static Task<decimal?> MaxAsync(this IEnumerable<decimal?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Max(), cancellationToken);
+        => Task.Run(source.Max, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource})" />
     public static Task<TSource> MaxAsync<TSource>(this IEnumerable<TSource> source, CancellationToken cancellationToken = default)

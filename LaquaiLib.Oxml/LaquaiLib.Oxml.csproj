@@ -1,36 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <PackageVersion>$(CoreVersion)</PackageVersion>
-    <FileVersion>$(CoreVersion)</FileVersion>
-    <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
-    <Version>$(CoreVersion)</Version>
-    <AnalysisLevel>preview-all</AnalysisLevel>
-    <AnalysisMode>all</AnalysisMode>
-    <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    <DebugType>embedded</DebugType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(CoreNoWarn)</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>$(CoreFramework)</TargetFramework>
+
     <Title>LaquaiLib.Oxml</Title>
-    <Authors>$(CoreAuthors)</Authors>
-    <Description>$(CoreDescription)</Description>
-    <Copyright>(C) $(CoreAuthors) 20xx</Copyright>
     <PackageDescription>Contains functionality for working with the DocumentFormat.OpenXml specification (mostly the Wordprocessing structure).</PackageDescription>
-    
-    <IncludeSource>True</IncludeSource>
-    <IncludeSymbols>True</IncludeSymbols>
-    <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
-    <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>$(CorePackageOutput)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.2.0" />

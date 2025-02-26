@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Numerics;
+using System.Runtime.Intrinsics;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Interfaces;
@@ -32,7 +33,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     {
         if (vectors.Length == 0)
         {
-            throw new ArgumentOutOfRangeException("At least one vector must be provided.");
+            throw new ArgumentOutOfRangeException(nameof(vectors), "At least one vector must be provided.");
         }
 
         var max = 0;
@@ -67,11 +68,11 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     {
         if (arrays.Length == 0)
         {
-            throw new ArgumentOutOfRangeException("At least one array must be provided.");
+            throw new ArgumentOutOfRangeException(nameof(arrays), "At least one array must be provided.");
         }
         if (arrays.All(a => a.Length == 0))
         {
-            throw new ArgumentOutOfRangeException("At least one array must not be empty.");
+            throw new ArgumentOutOfRangeException(nameof(arrays), "At least one array must not be empty.");
         }
 
         var max = 0;
@@ -104,7 +105,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     {
         if (data.Length == 0)
         {
-            throw new ArgumentOutOfRangeException("The data array must not be empty.");
+            throw new ArgumentOutOfRangeException(nameof(data), "The data array must not be zero-sized.");
         }
 
         _data = (T[,])data.Clone();

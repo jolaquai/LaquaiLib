@@ -6,8 +6,6 @@ using SrcsUnsafe = System.Runtime.CompilerServices.Unsafe;
 
 namespace LaquaiLib.Collections;
 
-#pragma warning disable IDE0044 // Add readonly modifier
-
 /// <summary>
 /// Implements a dictionary that maps keys and specific orders of those keys to values.
 /// </summary>
@@ -208,7 +206,7 @@ public class MultiKeyDictionary<TValue>
         ArgumentOutOfRangeException.ThrowIfZero(keys.Length);
 
         // Setting doesn't care about whether we were already allocated or not
-        TryAllocate(keys.Length);
+        _ = TryAllocate(keys.Length);
 
         ref var theRef = ref GetRef(keys, true, out _);
         theRef = value;

@@ -8,43 +8,43 @@ public static partial class IEnumerableExtensions
 {
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{int})" />
     public static Task<int> MinAsync(this IEnumerable<int> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{long})" />
     public static Task<long> MinAsync(this IEnumerable<long> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{int?})" />
     public static Task<int?> MinAsync(this IEnumerable<int?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{long?})" />
     public static Task<long?> MinAsync(this IEnumerable<long?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{float})" />
     public static Task<float> MinAsync(this IEnumerable<float> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{float?})" />
     public static Task<float?> MinAsync(this IEnumerable<float?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{double})" />
     public static Task<double> MinAsync(this IEnumerable<double> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{double?})" />
     public static Task<double?> MinAsync(this IEnumerable<double?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{decimal})" />
     public static Task<decimal> MinAsync(this IEnumerable<decimal> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min(IEnumerable{decimal?})" />
     public static Task<decimal?> MinAsync(this IEnumerable<decimal?> source, CancellationToken cancellationToken = default)
-        => Task.Run(() => source.Min(), cancellationToken);
+        => Task.Run(source.Min, cancellationToken);
 
     /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource})" />
     public static Task<TSource> MinAsync<TSource>(this IEnumerable<TSource> source, CancellationToken cancellationToken = default)
