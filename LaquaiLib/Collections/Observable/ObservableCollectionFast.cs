@@ -277,6 +277,41 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         RaiseCollectionChanged();
     }
     #endregion
+    #region Move
+    /// <summary>
+    /// Moves the item at index <paramref name="i"/> to index <paramref name="j"/>.
+    /// Surrounding elements are shifted accordingly.
+    /// </summary>
+    /// <param name="i">The index of the item to move.</param>
+    /// <param name="j">The index to move the item to.</param>
+    public void Move(int i, int j)
+    {
+        MoveSilent(i, j);
+        RaiseCollectionChanged();
+    }
+    /// <summary>
+    /// Silently moves the item at index <paramref name="i"/> to index <paramref name="j"/>.
+    /// Surrounding elements are shifted accordingly.
+    /// This causes no <see cref="NotifyCollectionChangedAction.Move"/> event to be fired.
+    /// </summary>
+    /// <param name="i">The index of the item to move.</param>
+    /// <param name="j">The index to move the item to.</param>
+    /// <exception cref="IndexOutOfRangeException">Thrown when <paramref name="i"/> or <paramref name="j"/> are out of range.</exception>
+    public void MoveSilent(int i, int j)
+    {
+        if (i < 0 || i >= Count || j < 0 || j >= Count)
+        {
+            throw new IndexOutOfRangeException("Indices are out of range.");
+        }
+        if (i == j)
+        {
+            return;
+        }
+
+        var item = RemoveAtSilent(i);
+        InsertSilent(j, item);
+    }
+    #endregion
 
     #region Clearing
     /// <summary>
@@ -348,6 +383,29 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// </summary>
     /// <param name="selector">A <see cref="Func{T, TResult}"/> that determines whether an element should be removed.</param>
     public void RemoveSilent(Func<T, bool> selector) => items.RemoveAll(new Predicate<T>(selector));
+    /// <summary>
+    /// Removes the item at the specified <paramref name="index"/>
+    /// </summary>
+    /// <param name="index">The index of the item to remove.</param
+    /// <returns>The item that was removed.</returns>
+    public T RemoveAt(int index)
+    {
+        var t = RemoveAtSilent(index);
+        RaiseCollectionChanged();
+        return t;
+    }
+    /// <summary>
+    /// Silently removes the item at the specified <paramref name="index"/>.
+    /// This causes no <see cref="NotifyCollectionChangedAction.Remove"/> event to be fired.
+    /// </summary>
+    /// <param name="index">The index of the item to remove.</param>
+    /// <returns>The item that was removed.</returns>
+    public T RemoveAtSilent(int index)
+    {
+        var item = this[index];
+        items.RemoveAt(index);
+        return item;
+    }
     #endregion
 
     #region ICollection<T>
