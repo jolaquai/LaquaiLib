@@ -114,7 +114,7 @@ public partial class IEnumerableExtensions
             {
                 var src = other.AsSpan();
                 var length = src.Length;
-                if (startIndex + length > target.Capacity)
+                if (startIndex + length > target.Count)
                 {
                     CollectionsMarshal.SetCount(target, startIndex + length);
                 }
@@ -125,7 +125,7 @@ public partial class IEnumerableExtensions
             case IReadOnlyList<T> list:
             {
                 var length = list.Count;
-                if (startIndex + length > target.Capacity)
+                if (startIndex + length > target.Count)
                 {
                     CollectionsMarshal.SetCount(target, startIndex + length);
                 }
@@ -138,7 +138,7 @@ public partial class IEnumerableExtensions
             case IReadOnlyCollection<T> collection:
             {
                 var length = collection.Count;
-                if (startIndex + length > target.Capacity)
+                if (startIndex + length > target.Count)
                 {
                     CollectionsMarshal.SetCount(target, startIndex + length);
                 }
@@ -153,7 +153,7 @@ public partial class IEnumerableExtensions
             {
                 if (source.TryGetNonEnumeratedCount(out var length))
                 {
-                    if (startIndex + length > target.Capacity)
+                    if (startIndex + length > target.Count)
                     {
                         CollectionsMarshal.SetCount(target, startIndex + length);
                     }
