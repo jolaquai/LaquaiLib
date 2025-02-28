@@ -9,6 +9,7 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
     <File Path="README.md" />
+    <File Path="UNLICENSE" />
   </Folder>
   <Folder Name="/Solution Items/Scripts/" Id="eb4a6ed1-506c-a9c3-2245-c7e44ed24a1b">
     <File Path="PublishAll.ps1" />
