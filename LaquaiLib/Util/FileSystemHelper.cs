@@ -1,6 +1,7 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 
 using LaquaiLib.Extensions;
@@ -548,6 +549,167 @@ public static partial class FileSystemHelper
         var pathUri = new Uri(Path.EndsInDirectorySeparator(path) ? path : path + Path.DirectorySeparatorChar);
         var compUri = new Uri(Path.EndsInDirectorySeparator(potentialBase) ? potentialBase : potentialBase + Path.DirectorySeparatorChar);
         return compUri.IsBaseOf(pathUri);
+    }
+
+    private static partial class LockedFileInterop
+    {
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        private static partial nint CreateFile([MarshalAs(UnmanagedType.LPStr)] string lpFileName, uint dwDesiredAccess, uint dwShareMode,
+        nint lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, nint hTemplateFile);
+
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool BackupRead(nint hFile, Span<byte> lpBuffer, uint nNumberOfBytesToRead, ref uint lpNumberOfBytesRead, [MarshalAs(UnmanagedType.Bool)] bool bAbort, [MarshalAs(UnmanagedType.Bool)] bool bProcessSecurity, ref nint lpContext);
+
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool CloseHandle(nint hObject);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct WIN32_STREAM_ID
+        {
+            public uint dwStreamId;
+            public uint dwStreamAttributes;
+            public long Size;
+            public uint dwStreamNameSize;
+        }
+
+        public static bool CopyLockedFile(string sourceFile, string destFile)
+        {
+            const uint GENERIC_READ = 0x80000000;
+            const uint FILE_SHARE_READ = 0x00000001;
+            const uint FILE_SHARE_WRITE = 0x00000002;
+            const uint FILE_SHARE_DELETE = 0x00000004;
+            const uint OPEN_EXISTING = 3;
+            const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
+            const uint BACKUP_DATA = 1;
+
+            var handle = CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
+
+            if (handle == new nint(-1))
+            {
+                return false;
+            }
+
+            try
+            {
+                using (var destStream = new FileStream(destFile, FileMode.Create))
+                {
+                    Span<byte> buffer = stackalloc byte[1 << 16];
+                    uint bytesRead = 0;
+                    var context = nint.Zero;
+                    var inDataStream = false;
+                    long remainingDataSize = 0;
+
+                    while (BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
+                    {
+                        if (bytesRead == 0)
+                        {
+                            break;
+                        }
+
+                        var offset = 0;
+                        while (offset < bytesRead)
+                        {
+                            // Continue reading data from previous stream
+                            if (inDataStream)
+                            {
+                                var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
+                                destStream.Write(buffer.Slice(offset, dataChunkSize));
+
+                                remainingDataSize -= dataChunkSize;
+                                offset += dataChunkSize;
+
+                                if (remainingDataSize <= 0)
+                                {
+                                    inDataStream = false;
+                                }
+
+                                continue;
+                            }
+
+                            // Not enough bytes left for a header
+                            if (offset + 20 > bytesRead)
+                            {
+                                break;
+                            }
+
+                            var streamId = buffer.Read<int>(offset);
+                            var streamAttributes = buffer.Read<uint>(offset + 4);
+                            var streamSize = buffer.Read<long>(offset + 8);
+                            var streamNameSize = buffer.Read<uint>(offset + 16);
+
+                            var headerSize = 20 + (int)streamNameSize;
+
+                            // Skip past header
+                            offset += headerSize;
+
+                            // Check if this is a data stream
+                            if (streamId == BACKUP_DATA)
+                            {
+                                inDataStream = true;
+                                remainingDataSize = streamSize;
+
+                                // Process available data now
+                                if (offset < bytesRead)
+                                {
+                                    var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
+                                    destStream.Write(buffer.Slice(offset, dataChunkSize));
+
+                                    remainingDataSize -= dataChunkSize;
+                                    offset += dataChunkSize;
+
+                                    if (remainingDataSize <= 0)
+                                    {
+                                        inDataStream = false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // Skip non-data stream
+                                var skipSize = (int)Math.Min(streamSize, bytesRead - offset);
+                                offset += skipSize;
+                                remainingDataSize = streamSize - skipSize;
+
+                                if (remainingDataSize > 0)
+                                {
+                                    inDataStream = true;  // Will be skipped next time
+                                }
+                            }
+                        }
+                    }
+
+                    // Final read with bAbort = true
+                    _ = BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
+                }
+                return true;
+            }
+            finally
+            {
+                _ = CloseHandle(handle);
+            }
+        }
+    }
+    /// <summary>
+    /// Attempts to copy the file at <paramref name="source"/> to <paramref name="destination"/> even if that file is locked by another process.
+    /// </summary>
+    /// <param name="source">The path to the file to copy.</param>
+    /// <param name="destination">The path to copy the file to.</param>
+    /// <param name="overwrite">Whether to overwrite the destination file if it already exists. Defaults to <see langword="false"/>.</param>
+    /// <returns><see langword="true"/> if the file was copied successfully, otherwise <see langword="false"/>.</returns>
+    public static bool TryCopyLockedFile(string source, string destination, bool overwrite = false)
+    {
+        if (!File.Exists(source))
+        {
+            return false;
+        }
+        if (!overwrite && File.Exists(destination))
+        {
+            return false;
+        }
+
+        return LockedFileInterop.CopyLockedFile(source, destination);
     }
 
     private static ReadOnlySpan<char> InvalidFileNameChars => ['\"', '<', '>', ':', '*', '?', '\\', '/'];

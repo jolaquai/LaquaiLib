@@ -390,7 +390,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             IReadOnlySpanProvider<T> rosProvider = null;
             try
             {
-                _ = _data.TryGetReadOnlySpan(out rosProvider, out ReadOnlySpan<T> ros);
+                _ = _data.TryGetReadOnlySpan(out rosProvider, out var ros);
 
                 bool IsAllZerosFrom(ReadOnlySpan<T> span, int row)
                 {

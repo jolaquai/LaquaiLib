@@ -5,6 +5,9 @@
         <TargetFramework>$(CoreFramework)</TargetFramework>
         <Platforms>AnyCPU;x64;x86</Platforms>
 
+        <!-- Always optimize the Benchmark -->
+        <Optimize>True</Optimize>
+
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
 
