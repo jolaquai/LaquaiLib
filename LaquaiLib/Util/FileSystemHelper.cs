@@ -712,6 +712,20 @@ public static partial class FileSystemHelper
         return LockedFileInterop.CopyLockedFile(source, destination);
     }
 
+    /// <summary>
+    /// Deletes the <c>Zone.Identifier</c> alternate data stream from the specified file, if it exists.
+    /// This has the effect of removing the "This file originated from the internet" warning (akin to right-clicking and selecting "Unblock" in Explorer).
+    /// </summary>
+    /// <param name="path">The path to the file to remove the zone identifier from.</param>
+    public static void RemoveZoneIdentifier(string path)
+    {
+        path += ":Zone.Identifier";
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+    }
+
     private static ReadOnlySpan<char> InvalidFileNameChars => ['\"', '<', '>', ':', '*', '?', '\\', '/'];
     private static ReadOnlySpan<char> InvalidPathChars => ['|', '\0',
         (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
