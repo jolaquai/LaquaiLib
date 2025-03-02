@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.IO;
 using LaquaiLib.Util.Misc;
 
 namespace LaquaiLib.Util;
@@ -25,6 +26,8 @@ public static partial class FileSystemHelper
     /// <param name="copy">Replicate the directory and its contents at the source location instead of moving it.</param>
     /// <param name="allowExisting">Whether to allow the destination directory to already exist and contain files and whether to allow overwriting existing files.</param>
     /// <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow. Defaults to the number of logical processors on the machine.</param>
+    /// <param name="bufferSize">The size of the buffer to use for copying files. If unset, this is calculated individually for each chunk of files.</param>
+    /// <param name="progressSink">An <see cref="IProgress{T}"/> instance to report progress to. The value is a tuple of the number of files processed and the total number of files.</param>
     /// <param name="restorePermissionsAndAttributes">Whether to restore the permissions and attributes of the files and directories after moving or copying them. Defaults to <see langword="false"/> and may incur a large performance penalty if <see langword="true"/>.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
     /// <remarks>
@@ -37,6 +40,8 @@ public static partial class FileSystemHelper
         bool copy = false,
         bool allowExisting = false,
         int maxDegreeOfParallelism = -1,
+        int bufferSize = -1,
+        IProgress<(int, int)> progressSink = null,
         bool restorePermissionsAndAttributes = false,
         CancellationToken cancellationToken = default
     )
@@ -64,6 +69,7 @@ public static partial class FileSystemHelper
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
         var partitions = partitioner.GetPartitions(maxDegreeOfParallelism);
 
+        var filesCompleted = 0;
         return Task.WhenAll(partitions.Select(p => Task.Run(async () =>
         {
             // Local copy so the reference doesn't change from under us
@@ -82,7 +88,18 @@ public static partial class FileSystemHelper
                 await using (var sourceFs = File.OpenRead(fileSrc))
                 await using (var destFs = File.Create(fileDest))
                 {
-                    await sourceFs.CopyToAsync(destFs, cancellationToken);
+                    const int baseCutoff = 1 << 18;
+                    int buffer;
+                    if (sourceFs.Length < baseCutoff)
+                    {
+                        buffer = (int)sourceFs.Length;
+                    }
+                    else
+                    {
+                        buffer = bufferSize > 0 ? bufferSize : baseCutoff;
+                    }
+
+                    await sourceFs.CopyToAsync(destFs, buffer, cancellationToken);
                 }
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -104,6 +121,9 @@ public static partial class FileSystemHelper
                 {
                     File.Delete(fileSrc);
                 }
+
+                var prog = Interlocked.Increment(ref filesCompleted);
+                progressSink?.Report((prog, partitioner.TotalCount));
             }
         }, cancellationToken))).ContinueWith(_ =>
         {
@@ -122,6 +142,7 @@ public static partial class FileSystemHelper
     /// <param name="copy">Replicate the directory and its contents at the source location instead of moving it.</param>
     /// <param name="allowExisting">Whether to allow the destination directory to already exist and contain files and whether to allow overwriting existing files.</param>
     /// <param name="maxDegreeOfParallelism">The maximum number of concurrent operations to allow. Defaults to the number of logical processors on the machine.</param>
+    /// <param name="progressSink">An <see cref="IProgress{T}"/> instance to report progress to. The value is the completion progress in percent.</param>
     /// <param name="restorePermissionsAndAttributes">Whether to restore the permissions and attributes of the files and directories after moving or copying them. Defaults to <see langword="false"/> and may incur a large performance penalty if <see langword="true"/>.</param>
     /// <param name="compressionLevel">The level of compression to apply to the files. Defaults to <see cref="CompressionLevel.Optimal"/>.</param>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
@@ -135,6 +156,7 @@ public static partial class FileSystemHelper
         bool copy = false,
         bool allowExisting = false,
         int maxDegreeOfParallelism = -1,
+        IProgress<(int, int)> progressSink = null,
         bool restorePermissionsAndAttributes = false,
         CompressionLevel compressionLevel = CompressionLevel.Optimal,
         CancellationToken cancellationToken = default
@@ -163,6 +185,7 @@ public static partial class FileSystemHelper
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
         var partitions = partitioner.GetPartitions(maxDegreeOfParallelism);
 
+        var filesCompleted = 0;
         return Task.WhenAll(partitions.Select(p => Task.Run(async () =>
         {
             // Use a single intermediary stream for all files in this partition, since nobody but us will touch it
@@ -217,6 +240,9 @@ public static partial class FileSystemHelper
                 {
                     File.Delete(fileSrc);
                 }
+
+                var prog = Interlocked.Increment(ref filesCompleted);
+                progressSink?.Report((prog, partitioner.TotalCount));
             }
         }, cancellationToken))).ContinueWith(_ =>
         {

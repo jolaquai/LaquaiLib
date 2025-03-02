@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using System.Runtime.CompilerServices;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.IO;
 
 /// <summary>
 /// Implements a <see cref="Partitioner{TSource}"/> that partitions files by their size.
@@ -12,6 +12,15 @@ public class FileSizePartitioner : Partitioner<string>
     private readonly FrozenDictionary<string, FileInfo> _files;
 
     /// <summary>
+    /// The total size of all files in the partitioner in bytes.
+    /// </summary>
+    public ulong TotalSize { get; }
+    /// <summary>
+    /// The total count of all files in the partitioner.
+    /// </summary>
+    public int TotalCount { get; }
+
+    /// <summary>
     /// Initializes a new <see cref="FileSizePartitioner"/> using the specified file paths.
     /// </summary>
     /// <param name="paths">The paths to the files to partition.</param>
@@ -19,6 +28,8 @@ public class FileSizePartitioner : Partitioner<string>
     public FileSizePartitioner(IEnumerable<string> paths)
     {
         _files = paths.ToFrozenDictionary(static path => path, static path => new FileInfo(path));
+        TotalSize = _files.Aggregate(0ul, static (acc, pair) => acc + (ulong)pair.Value.Length);
+        TotalCount = _files.Count;
     }
     /// <summary>
     /// Initializes a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
@@ -28,6 +39,7 @@ public class FileSizePartitioner : Partitioner<string>
     public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)
     {
         _files = fileInfos.ToFrozenDictionary(static fi => fi.FullName);
+        TotalCount = _files.Count;
     }
 
     /// <summary>
@@ -41,10 +53,9 @@ public class FileSizePartitioner : Partitioner<string>
         partitionCount--;
 
         var ordered = _files.OrderByDescending(static pair => pair.Value.Length);
-        var totalSize = ordered.Sum(static pair => pair.Value.Length);
         var partitions = new List<IEnumerator<string>>(partitionCount);
 
-        var partitionSize = (int)Math.Ceiling((double)totalSize / partitionCount);
+        var partitionSize = (int)Math.Ceiling((double)TotalSize / partitionCount);
         var currentPartition = new List<string>();
         var currentSize = 0L;
 

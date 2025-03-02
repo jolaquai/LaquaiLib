@@ -1,4 +1,8 @@
-﻿namespace TestConsole;
+﻿using System.Text.Json.Serialization;
+
+using LaquaiLib.IO;
+
+namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -11,11 +15,9 @@ public static partial class TestConsole
         // FirstChanceExceptionHandlers.RegisterAll();
 
         Thread.CurrentThread.Name = "[MAIN]";
-        using (var scope = TestCore.TestCore.GetScope().GetAwaiter().GetResult())
-        {
-            ActualMain(scope.ServiceProvider).GetAwaiter().GetResult();
-            // Debugger.Break();
-        }
+        using var scope = TestCore.TestCore.GetScope().GetAwaiter().GetResult();
+        ActualMain(scope.ServiceProvider).GetAwaiter().GetResult();
+        // Debugger.Break();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -25,6 +27,11 @@ public static partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
+
+        const string from = @"C:\Overwatch";
+        const string to = @"C:\OverwatchBackup";
+
+        var copier = new ResumableDirectoryIO();
 
         ;
     }
