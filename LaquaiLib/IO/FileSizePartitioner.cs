@@ -7,6 +7,9 @@ namespace LaquaiLib.IO;
 /// <summary>
 /// Implements a <see cref="Partitioner{TSource}"/> that partitions files by their size.
 /// </summary>
+/// <remarks>
+/// This type cannot be used as a partitioner for <see cref="Parallel.ForEach{TSource}(Partitioner{TSource}, Action{TSource})"/> or similar calls because it does not support dynamic partitions. Instead, use <see cref="GetPartitions"/> to get the partitions and iterate over them manually.
+/// </remarks>
 public class FileSizePartitioner : Partitioner<string>
 {
     private readonly FrozenDictionary<string, FileInfo> _files;
@@ -24,7 +27,6 @@ public class FileSizePartitioner : Partitioner<string>
     /// Initializes a new <see cref="FileSizePartitioner"/> using the specified file paths.
     /// </summary>
     /// <param name="paths">The paths to the files to partition.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FileSizePartitioner(IEnumerable<string> paths)
     {
         _files = paths.ToFrozenDictionary(static path => path, static path => new FileInfo(path));
@@ -35,7 +37,6 @@ public class FileSizePartitioner : Partitioner<string>
     /// Initializes a new <see cref="FileSizePartitioner"/> using the specified <see cref="FileInfo"/> instances.
     /// </summary>
     /// <param name="fileInfos">The <see cref="FileInfo"/> instances to partition.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)
     {
         _files = fileInfos.ToFrozenDictionary(static fi => fi.FullName);

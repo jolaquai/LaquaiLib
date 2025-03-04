@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-using LaquaiLib.IO;
+﻿using LaquaiLib.Util;
 
 namespace TestConsole;
 
@@ -28,10 +26,8 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        const string from = @"C:\Overwatch";
-        const string to = @"C:\OverwatchBackup";
-
-        var copier = new ResumableDirectoryIO();
+        const string from = @"C:\topleaf\Alles\01_Programming\01_CS\WordSuchenersetzen - Copy";
+        await FileSystemHelper.UnpackDirectory(from, true, true);
 
         ;
     }

@@ -58,9 +58,8 @@ public partial class FileSystemHelper
         {
             File.Delete(source);
         }
-        finally
+        catch
         {
-            File.Delete(destination);
         }
     }
     /// <summary>

@@ -528,17 +528,20 @@ public static partial class FileSystemHelper
     /// Enumerates all subdirectories of the specified <paramref name="directory"/> and moves the entire contents to the specified root.
     /// </summary>
     /// <param name="directory">The directory to process.</param>
+    /// <param name="overwrite">Whether to allow overwriting files (not caused by the move) in the destination directory.</param>
+    /// <param name="overwriteFromSubdirectories">If files with the same names exist on multiple levels of the directory structure, whether to allow files from more deeply nested directories to overwrite files from less deeply nested directories.</param>
     /// <returns>A <see cref="Task"/> that completes when the operation is finished.</returns>
-    public static Task UnpackDirectory(string directory)
+    public static Task UnpackDirectory(string directory, bool overwrite = false, bool overwriteFromSubdirectories = false)
     {
         if (!Directory.Exists(directory))
         {
             throw new DirectoryNotFoundException($"Directory '{directory}' does not exist.");
         }
 
-        var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories);
-        // Filter out the files that are already in the root directory
-        files = [.. files.Except(Directory.GetFiles(directory))];
+        var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories)
+            .Except(Directory.GetFiles(directory))
+            .OrderBy(f => f.Length)
+            .ToArray();
         if (files.Length == 0)
         {
             return Task.CompletedTask;
@@ -546,22 +549,27 @@ public static partial class FileSystemHelper
 
         var names = files.Select(Path.GetFileName).ToArray();
         var newPaths = names.Select(n => Path.Combine(directory, n)).ToArray();
-        if (newPaths.FirstOrDefault(File.Exists) is string existing)
+        if (!overwrite && newPaths.FirstOrDefault(File.Exists) is string existing)
         {
             throw new IOException($"The file '{existing}' already exists. Move cannot be completed.");
         }
 
-        if (names.Distinct().Count() < names.Length)
+        if (!overwriteFromSubdirectories && names.Distinct().Count() < names.Length)
         {
             throw new IOException("Multiple files with the same name exist in the directory structure.");
         }
 
-        return Task.Run(() => Parallel.For(0, files.Length, i =>
+        return Task.Run(() =>
         {
-            var file = files[i];
-            var newFile = newPaths[i];
-            File.Move(file, newFile);
-        }));
+            var filesLoc = files;
+            for (var i = 0; i < filesLoc.Length; i++)
+            {
+                var file = filesLoc[i];
+                var newFile = newPaths[i];
+                MoveFile(file, newFile, overwriteFromSubdirectories);
+                DeleteIfEmpty(Path.GetDirectoryName(file), true);
+            }
+        });
     }
 
     /// <summary>
@@ -575,6 +583,51 @@ public static partial class FileSystemHelper
         var pathUri = new Uri(Path.EndsInDirectorySeparator(path) ? path : path + Path.DirectorySeparatorChar);
         var compUri = new Uri(Path.EndsInDirectorySeparator(potentialBase) ? potentialBase : potentialBase + Path.DirectorySeparatorChar);
         return compUri.IsBaseOf(pathUri);
+    }
+    /// <summary>
+    /// Determines whether the directory identified by the specified <paramref name="directoryPath"/> is empty.
+    /// </summary>
+    /// <param name="directoryPath">The path to the directory.</param>
+    /// <param name="allowEmptyDirectories">Whether a directory is considered empty if it contains only empty directories (that is, only files are considered for the check).</param>
+    /// <returns><see langword="true"/> if a directory at the specified path exists and is empty according to the passed arguments, <see langword="false"/> otherwise.</returns>
+    public static bool IsEmpty(string directoryPath, bool allowEmptyDirectories = false)
+        => IsEmpty(new DirectoryInfo(directoryPath), allowEmptyDirectories);
+    /// <summary>
+    /// Determines whether the directory identified by the specified <paramref name="directoryInfo"/> is empty.
+    /// </summary>
+    /// <param name="directoryInfo">A <see cref="DirectoryInfo"/> instance that identifies the directory.</param>
+    /// <param name="allowEmptyDirectories">Whether a directory is considered empty if it contains only empty directories (that is, only files are considered for the check).</param>
+    /// <returns><see langword="true"/> if a directory at the specified path exists and is empty according to the passed arguments, <see langword="false"/> otherwise.</returns>
+    public static bool IsEmpty(this DirectoryInfo directoryInfo, bool allowEmptyDirectories = false)
+    {
+        if (!directoryInfo.Exists)
+        {
+            return false;
+        }
+        if (allowEmptyDirectories)
+        {
+            return directoryInfo.EnumerateFiles("*", SearchOption.AllDirectories).Any();
+        }
+        return directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories).Any();
+    }
+    /// <summary>
+    /// Deletes the directory at the specified <paramref name="directoryPath"/> if it is empty.
+    /// </summary>
+    /// <param name="directoryPath">The path to the directory.</param>
+    /// <param name="allowEmptyDirectories">Whether to delete the directory if it contains only empty directories (that is, only files are considered for the check).</param>
+    public static void DeleteIfEmpty(string directoryPath, bool allowEmptyDirectories = false)
+        => IsEmpty(new DirectoryInfo(directoryPath), allowEmptyDirectories);
+    /// <summary>
+    /// Deletes the directory identified by the specified <paramref name="directoryInfo"/> if it is empty.
+    /// </summary>
+    /// <param name="directoryInfo">A <see cref="DirectoryInfo"/> instance that identifies the directory.</param>
+    /// <param name="allowEmptyDirectories">Whether to delete the directory if it contains only empty directories (that is, only files are considered for the check).</param>
+    public static void DeleteIfEmpty(this DirectoryInfo directoryInfo, bool allowEmptyDirectories = false)
+    {
+        if (IsEmpty(directoryInfo, allowEmptyDirectories))
+        {
+            directoryInfo.Delete(allowEmptyDirectories);
+        }
     }
 
     private static partial class LockedFileInterop

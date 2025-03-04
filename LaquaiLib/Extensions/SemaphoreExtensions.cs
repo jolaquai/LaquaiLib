@@ -8,10 +8,22 @@ public static class SemaphoreExtensions
     /// <summary>
     /// Represents <paramref name="count"/> entries into the specified <paramref name="semaphore"/>.
     /// </summary>
-    public struct SemaphoreEntry(Semaphore semaphore, int count = 1) : IDisposable
+    public struct SemaphoreEntry : IDisposable
     {
-        private readonly Semaphore _semaphore = semaphore;
-        private readonly int _count = count;
+        /// <summary>
+        /// Gets the <see cref="Semaphore"/> that was entered.
+        /// </summary>
+        public readonly Semaphore Semaphore { get; }
+        /// <summary>
+        /// Gets the number of entries into <see cref="Semaphore"/> this instance represents.
+        /// </summary>
+        public readonly int Count { get; }
+
+        internal SemaphoreEntry(Semaphore semaphore, int count = 1)
+        {
+            Semaphore = semaphore;
+            Count = count;
+        }
 
         private bool disposed;
         /// <summary>
@@ -24,20 +36,33 @@ public static class SemaphoreExtensions
                 return;
             }
             disposed = true;
-            _ = _semaphore.Release(_count);
+            _ = Semaphore.Release(Count);
         }
     }
     /// <summary>
     /// Represents <paramref name="count"/> entries into the specified <paramref name="semaphore"/>.
     /// </summary>
-    public struct SemaphoreSlimEntry(SemaphoreSlim semaphore, int count = 1) : IDisposable
+    public struct SemaphoreSlimEntry : IDisposable
     {
-        private readonly SemaphoreSlim _semaphore = semaphore;
-        private readonly int _count = count;
+        /// <summary>
+        /// Gets the <see cref="SemaphoreSlim"/> that was entered.
+        /// </summary>
+        public readonly SemaphoreSlim SemaphoreSlim { get; }
+        /// <summary>
+        /// Gets the number of entries into <see cref="SemaphoreSlim"/> this instance represents.
+        /// </summary>
+        public readonly int Count { get; }
 
         private bool disposed;
+
+        internal SemaphoreSlimEntry(SemaphoreSlim semaphore, int count = 1)
+        {
+            SemaphoreSlim = semaphore;
+            Count = count;
+        }
+
         /// <summary>
-        /// Releases the <see cref="SemaphoreSlim"/> entries.
+        /// Releases the <see cref="System.Threading.SemaphoreSlim"/> entries.
         /// </summary>
         public void Dispose()
         {
@@ -46,7 +71,7 @@ public static class SemaphoreExtensions
                 return;
             }
             disposed = true;
-            _ = _semaphore.Release(_count);
+            _ = SemaphoreSlim.Release(Count);
         }
     }
 

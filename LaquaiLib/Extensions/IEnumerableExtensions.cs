@@ -56,6 +56,63 @@ public static partial class IEnumerableExtensions
         return (enumerated[..half], enumerated[half..]);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T Random<T>(this IEnumerable<T> source) => source.Random(System.Random.Shared);
+    public static T Random<T>(this IEnumerable<T> source, Random random = null)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        random ??= System.Random.Shared;
+
+        // Try to optimize for collections that expose Count/Length
+        if (source is IReadOnlyCollection<T> collection)
+        {
+            var count = collection.Count;
+            if (count == 0)
+            {
+                throw new InvalidOperationException("Sequence contains no elements");
+            }
+
+            var index = random.Next(count);
+
+            // Further optimize for indexed access
+            if (source is IReadOnlyList<T> list)
+            {
+                return list[index];
+            }
+
+            // Fall back to enumeration for collections without indexed access
+            using var enumerator = source.GetEnumerator();
+            for (var i = 0; i <= index; i++)
+            {
+                _ = enumerator.MoveNext();
+            }
+            return enumerator.Current;
+        }
+        else
+        {
+
+            // Reservoir sampling for unknown-length sequences
+            using var e = source.GetEnumerator();
+            if (!e.MoveNext())
+            {
+                throw new InvalidOperationException("Sequence contains no elements");
+            }
+
+            var result = e.Current;
+            var count = 1;
+
+            while (e.MoveNext())
+            {
+                count++;
+                if (random.Next(count) == 0) // 1/count probability
+                {
+                    result = e.Current;
+                }
+            }
+
+            return result;
+        }
+    }
     /// <summary>
     /// Shuffles the elements in the input sequence using <see cref="Random.Shared"/>.
     /// </summary>
@@ -66,7 +123,7 @@ public static partial class IEnumerableExtensions
     /// <param name="source">The input sequence.</param>
     /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(Random.Shared);
+    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(System.Random.Shared);
     /// <summary>
     /// Shuffles the elements in the input sequence, using a specified <see cref="Random"/> instance.
     /// </summary>

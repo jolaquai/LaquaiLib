@@ -819,6 +819,12 @@ public static partial class TypeExtensions
     /// <param name="type">The type name to convert.</param>
     /// <returns>The type name as a C# keyword, if it exists, otherwise the original type name.</returns>
     public static string AsKeyword(string type) => _typeKeywordMap.TryGetValue(type, out var keyword) ? keyword : type;
+    /// <summary>
+    /// Converts a <see cref="Type"/> to its C# keyword, if it exists.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> to convert.</param>
+    /// <returns>The <see cref="Type"/>'s name as a C# keyword, if it exists, otherwise the original <see cref="Type"/>.</returns>
+    public static string AsKeyword(this Type type) => AsKeyword(type.FullName);
 
     /// <summary>
     /// Determines whether the specified <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload.

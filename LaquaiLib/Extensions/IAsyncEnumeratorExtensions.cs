@@ -30,9 +30,9 @@ public static class IAsyncEnumeratorExtensions
     }
 }
 
-file struct AsyncEnumeratorCombiner<T>(params ReadOnlySpan<IAsyncEnumerator<T>> iterators) : IAsyncEnumerator<T>
+file struct AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators) : IAsyncEnumerator<T>
 {
-    private IAsyncEnumerator<T>[] _iterators = [.. iterators];
+    private IAsyncEnumerator<T>[] _iterators = iterators;
     public T Current { get; private set; }
     public readonly async ValueTask DisposeAsync()
     {

@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Represents a set of options for <see cref="TypeExtensions.Reflect(Type, ReflectionOptions)"/>.
+/// Encapsulates a set of options for <see cref="TypeExtensions.Reflect(Type, ReflectionOptions)"/>.
 /// </summary>
 public readonly struct ReflectionOptions()
 {

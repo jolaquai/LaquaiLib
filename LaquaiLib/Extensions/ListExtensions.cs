@@ -13,7 +13,7 @@ public static class ListExtensions
     /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
     /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
     /// <param name="index">An <see cref="Index"/> instance that indicates where the item to be removed is located in the <paramref name="list"/>.</param>
-    public static void Remove<T>(this IList<T> list, Index index) => list.Remove(index.GetOffset(list.Count));
+    public static void RemoveAt<T>(this IList<T> list, Index index) => list.RemoveAt(index.GetOffset(list.Count));
     /// <summary>
     /// Removes elements in a specified <paramref name="range"/> from this <see cref="List{T}"/>.
     /// </summary>
@@ -27,7 +27,7 @@ public static class ListExtensions
     }
 
     /// <summary>
-    /// Removes all elements from this <see cref="List{T}"/> that match the conditions defined by the specified <paramref name="predicate"/>.
+    /// Removes all elements from this <see cref="List{T}"/> that do not match the conditions defined by the specified <paramref name="predicate"/>.
     /// </summary>
     /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
     /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
@@ -77,7 +77,7 @@ public static class ListExtensions
         {
             startAt = list.Count;
         }
-        if (startAt + count > list.Capacity)
+        if (startAt + count > list.Count)
         {
             CollectionsMarshal.SetCount(list, startAt + count);
         }

@@ -37,7 +37,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
         CancellationToken cancellationToken = default
     )
         => MigrateFileAsync(sourcePath, destinationPath, true, overwrite, progress, cancellationToken);
-    public Task<bool MoveFileAsync(
+    public Task<bool> MoveFileAsync(
         string sourcePath,
         string destinationPath,
         bool overwrite = false,

@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using System.Diagnostics;
+
+namespace LaquaiLib.Extensions;
 
 /// <summary>
 /// Provides extension methods for the <see cref="IEnumerable{T}"/> of <see cref="CancellationToken"/> Type.
@@ -62,5 +64,44 @@ public static class IEnumerableExtensionsCancellationToken
         } while (uncancelled.MoveNext());
 
         return tcs.Task;
+    }
+    /// <summary>
+    /// Throws an <see cref="OperationCanceledException"/> if any of the source sequence's <see cref="CancellationToken"/>s is cancelled.
+    /// </summary>
+    /// <param name="tokens"></param>
+    [StackTraceHidden]
+    public static void ThrowIfAnyCancelled(this IEnumerable<CancellationToken> tokens)
+    {
+        foreach (var token in tokens)
+        {
+            token.ThrowIfCancellationRequested();
+        }
+    }
+    /// <summary>
+    /// Throws an <see cref="OperationCanceledException"/> if all of the source sequence's <see cref="CancellationToken"/>s are cancelled.
+    /// </summary>
+    /// <param name="tokens">The source sequence of <see cref="CancellationToken"/>s.</param>
+    /// <exception cref="OperationCanceledException">Thrown when all of the source sequence's <see cref="CancellationToken"/>s are cancelled.</exception>
+    [StackTraceHidden]
+    public static void ThrowIfAllCancelled(this IEnumerable<CancellationToken> tokens)
+    {
+        if (!tokens.Any())
+        {
+            return;
+        }
+        var count = 0;
+        var cancelled = 0;
+        foreach (var token in tokens)
+        {
+            count++;
+            if (token.IsCancellationRequested)
+            {
+                cancelled++;
+            }
+        }
+        if (count == cancelled)
+        {
+            throw new OperationCanceledException();
+        }
     }
 }

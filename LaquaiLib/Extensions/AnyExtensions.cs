@@ -229,6 +229,8 @@ public static class AnyExtensions
     /// <returns>An exact copy of <paramref name="source"/>.</returns>
     public static T DeepCopy<T>(this T source, int depth, bool useRoundTripSerialization = false)
     {
+        ArgumentNullException.ThrowIfNull(source);
+
         if (depth < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(depth), "Reached maximum recursion depth.");
