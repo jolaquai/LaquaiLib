@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+using LaquaiLib.Util;
 using LaquaiLib.Util.Misc;
 
 namespace LaquaiLib.Extensions;
@@ -10,6 +11,33 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static partial class IEnumerableExtensions
 {
+    /// <summary>
+    /// Attempts to retrieve a <see cref="ReadOnlySpan{T}"/> over the specified <paramref name="source"/> collection.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
+    /// <param name="source">The collection to retrieve a <see cref="ReadOnlySpan{T}"/> over.</param>
+    /// <param name="span">An <see langword="out"/> variable that receives the <see cref="ReadOnlySpan{T}"/> if the operation is successful.</param>
+    /// <returns><see langword="true"/> if a <see cref="ReadOnlySpan{T}"/> could be created, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool TryGetSpan<T>(this IEnumerable<T> source, out ReadOnlySpan<T> span)
+    {
+        var result = true;
+        switch (source)
+        {
+            case T[]:
+                span = System.Runtime.CompilerServices.Unsafe.As<T[]>(source);
+                break;
+            case List<T>:
+                span = CollectionsMarshal.AsSpan(System.Runtime.CompilerServices.Unsafe.As<List<T>>(source));
+                break;
+            default:
+                span = default;
+                result = false;
+                break;
+        }
+        return result;
+    }
+
     /// <summary>
     /// Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
     /// </summary>
@@ -689,7 +717,8 @@ public static partial class IEnumerableExtensions
     /// <remarks>
     /// <typeparamref name="TDerived"/> is not constrained with regards to <typeparamref name="TSource"/>, so that consuming code needn't check for type relationships before calling this method.
     /// </remarks>
-    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source) => typeof(TDerived).IsAssignableTo(typeof(TSource)) ? source.Where(static i => i is not TDerived) : source;
+    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source) where TSource : class where TDerived : class
+        => typeof(TDerived).IsAssignableTo(typeof(TSource)) ? source.Where(static i => i is not TDerived) : source;
 
     /// <summary>
     /// Indexes the elements in the input sequence; that is, each element is paired with its number of occurrences in the sequence.
@@ -715,6 +744,7 @@ public static partial class IEnumerableExtensions
     /// <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
     public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate) => !source.Any(predicate);
 
+    // Imma be honest, I stole these right out of System.Linq
     /// <summary>
     /// Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
     /// This behaves exactly like <see cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, TSource)"/> without throwing exceptions.
@@ -725,14 +755,35 @@ public static partial class IEnumerableExtensions
     /// <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
     public static T OnlyOrDefault<T>(this IEnumerable<T> source, T defaultValue = default)
     {
-        try
-        {
-            return source.Single();
-        }
-        catch
+        if (source.TryGetNonEnumeratedCount(out var count) && count > 1)
         {
             return defaultValue;
         }
+
+        if (source is IReadOnlyList<T> list)
+        {
+            switch (list.Count)
+            {
+                case 0:
+                    return defaultValue;
+                case 1:
+                    return list[0];
+            }
+        }
+        else
+        {
+            using var enumerator = source.GetEnumerator();
+            if (!enumerator.MoveNext())
+            {
+                return defaultValue;
+            }
+            var current = enumerator.Current;
+            if (!enumerator.MoveNext())
+            {
+                return current;
+            }
+        }
+        return defaultValue;
     }
     /// <summary>
     /// Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
@@ -745,14 +796,46 @@ public static partial class IEnumerableExtensions
     /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
     public static T OnlyOrDefault<T>(this IEnumerable<T> source, Func<T, bool> predicate, T defaultValue = default)
     {
-        try
+        if (source.TryGetSpan(out var span))
         {
-            return source.Single(predicate);
+            for (var i = 0; i < span.Length; i++)
+            {
+                var val = span[i];
+                if (!predicate(val))
+                {
+                    continue;
+                }
+                for (i++; (uint)i < (uint)span.Length; i++)
+                {
+                    if (predicate(span[i]))
+                    {
+                        return defaultValue;
+                    }
+                }
+                return val;
+            }
         }
-        catch
+        else
         {
-            return defaultValue;
+            using var enumerator = source.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var current = enumerator.Current;
+                if (!predicate(current))
+                {
+                    continue;
+                }
+                while (enumerator.MoveNext())
+                {
+                    if (predicate(enumerator.Current))
+                    {
+                        return defaultValue;
+                    }
+                }
+                return current;
+            }
         }
+        return defaultValue;
     }
 
     /// <summary>
