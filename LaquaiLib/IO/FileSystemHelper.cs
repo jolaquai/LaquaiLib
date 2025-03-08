@@ -449,6 +449,36 @@ public static partial class FileSystemHelper
         File.Delete(path);
         return ms;
     }
+    /// <summary>
+    /// Reads the file at <paramref name="path"/> into the specified <paramref name="stream"/>, then deletes the file. It then only exists in memory.
+    /// </summary>
+    /// <param name="path">The path to the file to cut.</param>
+    public static void CutFile(string path, Stream stream)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        using (var fileStream = File.OpenRead(path))
+        {
+            fileStream.CopyTo(stream);
+        }
+        File.Delete(path);
+    }
+    /// <summary>
+    /// Asynchronously reads the file at <paramref name="path"/> into the specified <paramref name="stream"/>, then deletes the file. It then only exists in memory.
+    /// </summary>
+    /// <param name="path">The path to the file to cut.</param>
+    /// <returns>A <see cref="Task"/> that completes when the operation is finished.</returns>
+    public static async Task CutFileAsync(string path, Stream stream)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        var fileStream = File.OpenRead(path);
+        await using (fileStream.ConfigureAwait(false))
+        {
+            await fileStream.CopyToAsync(stream);
+        }
+        File.Delete(path);
+    }
 
     /// <summary>
     /// Asynchronously enumerates the file system and attempts to find a directory structure that matches the one specified.
@@ -804,27 +834,81 @@ public static partial class FileSystemHelper
             File.Delete(path);
         }
     }
+    /// <summary>
+    /// Opens the alternate content stream with the specified name on the specified file.
+    /// </summary>
+    /// <param name="file">The path to the file to open the alternate content stream on.</param>
+    /// <param name="acsName">The name of the alternate content stream to open.</param>
+    /// <param name="fileMode">A <see cref="FileMode"/> value that determines how the ACS is opened or created.</param>
+    /// <param name="fileAccess">A <see cref="FileAccess"/> value that determines the access rights to the ACS.</param>
+    /// <param name="fileShare">A <see cref="FileShare"/> value that determines how the ACS is shared.</param>
+    /// <returns>A <see cref="Stream"/> that represents the alternate content stream.</returns>
+    public static Stream OpenAlternateContentStream(string file, string acsName, FileMode fileMode = FileMode.OpenOrCreate, FileAccess fileAccess = FileAccess.ReadWrite, FileShare fileShare = FileShare.None)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(file);
+        ArgumentException.ThrowIfNullOrWhiteSpace(acsName);
+        if (acsName.Length > 255)
+        {
+            throw new ArgumentException("Alternate content stream name is too long, must be 255 characters or less.", nameof(acsName));
+        }
+        if (acsName.AsSpan().ContainsAny(InvalidPathCharsSearchValues))
+        {
+            throw new ArgumentException("Alternate content stream name contains invalid characters.", nameof(acsName));
+        }
 
-    private static ReadOnlySpan<char> InvalidFileNameChars => ['\"', '<', '>', ':', '*', '?', '\\', '/'];
-    private static ReadOnlySpan<char> InvalidPathChars => ['|', '\0',
-        (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
+        var path = file + ":" + acsName;
+        return new FileStream(path, fileMode, fileAccess, fileShare);
+    }
+
+    /// <summary>
+    /// Gets a <see cref="SearchValues{T}"/> instance enabling efficient searching for the <see langword="char"/>s in <see cref="ControlCharacters"/>.
+    /// </summary>
+    public static SearchValues<char> ControlCharactersSearchValues { get; } = SearchValues.Create(ControlCharacters);
+    /// <summary>
+    /// Gets a <see cref="SearchValues{T}"/> instance enabling efficient searching for the <see langword="char"/>s in <see cref="InvalidFileNameChars"/>.
+    /// </summary>
+    public static SearchValues<char> InvalidFileNameCharsSearchValues { get; } = SearchValues.Create(InvalidFileNameChars);
+    /// <summary>
+    /// Gets a <see cref="SearchValues{T}"/> instance enabling efficient searching for the <see langword="char"/>s in <see cref="InvalidPathChars"/>.
+    /// </summary>
+    public static SearchValues<char> InvalidPathCharsSearchValues { get; } = SearchValues.Create(InvalidPathChars);
+    /// <summary>
+    /// Gets all ASCII control characters (0-31) as a <see cref="ReadOnlySpan{T}"/>.
+    /// </summary>
+    public static ReadOnlySpan<char> ControlCharacters =>
+    [
+        '\0', (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
         (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20,
         (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30,
         (char)31
     ];
     /// <summary>
-    /// Fills the specified <see cref="Span{T}"/> with the characters that are not allowed in file names. Must be at least 41 characters long.
+    /// Gets a <see cref="ReadOnlySpan{T}"/> containing the characters that are not allowed in file names.
+    /// </summary>
+    public static ReadOnlySpan<char> InvalidFileNameChars => ['\"', '<', '>', ':', '*', '?', '\\', '/'];
+    /// <summary>
+    /// Gets a <see cref="ReadOnlySpan{T}"/> containing the characters that are not allowed in paths.
+    /// </summary>
+    public static ReadOnlySpan<char> InvalidPathChars =>
+    [
+        '|',
+        '\0', (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10,
+        (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20,
+        (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30,
+        (char)31
+    ];
+    /// <summary>
+    /// Fills the specified <see cref="Span{T}"/> with the characters that are not allowed in file names. Must be at least 8 characters long.
     /// </summary>
     /// <param name="destination">The span to fill.</param>
     public static void FillInvalidFileNameChars(Span<char> destination)
     {
-        if (destination.Length < 41)
+        if (destination.Length < 8)
         {
             throw new ArgumentException("Destination span is too short.", nameof(destination));
         }
 
-        FillInvalidPathChars(destination[..33]);
-        InvalidFileNameChars.CopyTo(destination[33..41]);
+        InvalidFileNameChars.CopyTo(destination[..8]);
     }
     /// <summary>
     /// Fills the specified <see cref="Span{T}"/> with the characters that are not allowed in path names. Must be at least 33 characters long.
