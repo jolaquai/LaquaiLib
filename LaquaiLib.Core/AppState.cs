@@ -7,6 +7,7 @@ internal static class AppState
         get
         {
             field ??= new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LaquaiLib"));
+            field.Refresh();
             if (!field.Exists)
             {
                 field.Create();

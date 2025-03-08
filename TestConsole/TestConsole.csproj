@@ -29,6 +29,7 @@
 
     <ItemGroup>
       <Folder Include="Resources\" />
+      <ProjectReference Include="..\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="False" />
     </ItemGroup>
 
 </Project>
