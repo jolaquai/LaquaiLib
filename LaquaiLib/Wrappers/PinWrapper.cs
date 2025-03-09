@@ -7,7 +7,7 @@ namespace LaquaiLib.Wrappers;
 /// Wraps a <see langword="fixed"/> statement in a disposable wrapper. For its lifetime, the pointer pinned by the <see langword="fixed"/> statement will be valid.
 /// </summary>
 /// <typeparam name="T">The type of the value to pin.</typeparam>
-internal readonly unsafe ref struct PinWrapper<T> : IDisposable
+public readonly unsafe ref struct PinWrapper<T> : IDisposable
     where T : unmanaged
 {
     private readonly GCHandle<T> _handle;
@@ -78,7 +78,7 @@ internal readonly unsafe ref struct PinWrapper<T> : IDisposable
 
     /// <summary>
     /// Creates a <see cref="Span{T}"/> of <typeparamref name="T"/> from this handle, starting at the pinned pointer up to the specified <paramref name="length"/>.
-    /// It is considered undefined behavior to do this with a handle that does not originate from a <see cref="Span{T}"/>-compatible type (for example, <see cref="string"/>/<c><see cref="char"/>*</c> is one such type).
+    /// It is considered undefined behavior to do this with a handle that does not originate from a <see cref="Span{T}"/>-compatible type (for example, <see cref="string"/>/<c><see cref="char"/>*</c> is a type combination that does support this).
     /// </summary>
     /// <param name="length">The length of the <see cref="Span{T}"/> to create.</param>
     /// <returns>The created <see cref="Span{T}"/> as described.</returns>
@@ -104,6 +104,7 @@ public static class PinWrapper
     /// </summary>
     /// <param name="str">The <see langword="string"/> to pin.</param>
     /// <returns>The created <see cref="PinWrapper{T}"/>.</returns>
-    internal static unsafe PinWrapper<char> Pin(string str) => new PinWrapper<char>(new GCHandle<char>((char*)&str));
+    public static unsafe PinWrapper<char> Pin(string str) => new PinWrapper<char>(new GCHandle<char>((char*)&str));
+    public static unsafe PinWrapper<T> Pin<T>(T[] array) where T : unmanaged => new PinWrapper<T>(GCHandle.Alloc(array, GCHandleType.Pinned));
 #pragma warning restore CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 }

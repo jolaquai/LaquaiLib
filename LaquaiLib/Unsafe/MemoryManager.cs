@@ -132,5 +132,5 @@ public static unsafe class MemoryManager
     /// <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
     /// <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
     public static void* Next<T>(void* ptr, int count = 1)
-        where T : unmanaged => (void*)((nint)ptr + sizeof(T) * count);
+        where T : unmanaged => (void*)((nint)ptr + (sizeof(T) * count));
 }

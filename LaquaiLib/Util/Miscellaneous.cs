@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace LaquaiLib.Core;
+namespace LaquaiLib.Util;
 
 /// <summary>
 /// Contains miscellaneous functionality.
@@ -42,20 +42,25 @@ public static class Miscellaneous
             throw new ArgumentException($"{nameof(step)} cannot be 0.", nameof(step));
         }
 
-        if (start == stop)
-        {
-            yield return start;
-            yield break;
-        }
-        if ((start > stop && step > zero) || (start < stop && step < zero))
-        {
-            step = -step;
-        }
+        return Iterator();
 
-        var current = start - step;
-        while (step > zero ? current + step < stop : current + step >= stop)
+        IEnumerable<T> Iterator()
         {
-            yield return current += step;
+            if (start == stop)
+            {
+                yield return start;
+                yield break;
+            }
+            if ((start > stop && step > zero) || (start < stop && step < zero))
+            {
+                step = -step;
+            }
+
+            var current = start - step;
+            while (step > zero ? current + step < stop : current + step >= stop)
+            {
+                yield return current += step;
+            }
         }
     }
 }

@@ -24,12 +24,13 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     private long nextCallAllowed = DateTime.Now.Ticks;
     /// <summary>
     /// Gets a <see cref="DateTime"/> representing the next time a request is allowed.
-    /// Note that this should be used purely informatively and not to guard <see cref="Send(HttpRequestMessage, CancellationToken)"/> or <see cref="SendAsync(HttpRequestMessage, CancellationToken)"/> calls, since those employ waiting themselves.
+    /// Do not use this to guard <see cref="Send(HttpRequestMessage, CancellationToken)"/> or <see cref="SendAsync(HttpRequestMessage, CancellationToken)"/> calls, since those employ waiting themselves.
     /// </summary>
     public DateTime NextCallAllowed => new DateTime(nextCallAllowed);
 
-    // Could use a Lock here too, which would be more efficient, but since we need cancellation support on the potential wait, we use a SemaphoreSlim
+    // _semaphore is used when cancellation is possible, running is used when it is not since that's probably a bit cheaper
     private readonly SemaphoreSlim _semaphore;
+    private int running;
     // Also allocate a static one if consumers request an instance that contributes to the global delayed handler pool
     private static readonly SemaphoreSlim _globalSemaphore = new SemaphoreSlim(1, 1);
 
@@ -73,15 +74,33 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     /// <returns>The response to the request.</returns>
     protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        _semaphore.Wait(cancellationToken);
-        try
+        if (cancellationToken.CanBeCanceled)
         {
-            Wait();
-            SetNextAllowedTime(cancellationToken);
+            _semaphore.Wait(cancellationToken);
+            try
+            {
+                Wait();
+                SetNextAllowedTime(cancellationToken);
+            }
+            finally
+            {
+                _ = _semaphore.Release();
+            }
         }
-        finally
+        else
         {
-            _ = _semaphore.Release();
+            if (Interlocked.Exchange(ref running, 1) == 1)
+            {
+                try
+                {
+                    Wait();
+                    SetNextAllowedTime(cancellationToken);
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref running, 0);
+                }
+            }
         }
 
         return base.Send(request, cancellationToken);
@@ -94,16 +113,35 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     /// <returns>A <see cref="Task{TResult}"/> that resolves to the response to the request.</returns>
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        await _semaphore.WaitAsync(cancellationToken);
-        try
+        if (cancellationToken.CanBeCanceled)
         {
-            await WaitAsync(cancellationToken);
-            cancellationToken.ThrowIfCancellationRequested();
-            SetNextAllowedTime(cancellationToken);
+            await _semaphore.WaitAsync(cancellationToken);
+            try
+            {
+                await WaitAsync(cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                SetNextAllowedTime(cancellationToken);
+            }
+            finally
+            {
+                _ = _semaphore.Release();
+            }
         }
-        finally
+        else
         {
-            _ = _semaphore.Release();
+            if (Interlocked.Exchange(ref running, 1) == 1)
+            {
+                try
+                {
+                    await WaitAsync(cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    SetNextAllowedTime(cancellationToken);
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref running, 0);
+                }
+            }
         }
 
         return await base.SendAsync(request, cancellationToken);
@@ -140,13 +178,12 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void SetNextAllowedTime(CancellationToken cancellationToken)
+    private void SetNextAllowedTime(CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         long original, newValue;
         do
         {
+            cancellationToken.ThrowIfCancellationRequested();
             original = nextCallAllowed;
             newValue = original + minDelay;
         } while (Interlocked.CompareExchange(ref nextCallAllowed, newValue, original) != original);

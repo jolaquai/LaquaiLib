@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 
+using LaquaiLib.Unsafe;
+
 namespace LaquaiLib.Core;
 
 /// <summary>
@@ -31,7 +33,7 @@ public static class StringUtility
     /// <returns>A reference to the allocated string.</returns>
     internal static unsafe string AllocString(int length)
     {
-        var buffer = (char*)Marshal.AllocHGlobal((length + 1) * sizeof(char));
+        var buffer = MemoryManager.CAlloc<char>(length + 1);
         buffer[length] = '\0';
         return new string(buffer, 0, length);
     }

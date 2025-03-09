@@ -6,8 +6,7 @@ namespace LaquaiLib.Util;
 /// <summary>
 /// Represents a value that can be observed for and notifies its observers about changes.
 /// </summary>
-public class ObservableValue<T>
-    : INotifyPropertyChanged, IEquatable<T>, IComparable<T>, IEquatable<ObservableValue<T>>, IComparable<ObservableValue<T>>
+public class ObservableValue<T> : INotifyPropertyChanged, IEquatable<T>, IComparable<T>, IEquatable<ObservableValue<T>>, IComparable<ObservableValue<T>>
 {
     private T value;
     /// <summary>
@@ -201,17 +200,11 @@ public class ValueChangedEventArgs<T> : EventArgs
     /// <summary>
     /// The value before the change.
     /// </summary>
-    public T OldValue
-    {
-        get;
-    }
+    public T OldValue { get; }
     /// <summary>
     /// The value after the change.
     /// </summary>
-    public T NewValue
-    {
-        get;
-    }
+    public T NewValue { get; }
 
     /// <summary>
     /// Initializes new <see cref="ValueChangedEventArgs{T}"/> with the given values.
