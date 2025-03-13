@@ -2,6 +2,8 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Shell;
 
+using LaquaiLib.Util;
+
 namespace LaquaiLib.Windows.Util;
 
 /// <summary>
@@ -66,8 +68,7 @@ public partial class TaskbarProgress
 
         static double RoundToMultiple(double value, double multiple) => Math.Round(value / multiple) * multiple;
 
-        var values =
-            Core.Miscellaneous.Range(from, to, (to - from) / steps)
+        var values = Miscellaneous.Range(from, to, (to - from) / steps)
                      .Select(d => RoundToMultiple(d, 0.05))
                      .ToArray();
         // Consolidate the values

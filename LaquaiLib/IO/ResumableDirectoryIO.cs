@@ -35,7 +35,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
     private partial class ResumableDirectoryCopySerializerContext : JsonSerializerContext;
 
     private const int BufferSize = 1 << 17;
-    private readonly string _stateFilePath = stateFilePath ?? AppState.AppData.GetFile(nameof(ResumableDirectoryIO), Guid.NewGuid().ToString()).FullName;
+    private readonly string _stateFilePath = stateFilePath ?? AppState.AppData.File(nameof(ResumableDirectoryIO), Guid.NewGuid().ToString()).FullName;
     private volatile int running;
     private CancellationTokenSource cts;
 
