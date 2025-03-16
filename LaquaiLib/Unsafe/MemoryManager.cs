@@ -131,6 +131,13 @@ public static unsafe class MemoryManager
     /// <param name="ptr">The pointer to offset.</param>
     /// <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
     /// <returns>The <see langword="void"/> pointer that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
-    public static void* Next<T>(void* ptr, int count = 1)
-        where T : unmanaged => (void*)((nint)ptr + (sizeof(T) * count));
+    public static void* Next<T>(void* ptr, int count = 1) where T : unmanaged => (void*)((nint)ptr + (sizeof(T) * count));
+    /// <summary>
+    /// Returns a new pointer to <typeparamref name="T"/> that is offset from the specified pointer by the size of <typeparamref name="T"/> <paramref name="count"/> times. That value may be negative.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type pointed to.</typeparam>
+    /// <param name="ptr">The pointer to offset.</param>
+    /// <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
+    /// <returns>A pointer to <typeparamref name="T"/> that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
+    public static T* Next<T>(T* ptr, int count = 1) where T : unmanaged => (T*)((nint)ptr + (sizeof(T) * count));
 }

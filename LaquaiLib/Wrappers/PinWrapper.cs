@@ -4,7 +4,8 @@ using System.Runtime.InteropServices;
 namespace LaquaiLib.Wrappers;
 
 /// <summary>
-/// Wraps a <see langword="fixed"/> statement in a disposable wrapper. For its lifetime, the pointer pinned by the <see langword="fixed"/> statement will be valid.
+/// Wraps a <see langword="fixed"/> statement in a disposable wrapper. For its lifetime, the pointer pinned by the <see langword="fixed"/> statement will remain valid.
+/// Allows 
 /// </summary>
 /// <typeparam name="T">The type of the value to pin.</typeparam>
 public readonly unsafe ref struct PinWrapper<T> : IDisposable
@@ -105,6 +106,13 @@ public static class PinWrapper
     /// <param name="str">The <see langword="string"/> to pin.</param>
     /// <returns>The created <see cref="PinWrapper{T}"/>.</returns>
     public static unsafe PinWrapper<char> Pin(string str) => new PinWrapper<char>(new GCHandle<char>((char*)&str));
+    /// <summary>
+    /// Pins a pointer to the specified <see cref="Array"/> and wraps it in a <see cref="PinWrapper{T}"/>.
+    /// This is equivalent to the statement <c>fixed (T* ptr = array)</c>.
+    /// </summary>
+    /// <typeparam name="T">The type of the array elements.</typeparam>
+    /// <param name="array">The <see cref="Array"/> to pin.</param>
+    /// <returns>The created <see cref="PinWrapper{T}"/>.</returns>
     public static unsafe PinWrapper<T> Pin<T>(T[] array) where T : unmanaged => new PinWrapper<T>(GCHandle.Alloc(array, GCHandleType.Pinned));
 #pragma warning restore CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 }

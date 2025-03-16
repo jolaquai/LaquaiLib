@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
-using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace LaquaiLib.IO;
 
@@ -42,6 +42,25 @@ public class FileSizePartitioner : Partitioner<string>
         _files = fileInfos.ToFrozenDictionary(static fi => fi.FullName);
         TotalCount = _files.Count;
     }
+    /// <summary>
+    /// Initializes a new <see cref="FileSizePartitioner"/> using the files in the specified directory.
+    /// </summary>
+    /// <param name="directoryInfo">The directory to partition.</param>
+    /// <param name="enumerationOptions">An optional <see cref="EnumerationOptions"/> instance that specifies how to enumerate the files in the directory.</param>
+    public FileSizePartitioner(DirectoryInfo directoryInfo, EnumerationOptions enumerationOptions = null)
+    {
+        enumerationOptions ??= new EnumerationOptions()
+        {
+            RecurseSubdirectories = false,
+            ReturnSpecialDirectories = false,
+            AttributesToSkip = FileAttributes.Hidden | FileAttributes.System,
+            IgnoreInaccessible = true,
+        };
+
+        _files = directoryInfo.EnumerateFiles("*", enumerationOptions).ToFrozenDictionary(static fi => fi.FullName);
+        TotalSize = _files.Aggregate(0ul, static (acc, pair) => acc + (ulong)pair.Value.Length);
+        TotalCount = _files.Count;
+    }
 
     /// <summary>
     /// Partitions the file set into at most <paramref name="partitionCount"/> partitions, accounting for the size of the files.
@@ -51,19 +70,17 @@ public class FileSizePartitioner : Partitioner<string>
     /// <returns>An <see cref="IList{T}"/> of <see cref="IEnumerator{T}"/> instances that represent the partitions.</returns>
     public override IList<IEnumerator<string>> GetPartitions(int partitionCount)
     {
-        partitionCount--;
-
         var ordered = _files.OrderByDescending(static pair => pair.Value.Length);
         var partitions = new List<IEnumerator<string>>(partitionCount);
 
-        var partitionSize = (int)Math.Ceiling((double)TotalSize / partitionCount);
+        var partitionSize = Math.Ceiling((double)TotalSize / partitionCount);
         var currentPartition = new List<string>();
         var currentSize = 0L;
 
         foreach (var file in ordered)
         {
             var fileSize = file.Value.Length;
-            if (currentSize + fileSize <= partitionSize)
+            if (currentPartition.Count == 0 || currentSize + fileSize <= partitionSize)
             {
                 currentPartition.Add(file.Key);
                 currentSize += fileSize;
@@ -75,6 +92,8 @@ public class FileSizePartitioner : Partitioner<string>
                 currentSize = fileSize;
             }
         }
+
+        Debug.Assert(partitions.Count <= partitionCount);
 
         partitions.Add(currentPartition.GetEnumerator());
 
