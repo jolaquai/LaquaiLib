@@ -44,6 +44,34 @@ public static partial class StreamExtensions
         stream.ReadExactly(span);
     }
     /// <summary>
+    /// Asynchronously reads all bytes from the current position to the end of the <see cref="Stream"/>, optionally monitoring a <paramref name="cancellationToken"/> for cancellation requests, and advances the position within it to the end.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
+    /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous read operation and resolves to the bytes read.</returns>
+    public static async Task<byte[]> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken = default)
+    {
+        var buffer = new byte[stream.Length - stream.Position];
+        await stream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
+        return buffer;
+    }
+    /// <summary>
+    /// Asynchronously reads all bytes from the current position to the end of the <see cref="Stream"/> into the specified <paramref name="memory"/> and advances the position within it to the end.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
+    /// <param name="memory">A <see cref="Memory{T}"/> of <see cref="byte"/> to read into.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous read operation.</returns>
+    public static async Task ReadToEndAsync(this Stream stream, Memory<byte> memory, CancellationToken cancellationToken = default)
+    {
+        var requiredSpace = stream.Length - stream.Position;
+        if (memory.Length < requiredSpace)
+        {
+            throw new ArgumentException($"The provided {nameof(Memory<>)} is too small to hold the rest of the stream (can only accommodate {memory.Length}/{requiredSpace} bytes).");
+        }
+        await stream.ReadExactlyAsync(memory, cancellationToken).ConfigureAwait(false);
+    }
+    /// <summary>
     /// Reads as many <see langword="byte"/>s from the specified <paramref name="stream"/> as will fit into <paramref name="span"/>, or less than that if the <paramref name="stream"/> has fewer bytes left before the end.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to read from.</param>
@@ -58,30 +86,18 @@ public static partial class StreamExtensions
         stream.ReadExactly(span);
     }
     /// <summary>
-    /// Reads all bytes from the current position to the end of the <see cref="Stream"/> asynchronously, optionally monitoring a <paramref name="cancellationToken"/> for cancellation requests, and advances the position within it to the end.
+    /// Asynchronously reads data from a stream into a specified memory buffer.
     /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
-    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
-    /// <returns>A <see cref="Task{TResult}"/> that represents the asynchronous read operation and resolves to the bytes read.</returns>
-    public static async Task<byte[]> ReadToEndAsync(this Stream stream, CancellationToken cancellationToken = default)
-    {
-        var buffer = new byte[stream.Length - stream.Position];
-        await stream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
-        return buffer;
-    }
-    /// <summary>
-    /// Reads all bytes from the current position to the end of the <see cref="Stream"/> into the specified <paramref name="memory"/> and advances the position within it to the end.
-    /// </summary>
-    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
-    /// <param name="memory">A <see cref="Memory{T}"/> of <see cref="byte"/> to read into.</param>
+    /// <param name="stream">The data source from which bytes are read.</param>
+    /// <param name="memory">The buffer that receives the read bytes from the stream.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
     /// <returns>A <see cref="Task"/> that represents the asynchronous read operation.</returns>
-    public static async Task ReadToEndAsync(this Stream stream, Memory<byte> memory, CancellationToken cancellationToken = default)
+    public static async Task ReadFillAsync(this Stream stream, Memory<byte> memory, CancellationToken cancellationToken = default)
     {
-        var requiredSpace = stream.Length - stream.Position;
-        if (memory.Length < requiredSpace)
+        var bytesLeft = Math.Min(memory.Length, stream.Length - stream.Position);
+        if (bytesLeft < memory.Length)
         {
-            throw new ArgumentException($"The provided {nameof(Memory<>)} is too small to hold the rest of the stream (can only accommodate {memory.Length}/{requiredSpace} bytes).");
+            memory = memory[..(int)bytesLeft];
         }
         await stream.ReadExactlyAsync(memory, cancellationToken).ConfigureAwait(false);
     }
