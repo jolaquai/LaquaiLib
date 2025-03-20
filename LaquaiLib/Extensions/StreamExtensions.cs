@@ -25,7 +25,7 @@ public static partial class StreamExtensions
     public static byte[] ToArray(this Stream stream)
     {
         var buffer = new byte[stream.Length];
-        _ = stream.Seek(0, SeekOrigin.Begin);
+        stream.Position = 0;
         stream.ReadExactly(buffer);
         return buffer;
     }
@@ -40,6 +40,20 @@ public static partial class StreamExtensions
         if (span.Length < requiredSpace)
         {
             throw new ArgumentException($"The provided {nameof(Span<>)} is too small to hold the rest of the stream (can only accommodate {span.Length}/{requiredSpace} bytes).");
+        }
+        stream.ReadExactly(span);
+    }
+    /// <summary>
+    /// Reads as many <see langword="byte"/>s from the specified <paramref name="stream"/> as will fit into <paramref name="span"/>, or less than that if the <paramref name="stream"/> has fewer bytes left before the end.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> to read from.</param>
+    /// <param name="span">The <see cref="Span{T}"/> to read into.</param>
+    public static void ReadFill(this Stream stream, Span<byte> span)
+    {
+        var bytesLeft = Math.Min(span.Length, stream.Length - stream.Position);
+        if (bytesLeft < span.Length)
+        {
+            span = span[..(int)bytesLeft];
         }
         stream.ReadExactly(span);
     }
