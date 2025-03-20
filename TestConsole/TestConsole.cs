@@ -1,8 +1,4 @@
-﻿using System.IO;
-
-using LaquaiLib.IO;
-
-namespace TestConsole;
+﻿namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -28,8 +24,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var fsp = new FileSizePartitioner(new DirectoryInfo(@"E:\programs\steam\steamapps\common"), new EnumerationOptions() { RecurseSubdirectories = true });
-        var parts = fsp.GetPartitions(Environment.ProcessorCount);
+        
 
         ;
     }

@@ -1,4 +1,7 @@
+using System.Buffers;
 using System.Runtime.InteropServices;
+
+using LaquaiLib.Core;
 
 namespace LaquaiLib.Unsafe;
 
@@ -140,4 +143,11 @@ public static unsafe class MemoryManager
     /// <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
     /// <returns>A pointer to <typeparamref name="T"/> that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
     public static T* Next<T>(T* ptr, int count = 1) where T : unmanaged => (T*)((nint)ptr + (sizeof(T) * count));
+
+    /// <summary>
+    /// Creates a buffer of the specified size. It may be <see langword="stackalloc"/>'d for small enough sizes.
+    /// </summary>
+    /// <param name="length">The size of the buffer to create.</param>
+    /// <returns>A <see cref="Span{T}"/> of <see langword="byte"/> around the buffer.</returns>
+    public static Span<byte> CreateBuffer(int length) => length <= Configuration.MaxStackallocSize ? stackalloc byte[length] : new byte[length];
 }

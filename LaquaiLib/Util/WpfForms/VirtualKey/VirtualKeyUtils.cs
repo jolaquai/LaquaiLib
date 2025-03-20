@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.Unsafe;
 
 using static LaquaiLib.Util.WpfForms.VirtualKey;
 
@@ -29,7 +30,6 @@ public static partial class VirtualKeyUtils
         internal const byte msgByte = 0x80;
         internal const ushort msbShort = 0x8000;
 
-        internal static byte[] KeyboardStateBuffer => field ??= new byte[256];
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static partial bool GetKeyboardState(Span<byte> lpKeyState);
@@ -116,11 +116,13 @@ public static partial class VirtualKeyUtils
     {
         cultureInfo ??= CultureInfo.CurrentCulture;
 
-        _ = Interop.GetKeyboardState(Interop.KeyboardStateBuffer);
+        // Moved this from a persistent allocation to just use MemoryManager since it will 1000% stackalloc a tiny 256 byte buffer
+        var kbStateBuffer = MemoryManager.CreateBuffer(256);
+        _ = Interop.GetKeyboardState(kbStateBuffer);
 
         var keyboardLayout = cultureInfo.KeyboardLayoutId;
         var receiver = new string('\0', 2);
-        var result = Interop.ToUnicodeEx((uint)vk, 0, Interop.KeyboardStateBuffer, receiver, 2, 0, keyboardLayout);
+        var result = Interop.ToUnicodeEx((uint)vk, 0, kbStateBuffer, receiver, 2, 0, keyboardLayout);
         return result > 0 ? receiver.Trim('\0') : null;
     }
     /// <summary>

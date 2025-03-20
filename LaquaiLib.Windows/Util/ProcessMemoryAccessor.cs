@@ -288,7 +288,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         // If reversal is requested, reverse the byte sequence
         if (reverseLittleEndian && BitConverter.IsLittleEndian)
         {
-            Span<byte> temp = data.Length < 512 ? stackalloc byte[data.Length] : new byte[data.Length];
+            var temp = MemoryManager.CreateBuffer(data.Length);
             data.CopyTo(temp);
             temp.Reverse();
 
