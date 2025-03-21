@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using LaquaiLib.Core;
@@ -149,5 +150,6 @@ public static unsafe class MemoryManager
     /// </summary>
     /// <param name="length">The size of the buffer to create.</param>
     /// <returns>A <see cref="Span{T}"/> of <see langword="byte"/> around the buffer.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<byte> CreateBuffer(int length) => length <= Configuration.MaxStackallocSize ? stackalloc byte[length] : new byte[length];
 }

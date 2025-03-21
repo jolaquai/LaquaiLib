@@ -98,8 +98,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var module = _modules.FirstOrDefault(m => m.BaseAddress <= address && address < m.BaseAddress + m.ModuleMemorySize)
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
-        // If you define structs that would blow the stack, you deserve what's coming to you
-        Span<byte> buffer = stackalloc byte[Marshal.SizeOf<T>()];
+        var buffer = MemoryManager.CreateBuffer(Marshal.SizeOf<T>());
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
         {
@@ -131,8 +130,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var module = _modules.FirstOrDefault(m => m.BaseAddress <= address && address < m.BaseAddress + m.ModuleMemorySize)
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
-        // If you define structs that would blow the stack, you deserve what's coming to you
-        Span<byte> buffer = stackalloc byte[Marshal.SizeOf<T>()];
+        var buffer = MemoryManager.CreateBuffer(Marshal.SizeOf<T>());
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
         {
@@ -207,19 +205,20 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var chunkSize = Environment.SystemPageSize;
         var overlap = data.Length - 1;
 
+        // This will conditionally stackalloc, and fortunately, the size doesn't depend on the contents of the loop, so we can do this once and keep reusing it
+        var span = MemoryManager.CreateBuffer(chunkSize + overlap);
+
         foreach (var module in _modules)
         {
             var baseAddress = module.BaseAddress;
             var regionSize = module.ModuleMemorySize;
 
-            // Can't afford to stackalloc this since data could be huge
-            var arr = new byte[chunkSize + overlap];
             var leftover = 0;
 
             for (var offset = 0; offset < regionSize; offset += chunkSize)
             {
                 var sizeToRead = Math.Min(chunkSize, regionSize - offset);
-                var readSpan = arr.AsSpan(leftover, sizeToRead);
+                var readSpan = span.Slice(leftover, sizeToRead);
 
                 if (!Interop.ReadProcessMemory(_handle, baseAddress + offset, readSpan, out var bytesRead))
                 {
@@ -228,7 +227,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
                 }
 
                 // Combine leftover and newly read data
-                var combinedSpan = arr.AsSpan(0, leftover + bytesRead);
+                var combinedSpan = span[..(leftover + bytesRead)];
                 var index = combinedSpan.IndexOf(data);
                 if (index >= 0)
                 {
@@ -237,11 +236,11 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
                 // Keep final overlap bytes for next iteration
                 leftover = Math.Min(overlap, bytesRead);
-                combinedSpan.Slice(bytesRead - leftover, leftover).CopyTo(arr.AsSpan(0, leftover));
+                combinedSpan.Slice(bytesRead - leftover, leftover).CopyTo(span[..leftover]);
             }
         }
 
-        return nint.Zero;
+        return 0;
     }
     /// <summary>
     /// Attempts to find the sequence of bytes that make up the specified instance of <typeparamref name="T"/> in the target process's memory space.

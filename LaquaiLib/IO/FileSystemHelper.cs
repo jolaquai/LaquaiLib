@@ -6,6 +6,7 @@ using System.Security.AccessControl;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.IO;
+using LaquaiLib.Unsafe;
 using LaquaiLib.Util.Misc;
 
 namespace LaquaiLib.Util;
@@ -704,7 +705,7 @@ public static partial class FileSystemHelper
             {
                 using (var destStream = new FileStream(destFile, FileMode.Create))
                 {
-                    Span<byte> buffer = stackalloc byte[1 << 16];
+                    var buffer = MemoryManager.CreateBuffer(1 << 16);
                     uint bytesRead = 0;
                     var context = nint.Zero;
                     var inDataStream = false;

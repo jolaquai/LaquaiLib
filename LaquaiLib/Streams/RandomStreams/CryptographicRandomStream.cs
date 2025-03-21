@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 
+using LaquaiLib.Unsafe;
+
 namespace LaquaiLib.Streams.RandomStreams;
 
 /// <summary>
@@ -18,7 +20,7 @@ public class CryptographicRandomStream() : RandomStream(null)
     /// <inheritdoc/>
     public override int ReadByte()
     {
-        Span<byte> buffer = stackalloc byte[1];
+        var buffer = MemoryManager.CreateBuffer(1);
         rng.GetBytes(buffer);
         return buffer[0];
     }

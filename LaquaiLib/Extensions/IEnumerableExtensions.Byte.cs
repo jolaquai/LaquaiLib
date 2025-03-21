@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
 
+using LaquaiLib.Unsafe;
+
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -23,7 +25,7 @@ public static class IEnumerableExtensionsByte
                 return MemoryMarshal.Read<T>(list.AsSpan());
             default:
             {
-                Span<byte> bytes = stackalloc byte[System.Runtime.CompilerServices.Unsafe.SizeOf<T>()];
+                var bytes = MemoryManager.CreateBuffer(System.Runtime.CompilerServices.Unsafe.SizeOf<T>());
                 _ = enumerable.Into(bytes);
                 return MemoryMarshal.Read<T>(bytes);
             }
