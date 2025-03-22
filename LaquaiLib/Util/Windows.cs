@@ -7,6 +7,8 @@ using Timer = System.Threading.Timer;
 
 namespace LaquaiLib.Util;
 
+#pragma warning disable CA1069 // Enums values should not be duplicated
+
 /// <summary>
 /// Provides methods and events for working with windows.
 /// </summary>
@@ -102,7 +104,7 @@ public static partial class Windows
 
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -129,7 +131,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -154,7 +156,7 @@ public static partial class Windows
             var windows = new ArrayList();
             using (var handle = new Wrappers.GCHandle<ArrayList>(windows))
             {
-                _ = EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
+                EnumWindows(EnumWindowsCallback, GCHandle.ToIntPtr(handle));
             }
 
             existing.Clear();
@@ -186,7 +188,7 @@ public static partial class Windows
         var handles = handle.Target;
         lock (handles.SyncRoot)
         {
-            _ = handles.Add(hWnd);
+            handles.Add(hWnd);
         }
 
         return true;
@@ -679,7 +681,7 @@ public static partial class Windows
         /// Flashes the specified window <paramref name="count"/> times.
         /// </summary>
         /// <param name="count">The number of times to flash the window.</param>
-        public static void SetFlashing(uint count = 1) => _ = count;
+        public static void SetFlashing(uint count = 1) { }
         /// <summary>
         /// Stops the flashing of the specified window.
         /// </summary>

@@ -40,8 +40,9 @@ public static partial class FirstChanceExceptionHandlers
     {
         if (!isRegistered)
         {
-            foreach (var handler in _handlers)
+            for (var i = 0; i < _handlers.Length; i++)
             {
+                var handler = _handlers[i];
                 AppDomain.CurrentDomain.FirstChanceException += handler;
             }
             isRegistered = true;
@@ -51,8 +52,9 @@ public static partial class FirstChanceExceptionHandlers
     {
         if (isRegistered)
         {
-            foreach (var handler in _handlers)
+            for (var i = 0; i < _handlers.Length; i++)
             {
+                var handler = _handlers[i];
                 AppDomain.CurrentDomain.FirstChanceException -= handler;
             }
             isRegistered = false;
@@ -103,8 +105,9 @@ public static partial class FirstChanceExceptionHandlers
                 pathExts = [.. pathExts.Select(p => p.Trim()).Distinct().OrderDescending()];
 
                 var fullPath = "";
-                foreach (var path in allPaths)
+                for (var i = 0; i < allPaths.Length; i++)
                 {
+                    var path = allPaths[i];
                     var possiblePath = Path.Combine(path, dllName);
                     if (File.Exists(possiblePath))
                     {
@@ -125,39 +128,37 @@ public static partial class FirstChanceExceptionHandlers
 
                 try
                 {
-                    using (var proc = Process.Start(new ProcessStartInfo()
+                    using var proc = Process.Start(new ProcessStartInfo()
                     {
                         FileName = dumpbinPath,
                         ArgumentList =
-                    {
-                        "/exports",
-                        fullPath
-                    },
+                        {
+                            "/exports",
+                            fullPath
+                        },
                         RedirectStandardOutput = true,
                         UseShellExecute = false,
                         CreateNoWindow = true
-                    }))
-                    {
-                        var output = proc.StandardOutput.ReadToEnd();
-                        proc.Kill();
-                        proc.WaitForExit();
-                        // Sample:
-                        // 2459  3C6 0002A800 UnregisterDeviceNotification
-                        // 2460  3C7 0002EB60 UnregisterHotKey
-                        // 2461  3C8 000029B0 UnregisterMessagePumpHook
-                        // 2462  3C9 000496C0 UnregisterPointerInputTarget
-                        // 2463  3CA 000496E0 UnregisterPointerInputTargetEx
-                        // 2464  3CB 0002A730 UnregisterPowerSettingNotification
-                        var entryPoints = output
-                            .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                            .SkipWhile(l => !l.Contains("ordinal hint RVA", StringComparison.OrdinalIgnoreCase))
-                            .Skip(1)
-                            .TakeWhile(l => !string.IsNullOrWhiteSpace(l))
-                            .Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last())
-                            .ToArray();
-                        possibleEntryPoints = Array.FindAll(entryPoints, ep => ep.StartsWith(entryPoint, StringComparison.OrdinalIgnoreCase));
-                        Array.Sort(possibleEntryPoints);
-                    }
+                    });
+                    var output = proc.StandardOutput.ReadToEnd();
+                    proc.Kill();
+                    proc.WaitForExit();
+                    // Sample:
+                    // 2459  3C6 0002A800 UnregisterDeviceNotification
+                    // 2460  3C7 0002EB60 UnregisterHotKey
+                    // 2461  3C8 000029B0 UnregisterMessagePumpHook
+                    // 2462  3C9 000496C0 UnregisterPointerInputTarget
+                    // 2463  3CA 000496E0 UnregisterPointerInputTargetEx
+                    // 2464  3CB 0002A730 UnregisterPowerSettingNotification
+                    var entryPoints = output
+                        .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                        .SkipWhile(l => !l.Contains("ordinal hint RVA", StringComparison.OrdinalIgnoreCase))
+                        .Skip(1)
+                        .TakeWhile(l => !string.IsNullOrWhiteSpace(l))
+                        .Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last())
+                        .ToArray();
+                    possibleEntryPoints = Array.FindAll(entryPoints, ep => ep.StartsWith(entryPoint, StringComparison.OrdinalIgnoreCase));
+                    Array.Sort(possibleEntryPoints);
                 }
                 catch
                 {

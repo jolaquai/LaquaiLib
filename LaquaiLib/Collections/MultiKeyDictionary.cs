@@ -96,8 +96,11 @@ public class MultiKeyDictionary<TValue>
             case 8 when _eight is null:
             case > 8 when _many is null:
                 Allocate(0, keyCount);
-                // Enables fast paths in getter methods since a newly allocated dictionary cannot possible contain the sought key
+                // Enables fast paths in getter methods since a newly allocated dictionary cannot possibly contain the sought key
                 return false;
+            default:
+                Debug.Fail("Impossible key count");
+                throw new ArgumentException("Impossible key count", nameof(keyCount));
         }
 
         return true;
@@ -206,7 +209,7 @@ public class MultiKeyDictionary<TValue>
         ArgumentOutOfRangeException.ThrowIfZero(keys.Length);
 
         // Setting doesn't care about whether we were already allocated or not
-        _ = TryAllocate(keys.Length);
+        TryAllocate(keys.Length);
 
         ref var theRef = ref GetRef(keys, true, out _);
         theRef = value;

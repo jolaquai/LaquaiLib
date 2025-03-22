@@ -16,7 +16,7 @@ public static class DelegateExtensions
     {
         try
         {
-            _ = del.DynamicInvoke(arguments.ToArray());
+            del.DynamicInvoke(arguments.ToArray());
         }
         catch (Exception ex)
         {

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Numerics;
-using System.Runtime.Intrinsics;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Interfaces;
@@ -184,7 +183,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         IReadOnlySpanProvider<T> spanProvider = null;
         try
         {
-            _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
+            _data.TryGetReadOnlySpan(out spanProvider, out var ros);
             ros.Slice(row * Columns, Columns).CopyTo(result);
         }
         finally
@@ -233,7 +232,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         IReadOnlySpanProvider<T> spanProvider = null;
         try
         {
-            _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
+            _data.TryGetReadOnlySpan(out spanProvider, out var ros);
             for (var i = 0; i < Rows; i++)
             {
                 result[i] = new T[Columns];
@@ -390,7 +389,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             IReadOnlySpanProvider<T> rosProvider = null;
             try
             {
-                _ = _data.TryGetReadOnlySpan(out rosProvider, out var ros);
+                _data.TryGetReadOnlySpan(out rosProvider, out var ros);
 
                 bool IsAllZerosFrom(ReadOnlySpan<T> span, int row)
                 {
@@ -474,7 +473,6 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                 return false;
             }
 
-            var pivotCol = -1;
             for (var r = 0; r < Rows; r++)
             {
                 // Find the leftmost non-zero entry in this row
@@ -494,10 +492,8 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                     continue;
                 }
 
-                pivotCol = firstNonZero;
-
                 // Check pivot = 1
-                if (_data[r, pivotCol] != T.One)
+                if (_data[r, firstNonZero] != T.One)
                 {
                     return false;
                 }
@@ -505,7 +501,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                 // Check it's the only non-zero in that column
                 for (var rr = 0; rr < Rows; rr++)
                 {
-                    if (rr != r && _data[rr, pivotCol] != T.Zero)
+                    if (rr != r && _data[rr, firstNonZero] != T.Zero)
                     {
                         return false;
                     }
@@ -528,20 +524,17 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                 throw new InvalidOperationException("The matrix must be square to calculate the determinant.");
             }
             // Fast paths for up to 3x3
-            switch (Columns)
+            return Columns switch
             {
-                case 1:
-                    return _data[0, 0];
-                case 2:
-                    return (_data[0, 0] * _data[1, 1]) - (_data[0, 1] * _data[1, 0]);
-                case 3:
-                    // Expand along the first row
-                    return (_data[0, 0] * ((_data[1, 1] * _data[2, 2]) - (_data[1, 2] * _data[2, 1])))
-                         - (_data[0, 1] * ((_data[1, 0] * _data[2, 2]) - (_data[1, 2] * _data[2, 0])))
-                         + (_data[0, 2] * ((_data[1, 0] * _data[2, 1]) - (_data[1, 1] * _data[2, 0])));
-            }
-            // Otherwise fall back to row-reduction
-            return DetRowReduce();
+                1 => _data[0, 0],
+                2 => (_data[0, 0] * _data[1, 1]) - (_data[0, 1] * _data[1, 0]),
+                // Expand along the first row
+                3 => (_data[0, 0] * ((_data[1, 1] * _data[2, 2]) - (_data[1, 2] * _data[2, 1])))
+                   - (_data[0, 1] * ((_data[1, 0] * _data[2, 2]) - (_data[1, 2] * _data[2, 0])))
+                   + (_data[0, 2] * ((_data[1, 0] * _data[2, 1]) - (_data[1, 1] * _data[2, 0]))),
+                // Otherwise fall back to row-reduction
+                _ => DetRowReduce(),
+            };
         }
     }
     private T DetRowReduce()
@@ -1125,7 +1118,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             IReadOnlySpanProvider<T> spanProvider = null;
             try
             {
-                _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
+                _data.TryGetReadOnlySpan(out spanProvider, out var ros);
                 if (ros.Length >= 8)
                 {
                     ros = ros[^8..];
@@ -1146,7 +1139,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             IReadOnlySpanProvider<T> spanProvider = null;
             try
             {
-                _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
+                _data.TryGetReadOnlySpan(out spanProvider, out var ros);
                 if (ros.Length >= 8)
                 {
                     ros = ros[^8..];

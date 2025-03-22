@@ -28,8 +28,9 @@ file struct AsyncEnumerableCombiner<T>(params ReadOnlySpan<IAsyncEnumerable<T>> 
     private IAsyncEnumerable<T>[] _iterators = [.. iterators];
     public readonly async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-        foreach (var iterator in _iterators)
+        for (var i = 0; i < _iterators.Length; i++)
         {
+            var iterator = _iterators[i];
             await foreach (var item in iterator.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
                 yield return item;

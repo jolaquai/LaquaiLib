@@ -24,7 +24,7 @@ public static class DbSetExtensions
             return existing;
         }
         var newEntity = await factory().ConfigureAwait(false);
-        _ = set.Add(newEntity);
+        set.Add(newEntity);
         return newEntity;
     }
     /// <summary>
@@ -43,14 +43,14 @@ public static class DbSetExtensions
     public static TEntity AddOrUpdate<TEntity>(this DbSet<TEntity> set, TEntity entity, params object[] keys)
         where TEntity : class
     {
-        _ = set.Attach(entity);
+        set.Attach(entity);
         var existing = set.Find(keys);
         if (existing is not null)
         {
-            _ = set.Update(entity);
+            set.Update(entity);
             return existing;
         }
-        _ = set.Add(entity);
+        set.Add(entity);
         return entity;
     }
 }

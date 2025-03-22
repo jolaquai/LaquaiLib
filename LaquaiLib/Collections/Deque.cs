@@ -67,7 +67,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         foreach (var value in values)
         {
-            _ = AddLast(value);
+            AddLast(value);
         }
     }
     /// <summary>
@@ -78,7 +78,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         for (var i = 0; i < nodes; i++)
         {
-            _ = AddLast(default(T));
+            AddLast(default(T));
         }
     }
     /// <summary>
@@ -90,7 +90,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         foreach (var value in linkedList)
         {
-            _ = AddLast(value);
+            AddLast(value);
         }
     }
     #endregion
@@ -255,7 +255,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         else
         {
             // Otherwise make this node the new head
-            _ = AddBefore(Head, node);
+            AddBefore(Head, node);
         }
 
         node.Deque = this;
@@ -294,7 +294,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         else
         {
             // Otherwise, make this node the new tail
-            _ = AddAfter(Tail!, node);
+            AddAfter(Tail!, node);
         }
 
         node.Deque = this;
@@ -479,7 +479,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
             {
                 if (nodes.IndexOf(current) > 0)
                 {
-                    _ = RemoveNode(current);
+                    RemoveNode(current);
                     removed++;
                 }
                 current = current.Next;

@@ -9,7 +9,5 @@
 </PropertyGroup>
   <ItemGroup>
       <InternalsVisibleTo Include="LaquaiLib" />
-
-      <ProjectReference Include="..\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="False" PrivateAssets="none" />
   </ItemGroup>
 </Project>

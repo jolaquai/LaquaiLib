@@ -50,11 +50,13 @@ public static partial class FileSystemHelper
         ValidateMigrateArguments(source, destination, allowExisting, ref maxDegreeOfParallelism);
 
         // Create the directory structure first
-        _ = Directory.CreateDirectory(destination);
-        foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
+        Directory.CreateDirectory(destination);
+        var directories = Directory.GetDirectories(source, "*", SearchOption.AllDirectories);
+        for (var i = 0; i < directories.Length; i++)
         {
+            var dirPath = directories[i];
             var newDirPath = dirPath.Replace(source, destination);
-            _ = Directory.CreateDirectory(newDirPath);
+            Directory.CreateDirectory(newDirPath);
 
             if (OperatingSystem.IsWindows())
             {
@@ -167,11 +169,13 @@ public static partial class FileSystemHelper
         cancellationToken.ThrowIfCancellationRequested();
 
         // First, create the directory structure
-        _ = Directory.CreateDirectory(destination);
-        foreach (var dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
+        Directory.CreateDirectory(destination);
+        var directories = Directory.GetDirectories(source, "*", SearchOption.AllDirectories);
+        for (var i = 0; i < directories.Length; i++)
         {
+            var dirPath = directories[i];
             var newDirPath = dirPath.Replace(source, destination);
-            _ = Directory.CreateDirectory(newDirPath);
+            Directory.CreateDirectory(newDirPath);
             if (OperatingSystem.IsWindows())
             {
                 if (restorePermissionsAndAttributes)
@@ -321,19 +325,19 @@ public static partial class FileSystemHelper
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
         {
-            _ = sec.RemoveAccessRule(rule);
+            sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
         {
-            _ = sec.RemoveAccessRule(rule);
+            sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
         {
-            _ = sec.RemoveAuditRule(rule);
+            sec.RemoveAuditRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
         {
-            _ = sec.RemoveAuditRule(rule);
+            sec.RemoveAuditRule(rule);
         }
 
         // Now copy the rules from the source
@@ -369,19 +373,19 @@ public static partial class FileSystemHelper
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
         {
-            _ = sec.RemoveAccessRule(rule);
+            sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
         {
-            _ = sec.RemoveAccessRule(rule);
+            sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
         {
-            _ = sec.RemoveAuditRule(rule);
+            sec.RemoveAuditRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
         {
-            _ = sec.RemoveAuditRule(rule);
+            sec.RemoveAuditRule(rule);
         }
 
         // Now copy the rules from the source
@@ -422,10 +426,8 @@ public static partial class FileSystemHelper
 
         var ms = new MemoryStream();
         {
-            using (var fileStream = File.OpenRead(path))
-            {
-                fileStream.CopyTo(ms);
-            }
+            using var fileStream = File.OpenRead(path);
+            fileStream.CopyTo(ms);
         }
         File.Delete(path);
         return ms;
@@ -703,26 +705,65 @@ public static partial class FileSystemHelper
 
             try
             {
-                using (var destStream = new FileStream(destFile, FileMode.Create))
-                {
-                    var buffer = MemoryManager.CreateBuffer(1 << 16);
-                    uint bytesRead = 0;
-                    var context = nint.Zero;
-                    var inDataStream = false;
-                    long remainingDataSize = 0;
+                using var destStream = new FileStream(destFile, FileMode.Create);
 
-                    while (BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
+                var buffer = MemoryManager.CreateBuffer(1 << 16);
+                uint bytesRead = 0;
+                var context = nint.Zero;
+                var inDataStream = false;
+                long remainingDataSize = 0;
+
+                while (BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
+                {
+                    if (bytesRead == 0)
                     {
-                        if (bytesRead == 0)
+                        break;
+                    }
+
+                    var offset = 0;
+                    while (offset < bytesRead)
+                    {
+                        // Continue reading data from previous stream
+                        if (inDataStream)
+                        {
+                            var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
+                            destStream.Write(buffer.Slice(offset, dataChunkSize));
+
+                            remainingDataSize -= dataChunkSize;
+                            offset += dataChunkSize;
+
+                            if (remainingDataSize <= 0)
+                            {
+                                inDataStream = false;
+                            }
+
+                            continue;
+                        }
+
+                        // Not enough bytes left for a header
+                        if (offset + 20 > bytesRead)
                         {
                             break;
                         }
 
-                        var offset = 0;
-                        while (offset < bytesRead)
+                        var streamId = buffer.Read<int>(offset);
+                        var streamAttributes = buffer.Read<uint>(offset + 4);
+                        var streamSize = buffer.Read<long>(offset + 8);
+                        var streamNameSize = buffer.Read<uint>(offset + 16);
+
+                        var headerSize = 20 + (int)streamNameSize;
+
+                        // Skip past header
+                        offset += headerSize;
+
+                        // Check if this is a data stream
+                        if (streamId == BACKUP_DATA)
                         {
-                            // Continue reading data from previous stream
-                            if (inDataStream)
+                            inDataStream = true;
+                            remainingDataSize = streamSize;
+
+                            // Process available data now
+                            if (offset < bytesRead)
                             {
                                 var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
                                 destStream.Write(buffer.Slice(offset, dataChunkSize));
@@ -734,70 +775,30 @@ public static partial class FileSystemHelper
                                 {
                                     inDataStream = false;
                                 }
-
-                                continue;
                             }
+                        }
+                        else
+                        {
+                            // Skip non-data stream
+                            var skipSize = (int)Math.Min(streamSize, bytesRead - offset);
+                            offset += skipSize;
+                            remainingDataSize = streamSize - skipSize;
 
-                            // Not enough bytes left for a header
-                            if (offset + 20 > bytesRead)
+                            if (remainingDataSize > 0)
                             {
-                                break;
-                            }
-
-                            var streamId = buffer.Read<int>(offset);
-                            var streamAttributes = buffer.Read<uint>(offset + 4);
-                            var streamSize = buffer.Read<long>(offset + 8);
-                            var streamNameSize = buffer.Read<uint>(offset + 16);
-
-                            var headerSize = 20 + (int)streamNameSize;
-
-                            // Skip past header
-                            offset += headerSize;
-
-                            // Check if this is a data stream
-                            if (streamId == BACKUP_DATA)
-                            {
-                                inDataStream = true;
-                                remainingDataSize = streamSize;
-
-                                // Process available data now
-                                if (offset < bytesRead)
-                                {
-                                    var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
-                                    destStream.Write(buffer.Slice(offset, dataChunkSize));
-
-                                    remainingDataSize -= dataChunkSize;
-                                    offset += dataChunkSize;
-
-                                    if (remainingDataSize <= 0)
-                                    {
-                                        inDataStream = false;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Skip non-data stream
-                                var skipSize = (int)Math.Min(streamSize, bytesRead - offset);
-                                offset += skipSize;
-                                remainingDataSize = streamSize - skipSize;
-
-                                if (remainingDataSize > 0)
-                                {
-                                    inDataStream = true;  // Will be skipped next time
-                                }
+                                inDataStream = true;  // Will be skipped next time
                             }
                         }
                     }
-
-                    // Final read with bAbort = true
-                    _ = BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
                 }
+
+                // Final read with bAbort = true
+                BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
                 return true;
             }
             finally
             {
-                _ = CloseHandle(handle);
+                CloseHandle(handle);
             }
         }
     }

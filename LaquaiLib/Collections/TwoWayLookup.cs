@@ -201,7 +201,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     {
         try
         {
-            _ = RemoveForward(key);
+            RemoveForward(key);
             return true;
         }
         catch
@@ -218,7 +218,7 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     {
         try
         {
-            _ = RemoveReverse(value);
+            RemoveReverse(value);
             return true;
         }
         catch

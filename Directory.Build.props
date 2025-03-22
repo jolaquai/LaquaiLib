@@ -4,7 +4,7 @@
         <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
-        <CoreVersion>1.3.6</CoreVersion>
+        <CoreVersion>1.3.7</CoreVersion>
         <PackageVersion>$(CoreVersion)</PackageVersion>
         <FileVersion>$(CoreVersion)</FileVersion>
         <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
@@ -36,9 +36,14 @@
         <AnalysisMode>all</AnalysisMode>
         <Platforms>AnyCPU;x64;x86</Platforms>
 
-        <NoWarn>$(NoWarn);CS8714;IDE0290;IDE0045;IDE0046</NoWarn>
+        <NoWarn>$(NoWarn);CS8714;IDE0290;IDE0010;IDE0045;IDE0046;IDE0079;IDE0072;IDE0058;IDE0060</NoWarn>
 
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>obj\Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Analyzers' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="..\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
+      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Generators' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="..\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
+    </ItemGroup>
 </Project>

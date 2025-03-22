@@ -418,7 +418,7 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
                 {
                     data[i - shiftAmount] = data[i];
                 }
-                _ = Reallocate(data.Length - shiftAmount);
+                Reallocate(data.Length - shiftAmount);
                 data = Span;
             }
 
@@ -444,13 +444,13 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
         for (var i = 0; i < _size; i += 4)
         {
             var slice = data[i..(i + 4 > _size ? _size : i + 4)];
-            _ = sb.Append(Convert.ToHexString(slice));
+            sb.Append(Convert.ToHexString(slice));
             if ((i + 4) % 32 == 0)
             {
-                _ = sb.AppendLine();
+                sb.AppendLine();
                 continue;
             }
-            _ = sb.Append(' ');
+            sb.Append(' ');
         }
         return sb.ToString().Trim(' ');
     }
@@ -466,9 +466,9 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
         {
             foreach (var b in i < 4 ? data[..i] : data.Slice(i - 4, 4))
             {
-                _ = sb.Insert(0, Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
+                sb.Insert(0, Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }
-            _ = sb.Insert(0, ' ');
+            sb.Insert(0, ' ');
         }
         return sb.ToString().Trim(' ');
     }

@@ -19,11 +19,11 @@ public static class IEnumerableExtensionsCancellationToken
         {
             if (token.IsCancellationRequested)
             {
-                _ = tcs.TrySetResult(token);
+                tcs.TrySetResult(token);
                 return tcs.Task;
             }
 
-            _ = token.Register(() => tcs.TrySetResult(token));
+            token.Register(() => tcs.TrySetResult(token));
         }
         return tcs.Task;
     }
@@ -54,11 +54,11 @@ public static class IEnumerableExtensionsCancellationToken
                 continue;
             }
             remaining++;
-            _ = uncancelled.Current.Register(() =>
+            uncancelled.Current.Register(() =>
             {
                 if (Interlocked.Decrement(ref remaining) == 0)
                 {
-                    _ = tcs.TrySetResult();
+                    tcs.TrySetResult();
                 }
             });
         } while (uncancelled.MoveNext());

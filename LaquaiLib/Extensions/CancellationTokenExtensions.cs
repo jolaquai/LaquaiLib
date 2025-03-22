@@ -13,7 +13,7 @@ public static class CancellationTokenExtensions
     public static Task WhenCancelled(this CancellationToken cancellationToken)
     {
         var tcs = new TaskCompletionSource();
-        _ = cancellationToken.Register(tcs.SetResult);
+        cancellationToken.Register(tcs.SetResult);
         return tcs.Task;
     }
 }

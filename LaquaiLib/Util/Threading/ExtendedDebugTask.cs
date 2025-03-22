@@ -3,6 +3,8 @@ using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Util.Threading;
 
+#pragma warning disable CA1068 // CancellationToken parameters must come last
+
 // There's StackTraceHiddenAttribute and DebuggerStepThroughAttribute on all these to prevent the debugger from highlighting the throw statments in the GetResult methods if an exception is thrown
 
 /// <summary>

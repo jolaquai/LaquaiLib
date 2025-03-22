@@ -36,11 +36,10 @@ public partial class FileSystemHelper
     {
         EnsureArgumentsValid(ref source, ref destination, overwrite);
 
-        using (var srcFs = File.OpenRead(source))
-        using (var destFs = File.Create(destination))
-        {
-            srcFs.CopyTo(destFs);
-        }
+        using var srcFs = File.OpenRead(source);
+        using var destFs = File.Create(destination);
+
+        srcFs.CopyTo(destFs);
     }
     /// <summary>
     /// Moves a file to a new location.

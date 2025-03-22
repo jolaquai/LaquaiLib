@@ -74,6 +74,8 @@ public partial class ResumableFileIO(string stateFilePath = null)
                 throw new IOException("Destination file already exists.");
             }
 
+            cts = new CancellationTokenSource();
+
             var sourceInfo = new FileInfo(sourcePath);
             var totalBytes = sourceInfo.Length;
             var copyState = new CopyState
@@ -171,6 +173,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
         }
         finally
         {
+            cts = null;
             Interlocked.Exchange(ref running, 0);
         }
     }

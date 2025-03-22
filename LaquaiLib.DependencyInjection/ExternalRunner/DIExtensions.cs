@@ -12,10 +12,10 @@ public static class DIExtensions
     /// <returns>A <see cref="ExternalRunnerBuilder"/> instance to configure the external runner service.</returns>
     public static ExternalRunnerBuilder AddExternalRunners(this IServiceCollection services)
     {
-        _ = services.AddHostedService<ExternalRunnerService>();
-        _ = services.AddSingleton<IExternalRunner, ExecutableRunner>();
-        _ = services.AddSingleton<IExternalRunner, PythonScriptRunner>();
-        _ = services.AddSingleton<IExternalRunner, BatchScriptRunner>();
+        services.AddHostedService<ExternalRunnerService>();
+        services.AddSingleton<IExternalRunner, ExecutableRunner>();
+        services.AddSingleton<IExternalRunner, PythonScriptRunner>();
+        services.AddSingleton<IExternalRunner, BatchScriptRunner>();
         return new ExternalRunnerBuilder(services);
     }
 }

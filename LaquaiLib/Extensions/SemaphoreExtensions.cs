@@ -36,7 +36,7 @@ public static class SemaphoreExtensions
                 return;
             }
             disposed = true;
-            _ = Semaphore.Release(Count);
+            Semaphore.Release(Count);
         }
     }
     /// <summary>
@@ -71,7 +71,7 @@ public static class SemaphoreExtensions
                 return;
             }
             disposed = true;
-            _ = SemaphoreSlim.Release(Count);
+            SemaphoreSlim.Release(Count);
         }
     }
 
@@ -82,7 +82,7 @@ public static class SemaphoreExtensions
     /// <returns>A <see cref="SemaphoreEntry"/> that represents the entry into the <paramref name="semaphore"/>.</returns>
     public static SemaphoreEntry WaitOne(this Semaphore semaphore)
     {
-        _ = semaphore.WaitOne();
+        semaphore.WaitOne();
         return new SemaphoreEntry(semaphore);
     }
     /// <summary>
@@ -95,7 +95,7 @@ public static class SemaphoreExtensions
     {
         for (var i = count - 1; i >= 0; i--)
         {
-            _ = semaphore.WaitOne();
+            semaphore.WaitOne();
         }
         return new SemaphoreEntry(semaphore, count);
     }

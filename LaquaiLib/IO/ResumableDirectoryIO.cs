@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 using LaquaiLib.Core;
 using LaquaiLib.Extensions;
@@ -110,6 +109,8 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             {
                 throw new IOException($"Destination directory already exists: '{destinationPath}'.");
             }
+
+            cts = new CancellationTokenSource();
 
             // Create destination directory
             Directory.CreateDirectory(destinationPath);
@@ -255,6 +256,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
         }
         finally
         {
+            cts = null;
             Interlocked.Exchange(ref running, 0);
         }
     }
@@ -343,11 +345,11 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
     private async Task ScanDirectoryAsync(DirectoryCopyState copyState, string sourcePath, bool computeHashes = true, CancellationToken cancellationToken = default)
     {
         var allFiles = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
-        var sourceRoot = new DirectoryInfo(sourcePath);
 
         // Create pending file entries
-        foreach (var filePath in allFiles)
+        for (var i = 0; i < allFiles.Length; i++)
         {
+            var filePath = allFiles[i];
             cancellationToken.ThrowIfCancellationRequested();
             cts.Token.ThrowIfCancellationRequested();
 

@@ -97,7 +97,7 @@ public sealed class LimitedQueue<T> : IReadOnlyCollection<T>
         // Dequeue before Enqueue if the collection is at capacity to prevent resizing the backing store
         if (queue.Count + 1 > Capacity)
         {
-            _ = Dequeue();
+            Dequeue();
         }
         queue.Enqueue(item);
     }
@@ -178,7 +178,7 @@ public sealed class LimitedQueue<T> : IReadOnlyCollection<T>
         {
             while (queue.Count > size)
             {
-                _ = Dequeue();
+                Dequeue();
             }
         }
     }
@@ -287,7 +287,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
             // Dequeue before Enqueue if the collection is at capacity to prevent resizing the backing store
             if (Capacity <= queue.Count)
             {
-                _ = Dequeue();
+                Dequeue();
             }
             queue.Enqueue(item);
         }
@@ -379,7 +379,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
             {
                 while (queue.Count > size)
                 {
-                    _ = Dequeue();
+                    Dequeue();
                 }
             }
         }

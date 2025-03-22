@@ -27,11 +27,10 @@ public static partial class ProcessExtensions
         }
         catch { }
 
-        using (var searcher = new ManagementObjectSearcher("SELECT CommandLine FROM Win32_Process WHERE ProcessId = " + process.Id))
-        using (var objects = searcher.Get())
-        using (var obj = objects.Cast<ManagementBaseObject>().Single())
-        {
-            return obj["CommandLine"]?.ToString();
-        }
+        using var searcher = new ManagementObjectSearcher("SELECT CommandLine FROM Win32_Process WHERE ProcessId = " + process.Id);
+        using var objects = searcher.Get();
+        using var obj = objects.Cast<ManagementBaseObject>().Single();
+
+        return obj["CommandLine"]?.ToString();
     }
 }

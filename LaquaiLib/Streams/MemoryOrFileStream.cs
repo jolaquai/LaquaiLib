@@ -40,7 +40,7 @@ public static class MemoryOrFileStream
     {
         if (fromBeginning)
         {
-            _ = other.Position = 0;
+            other.Position = 0;
         }
         var stream = Create((int)other.Length);
         other.CopyTo(stream);

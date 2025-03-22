@@ -49,8 +49,10 @@ public static class PartitionerExtensions
             }
         }
 
-        foreach (var item in partitioner.GetPartitions(partitions))
+        var list = partitioner.GetPartitions(partitions);
+        for (var i = 0; i < list.Count; i++)
         {
+            using var item = list[i];
             yield return TransformPartition(item);
         }
     }

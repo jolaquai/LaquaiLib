@@ -156,7 +156,7 @@ public static class AsyncLogger
         var sb = new StringBuilder();
         foreach (var line in lines)
         {
-            _ = sb.AppendLine(line);
+            sb.AppendLine(line);
         }
         QueueMessage(sb.ToString(), timestamp, type);
     }

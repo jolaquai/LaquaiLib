@@ -234,7 +234,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     {
         ArgumentNullException.ThrowIfNull(collection);
 
-        _ = collection.AddTo(items);
+        collection.AddTo(items);
         RaiseCollectionChanged();
     }
     /// <summary>
@@ -369,7 +369,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
 
         foreach (var item in collection)
         {
-            _ = RemoveSilent(item);
+            RemoveSilent(item);
         }
         RaiseCollectionChanged();
     }

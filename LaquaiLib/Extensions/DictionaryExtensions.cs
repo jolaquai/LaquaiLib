@@ -217,7 +217,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            _ = concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
+            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
             return;
         }
 
@@ -254,7 +254,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            _ = concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
+            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
             return;
         }
 
@@ -291,7 +291,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            _ = concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
+            concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
             return;
         }
 

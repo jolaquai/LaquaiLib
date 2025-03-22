@@ -37,8 +37,10 @@ public static class Drives
         lock (SyncRoot)
         {
             existing.Clear();
-            foreach (var drvInfo in DriveInfo.GetDrives())
+            var drives = DriveInfo.GetDrives();
+            for (var i = 0; i < drives.Length; i++)
             {
+                var drvInfo = drives[i];
                 existing.Add(drvInfo);
             }
         }

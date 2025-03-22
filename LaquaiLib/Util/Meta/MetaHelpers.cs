@@ -34,12 +34,15 @@ public static class MetaHelpers
         var vsVersions = Array.ConvertAll(versions.GetFlags(), static flag => flag.GetDescription());
         var vsEditions = Array.ConvertAll(edition.GetFlags(), static flag => flag.GetDescription());
 
-        foreach (var programFile in programFiles)
+        for (var i = 0; i < programFiles.Length; i++)
         {
-            foreach (var vsVersion in vsVersions)
+            var programFile = programFiles[i];
+            for (var k = 0; k < vsVersions.Length; k++)
             {
-                foreach (var vsEdition in vsEditions)
+                var vsVersion = vsVersions[k];
+                for (var m = 0; m < vsEditions.Length; m++)
                 {
+                    var vsEdition = vsEditions[m];
                     var msvc = Path.Combine(programFile, "Microsoft Visual Studio", vsVersion, vsEdition);
                     if (File.Exists(Path.Combine(msvc, "Common7", "IDE", "devenv.exe")))
                     {
@@ -77,12 +80,15 @@ public static class MetaHelpers
         var vsEditions = Array.ConvertAll(edition.GetFlags(), flag => flag.GetDescription());
 
         List<Task<string>> tasks = [];
-        foreach (var programFile in programFiles)
+        for (var i = 0; i < programFiles.Length; i++)
         {
-            foreach (var vsVersion in vsVersions)
+            var programFile = programFiles[i];
+            for (var k = 0; k < vsVersions.Length; k++)
             {
-                foreach (var vsEdition in vsEditions)
+                var vsVersion = vsVersions[k];
+                for (var m = 0; m < vsEditions.Length; m++)
                 {
+                    var vsEdition = vsEditions[m];
                     var msvc = Path.Combine(programFile, "Microsoft Visual Studio", vsVersion, vsEdition);
                     if (Directory.Exists(msvc))
                     {
@@ -98,7 +104,7 @@ public static class MetaHelpers
                 }
             }
         }
-        _ = Task.WhenAll(tasks).GetAwaiter().GetResult();
+        Task.WhenAll(tasks).GetAwaiter().GetResult();
 
         return [.. tasks.Where(t => t.Result is not null).Select(t => t.Result)];
     }

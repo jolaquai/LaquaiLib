@@ -113,7 +113,7 @@ public class ObservableStream<T> : Stream
     /// <inheritdoc/>
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        _ = await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         DataRead?.Invoke(this, new ReadEventArgs(buffer));
         return buffer.Length;
     }

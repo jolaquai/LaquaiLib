@@ -399,7 +399,7 @@ public partial class IEnumerableExtensions
         {
             // Assumes sane behavior of that method
             var count = target.Count;
-            _ = method.Invoke(target, [source]);
+            method.Invoke(target, [source]);
             return target.Count - count;
         }
 

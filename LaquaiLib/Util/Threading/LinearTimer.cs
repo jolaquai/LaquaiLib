@@ -29,7 +29,7 @@ public class LinearTimer
         {
             field = value;
             timer ??= new Timer(Execute);
-            _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -44,7 +44,7 @@ public class LinearTimer
         {
             field = value;
             timer ??= new Timer(Execute);
-            _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -59,7 +59,7 @@ public class LinearTimer
         {
             field = value;
             timer ??= new Timer(Execute);
-            _ = timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
     }
 
@@ -131,8 +131,6 @@ public class LinearTimer
     public void Start() => timer.Change(WaitOnStart, Interval);
     private void Execute(object state)
     {
-        _ = state;
-
         if (execution?.IsCompleted == false && !QueueCallback)
         {
             return;
@@ -146,7 +144,7 @@ public class LinearTimer
         {
             // Don't assign to execution here, otherwise we'll end up with infinite continuations
             // Would defeat the purpose of the timer, wunnit now
-            _ = execution.ContinueWith(_ => Execute(null), TaskContinuationOptions.ExecuteSynchronously);
+            execution.ContinueWith(_ => Execute(null), TaskContinuationOptions.ExecuteSynchronously);
             lastAssignedContinuationId = execution.Id;
         }
     }

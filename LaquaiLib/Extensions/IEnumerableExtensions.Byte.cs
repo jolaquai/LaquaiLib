@@ -26,7 +26,7 @@ public static class IEnumerableExtensionsByte
             default:
             {
                 var bytes = MemoryManager.CreateBuffer(System.Runtime.CompilerServices.Unsafe.SizeOf<T>());
-                _ = enumerable.Into(bytes);
+                enumerable.Into(bytes);
                 return MemoryMarshal.Read<T>(bytes);
             }
         }

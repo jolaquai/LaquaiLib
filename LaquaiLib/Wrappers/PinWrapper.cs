@@ -38,7 +38,7 @@ public readonly unsafe ref struct PinWrapper<T> : IDisposable
     public PinWrapper(GCHandle handle)
     {
         // This throws internally if the handle is not pinned
-        _ = handle.AddrOfPinnedObject();
+        handle.AddrOfPinnedObject();
         _handle = new GCHandle<T>(handle);
         Pointer = (T*)GetSetHandleInternal(ref handle);
     }

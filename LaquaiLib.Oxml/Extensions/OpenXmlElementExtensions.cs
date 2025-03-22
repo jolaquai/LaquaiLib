@@ -84,8 +84,10 @@ public static class OpenXmlElementExtensions
     }
     private static void RemoveRsid(XElement xElement)
     {
-        foreach (var attribute in xElement.Attributes().Where(static a => a.Name.LocalName.StartsWith("rsid", StringComparison.OrdinalIgnoreCase)).ToArray())
+        var attribs = xElement.Attributes().Where(static a => a.Name.LocalName.StartsWith("rsid", StringComparison.OrdinalIgnoreCase)).ToArray();
+        for (var i = 0; i < attribs.Length; i++)
         {
+            var attribute = attribs[i];
             attribute.Remove();
         }
         foreach (var descendant in xElement.Descendants())
@@ -95,12 +97,16 @@ public static class OpenXmlElementExtensions
     }
     private static void RemoveNamespaces(XElement xElement)
     {
-        foreach (var attribute in xElement.Attributes().Where(static a => a.IsNamespaceDeclaration).ToArray())
+        var attribs = xElement.Attributes().Where(static a => a.IsNamespaceDeclaration).ToArray();
+        for (var i = 0; i < attribs.Length; i++)
         {
+            var attribute = attribs[i];
             attribute.Remove();
         }
-        foreach (var attribute in xElement.Attributes().Where(static a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.None).ToArray())
+        attribs = [.. xElement.Attributes().Where(static a => a.Name.Namespace != XNamespace.Xml && a.Name.Namespace != XNamespace.None)];
+        for (var i = 0; i < attribs.Length; i++)
         {
+            var attribute = attribs[i];
             xElement.SetAttributeValue(attribute.Name.LocalName, attribute.Value);
             attribute.Remove();
         }
@@ -207,7 +213,7 @@ public static class OpenXmlElementExtensions
         where TFrom : OpenXmlElement
         where TTo : OpenXmlElement
     {
-        _ = element.InsertAfterSelf(newElement);
+        element.InsertAfterSelf(newElement);
         element.Remove();
         return newElement;
     }
@@ -226,7 +232,7 @@ public static class OpenXmlElementExtensions
     {
         for (var i = newElements.Length - 1; i >= 0; i--)
         {
-            _ = element.InsertAfterSelf(newElements[i]);
+            element.InsertAfterSelf(newElements[i]);
         }
         element.Remove();
         return element;
@@ -245,7 +251,7 @@ public static class OpenXmlElementExtensions
         var i = index.GetOffset(element.ChildElements.Count);
         foreach (var newElement in newElements)
         {
-            _ = element.InsertAt(newElement, i++);
+            element.InsertAt(newElement, i++);
         }
     }
     /// <summary>

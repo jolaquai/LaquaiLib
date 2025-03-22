@@ -14,9 +14,9 @@ public class ExternalRunnerBuilder(IServiceCollection services)
     /// <returns>A reference to this instance after the operation has completed.</returns>
     public ExternalRunnerBuilder AddExternal(string path, params string[] args)
     {
-        _ = _services.Configure<ExternalRunnerOptions>(o =>
+        _services.Configure<ExternalRunnerOptions>(o =>
         {
-            _ = o.Externals.Add((path, args));
+            o.Externals.Add((path, args));
         });
         return this;
     }
@@ -27,7 +27,7 @@ public class ExternalRunnerBuilder(IServiceCollection services)
     /// <returns>A reference to this instance after the operation has completed.</returns>
     public ExternalRunnerBuilder UsePowershell()
     {
-        _ = _services.AddSingleton<IExternalRunner, PowerShellScriptRunner>();
+        _services.AddSingleton<IExternalRunner, PowerShellScriptRunner>();
         return this;
     }
     /// <summary>
@@ -37,7 +37,7 @@ public class ExternalRunnerBuilder(IServiceCollection services)
     /// <returns>A reference to this instance after the operation has completed.</returns>
     public ExternalRunnerBuilder UsePwsh()
     {
-        _ = _services.AddSingleton<IExternalRunner, PwshScriptRunner>();
+        _services.AddSingleton<IExternalRunner, PwshScriptRunner>();
         return this;
     }
 }

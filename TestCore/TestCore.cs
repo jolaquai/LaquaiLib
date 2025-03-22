@@ -10,8 +10,8 @@ public static class TestCore
     {
         var services = new ServiceCollection();
 
-        _ = services.AddSingleton<HttpClient>();
-        _ = services.AddSingleton(Random.Shared);
+        services.AddSingleton<HttpClient>();
+        services.AddSingleton(Random.Shared);
 
         provider = services.BuildServiceProvider(true);
 

@@ -66,7 +66,7 @@ public sealed class CommandInterface : IShellInterface
                 EnableRaisingEvents = true
             }
         };
-        _ = instance.Process.Start();
+        instance.Process.Start();
 
         // Before returning, the working directory MUST be set to the current directory
         // Unfortunately, PS doesn't care about passing ProcessStartInfo.WorkingDirectory it seems
@@ -75,11 +75,11 @@ public sealed class CommandInterface : IShellInterface
         {
             // Let's not throw and just default to what actual cmd.exe does
             // throw new InvalidOperationException($"cmd.exe cannot operate in UNC paths.");
-            _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"").ConfigureAwait(false);
+            await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"").ConfigureAwait(false);
         }
         else
         {
-            _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"").ConfigureAwait(false);
+            await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"").ConfigureAwait(false);
         }
         return instance;
     }
@@ -112,7 +112,7 @@ public sealed class CommandInterface : IShellInterface
         }
         finally
         {
-            _ = _syncSemaphore.Release();
+            _syncSemaphore.Release();
         }
     }
     /// <inheritdoc/>
@@ -125,7 +125,7 @@ public sealed class CommandInterface : IShellInterface
         }
         finally
         {
-            _ = _syncSemaphore.Release();
+            _syncSemaphore.Release();
         }
     }
     /// <inheritdoc/>
@@ -165,10 +165,10 @@ public sealed class CommandInterface : IShellInterface
                     }
                     finally
                     {
-                        _ = _syncSemaphore.Release();
+                        _syncSemaphore.Release();
                     }
                 }, cts.Token);
-                _ = readTask.Wait(300);
+                readTask.Wait(300);
                 if (!readTask.IsCompleted)
                 {
                     cts.Cancel();
@@ -187,7 +187,7 @@ public sealed class CommandInterface : IShellInterface
     #region public async ValueTask DisposeAsync()
     public async ValueTask DisposeAsync()
     {
-        _ = await DispatchAsync("break").ConfigureAwait(false);
+        await DispatchAsync("break").ConfigureAwait(false);
         await (Process.WaitForExitAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         Process.Dispose();
     }

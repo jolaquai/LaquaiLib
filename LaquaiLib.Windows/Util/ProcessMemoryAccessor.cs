@@ -9,6 +9,8 @@ using LaquaiLib.Util;
 
 namespace LaquaiLib.Unsafe;
 
+#pragma warning disable CA1069 // Enums values should not be duplicated
+
 /// <summary>
 /// Allows reading and writing arbitrary memory of the current or another process.
 /// </summary>
@@ -53,7 +55,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     public ProcessMemoryAccessor(int pid)
     {
         Process.EnterDebugMode();
-        _ = Interlocked.Increment(ref _instanceCount);
+        Interlocked.Increment(ref _instanceCount);
 
         _pid = pid;
         EnsureAllowTarget();
@@ -208,8 +210,9 @@ internal partial class ProcessMemoryAccessor : IDisposable
         // This will conditionally stackalloc, and fortunately, the size doesn't depend on the contents of the loop, so we can do this once and keep reusing it
         var span = MemoryManager.CreateBuffer(chunkSize + overlap);
 
-        foreach (var module in _modules)
+        for (var i = 0; i < _modules.Length; i++)
         {
+            var module = _modules[i];
             var baseAddress = module.BaseAddress;
             var regionSize = module.ModuleMemorySize;
 
@@ -327,7 +330,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// <param name="instance">The value to write.</param>
     /// <returns><see langword="true"/> if the write operation was successful, otherwise <see langword="false"/>.</returns>
     public bool Write<T>(nint address, nint offset, T instance) where T : struct
-        => Write(address, offset, (ReadOnlySpan<byte>)MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref instance, 1)), false);
+        => Write(address, offset, MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref instance, 1)), false);
 
     private static int HResultFromWin32Error(int x) => x <= 0 ? x : ((int)((x & 0x0000FFFF) | (7 << 16) | 0x80000000));
     [DoesNotReturn]
@@ -407,7 +410,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
         if (_handle != nint.Zero)
         {
-            _ = Interop.CloseHandle(_handle);
+            Interop.CloseHandle(_handle);
             _handle = nint.Zero;
         }
     }

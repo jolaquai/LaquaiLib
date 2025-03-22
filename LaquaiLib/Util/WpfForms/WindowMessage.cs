@@ -1,5 +1,7 @@
 ﻿namespace LaquaiLib.Util.WpfForms;
 
+#pragma warning disable CA1041 // Provide ObsoleteAttribute message
+
 /// <summary>
 /// Provides the window message constants without requiring further references into Win32 APIs.
 /// Stolen shamelessly from <seealso href="https://github.com/dotnet/pinvoke/blob/main/src/User32/User32+WindowMessage.cs"/>.

@@ -84,7 +84,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
             }
             finally
             {
-                _ = _semaphore.Release();
+                _semaphore.Release();
             }
         }
         else
@@ -124,7 +124,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
             }
             finally
             {
-                _ = _semaphore.Release();
+                _semaphore.Release();
             }
         }
         else

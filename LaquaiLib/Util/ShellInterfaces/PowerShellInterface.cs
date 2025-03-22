@@ -75,11 +75,11 @@ public sealed class PowerShellInterface : IShellInterface
                 EnableRaisingEvents = true
             }
         };
-        _ = instance.Process.Start();
+        instance.Process.Start();
 
         // Before returning, the working directory MUST be set to the current directory
         // Unfortunately, PS doesn't care about passing ProcessStartInfo.WorkingDirectory it seems
-        _ = await instance.DispatchAsync($"Set-Location '{Environment.CurrentDirectory}'").ConfigureAwait(false);
+        await instance.DispatchAsync($"Set-Location '{Environment.CurrentDirectory}'").ConfigureAwait(false);
         return instance;
     }
     private PowerShellInterface()
@@ -121,7 +121,7 @@ public sealed class PowerShellInterface : IShellInterface
         }
         finally
         {
-            _ = _syncSemaphore.Release();
+            _syncSemaphore.Release();
         }
     }
     /// <inheritdoc/>
@@ -134,7 +134,7 @@ public sealed class PowerShellInterface : IShellInterface
         }
         finally
         {
-            _ = _syncSemaphore.Release();
+            _syncSemaphore.Release();
         }
     }
     /// <inheritdoc/>
@@ -174,10 +174,10 @@ public sealed class PowerShellInterface : IShellInterface
                     }
                     finally
                     {
-                        _ = _syncSemaphore.Release();
+                        _syncSemaphore.Release();
                     }
                 }, cts.Token);
-                _ = readTask.Wait(300);
+                readTask.Wait(300);
                 if (!readTask.IsCompleted)
                 {
                     cts.Cancel();
@@ -196,7 +196,7 @@ public sealed class PowerShellInterface : IShellInterface
     #region public async ValueTask DisposeAsync()
     public async ValueTask DisposeAsync()
     {
-        _ = await DispatchAsync("break").ConfigureAwait(false);
+        await DispatchAsync("break").ConfigureAwait(false);
         await (Process.WaitForExitAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         Process.Dispose();
     }

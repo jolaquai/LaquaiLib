@@ -36,15 +36,17 @@ file struct AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators) :
     public T Current { get; private set; }
     public readonly async ValueTask DisposeAsync()
     {
-        foreach (var iterator in _iterators)
+        for (var i = 0; i < _iterators.Length; i++)
         {
+            var iterator = _iterators[i];
             await iterator.DisposeAsync().ConfigureAwait(false);
         }
     }
     public async ValueTask<bool> MoveNextAsync()
     {
-        foreach (var iterator in _iterators)
+        for (var i = 0; i < _iterators.Length; i++)
         {
+            var iterator = _iterators[i];
             if (await iterator.MoveNextAsync().ConfigureAwait(false))
             {
                 Current = iterator.Current;

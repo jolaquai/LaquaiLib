@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-using LaquaiLib.Util;
 using LaquaiLib.Util.Misc;
 
 namespace LaquaiLib.Extensions;
@@ -112,7 +111,7 @@ public static partial class IEnumerableExtensions
             using var enumerator = source.GetEnumerator();
             for (var i = 0; i <= index; i++)
             {
-                _ = enumerator.MoveNext();
+                enumerator.MoveNext();
             }
             return enumerator.Current;
         }
@@ -171,25 +170,24 @@ public static partial class IEnumerableExtensions
     /// <returns>A single sequence that contains the elements of both input sequences, interlaced.</returns>
     public static IEnumerable<T> Interlace<T>(this IEnumerable<T> first, IEnumerable<T> second)
     {
-        using (var enumerator1 = first.GetEnumerator())
-        using (var enumerator2 = second.GetEnumerator())
+        using var enumerator1 = first.GetEnumerator();
+        using var enumerator2 = second.GetEnumerator();
+
+        var hasNext1 = enumerator1.MoveNext();
+        var hasNext2 = enumerator2.MoveNext();
+
+        while (hasNext1 || hasNext2)
         {
-            var hasNext1 = enumerator1.MoveNext();
-            var hasNext2 = enumerator2.MoveNext();
-
-            while (hasNext1 || hasNext2)
+            if (hasNext1)
             {
-                if (hasNext1)
-                {
-                    yield return enumerator1.Current;
-                    hasNext1 = enumerator1.MoveNext();
-                }
+                yield return enumerator1.Current;
+                hasNext1 = enumerator1.MoveNext();
+            }
 
-                if (hasNext2)
-                {
-                    yield return enumerator2.Current;
-                    hasNext2 = enumerator2.MoveNext();
-                }
+            if (hasNext2)
+            {
+                yield return enumerator2.Current;
+                hasNext2 = enumerator2.MoveNext();
             }
         }
     }
@@ -679,8 +677,9 @@ public static partial class IEnumerableExtensions
                 byte[] v => v,
                 _ => [],
             };
-            foreach (var b in bytes)
+            for (var i = 0; i < bytes.Length; i++)
             {
+                var b = bytes[i];
                 yield return b;
             }
         }

@@ -147,8 +147,8 @@ public static partial class ArrayExtensions
         ISpanProvider<T> destSpanProv = null;
         try
         {
-            _ = TryGetReadOnlySpan(source, out sourceSpanProv, out var srcSpan);
-            _ = TryGetSpan(destination, out destSpanProv, out var destSpan);
+            TryGetReadOnlySpan(source, out sourceSpanProv, out var srcSpan);
+            TryGetSpan(destination, out destSpanProv, out var destSpan);
 
             if (sourceIndex < 0)
             {
@@ -368,8 +368,8 @@ public static partial class ArrayExtensions
         IReadOnlySpanProvider<T> otherSpanProv = null;
         try
         {
-            _ = first.TryGetReadOnlySpan(out firstSpanProv, out var firstSpan);
-            _ = other.TryGetReadOnlySpan(out otherSpanProv, out var otherSpan);
+            first.TryGetReadOnlySpan(out firstSpanProv, out var firstSpan);
+            other.TryGetReadOnlySpan(out otherSpanProv, out var otherSpan);
 
             return firstSpan.SequenceEqual(otherSpan, equalityComparer);
         }

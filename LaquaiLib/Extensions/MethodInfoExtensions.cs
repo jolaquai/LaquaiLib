@@ -198,7 +198,7 @@ public static class MethodInfoExtensions
         List<string> genericParameters = null;
         if (method.IsGenericMethod)
         {
-            genericParameters = method.GetGenericArguments().Select(t => t.Name).ToList();
+            genericParameters = [.. method.GetGenericArguments().Select(t => t.Name)];
             if (genericParametersTransform is not null)
             {
                 genericParametersTransform(genericParameters);

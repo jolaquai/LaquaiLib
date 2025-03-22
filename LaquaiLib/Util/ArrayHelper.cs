@@ -95,7 +95,7 @@ public static class ArrayHelper
             throw new ArgumentException("The length of the keys array must be equal to the length of all items arrays.");
         }
 
-        indices = Enumerable.Range(0, keysLength).ToArray();
+        indices = [.. Enumerable.Range(0, keysLength)];
         var originalIndices = new int[keysLength];
         indices.CopyTo(originalIndices);
 

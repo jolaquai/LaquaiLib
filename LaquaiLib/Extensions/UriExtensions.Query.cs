@@ -64,7 +64,7 @@ internal readonly struct QueryBuilder
         {
             if (value is null)
             {
-                _ = _components.Remove(name);
+                _components.Remove(name);
             }
             else
             {
