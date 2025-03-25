@@ -2,5 +2,6 @@
 
 internal static class AnalyzerCategories
 {
-    public const string Performance = "Performance";
+    public const string Performance = nameof(Performance);
+    public const string Reliability = nameof(Reliability);
 }

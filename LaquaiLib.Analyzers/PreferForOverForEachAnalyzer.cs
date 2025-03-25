@@ -48,7 +48,7 @@ public class PreferForOverForEachAnalyzer : DiagnosticAnalyzer
         context.ReportDiagnostic(diagnostic);
     }
 
-    private bool CanUseForLoop(ExpressionSyntax expression, SemanticModel semanticModel)
+    private static bool CanUseForLoop(ExpressionSyntax expression, SemanticModel semanticModel)
     {
         var typeInfo = semanticModel.GetTypeInfo(expression);
         if (typeInfo.Type == null)

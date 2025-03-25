@@ -137,7 +137,7 @@ public static class ArrayHelper
     public static void Sort<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays) => SortGenericImpl(keys, comparer, itemsArrays, null);
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of items arrays with unspecified types using the default comparer.
-    /// Note that this method is significantly slower than the generic version.
+    /// Note that this method is significantly slower than the generic version, but does allow for sorting arbitrarily typed arrays.
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
@@ -166,7 +166,7 @@ public static class ArrayHelper
         => SortGenericImpl(keys, comparer, itemsArrays, Reverse);
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of items arrays with unspecified types using the default comparer.
-    /// Note that this method is significantly slower than the generic version.
+    /// Note that this method is significantly slower than the generic version, but does allow for sorting arbitrarily typed arrays.
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>

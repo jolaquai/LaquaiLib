@@ -99,7 +99,7 @@ public sealed class CommandInterface : IShellInterface
                 {
                     await Task.Delay(100).ConfigureAwait(false);
                 }
-            });
+            }).ConfigureAwait(false);
             await Process.StandardInput.WriteLineAsync(input).ConfigureAwait(false);
             await Process.StandardInput.FlushAsync().ConfigureAwait(false);
 

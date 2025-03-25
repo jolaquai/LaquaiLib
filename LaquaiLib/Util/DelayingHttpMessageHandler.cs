@@ -115,10 +115,10 @@ public class DelayingHttpMessageHandler : DelegatingHandler
     {
         if (cancellationToken.CanBeCanceled)
         {
-            await _semaphore.WaitAsync(cancellationToken);
+            await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
             {
-                await WaitAsync(cancellationToken);
+                await WaitAsync(cancellationToken).ConfigureAwait(false);
                 cancellationToken.ThrowIfCancellationRequested();
                 SetNextAllowedTime(cancellationToken);
             }
@@ -133,7 +133,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
             {
                 try
                 {
-                    await WaitAsync(cancellationToken);
+                    await WaitAsync(cancellationToken).ConfigureAwait(false);
                     cancellationToken.ThrowIfCancellationRequested();
                     SetNextAllowedTime(cancellationToken);
                 }
@@ -144,7 +144,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
             }
         }
 
-        return await base.SendAsync(request, cancellationToken);
+        return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

@@ -301,7 +301,7 @@ public static partial class IEnumerableExtensions
             {
                 for (var i = 0; i < array.Length; i++)
                 {
-                    await func(array[i]);
+                    await func(array[i]).ConfigureAwait(false);
                 }
                 return;
             }
@@ -309,7 +309,7 @@ public static partial class IEnumerableExtensions
             {
                 for (var i = 0; i < list.Count; i++)
                 {
-                    await func(list[i]);
+                    await func(list[i]).ConfigureAwait(false);
                 }
                 return;
             }
@@ -317,7 +317,7 @@ public static partial class IEnumerableExtensions
             {
                 for (var i = 0; i < list.Count; i++)
                 {
-                    await func(list[i]);
+                    await func(list[i]).ConfigureAwait(false);
                 }
                 return;
             }
@@ -325,7 +325,7 @@ public static partial class IEnumerableExtensions
             {
                 foreach (var element in source)
                 {
-                    await func(element);
+                    await func(element).ConfigureAwait(false);
                 }
                 return;
             }
@@ -345,7 +345,7 @@ public static partial class IEnumerableExtensions
             {
                 for (var i = 0; i < array.Length; i++)
                 {
-                    await func(array[i], i);
+                    await func(array[i], i).ConfigureAwait(false);
                 }
                 return;
             }
@@ -353,7 +353,7 @@ public static partial class IEnumerableExtensions
             {
                 for (var i = 0; i < list.Count; i++)
                 {
-                    await func(list[i], i);
+                    await func(list[i], i).ConfigureAwait(false);
                 }
                 return;
             }
@@ -361,7 +361,7 @@ public static partial class IEnumerableExtensions
             {
                 for (var i = 0; i < list.Count; i++)
                 {
-                    await func(list[i], i);
+                    await func(list[i], i).ConfigureAwait(false);
                 }
                 return;
             }
@@ -370,7 +370,7 @@ public static partial class IEnumerableExtensions
                 var i = 0;
                 foreach (var element in source)
                 {
-                    await func(element, i++);
+                    await func(element, i++).ConfigureAwait(false);
                 }
                 return;
             }

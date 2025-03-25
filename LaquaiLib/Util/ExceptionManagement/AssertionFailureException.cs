@@ -14,11 +14,8 @@ public class AssertionFailureException<T> : Exception
     private static string MessageFromCaller
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => new StackFrame(1).GetMethod() is MethodBase method ? $"Assertion failed in {method.Name}." : _defaultMessage;
+        get => field ??= new StackFrame(1).GetMethod() is MethodBase method ? $"Assertion failed in {method.Name}." : _defaultMessage;
     }
-
-    /// <inheritdoc cref="Exception.InnerException"/>
-    public new Exception InnerException { get; }
 
     /// <summary>
     /// The value that caused an assertion to fail.
@@ -29,23 +26,11 @@ public class AssertionFailureException<T> : Exception
     /// Initializes a new <see cref="AssertionFailureException{T}"/> with the value that failed an assertion and a message.
     /// </summary>
     /// <param name="value">The value that caused an assertion to fail.</param>
-    /// <param name="message">A message that described the assertion failure.</param>
-    public AssertionFailureException(T value, [CallerArgumentExpression(nameof(value))] string message = null)
-        : base(string.IsNullOrWhiteSpace(message) ? MessageFromCaller : message)
-    {
-        Value = value;
-    }
-    /// <summary>
-    /// Initializes a new <see cref="AssertionFailureException{T}"/> with the value that failed an assertion and an inner exception.
-    /// </summary>
-    /// <param name="value">The value that caused an assertion to fail.</param>
     /// <param name="innerException">The exception that is the cause of the current exception.</param>
     /// <param name="message">A message that described the assertion failure.</param>
-    public AssertionFailureException(T value, Exception innerException, [CallerArgumentExpression(nameof(value))] string message = null) : this(value, message)
+    public AssertionFailureException(T value, Exception innerException = null, [CallerArgumentExpression(nameof(value))] string message = null)
+        : base(string.IsNullOrWhiteSpace(message) ? MessageFromCaller : message, innerException)
     {
-        if (innerException is not null)
-        {
-            InnerException = innerException;
-        }
+        Value = value;
     }
 }

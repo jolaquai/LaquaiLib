@@ -249,12 +249,14 @@ public static partial class TypeExtensions
     {
         var ret = (Type.GetTypeCode(first), Type.GetTypeCode(second));
 
-        ThrowHelper.ThrowOnFirstOffender<ArgumentNullException, TypeCode>(
-            static _ => ["Type must be a numeric primitive type."],
-            static item => item is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String,
-            ret.Item1,
-            ret.Item2
-        );
+        if (ret.Item1 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
+        {
+            throw new ArgumentException("Type must be a numeric primitive type.", nameof(first));
+        }
+        if (ret.Item2 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
+        {
+            throw new ArgumentException("Type must be a numeric primitive type.", nameof(second));
+        }
 
         return ret;
     }

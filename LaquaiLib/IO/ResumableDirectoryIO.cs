@@ -123,7 +123,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             {
                 try
                 {
-                    copyState = await LoadStateAsync();
+                    copyState = await LoadStateAsync().ConfigureAwait(false);
 
                     // Verify the saved state matches the current operation
                     if (copyState.SourcePath == sourcePath && copyState.DestinationPath == destinationPath)
@@ -148,7 +148,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             // If not resuming, scan the directory and build the file list
             if (!isResume)
             {
-                await ScanDirectoryAsync(copyState, sourcePath, preserveTimestamps, cancellationToken);
+                await ScanDirectoryAsync(copyState, sourcePath, preserveTimestamps, cancellationToken).ConfigureAwait(false);
             }
 
             // Copy progress tracking
@@ -191,7 +191,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
                                 fileState.RelativePath
                             ));
                         }),
-                        cancellationToken);
+                        cancellationToken).ConfigureAwait(false);
 
                     if (fileSuccess)
                     {
@@ -205,7 +205,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
 
                         // Update the state periodically
                         copyState.LastUpdated = DateTime.UtcNow;
-                        await SaveStateAsync(copyState);
+                        await SaveStateAsync(copyState).ConfigureAwait(false);
 
                         // Report overall progress
                         progress?.Report((
@@ -220,7 +220,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
                     {
                         // File copy failed or was canceled
                         // We've already updated the file state, so just save and exit
-                        await SaveStateAsync(copyState);
+                        await SaveStateAsync(copyState).ConfigureAwait(false);
                         return false;
                     }
                 }
@@ -243,14 +243,14 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             {
                 // Save state on cancellation
                 copyState.LastUpdated = DateTime.UtcNow;
-                await SaveStateAsync(copyState);
+                await SaveStateAsync(copyState).ConfigureAwait(false);
                 return false;
             }
             catch (Exception)
             {
                 // Save state on other errors
                 copyState.LastUpdated = DateTime.UtcNow;
-                await SaveStateAsync(copyState);
+                await SaveStateAsync(copyState).ConfigureAwait(false);
                 throw;
             }
         }
@@ -286,9 +286,9 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             int bytesRead;
 
             // Copy the file in chunks
-            while ((bytesRead = await sourceStream.ReadAsync(buffer, cancellationToken)) > 0)
+            while ((bytesRead = await sourceStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false)) > 0)
             {
-                await destStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
+                await destStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
                 fileState.BytesCopied += bytesRead;
 
                 // Report progress
@@ -308,7 +308,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             // Verify file hash if requested
             if (verifyFiles && !string.IsNullOrEmpty(fileState.FileHash))
             {
-                var hash = await ComputeFileHashAsync(destFilePath, cancellationToken);
+                var hash = await ComputeFileHashAsync(destFilePath, cancellationToken).ConfigureAwait(false);
                 if (hash != fileState.FileHash)
                 {
                     throw new IOException($"File verification failed: Hash mismatch for '{destFilePath}'.");
@@ -366,7 +366,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             // Compute hash for verification if requested
             if (computeHashes)
             {
-                fileState.FileHash = await ComputeFileHashAsync(filePath, cancellationToken);
+                fileState.FileHash = await ComputeFileHashAsync(filePath, cancellationToken).ConfigureAwait(false);
             }
 
             copyState.PendingFiles.Add(fileState);
@@ -375,7 +375,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
     private static async Task<string> ComputeFileHashAsync(string filePath, CancellationToken cancellationToken)
     {
         using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize, true);
-        var hashBytes = await SHA256.HashDataAsync(stream, cancellationToken);
+        var hashBytes = await SHA256.HashDataAsync(stream, cancellationToken).ConfigureAwait(false);
         return Convert.ToHexStringLower(hashBytes);
     }
     private static DirectoryCopyState CreateNewCopyState(string sourcePath, string destinationPath)
@@ -392,11 +392,11 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
     private async Task SaveStateAsync(DirectoryCopyState state)
     {
         var json = JsonSerializer.Serialize(state, ResumableDirectoryCopySerializerContext.Default.DirectoryCopyState);
-        await File.WriteAllTextAsync(_stateFilePath, json);
+        await File.WriteAllTextAsync(_stateFilePath, json).ConfigureAwait(false);
     }
     private async Task<DirectoryCopyState> LoadStateAsync()
     {
-        var json = await File.ReadAllTextAsync(_stateFilePath);
+        var json = await File.ReadAllTextAsync(_stateFilePath).ConfigureAwait(false);
         return JsonSerializer.Deserialize(json, ResumableDirectoryCopySerializerContext.Default.DirectoryCopyState);
     }
 
@@ -412,7 +412,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             // wait until running becomes 0, longer on each iteration
             for (var i = 10; running == 1; i *= 2)
             {
-                await Task.Delay(i);
+                await Task.Delay(i).ConfigureAwait(false);
             }
         }
     }

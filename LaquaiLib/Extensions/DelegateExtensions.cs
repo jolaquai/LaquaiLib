@@ -33,6 +33,5 @@ public static class DelegateExtensions
     /// <remarks>
     /// If not all elements of the invocation list can be cast to <typeparamref name="TDelegate"/>, consumers will run into non-sensical exceptions when attempting to call the delegates.
     /// </remarks>
-    public static TDelegate[] GetInvocationList<TDelegate>(this Delegate del)
-        where TDelegate : Delegate => AnyExtensions.As<TDelegate[]>(del.GetInvocationList());
+    public static TDelegate[] GetInvocationList<TDelegate>(this Delegate del) where TDelegate : Delegate => AnyExtensions.As<TDelegate[]>(del.GetInvocationList());
 }

@@ -12,7 +12,7 @@ public static class Assert
     private static T Throw<T>(T value, string message = null)
     {
         Debugger.Break();
-        throw new AssertionFailureException<T>(value, message);
+        throw new AssertionFailureException<T>(value, message: message);
     }
 
     /// <summary>

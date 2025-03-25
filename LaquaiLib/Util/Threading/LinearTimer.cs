@@ -227,11 +227,11 @@ public class AsyncTimer : IDisposable
         {
             while (invoke is not null)
             {
-                if (timer is not null && await timer.WaitForNextTickAsync())
+                if (timer is not null && await timer.WaitForNextTickAsync().ConfigureAwait(false))
                 {
                     // No need to cast
                     var callbacks = Callback.GetInvocationList<Func<object, Task>>();
-                    await Task.WhenAll(callbacks.Select(callback => callback(State)));
+                    await Task.WhenAll(callbacks.Select(callback => callback(State))).ConfigureAwait(false);
                 }
             }
         });

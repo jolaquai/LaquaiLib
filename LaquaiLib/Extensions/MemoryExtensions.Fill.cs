@@ -114,7 +114,7 @@ public partial class MemoryExtensions
     {
         for (var i = 0; i < memory.Length; i++)
         {
-            var t = await factory();
+            var t = await factory().ConfigureAwait(false);
             memory.Span[i] = t;
         }
     }
@@ -130,7 +130,7 @@ public partial class MemoryExtensions
         T last = default;
         for (var i = 0; i < memory.Length; i++)
         {
-            var t = await factory(last);
+            var t = await factory(last).ConfigureAwait(false);
             last = memory.Span[i] = t;
         }
     }
@@ -145,7 +145,7 @@ public partial class MemoryExtensions
     {
         for (var i = 0; i < memory.Length; i++)
         {
-            var t = await factory(i);
+            var t = await factory(i).ConfigureAwait(false);
             memory.Span[i] = t;
         }
     }
@@ -161,7 +161,7 @@ public partial class MemoryExtensions
         T last = default;
         for (var i = 0; i < memory.Length; i++)
         {
-            var t = await factory(i, last);
+            var t = await factory(i, last).ConfigureAwait(false);
             last = memory.Span[i] = t;
         }
     }

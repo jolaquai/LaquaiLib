@@ -81,7 +81,7 @@ public partial class ArrayExtensions
     {
         for (var i = 0; i < array.Length; i++)
         {
-            array[i] = await factory();
+            array[i] = await factory().ConfigureAwait(false);
         }
     }
     /// <summary>
@@ -309,7 +309,7 @@ public partial class ArrayExtensions
                 indices[dimension] = i;
                 if (dimension == array.Rank - 1)
                 {
-                    array.SetValue(await factory(), indices);
+                    array.SetValue(await factory().ConfigureAwait(false), indices);
                 }
                 else
                 {

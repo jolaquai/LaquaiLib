@@ -98,7 +98,7 @@ public sealed class PowerShellInterface : IShellInterface
                 {
                     await Task.Delay(100).ConfigureAwait(false);
                 }
-            });
+            }).ConfigureAwait(false);
 
             if (input.Contains(Environment.NewLine))
             {

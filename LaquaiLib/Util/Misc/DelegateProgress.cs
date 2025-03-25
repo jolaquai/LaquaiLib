@@ -19,11 +19,11 @@ public static class DelegateProgress
 /// </summary>
 /// <typeparam name="T">The type of progress value.</typeparam>
 /// <param name="action">The delegate to proxy <see cref="Report(T)"/> invocations to.</param>
-public class DelegateProgress<T>(Action<T> action) : IProgress<T>
+public struct DelegateProgress<T>(Action<T> action) : IProgress<T>
 {
     /// <summary>
     /// Reports the specified <paramref name="progress"/> value.
     /// </summary>
     /// <param name="progress">The value to report.</param>
-    public void Report(T progress) => action(progress);
+    public readonly void Report(T progress) => action(progress);
 }

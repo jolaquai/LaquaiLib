@@ -73,7 +73,7 @@ public static partial class FileSystemHelper
         var partitions = partitioner.GetPartitions(maxDegreeOfParallelism);
 
         var filesCompleted = 0;
-        return Task.WhenAll(partitions.Select(p => Task.Run(async () =>
+        return Task.WhenAll(partitions.Select((Func<IEnumerator<string>, Task>)(p => Task.Run((Func<Task>)(async () =>
         {
             // Local copy so the reference doesn't change from under us
             var pathEnumerator = p;
@@ -88,21 +88,25 @@ public static partial class FileSystemHelper
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
-                await using (var sourceFs = File.OpenRead(fileSrc))
-                await using (var destFs = File.Create(fileDest))
                 {
-                    const int baseCutoff = 1 << 18;
-                    int buffer;
-                    if (sourceFs.Length < baseCutoff)
+                    var sourceFs = File.OpenRead(fileSrc);
+                    var destFs = File.Create(fileDest);
+                    await using (sourceFs.ConfigureAwait(false))
+                    await using (destFs.ConfigureAwait(false))
                     {
-                        buffer = (int)sourceFs.Length;
-                    }
-                    else
-                    {
-                        buffer = bufferSize > 0 ? bufferSize : baseCutoff;
-                    }
+                        const int baseCutoff = 1 << 18;
+                        int buffer;
+                        if (sourceFs.Length < baseCutoff)
+                        {
+                            buffer = (int)sourceFs.Length;
+                        }
+                        else
+                        {
+                            buffer = bufferSize > 0 ? bufferSize : baseCutoff;
+                        }
 
-                    await sourceFs.CopyToAsync(destFs, buffer, cancellationToken);
+                        await sourceFs.CopyToAsync(destFs, buffer, cancellationToken).ConfigureAwait(false);
+                    }
                 }
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -128,7 +132,7 @@ public static partial class FileSystemHelper
                 var prog = Interlocked.Increment(ref filesCompleted);
                 progressSink?.Report((prog, partitioner.TotalCount));
             }
-        }, cancellationToken))).ContinueWith(_ =>
+        }), cancellationToken)))).ContinueWith(_ =>
         {
             if (!copy)
             {
@@ -211,19 +215,23 @@ public static partial class FileSystemHelper
                 cancellationToken.ThrowIfCancellationRequested();
                 // Lots of stream overhead + compression and decompression for every file, but (ideally) less data to move around
                 intermediary.SetLength(0);
-                await using (var sourceFs = File.OpenRead(fileSrc))
-                await using (var destFs = File.Create(fileDest))
+                var sourceFs = File.OpenRead(fileSrc);
+                var destFs = File.Create(fileDest);
+                await using (sourceFs.ConfigureAwait(false))
+                await using (destFs.ConfigureAwait(false))
                 {
-                    await using (var compStream = new DeflateStream(intermediary, compressionLevel, true))
+                    var deflateStream = new DeflateStream(intermediary, compressionLevel, true);
+                    await using (deflateStream.ConfigureAwait(false))
                     {
-                        await sourceFs.CopyToAsync(compStream, cancellationToken);
+                        await sourceFs.CopyToAsync(deflateStream, cancellationToken).ConfigureAwait(false);
                     }
                     intermediary.Position = 0;
-                    await using (var decompStream = new DeflateStream(intermediary, CompressionMode.Decompress))
+                    deflateStream = new DeflateStream(intermediary, CompressionMode.Decompress);
+                    await using (deflateStream.ConfigureAwait(false))
                     {
-                        await decompStream.CopyToAsync(destFs, cancellationToken);
+                        await deflateStream.CopyToAsync(destFs, cancellationToken).ConfigureAwait(false);
                     }
-                    await sourceFs.CopyToAsync(destFs, cancellationToken);
+                    await sourceFs.CopyToAsync(destFs, cancellationToken).ConfigureAwait(false);
                 }
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -446,7 +454,7 @@ public static partial class FileSystemHelper
             var fileStream = File.OpenRead(path);
             await using (fileStream.ConfigureAwait(false))
             {
-                await fileStream.CopyToAsync(ms);
+                await fileStream.CopyToAsync(ms).ConfigureAwait(false);
             }
         }
         File.Delete(path);
@@ -478,7 +486,7 @@ public static partial class FileSystemHelper
         var fileStream = File.OpenRead(path);
         await using (fileStream.ConfigureAwait(false))
         {
-            await fileStream.CopyToAsync(stream);
+            await fileStream.CopyToAsync(stream).ConfigureAwait(false);
         }
         File.Delete(path);
     }

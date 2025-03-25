@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Diagnostics;
 using System.Numerics;
 
 namespace LaquaiLib.Util;
@@ -35,32 +37,29 @@ public static class Miscellaneous
     /// <returns>An <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> as described.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
     public static IEnumerable<T> Range<T>(T start, T stop, T step) where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>
+         => new RangeIterable<T>(start, stop, step);
+}
+
+[method: StackTraceHidden]
+internal class RangeIterable<T>(T start, T stop, T step) : IEnumerable<T> where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>
+{
+    private readonly T _start = start;
+    private readonly T _stop = stop;
+    private readonly T _step = step;
+
+    [StackTraceHidden]
+    public RangeIterable(T stop, T step) : this(default, stop, step) { }
+    [StackTraceHidden]
+    public RangeIterable(T stop) : this(default, stop, T.One) { }
+
+    public IEnumerator<T> GetEnumerator()
     {
-        var zero = default(T);
-        if (step == zero)
+        var current = _start;
+        yield return current;
+        while (current + _step is var next && next <= _stop)
         {
-            throw new ArgumentException($"{nameof(step)} cannot be 0.", nameof(step));
-        }
-
-        return Iterator();
-
-        IEnumerable<T> Iterator()
-        {
-            if (start == stop)
-            {
-                yield return start;
-                yield break;
-            }
-            if ((start > stop && step > zero) || (start < stop && step < zero))
-            {
-                step = -step;
-            }
-
-            var current = start - step;
-            while (step > zero ? current + step < stop : current + step >= stop)
-            {
-                yield return current += step;
-            }
+            yield return current = next;
         }
     }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

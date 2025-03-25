@@ -78,7 +78,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
 
             var sourceInfo = new FileInfo(sourcePath);
             var totalBytes = sourceInfo.Length;
-            var copyState = new CopyState
+            var copyState = new CopyState()
             {
                 SourcePath = sourcePath,
                 DestinationPath = destinationPath,
@@ -91,7 +91,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
             {
                 try
                 {
-                    var savedState = await LoadStateAsync();
+                    var savedState = await LoadStateAsync().ConfigureAwait(false);
 
                     // Verify the saved state matches the current operation
                     if (savedState.SourcePath == sourcePath && savedState.DestinationPath == destinationPath)
@@ -107,67 +107,70 @@ public partial class ResumableFileIO(string stateFilePath = null)
 
             try
             {
-                using var sourceStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize, FileOptions.SequentialScan);
-                using var destinationStream = new FileStream(destinationPath, copyState.BytesCopied > 0 ? FileMode.OpenOrCreate : FileMode.Create, FileAccess.Write, FileShare.None, BufferSize, FileOptions.SequentialScan);
-
-                // Set position for resume
-                if (copyState.BytesCopied > 0)
+                var sourceStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize, FileOptions.SequentialScan);
+                var destinationStream = new FileStream(destinationPath, copyState.BytesCopied > 0 ? FileMode.OpenOrCreate : FileMode.Create, FileAccess.Write, FileShare.None, BufferSize, FileOptions.SequentialScan);
+                await using (sourceStream.ConfigureAwait(false))
+                await using (destinationStream.ConfigureAwait(false))
                 {
-                    sourceStream.Position = copyState.BytesCopied;
-                    destinationStream.Position = copyState.BytesCopied;
-                }
-
-                var buffer = new byte[BufferSize];
-                int bytesRead;
-
-                // Copy the file in chunks
-                while ((bytesRead = await sourceStream.ReadAsync(buffer, cancellationToken)) > 0)
-                {
-                    await destinationStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-
-                    copyState.BytesCopied += bytesRead;
-                    copyState.LastUpdated = DateTime.UtcNow;
-
-                    // Update state file periodically (every ~5MB)
-                    if (copyState.BytesCopied % (BufferSize * 64) < BufferSize)
+                    // Set position for resume
+                    if (copyState.BytesCopied > 0)
                     {
-                        await SaveStateAsync(copyState);
+                        sourceStream.Position = copyState.BytesCopied;
+                        destinationStream.Position = copyState.BytesCopied;
                     }
 
-                    // Report progress
-                    progress?.Report((copyState.BytesCopied, totalBytes));
+                    var buffer = new byte[BufferSize];
+                    int bytesRead;
 
-                    // Check for cancellation
-                    cancellationToken.ThrowIfCancellationRequested();
-                    cts.Token.ThrowIfCancellationRequested();
+                    // Copy the file in chunks
+                    while ((bytesRead = await sourceStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false)) > 0)
+                    {
+                        await destinationStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
+
+                        copyState.BytesCopied += bytesRead;
+                        copyState.LastUpdated = DateTime.UtcNow;
+
+                        // Update state file periodically (every ~5MB)
+                        if (copyState.BytesCopied % (BufferSize * 64) < BufferSize)
+                        {
+                            await SaveStateAsync(copyState).ConfigureAwait(false);
+                        }
+
+                        // Report progress
+                        progress?.Report((copyState.BytesCopied, totalBytes));
+
+                        // Check for cancellation
+                        cancellationToken.ThrowIfCancellationRequested();
+                        cts.Token.ThrowIfCancellationRequested();
+                    }
+
+                    if (!copy)
+                    {
+                        // Delete source file on successful move
+                        File.Delete(sourcePath);
+                    }
+
+                    // Ensure final size matches
+                    if (copyState.BytesCopied != totalBytes)
+                    {
+                        throw new IOException($"Copy failed: Expected {totalBytes} bytes but copied {copyState.BytesCopied} bytes.");
+                    }
+
+                    // Clean up state file on successful completion
+                    File.Delete(_stateFilePath);
+                    return true;
                 }
-
-                if (!copy)
-                {
-                    // Delete source file on successful move
-                    File.Delete(sourcePath);
-                }
-
-                // Ensure final size matches
-                if (copyState.BytesCopied != totalBytes)
-                {
-                    throw new IOException($"Copy failed: Expected {totalBytes} bytes but copied {copyState.BytesCopied} bytes.");
-                }
-
-                // Clean up state file on successful completion
-                File.Delete(_stateFilePath);
-                return true;
             }
             catch (OperationCanceledException)
             {
                 // Save state on cancellation
-                await SaveStateAsync(copyState);
+                await SaveStateAsync(copyState).ConfigureAwait(false);
                 return false;
             }
             catch
             {
                 // Save state on other errors
-                await SaveStateAsync(copyState);
+                await SaveStateAsync(copyState).ConfigureAwait(false);
                 throw;
             }
         }
@@ -180,11 +183,11 @@ public partial class ResumableFileIO(string stateFilePath = null)
     private async Task SaveStateAsync(CopyState state)
     {
         var json = JsonSerializer.Serialize(state, ResumableFileCopySerializerContext.Default.CopyState);
-        await File.WriteAllTextAsync(_stateFilePath, json);
+        await File.WriteAllTextAsync(_stateFilePath, json).ConfigureAwait(false);
     }
     private async Task<CopyState> LoadStateAsync()
     {
-        var json = await File.ReadAllTextAsync(_stateFilePath);
+        var json = await File.ReadAllTextAsync(_stateFilePath).ConfigureAwait(false);
         return JsonSerializer.Deserialize(json, ResumableFileCopySerializerContext.Default.CopyState);
     }
 
@@ -200,7 +203,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
             // wait until running becomes 0, longer on each iteration
             for (var i = 10; running == 1; i *= 2)
             {
-                await Task.Delay(i);
+                await Task.Delay(i).ConfigureAwait(false);
             }
         }
     }

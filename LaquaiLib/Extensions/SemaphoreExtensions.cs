@@ -288,7 +288,7 @@ public static class SemaphoreExtensions
     /// <returns>A <see cref="ValueTask{TResult}"/> that resolves to a <see cref="SemaphoreSlimEntry"/> that represents the entry into the <paramref name="semaphore"/>.</returns>
     public static async ValueTask<SemaphoreSlimEntry> WaitOneAsync(this SemaphoreSlim semaphore)
     {
-        await semaphore.WaitAsync();
+        await semaphore.WaitAsync().ConfigureAwait(false);
         return new SemaphoreSlimEntry(semaphore);
     }
     /// <summary>
@@ -301,7 +301,7 @@ public static class SemaphoreExtensions
     {
         for (var i = count - 1; i >= 0; i--)
         {
-            await semaphore.WaitAsync();
+            await semaphore.WaitAsync().ConfigureAwait(false);
         }
         return new SemaphoreSlimEntry(semaphore, count);
     }
@@ -314,7 +314,7 @@ public static class SemaphoreExtensions
     /// <returns>A <see cref="ValueTask{TResult}"/> that resolves to a <see cref="SemaphoreSlimEntry"/> that represents the entry into the <paramref name="semaphore"/> or <see langword="null"/> if the timeout expired.</returns>
     public static async ValueTask<SemaphoreSlimEntry> WaitOneAsync(this SemaphoreSlim semaphore, TimeSpan timeout)
     {
-        if (!await semaphore.WaitAsync(timeout))
+        if (!await semaphore.WaitAsync(timeout).ConfigureAwait(false))
         {
             throw new TimeoutException("The operation has timed out.");
         }
@@ -330,7 +330,7 @@ public static class SemaphoreExtensions
     /// <returns>A <see cref="ValueTask{TResult}"/> that resolves to a <see cref="SemaphoreSlimEntry"/> that represents the entry into the <paramref name="semaphore"/>.</returns>
     public static async ValueTask<SemaphoreSlimEntry> WaitOneAsync(this SemaphoreSlim semaphore, TimeSpan timeout, CancellationToken cancellationToken)
     {
-        if (!await semaphore.WaitAsync(timeout, cancellationToken))
+        if (!await semaphore.WaitAsync(timeout, cancellationToken).ConfigureAwait(false))
         {
             throw new TimeoutException("The operation has timed out.");
         }
@@ -344,7 +344,7 @@ public static class SemaphoreExtensions
     /// <returns>A <see cref="ValueTask{TResult}"/> that resolves to a <see cref="SemaphoreSlimEntry"/> that represents the entry into the <paramref name="semaphore"/>.</returns>
     public static async ValueTask<SemaphoreSlimEntry> WaitOneAsync(this SemaphoreSlim semaphore, CancellationToken cancellationToken)
     {
-        await semaphore.WaitAsync(cancellationToken);
+        await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         return new SemaphoreSlimEntry(semaphore);
     }
     /// <summary>
@@ -356,7 +356,7 @@ public static class SemaphoreExtensions
     /// <returns>A <see cref="ValueTask{TResult}"/> that resolves to a <see cref="SemaphoreSlimEntry"/> that represents the entry into the <paramref name="semaphore"/> or <see langword="null"/> if the timeout expired.</returns>
     public static async ValueTask<SemaphoreSlimEntry?> TryWaitOneAsync(this SemaphoreSlim semaphore, TimeSpan timeout)
     {
-        if (!await semaphore.WaitAsync(timeout))
+        if (!await semaphore.WaitAsync(timeout).ConfigureAwait(false))
         {
             return null;
         }
@@ -374,7 +374,7 @@ public static class SemaphoreExtensions
     {
         try
         {
-            if (!await semaphore.WaitAsync(timeout, cancellationToken))
+            if (!await semaphore.WaitAsync(timeout, cancellationToken).ConfigureAwait(false))
             {
                 return null;
             }
@@ -396,7 +396,7 @@ public static class SemaphoreExtensions
     {
         try
         {
-            await semaphore.WaitAsync(cancellationToken);
+            await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         }
         catch // Have to do this for the cancellation token, making this the most expensive overload
         {
