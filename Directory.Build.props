@@ -4,7 +4,7 @@
         <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
-        <CoreVersion>1.3.8</CoreVersion>
+        <CoreVersion>1.4.0</CoreVersion>
         <PackageVersion>$(CoreVersion)</PackageVersion>
         <FileVersion>$(CoreVersion)</FileVersion>
         <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
