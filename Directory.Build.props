@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <CoreFramework>net9.0</CoreFramework>
+        <CoreFramework>net10.0</CoreFramework>
         <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
