@@ -21,6 +21,10 @@
     <Project Path="TestCore\TestCore.csproj" />
     <Project Path="TestWpf\TestWpf.csproj" />
   </Folder>
+  <Project Path="LaquaiLib.Analyzers.Fixes/LaquaiLib.Analyzers.Fixes.csproj">
+    <Platform Solution="*|x64" Project="x64" />
+    <Platform Solution="*|x86" Project="x86" />
+  </Project>
   <Project Path="LaquaiLib.Analyzers/LaquaiLib.Analyzers.csproj" Id="85d7011f-6162-403a-b68b-5f4464f3adf6" />
   <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
   <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" />

@@ -77,18 +77,18 @@ public class FileSizePartitioner : Partitioner<string>
         var currentPartition = new List<string>();
         var currentSize = 0L;
 
-        foreach (var file in ordered)
+        foreach (var (k, v) in ordered)
         {
-            var fileSize = file.Value.Length;
+            var fileSize = v.Length;
             if (currentPartition.Count == 0 || currentSize + fileSize <= partitionSize)
             {
-                currentPartition.Add(file.Key);
+                currentPartition.Add(k);
                 currentSize += fileSize;
             }
             else
             {
                 partitions.Add(currentPartition.GetEnumerator());
-                currentPartition = [file.Key];
+                currentPartition = [k];
                 currentSize = fileSize;
             }
         }

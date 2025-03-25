@@ -30,6 +30,7 @@
     <ItemGroup>
       <Folder Include="Resources\" />
       <ProjectReference Include="..\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+      <ProjectReference Include="..\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
     </ItemGroup>
 
 </Project>

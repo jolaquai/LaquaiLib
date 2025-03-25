@@ -9,7 +9,7 @@ namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
 /// <code language="csharp">
 /// MyClass? myInstance = null;
 /// var myFullAccessDynamic = FullAccessDynamic.Create(typeof(MyClass), myInstance);
-/// // This incovation will happen no matter if the underlying object myInstance is null or not
+/// // This incovation will happen no matter if the underlying object myInstance is null or not, because the null propagation will check the FullAccessDynamic instance, rather than the underlying object
 /// myFullAccessDynamic?.MyMethod();
 /// // These ones will not, however, if MyProperty is null or MyNullReturningMethod returns null
 /// myFullAccessDynamic.MyProperty?.MyMethod();

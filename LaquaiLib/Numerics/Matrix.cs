@@ -107,7 +107,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             throw new ArgumentOutOfRangeException(nameof(data), "The data array must not be zero-sized.");
         }
 
-        _data = (T[,])data.Clone();
+        _data = System.Runtime.CompilerServices.Unsafe.As<T[,]>(data.Clone());
 
         Rows = _data.GetLength(0);
         Columns = _data.GetLength(1);
@@ -275,7 +275,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     /// Gets a copy of entire backing store of the matrix as a 2D array.
     /// </summary>
     /// <returns>A copy of the backing store of the matrix as a 2D array.</returns>
-    public T[,] ToArray() => (T[,])_data.Clone();
+    public T[,] ToArray() => System.Runtime.CompilerServices.Unsafe.As<T[,]>(_data.Clone());
 
     /// <summary>
     /// Gets the number of columns in the matrix.
@@ -540,7 +540,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     private T DetRowReduce()
     {
         var n = _data.GetLength(0);
-        var mat = (T[,])_data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(_data.Clone());
         var det = T.One;
 
         for (var i = 0; i < n; i++)
@@ -602,7 +602,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             throw new InvalidOperationException("The matrices must have the same size to multiply element-wise.");
         }
 
-        var mat = (T[,])left._data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(left._data.Clone());
         for (var i = 0; i < left.Rows; i++)
         {
             for (var j = 0; j < left.Columns; j++)
@@ -625,7 +625,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             throw new InvalidOperationException("The matrices must have the same size to multiply element-wise.");
         }
 
-        var mat = (T[,])left._data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(left._data.Clone());
         for (var i = 0; i < left.Rows; i++)
         {
             for (var j = 0; j < left.Columns; j++)
@@ -675,7 +675,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     /// <returns>The result of the multiplication.</returns>
     public static Matrix<T> operator *(Matrix<T> left, T right)
     {
-        var mat = (T[,])left._data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(left._data.Clone());
         for (var i = 0; i < left.Rows; i++)
         {
             for (var j = 0; j < left.Columns; j++)
@@ -718,7 +718,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     /// <returns>The result of the division.</returns>
     public static Matrix<T> operator /(Matrix<T> left, T right)
     {
-        var mat = (T[,])left._data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(left._data.Clone());
         for (var i = 0; i < left.Rows; i++)
         {
             for (var j = 0; j < left.Columns; j++)
@@ -771,7 +771,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
 
         var rowCount = Rows;
         var colCount = Columns;
-        var data = (T[,])_data.Clone();
+        var data = System.Runtime.CompilerServices.Unsafe.As<T[,]>(_data.Clone());
 
         // We perform a standard Gaussian elimination without pivot normalization.
         for (var pivotIndex = 0; pivotIndex < rowCount && pivotIndex < colCount; pivotIndex++)
@@ -832,7 +832,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         }
 
         // Work on a copy
-        var rref = (T[,])_data.Clone();
+        var rref = System.Runtime.CompilerServices.Unsafe.As<T[,]>(_data.Clone());
         var rowCount = Rows;
         var colCount = Columns;
 
@@ -934,7 +934,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
 
         var n = Rows;
         // Clone original data
-        var mat = (T[,])_data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(_data.Clone());
         // Create identity matrix
         var inv = Identity(n)._data;
 
@@ -1011,7 +1011,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(row1, Rows, nameof(row1));
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(row2, Rows, nameof(row2));
 
-        var mat = (T[,])_data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(_data.Clone());
         for (var c = 0; c < Columns; c++)
         {
             (mat[row1, c], mat[row2, c]) = (mat[row2, c], mat[row1, c]);
@@ -1031,7 +1031,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(column1, Columns, nameof(column1));
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(column2, Columns, nameof(column2));
 
-        var mat = (T[,])_data.Clone();
+        var mat = System.Runtime.CompilerServices.Unsafe.As<T[,]>(_data.Clone());
         for (var r = 0; r < Rows; r++)
         {
             (mat[r, column1], mat[r, column2]) = (mat[r, column2], mat[r, column1]);

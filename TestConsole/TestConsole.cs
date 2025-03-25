@@ -1,4 +1,6 @@
-﻿namespace TestConsole;
+﻿using System.Diagnostics;
+
+namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -24,7 +26,18 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-
+        var range = Enumerable.Range(0, 1000000);
+        var async = range.AsAsynchronous();
+        var prev = -1;
+        await foreach (var n in async.ConfigureAwait(false))
+        {
+            if (n != prev + 1)
+            {
+                Debug.Fail($"Expected {prev + 1}, got {n}");
+            }
+            prev = n;
+            n.cw();
+        }
 
         ;
     }

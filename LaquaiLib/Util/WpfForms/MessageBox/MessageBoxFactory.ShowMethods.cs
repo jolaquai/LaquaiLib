@@ -131,15 +131,11 @@ public partial class MessageBoxFactory
         modality ??= Modality;
         otherOptions ??= OtherOptions;
 
-        var tcs = new TaskCompletionSource<uint>();
-        var msgBoxThread = new Thread(state =>
+        return Task.Run(() =>
         {
             Thread.CurrentThread.Name = nameof(MessageBoxFactory) + '.' + nameof(ShowAsync);
-            var result = Interop.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | MessageBoxModality.Application | otherOptions.Value);
-            tcs.SetResult(result);
+            return Interop.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | MessageBoxModality.Application | otherOptions.Value);
         });
-        msgBoxThread.Start();
-        return tcs.Task;
     }
     /// <summary>
     /// Asynchronously shows a message box with the specified <paramref name="text"/>. All other properties will use the defaults configured in this <see cref="MessageBoxFactory"/>'s <see cref="Configuration"/> instance.
