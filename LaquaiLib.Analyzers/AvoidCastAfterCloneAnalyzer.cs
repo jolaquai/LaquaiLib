@@ -46,13 +46,23 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
         }
 
         // Look for parent cast expression
+        Location loc = null;
         if (invocation.Parent is CastExpressionSyntax castExpression)
         {
             // Report diagnostic for using cast after Clone()
             var locStart = castExpression.OpenParenToken.GetLocation().SourceSpan.Start;
             var locEnd = castExpression.CloseParenToken.GetLocation().SourceSpan.End;
-            var loc = Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(locStart, locEnd));
-
+            loc = Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(locStart, locEnd));
+        }
+        else if (invocation.Parent is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression))
+        {
+            // Report diagnostic for using as expression after Clone()
+            var locStart = binaryExpr.OperatorToken.GetLocation().SourceSpan.Start;
+            var locEnd = binaryExpr.Right.GetLocation().SourceSpan.End;
+            loc = Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(locStart, locEnd));
+        }
+        if (loc is not null)
+        {
             var diagnostic = Diagnostic.Create(Descriptor, loc);
             context.ReportDiagnostic(diagnostic);
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -29,34 +30,51 @@ public class AvoidCastAfterCloneAnalyzerFix : CodeFixProvider
         {
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: $"Change to Unsafe.As call",
+                    title: "Change to Unsafe.As",
                     createChangedDocument: c => ReplaceWithUnsafeAsAsync(context.Document, castExpression, c),
+                    equivalenceKey: "ChangeToUnsafeAs"),
+                diagnostic);
+        }
+        else if (node is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression))
+        {
+            context.RegisterCodeFix(
+                CodeAction.Create(
+                    title: "Change to Unsafe.As",
+                    createChangedDocument: c => ReplaceWithUnsafeAsAsync(context.Document, binaryExpr, c),
                     equivalenceKey: "ChangeToUnsafeAs"),
                 diagnostic);
         }
     }
     private async Task<Document> ReplaceWithUnsafeAsAsync(Document document, ExpressionSyntax expression, CancellationToken cancellationToken)
     {
-        var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
         var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
-        if (expression is not CastExpressionSyntax castExpression)
+        ExpressionSyntax replaceTarget = null;
+        TypeSyntax targetType = null;
+        if (expression is CastExpressionSyntax castExpression)
         {
-            return document;
+            replaceTarget = castExpression.Expression;
+            targetType = castExpression.Type;
+        }
+        else if (expression is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression)
+            && binaryExpr.OperatorToken.IsKind(SyntaxKind.AsKeyword) && binaryExpr.Right is TypeSyntax typeSyntax)
+        {
+            replaceTarget = binaryExpr.Left;
+            targetType = typeSyntax;
         }
 
-        var targetType = castExpression.Type;
-        var cloneExpression = castExpression.Expression;
+        if (replaceTarget is not null && targetType is not null)
+        {
+            // Create Unsafe.As<T>(obj) expression
+            var targetTypeSyntax = SyntaxFactory.GenericName(SyntaxFactory.Identifier("As"), SyntaxFactory.TypeArgumentList(SyntaxFactory.SingletonSeparatedList(targetType)));
+            var unsafeNamespace = SyntaxFactory.ParseName("System.Runtime.CompilerServices.Unsafe").WithAdditionalAnnotations(Simplifier.Annotation);
+            var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, unsafeNamespace, targetTypeSyntax);
+            var argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Argument(replaceTarget)));
+            var newExpression = SyntaxFactory.InvocationExpression(memberAccess, argumentList).WithAdditionalAnnotations(Formatter.Annotation);
 
-        // Create Unsafe.As<T>(obj) expression
-        var unsafeNamespace = SyntaxFactory.ParseName("System.Runtime.CompilerServices.Unsafe").WithAdditionalAnnotations(Simplifier.Annotation);
-        var genericName = SyntaxFactory.GenericName(SyntaxFactory.Identifier("As"), SyntaxFactory.TypeArgumentList(SyntaxFactory.SingletonSeparatedList(targetType)));
-        var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, unsafeNamespace, genericName);
-        var argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Argument(cloneExpression)));
-        var newExpression = SyntaxFactory.InvocationExpression(memberAccess, argumentList).WithAdditionalAnnotations(Formatter.Annotation);
+            return document.WithSyntaxRoot(root.ReplaceNode(expression, newExpression));
+        }
 
-        var newRoot = root.ReplaceNode(castExpression, newExpression);
-
-        return document.WithSyntaxRoot(newRoot);
+        return document;
     }
 }
