@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
+namespace LaquaiLib.Dynamic;
 
 /// <summary>
 /// Provides static factory methods for <see cref="SilentFullAccessDynamic{T}"/> instances.

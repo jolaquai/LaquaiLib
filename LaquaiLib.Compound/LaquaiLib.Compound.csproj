@@ -7,12 +7,12 @@
     <PackageDescription>Compounds all parts of LaquaiLib, adding references to all of them (except LaquaiLib.Windows).</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
-    <ProjectReference Include="..\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" />
-    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
-    <ProjectReference Include="..\LaquaiLib.DependencyInjection\LaquaiLib.DependencyInjection.csproj" />
-    <ProjectReference Include="..\LaquaiLib.EF\LaquaiLib.EF.csproj" />
-    <ProjectReference Include="..\LaquaiLib.Generators\LaquaiLib.Generators.csproj" />
-    <ProjectReference Include="..\LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib\LaquaiLib.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.DependencyInjection\LaquaiLib.DependencyInjection.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.EF\LaquaiLib.EF.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Generators\LaquaiLib.Generators.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
-    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Core\LaquaiLib.Core.csproj" />
   </ItemGroup>
 </Project>

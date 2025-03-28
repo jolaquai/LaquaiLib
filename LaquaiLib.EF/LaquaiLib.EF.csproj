@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
-    <ProjectReference Include="..\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib\LaquaiLib.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Core\LaquaiLib.Core.csproj" />
   </ItemGroup>
 </Project>

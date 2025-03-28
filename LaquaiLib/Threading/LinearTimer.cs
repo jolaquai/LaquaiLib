@@ -1,6 +1,6 @@
 ﻿using LaquaiLib.Extensions;
 
-namespace LaquaiLib.Util.Threading;
+namespace LaquaiLib.Threading;
 
 /// <summary>
 /// Implements a timer that periodically invokes a callback while guaranteeing that no two invocations of that callback overlap.

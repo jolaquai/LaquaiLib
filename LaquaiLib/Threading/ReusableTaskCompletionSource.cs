@@ -1,7 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using System.Threading.Tasks.Sources;
+﻿using System.Threading.Tasks.Sources;
 
-namespace LaquaiLib.Util.Threading;
+namespace LaquaiLib.Threading;
 
 /// <summary>
 /// Implements a custom equivalent to <see cref="TaskCompletionSource"/> that can be reused without further allocation.

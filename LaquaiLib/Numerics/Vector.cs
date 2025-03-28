@@ -50,7 +50,7 @@ public readonly struct Vector<T> : IEnumerable<T>,
             throw new ArgumentException("At least one value must be provided.", nameof(values));
         }
 
-        _coordinates = [.. values];
+        _coordinates = System.Runtime.CompilerServices.Unsafe.As<T[]>(values.Clone());
     }
     /// <summary>
     /// Creates a new <see cref="Vector{T}"/> using the specified values.
@@ -83,7 +83,7 @@ public readonly struct Vector<T> : IEnumerable<T>,
     /// Creates a copy of the <see cref="Vector{T}"/>'s coordinates and returns them as an array.
     /// </summary>
     /// <returns>A copy of the <see cref="Vector{T}"/>'s coordinates as an array.</returns>
-    public T[] ToArray() => [.. _coordinates];
+    public T[] ToArray() => System.Runtime.CompilerServices.Unsafe.As<T[]>(_coordinates.Clone());
 
     /// <summary>
     /// Adds two <see cref="Vector{T}"/>s.

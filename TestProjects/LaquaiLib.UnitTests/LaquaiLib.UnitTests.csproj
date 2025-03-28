@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(CoreFramework)-windows</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="xunit.v3" Version="2.0.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
+
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>

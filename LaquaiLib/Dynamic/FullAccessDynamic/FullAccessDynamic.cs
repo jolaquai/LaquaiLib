@@ -1,7 +1,7 @@
 using System.Dynamic;
 using System.Reflection;
 
-namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
+namespace LaquaiLib.Dynamic;
 
 /// <summary>
 /// Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level.

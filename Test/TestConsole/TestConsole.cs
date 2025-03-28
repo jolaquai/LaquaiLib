@@ -24,7 +24,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var t = new byte[1];
+
 
         ;
     }

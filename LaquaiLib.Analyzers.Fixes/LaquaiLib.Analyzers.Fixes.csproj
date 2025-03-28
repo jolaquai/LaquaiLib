@@ -2,6 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>False</IsPackable>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 
     <Title>LaquaiLib.Analyzers.Fixes</Title>
     <PackageDescription>Personal library. Contains fixes for analyzers.</PackageDescription>

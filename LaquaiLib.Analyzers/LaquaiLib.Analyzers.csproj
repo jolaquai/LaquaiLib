@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" PrivateAssets="all" IncludeAssets="all" />
 
-    <ProjectReference Include="..\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" />
   </ItemGroup>
   <PropertyGroup>
     <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
