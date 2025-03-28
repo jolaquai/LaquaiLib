@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
-    <ProjectReference Include="..\TestCore\TestCore.csproj" />
-    <ProjectReference Include="..\LaquaiLib\LaquaiLib.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
+    <ProjectReference Include="$(SolutionDir)LaquaiLib\LaquaiLib.csproj" />
   </ItemGroup>
 
 </Project>

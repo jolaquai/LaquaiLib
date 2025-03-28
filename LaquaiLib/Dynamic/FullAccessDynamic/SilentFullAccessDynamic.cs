@@ -1,7 +1,7 @@
 using System.Dynamic;
 using System.Reflection;
 
-namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
+namespace LaquaiLib.Dynamic;
 
 /// <summary>
 /// Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level. All binding failures and binding-related exceptions are swallowed and will result in <see langword="null"/> returns.
@@ -9,7 +9,7 @@ namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
 /// <code language="csharp">
 /// MyClass? myInstance = null;
 /// var mySilentFullAccessDynamic = SilentFullAccessDynamic.Create(typeof(MyClass), myInstance);
-/// // This incovation will happen no matter if the underlying object myInstance is null or not
+/// // This incovation will happen no matter if the underlying object myInstance is null or not, because the null propagation will check the SilentFullAccessDynamic instance, rather than the underlying object
 /// mySilentFullAccessDynamic?.MyMethod();
 /// // These ones will not, however, if MyProperty is null or MyNullReturningMethod returns null
 /// mySilentFullAccessDynamic.MyProperty?.MyMethod();

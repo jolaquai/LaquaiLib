@@ -73,7 +73,7 @@ public static partial class FileSystemHelper
         var partitions = partitioner.GetPartitions(maxDegreeOfParallelism);
 
         var filesCompleted = 0;
-        return Task.WhenAll(partitions.Select((Func<IEnumerator<string>, Task>)(p => Task.Run((Func<Task>)(async () =>
+        return Task.WhenAll(partitions.Select(p => Task.Run(async () =>
         {
             // Local copy so the reference doesn't change from under us
             var pathEnumerator = p;
@@ -132,7 +132,7 @@ public static partial class FileSystemHelper
                 var prog = Interlocked.Increment(ref filesCompleted);
                 progressSink?.Report((prog, partitioner.TotalCount));
             }
-        }), cancellationToken)))).ContinueWith(_ =>
+        }, cancellationToken))).ContinueWith(_ =>
         {
             if (!copy)
             {

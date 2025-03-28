@@ -1,6 +1,6 @@
 using System.Reflection;
 
-using LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
+using LaquaiLib.Dynamic;
 
 namespace LaquaiLib.Extensions;
 

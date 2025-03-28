@@ -1,10 +1,10 @@
 <Project>
     <PropertyGroup>
-        <CoreFramework>net9.0</CoreFramework>
+        <CoreFramework>net10.0</CoreFramework>
         <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
-        <CoreVersion>1.3.8</CoreVersion>
+        <CoreVersion>1.4.0</CoreVersion>
         <PackageVersion>$(CoreVersion)</PackageVersion>
         <FileVersion>$(CoreVersion)</FileVersion>
         <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
@@ -27,7 +27,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DebugType>embedded</DebugType>
+        <DebugType>full</DebugType>
         <DebugSymbols>True</DebugSymbols>
         <IncludeSymbols>True</IncludeSymbols>
         <IncludeSource>True</IncludeSource>
@@ -43,7 +43,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Analyzers' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="..\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
-      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Generators' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="..\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
+      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Analyzers' And '$(MSBuildProjectName)' != 'LaquaiLib.Analyzers.Fixes' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="$(SolutionDir)LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
+      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Generators' And '$(MSBuildProjectName)' != 'LaquaiLib.Analyzers.Fixes' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="$(SolutionDir)LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
+      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Generators' And '$(MSBuildProjectName)' != 'LaquaiLib.Analyzers.Fixes' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="$(SolutionDir)LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
+
+      <InternalsVisibleTo Include="LaquaiLib.UnitTests" />
     </ItemGroup>
 </Project>

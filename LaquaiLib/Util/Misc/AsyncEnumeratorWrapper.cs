@@ -8,7 +8,7 @@
 /// </summary>
 /// <typeparam name="T">The Type of elements the <see cref="IEnumerator{T}"/> yields.</typeparam>
 /// <param name="from">The <see cref="IEnumerator{T}"/> to wrap.</param>
-public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from) : IAsyncEnumerator<T>
+public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from, CancellationToken cancellationToken = default) : IAsyncEnumerator<T>
 {
     /// <summary>
     /// Gets an empty <see cref="AsyncEnumeratorWrapper{T}"/> (that is, an instance that yields no elements).
@@ -16,6 +16,7 @@ public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from) : IAsyncEn
     public static AsyncEnumeratorWrapper<T> Empty { get; } = new AsyncEnumeratorWrapper<T>([]);
 
     private readonly IEnumerator<T> _from = from;
+    private readonly CancellationToken _cancellationToken = cancellationToken;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AsyncEnumeratorWrapper{T}"/> <see langword="struct"/> using an <see cref="IEnumerable{T}"/>.
@@ -24,20 +25,17 @@ public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from) : IAsyncEn
     /// <remarks>
     /// <see cref="ParallelQuery{TSource}"/> is supported.
     /// </remarks>
-    public AsyncEnumeratorWrapper(IEnumerable<T> from) : this(from.GetEnumerator()) { }
+    public AsyncEnumeratorWrapper(IEnumerable<T> from, CancellationToken cancellationToken = default) : this(from.GetEnumerator(), cancellationToken) { }
 
     /// <inheritdoc/>
-    public T Current => _from.Current;
+    public readonly T Current => _from.Current;
     /// <inheritdoc/>
     public readonly ValueTask DisposeAsync()
     {
         _from.Dispose();
         return ValueTask.CompletedTask;
     }
+
     /// <inheritdoc/>
-    public async ValueTask<bool> MoveNextAsync()
-    {
-        var from = _from;
-        return await Task.Run(from.MoveNext).ConfigureAwait(false);
-    }
+    public readonly async ValueTask<bool> MoveNextAsync() => await Task.Run(_from.MoveNext, _cancellationToken).ConfigureAwait(false);
 }

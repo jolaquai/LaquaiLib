@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace LaquaiLib.Util.Threading;
+namespace LaquaiLib.Threading;
 
 #pragma warning disable CA1068 // CancellationToken parameters must come last
 

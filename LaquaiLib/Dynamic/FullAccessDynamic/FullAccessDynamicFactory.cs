@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace LaquaiLib.Util.DynamicExtensions.FullAccessDynamic;
+namespace LaquaiLib.Dynamic;
 
 /// <summary>
 /// Provides static factory methods for <see cref="FullAccessDynamic{T}"/> instances.
