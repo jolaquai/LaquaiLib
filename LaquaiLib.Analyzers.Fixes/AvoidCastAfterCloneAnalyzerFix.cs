@@ -30,18 +30,18 @@ public class AvoidCastAfterCloneAnalyzerFix : CodeFixProvider
         {
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: "Change to Unsafe.As",
+                    title: "Use Unsafe.As",
                     createChangedDocument: c => ReplaceWithUnsafeAsAsync(context.Document, castExpression, c),
-                    equivalenceKey: "ChangeToUnsafeAs"),
+                    equivalenceKey: "UseUnsafeAs"),
                 diagnostic);
         }
         else if (node is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression))
         {
             context.RegisterCodeFix(
                 CodeAction.Create(
-                    title: "Change to Unsafe.As",
+                    title: "Use Unsafe.As",
                     createChangedDocument: c => ReplaceWithUnsafeAsAsync(context.Document, binaryExpr, c),
-                    equivalenceKey: "ChangeToUnsafeAs"),
+                    equivalenceKey: "UseUnsafeAs"),
                 diagnostic);
         }
     }

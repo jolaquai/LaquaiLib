@@ -27,7 +27,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DebugType>embedded</DebugType>
+        <DebugType>full</DebugType>
         <DebugSymbols>True</DebugSymbols>
         <IncludeSymbols>True</IncludeSymbols>
         <IncludeSource>True</IncludeSource>

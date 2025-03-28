@@ -253,7 +253,7 @@ public static class AnyExtensions
                 else
                 {
                     var array = (Array)field.GetValue(source);
-                    var arrayClone = (Array)array.Clone();
+                    var arrayClone = System.Runtime.CompilerServices.Unsafe.As<Array>(array.Clone());
                     // Since we can't make assumptions about the rank or length(s) of the Array, we have to defensively iterate the entire thing
                     using (var read = array.GetReadOnlySpanProvider<object>())
                     using (var write = arrayClone.GetSpanProvider<object>())

@@ -240,7 +240,7 @@ public static partial class ArrayExtensions
         // No Array.Rank comparison since a 2x3 and a 3x2 array are compatible for copying as long as the total number of elements is the same, and since length is specified, this is guaranteed
         // As such, this is able to transpose and even linearize arrays into a T[]
 
-        var destCopy = (Array)destination.Clone();
+        var destCopy = System.Runtime.CompilerServices.Unsafe.As<Array>(destination.Clone());
 
         ISpanProvider<T> sourceSpanProv = null;
         ISpanProvider<T> destSpanProv = null;

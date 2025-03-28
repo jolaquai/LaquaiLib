@@ -15,6 +15,9 @@
     <IsPackable>True</IsPackable>
     <IncludeBuildOutput>True</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>True</SuppressDependenciesWhenPacking>
-    <DevelopmentDependency>True</DevelopmentDependency>
+    <DevelopmentDependency>True</DevelopmentDependency> 
   </PropertyGroup>
+  <ItemGroup>
+      <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="True" PackagePath="analyzers/dotnet/cs" />
+  </ItemGroup>
 </Project>
