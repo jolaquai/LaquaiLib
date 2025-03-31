@@ -464,7 +464,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <inheritdoc/>
     public IEnumerator<T> GetEnumerator()
     {
-        foreach (var item in new FilterableEnumerator<T>(items, Filter))
+        foreach (var item in new FilterableEnumerable<T>(items, Filter))
         {
             yield return item;
         }

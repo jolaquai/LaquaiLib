@@ -15,7 +15,7 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
     /// <param name="source">The <see cref="Array"/> to transform.</param>
     /// <returns>The reinterpreted reference to <paramref name="source"/>.</returns>
-    public static IEnumerable<T> AsEnumerable<T>(this Array source) => new MultiDimArrayEnumerator<T>(source);
+    public static IEnumerable<T> AsEnumerable<T>(this Array source) => new MultiDimArrayEnumerable<T>(source);
     /// <summary>
     /// Gets an <see cref="ISpanProvider{T}"/> for the specified <paramref name="source"/>.
     /// It must be disposed after use to release the array handle, otherwise this will result in a memory leak.
@@ -23,7 +23,7 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
     /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
     /// <returns>An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> over the array.</returns>
-    public static ISpanProvider<T> GetSpanProvider<T>(this Array source) => new MultiDimArrayEnumerator<T>(source);
+    public static ISpanProvider<T> GetSpanProvider<T>(this Array source) => new MultiDimArrayEnumerable<T>(source);
     /// <summary>
     /// Gets an <see cref="ISpanProvider{T}"/> for the specified <paramref name="source"/>.
     /// It must be disposed after use to release the array handle, otherwise this will result in a memory leak.
@@ -31,7 +31,7 @@ public static partial class ArrayExtensions
     /// <typeparam name="T">The Type of the items in the array.</typeparam>
     /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
     /// <returns>An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> over the array.</returns>
-    public static IReadOnlySpanProvider<T> GetReadOnlySpanProvider<T>(this Array source) => new MultiDimArrayEnumerator<T>(source);
+    public static IReadOnlySpanProvider<T> GetReadOnlySpanProvider<T>(this Array source) => new MultiDimArrayEnumerable<T>(source);
     /// <summary>
     /// Attempts to retrieve a <see cref="Span{T}"/> from the specified <paramref name="array"/>.
     /// </summary>
