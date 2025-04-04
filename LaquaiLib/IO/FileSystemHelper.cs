@@ -4,12 +4,13 @@ using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 
+using LaquaiLib.Core;
 using LaquaiLib.Extensions;
 using LaquaiLib.IO;
 using LaquaiLib.Unsafe;
 using LaquaiLib.Util.Misc;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.IO;
 
 #pragma warning disable CA1416
 
@@ -871,17 +872,63 @@ public static partial class FileSystemHelper
     }
 
     /// <summary>
+    /// Changes the name of the target of a path <see langword="string"/>. Specifying an extension in <paramref name="newName"/> causes the old extension to be replaced.
+    /// </summary>
+    /// <param name="path">The path to change the name of.</param>
+    /// <param name="newName">The new name to change the path to.</param>
+    /// <returns>A new path <see langword="string"/> with the new name.</returns>
+    public static string ChangeName(string path, string newName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentException.ThrowIfNullOrWhiteSpace(newName);
+
+        var span = path.AsSpan().TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar);
+        var lastDirSepExclusiveIndex = span.LastIndexOfAny(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + 1;
+        var extIndexWithTrailingPeriod = span.LastIndexOf('.');
+
+        var newNameHasExtension = newName.Contains('.');
+
+        if (extIndexWithTrailingPeriod > lastDirSepExclusiveIndex && !newNameHasExtension)
+        {
+            var beforeName = span[..lastDirSepExclusiveIndex];
+            var afterName = span[extIndexWithTrailingPeriod..];
+            return string.Create(beforeName.Length + newName.Length + afterName.Length, new ChangeNameState(beforeName, newName, afterName), (newSpan, state) =>
+            {
+                state.s1.CopyTo(newSpan);
+                state.s2.CopyTo(newSpan[state.s1.Length..(state.s1.Length + state.s2.Length)]);
+                state.s3.CopyTo(newSpan[^state.s3.Length..]);
+            });
+        }
+        else // Includes the case where there is no extension (extIndexWithTrailingPeriod == -1)
+        {
+            var beforeName = span[..lastDirSepExclusiveIndex];
+            return string.Create(beforeName.Length + newName.Length, new ChangeNameState(beforeName, newName), (newSpan, state) =>
+            {
+                state.s1.CopyTo(newSpan);
+                state.s2.CopyTo(newSpan[state.s1.Length..]);
+            });
+        }
+    }
+    // Encapsulates state for use in string.Create above
+    private readonly ref struct ChangeNameState(ReadOnlySpan<char> s1, ReadOnlySpan<char> s2, ReadOnlySpan<char> s3 = default)
+    {
+        public readonly ReadOnlySpan<char> s1 = s1;
+        public readonly ReadOnlySpan<char> s2 = s2;
+        public readonly ReadOnlySpan<char> s3 = s3;
+    }
+
+    /// <summary>
     /// Gets a <see cref="SearchValues{T}"/> instance enabling efficient searching for the <see langword="char"/>s in <see cref="ControlCharacters"/>.
     /// </summary>
-    public static SearchValues<char> ControlCharactersSearchValues { get; } = SearchValues.Create(ControlCharacters);
+    public static SearchValues<char> ControlCharactersSearchValues => field ??= SearchValues.Create(ControlCharacters);
     /// <summary>
     /// Gets a <see cref="SearchValues{T}"/> instance enabling efficient searching for the <see langword="char"/>s in <see cref="InvalidFileNameChars"/>.
     /// </summary>
-    public static SearchValues<char> InvalidFileNameCharsSearchValues { get; } = SearchValues.Create(InvalidFileNameChars);
+    public static SearchValues<char> InvalidFileNameCharsSearchValues => field ??= SearchValues.Create(InvalidFileNameChars);
     /// <summary>
     /// Gets a <see cref="SearchValues{T}"/> instance enabling efficient searching for the <see langword="char"/>s in <see cref="InvalidPathChars"/>.
     /// </summary>
-    public static SearchValues<char> InvalidPathCharsSearchValues { get; } = SearchValues.Create(InvalidPathChars);
+    public static SearchValues<char> InvalidPathCharsSearchValues => field ??= SearchValues.Create(InvalidPathChars);
     /// <summary>
     /// Gets all ASCII control characters (0-31) as a <see cref="ReadOnlySpan{T}"/>.
     /// </summary>
