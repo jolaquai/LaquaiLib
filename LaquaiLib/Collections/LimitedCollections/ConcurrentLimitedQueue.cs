@@ -15,6 +15,7 @@ namespace LaquaiLib.Collections.LimitedCollections;
 public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
 {
     private static ArgumentException NeedCapacityGreaterThanInitialItemsException => new ArgumentException($"The passed initial capacity may not be smaller than the number of items passed to create the {nameof(ConcurrentLimitedQueue<>)} with.");
+    private static ArgumentOutOfRangeException InitializationLengthMustNotBeZero => new ArgumentOutOfRangeException("The passed collection must not be empty.");
 
     // there is no way around a lock to prevent the data race between queue.Count and Capacity since both are freely mutable
     private readonly Lock _lock = new Lock();
@@ -30,16 +31,18 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         private set => capacity = value;
     }
 
+    #region .ctors
     /// <summary>
     /// Initializes a new empty <see cref="ConcurrentLimitedQueue{T}"/> with the given maximum <paramref name="capacity"/>.
     /// </summary>
     /// <param name="capacity">The maximum number of items this <see cref="ConcurrentLimitedQueue{T}"/> can hold before discarding the oldest value.</param>
-    private ConcurrentLimitedQueue(int capacity)
+    public ConcurrentLimitedQueue(int capacity)
     {
         ArgumentOutOfRangeException.ThrowIfZero(capacity);
         ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 
         Capacity = capacity;
+        queue = new ConcurrentQueue<T>();
     }
     /// <summary>
     /// Initializes a new <see cref="ConcurrentLimitedQueue{T}"/> with the items from the passed <paramref name="enumerable"/>. Its maximum capacity is set to <paramref name="enumerable"/>'s length.
@@ -47,15 +50,39 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     /// <param name="enumerable">The collection to copy the new <see cref="ConcurrentLimitedQueue{T}"/>'s items from.</param>
     public ConcurrentLimitedQueue(IEnumerable<T> enumerable)
     {
-        queue = new ConcurrentQueue<T>(enumerable);
-        ArgumentOutOfRangeException.ThrowIfZero(queue.Count, nameof(enumerable));
-        Capacity = queue.Count;
+        if (enumerable.TryGetNonEnumeratedCount(out var count))
+        {
+            if (count == 0)
+            {
+                throw InitializationLengthMustNotBeZero;
+            }
+            Capacity = count;
+            queue = new ConcurrentQueue<T>();
+            foreach (var item in enumerable)
+            {
+                queue.Enqueue(item);
+            }
+        }
+        else
+        {
+            var array = enumerable.ToArray();
+            if (array.Length == 0)
+            {
+                throw InitializationLengthMustNotBeZero;
+            }
+            Capacity = array.Length;
+            queue = new ConcurrentQueue<T>();
+            for (var i = 0; i < array.Length; i++)
+            {
+                queue.Enqueue(array[i]);
+            }
+        }
     }
     /// <summary>
     /// Initializes a new <see cref="ConcurrentLimitedQueue{T}"/> with the items from the passed <paramref name="items"/>. Its maximum capacity is set to <paramref name="items"/>'s length.
     /// </summary>
     /// <param name="items">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> to copy the new <see cref="ConcurrentLimitedQueue{T}"/>'s items from.</param>
-    public ConcurrentLimitedQueue(params T[] items) : this(items.Length, items) { }
+    public ConcurrentLimitedQueue(ReadOnlySpan<T> items) : this(items.Length, items) { }
     /// <summary>
     /// Initializes a new <see cref="ConcurrentLimitedQueue{T}"/> with the items from the passed <paramref name="enumerable"/>. Its maximum capacity is set to <paramref name="capacity"/>.
     /// </summary>
@@ -64,7 +91,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="enumerable"/>.</exception>
     public ConcurrentLimitedQueue(int capacity, IEnumerable<T> enumerable) : this(capacity)
     {
-        if (enumerable.TryGetNonEnumeratedCount(out var count) && capacity > count)
+        if (enumerable.TryGetNonEnumeratedCount(out var count) && count > capacity)
         {
             throw NeedCapacityGreaterThanInitialItemsException;
         }
@@ -81,19 +108,31 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         }
     }
     /// <summary>
-    /// Initializes a new <see cref="ConcurrentLimitedQueue{T}"/> with the items from the passed <paramref name="items"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+    /// Initializes a new <see cref="ConcurrentLimitedQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
     /// </summary>
-    /// <param name="items">The span to copy the new <see cref="ConcurrentLimitedQueue{T}"/>'s items from.</param>
+    /// <param name="span">The span to copy the new <see cref="ConcurrentLimitedQueue{T}"/>'s items from.</param>
     /// <param name="capacity">The maximum number of items this <see cref="ConcurrentLimitedQueue{T}"/> can hold before discarding the oldest value.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="items"/>.</exception>
-    public ConcurrentLimitedQueue(int capacity, params T[] items) : this(capacity)
+    /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="span"/>.</exception>
+    public ConcurrentLimitedQueue(int capacity, T[] span) : this(capacity, span.AsSpan()) { }
+    /// <summary>
+    /// Initializes a new <see cref="ConcurrentLimitedQueue{T}"/> with the items from the passed <paramref name="span"/>. Its maximum capacity is set to <paramref name="capacity"/>.
+    /// </summary>
+    /// <param name="span">The span to copy the new <see cref="ConcurrentLimitedQueue{T}"/>'s items from.</param>
+    /// <param name="capacity">The maximum number of items this <see cref="ConcurrentLimitedQueue{T}"/> can hold before discarding the oldest value.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="capacity"/> is smaller than the number of items in <paramref name="span"/>.</exception>
+    public ConcurrentLimitedQueue(int capacity, ReadOnlySpan<T> span) : this(capacity)
     {
-        if (Capacity < items.Length)
+        if (Capacity < span.Length)
         {
             throw NeedCapacityGreaterThanInitialItemsException;
         }
-        queue = new ConcurrentQueue<T>(items);
+        queue = new ConcurrentQueue<T>();
+        for (var i = 0; i < span.Length; i++)
+        {
+            queue.Enqueue(span[i]);
+        }
     }
+    #endregion
 
     #region Queue methods
     /// <summary>
@@ -105,7 +144,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         lock (_lock)
         {
             // Dequeue before Enqueue if the collection is at capacity to prevent resizing the backing store
-            if (Capacity <= queue.Count)
+            if (!queue.IsEmpty && queue.Count >= Capacity)
             {
                 Dequeue();
             }
@@ -122,7 +161,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     {
         lock (_lock)
         {
-            if (queue.Count <= Capacity)
+            if (queue.Count < Capacity)
             {
                 queue.Enqueue(item);
                 return true;
@@ -199,7 +238,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     /// <inheritdoc cref="Enqueue(T)"/>
     public void Add(T item) => Enqueue(item);
     /// <summary>
-    /// Dequeues all items from the <see cref="LimitedQueue{T}"/>.
+    /// Dequeues all items from the <see cref="ConcurrentLimitedQueue{T}"/>.
     /// </summary>
     public void Clear()
     {
@@ -212,10 +251,10 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         }
     }
     /// <summary>
-    /// Determines whether the <see cref="LimitedQueue{T}"/> contains a specific value.
+    /// Determines whether the <see cref="ConcurrentLimitedQueue{T}"/> contains a specific value.
     /// </summary>
-    /// <param name="item">The object to locate in the <see cref="LimitedQueue{T}"/>.</param>
-    /// <returns>The <see langword="true"/> if <paramref name="item"/> is found in the <see cref="LimitedQueue{T}"/>, otherwise <see langword="false"/>.</returns>
+    /// <param name="item">The object to locate in the <see cref="ConcurrentLimitedQueue{T}"/>.</param>
+    /// <returns>The <see langword="true"/> if <paramref name="item"/> is found in the <see cref="ConcurrentLimitedQueue{T}"/>, otherwise <see langword="false"/>.</returns>
     public bool Contains(T item)
     {
         lock (_lock)
@@ -237,9 +276,9 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         }
     }
     /// <summary>
-    /// Always returns <see langword="false"/>. Items cannot be directly removed from a <see cref="LimitedQueue{T}"/>;
+    /// Always returns <see langword="false"/>. Items cannot be directly removed from a <see cref="ConcurrentLimitedQueue{T}"/>;
     /// </summary>
-    /// <param name="item">The item to remove from the <see cref="LimitedQueue{T}"/>.</param>
+    /// <param name="item">The item to remove from the <see cref="ConcurrentLimitedQueue{T}"/>.</param>
     /// <returns><see langword="false"/> unconditionally.</returns>
     public bool Remove(T item) => false;
     #endregion

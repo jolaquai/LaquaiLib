@@ -1,4 +1,6 @@
-﻿namespace TestConsole;
+﻿using LaquaiLib.Collections.LimitedCollections;
+
+namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -23,8 +25,6 @@ public static partial class TestConsole
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
-
-
 
         ;
     }

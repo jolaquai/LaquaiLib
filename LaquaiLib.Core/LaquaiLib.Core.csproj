@@ -5,9 +5,5 @@
 
     <Title>LaquaiLib.Core</Title>
     <PackageDescription>Contains core functionality shared among the other parts of LaquaiLib.</PackageDescription>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 </PropertyGroup>
-  <ItemGroup>
-      <InternalsVisibleTo Include="LaquaiLib" />
-  </ItemGroup>
 </Project>
