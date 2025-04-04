@@ -1,7 +1,6 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 
-using LaquaiLib.Extensions;
 using LaquaiLib.Unsafe;
 
 using static LaquaiLib.Util.WpfForms.VirtualKey;

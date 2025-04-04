@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.IO;
 using LaquaiLib.Util;
 
 namespace LaquaiLib.Unsafe;

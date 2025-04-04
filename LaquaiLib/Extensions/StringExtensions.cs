@@ -679,8 +679,8 @@ public static partial class StringExtensions
     /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits{T}(ReadOnlySpan{T}, ReadOnlySpan{T})"/> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static SpanSplitByStringEnumerator EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)
-        => new SpanSplitByStringEnumerator(source, strings, stringComparison);
+    public static SpanSplitByStringsEnumerable EnumerateSplits(this ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)
+        => new SpanSplitByStringsEnumerable(source, strings, stringComparison);
 
     /// <summary>
     /// Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s.

@@ -5,8 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-using LaquaiLib.Util;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>
