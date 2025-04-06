@@ -376,8 +376,8 @@ public class DequeTests
         Assert.Equal(4, deque.Head.Value);
         Assert.Equal(3, deque.Tail.Value);
         deque.Rotate(-3);
-        Assert.Equal(1, deque.Head.Value);
-        Assert.Equal(5, deque.Tail.Value);
+        Assert.Equal(2, deque.Head.Value);
+        Assert.Equal(1, deque.Tail.Value);
     }
 
     [Fact]

@@ -22,7 +22,12 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// <summary>
     /// Gets the "last" element of the deque.
     /// </summary>
-    public DequeNode<T> Tail => Head?.Previous;
+    public DequeNode<T> Tail
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => Head?.Previous;
+    }
+
     /// <summary>
     /// Gets the number of nodes in the <see cref="Deque{T}"/>.
     /// </summary>
@@ -38,7 +43,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
                 {
                     i++;
                     current = current.Next;
-                } while (current != Head && current is not null);
+                } while (!ReferenceEquals(current, Head));
             }
             return i;
         }
@@ -49,7 +54,11 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// <remarks>
     /// Do not use <see cref="Count"/> to perform an empty check under any circumstances. With sufficiently large deques, the performance penalty is significant.
     /// </remarks>
-    public bool IsEmpty => Head is null;
+    public bool IsEmpty
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => Head is null;
+    }
     #endregion
 
     #region .ctors
@@ -171,6 +180,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// <param name="node">The node to insert the new node after.</param>
     /// <param name="value">The value to insert.</param>
     /// <returns>A reference to the newly inserted node.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public DequeNode<T> AddAfter(DequeNode<T> node, T value) => AddAfter(node, new DequeNode<T>(value));
     /// <summary>
     /// Inserts the specified <see cref="DequeNode{T}"/> after the specified node.
@@ -210,6 +220,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// <param name="node">The node to insert the new node before.</param>
     /// <param name="value">The value to insert.</param>
     /// <returns>A reference to the newly inserted node.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public DequeNode<T> AddBefore(DequeNode<T> node, T value) => AddBefore(node, new DequeNode<T>(value));
     /// <summary>
     /// Inserts the specified <see cref="DequeNode{T}"/> before the specified node.
@@ -229,6 +240,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// </summary>
     /// <param name="value">The value to insert.</param>
     /// <returns>A reference to the newly inserted node.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public DequeNode<T> AddFirst(T value) => AddFirst(new DequeNode<T>(value));
     /// <summary>
     /// Adds the specified <see cref="DequeNode{T}"/> to the beginning of the deque (that is, the specified node becomes the <see cref="Head"/>).
@@ -254,8 +266,12 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         }
         else
         {
-            // Otherwise make this node the new head
-            AddBefore(Head, node);
+            // Otherwise make this node the new Head
+            Head.Previous.Next = node;
+            node.Previous = Head.Previous;
+            Head.Previous = node;
+            node.Next = Head;
+            Head = node;
         }
 
         node.Deque = this;
@@ -268,6 +284,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// </summary>
     /// <param name="value">The value to insert.</param>
     /// <returns>A reference to the newly inserted node.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public DequeNode<T> AddLast(T value) => AddLast(new DequeNode<T>(value));
     /// <summary>
     /// Adds the specified <see cref="DequeNode{T}"/> to the end of the deque (that is, the specified node becomes the <see cref="Tail"/>).
@@ -329,7 +346,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
                     return true;
                 }
                 current = current.Next;
-            } while (current != Head && current is not null);
+            } while (!ReferenceEquals(current, Head));
         }
         return false;
     }
@@ -342,7 +359,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         ArgumentNullException.ThrowIfNull(array);
 
-        var len = array.Length;
+        var len = array.Length - index;
         var nodeCount = Count;
         if (index < 0 || index >= len)
         {
@@ -354,11 +371,13 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         }
 
         var current = Head;
-        for (var i = 0; i < len && current is not null; i++)
+        var i = index;
+        do
         {
             array[i] = current.Value;
             current = current.Next;
-        }
+            i++;
+        } while (i < len && !ReferenceEquals(current, Head));
     }
     /// <summary>
     /// Enumerates the <see cref="Deque{T}"/> and ensures that all contained nodes have references to neighboring nodes and to this <see cref="Deque{T}"/>.
@@ -401,23 +420,22 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         if (Head is not null)
         {
-            if (n == 0)
+            switch (n)
             {
-                return Head;
-            }
-            else if (n > 0)
-            {
-                while (n-- != 0)
-                {
-                    Head = Head!.Previous;
-                }
-            }
-            else
-            {
-                while (n++ != 0)
-                {
-                    Head = Head!.Next;
-                }
+                case 0:
+                    return Head;
+                case > 0:
+                    while (n-- != 0)
+                    {
+                        Head = Head!.Previous;
+                    }
+                    break;
+                case < 0:
+                    while (n++ != 0)
+                    {
+                        Head = Head!.Next;
+                    }
+                    break;
             }
         }
         return Head;
@@ -477,13 +495,14 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         {
             do
             {
-                if (nodes.IndexOf(current) > 0)
+                var next = current.Next;
+                if (nodes.Contains(current))
                 {
                     RemoveNode(current);
                     removed++;
                 }
-                current = current.Next;
-            } while (current != Head && current is not null);
+                current = next;
+            } while (!ReferenceEquals(current, Head));
         }
 
         return removed;
@@ -493,18 +512,21 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     /// </summary>
     /// <param name="value">The value to remove.</param>
     /// <returns>The number of nodes that were removed.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int RemoveAll(T value) => RemoveNodes(FindAll(value));
     /// <summary>
     /// Detaches the <see cref="Head"/> from the <see cref="Deque{T}"/> and its neighbors.
     /// </summary>
     /// <returns>The value of the detached node.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T PopLeft() => RemoveNode(Head ?? throw new InvalidOperationException("The deque is empty.")).Value;
     /// <summary>
     /// Detaches the <see cref="Tail"/> from the <see cref="Deque{T}"/> and its neighbors.
     /// </summary>
     /// <returns>The value of the detached node.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the <see cref="Deque{T}"/> is empty.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T PopRight() => RemoveNode(Tail ?? throw new InvalidOperationException("The deque is empty.")).Value;
     #endregion
 
@@ -624,8 +646,10 @@ public class DequeNode<T> : IEquatable<DequeNode<T>>
     public T Value { get; set; }
 
     /// <inheritdoc/>
-    public bool Equals(DequeNode<T> other) => ReferenceEquals(this, other) || other?.Value?.Equals(Value) is true;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Equals(DequeNode<T> other) => other is not null && (ReferenceEquals(this, other) || other?.Value?.Equals(Value) is true);
     /// <inheritdoc/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override bool Equals(object obj) => Equals(obj as DequeNode<T>);
     /// <inheritdoc/>
     public override int GetHashCode()
@@ -642,5 +666,6 @@ public class DequeNode<T> : IEquatable<DequeNode<T>>
     /// Returns the string representation of the <see cref="Value"/> this node contains.
     /// </summary>
     /// <returns>A <see cref="string"/> as described.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override string ToString() => Value?.ToString() ?? "";
 }

@@ -16,7 +16,11 @@ internal static class Helpers
     /// <returns>The size of the type in bytes or <c>0</c> if the size could not be determined or the type does not have a fixed size.</returns>
     public static int SizeOf(this ITypeSymbol typeSymbol, Compilation compilation)
     {
-        if (typeSymbol.TypeKind is not TypeKind.Struct) return 0;
+        if (typeSymbol.TypeKind is not TypeKind.Struct)
+        {
+            return 0;
+        }
+
         try
         {
             var type = Type.GetType(typeSymbol.OriginalDefinition.ToDisplayString());
