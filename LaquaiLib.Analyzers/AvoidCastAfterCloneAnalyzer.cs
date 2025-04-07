@@ -40,7 +40,7 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
         }
 
         // Check if this is a call to ICloneable.Clone()
-        if (methodSymbol.Name != "Clone" || methodSymbol.ContainingType.AllInterfaces.All(i => i.ToDisplayString() != "System.ICloneable"))
+        if (methodSymbol.Name != "Clone" || methodSymbol.ContainingType.AllInterfaces.All(static i => i.ToDisplayString() != "System.ICloneable"))
         {
             return;
         }

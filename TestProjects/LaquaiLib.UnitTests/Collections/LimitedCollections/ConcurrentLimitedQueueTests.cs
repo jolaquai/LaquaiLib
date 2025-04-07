@@ -66,13 +66,13 @@ public class ConcurrentLimitedQueueTests
     [Fact]
     public void ConstructorWithZeroCapacityThrowsException()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ConcurrentLimitedQueue<int>(0));
+        Assert.Throws<ArgumentOutOfRangeException>(static () => new ConcurrentLimitedQueue<int>(0));
     }
 
     [Fact]
     public void ConstructorWithNegativeCapacityThrowsException()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ConcurrentLimitedQueue<int>(-1));
+        Assert.Throws<ArgumentOutOfRangeException>(static () => new ConcurrentLimitedQueue<int>(-1));
     }
 
     [Fact]

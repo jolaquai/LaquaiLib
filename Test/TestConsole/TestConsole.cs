@@ -1,4 +1,6 @@
-﻿using LaquaiLib.Collections.LimitedCollections;
+﻿using System.IO;
+
+using LaquaiLib.Analyzers.Shared.Attributes;
 
 namespace TestConsole;
 
@@ -29,3 +31,6 @@ public static partial class TestConsole
         ;
     }
 }
+
+[FullAccessProxy<MemoryStream>]
+public partial class MemoryStreamProxy;

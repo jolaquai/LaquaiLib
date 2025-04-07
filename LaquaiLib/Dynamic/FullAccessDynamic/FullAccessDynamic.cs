@@ -82,7 +82,7 @@ public class FullAccessDynamic<T> : DynamicObject
         }
         else
         {
-            method = GetFirstNonNull(bf => _instanceType.GetMethod(binder.Name, bf, null, Array.ConvertAll(args, item => item.GetType()), null));
+            method = FindMethod(binder, args);
             _memberCache[key] = method;
         }
 
@@ -119,7 +119,7 @@ public class FullAccessDynamic<T> : DynamicObject
 
         try
         {
-            prop ??= GetFirstNonNull(bf => _instanceType.GetProperty(binder.Name, bf));
+            prop ??= FindProperty(binder);
             if (prop is not null)
             {
                 var propValue = prop.GetValue(_instance);
@@ -134,13 +134,11 @@ public class FullAccessDynamic<T> : DynamicObject
 
         try
         {
-            field ??= GetFirstNonNull(bf => _instanceType.GetField(binder.Name, bf));
+            field ??= FindField(binder);
             if (field is not null)
             {
                 var fieldValue = field.GetValue(_instance);
-                result = fieldValue is null
-                    ? null
-                    : (object)FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
+                result = fieldValue is null ? null : FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
                 _memberCache[key] = field;
                 return true;
             }
@@ -182,14 +180,14 @@ public class FullAccessDynamic<T> : DynamicObject
             }
         }
 
-        prop ??= GetFirstNonNull(bf => _instanceType.GetProperty(binder.Name, bf));
+        prop ??= FindProperty(binder);
         if (prop is not null)
         {
             prop.SetValue(_instance, value);
             return true;
         }
 
-        field ??= GetFirstNonNull(bf => _instanceType.GetField(binder.Name, bf));
+        field ??= FindField(binder);
         if (field is not null)
         {
             field.SetValue(_instance, value);
@@ -218,7 +216,7 @@ public class FullAccessDynamic<T> : DynamicObject
             return false;
         }
 
-        var itemProp = GetFirstNonNull(bf => _instanceType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
+        var itemProp = FindIndexer(binder, indexes);
         if (itemProp is not null)
         {
             var itemValue = itemProp.GetValue(_instance, indexes);
@@ -239,7 +237,7 @@ public class FullAccessDynamic<T> : DynamicObject
             return false;
         }
 
-        var itemProp = GetFirstNonNull(bf => _instanceType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
+        var itemProp = FindIndexer(binder, indexes);
         if (itemProp is not null)
         {
             itemProp.SetValue(_instance, value, indexes);
@@ -264,7 +262,7 @@ public class FullAccessDynamic<T> : DynamicObject
         }
     }
     /// <inheritdoc/>
-    public override IEnumerable<string> GetDynamicMemberNames() => _instanceType.GetProperties(bindingFlags).Select(static p => p.Name);
+    public override IEnumerable<string> GetDynamicMemberNames() => _instanceType.GetMembers(bindingFlags).Select(static p => p.Name);
 
     /// <summary>
     /// Returns the underlying <typeparamref name="T"/> instance.
@@ -279,11 +277,114 @@ public class FullAccessDynamic<T> : DynamicObject
     /// <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
     private static TMember GetFirstNonNull<TMember>(Func<BindingFlags, TMember> func)
     {
-        return func(publicStatic)
+        var member =
+            func(publicStatic)
             ?? func(anyStatic)
             ?? func(publicInstance)
-            ?? func(anyInstance);
+            ?? func(anyInstance)
+            ?? func(bindingFlags | BindingFlags.FlattenHierarchy);
+
+        return member;
     }
+    private MethodInfo FindMethod(InvokeMemberBinder binder, object[] args)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var method = GetFirstNonNull(bf => targetType.GetMethod(binder.Name, bf, null, Array.ConvertAll(args, item => item.GetType()), null));
+            if (method is not null)
+            {
+                return method;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+    private FieldInfo FindField(GetMemberBinder binder)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var field = GetFirstNonNull(bf => targetType.GetField(binder.Name, bf));
+            if (field is not null)
+            {
+                return field;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+    private PropertyInfo FindProperty(GetMemberBinder binder)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var property = GetFirstNonNull(bf => targetType.GetProperty(binder.Name, bf));
+            if (property is not null)
+            {
+                return property;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+    private FieldInfo FindField(SetMemberBinder binder)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var field = GetFirstNonNull(bf => targetType.GetField(binder.Name, bf));
+            if (field is not null)
+            {
+                return field;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+    private PropertyInfo FindProperty(SetMemberBinder binder)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var property = GetFirstNonNull(bf => targetType.GetProperty(binder.Name, bf));
+            if (property is not null)
+            {
+                return property;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+    private PropertyInfo FindIndexer(GetIndexBinder binder, object[] indexes)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
+            if (indexer is not null)
+            {
+                return indexer;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+    private PropertyInfo FindIndexer(SetIndexBinder binder, object[] indexes)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
+            if (indexer is not null)
+            {
+                return indexer;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+
     /// <inheritdoc/>
     public override bool Equals(object obj) => Equals(Unwrap(), obj);
     /// <inheritdoc/>
@@ -292,4 +393,6 @@ public class FullAccessDynamic<T> : DynamicObject
     public static bool operator !=(FullAccessDynamic<T> left, object right) => !(left == right);
     /// <inheritdoc/>
     public override int GetHashCode() => Unwrap()?.GetHashCode() ?? 0;
+    /// <inheritdoc/>
+    public override string ToString() => _instance.ToString();
 }

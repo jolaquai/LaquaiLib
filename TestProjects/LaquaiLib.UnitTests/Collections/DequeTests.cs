@@ -130,7 +130,7 @@ public class DequeTests
         var deque = new Deque<int>([1, 2, 3, 2, 1]);
         var nodes = deque.FindAll(2);
         Assert.Equal(2, nodes.Length);
-        Assert.All(nodes, node => Assert.Equal(2, node.Value));
+        Assert.All(nodes, static node => Assert.Equal(2, node.Value));
     }
 
     [Fact]

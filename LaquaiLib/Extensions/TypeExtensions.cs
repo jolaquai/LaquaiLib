@@ -812,7 +812,7 @@ public static partial class TypeExtensions
             {
                 operateOn = operateOn[..tickAt];
             }
-            var args = string.Join(", ", type.GetGenericArguments().Select(t => t.GetFriendlyName()));
+            var args = string.Join(", ", type.GetGenericArguments().Select(static t => t.GetFriendlyName()));
 
             return $"{operateOn}<{args}>";
         }

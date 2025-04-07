@@ -220,7 +220,7 @@ public class PreferStackallocForTemporaryBuffersAnalyzer : DiagnosticAnalyzer
     {
         // Give up if we're not inside a ref struct, but our assignment is being attempted as if we were, which means the stackalloc isn't allowed here anyway
         var structDeclarationSyntax = acExpr.FirstAncestorOrSelf<StructDeclarationSyntax>();
-        if (structDeclarationSyntax is null || !structDeclarationSyntax.Modifiers.Any(m => m.IsKind(SyntaxKind.RefKeyword)))
+        if (structDeclarationSyntax is null || !structDeclarationSyntax.Modifiers.Any(static m => m.IsKind(SyntaxKind.RefKeyword)))
         {
             return false;
         }

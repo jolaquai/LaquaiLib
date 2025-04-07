@@ -232,7 +232,7 @@ public static class AnyExtensions
             fields.UnionWith(baseType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
             baseType = baseType.BaseType;
         }
-        var fieldMap = fields.ToDictionary(f => f, f => f.DeclaringType);
+        var fieldMap = fields.ToDictionary(static f => f, static f => f.DeclaringType);
 
         foreach (var (field, asType) in fieldMap)
         {

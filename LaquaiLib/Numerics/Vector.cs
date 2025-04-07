@@ -36,7 +36,7 @@ public readonly struct Vector<T> : IEnumerable<T>,
     /// <summary>
     /// Gets whether this <see cref="Vector{T}"/> is equivalent to a null vector (that is, all values are zero).
     /// </summary>
-    public bool IsZero => _coordinates.All(v => v == T.Zero);
+    public bool IsZero => _coordinates.All(static v => v == T.Zero);
 
     // Always copy the values to prevent modification of the vector
     /// <summary>
@@ -91,14 +91,14 @@ public readonly struct Vector<T> : IEnumerable<T>,
     /// <param name="left">The first vector to add.</param>
     /// <param name="right">The second vector to add.</param>
     /// <returns>A new <see cref="Vector{T}"/> that is the result of the addition.</returns>
-    public static Vector<T> operator +(Vector<T> left, Vector<T> right) => new Vector<T>(left._coordinates.Zip(right._coordinates, (l, r) => l + r));
+    public static Vector<T> operator +(Vector<T> left, Vector<T> right) => new Vector<T>(left._coordinates.Zip(right._coordinates, static (l, r) => l + r));
     /// <summary>
     /// Subtracts a <see cref="Vector{T}"/> from another.
     /// </summary>
     /// <param name="left">The vector to subtract from.</param>
     /// <param name="right">The vector to subtract.</param>
     /// <returns>A new <see cref="Vector{T}"/> that is the result of the subtraction.</returns>
-    public static Vector<T> operator -(Vector<T> left, Vector<T> right) => new Vector<T>(left._coordinates.Zip(right._coordinates, (l, r) => l - r));
+    public static Vector<T> operator -(Vector<T> left, Vector<T> right) => new Vector<T>(left._coordinates.Zip(right._coordinates, static (l, r) => l - r));
     // I agree, defining this and making it throw unconditionally is ugly, but I want implicit choosing of a multiplication method impossible by design
     /// <summary>
     /// Throws a <see cref="NotSupportedException"/> as vector multiplication has two definitions.
@@ -206,7 +206,7 @@ public readonly struct Vector<T> : IEnumerable<T>,
         {
             return true;
         }
-        var coordinates = _coordinates.Zip(comp._coordinates, (l, r) => l / r);
+        var coordinates = _coordinates.Zip(comp._coordinates, static (l, r) => l / r);
         using var enumerator = coordinates.GetEnumerator();
         if (!enumerator.MoveNext())
         {

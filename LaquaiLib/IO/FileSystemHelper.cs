@@ -892,7 +892,7 @@ public static partial class FileSystemHelper
         {
             var beforeName = span[..lastDirSepExclusiveIndex];
             var afterName = span[extIndexWithTrailingPeriod..];
-            return string.Create(beforeName.Length + newName.Length + afterName.Length, new ChangeNameState(beforeName, newName, afterName), (newSpan, state) =>
+            return string.Create(beforeName.Length + newName.Length + afterName.Length, new ChangeNameState(beforeName, newName, afterName), static (newSpan, state) =>
             {
                 state.s1.CopyTo(newSpan);
                 state.s2.CopyTo(newSpan[state.s1.Length..(state.s1.Length + state.s2.Length)]);
@@ -902,7 +902,7 @@ public static partial class FileSystemHelper
         else // Includes the case where there is no extension (extIndexWithTrailingPeriod == -1)
         {
             var beforeName = span[..lastDirSepExclusiveIndex];
-            return string.Create(beforeName.Length + newName.Length, new ChangeNameState(beforeName, newName), (newSpan, state) =>
+            return string.Create(beforeName.Length + newName.Length, new ChangeNameState(beforeName, newName), static (newSpan, state) =>
             {
                 state.s1.CopyTo(newSpan);
                 state.s2.CopyTo(newSpan[state.s1.Length..]);

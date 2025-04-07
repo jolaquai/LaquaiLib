@@ -8,7 +8,7 @@ public class FilterableEnumerableTests
     public void FilterWorks()
     {
         IEnumerable<int> ints = [1, 2, 3, 4, 5];
-        var enumerable = new FilterableEnumerable<int>(ints, i => i % 2 == 0);
+        var enumerable = new FilterableEnumerable<int>(ints, static i => i % 2 == 0);
         using var enumerator = enumerable.GetEnumerator();
 
         Assert.True(enumerator.MoveNext());

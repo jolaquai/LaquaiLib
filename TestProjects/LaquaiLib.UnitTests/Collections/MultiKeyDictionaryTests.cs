@@ -262,7 +262,7 @@ public class MultiKeyDictionaryTests
         object[] keys = ["key"];
         dictionary.Add(keys, "value");
 
-        dictionary.AddOrUpdate(keys, "new-value", existingValue => existingValue + "-updated");
+        dictionary.AddOrUpdate(keys, "new-value", static existingValue => existingValue + "-updated");
 
         Assert.Equal("value-updated", dictionary.GetValue(keys));
     }
@@ -273,7 +273,7 @@ public class MultiKeyDictionaryTests
         var dictionary = new MultiKeyDictionary<string>();
         object[] keys = ["key"];
 
-        dictionary.AddOrUpdate(keys, "new-value", existingValue => existingValue + "-updated");
+        dictionary.AddOrUpdate(keys, "new-value", static existingValue => existingValue + "-updated");
 
         Assert.Equal("new-value", dictionary.GetValue(keys));
     }
@@ -285,7 +285,7 @@ public class MultiKeyDictionaryTests
         object[] keys = ["key"];
         dictionary.Add(keys, "old-value");
 
-        dictionary.AddOrUpdate(keys, "add-value", (existing, add) => $"{existing}+{add}");
+        dictionary.AddOrUpdate(keys, "add-value", static (existing, add) => $"{existing}+{add}");
 
         Assert.Equal("old-value+add-value", dictionary.GetValue(keys));
     }
@@ -392,7 +392,7 @@ public class MultiKeyDictionaryTests
 
         Assert.Equal(2, keys.Length);
         Assert.Contains("key1", keys);
-        Assert.Contains(keys, k => k is ValueTuple<object, object> tuple && tuple.Item1.Equals("key2") && tuple.Item2.Equals("key3"));
+        Assert.Contains(keys, static k => k is ValueTuple<object, object> tuple && tuple.Item1.Equals("key2") && tuple.Item2.Equals("key3"));
     }
 
     [Fact]

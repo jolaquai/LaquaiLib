@@ -69,7 +69,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         {
             throw new ArgumentOutOfRangeException(nameof(arrays), "At least one array must be provided.");
         }
-        if (arrays.All(a => a.Length == 0))
+        if (arrays.All(static a => a.Length == 0))
         {
             throw new ArgumentOutOfRangeException(nameof(arrays), "At least one array must not be empty.");
         }

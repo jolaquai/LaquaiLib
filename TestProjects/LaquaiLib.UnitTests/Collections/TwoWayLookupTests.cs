@@ -463,9 +463,9 @@ public class TwoWayLookupTests
         var entries = lookup.ToList();
 
         Assert.Equal(3, entries.Count);
-        Assert.Contains(entries, e => e.Key == 1 && e.Value == "One");
-        Assert.Contains(entries, e => e.Key == 2 && e.Value == "Two");
-        Assert.Contains(entries, e => e.Key == 3 && e.Value == "Three");
+        Assert.Contains(entries, static e => e.Key == 1 && e.Value == "One");
+        Assert.Contains(entries, static e => e.Key == 2 && e.Value == "Two");
+        Assert.Contains(entries, static e => e.Key == 3 && e.Value == "Three");
     }
 
     [Fact]
@@ -484,9 +484,9 @@ public class TwoWayLookupTests
         }
 
         Assert.Equal(3, entries.Count);
-        Assert.Contains(entries, e => e.Key == "One" && e.Value == 1);
-        Assert.Contains(entries, e => e.Key == "Two" && e.Value == 2);
-        Assert.Contains(entries, e => e.Key == "Three" && e.Value == 3);
+        Assert.Contains(entries, static e => e.Key == "One" && e.Value == 1);
+        Assert.Contains(entries, static e => e.Key == "Two" && e.Value == 2);
+        Assert.Contains(entries, static e => e.Key == "Three" && e.Value == 3);
     }
 
     #endregion

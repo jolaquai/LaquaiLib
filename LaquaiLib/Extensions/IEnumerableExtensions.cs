@@ -725,7 +725,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>A sequence of key-value pairs where the key is an element from the input sequence and the value is the number of occurrences of that element in the input sequence.</returns>
-    public static IEnumerable<KeyValuePair<T, int>> Indexed<T>(this IEnumerable<T> source) => source.CountBy(i => i);
+    public static IEnumerable<KeyValuePair<T, int>> Indexed<T>(this IEnumerable<T> source) => source.CountBy(static i => i);
 
     /// <summary>
     /// Determines if a sequence is empty.
@@ -958,7 +958,7 @@ public static partial class IEnumerableExtensions
     /// <param name="keys">The input sequence of keys.</param>
     /// <param name="valueFactory">The <see cref="Func{T, TResult}"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
-    public static Dictionary<TKey, TValue> MapTo<TKey, TValue>(this IEnumerable<TKey> keys, Func<TKey, TValue> valueFactory) => keys.ToDictionary(key => key, valueFactory);
+    public static Dictionary<TKey, TValue> MapTo<TKey, TValue>(this IEnumerable<TKey> keys, Func<TKey, TValue> valueFactory) => keys.ToDictionary(static key => key, valueFactory);
     /// <summary>
     /// Maps every element in the input sequence to a single value in the specified <paramref name="second"/> sequence. A <paramref name="predicate"/> decides
     /// </summary>

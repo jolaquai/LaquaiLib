@@ -52,19 +52,19 @@ public class LimitedQueueTests
     [Fact]
     public void ConstructorWithZeroCapacityThrowsException()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new LimitedQueue<int>(0, []));
+        Assert.Throws<ArgumentOutOfRangeException>(static () => new LimitedQueue<int>(0, []));
     }
 
     [Fact]
     public void ConstructorWithNegativeCapacityThrowsException()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new LimitedQueue<int>(-1, []));
+        Assert.Throws<ArgumentOutOfRangeException>(static () => new LimitedQueue<int>(-1, []));
     }
 
     [Fact]
     public void ConstructorWithCapacitySmallerThanItemCountThrowsException()
     {
-        Assert.Throws<ArgumentException>(() => new LimitedQueue<int>(2, [1, 2, 3]));
+        Assert.Throws<ArgumentException>(static () => new LimitedQueue<int>(2, [1, 2, 3]));
     }
 
     [Fact]
