@@ -716,7 +716,8 @@ public static partial class FileSystemHelper
             {
                 using var destStream = new FileStream(destFile, FileMode.Create);
 
-                var buffer = MemoryManager.CreateBuffer(1 << 16);
+                const int size = 1 << 16;
+                Span<byte> buffer = size <= Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
                 uint bytesRead = 0;
                 var context = nint.Zero;
                 var inDataStream = false;

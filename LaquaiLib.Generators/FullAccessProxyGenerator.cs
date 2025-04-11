@@ -48,32 +48,32 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
     private void Execute(SourceProductionContext context, ClassDeclarationSyntax source)
     {
-#warning TODO
-        // Get the semantic model
-        var semanticModel = context.Compilation.GetSemanticModel(classDeclaration.SyntaxTree);
+//#warning TODO
+//        // Get the semantic model
+//        var semanticModel = context.Compilation.GetSemanticModel(classDeclaration.SyntaxTree);
         
-        // Get the class symbol
-        var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-        if (classSymbol == null) return;
+//        // Get the class symbol
+//        var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
+//        if (classSymbol == null) return;
         
-        // Find the FullAccessProxy attribute and its type argument
-        var attribute = classSymbol.GetAttributes()
-            .FirstOrDefault(a => a.AttributeClass?.ToDisplayString().Contains("FullAccessProxy") == true);
+//        // Find the FullAccessProxy attribute and its type argument
+//        var attribute = classSymbol.GetAttributes()
+//            .FirstOrDefault(a => a.AttributeClass?.ToDisplayString().Contains("FullAccessProxy") == true);
         
-        if (attribute == null) return;
+//        if (attribute == null) return;
         
-        // Get the type argument from the attribute (e.g., MemoryStream)
-        var typeArg = attribute.AttributeClass?.TypeArguments.FirstOrDefault();
-        if (typeArg == null) return;
+//        // Get the type argument from the attribute (e.g., MemoryStream)
+//        var typeArg = attribute.AttributeClass?.TypeArguments.FirstOrDefault();
+//        if (typeArg == null) return;
         
-        var proxyClassName = classSymbol.Name;
-        var targetTypeName = typeArg.ToDisplayString();
-        var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
+//        var proxyClassName = classSymbol.Name;
+//        var targetTypeName = typeArg.ToDisplayString();
+//        var namespaceName = classSymbol.ContainingNamespace.ToDisplayString();
 
-        // Generate the proxy class
-        var source = GenerateProxyClass(namespaceName, proxyClassName, targetTypeName);
+//        // Generate the proxy class
+//        var source = GenerateProxyClass(namespaceName, proxyClassName, targetTypeName);
         
-        context.AddSource($"{proxyClassName}.g.cs", SourceText.From(source, Encoding.UTF8));
+        //context.AddSource($"{proxyClassName}.g.cs", SourceText.From(source, Encoding.UTF8));
     }
     private void Execute(SourceProductionContext context, StructDeclarationSyntax source)
     {

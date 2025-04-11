@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using LaquaiLib.Core;
 using LaquaiLib.Extensions;
 using LaquaiLib.IO;
 using LaquaiLib.Util;
@@ -101,7 +102,8 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var module = _modules.FirstOrDefault(m => m.BaseAddress <= address && address < m.BaseAddress + m.ModuleMemorySize)
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
-        var buffer = MemoryManager.CreateBuffer(Marshal.SizeOf<T>());
+        var size = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+        Span<byte> buffer = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
         {
@@ -133,7 +135,8 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var module = _modules.FirstOrDefault(m => m.BaseAddress <= address && address < m.BaseAddress + m.ModuleMemorySize)
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
-        var buffer = MemoryManager.CreateBuffer(Marshal.SizeOf<T>());
+        var size = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+        Span<byte> buffer = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
         {
@@ -209,7 +212,8 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var overlap = data.Length - 1;
 
         // This will conditionally stackalloc, and fortunately, the size doesn't depend on the contents of the loop, so we can do this once and keep reusing it
-        var span = MemoryManager.CreateBuffer(chunkSize + overlap);
+        var size = chunkSize + overlap;
+        Span<byte> span = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
 
         for (var i = 0; i < _modules.Length; i++)
         {
@@ -291,7 +295,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         // If reversal is requested, reverse the byte sequence
         if (reverseLittleEndian && BitConverter.IsLittleEndian)
         {
-            var temp = MemoryManager.CreateBuffer(data.Length);
+            Span<byte> temp = data.Length < Configuration.MaxStackallocSize ? stackalloc byte[data.Length] : new byte[data.Length];
             data.CopyTo(temp);
             temp.Reverse();
 

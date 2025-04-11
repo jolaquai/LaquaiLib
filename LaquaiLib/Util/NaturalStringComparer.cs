@@ -1,12 +1,18 @@
 using System.Collections.Frozen;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+
+using LaquaiLib.Core;
 
 namespace LaquaiLib.Util;
 
 /// <summary>
-/// Represents a <see cref="IComparer{T}"/> that compares strings using a natural sort order, that is, like Windows Explorer sorts file names.
+/// Implements an <see cref="IComparer{T}"/> that compares <see langword="string"/>s and <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> using a natural sort order, that is, like Windows Explorer sorts file names.
+/// The comparisons of two <see langword="char"/> are case-insensitive.
 /// </summary>
-public partial class NaturalStringComparer : IComparer<string>
+public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOnlySpan<char>>, IEqualityComparer<string>, IEqualityComparer<ReadOnlySpan<char>>
 {
     /// <summary>
     /// Gets the default instance of the <see cref="NaturalStringComparer"/> class.
@@ -14,46 +20,69 @@ public partial class NaturalStringComparer : IComparer<string>
     public static NaturalStringComparer Instance { get; } = new NaturalStringComparer();
 
     /// <summary>
-    /// Compares two strings and returns a value indicating whether one is less than, equal to, or greater than the other.
+    /// Compares two <see langword="string"/>s and returns a value indicating whether one is less than, equal to, or greater than the other.
+    /// Empty <see langword="string"/>s are sorted to the bottom.
     /// </summary>
-    /// <param name="x">The first string to compare.</param>
-    /// <param name="y">The second string to compare.</param>
-    /// <returns>A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>.</returns>
-    public int Compare(string x, string y)
+    /// <param name="x">The first <see langword="string"/> to compare.</param>
+    /// <param name="y">The second <see langword="string"/> to compare.</param>
+    /// <returns>A signed integer that indicates the result of the comparison. A negative value indicates that <paramref name="x"/> is less than <paramref name="y"/>, zero indicates that they are equal, and a positive value indicates that <paramref name="x"/> is greater than <paramref name="y"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
+    public int Compare(string x, string y) => Compare(x.AsSpan(), y.AsSpan());
+    /// <summary>
+    /// Compares two <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> and returns a value indicating whether one is less than, equal to, or greater than the other.
+    /// Empty spans are sorted to the bottom.
+    /// </summary>
+    /// <param name="x">The first <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> to compare.</param>
+    /// <param name="y">The second <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> to compare.</param>
+    /// <returns>A signed integer that indicates the result of the comparison. A negative value indicates that <paramref name="x"/> is less than <paramref name="y"/>, zero indicates that they are equal, and a positive value indicates that <paramref name="x"/> is greater than <paramref name="y"/>.</returns>
+    public int Compare(ReadOnlySpan<char> x, ReadOnlySpan<char> y)
     {
-        if (x == y)
+        if (x.IsEmpty && y.IsEmpty)
         {
             return 0;
         }
-        if (x == null)
+        if (x.IsEmpty)
         {
             return -1;
         }
-        if (y == null)
+        if (y.IsEmpty)
         {
             return 1;
         }
 
+        var len = x.Length + y.Length;
+        Span<char> chars = len <= Configuration.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : new char[len];
+        var left = chars[..x.Length];
+        var right = chars[x.Length..];
+        x.ToUpperInvariant(left);
+        y.ToUpperInvariant(right);
+
+        if (left.SequenceEqual(right))
+        {
+            return 0;
+        }
+
         int ix = 0, iy = 0;
-        while (ix < x.Length && iy < y.Length)
+        while (ix < left.Length && iy < right.Length)
         {
             // Check for Arabic numerals
-            if (char.IsDigit(x[ix]) && char.IsDigit(y[iy]))
+            if (char.IsDigit(left[ix]) && char.IsDigit(right[iy]))
             {
                 // Extract numerical parts
-                var nx = GetNumber(x, ref ix);
-                var ny = GetNumber(y, ref iy);
+                var nx = GetNumber(left, ref ix);
+                var ny = GetNumber(right, ref iy);
                 if (nx != ny)
                 {
                     return nx.CompareTo(ny);
                 }
             }
             // Check for Roman numerals
-            else if (IsRomanNumeral(x, ix) && IsRomanNumeral(y, iy))
+            else if (IsRomanNumeral(left, ix) && IsRomanNumeral(right, iy))
             {
                 // Extract Roman numeral values
-                var rx = GetRomanValue(x, ref ix);
-                var ry = GetRomanValue(y, ref iy);
+                var rx = GetRomanValue(left, ref ix);
+                var ry = GetRomanValue(right, ref iy);
                 if (rx != ry)
                 {
                     return rx.CompareTo(ry);
@@ -61,17 +90,17 @@ public partial class NaturalStringComparer : IComparer<string>
             }
             else
             {
-                if (x[ix] != y[iy])
+                if (left[ix] != right[iy])
                 {
-                    return x[ix].CompareTo(y[iy]);
+                    return left[ix].CompareTo(right[iy]);
                 }
                 ix++;
                 iy++;
             }
         }
-        return x.Length - y.Length;
+        return left.Length - right.Length;
     }
-    private static long GetNumber(string s, ref int index)
+    private static long GetNumber(ReadOnlySpan<char> s, ref int index)
     {
         long number = 0;
         while (index < s.Length && char.IsDigit(s[index]))
@@ -81,20 +110,27 @@ public partial class NaturalStringComparer : IComparer<string>
         }
         return number;
     }
-
     /// <summary>
     /// Checks if the characters starting at the given index form a Roman numeral.
     /// </summary>
-    private static bool IsRomanNumeral(string s, int index)
+    private static bool IsRomanNumeral(ReadOnlySpan<char> s, int index)
     {
         if (index >= s.Length)
         {
             return false;
         }
 
+        // Escape hatch if our previous char is a Roman numeral character
+        // If it was valid, it should be impossible to be in here.
+        // If it wasn't, we shouldn't be in here because starting Roman identification partway through can't be correct
+        if (index > 0 && s[index - 1] is 'I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M')
+        {
+            return false;
+        }
+
         // Check if character is a valid Roman numeral character
-        var c = char.ToUpper(s[index]);
-        if (c != 'I' && c != 'V' && c != 'X' && c != 'L' && c != 'C' && c != 'D' && c != 'M')
+        var c = s[index];
+        if (c is not ('I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M'))
         {
             return false;
         }
@@ -105,8 +141,8 @@ public partial class NaturalStringComparer : IComparer<string>
 
         while (i < s.Length)
         {
-            c = char.ToUpper(s[i]);
-            if (c != 'I' && c != 'V' && c != 'X' && c != 'L' && c != 'C' && c != 'D' && c != 'M')
+            c = s[i];
+            if (c is not ('I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M'))
             {
                 break;
             }
@@ -122,13 +158,12 @@ public partial class NaturalStringComparer : IComparer<string>
         }
 
         // Verify there's at least one valid Roman numeral
-        return romanChars > 0 && IsValidRomanNumeral(s.Substring(index, romanChars).ToUpper());
+        return romanChars > 0 && IsValidRomanNumeral(s.Slice(index, romanChars));
     }
-
     /// <summary>
     /// Extracts and computes the value of a Roman numeral from a string starting at the specified index.
     /// </summary>
-    private static int GetRomanValue(string s, ref int index)
+    private static int GetRomanValue(ReadOnlySpan<char> s, ref int index)
     {
         var startIndex = index;
         var length = 0;
@@ -136,8 +171,8 @@ public partial class NaturalStringComparer : IComparer<string>
         // Find the end of the Roman numeral
         while (index < s.Length)
         {
-            var c = char.ToUpper(s[index]);
-            if (c != 'I' && c != 'V' && c != 'X' && c != 'L' && c != 'C' && c != 'D' && c != 'M')
+            var c = s[index];
+            if (c is not ('I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M'))
             {
                 break;
             }
@@ -153,10 +188,10 @@ public partial class NaturalStringComparer : IComparer<string>
         }
 
         // Extract and parse the Roman numeral
-        var roman = s.Substring(startIndex, length).ToUpper();
-        return RomanToInt(roman);
+        return RomanToInt(s.Slice(startIndex, length));
     }
 
+    #region private static readonly FrozenDictionary<string, int> _romanMap
     private static readonly FrozenDictionary<string, int> _romanMap = FrozenDictionary.ToFrozenDictionary(
     [
         // Add most common cases here too, enables a fast path
@@ -193,14 +228,15 @@ public partial class NaturalStringComparer : IComparer<string>
             _ = _romanMap.TryGetAlternateLookup<ReadOnlySpan<char>>(out var lookup);
             return lookup;
         }
-    }
+    } 
+    #endregion
 
     /// <summary>
     /// Converts a Roman numeral string to an integer.
     /// </summary>
-    private static int RomanToInt(string roman)
+    private static int RomanToInt(ReadOnlySpan<char> roman)
     {
-        if (string.IsNullOrEmpty(roman))
+        if (roman.Length == 0)
         {
             return 0;
         }
@@ -208,41 +244,39 @@ public partial class NaturalStringComparer : IComparer<string>
         var result = 0;
         var prevValue = 0;
 
-        if (_romanMap.TryGetValue(roman, out var value))
+        var alt = AlternateLookup;
+        if (alt.TryGetValue(roman, out var value))
         {
             return value;
         }
 
         // Process from right to left
-        var alt = AlternateLookup;
-        var span = roman.AsSpan();
+        Span<char> upper = roman.Length <= Configuration.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : new char[roman.Length];
+        roman.ToUpperInvariant(upper);
         for (var i = roman.Length - 1; i >= 0; i--)
         {
-            var currentValue = alt[span[i..i]];
+            var currentValue = alt[upper[i..(i + 1)]];
 
             // If current value is greater than or equal to previous value, add it
             // Otherwise subtract it (handles cases like IV, IX, etc.)
             if (currentValue >= prevValue)
             {
-                result += currentValue;
+                result += prevValue = currentValue;
             }
             else
             {
-                result -= currentValue;
+                result -= prevValue = currentValue;
             }
-
-            prevValue = currentValue;
         }
 
         return result;
     }
-
     /// <summary>
     /// Validates that a string is a properly formatted Roman numeral.
     /// </summary>
-    private static bool IsValidRomanNumeral(string roman)
+    private static bool IsValidRomanNumeral(ReadOnlySpan<char> roman)
     {
-        if (string.IsNullOrEmpty(roman))
+        if (roman.Length == 0)
         {
             return false;
         }
@@ -251,6 +285,26 @@ public partial class NaturalStringComparer : IComparer<string>
     }
 
     private static readonly Regex _romanNumeralRegex = RomanNumeralRegex();
-    [GeneratedRegex("^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")]
+    [GeneratedRegex("^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$", RegexOptions.ExplicitCapture)]
     private static partial Regex RomanNumeralRegex();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
+    public bool Equals(string x, string y) => Equals(x.AsSpan(), y.AsSpan());
+    public bool Equals(ReadOnlySpan<char> x, ReadOnlySpan<char> y) => Compare(x, y) == 0;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [DebuggerStepThrough]
+    public int GetHashCode([DisallowNull] string obj) => GetHashCode(obj.AsSpan());
+    public int GetHashCode([DisallowNull] ReadOnlySpan<char> span)
+    {
+        HashCode hashCode = default;
+
+        var comp = CharComparer.OrdinalIgnoreCase;
+        for (var i = span.Length >= 8 ? span.Length - 8 : 0; i < span.Length; i++)
+        {
+            hashCode.Add(comp.GetHashCode(span[i]));
+        }
+
+        return hashCode.ToHashCode();
+    }
 }

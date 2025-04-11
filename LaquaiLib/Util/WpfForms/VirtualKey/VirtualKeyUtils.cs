@@ -115,8 +115,7 @@ public static partial class VirtualKeyUtils
     {
         cultureInfo ??= CultureInfo.CurrentCulture;
 
-        // Moved this from a persistent allocation to just use MemoryManager since it will 1000% stackalloc a tiny 256 byte buffer
-        var kbStateBuffer = MemoryManager.CreateBuffer(256);
+        Span<byte> kbStateBuffer = stackalloc byte[256];
         Interop.GetKeyboardState(kbStateBuffer);
 
         var keyboardLayout = cultureInfo.KeyboardLayoutId;

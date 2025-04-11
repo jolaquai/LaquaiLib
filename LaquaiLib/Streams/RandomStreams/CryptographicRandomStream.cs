@@ -20,7 +20,7 @@ public class CryptographicRandomStream() : RandomStream(null)
     /// <inheritdoc/>
     public override int ReadByte()
     {
-        var buffer = MemoryManager.CreateBuffer(1);
+        Span<byte> buffer = stackalloc byte[1];
         rng.GetBytes(buffer);
         return buffer[0];
     }
