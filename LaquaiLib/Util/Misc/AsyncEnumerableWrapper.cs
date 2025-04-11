@@ -20,5 +20,5 @@ public readonly struct AsyncEnumerableWrapper<T>(IEnumerable<T> from) : IAsyncEn
 
     private readonly IEnumerable<T> _from = from;
     /// <inheritdoc/>
-    public readonly IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new AsyncEnumeratorWrapper<T>(_from.GetEnumerator());
+    public readonly IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new AsyncEnumeratorWrapper<T>(_from.GetEnumerator(), cancellationToken);
 }

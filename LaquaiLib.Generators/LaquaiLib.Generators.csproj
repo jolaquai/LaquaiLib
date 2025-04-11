@@ -17,4 +17,7 @@
     <SuppressDependenciesWhenPacking>True</SuppressDependenciesWhenPacking>
     <DevelopmentDependency>True</DevelopmentDependency>
   </PropertyGroup>
+  <ItemGroup>
+      <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="True" PackagePath="analyzers/dotnet/cs" />
+  </ItemGroup>
 </Project>

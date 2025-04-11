@@ -725,7 +725,7 @@ public static partial class IEnumerableExtensions
     /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
     /// <param name="source">The input sequence.</param>
     /// <returns>A sequence of key-value pairs where the key is an element from the input sequence and the value is the number of occurrences of that element in the input sequence.</returns>
-    public static IEnumerable<KeyValuePair<T, int>> Indexed<T>(this IEnumerable<T> source) => source.CountBy(i => i);
+    public static IEnumerable<KeyValuePair<T, int>> Indexed<T>(this IEnumerable<T> source) => source.CountBy(static i => i);
 
     /// <summary>
     /// Determines if a sequence is empty.
@@ -958,7 +958,7 @@ public static partial class IEnumerableExtensions
     /// <param name="keys">The input sequence of keys.</param>
     /// <param name="valueFactory">The <see cref="Func{T, TResult}"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
     /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
-    public static Dictionary<TKey, TValue> MapTo<TKey, TValue>(this IEnumerable<TKey> keys, Func<TKey, TValue> valueFactory) => keys.ToDictionary(key => key, valueFactory);
+    public static Dictionary<TKey, TValue> MapTo<TKey, TValue>(this IEnumerable<TKey> keys, Func<TKey, TValue> valueFactory) => keys.ToDictionary(static key => key, valueFactory);
     /// <summary>
     /// Maps every element in the input sequence to a single value in the specified <paramref name="second"/> sequence. A <paramref name="predicate"/> decides
     /// </summary>
@@ -975,8 +975,8 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Returns an <see cref="IAsyncEnumerable{T}"/> wrapper around the specified <see cref="IEnumerable{T}"/>.
-    /// <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> or similar). Instead, use the corresponding aggregation methods from <see cref="ALinq.IEnumerableExtensions"/> such as <see cref="ALinq.IEnumerableExtensions.ToListAsync{TSource}(IEnumerable{TSource}, CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="IEnumerator{T}"/> are expected to be computationally expensive or time-consuming; every <c>MoveNext</c> call is wrapped in a new <see cref="Task"/> and <see langword="await"/>ed. To reduce overhead, usage of the asynchronous methods in <see cref="ALinq.IEnumerableExtensions"/> is recommended (which batch the entire enumeration and potential allocation of the aggregation result into a single <see cref="Task"/>).
+    /// Returns an <see cref="IAsyncEnumerable{T}"/> wrapper around the specified <see cref="IEnumerable{T}"/>. This is fundamentally different from <see cref="AsyncEnumerable.ToAsyncEnumerable{TSource}(IEnumerable{TSource})"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
+    /// <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> or similar). Instead, call <see cref="AsyncEnumerable.ToAsyncEnumerable{TSource}(IEnumerable{TSource})"/>, then use a method such as <see cref="AsyncEnumerable.ToListAsync{TSource}(IAsyncEnumerable{TSource}, CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="IEnumerator{T}"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="AsyncEnumerable"/> is recommended (which are optimized for their purpose).
     /// </summary>
     /// <typeparam name="T">The type of elements in the <see cref="IEnumerable{T}"/>.</typeparam>
     /// <param name="source">The <see cref="IEnumerable{T}"/> to wrap.</param>

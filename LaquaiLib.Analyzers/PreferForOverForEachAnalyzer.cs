@@ -12,7 +12,7 @@ namespace LaquaiLib.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class PreferForOverForEachAnalyzer : DiagnosticAnalyzer
 {
-    private static readonly DiagnosticDescriptor _descriptor = new(
+    public static DiagnosticDescriptor Descriptor { get; } = new(
         id: "LAQ0001",
         title: "Use a for loop when it is available instead of a foreach loop for improved performance",
         messageFormat: "Use a for loop when it is available instead of a foreach loop for improved performance",
@@ -22,7 +22,7 @@ public class PreferForOverForEachAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true
     );
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [_descriptor];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [Descriptor];
 
     public override void Initialize(AnalysisContext context)
     {
@@ -44,7 +44,7 @@ public class PreferForOverForEachAnalyzer : DiagnosticAnalyzer
         }
 
         // Report the diagnostic
-        var diagnostic = Diagnostic.Create(_descriptor, foreachStatement.ForEachKeyword.GetLocation());
+        var diagnostic = Diagnostic.Create(Descriptor, foreachStatement.ForEachKeyword.GetLocation());
         context.ReportDiagnostic(diagnostic);
     }
 

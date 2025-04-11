@@ -125,7 +125,7 @@ public static class MethodInfoExtensions
         }
 
         // Determine if the generic method requires an unsafe context
-        var unsafeRequired = method.GetParameters().Any(p => p.ParameterType.IsPointer);
+        var unsafeRequired = method.GetParameters().Any(static p => p.ParameterType.IsPointer);
 
 #pragma warning disable IDE0058 // Expression value is never used
         var sb = new StringBuilder();
@@ -139,12 +139,12 @@ public static class MethodInfoExtensions
             {
                 var genericTypeParams = method.GetGenericArguments();
                 sb.Append('{');
-                sb.Append(string.Join(", ", genericTypeParams.Select(t => t.Name)));
+                sb.Append(string.Join(", ", genericTypeParams.Select(static t => t.Name)));
                 sb.Append('}');
             }
 
             sb.Append('(');
-            sb.Append(string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
+            sb.Append(string.Join(", ", method.GetParameters().Select(static p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
             sb.Append(')');
 
             sb.AppendLine("\" />");
@@ -198,7 +198,7 @@ public static class MethodInfoExtensions
         List<string> genericParameters = null;
         if (method.IsGenericMethod)
         {
-            genericParameters = [.. method.GetGenericArguments().Select(t => t.Name)];
+            genericParameters = [.. method.GetGenericArguments().Select(static t => t.Name)];
             if (genericParametersTransform is not null)
             {
                 genericParametersTransform(genericParameters);
@@ -207,7 +207,7 @@ public static class MethodInfoExtensions
             sb.Append($"<{string.Join(", ", genericParameters)}>");
         }
 
-        var parameters = method.GetParameters().Select(p => (p.ParameterType.GetFriendlyName(), p.Name, p.DefaultValue)).ToList();
+        var parameters = method.GetParameters().Select(static p => (p.ParameterType.GetFriendlyName(), p.Name, p.DefaultValue)).ToList();
         if (parametersTransform is not null)
         {
             parametersTransform(parameters);

@@ -1,4 +1,7 @@
-﻿using LaquaiLib.Unsafe;
+﻿using System.Drawing;
+
+using LaquaiLib.Core;
+using LaquaiLib.Unsafe;
 
 namespace LaquaiLib.Extensions;
 
@@ -43,7 +46,7 @@ public static class RandomExtensions
         }
 
         // Otherwise we have little choice but to read into a buffer and write it to the stream
-        var buffer = MemoryManager.CreateBuffer(count);
+        Span<byte> buffer = count <= Configuration.MaxStackallocSize ? stackalloc byte[count] : new byte[count];
         random.NextBytes(buffer);
         destination.Write(buffer);
     }

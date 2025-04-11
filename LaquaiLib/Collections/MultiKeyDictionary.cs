@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using SrcsUnsafe = System.Runtime.CompilerServices.Unsafe;
@@ -16,6 +17,31 @@ namespace LaquaiLib.Collections;
 /// </remarks>
 public class MultiKeyDictionary<TValue>
 {
+    private class ObjectArraySpanComparer([DisallowNull] IEqualityComparer<object> inner) : IEqualityComparer<object>, IAlternateEqualityComparer<ReadOnlySpan<object>, object[]>
+    {
+        private readonly IEqualityComparer<object> _inner = inner;
+
+        private static ObjectArraySpanComparer instance;
+        public static ObjectArraySpanComparer GetInstance(IEqualityComparer<object> innerComparer = null) => instance ??= new ObjectArraySpanComparer(innerComparer ?? EqualityComparer<object>.Default);
+
+        public object[] Create(ReadOnlySpan<object> alternate) => alternate.ToArray();
+        public bool Equals(ReadOnlySpan<object> alternate, object[] other) => alternate.SequenceEqual(other, _inner);
+        public bool Equals(object x, object y) => _inner.Equals(x, y);
+        public int GetHashCode(ReadOnlySpan<object> alternate)
+        {
+            // Stolen directly from Array.cs
+            HashCode hashCode = default;
+
+            for (var i = alternate.Length >= 8 ? alternate.Length - 8 : 0; i < alternate.Length; i++)
+            {
+                hashCode.Add(_inner.GetHashCode(alternate[i]));
+            }
+
+            return hashCode.ToHashCode();
+        }
+        public int GetHashCode([DisallowNull] object obj) => obj.GetHashCode();
+    }
+
     [DoesNotReturn] private static void ThrowKeysNotFoundException() => throw new KeyNotFoundException("The specified key combination was not found.");
     [DoesNotReturn] private static void ThrowKeysAlreadyExistsException() => throw new InvalidOperationException("The specified key combination already exists in the dictionary.");
 
@@ -74,7 +100,7 @@ public class MultiKeyDictionary<TValue>
     /// <remarks>
     /// Multiple calls to this method have no effect after the backing storage has been allocated. To clear the backing storage associated with the specified <paramref name="keyCount"/>, use <see cref="Clear(int)"/>.
     /// </remarks>
-    public bool TryAllocate(int keyCount)
+    private bool TryAllocate(int keyCount)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(keyCount);
         ArgumentOutOfRangeException.ThrowIfZero(keyCount);
@@ -102,8 +128,6 @@ public class MultiKeyDictionary<TValue>
                 Debug.Fail("Impossible key count");
                 throw new ArgumentException("Impossible key count", nameof(keyCount));
         }
-
-        return true;
     }
     private void Allocate(int capacity, int keyCount)
     {
@@ -137,7 +161,8 @@ public class MultiKeyDictionary<TValue>
                 _eight = new(capacity);
                 break;
             case > 8 when _many is null:
-                _many = new(capacity);
+                // Need a custom comparer for this unfortunately
+                _many = new(capacity, ObjectArraySpanComparer.GetInstance(EqualityComparer<object>.Default));
                 _manyLookup = _many.GetAlternateLookup<ReadOnlySpan<object>>();
                 break;
         }
@@ -240,6 +265,7 @@ public class MultiKeyDictionary<TValue>
     public bool TryAdd(ReadOnlySpan<object> keys, TValue value)
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
+        Debug.Assert(!SrcsUnsafe.IsNullRef(ref theRef));
         if (existed)
         {
             return false;
@@ -315,8 +341,8 @@ public class MultiKeyDictionary<TValue>
     /// If <paramref name="addDefault"/> is <see langword="false"/>, that <see langword="ref"/> may be <see langword="null"/>.
     /// </summary>
     /// <param name="keys">The keys to get the <see langword="ref"/> for.</param>
-    /// <param name="addDefault">Whether to add a default value if the key is not found.</param>
-    /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the dictionary.</param>
+    /// <param name="addDefault">Whether to add a default value if the key is not found (or even allocate the entire dictionary if it is <see langword="null"/>).</param>
+    /// <param name="existed">An <see langword="out"/> variable that indicates whether the accessed dictionary was allocated and the key was present in the dictionary.</param>
     /// <returns>A <see langword="ref"/> into the backing storage of the corresponding dictionary for the specified keys.</returns>
     private ref TValue GetRef(ReadOnlySpan<object> keys, bool addDefault, out bool existed)
     {
@@ -324,13 +350,9 @@ public class MultiKeyDictionary<TValue>
 
         if (addDefault)
         {
-            // Fast path if the dictionary is not even allocated
-            if (!IsAllocated(keys.Length))
-            {
-                existed = false;
-                return ref SrcsUnsafe.NullRef<TValue>();
-            }
+            _ = TryAllocate(keys.Length);
 
+            // Unfortunately no fast path for this case
             switch (keys.Length)
             {
                 case 1:
@@ -364,7 +386,12 @@ public class MultiKeyDictionary<TValue>
         }
         else
         {
-            // Unfortunately no fast path for this case
+            // Fast path if the dictionary is not even allocated
+            if (!IsAllocated(keys.Length))
+            {
+                existed = false;
+                return ref SrcsUnsafe.NullRef<TValue>();
+            }
 
             switch (keys.Length)
             {

@@ -232,7 +232,7 @@ public static class AnyExtensions
             fields.UnionWith(baseType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
             baseType = baseType.BaseType;
         }
-        var fieldMap = fields.ToDictionary(f => f, f => f.DeclaringType);
+        var fieldMap = fields.ToDictionary(static f => f, static f => f.DeclaringType);
 
         foreach (var (field, asType) in fieldMap)
         {
@@ -253,7 +253,7 @@ public static class AnyExtensions
                 else
                 {
                     var array = (Array)field.GetValue(source);
-                    var arrayClone = (Array)array.Clone();
+                    var arrayClone = System.Runtime.CompilerServices.Unsafe.As<Array>(array.Clone());
                     // Since we can't make assumptions about the rank or length(s) of the Array, we have to defensively iterate the entire thing
                     using (var read = array.GetReadOnlySpanProvider<object>())
                     using (var write = arrayClone.GetSpanProvider<object>())

@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.IO;
 
 // This partial part implements significantly faster versions of the static File and Directory methods.
 // It seems like File just calls directly into the OS, and copying cross-device takes AGES. Buffering through memory is in the reigns of 100x faster.
-public partial class FileSystemHelper
+public static partial class FileSystemHelper
 {
     [StackTraceHidden]
     private static void EnsureArgumentsValid(ref string source, ref string destination, bool overwrite)
