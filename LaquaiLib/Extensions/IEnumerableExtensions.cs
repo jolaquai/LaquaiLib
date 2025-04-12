@@ -1,3 +1,4 @@
+using System.Diagnostics.Tracing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -200,26 +201,20 @@ public static partial class IEnumerableExtensions
     /// <param name="action">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
     {
+        if (source.TryGetNonEnumeratedCount(out var count) && count == 0)
+        {
+            return;
+        }
+        if (source.TryGetSpan(out var span) && span.Length > 0)
+        {
+            for (var i = 0; i < span.Length; i++)
+            {
+                action(span[i]);
+            }
+            return;
+        }
         switch (source)
         {
-            case T[] array:
-            {
-                var src = array.AsSpan();
-                for (var i = 0; i < src.Length; i++)
-                {
-                    action(src[i]);
-                }
-                return;
-            }
-            case List<T> other:
-            {
-                var src = other.AsSpan();
-                for (var i = 0; i < src.Length; i++)
-                {
-                    action(src[i]);
-                }
-                return;
-            }
             case IReadOnlyList<T> list:
             {
                 var length = list.Count;
@@ -247,18 +242,20 @@ public static partial class IEnumerableExtensions
     /// <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
     public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
     {
+        if (source.TryGetNonEnumeratedCount(out var count) && count == 0)
+        {
+            return;
+        }
+        if (source.TryGetSpan(out var span) && span.Length > 0)
+        {
+            for (var i = 0; i < span.Length; i++)
+            {
+                action(span[i], i);
+            }
+            return;
+        }
         switch (source)
         {
-            case T[] array:
-            {
-                SpanForEach(array.AsSpan());
-                return;
-            }
-            case List<T> other:
-            {
-                SpanForEach(other.AsSpan());
-                return;
-            }
             case IReadOnlyList<T> list:
             {
                 var length = list.Count;
@@ -276,14 +273,6 @@ public static partial class IEnumerableExtensions
                     action(element, i++);
                 }
                 return;
-            }
-        }
-
-        void SpanForEach(Span<T> src)
-        {
-            for (var i = 0; i < src.Length; i++)
-            {
-                action(src[i], i);
             }
         }
     }
@@ -864,6 +853,171 @@ public static partial class IEnumerableExtensions
                 }
         }
     }
+    /// <summary>
+    /// Finds the first index of the specified <paramref name="item"/> in the input sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="item">The item to find the index of.</param>
+    /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
+    /// <returns>The index of the first occurrence of the specified <paramref name="item"/> in the input sequence, or -1 if the item is not found.</returns>
+    public static int IndexOf<T>(this IEnumerable<T> source, T item, IEqualityComparer<T> equalityComparer = null)
+    {
+        equalityComparer ??= EqualityComparer<T>.Default;
+        if (source.TryGetSpan(out var span))
+        {
+            return span.IndexOf(item, equalityComparer);
+        }
+        else if (source is IReadOnlyList<T> list)
+        {
+            for (var i = 0; i < list.Count; i++)
+            {
+                if (equalityComparer.Equals(list[i], item))
+                {
+                    return i;
+                }
+            }
+        }
+        else
+        {
+            var i = 0;
+            foreach (var element in source)
+            {
+                if (equalityComparer.Equals(element, item))
+                {
+                    return i;
+                }
+                i++;
+            }
+        }
+        return -1;
+    }
+    /// <summary>
+    /// Finds the first starting index of the specified <paramref name="sequence"/> in the input sequence.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="sequence">The sequence to find the index of.</param>
+    /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
+    /// <returns>The index of the first occurrence of the specified <paramref name="sequence"/> in the input sequence, or -1 if the sequence is not found.</returns>
+    public static int IndexOf<T>(this IEnumerable<T> source, IEnumerable<T> sequence, IEqualityComparer<T> equalityComparer = null)
+    {
+        if (sequence.TryGetNonEnumeratedCount(out var count))
+        {
+            switch (count)
+            {
+                case 0:
+                    return 0;
+                case 1:
+                {
+                    if (sequence.TryGetSpan(out var asSpan))
+                    {
+                        return source.IndexOf(asSpan[0], equalityComparer);
+                    }
+                    else if (source is IReadOnlyList<T> list)
+                    {
+                        return list.IndexOf(list[0], equalityComparer);
+                    }
+                    return source.IndexOf(sequence.First(), equalityComparer);
+                }
+            }
+        }
+
+        equalityComparer ??= EqualityComparer<T>.Default;
+        var enumerated = sequence as T[] ?? sequence.ToArray();
+        if (enumerated.Length == 0)
+        {
+            return 0;
+        }
+
+        if (source.TryGetSpan(out var span))
+        {
+            return span.IndexOf(enumerated, equalityComparer);
+        }
+        else if (source is IReadOnlyList<T> list)
+        {
+            for (var i = 0; i < list.Count; i++)
+            {
+                if (list.Count - i < enumerated.Length)
+                {
+                    return -1;
+                }
+                var found = true;
+                for (var j = 0; j < enumerated.Length; j++)
+                {
+                    if (!equalityComparer.Equals(list[i + j], enumerated[j]))
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    return i;
+                }
+            }
+        }
+        else
+        {
+            // Handle general IEnumerable<T> case with enumerators
+            if (enumerated.Length == 0)
+            {
+                return 0;
+            }
+
+            var position = 0;
+            using var sourceEnumerator = source.GetEnumerator();
+
+            // Continue until we run out of elements
+            while (sourceEnumerator.MoveNext())
+            {
+                // For each position, check if the sequence matches
+                var currentPosition = position;
+                var matchPossible = true;
+
+                // Check first element
+                if (!equalityComparer.Equals(sourceEnumerator.Current, enumerated[0]))
+                {
+                    position++;
+                    continue;
+                }
+
+                // If sequence is just one element, we found a match
+                if (enumerated.Length == 1)
+                {
+                    return currentPosition;
+                }
+
+                // Check remaining elements in the sequence
+                var sequenceIndex = 1;
+                var tempEnumerator = source.Skip(currentPosition + 1).GetEnumerator();
+
+                while (sequenceIndex < enumerated.Length && tempEnumerator.MoveNext())
+                {
+                    if (!equalityComparer.Equals(tempEnumerator.Current, enumerated[sequenceIndex]))
+                    {
+                        matchPossible = false;
+                        break;
+                    }
+                    sequenceIndex++;
+                }
+
+                // Check if we ran out of elements before completing the sequence check
+                if (sequenceIndex < enumerated.Length)
+                {
+                    matchPossible = false;
+                }
+
+                if (matchPossible)
+                {
+                    return currentPosition;
+                }
+
+                position++;
+            }
+        }
+        return -1;
+    }
 
     /// <summary>
     /// Determines whether the majority of a sequence's elements satisfy a condition.
@@ -949,7 +1103,6 @@ public static partial class IEnumerableExtensions
         }
         return result;
     }
-
     /// <summary>
     /// Builds a <see cref="Dictionary{TKey, TValue}"/> from the input sequence, using the specified <paramref name="valueFactory"/> to generate values for each key.
     /// </summary>

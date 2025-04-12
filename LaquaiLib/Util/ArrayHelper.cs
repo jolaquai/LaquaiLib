@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace LaquaiLib.Util;
 
 /// <summary>
-/// Contains helper methods for arrays.
+/// Contains helper methods for arrays and spans.
 /// </summary>
 public static class ArrayHelper
 {

@@ -10,7 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CoreAudio" Version="1.40.0" />
-    <PackageReference Include="System.Management" Version="9.0.2" />
+    <PackageReference Include="System.Management" Version="9.0.4" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(SolutionDir)LaquaiLib.Core\LaquaiLib.Core.csproj" />

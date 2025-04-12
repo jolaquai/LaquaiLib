@@ -255,7 +255,7 @@ public partial class ScreenCapture
     public ScreenCapture()
     {
         var rect = Screen.PrimaryScreen!.Bounds;
-        ScaleCoordinates(Screen.AllScreens.ToList().IndexOf(Screen.PrimaryScreen), false, ref rect);
+        ScaleCoordinates(Array.IndexOf(Screen.AllScreens, Screen.PrimaryScreen), false, ref rect);
         Predicate = static () => true;
         InitTimer();
     }
@@ -267,7 +267,7 @@ public partial class ScreenCapture
     public ScreenCapture(Func<bool> predicate)
     {
         var rect = Screen.PrimaryScreen!.Bounds;
-        ScaleCoordinates(Screen.AllScreens.ToList().IndexOf(Screen.PrimaryScreen), false, ref rect);
+        ScaleCoordinates(Array.IndexOf(Screen.AllScreens, Screen.PrimaryScreen), false, ref rect);
         Predicate = predicate;
         InitTimer();
     }
