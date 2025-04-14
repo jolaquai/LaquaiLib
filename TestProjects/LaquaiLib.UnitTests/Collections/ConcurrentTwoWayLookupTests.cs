@@ -714,10 +714,7 @@ public class ConcurrentTwoWayLookupTests
             return false;
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Name);
-        }
+        public override int GetHashCode() => HashCode.Combine(Id, Name);
     }
 
     public class Address
@@ -734,10 +731,7 @@ public class ConcurrentTwoWayLookupTests
             return false;
         }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Street);
-        }
+        public override int GetHashCode() => HashCode.Combine(Id, Street);
     }
 
     #endregion

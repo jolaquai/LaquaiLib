@@ -175,7 +175,7 @@ public static partial class ArrayExtensions
                 throw new ArgumentOutOfRangeException(nameof(length), length, "The specified length exceeds the length of the destination array.");
             }
 
-            srcSpan[sourceIndex..length].CopyTo(destSpan[destinationIndex..length]);
+            srcSpan.Slice(sourceIndex, length).CopyTo(destSpan.Slice(destinationIndex, length));
         }
         finally
         {

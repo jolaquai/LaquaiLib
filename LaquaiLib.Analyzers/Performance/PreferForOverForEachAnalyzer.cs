@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 using static Microsoft.CodeAnalysis.SpecialType;
 
-namespace LaquaiLib.Analyzers;
+namespace LaquaiLib.Analyzers.Performance;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class PreferForOverForEachAnalyzer : DiagnosticAnalyzer

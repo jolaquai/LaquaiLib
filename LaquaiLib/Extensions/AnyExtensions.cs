@@ -19,12 +19,13 @@ public static class AnyExtensions
     /// <param name="source">The first object to use for the comparison.</param>
     /// <param name="other">The remaining objects to use for the comparison.</param>
     /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
-    public static bool AllEqual<T>(this T source, params ReadOnlySpan<T> other)
+    public static bool AllEqual<T>(this T source, ReadOnlySpan<T> other, IEqualityComparer<T> equalityComparer = null)
     {
         if (other.Length == 0)
         {
             return true;
         }
+        equalityComparer ??= EqualityComparer<T>.Default;
 
         for (var i = 0; i < other.Length; i++)
         {
@@ -33,8 +34,7 @@ public static class AnyExtensions
             {
                 return false;
             }
-
-            if (!source.Equals(elem))
+            else if (!equalityComparer.Equals(source, elem))
             {
                 return false;
             }
@@ -49,23 +49,31 @@ public static class AnyExtensions
     /// <param name="source">The first object to use for the comparison.</param>
     /// <param name="enumerable">The objects to use for the comparison. Enumeration will cease if an object is encountered that is not equal to <paramref name="source"/>.</param>
     /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
-    public static bool AllEqual<T>(this T source, IEnumerable<T> enumerable)
+    public static bool AllEqual<T>(this T source, IEnumerable<T> enumerable, IEqualityComparer<T> equalityComparer = null)
     {
+        if (enumerable.TryGetSpan(out var span))
+        {
+            return source.AllEqual(span, equalityComparer);
+        }
+        if (enumerable.TryGetNonEnumeratedCount(out var count) && count == 0)
+        {
+            return false;
+        }
+        equalityComparer ??= EqualityComparer<T>.Default;
+
         // Carry the extra bool around to check for an empty enumerable
-        var compared = false;
         foreach (var elem in enumerable)
         {
-            compared = true;
             if (source is null && elem is not null)
             {
                 return false;
             }
-            else if (!source.Equals(elem))
+            else if (!equalityComparer.Equals(source, elem))
             {
                 return false;
             }
         }
-        return compared;
+        return true;
     }
 
     /// <summary>
@@ -77,23 +85,23 @@ public static class AnyExtensions
     /// <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
     /// <param name="other">The remaining objects to use for the comparison.</param>
     /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
-    public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, params ReadOnlySpan<T> other)
+    public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, ReadOnlySpan<T> other, IEqualityComparer<TCompare> equalityComparer = null)
     {
         if (other.Length == 0)
         {
             return true;
         }
+        equalityComparer ??= EqualityComparer<TCompare>.Default;
 
         var sourceTransformed = transform(source);
         for (var i = 0; i < other.Length; i++)
         {
-            var elem = other[i];
+            var elem = transform(other[i]);
             if (sourceTransformed is null && elem is not null)
             {
                 return false;
             }
-
-            if (!sourceTransformed.Equals(elem))
+            if (!equalityComparer.Equals(sourceTransformed, elem))
             {
                 return false;
             }
@@ -109,25 +117,32 @@ public static class AnyExtensions
     /// <param name="transform">The transform function to invoke on each object before performing the comparison.</param>
     /// <param name="enumerable">The remaining objects to use for the comparison.</param>
     /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
-    public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, IEnumerable<T> enumerable)
+    public static bool EqualBy<T, TCompare>(this T source, Func<T, TCompare> transform, IEnumerable<T> enumerable, IEqualityComparer<TCompare> equalityComparer = null)
     {
-        // Carry the extra bool around to check for an empty enumerable
-        var compared = false;
+        if (enumerable.TryGetSpan(out var span))
+        {
+            return source.EqualBy(transform, span, equalityComparer);
+        }
+        if (enumerable.TryGetNonEnumeratedCount(out var count) && count == 0)
+        {
+            return false;
+        }
+        equalityComparer ??= EqualityComparer<TCompare>.Default;
+
         var sourceTransformed = transform(source);
         foreach (var elem in enumerable)
         {
-            compared = true;
             var elemTransformed = transform(elem);
             if (sourceTransformed is null && elemTransformed is not null)
             {
                 return false;
             }
-            else if (!sourceTransformed.Equals(elemTransformed))
+            else if (!equalityComparer.Equals(sourceTransformed, elemTransformed))
             {
                 return false;
             }
         }
-        return compared;
+        return true;
     }
 
     /// <summary>
@@ -167,6 +182,22 @@ public static class AnyExtensions
     {
         await action(source).ConfigureAwait(false);
         return source;
+    }
+    /// <summary>
+    /// Invokes an asynchronous <paramref name="action"/> that is passed the result of the <paramref name="source"/> object's <see cref="Task{TResult}"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the object to execute the <paramref name="action"/> on.</typeparam>
+    /// <param name="source">The object to execute the <paramref name="action"/> on.</param>
+    /// <param name="action">The action to execute on the <paramref name="source"/> object.</param>
+    /// <returns>A reference to the result of <paramref name="source"/> itself after <paramref name="action"/> has returned.</returns>
+    /// <remarks>
+    /// While not tremendously useful, this method can be used to effectively limit variable scopes or chain calls to the same object like when using a builder pattern.
+    /// </remarks>
+    public static async Task<T> With<T>(this Task<T> source, Func<T, Task> action)
+    {
+        var result = await source.ConfigureAwait(false);
+        await action(result).ConfigureAwait(false);
+        return result;
     }
 
     /// <summary>
@@ -210,7 +241,7 @@ public static class AnyExtensions
 
         var typeofT = typeof(T);
         T clone;
-    getUninitializedInstance:
+        getUninitializedInstance:
         if (typeofT.IsValueType)
         {
             System.Runtime.CompilerServices.Unsafe.SkipInit(out clone);

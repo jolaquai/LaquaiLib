@@ -737,7 +737,14 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public static Matrix<T> Identity(int size)
     {
         var result = new T[size, size];
-        result.Initialize(T.Zero);
+        // This will never fail
+        if (result.TryGetSpan<T>(out var provider, out var span))
+        {
+            using (provider)
+            {
+                span.Fill(T.Zero);
+            }
+        }
         for (var i = 0; i < size; i++)
         {
             result[i, i] = T.One;
@@ -753,7 +760,14 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public static Matrix<T> Zero(int rows, int columns)
     {
         var result = new T[rows, columns];
-        result.Initialize(T.Zero);
+        // This will never fail
+        if (result.TryGetSpan<T>(out var provider, out var span))
+        {
+            using (provider)
+            {
+                span.Fill(T.Zero);
+            }
+        }
         return new Matrix<T>(result);
     }
 

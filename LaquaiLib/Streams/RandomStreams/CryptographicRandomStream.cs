@@ -1,7 +1,5 @@
 using System.Security.Cryptography;
 
-using LaquaiLib.Unsafe;
-
 namespace LaquaiLib.Streams.RandomStreams;
 
 /// <summary>

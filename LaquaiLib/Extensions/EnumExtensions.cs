@@ -32,12 +32,14 @@ public static class EnumExtensions
     /// <typeparam name="TEnum">The <see cref="Enum"/> type to retrieve the flags for.</typeparam>
     /// <param name="any">The <typeparamref name="TEnum"/> value to retrieve the flags for.</param>
     /// <returns>The flags that are currently set in the specified <typeparamref name="TEnum"/> value or an empty array if no flags are set.</returns>
-    public static TEnum[] GetFlags<TEnum>(this TEnum any)
-        where TEnum : struct, Enum
+    public static TEnum[] GetFlags<TEnum>(this TEnum any) where TEnum : struct, Enum
     {
-        return typeof(TEnum).GetCustomAttribute<FlagsAttribute>() is null
-            ? throw new ArgumentException($"The given Enum type '{typeof(TEnum).FullName}' is not marked with [FlagsAttribute].", nameof(any))
-            : Array.FindAll(Enum.GetValues<TEnum>(), field => any.HasFlag(field) && !field.Equals(any));
+        if (typeof(TEnum).GetCustomAttribute<FlagsAttribute>() is null)
+        {
+            throw new ArgumentException($"The given Enum type '{typeof(TEnum).FullName}' is not marked with [FlagsAttribute].", nameof(any));
+        }
+        var flags = Enum.GetValues<TEnum>();
+        return flags.Where(f => any.HasFlag(f)).ToArray();
     }
 
     /// <summary>
@@ -46,7 +48,7 @@ public static class EnumExtensions
     /// <typeparam name="T">The type of the enum.</typeparam>
     /// <param name="source">The enum value to test.</param>
     /// <returns>A value indicating whether <paramref name="source"/> has a non-zero value.</returns>
-    public static bool HasValue<T>(this T source) where T : struct, Enum => source.GetFlags().Length != 0;
+    public static bool HasValue<T>(this T source) where T : struct, Enum => Convert.ToInt64(source) != 0;
 
     /// <summary>
     /// Determines if an enum value <paramref name="source"/> of <typeparamref name="T"/> has at least one value that another <paramref name="value"/> also has. May not work correctly with non-<see cref="FlagsAttribute"/> enums.
@@ -55,5 +57,14 @@ public static class EnumExtensions
     /// <param name="source">The enum value to test.</param>
     /// <param name="value">An enum value that is checked against.</param>
     /// <returns>A value indicating whether <paramref name="source"/> has at least one value that <paramref name="value"/> also has.</returns>
-    public static bool HasValue<T>(this T source, T value) where T : struct, Enum => source.GetFlags().Intersect(value.GetFlags()).Any();
+    public static bool HasValue<T>(this T source, T value) where T : struct, Enum
+    {
+        var intersect = source.GetFlags().Intersect(value.GetFlags()).ToArray();
+        return intersect.Length switch
+        {
+            0 => false,
+            1 => Convert.ToUInt64(intersect[0]) != 0,
+            _ => true,
+        };
+    }
 }

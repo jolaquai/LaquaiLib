@@ -9,53 +9,13 @@ namespace LaquaiLib.Extensions;
 public static class IDictionaryExtensions
 {
     /// <summary>
-    /// Creates an inverted <see cref="Dictionary{TKey, TValue}"/>, where the original keys are now the values and vice versa.
-    /// </summary>
-    /// <typeparam name="TKey">The Type of the keys of the original <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-    /// <typeparam name="TValue">The Type of the values of the original <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-    /// <param name="source">The original <see cref="Dictionary{TKey, TValue}"/>. Must be mutable.</param>
-    /// <returns>A new <see cref="Dictionary{TKey, TValue}"/> where the keys are the values of the original <see cref="Dictionary{TKey, TValue}"/> and vice versa.</returns>
-    public static Dictionary<TValue, TKey> Invert<TKey, TValue>(this IDictionary<TKey, TValue> source)
-        where TKey : notnull
-        where TValue : notnull
-    {
-        Dictionary<TValue, TKey> ret = [];
-        foreach (var kv in source)
-        {
-            ret.Add(kv.Value, kv.Key);
-        }
-        return ret;
-    }
-    /// <summary>
-    /// Creates a content-aware inverse <see cref="Dictionary{TKey, TValue}"/> where the original keys are now values grouped by the original values.
-    /// </summary>
-    /// <typeparam name="TKey">The Type of the keys of the original <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-    /// <typeparam name="TValue">The Type of the values of the original <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-    /// <param name="source">The original <see cref="IDictionary{TKey, TValue}"/>. Must be mutable.</param>
-    /// <returns>An inverted <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
-    public static Dictionary<TValue, IEnumerable<TKey>> InvertContentAware<TKey, TValue>(this IDictionary<TKey, TValue> source)
-        where TKey : notnull
-        where TValue : notnull
-    {
-        var grouping = source.GroupBy(static kv => kv.Value);
-        return grouping.Aggregate(
-            new Dictionary<TValue, IEnumerable<TKey>>(),
-            static (acc, grouping) =>
-            {
-                acc.Add(grouping.Key, grouping.Select(static x => x.Key));
-                return acc;
-            }
-        );
-    }
-    /// <summary>
     /// Creates a mutable shallow copy of the <see cref="IDictionary{TKey, TValue}"/>.
     /// </summary>
     /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
     /// <typeparam name="TValue">They Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
     /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to clone. Must be mutable.</param>
     /// <returns>A shallow copy of the <see cref="IDictionary{TKey, TValue}"/>.</returns>
-    public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> source)
-        where TKey : notnull => source.ToDictionary();
+    public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> source) where TKey : notnull => source.ToDictionary();
 
     /// <summary>
     /// Gets the value associated with the specified key or adds a new key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not already exist.
@@ -324,7 +284,7 @@ public static class IDictionaryExtensions
         ArgumentNullException.ThrowIfNull(dictionary);
         ArgumentNullException.ThrowIfNull(key);
         ref var reference = ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
-        existed = System.Runtime.CompilerServices.Unsafe.IsNullRef(ref reference);
+        existed = !System.Runtime.CompilerServices.Unsafe.IsNullRef(ref reference);
         return ref reference;
     }
     /// <summary>
@@ -362,6 +322,7 @@ public static class IDictionaryExtensions
     {
         ArgumentNullException.ThrowIfNull(dictionary);
         ArgumentNullException.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(valueFactory);
         ref var reference = ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
         if (!existed)
         {

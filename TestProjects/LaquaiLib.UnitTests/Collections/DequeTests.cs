@@ -40,7 +40,7 @@ public class DequeTests
     [Fact]
     public void LinkedListConstructorShouldCreateDequeFromLinkedList()
     {
-        var linkedList = new LinkedList<string>(new[] { "a", "b", "c" });
+        var linkedList = new LinkedList<string>(["a", "b", "c"]);
         var deque = new Deque<string>(linkedList);
         Assert.Equal(3, deque.Count);
         Assert.False(deque.IsEmpty);
@@ -364,7 +364,7 @@ public class DequeTests
     public void EnsureIntegrityShouldNotThrowForValidDeque()
     {
         var deque = new Deque<int>([1, 2, 3]);
-        var exception = Record.Exception(() => deque.EnsureIntegrity());
+        var exception = Record.Exception(deque.EnsureIntegrity);
         Assert.Null(exception);
     }
 

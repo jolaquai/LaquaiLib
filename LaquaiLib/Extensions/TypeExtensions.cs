@@ -27,7 +27,7 @@ public static partial class TypeExtensions
                 return Activator.CreateInstance(type);
             }
             var types = parameters.ToArray(static obj => obj?.GetType());
-            return type.GetConstructor(types).New(parameters);
+            return type.GetConstructor(types).Invoke(parameters);
         }
         catch
         {

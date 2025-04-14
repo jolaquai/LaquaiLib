@@ -4,7 +4,7 @@
         <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
-        <CoreVersion>1.4.0</CoreVersion>
+        <CoreVersion>10.0.0</CoreVersion>
         <PackageVersion>$(CoreVersion)</PackageVersion>
         <FileVersion>$(CoreVersion)</FileVersion>
         <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
@@ -14,7 +14,8 @@
         <CoreUrl>https://github.com/jolaquai/LaquaiLib</CoreUrl>
         <Authors>$(CoreAuthors)</Authors>
         <Description>$(CoreDescription)</Description>
-        <Copyright>(C) $(CoreAuthors) 20xx</Copyright><IncludeSource>True</IncludeSource>
+        <Copyright>(C) $(CoreAuthors) 20xx</Copyright>
+        <IncludeSource>True</IncludeSource>
         <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
         <PackageId>$(Title)</PackageId>
         <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
