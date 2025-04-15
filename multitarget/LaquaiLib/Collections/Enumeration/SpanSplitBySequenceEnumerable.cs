@@ -49,8 +49,19 @@ public ref struct SpanSplitBySequenceEnumerable<T>(ReadOnlySpan<T> source, ReadO
                 {
                     return false;
                 }
-
+#if NET9_0
+                var end = -1;
+                for (var i = 0; i < _source.Length - _sequence.Length + 1; i++)
+                {
+                    if (_source.Slice(i, _sequence.Length).SequenceEqual(_sequence, _equalityComparer))
+                    {
+                        end = i;
+                        break;
+                    }
+                }
+#elif NET10_0_OR_GREATER
                 var end = _source.IndexOf(_sequence, _equalityComparer);
+#endif
                 if (end == -1)
                 {
                     Current = _source;

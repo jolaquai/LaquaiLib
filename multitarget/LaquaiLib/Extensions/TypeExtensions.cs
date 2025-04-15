@@ -662,59 +662,47 @@ public static partial class TypeExtensions
         }
         return "public";
     }
-    internal static bool IsInaccessibleAsReflectedType(string modifiers, ReflectionOptions.InheritanceBehavior inheritance)
+    internal static bool IsInaccessibleAsReflectedType(string modifiers, ReflectionOptions.InheritanceBehavior inheritance) => modifiers.ToUpperInvariant() switch
     {
-        return modifiers.ToUpperInvariant() switch
-        {
-            "PRIVATE" => true,
-            "PRIVATE PROTECTED" => true, // technically this COULD return true, but that would require the reflected type to be in the same assembly as the reflected type, which is... possible, but stupid
-            "PROTECTED" => inheritance is not ReflectionOptions.InheritanceBehavior.Inherit,
-            "INTERNAL" => true,
-            "PROTECTED INTERNAL" => inheritance is not ReflectionOptions.InheritanceBehavior.Inherit,
-            "PUBLIC" => false,
-            _ => true
-        };
-    }
-    internal static string GetAccessibility(MethodBase methodBase)
+        "PRIVATE" => true,
+        "PRIVATE PROTECTED" => true, // technically this COULD return true, but that would require the reflected type to be in the same assembly as the reflected type, which is... possible, but stupid
+        "PROTECTED" => inheritance is not ReflectionOptions.InheritanceBehavior.Inherit,
+        "INTERNAL" => true,
+        "PROTECTED INTERNAL" => inheritance is not ReflectionOptions.InheritanceBehavior.Inherit,
+        "PUBLIC" => false,
+        _ => true
+    };
+    internal static string GetAccessibility(MethodBase methodBase) => methodBase switch
     {
-        return methodBase switch
-        {
-            { IsPublic: true } => "public",
-            { IsFamily: true } => "protected",
-            { IsAssembly: true } => "internal",
-            { IsPrivate: true } => "private",
-            { IsFamilyAndAssembly: true } => "private protected",
-            { IsFamilyOrAssembly: true } => "protected internal",
-            _ => "private"
-        };
-    }
-    internal static string GetAccessibility(FieldInfo fieldInfo)
+        { IsPublic: true } => "public",
+        { IsFamily: true } => "protected",
+        { IsAssembly: true } => "internal",
+        { IsPrivate: true } => "private",
+        { IsFamilyAndAssembly: true } => "private protected",
+        { IsFamilyOrAssembly: true } => "protected internal",
+        _ => "private"
+    };
+    internal static string GetAccessibility(FieldInfo fieldInfo) => fieldInfo switch
     {
-        return fieldInfo switch
-        {
-            { IsPublic: true } => "public",
-            { IsFamily: true } => "protected",
-            { IsAssembly: true } => "internal",
-            { IsPrivate: true } => "private",
-            { IsFamilyAndAssembly: true } => "private protected",
-            { IsFamilyOrAssembly: true } => "protected internal",
-            _ => "private"
-        };
-    }
-    internal static string GetAccessibility(Type type)
+        { IsPublic: true } => "public",
+        { IsFamily: true } => "protected",
+        { IsAssembly: true } => "internal",
+        { IsPrivate: true } => "private",
+        { IsFamilyAndAssembly: true } => "private protected",
+        { IsFamilyOrAssembly: true } => "protected internal",
+        _ => "private"
+    };
+    internal static string GetAccessibility(Type type) => type switch
     {
-        return type switch
-        {
-            { IsPublic: true } => "public",
-            { IsNestedPublic: true } => "public",
-            { IsNestedFamily: true } => "protected",
-            { IsNestedAssembly: true } => "internal",
-            { IsNestedPrivate: true } => "private",
-            { IsNestedFamANDAssem: true } => "private protected",
-            { IsNestedFamORAssem: true } => "protected internal",
-            _ => "private"
-        };
-    }
+        { IsPublic: true } => "public",
+        { IsNestedPublic: true } => "public",
+        { IsNestedFamily: true } => "protected",
+        { IsNestedAssembly: true } => "internal",
+        { IsNestedPrivate: true } => "private",
+        { IsNestedFamANDAssem: true } => "private protected",
+        { IsNestedFamORAssem: true } => "protected internal",
+        _ => "private"
+    };
     internal static string GetAccessibility(this MemberInfo member)
     {
         ArgumentNullException.ThrowIfNull(member);

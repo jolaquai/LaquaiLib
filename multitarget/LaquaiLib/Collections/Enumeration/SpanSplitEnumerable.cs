@@ -12,7 +12,7 @@ public ref struct SpanSplitEnumerable<T>(ReadOnlySpan<T> source, ReadOnlySpan<T>
 {
     private ReadOnlySpan<T> _source = source;
     private readonly ReadOnlySpan<T> _ts = splits;
-    private readonly IEqualityComparer<T> _equalityComparer = equalityComparer;
+    private readonly IEqualityComparer<T> _equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
 
     /// <summary>
     /// Retrieves the current segment at which the enumerator is positioned.
@@ -51,7 +51,26 @@ public ref struct SpanSplitEnumerable<T>(ReadOnlySpan<T> source, ReadOnlySpan<T>
                     return false;
                 }
 
+#if NET9_0
+                var end = -1;
+                for (var i = 0; i < _source.Length; i++)
+                {
+                    for (var k = 0; k < _ts.Length; k++)
+                    {
+                        if (_equalityComparer.Equals(_source[i], _ts[k]))
+                        {
+                            end = i;
+                            break;
+                        }
+                    }
+                    if (end != -1)
+                    {
+                        break;
+                    }
+                }
+#elif NET10_0_OR_GREATER
                 var end = _source.IndexOfAny(_ts, _equalityComparer);
+#endif
                 if (end == -1)
                 {
                     Current = _source;

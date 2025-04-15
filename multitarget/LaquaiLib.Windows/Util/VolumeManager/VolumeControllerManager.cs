@@ -28,13 +28,10 @@ public class VolumeControllerManager
     /// <param name="onFocusReceived">The <see cref="Action{T}"/> to be called when the window or process represented by the <see cref="VolumeController"/> receives focus. If omitted or <see langword="null"/>, the default focus received action will be used.</param>
     /// <param name="onFocusLost">The <see cref="Action{T}"/> to be called when the window or process represented by the <see cref="VolumeController"/> loses focus. If omitted or <see langword="null"/>, the default focus lost action will be used.</param>
     /// <returns>The created <see cref="VolumeController"/>.</returns>
-    public VolumeController CreateController(string processNameOrTitle, Action<AudioSessionControl2> onFocusReceived = null, Action<AudioSessionControl2> onFocusLost = null)
+    public VolumeController CreateController(string processNameOrTitle, Action<AudioSessionControl2> onFocusReceived = null, Action<AudioSessionControl2> onFocusLost = null) => new VolumeController()
     {
-        return new VolumeController()
-        {
-            ProcessNameOrTitle = processNameOrTitle,
-            OnFocusReceived = onFocusReceived ?? _defaultOnFocusReceived,
-            OnFocusLost = onFocusLost ?? _defaultOnFocusLost
-        };
-    }
+        ProcessNameOrTitle = processNameOrTitle,
+        OnFocusReceived = onFocusReceived ?? _defaultOnFocusReceived,
+        OnFocusLost = onFocusLost ?? _defaultOnFocusLost
+    };
 }

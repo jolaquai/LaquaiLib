@@ -178,16 +178,13 @@ public static class AsyncLogger
     /// <summary>
     /// Creates a <see cref="Task"/> that completes when the message queue is empty.
     /// </summary>
-    public static Task FlushAsync()
-    {
-        return Task.Run(static async () =>
-        {
-            while (Processing)
-            {
-                await Task.Delay(10).ConfigureAwait(false);
-            }
-        });
-    }
+    public static Task FlushAsync() => Task.Run(static async () =>
+                                            {
+                                                while (Processing)
+                                                {
+                                                    await Task.Delay(10).ConfigureAwait(false);
+                                                }
+                                            });
     /// <summary>
     /// Blocks the calling thread until the message queue is empty.
     /// </summary>

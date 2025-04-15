@@ -16,8 +16,5 @@ public class ResetEventArgs<T>
     /// Initializes a new instance of the <see cref="ResetEventArgs{T}"/> class.
     /// </summary>
     /// <param name="newContents">The new contents.</param>
-    public ResetEventArgs(IEnumerable<T> newContents)
-    {
-        NewContents = newContents;
-    }
+    public ResetEventArgs(IEnumerable<T> newContents) => NewContents = newContents;
 }

@@ -29,8 +29,5 @@ public class AssertionFailureException<T> : Exception
     /// <param name="innerException">The exception that is the cause of the current exception.</param>
     /// <param name="message">A message that described the assertion failure.</param>
     public AssertionFailureException(T value, Exception innerException = null, [CallerArgumentExpression(nameof(value))] string message = null)
-        : base(string.IsNullOrWhiteSpace(message) ? MessageFromCaller : message, innerException)
-    {
-        Value = value;
-    }
+        : base(string.IsNullOrWhiteSpace(message) ? MessageFromCaller : message, innerException) => Value = value;
 }

@@ -16,8 +16,5 @@ public class RangeAddedEventArgs<T>
     /// Initializes a new instance of the <see cref="RangeAddedEventArgs{T}"/> class.
     /// </summary>
     /// <param name="items">The items that were added.</param>
-    public RangeAddedEventArgs(IEnumerable<T> items)
-    {
-        Items = items;
-    }
+    public RangeAddedEventArgs(IEnumerable<T> items) => Items = items;
 }

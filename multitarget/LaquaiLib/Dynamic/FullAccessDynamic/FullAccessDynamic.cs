@@ -30,14 +30,8 @@ public class FullAccessDynamic<T> : DynamicObject
 
     private static readonly Dictionary<string, MemberInfo> _memberCache = [];
 
-    internal FullAccessDynamic()
-    {
-        _instance = Activator.CreateInstance<T>();
-    }
-    internal FullAccessDynamic(T instance)
-    {
-        _instance = instance;
-    }
+    internal FullAccessDynamic() => _instance = Activator.CreateInstance<T>();
+    internal FullAccessDynamic(T instance) => _instance = instance;
     /// <inheritdoc/>
     public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
     {

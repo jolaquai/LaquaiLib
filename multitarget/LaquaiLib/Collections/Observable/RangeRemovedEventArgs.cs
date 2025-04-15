@@ -16,8 +16,5 @@ public class RangeRemovedEventArgs<T>
     /// Initializes a new instance of the <see cref="RangeRemovedEventArgs{T}"/> class.
     /// </summary>
     /// <param name="items">The items that were removed.</param>
-    public RangeRemovedEventArgs(IEnumerable<T> items)
-    {
-        Items = items;
-    }
+    public RangeRemovedEventArgs(IEnumerable<T> items) => Items = items;
 }

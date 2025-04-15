@@ -78,12 +78,9 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
     /// <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TempAlloc Create<T>(int count)
-        where T : struct
-    {
-        return count <= 0
+        where T : struct => count <= 0
             ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
             : new TempAlloc(Marshal.SizeOf<T>() * count);
-    }
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
@@ -92,12 +89,9 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TempAlloc Create<T>(int count, bool clear)
-        where T : struct
-    {
-        return count <= 0
+        where T : struct => count <= 0
             ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
             : new TempAlloc(Marshal.SizeOf<T>() * count, clear);
-    }
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> for the
     /// </summary>

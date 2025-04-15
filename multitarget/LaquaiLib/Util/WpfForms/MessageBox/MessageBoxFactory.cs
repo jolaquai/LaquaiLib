@@ -50,26 +50,17 @@ public sealed partial class MessageBoxFactory
     /// </summary>
     public uint OtherOptions => Configuration.OtherOptions;
 
-    private MessageBoxFactory()
-    {
-        Configuration = MessageBoxConfiguration.Default;
-    }
+    private MessageBoxFactory() => Configuration = MessageBoxConfiguration.Default;
     /// <summary>
     /// Initialies a new <see cref="MessageBoxFactory"/> with the same default values as <paramref name="other"/>.
     /// </summary>
     /// <param name="other">The <see cref="MessageBoxFactory"/> to copy from.</param>
-    public MessageBoxFactory(MessageBoxFactory other)
-    {
-        Configuration = new MessageBoxConfiguration(other.Configuration);
-    }
+    public MessageBoxFactory(MessageBoxFactory other) => Configuration = new MessageBoxConfiguration(other.Configuration);
     /// <summary>
     /// Initializes a new <see cref="MessageBoxFactory"/> with the specified <paramref name="config"/>.
     /// </summary>
     /// <param name="config">The <see cref="MessageBoxConfiguration"/> to use.</param>
-    public MessageBoxFactory(MessageBoxConfiguration config)
-    {
-        Configuration = config;
-    }
+    public MessageBoxFactory(MessageBoxConfiguration config) => Configuration = config;
     /// <summary>
     /// Initializes a new <see cref="MessageBoxFactory"/> with the specified parameters. Any are omissible and will default to their respective default values.
     /// </summary>
@@ -81,10 +72,7 @@ public sealed partial class MessageBoxFactory
     /// <param name="icon">The <see cref="Icon"/> value to use.</param>
     /// <param name="modality">The <see cref="Modality"/> value to use.</param>
     /// <param name="otherOptions">The <see cref="OtherOptions"/> value to use.</param>
-    public MessageBoxFactory(nint ownerHwnd = 0, string text = "", string caption = nameof(MessageBox), uint button = 0, uint defaultButton = 0, uint icon = 0, uint modality = 0, uint otherOptions = 0)
-    {
-        Configuration = new MessageBoxConfiguration(ownerHwnd, text, caption, button, defaultButton, icon, modality, otherOptions);
-    }
+    public MessageBoxFactory(nint ownerHwnd = 0, string text = "", string caption = nameof(MessageBox), uint button = 0, uint defaultButton = 0, uint icon = 0, uint modality = 0, uint otherOptions = 0) => Configuration = new MessageBoxConfiguration(ownerHwnd, text, caption, button, defaultButton, icon, modality, otherOptions);
 
     private static partial class Interop
     {

@@ -48,23 +48,17 @@ public sealed class DetachedDequeNodeException<T> : Exception
     /// <param name="node">The detached <see cref="DequeNode{T}"/>.</param>
     /// <param name="offense">The kind of offense that <paramref name="node"/> committed which caused this exception to be thrown.</param>
     /// <param name="innerException">The exception that is the cause of the current exception.</param>
-    public DetachedDequeNodeException(DequeNode<T> node, OffenseKind offense, Exception innerException) : this(node, offense)
-    {
-        InnerException = innerException;
-    }
+    public DetachedDequeNodeException(DequeNode<T> node, OffenseKind offense, Exception innerException) : this(node, offense) => InnerException = innerException;
 
-    private static string GetOffenseString(OffenseKind offense)
+    private static string GetOffenseString(OffenseKind offense) => offense switch
     {
-        return offense switch
-        {
-            OffenseKind.NoDeque => $"The specified {nameof(DequeNode<>)} is not attached to a {nameof(Deque<>)}.",
-            OffenseKind.NoNext => $"The specified {nameof(DequeNode<>)} is missing a reference to its next node.",
-            OffenseKind.NoPrevious => $"The specified {nameof(DequeNode<>)} is missing a reference to its previous node.",
-            OffenseKind.InconsistentNext => $"The specified {nameof(DequeNode<>)}'s next node does not have a reference to the specified {nameof(DequeNode<>)} as its previous node.",
-            OffenseKind.InconsistentPrevious => $"The specified {nameof(DequeNode<>)}'s previous node does not have a reference to the specified {nameof(DequeNode<>)} as its next node.",
-            _ => throw new ArgumentOutOfRangeException(nameof(offense), offense, $"The specified {nameof(OffenseKind)} is not supported.")
-        };
-    }
+        OffenseKind.NoDeque => $"The specified {nameof(DequeNode<>)} is not attached to a {nameof(Deque<>)}.",
+        OffenseKind.NoNext => $"The specified {nameof(DequeNode<>)} is missing a reference to its next node.",
+        OffenseKind.NoPrevious => $"The specified {nameof(DequeNode<>)} is missing a reference to its previous node.",
+        OffenseKind.InconsistentNext => $"The specified {nameof(DequeNode<>)}'s next node does not have a reference to the specified {nameof(DequeNode<>)} as its previous node.",
+        OffenseKind.InconsistentPrevious => $"The specified {nameof(DequeNode<>)}'s previous node does not have a reference to the specified {nameof(DequeNode<>)} as its next node.",
+        _ => throw new ArgumentOutOfRangeException(nameof(offense), offense, $"The specified {nameof(OffenseKind)} is not supported.")
+    };
 
     /// <summary>
     /// Identifies the kind of offense that <see cref="Node"/> committed which caused this exception to be thrown.

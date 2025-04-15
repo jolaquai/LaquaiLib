@@ -378,17 +378,14 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
         var hashBytes = await SHA256.HashDataAsync(stream, cancellationToken).ConfigureAwait(false);
         return Convert.ToHexStringLower(hashBytes);
     }
-    private static DirectoryCopyState CreateNewCopyState(string sourcePath, string destinationPath)
+    private static DirectoryCopyState CreateNewCopyState(string sourcePath, string destinationPath) => new DirectoryCopyState
     {
-        return new DirectoryCopyState
-        {
-            SourcePath = sourcePath,
-            DestinationPath = destinationPath,
-            PendingFiles = [],
-            CompletedFiles = [],
-            LastUpdated = DateTime.UtcNow
-        };
-    }
+        SourcePath = sourcePath,
+        DestinationPath = destinationPath,
+        PendingFiles = [],
+        CompletedFiles = [],
+        LastUpdated = DateTime.UtcNow
+    };
     private async Task SaveStateAsync(DirectoryCopyState state)
     {
         var json = JsonSerializer.Serialize(state, ResumableDirectoryCopySerializerContext.Default.DirectoryCopyState);

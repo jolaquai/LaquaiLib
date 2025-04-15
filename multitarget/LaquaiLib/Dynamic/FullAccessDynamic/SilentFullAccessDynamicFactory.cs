@@ -25,24 +25,18 @@ public static class SilentFullAccessDynamicFactory
     /// </summary>
     /// <param name="type">The type of the object to wrap.</param>
     /// <returns>A new instance of <see cref="SilentFullAccessDynamic{T}"/> that has the specified <paramref name="type"/> and wraps a new instance of that type.</returns>
-    public static dynamic Create(Type type)
-    {
-        return type == typeof(void)
+    public static dynamic Create(Type type) => type == typeof(void)
             ? null
             : (dynamic)Activator.CreateInstance(typeof(SilentFullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [Activator.CreateInstance(type)], null);
-    }
     /// <summary>
     /// Creates a new instance of <see cref="SilentFullAccessDynamic{T}"/> that has the specified <paramref name="type"/> and wraps the specified object <paramref name="instance"/>. This may be <see langword="null"/>.
     /// </summary>
     /// <param name="type">The type of the object to wrap.</param>
     /// <param name="instance">The instance to wrap.</param>
     /// <returns>A new instance of <see cref="SilentFullAccessDynamic{T}"/> that has the specified <paramref name="type"/> and wraps the specified object <paramref name="instance"/>.</returns>
-    public static dynamic Create(Type type, object instance)
-    {
-        return type == typeof(void)
+    public static dynamic Create(Type type, object instance) => type == typeof(void)
             ? null
             : (dynamic)Activator.CreateInstance(typeof(SilentFullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [instance], null);
-    }
 
     /// <summary>
     /// Creates a new instance of <see cref="SilentFullAccessDynamic{T}"/> that wraps the current object instance.

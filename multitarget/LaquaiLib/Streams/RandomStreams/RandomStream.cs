@@ -24,17 +24,11 @@ public class RandomStream : ExceptStream
     /// <summary>
     /// Initializes a new <see cref="RandomStream"/> with the specified seed.
     /// </summary>
-    public RandomStream(int seed)
-    {
-        Random = new Random(seed);
-    }
+    public RandomStream(int seed) => Random = new Random(seed);
     /// <summary>
     /// Initializes a new <see cref="RandomStream"/> with the specified <see cref="System.Random"/> instance.
     /// </summary>
-    public RandomStream(Random random)
-    {
-        Random = random;
-    }
+    public RandomStream(Random random) => Random = random;
 
     /// <summary>
     /// The length of the <see cref="Stream"/>. This is irrelevant for <see cref="RandomStream"/>. Its length will never change.

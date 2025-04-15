@@ -32,10 +32,7 @@ public readonly struct GCHandle<T> : ISpanProvider<byte>, IDisposable
     /// </summary>
     /// <param name="value">The object to be referenced.</param>
     /// <param name="type">The <see cref="GCHandleType"/> of the object to be referenced.</param>
-    public GCHandle(T value, GCHandleType type = GCHandleType.Normal)
-    {
-        Handle = GCHandle.Alloc(value, type);
-    }
+    public GCHandle(T value, GCHandleType type = GCHandleType.Normal) => Handle = GCHandle.Alloc(value, type);
     /// <summary>
     /// Initializes a new <see cref="GCHandle{T}"/> from a handle to a managed object.
     /// </summary>
@@ -53,18 +50,12 @@ public readonly struct GCHandle<T> : ISpanProvider<byte>, IDisposable
     /// </summary>
     /// <param name="ptr">The pointer to an object.</param>
     /// <param name="type">The <see cref="GCHandleType"/> of the object to be referenced.</param>
-    public unsafe GCHandle(T* ptr, GCHandleType type = GCHandleType.Pinned)
-    {
-        Handle = GCHandle.Alloc(*ptr, type);
-    }
+    public unsafe GCHandle(T* ptr, GCHandleType type = GCHandleType.Pinned) => Handle = GCHandle.Alloc(*ptr, type);
     /// <summary>
     /// Initializes a new <see cref="GCHandle{T}"/> typed <typeparamref name="T"/> from an existing untyped handle to a managed object.
     /// </summary>
     /// <param name="handle">The existing untyped handle to a managed object.</param>
-    public GCHandle(GCHandle handle)
-    {
-        Handle = handle;
-    }
+    public GCHandle(GCHandle handle) => Handle = handle;
     #endregion
 
     /// <inheritdoc cref="GCHandle.AddrOfPinnedObject"/>

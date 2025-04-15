@@ -197,10 +197,7 @@ public readonly struct ExtendedDebugTaskAwaiter : INotifyCompletion
     private readonly ExtendedDebugTask _edt;
     private readonly StackTrace _creationStack;
 
-    private ExtendedDebugTaskAwaiter(StackTrace creationStack)
-    {
-        _creationStack = creationStack;
-    }
+    private ExtendedDebugTaskAwaiter(StackTrace creationStack) => _creationStack = creationStack;
     /// <summary>
     /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
     /// </summary>
@@ -256,14 +253,8 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
         _edt = edt;
         _creationStack = creationStack;
     }
-    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack)
-    {
-        _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
-    }
-    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack)
-    {
-        _options = options;
-    }
+    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack) => _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
+    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack) => _options = options;
     public ConfiguredExtendedDebugTaskAwaiter GetAwaiter() => new(_task.ConfigureAwait(_options).GetAwaiter(), _edt, _creationStack);
 
     #region ConfiguredExtendedDebugTaskAwaiter
@@ -279,10 +270,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
         private readonly ExtendedDebugTask _edt;
         private readonly StackTrace _creationStack;
 
-        private ConfiguredExtendedDebugTaskAwaiter(StackTrace creationStack)
-        {
-            _creationStack = creationStack;
-        }
+        private ConfiguredExtendedDebugTaskAwaiter(StackTrace creationStack) => _creationStack = creationStack;
         /// <summary>
         /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
         /// </summary>
@@ -474,10 +462,7 @@ public readonly struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
     private readonly ExtendedDebugTask<TResult> _edt;
     private readonly StackTrace _creationStack;
 
-    private ExtendedDebugTaskAwaiter(StackTrace creationStack)
-    {
-        _creationStack = creationStack;
-    }
+    private ExtendedDebugTaskAwaiter(StackTrace creationStack) => _creationStack = creationStack;
     /// <summary>
     /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
     /// </summary>
@@ -532,14 +517,8 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
         _edt = edt;
         _creationStack = creationStack;
     }
-    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack)
-    {
-        _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
-    }
-    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack)
-    {
-        _options = options;
-    }
+    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack) => _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
+    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack) => _options = options;
     public ConfiguredExtendedDebugTaskAwaiter GetAwaiter() => new(_task.ConfigureAwait(_options).GetAwaiter(), _edt, _creationStack);
 
     #region ConfiguredExtendedDebugTaskAwaiter
@@ -565,10 +544,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
         /// </summary>
         /// <param name="awaiter">The wrapped awaiter.</param>
         /// <param name="creationStack">The stack trace at the creation point of the task.</param>
-        public ConfiguredExtendedDebugTaskAwaiter(ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter awaiter, ExtendedDebugTask<TResult> edt, StackTrace creationStack) : this(creationStack, edt)
-        {
-            _awaiter = awaiter;
-        }
+        public ConfiguredExtendedDebugTaskAwaiter(ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter awaiter, ExtendedDebugTask<TResult> edt, StackTrace creationStack) : this(creationStack, edt) => _awaiter = awaiter;
 
         public readonly bool IsCompleted => _awaiter.IsCompleted;
 

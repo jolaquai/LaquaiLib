@@ -90,10 +90,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/>.
     /// </summary>
-    public ObservableCollectionFast()
-    {
-        items = [];
-    }
+    public ObservableCollectionFast() => items = [];
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified collection.
     /// </summary>
@@ -108,10 +105,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified span.
     /// </summary>
     /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> from which the elements are copied.</param>
-    public ObservableCollectionFast(params ReadOnlySpan<T> span)
-    {
-        items = [.. span];
-    }
+    public ObservableCollectionFast(params ReadOnlySpan<T> span) => items = [.. span];
     #endregion
 
     #region Indexers

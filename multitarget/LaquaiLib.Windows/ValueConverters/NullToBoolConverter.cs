@@ -18,15 +18,12 @@ public partial class NullToBoolConverter : IValueConverter
     /// <param name="parameter">An additional parameter that, when equal to <see langword="true"/>, inverts the result of the conversion.</param>
     /// <param name="culture">Which culture to use when converting / formatting the value.</param>
     /// <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => parameter switch
     {
-        return parameter switch
-        {
-            bool b when b => value is not null,
-            string s when s == "true" => value is not null,
-            _ => value is null
-        };
-    }
+        bool b when b => value is not null,
+        string s when s == "true" => value is not null,
+        _ => value is null
+    };
 
     /// <summary>
     /// [Unsupported] Converts a previously converted <paramref name="value"/> back to its original value. This method unconditionally throws a <see cref="NotSupportedException"/>.

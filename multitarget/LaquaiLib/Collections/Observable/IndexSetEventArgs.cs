@@ -15,8 +15,5 @@ public class IndexSetEventArgs
     /// Initializes a new instance of the <see cref="IndexSetEventArgs"/> class.
     /// </summary>
     /// <param name="index">The index being accessed.</param>
-    public IndexSetEventArgs(int index)
-    {
-        Index = index;
-    }
+    public IndexSetEventArgs(int index) => Index = index;
 }

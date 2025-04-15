@@ -23,12 +23,9 @@ public static class MemoryOrFileStream
     /// </summary>
     /// <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="Cutoff"/>, the internal <see cref="Stream"/> is created as a <see cref="FileStream"/>.</param>
     /// <returns>The created <see cref="Stream"/>.</returns>
-    public static Stream Create(int payloadSize)
-    {
-        return payloadSize >= Cutoff
+    public static Stream Create(int payloadSize) => payloadSize >= Cutoff
             ? new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.Asynchronous)
             : new MemoryStream(payloadSize);
-    }
     /// <summary>
     /// Creates a new <see cref="Stream"/> from the specified <paramref name="other"/> <see cref="Stream"/>.
     /// Its data from its current position to the end will be copied to the new <see cref="Stream"/>. Both streams' positions will be advanced by the number of bytes copied.

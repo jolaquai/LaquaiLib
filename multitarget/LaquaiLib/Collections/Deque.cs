@@ -594,10 +594,7 @@ public class DequeNode<T> : IEquatable<DequeNode<T>>
     /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
     /// </summary>
     /// <param name="value">The value this node contains.</param>
-    public DequeNode(T value)
-    {
-        Value = value;
-    }
+    public DequeNode(T value) => Value = value;
 
     /// <summary>
     /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has the specified neighbors.
@@ -622,10 +619,7 @@ public class DequeNode<T> : IEquatable<DequeNode<T>>
     /// <param name="next">The next node in the <see cref="Deque{T}"/>.</param>
     /// <param name="previous">The previous node in the <see cref="Deque{T}"/>.</param>
     /// <param name="deque">The <see cref="Deque{T}"/> this node belongs to.</param>
-    public DequeNode(T value, DequeNode<T> next, DequeNode<T> previous, Deque<T> deque) : this(value, next, previous)
-    {
-        Deque = deque;
-    }
+    public DequeNode(T value, DequeNode<T> next, DequeNode<T> previous, Deque<T> deque) : this(value, next, previous) => Deque = deque;
 
     /// <summary>
     /// Returns the <see cref="Deque{T}"/> this node belongs to.

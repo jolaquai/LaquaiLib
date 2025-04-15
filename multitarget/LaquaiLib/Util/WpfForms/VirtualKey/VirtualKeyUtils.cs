@@ -145,7 +145,21 @@ public static partial class VirtualKeyUtils
     /// <returns><see langword="true"/> if the key is toggled on, otherwise <see langword="false"/>.</returns>
     public static bool GetToggleState(VirtualKey vk)
     {
-        if (ToggleKeys.IndexOf(vk) == -1)
+#if NET9_0
+        var index = -1;
+        var tk = ToggleKeys;
+        for (var i = 0; i < tk.Length; i++)
+        {
+            if (tk[i] == vk)
+            {
+                index = i;
+                break;
+            }
+        }
+#elif NET10_0_OR_GREATER
+        var index = ToggleKeys.IndexOf(vk);
+#endif
+        if (index == -1)
         {
             throw new ArgumentException("The specified virtual key is not a toggle key.", nameof(vk));
         }

@@ -16,8 +16,5 @@ public class RemovedEventArgs<T>
     /// Initializes a new instance of the <see cref="RemovedEventArgs{T}"/> class.
     /// </summary>
     /// <param name="item">The item that was removed.</param>
-    public RemovedEventArgs(T item)
-    {
-        Item = item;
-    }
+    public RemovedEventArgs(T item) => Item = item;
 }

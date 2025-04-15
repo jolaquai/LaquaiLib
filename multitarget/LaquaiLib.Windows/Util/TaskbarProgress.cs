@@ -32,12 +32,9 @@ public partial class TaskbarProgress
     /// </remarks>
     /// <param name="hwnd">The hwnd to the <see cref="Window"/> the taskbar icon of which is to display progress.</param>
     /// <returns>A <see cref="TaskbarProgress"/> instance.</returns>
-    public TaskbarProgress(nint hwnd)
-    {
-        _taskbar = HwndSource.FromHwnd(hwnd).RootVisual is Window target
+    public TaskbarProgress(nint hwnd) => _taskbar = HwndSource.FromHwnd(hwnd).RootVisual is Window target
             ? target.TaskbarItemInfo
             : throw new ArgumentException("Window hwnd was 0 or resolved to null.", nameof(hwnd));
-    }
 
     /// <summary>
     /// Sets the state of the taskbar progress visual.

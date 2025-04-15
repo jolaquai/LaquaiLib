@@ -865,7 +865,17 @@ public static partial class IEnumerableExtensions
         equalityComparer ??= EqualityComparer<T>.Default;
         if (source.TryGetSpan(out var span))
         {
+#if NET9_0
+            for (var i = 0; i < span.Length; i++)
+            {
+                if (equalityComparer.Equals(span[i], item))
+                {
+                    return i;
+                }
+            }
+#elif NET10_0_OR_GREATER
             return span.IndexOf(item, equalityComparer);
+#endif
         }
         else if (source is IReadOnlyList<T> list)
         {
@@ -931,7 +941,17 @@ public static partial class IEnumerableExtensions
 
         if (source.TryGetSpan(out var span))
         {
+#if NET9_0
+            for (var i = 0; i < span.Length - enumerated.Length + 1; i++)
+            {
+                if (span.Slice(i, enumerated.Length).SequenceEqual(enumerated, equalityComparer))
+                {
+                    return i;
+                }
+            }
+#elif NET10_0_OR_GREATER
             return span.IndexOf(enumerated, equalityComparer);
+#endif
         }
         else if (source is IReadOnlyList<T> list)
         {

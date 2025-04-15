@@ -17,18 +17,12 @@ public class MultiStream : Stream, IDisposable
     /// Initializes a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
-    public MultiStream(params ReadOnlySpan<Stream> streams)
-    {
-        _streams = [.. streams];
-    }
+    public MultiStream(params ReadOnlySpan<Stream> streams) => _streams = [.. streams];
     /// <summary>
     /// Initializes a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
-    public MultiStream(IEnumerable<Stream> streams)
-    {
-        _streams = [.. streams];
-    }
+    public MultiStream(IEnumerable<Stream> streams) => _streams = [.. streams];
     #endregion
 
     /// <summary>

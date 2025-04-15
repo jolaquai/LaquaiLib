@@ -30,14 +30,8 @@ public class SilentFullAccessDynamic<T> : DynamicObject
 
     private static readonly Dictionary<string, MemberInfo> _memberCache = [];
 
-    internal SilentFullAccessDynamic()
-    {
-        _instance = Activator.CreateInstance<T>();
-    }
-    internal SilentFullAccessDynamic(T instance)
-    {
-        _instance = instance;
-    }
+    internal SilentFullAccessDynamic() => _instance = Activator.CreateInstance<T>();
+    internal SilentFullAccessDynamic(T instance) => _instance = instance;
     /// <inheritdoc/>
     public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
     {
@@ -276,13 +270,10 @@ public class SilentFullAccessDynamic<T> : DynamicObject
     /// </summary>
     /// <param name="func">The function to execute.</param>
     /// <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
-    private static TMember GetFirstNonNull<TMember>(Func<BindingFlags, TMember> func)
-    {
-        return func(publicStatic)
+    private static TMember GetFirstNonNull<TMember>(Func<BindingFlags, TMember> func) => func(publicStatic)
             ?? func(anyStatic)
             ?? func(publicInstance)
             ?? func(anyInstance);
-    }
     /// <inheritdoc/>
     public override bool Equals(object obj) => Equals(Unwrap(), obj);
     /// <inheritdoc/>

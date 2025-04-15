@@ -35,10 +35,7 @@ public struct FilterableEnumerable<T>
     /// Initializes a new <see cref="FilterableEnumerable{T}"/> that iterates over all items in the given collection.
     /// </summary>
     /// <param name="items">The type of the items to iterate over.</param>
-    public FilterableEnumerable(IEnumerable<T> items)
-    {
-        _items = items;
-    }
+    public FilterableEnumerable(IEnumerable<T> items) => _items = items;
     /// <summary>
     /// Initializes a new <see cref="FilterableEnumerable{T}"/>.
     /// </summary>

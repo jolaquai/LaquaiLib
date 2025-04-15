@@ -10,12 +10,9 @@ public static class RangeExtensions
     /// </summary>
     /// <param name="range">The <see cref="Range"/> to get the range from.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="int"/>s that are within the given <paramref name="range"/>.</returns>
-    public static IEnumerable<int> GetRange(this Range range)
-    {
-        return range.Start.IsFromEnd || range.End.IsFromEnd
+    public static IEnumerable<int> GetRange(this Range range) => range.Start.IsFromEnd || range.End.IsFromEnd
             ? throw new ArgumentException("Range indices cannot be from the end since there is no end to reference from.", nameof(range))
             : Enumerable.Range(range.Start.Value, range.End.Value - range.Start.Value);
-    }
     /// <summary>
     /// Returns an <see cref="IEnumerable{T}"/> of <see cref="int"/>s that are within the given <paramref name="range"/>, calculating the required indices from the given <paramref name="length"/>.
     /// </summary>

@@ -143,12 +143,9 @@ public static class RandomMath
     /// <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
     /// <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of <paramref name="smoothFunc"/> that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
     /// <exception cref="ArgumentException"><paramref name="xStart"/> was greater than <paramref name="xEnd"/>.</exception>
-    public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, Func<double, double> smoothFunc, double xStart = 0, double xEnd = 1)
-    {
-        return xEnd < xStart
+    public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, Func<double, double> smoothFunc, double xStart = 0, double xEnd = 1) => xEnd < xStart
             ? throw new ArgumentException("Smoothing end value must be greater than start value.", nameof(xEnd))
             : (p => (smoothFunc(p) * f(p)) + (smoothFunc(xEnd - p) + g(p)));
-    }
     /// <summary>
     /// Smooths two functions over a given interval by returning a new function that is a linear combination of the two functions within a that interval.
     /// </summary>

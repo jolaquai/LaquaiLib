@@ -297,10 +297,7 @@ public class ObservableStream<T> : Stream
     /// Initializes a new <see cref="ObservableStream{T}"/> instance by wrapping an existing <see cref="Stream"/>.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to wrap.</param>
-    protected internal ObservableStream(T stream)
-    {
-        _underlying = stream;
-    }
+    protected internal ObservableStream(T stream) => _underlying = stream;
 
     private bool disposed;
     /// <inheritdoc/>

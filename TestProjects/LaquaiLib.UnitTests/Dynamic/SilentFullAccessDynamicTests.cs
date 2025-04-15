@@ -67,10 +67,7 @@ public class DelegateTestClass
 {
     public Func<string, int, string> MyDelegate { get; set; }
 
-    public DelegateTestClass()
-    {
-        MyDelegate = (s, i) => $"{s}: {i}";
-    }
+    public DelegateTestClass() => MyDelegate = (s, i) => $"{s}: {i}";
 }
 
 public class SilentFullAccessDynamicTests

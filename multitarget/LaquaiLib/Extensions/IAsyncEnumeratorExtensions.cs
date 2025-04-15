@@ -44,26 +44,42 @@ public static class IAsyncEnumeratorExtensions
     }
 }
 
-file struct AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators) : IAsyncEnumerator<T>
+internal class AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators) : IAsyncEnumerator<T>
 {
     private IAsyncEnumerator<T>[] _iterators = iterators;
-    public T Current { get; private set; }
-    public readonly async ValueTask DisposeAsync()
+
+    public async ValueTask DisposeAsync()
     {
-        for (var i = 0; i < _iterators.Length; i++)
+        var exceptions = new List<Exception>(_iterators.Length);
+        for (var k = 0; k < _iterators.Length; k++)
         {
-            var iterator = _iterators[i];
-            await iterator.DisposeAsync().ConfigureAwait(false);
+            var iterator = _iterators[k];
+            // catch if anything happens, but keep going and rethrow as an AggregateException
+            try
+            {
+                await iterator.DisposeAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
+            }
+        }
+        if (exceptions.Count > 0)
+        {
+            throw new AggregateException("One or more enumerators failed to dispose (the rest were still disposed).", exceptions);
         }
     }
+
+    private int i;
+    public T Current => _iterators[i].Current;
+
     public async ValueTask<bool> MoveNextAsync()
     {
-        for (var i = 0; i < _iterators.Length; i++)
+        for (; i < _iterators.Length; i++)
         {
             var iterator = _iterators[i];
             if (await iterator.MoveNextAsync().ConfigureAwait(false))
             {
-                Current = iterator.Current;
                 return true;
             }
         }

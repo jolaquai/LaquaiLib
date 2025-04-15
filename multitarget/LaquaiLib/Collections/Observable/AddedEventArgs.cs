@@ -16,8 +16,5 @@ public class AddedEventArgs<T>
     /// Initializes a new instance of the <see cref="AddedEventArgs{T}"/> class.
     /// </summary>
     /// <param name="item">The item that was added.</param>
-    public AddedEventArgs(T item)
-    {
-        Item = item;
-    }
+    public AddedEventArgs(T item) => Item = item;
 }

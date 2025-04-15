@@ -17,12 +17,9 @@ public partial class BoolInverterConverter : IValueConverter
     /// <param name="culture">Which culture to use when converting / formatting the value.</param>
     /// <returns>The inverse of the input <paramref name="value"/>.</returns>
     /// <exception cref="ArgumentException">Thrown if the input <paramref name="value"/> is not a <see cref="bool"/>.</exception>
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        return value is bool b
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture) => value is bool b
             ? (object)!b
             : throw new ArgumentException($"Input value was expected to be a '{typeof(bool).FullName}' value, received '{value?.GetType().FullName ?? "null"}' instead.", nameof(value));
-    }
 
     /// <summary>
     /// Converts an "inverse" <see cref="bool"/> value to its original value.

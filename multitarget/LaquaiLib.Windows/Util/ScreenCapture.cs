@@ -352,18 +352,15 @@ public partial class ScreenCapture
     /// <summary>
     /// Initializes the <see cref="Timer"/> that controls when captures are made.
     /// </summary>
-    private void InitTimer()
-    {
-        Timer = new(info =>
-        {
-            var src = (ScreenCapture)info!;
-            if (src.IsCapturing && src.Predicate())
-            {
-                var captureTime = DateTime.Now;
-                RaiseEvent(new(Capture(), captureTime));
-            }
-        }, this, Timeout.Infinite, 50);
-    }
+    private void InitTimer() => Timer = new(info =>
+                                     {
+                                         var src = (ScreenCapture)info!;
+                                         if (src.IsCapturing && src.Predicate())
+                                         {
+                                             var captureTime = DateTime.Now;
+                                             RaiseEvent(new(Capture(), captureTime));
+                                         }
+                                     }, this, Timeout.Infinite, 50);
 
     /// <summary>
     /// Event raise wrapper.

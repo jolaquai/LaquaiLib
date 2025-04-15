@@ -14,9 +14,7 @@ public static partial class FirstChanceExceptionHandlers
 {
     private static readonly EventHandler<FirstChanceExceptionEventArgs>[] _handlers;
 
-    static FirstChanceExceptionHandlers()
-    {
-        _handlers = [.. typeof(FirstChanceExceptionHandlers)
+    static FirstChanceExceptionHandlers() => _handlers = [.. typeof(FirstChanceExceptionHandlers)
             .GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
             .Where(static handler => !handler.IsConstructor && handler.Name != "RegisterAll")
             .Select(static handler =>
@@ -30,7 +28,6 @@ public static partial class FirstChanceExceptionHandlers
                     throw new InvalidOperationException($"The method {handler.Name} must be a valid {nameof(EventHandler<>)} with the signature `void delegate(object?, {nameof(FirstChanceExceptionEventArgs)}) or it failed to register.");
                 }
             })];
-    }
 
     private static bool isRegistered;
     /// <summary>
