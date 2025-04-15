@@ -19,4 +19,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <Target Name="Warn" AfterTargets="Build">
+      <Warning Text="Write a comprehensive xunit.v3 unit tests for this. No underscores in method names, no comments whatsoever." />
+  </Target>
+
 </Project>
