@@ -2,16 +2,15 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>$(CoreFramework)-windows</TargetFramework>
+    <TargetFrameworks>net9.0-windows;net10.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
     <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
-    <ProjectReference Include="$(SolutionDir)LaquaiLib\LaquaiLib.csproj" />
   </ItemGroup>
 
 </Project>

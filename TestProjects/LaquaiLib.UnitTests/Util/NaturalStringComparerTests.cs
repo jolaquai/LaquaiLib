@@ -4,6 +4,7 @@ namespace LaquaiLib.UnitTests.Util;
 
 public class NaturalStringComparerTests
 {
+    #region Default
     [Fact]
     public void CompareRegularStrings()
     {
@@ -247,8 +248,8 @@ public class NaturalStringComparerTests
     [Fact]
     public void InstanceShouldReturnSingletonInstance()
     {
-        var instance1 = NaturalStringComparer.Instance;
-        var instance2 = NaturalStringComparer.Instance;
+        var instance1 = NaturalStringComparer.Default;
+        var instance2 = NaturalStringComparer.Default;
 
         Assert.NotNull(instance1);
         Assert.Same(instance1, instance2);
@@ -306,4 +307,111 @@ public class NaturalStringComparerTests
         Assert.True(comparer.Compare("Chapter iV", "Chapter Vi") < 0);
         Assert.True(comparer.Compare("Chapter vIi", "Chapter vIIi") < 0);
     }
+    #endregion
+
+    #region LenientEquality
+    private readonly NaturalStringComparer lenientComparer = NaturalStringComparer.LenientEquality;
+
+    [Fact]
+    public void CompareLenientWithDigitsSortsNaturally()
+    {
+        string[] unsorted = ["file10", "file2", "file1"];
+        string[] expected = ["file1", "file2", "file10"];
+
+        Array.Sort(unsorted, lenientComparer);
+
+        Assert.Equal(expected, unsorted);
+    }
+
+    [Fact]
+    public void CompareLenientWithRomanNumeralsSortsCorrectly()
+    {
+        string[] unsorted = ["Chapter X", "Chapter V", "Chapter I"];
+        string[] expected = ["Chapter I", "Chapter V", "Chapter X"];
+
+        Array.Sort(unsorted, lenientComparer);
+
+        Assert.Equal(expected, unsorted);
+    }
+
+    [Fact]
+    public void CompareLenientTreatsSpecialCharactersAsEqual()
+    {
+        var a = "test-file";
+        var b = "test_file";
+
+        Assert.Equal(0, lenientComparer.Compare(a, b));
+    }
+
+    [Fact]
+    public void CompareLenientHandlesEmptyStringsCorrectly()
+    {
+        var empty = "";
+        var nonEmpty = "test";
+
+        Assert.Equal(-1, lenientComparer.Compare(empty, nonEmpty));
+        Assert.Equal(1, lenientComparer.Compare(nonEmpty, empty));
+        Assert.Equal(0, lenientComparer.Compare(empty, empty));
+    }
+
+    [Fact]
+    public void EqualsLenientReturnsTrueForEquivalentStrings()
+    {
+        var a = "test-file";
+        var b = "test_file";
+
+        Assert.True(lenientComparer.Equals(a, b));
+    }
+
+    [Fact]
+    public void GetHashCodeLenientReturnsSameHashForEquivalentStrings()
+    {
+        var a = "test-file";
+        var b = "test_file";
+
+        var hashA = lenientComparer.GetHashCode(a);
+        var hashB = lenientComparer.GetHashCode(b);
+
+        Assert.Equal(hashA, hashB);
+    }
+
+    [Fact]
+    public void CompareLenientIsNotCaseSensitive()
+    {
+        var a = "TEST";
+        var b = "test";
+
+        Assert.Equal(0, lenientComparer.Compare(a, b));
+    }
+
+    [Fact]
+    public void CompareLenientHandlesMixedContent()
+    {
+        string[] unsorted = ["file10.txt", "file-2.txt", "file_1.txt"];
+        string[] expected = ["file_1.txt", "file-2.txt", "file10.txt"];
+
+        Array.Sort(unsorted, lenientComparer);
+
+        Assert.Equal(expected, unsorted);
+    }
+
+    [Fact]
+    public void CompareLenientWorksWithReadOnlySpan()
+    {
+        var a = "file-1".AsSpan();
+        var b = "file_2".AsSpan();
+
+        Assert.True(lenientComparer.Compare(a, b) < 0);
+    }
+
+    [Fact]
+    public void EqualsLenientWorksWithReadOnlySpan()
+    {
+        var a = "test-file".AsSpan();
+        var b = "test_file".AsSpan();
+
+        Assert.True(lenientComparer.Equals(a, b));
+    }
+
+    #endregion
 }

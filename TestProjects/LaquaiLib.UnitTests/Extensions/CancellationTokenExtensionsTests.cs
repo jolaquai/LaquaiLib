@@ -49,7 +49,7 @@ public class CancellationTokenExtensionsTests
 
         cts.Cancel();
 
-        await completionTask;
+        await completionTask.ConfigureAwait(false);
         Assert.True(completionTask.IsCompletedSuccessfully);
         Assert.False(completionTask.IsFaulted);
         Assert.False(completionTask.IsCanceled);

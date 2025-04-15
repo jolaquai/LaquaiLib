@@ -100,7 +100,7 @@ public class DictionaryExtensionsTests
     public void GetOrAddWithFactoryReturnsExistingValue()
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
-        bool factoryCalled = false;
+        var factoryCalled = false;
 
         var result = source.GetOrAdd("one", () => { factoryCalled = true; return 100; });
 
@@ -147,7 +147,7 @@ public class DictionaryExtensionsTests
     {
         var source = new ConcurrentDictionary<string, int>();
         source.TryAdd("one", 1);
-        bool factoryCalled = false;
+        var factoryCalled = false;
 
         var result = source.GetOrAdd("one", () => { factoryCalled = true; return 100; });
         Assert.Equal(1, result);
@@ -163,7 +163,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        bool found = source.GetOrAdd("one", 100, out var value);
+        var found = source.GetOrAdd("one", 100, out var value);
 
         Assert.True(found);
         Assert.Equal(1, value);
@@ -174,7 +174,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        bool found = source.GetOrAdd("two", 2, out var value);
+        var found = source.GetOrAdd("two", 2, out var value);
 
         Assert.False(found);
         Assert.Equal(2, value);
@@ -185,9 +185,9 @@ public class DictionaryExtensionsTests
     public void GetOrAddWithOutParameterAndFactoryReturnsTrueForExistingKey()
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
-        bool factoryCalled = false;
+        var factoryCalled = false;
 
-        bool found = source.GetOrAdd("one", () => { factoryCalled = true; return 100; }, out var value);
+        var found = source.GetOrAdd("one", () => { factoryCalled = true; return 100; }, out var value);
 
         Assert.True(found);
         Assert.Equal(1, value);
@@ -199,7 +199,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        bool found = source.GetOrAdd("two", () => 2, out var value);
+        var found = source.GetOrAdd("two", () => 2, out var value);
 
         Assert.False(found);
         Assert.Equal(2, value);
@@ -317,7 +317,7 @@ public class DictionaryExtensionsTests
     public void AddOrUpdateWithValueFactoryAddsNewValue()
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
-        bool addFactoryCalled = false;
+        var addFactoryCalled = false;
 
         source.AddOrUpdate("two", () => { addFactoryCalled = true; return 2; }, oldValue => oldValue * 10);
 
@@ -329,7 +329,7 @@ public class DictionaryExtensionsTests
     public void AddOrUpdateWithValueFactoryUpdatesExistingValue()
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
-        bool addFactoryCalled = false;
+        var addFactoryCalled = false;
 
         source.AddOrUpdate("one", () => { addFactoryCalled = true; return 100; }, oldValue => oldValue * 10);
 
@@ -394,7 +394,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        ref var valueRef = ref source.GetValueRefOrNullRef("one", out bool existed);
+        ref var valueRef = ref source.GetValueRefOrNullRef("one", out var existed);
 
         Assert.True(existed);
         Assert.Equal(1, valueRef);
@@ -405,7 +405,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        ref var valueRef = ref source.GetValueRefOrNullRef("two", out bool existed);
+        ref var valueRef = ref source.GetValueRefOrNullRef("two", out var existed);
 
         Assert.False(existed);
     }
@@ -431,7 +431,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        ref var valueRef = ref source.GetValueRefOrAdd("one", 100, out bool existed);
+        ref var valueRef = ref source.GetValueRefOrAdd("one", 100, out var existed);
 
         Assert.True(existed);
         Assert.Equal(1, valueRef);
@@ -445,7 +445,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        ref var valueRef = ref source.GetValueRefOrAdd("two", 2, out bool existed);
+        ref var valueRef = ref source.GetValueRefOrAdd("two", 2, out var existed);
 
         Assert.False(existed);
         Assert.Equal(2, valueRef);
@@ -475,9 +475,9 @@ public class DictionaryExtensionsTests
     public void GetValueRefOrAddWithFactoryReturnsRefToExistingValue()
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
-        bool factoryCalled = false;
+        var factoryCalled = false;
 
-        ref var valueRef = ref source.GetValueRefOrAdd("one", () => { factoryCalled = true; return 100; }, out bool existed);
+        ref var valueRef = ref source.GetValueRefOrAdd("one", () => { factoryCalled = true; return 100; }, out var existed);
 
         Assert.True(existed);
         Assert.False(factoryCalled);
@@ -492,7 +492,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        ref var valueRef = ref source.GetValueRefOrAdd("two", () => 2, out bool existed);
+        ref var valueRef = ref source.GetValueRefOrAdd("two", () => 2, out var existed);
 
         Assert.False(existed);
         Assert.Equal(2, valueRef);
@@ -535,7 +535,7 @@ public class DictionaryExtensionsTests
         ref var valueRef = ref source.GetValueRefOrNullRef("one");
         Assert.Equal(1, valueRef);
 
-        ref var valueRef2 = ref source.GetValueRefOrAddDefault("two", out bool existed);
+        ref var valueRef2 = ref source.GetValueRefOrAddDefault("two", out var existed);
         Assert.False(existed);
         valueRef2 = 2;
         Assert.Equal(2, source["two"]);

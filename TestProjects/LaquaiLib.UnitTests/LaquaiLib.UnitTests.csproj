@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(CoreFramework)-windows</TargetFramework>
+    <TargetFrameworks>net9.0-windows;net10.0-windows</TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -13,8 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
-    <ProjectReference Include="$(SolutionDir)LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
     <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
 
     <Using Include="Xunit" />

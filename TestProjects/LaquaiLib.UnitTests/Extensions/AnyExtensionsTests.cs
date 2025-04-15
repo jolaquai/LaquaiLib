@@ -320,7 +320,7 @@ public class AnyExtensionsTests
 
         var result = await obj.With(async o =>
         {
-            await Task.Delay(10);
+            await Task.Delay(10).ConfigureAwait(false);
             o.Name = "Modified";
             actionExecuted = true;
         });
@@ -338,12 +338,12 @@ public class AnyExtensionsTests
         var result = await obj
                 .With(async o =>
                 {
-                    await Task.Delay(10);
+                    await Task.Delay(10).ConfigureAwait(false);
                     o.Id = 2;
                 })
                 .With(async o =>
                 {
-                    await Task.Delay(10);
+                    await Task.Delay(10).ConfigureAwait(false);
                     o.Name = "Modified";
                 });
 
