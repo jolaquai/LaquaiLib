@@ -11,7 +11,7 @@ public static class ICollectionExtensions
     /// <typeparam name="T">The Type of the elements in the <see cref="ICollection{T}"/>.</typeparam>
     /// <param name="collection">The <see cref="ICollection{T}"/> to be modified.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> delegate that defines the conditions of the elements to keep.</param>
-    public static void KeepOnly<T>(this ICollection<T> collection, Predicate<T> predicate)
+    public static void KeepOnly<T>(this ICollection<T> collection, Func<T, bool> predicate)
     {
         if (collection.IsReadOnly)
         {
@@ -22,17 +22,55 @@ public static class ICollectionExtensions
             return;
         }
 
-        if (collection is List<T> list)
+        switch (collection)
         {
-            ListExtensions.KeepOnly(list, predicate);
-            return;
-        }
-
-        var newItems = collection.Where(item => predicate(item)).ToArray();
-        collection.Clear();
-        for (var i = 0; i < newItems.Length; i++)
-        {
-            collection.Add(newItems[i]);
+            case HashSet<T> hashSet:
+            {
+                _ = hashSet.RemoveWhere(item => !predicate(item));
+                return;
+            }
+            case ISet<T> set:
+            {
+                var items = set.ToArray();
+                for (var i = 0; i < items.Length; i++)
+                {
+                    var item = items[i];
+                    if (!predicate(item))
+                    {
+                        set.Remove(item);
+                    }
+                }
+                return;
+            }
+            case List<T> list:
+            {
+                ListExtensions.KeepOnly(list, predicate);
+                return;
+            }
+            case IList<T> ilist:
+            {
+                for (var i = ilist.Count - 1; i >= 0; i--)
+                {
+                    if (!predicate(ilist[i]))
+                    {
+                        ilist.RemoveAt(i);
+                    }
+                }
+                return;
+            }
+            default:
+            {
+                var array = collection.ToArray();
+                for (var i = 0; i < array.Length; i++)
+                {
+                    var item = array[i];
+                    if (!predicate(item))
+                    {
+                        collection.Remove(item);
+                    }
+                }
+                return;
+            }
         }
     }
 }

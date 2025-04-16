@@ -155,7 +155,7 @@ public class IAsyncEnumerableExtensionsTests
     }
 
     [Fact]
-    public Task ConcatWithNullArrayThrowsArgumentNullException() => Assert.ThrowsAsync<ArgumentNullException>(async () =>
+    public Task ConcatWithNullArrayThrowsArgumentNullException() => Assert.ThrowsAsync<ArgumentNullException>(static async () =>
     {
         var combined = IAsyncEnumerableExtensions.Concat<int>(toChain: null);
         await ConvertToList(combined);

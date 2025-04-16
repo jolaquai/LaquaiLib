@@ -13,7 +13,7 @@ public static class IAsyncEnumerableExtensions
     /// <returns>An <see cref="IAsyncEnumerable{T}"/> implementation that iterates over each <paramref name="toChain"/> in turn.</returns>
     public static IAsyncEnumerable<T> Concat<T>(IAsyncEnumerable<T>[] toChain)
     {
-        if (toChain.Any(e => e is null))
+        if (toChain.Any(static e => e is null))
         {
             throw new ArgumentNullException(nameof(toChain), "One or more of the provided IAsyncEnumerable<T> instances is null.");
         }

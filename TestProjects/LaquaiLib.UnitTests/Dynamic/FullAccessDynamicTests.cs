@@ -48,7 +48,7 @@ public class FullAccessDynamicTests
 
     private class IndexerTestClass
     {
-        private readonly Dictionary<string, string> dictionary = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> dictionary = [];
 
         public string this[string key]
         {
@@ -70,8 +70,8 @@ public class FullAccessDynamicTests
 
         public DelegateTestClass()
         {
-            PublicDelegate = (s) => $"Public: {s}";
-            PrivateDelegate = (s) => $"Private: {s}";
+            PublicDelegate = static (s) => $"Public: {s}";
+            PrivateDelegate = static (s) => $"Private: {s}";
         }
     }
 

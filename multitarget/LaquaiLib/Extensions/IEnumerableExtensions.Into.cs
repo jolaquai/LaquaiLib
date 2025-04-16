@@ -2,7 +2,7 @@
 
 namespace LaquaiLib.Extensions;
 
-public partial class IEnumerableExtensions
+public static partial class IEnumerableExtensions
 {
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Array"/>, starting at the specified
@@ -12,9 +12,7 @@ public partial class IEnumerableExtensions
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-    /// <param name="allowUnsafeMutation">
-    /// Whether the method is allowed to begin mutating the array if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>.
-    /// </param>
+    /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Span{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the <paramref name="source"/> to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
     /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<T>(this IEnumerable<T> source, T[] target, int startIndex = 0, bool allowUnsafeMutation = false)
     {
@@ -87,6 +85,11 @@ public partial class IEnumerableExtensions
                         target[startIndex++] = item;
                     }
                 }
+                else
+                {
+                    var enumerated = source.ToArray();
+                    return Into(enumerated, target, startIndex);
+                }
                 return startIndex - start;
             }
         }
@@ -103,7 +106,7 @@ public partial class IEnumerableExtensions
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
     /// <returns>The number of elements written to the target collection.</returns>
     /// <remarks>
-    /// <paramref name="startIndex"/> defaults to <c>0</c>, meaning items will be overwritten from the beginning of the <see cref="List{T}"/>. To force appending them, explicitly pass the current <see cref="List{T}.Count"/> of <paramref name="target"/>.
+    /// <paramref name="startIndex"/> defaults to <c>0</c>, meaning items will be overwritten from the beginning of the <see cref="List{T}"/>. To force appending them, explicitly pass the current <see cref="List{T}.Count"/> of <paramref name="target"/> or use <see cref="AddTo{T}(IEnumerable{T}, List{T})"/>.
     /// <para/>Note that this method inherently exposes unsafe behavior, such as results from setting <paramref name="startIndex"/> to a value greater than the current <see cref="List{T}.Count"/>. Unassigned elements are left in an undefined state.
     /// </remarks>
     public static int Into<T>(this IEnumerable<T> source, List<T> target, int startIndex = 0)
@@ -189,10 +192,7 @@ public partial class IEnumerableExtensions
     /// <param name="source">The sequence to copy elements from.</param>
     /// <param name="target">The <see cref="Span{T}"/> to copy elements to.</param>
     /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-    /// <param name="allowUnsafeMutation">
-    /// Whether the method is allowed to begin mutating the span if it is unable to ascertain whether all elements will
-    /// fit. Defaults to <see langword="false"/>.
-    /// </param>
+    /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Span{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the <paramref name="source"/> to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
     /// <returns>The number of elements written to the target collection.</returns>
     public static int Into<T>(this IEnumerable<T> source, Span<T> target, int startIndex = 0, bool allowUnsafeMutation = false)
     {
@@ -262,10 +262,25 @@ public partial class IEnumerableExtensions
                         target[i++] = item;
                     }
                 }
+                else
+                {
+                    var enumerated = source.ToArray();
+                    return Into(enumerated, target, startIndex);
+                }
                 return i;
             }
         }
     }
+    /// <summary>
+    /// Copies the elements of the input sequence into the specified <see cref="Memory{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The sequence to copy elements from.</param>
+    /// <param name="target">The <see cref="Memory{T}"/> to copy elements to.</param>
+    /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
+    /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Memory{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the <paramref name="source"/> to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
+    /// <returns>The number of elements written to the target collection.</returns>
+    public static int Into<T>(this IEnumerable<T> source, Memory<T> target, int startIndex = 0, bool allowUnsafeMutation = false) => source.Into(target.Span, startIndex, allowUnsafeMutation);
     /// <summary>
     /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the
     /// specified <paramref name="valueFactory"/> to generate values for each key.
@@ -392,15 +407,6 @@ public partial class IEnumerableExtensions
                 return source.Into(arr);
             case List<T> list:
                 return source.Into(list);
-        }
-
-        var targetType = target.GetType();
-        if (targetType.GetMethod("AddRange", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance) is System.Reflection.MethodInfo method)
-        {
-            // Assumes sane behavior of that method
-            var count = target.Count;
-            method.Invoke(target, [source]);
-            return target.Count - count;
         }
 
         if (target.IsReadOnly)

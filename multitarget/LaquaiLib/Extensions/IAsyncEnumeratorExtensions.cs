@@ -13,7 +13,7 @@ public static class IAsyncEnumeratorExtensions
     /// <returns>An <see cref="IAsyncEnumerator{T}"/> implementation that iterates over each <paramref name="toChain"/> in turn.</returns>
     public static IAsyncEnumerator<T> Chain<T>(IAsyncEnumerator<T>[] toChain)
     {
-        if (toChain.Any(e => e is null))
+        if (toChain.Any(static e => e is null))
         {
             throw new ArgumentNullException(nameof(toChain), "One or more enumerators are null.");
         }

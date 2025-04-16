@@ -16,8 +16,8 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             static (context, _) =>
             {
                 var classDeclarationSyntax = Unsafe.As<ClassDeclarationSyntax>(context.Node);
-                var attribute = classDeclarationSyntax.AttributeLists.SelectMany(x => x.Attributes)
-                    .FirstOrDefault(x => x.Name.ToString().Contains("FullAccessProxy"));
+                var attribute = classDeclarationSyntax.AttributeLists.SelectMany(static x => x.Attributes)
+                    .FirstOrDefault(static x => x.Name.ToString().Contains("FullAccessProxy"));
                 if (attribute is not null)
                 {
                     return classDeclarationSyntax;
@@ -33,8 +33,8 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             static (context, _) =>
             {
                 var structDeclarationSyntax = Unsafe.As<StructDeclarationSyntax>(context.Node);
-                var attribute = structDeclarationSyntax.AttributeLists.SelectMany(x => x.Attributes)
-                    .FirstOrDefault(x => x.Name.ToString().Contains("FullAccessProxy"));
+                var attribute = structDeclarationSyntax.AttributeLists.SelectMany(static x => x.Attributes)
+                    .FirstOrDefault(static x => x.Name.ToString().Contains("FullAccessProxy"));
                 if (attribute is not null)
                 {
                     return structDeclarationSyntax;

@@ -17,7 +17,7 @@ public class DelegateExtensionsTests
     [Fact]
     public void GetInvocationListReturnsSingleElementForSingleDelegate()
     {
-        Action testDelegate = () => { };
+        Action testDelegate = static () => { };
 
         var result = testDelegate.GetInvocationList<Action>();
 
@@ -28,16 +28,16 @@ public class DelegateExtensionsTests
     [Fact]
     public void GetInvocationListReturnsMultipleElementsForMulticastDelegate()
     {
-        Action action1 = () => { };
-        Action action2 = () => { };
-        Action action3 = () => { };
+        Action action1 = static () => { };
+        Action action2 = static () => { };
+        Action action3 = static () => { };
 
         var multicastDelegate = action1 + action2 + action3;
 
         var result = multicastDelegate.GetInvocationList<Action>();
 
         Assert.Equal(3, result.Length);
-        Assert.All(result, d => Assert.IsType<Action>(d));
+        Assert.All(result, static d => Assert.IsType<Action>(d));
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public class DelegateExtensionsTests
     [Fact]
     public void GetInvocationListWorksWithDifferentDelegateTypes()
     {
-        Func<int> func1 = () => 1;
-        Func<int> func2 = () => 2;
+        Func<int> func1 = static () => 1;
+        Func<int> func2 = static () => 2;
 
         var multicastFunc = func1 + func2;
 
@@ -82,8 +82,8 @@ public class DelegateExtensionsTests
     [Fact]
     public void GetInvocationListWorksWithCustomDelegateTypes()
     {
-        CustomDelegate del1 = (x) => x + 1;
-        CustomDelegate del2 = (x) => x + 2;
+        CustomDelegate del1 = static (x) => x + 1;
+        CustomDelegate del2 = static (x) => x + 2;
 
         var multicast = del1 + del2;
 
@@ -97,8 +97,8 @@ public class DelegateExtensionsTests
     [Fact]
     public void GetInvocationListCanBeUsedWithCombinedDelegates()
     {
-        Action action1 = () => { };
-        Action action2 = () => { };
+        Action action1 = static () => { };
+        Action action2 = static () => { };
 
         var combined = Delegate.Combine(action1, action2) as Action;
 
@@ -110,8 +110,8 @@ public class DelegateExtensionsTests
     [Fact]
     public void GetInvocationListCanBeCalledMultipleTimes()
     {
-        Action action1 = () => { };
-        Action action2 = () => { };
+        Action action1 = static () => { };
+        Action action2 = static () => { };
 
         var multicast = action1 + action2;
 

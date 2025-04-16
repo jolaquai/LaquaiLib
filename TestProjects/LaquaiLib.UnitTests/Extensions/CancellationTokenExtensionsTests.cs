@@ -34,7 +34,7 @@ public class CancellationTokenExtensionsTests
         using var cts = new CancellationTokenSource();
         var completionTask = cts.Token.WhenCancelled();
 
-        var timeoutTask = Task.Delay(100);
+        var timeoutTask = Task.Delay(100, TestContext.Current.CancellationToken);
         var completedTask = await Task.WhenAny(completionTask, timeoutTask);
 
         Assert.Equal(timeoutTask, completedTask);
@@ -68,7 +68,7 @@ public class CancellationTokenExtensionsTests
 
         Assert.NotNull(completionTask);
 
-        var timeoutTask = Task.Delay(100);
+        var timeoutTask = Task.Delay(100, TestContext.Current.CancellationToken);
         var completedTask = await Task.WhenAny(completionTask, timeoutTask);
         Assert.Equal(timeoutTask, completedTask);
     }
@@ -80,7 +80,7 @@ public class CancellationTokenExtensionsTests
 
         var completionTask = defaultToken.WhenCancelled();
 
-        var timeoutTask = Task.Delay(100);
+        var timeoutTask = Task.Delay(100, TestContext.Current.CancellationToken);
         var completedTask = await Task.WhenAny(completionTask, timeoutTask);
 
         Assert.Equal(timeoutTask, completedTask);
@@ -96,7 +96,7 @@ public class CancellationTokenExtensionsTests
         var completionTask = linkedCts.Token.WhenCancelled();
 
         cts1.Cancel();
-        var timeoutTask = Task.Delay(100);
+        var timeoutTask = Task.Delay(100, TestContext.Current.CancellationToken);
         var completedTask = await Task.WhenAny(completionTask, timeoutTask);
 
         Assert.Equal(completionTask, completedTask);

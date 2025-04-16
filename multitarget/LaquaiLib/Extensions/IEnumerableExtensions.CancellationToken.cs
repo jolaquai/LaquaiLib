@@ -2,10 +2,7 @@
 
 namespace LaquaiLib.Extensions;
 
-/// <summary>
-/// Provides extension methods for the <see cref="IEnumerable{T}"/> of <see cref="CancellationToken"/> Type.
-/// </summary>
-public static class IEnumerableExtensionsCancellationToken
+public static partial class IEnumerableExtensions
 {
     /// <summary>
     /// Creates a <see cref="Task{TResult}"/> that completes successfully when any of the source sequence's <see cref="CancellationToken"/>s is cancelled.

@@ -8,7 +8,7 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class ConstructorInfoExtensions
 {
-    private static EqualityComparer<ParameterInfo> ParameterInfoTypeComparer => field ??= EqualityComparer<ParameterInfo>.Create((x, y) => x.ParameterType == y.ParameterType);
+    private static EqualityComparer<ParameterInfo> ParameterInfoTypeComparer => field ??= EqualityComparer<ParameterInfo>.Create(static (x, y) => x.ParameterType == y.ParameterType);
 
     /// <summary>
     /// Creates a delegate that acts like the instance constructor represented by <paramref name="ctorInfo"/>.

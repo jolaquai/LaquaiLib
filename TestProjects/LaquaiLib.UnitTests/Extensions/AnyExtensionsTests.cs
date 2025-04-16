@@ -304,8 +304,8 @@ public class AnyExtensionsTests
         var obj = new TestObject { Id = 1, Name = "Initial" };
 
         var result = obj
-                .With(o => o.Id = 2)
-                .With(o => o.Name = "Modified");
+                .With(static o => o.Id = 2)
+                .With(static o => o.Name = "Modified");
 
         Assert.Equal(2, obj.Id);
         Assert.Equal("Modified", obj.Name);
@@ -336,12 +336,12 @@ public class AnyExtensionsTests
         var obj = new TestObject { Id = 1, Name = "Initial" };
 
         var result = await obj
-                .With(async o =>
+                .With(static async o =>
                 {
                     await Task.Delay(10).ConfigureAwait(false);
                     o.Id = 2;
                 })
-                .With(async o =>
+                .With(static async o =>
                 {
                     await Task.Delay(10).ConfigureAwait(false);
                     o.Name = "Modified";

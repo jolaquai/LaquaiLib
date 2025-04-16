@@ -60,7 +60,7 @@ public class FullAccessProxyAttributeUsageAnalyzer : DiagnosticAnalyzer
         }
 
         // LAQ9001: Check if the type is partial
-        if (!typeDecl.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
+        if (!typeDecl.Modifiers.Any(static m => m.IsKind(SyntaxKind.PartialKeyword)))
         {
             var diagnostic = Diagnostic.Create(
                 InvalidAttributePlacementDescriptor,

@@ -113,7 +113,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        var result = source.GetOrAdd("two", () => 2);
+        var result = source.GetOrAdd("two", static () => 2);
 
         Assert.Equal(2, result);
         Assert.Equal(2, source["two"]);
@@ -199,7 +199,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        var found = source.GetOrAdd("two", () => 2, out var value);
+        var found = source.GetOrAdd("two", static () => 2, out var value);
 
         Assert.False(found);
         Assert.Equal(2, value);
@@ -230,7 +230,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        source.AddOrUpdate("two", 2, oldValue => oldValue * 10);
+        source.AddOrUpdate("two", 2, static oldValue => oldValue * 10);
 
         Assert.Equal(2, source["two"]);
     }
@@ -240,7 +240,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        source.AddOrUpdate("one", 100, oldValue => oldValue * 10);
+        source.AddOrUpdate("one", 100, static oldValue => oldValue * 10);
 
         Assert.Equal(10, source["one"]);
     }
@@ -288,7 +288,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        source.AddOrUpdate("two", 2, (oldValue, newValue) => oldValue + newValue);
+        source.AddOrUpdate("two", 2, static (oldValue, newValue) => oldValue + newValue);
 
         Assert.Equal(2, source["two"]);
     }
@@ -298,7 +298,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        source.AddOrUpdate("one", 10, (oldValue, newValue) => oldValue + newValue);
+        source.AddOrUpdate("one", 10, static (oldValue, newValue) => oldValue + newValue);
 
         Assert.Equal(11, source["one"]);
     }
@@ -353,10 +353,10 @@ public class DictionaryExtensionsTests
         var source = new ConcurrentDictionary<string, int>();
         source.TryAdd("one", 1);
 
-        source.AddOrUpdate("one", 100, oldValue => oldValue * 10);
+        source.AddOrUpdate("one", 100, static oldValue => oldValue * 10);
         Assert.Equal(10, source["one"]);
 
-        source.AddOrUpdate("two", 2, oldValue => oldValue * 10);
+        source.AddOrUpdate("two", 2, static oldValue => oldValue * 10);
         Assert.Equal(2, source["two"]);
     }
 
@@ -366,10 +366,10 @@ public class DictionaryExtensionsTests
         var source = new ConcurrentDictionary<string, int>();
         source.TryAdd("one", 1);
 
-        source.AddOrUpdate("one", 10, (oldValue, newValue) => oldValue + newValue);
+        source.AddOrUpdate("one", 10, static (oldValue, newValue) => oldValue + newValue);
         Assert.Equal(11, source["one"]);
 
-        source.AddOrUpdate("two", 2, (oldValue, newValue) => oldValue + newValue);
+        source.AddOrUpdate("two", 2, static (oldValue, newValue) => oldValue + newValue);
         Assert.Equal(2, source["two"]);
     }
 
@@ -379,10 +379,10 @@ public class DictionaryExtensionsTests
         var source = new ConcurrentDictionary<string, int>();
         source.TryAdd("one", 1);
 
-        source.AddOrUpdate("one", () => 100, oldValue => oldValue * 10);
+        source.AddOrUpdate("one", static () => 100, static oldValue => oldValue * 10);
         Assert.Equal(10, source["one"]);
 
-        source.AddOrUpdate("two", () => 2, oldValue => oldValue * 10);
+        source.AddOrUpdate("two", static () => 2, static oldValue => oldValue * 10);
         Assert.Equal(2, source["two"]);
     }
     #endregion
@@ -492,7 +492,7 @@ public class DictionaryExtensionsTests
     {
         var source = new Dictionary<string, int> { { "one", 1 } };
 
-        ref var valueRef = ref source.GetValueRefOrAdd("two", () => 2, out var existed);
+        ref var valueRef = ref source.GetValueRefOrAdd("two", static () => 2, out var existed);
 
         Assert.False(existed);
         Assert.Equal(2, valueRef);

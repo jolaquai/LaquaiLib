@@ -64,7 +64,7 @@ public class FullAccessDynamic<T> : DynamicObject
         }
 
         // Attempt to find the method with the specified name and parameter types.
-        var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name + '(' + string.Join(", ", Array.ConvertAll(args, item =>
+        var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name + '(' + string.Join(", ", Array.ConvertAll(args, static item =>
         {
             var itemType = item.GetType();
             return itemType.Namespace + '.' + itemType.Name;

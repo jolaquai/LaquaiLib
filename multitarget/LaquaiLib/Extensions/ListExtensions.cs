@@ -32,7 +32,7 @@ public static class ListExtensions
     /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
     /// <param name="list">The <see cref="List{T}"/> to be modified.</param>
     /// <param name="predicate">The <see cref="Predicate{T}"/> delegate that defines the conditions of the elements to keep.</param>
-    public static void KeepOnly<T>(this List<T> list, Predicate<T> predicate) => list.RemoveAll(item => !predicate(item));
+    public static void KeepOnly<T>(this List<T> list, Func<T, bool> predicate) => list.RemoveAll(item => !predicate(item));
 
     /// <summary>
     /// Retrieves a <see cref="Span{T}"/> over a portion of the backing array of the specified <paramref name="list"/>.

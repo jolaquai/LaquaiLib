@@ -83,8 +83,21 @@ public static partial class IEnumerableExtensions
         return (enumerated[..half], enumerated[half..]);
     }
 
+    /// <summary>
+    /// Selects a random element from the input sequence using <see cref="Random.Shared"/>.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <returns>A random element from <paramref name="source"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T Random<T>(this IEnumerable<T> source) => source.Random(System.Random.Shared);
+    /// <summary>
+    /// Selects a random element from the input sequence using the specified <paramref name="random"/> instance.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
+    /// <param name="source">The input sequence.</param>
+    /// <param name="random">The <see cref="System.Random"/> instance to use for random number generation.</param>
+    /// <returns>The random element from <paramref name="source"/>.</returns>
     public static T Random<T>(this IEnumerable<T> source, Random random = null)
     {
         ArgumentNullException.ThrowIfNull(source);
@@ -140,26 +153,7 @@ public static partial class IEnumerableExtensions
             return result;
         }
     }
-    /// <summary>
-    /// Shuffles the elements in the input sequence using <see cref="Random.Shared"/>.
-    /// </summary>
-    /// <remarks>
-    /// If the calling code already has an instance of <see cref="Random"/>, it should use the <see cref="Shuffle{T}(IEnumerable{T}, Random)"/> overload.
-    /// </remarks>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source) => source.Shuffle(System.Random.Shared);
-    /// <summary>
-    /// Shuffles the elements in the input sequence, using a specified <see cref="Random"/> instance.
-    /// </summary>
-    /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-    /// <param name="source">The input sequence.</param>
-    /// <param name="random">The <see cref="Random"/> instance to use for shuffling.</param>
-    /// <returns>A shuffled sequence of the elements in the input sequence.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random) => source.OrderBy(_ => random.Next());
+
     /// <summary>
     /// Returns an <see cref="IEnumerable{T}"/> that enumerates the elements of the input sequences is turn; that is, the first element of the first sequence, the first element of the second sequence, the second element of the first sequence, the second element of the second sequence, and so on.
     /// If the sequences are of unequal length, the remaining elements of the longer sequence will end up at the end of the resulting sequence.
@@ -415,28 +409,6 @@ public static partial class IEnumerableExtensions
         return source.Skip(1).All(item => item.Equals(first));
     }
 
-    /// <summary>
-    /// Produces the set difference of two sequences according to a specified key selector function.
-    /// </summary>
-    /// <typeparam name="TSource">The type of the elements of the input sequences.</typeparam>
-    /// <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
-    /// <param name="source">The first sequence to compare.</param>
-    /// <param name="other">The second sequence to compare.</param>
-    /// <param name="keySelector">The <see cref="Func{T, TResult}"/> that is passed each element of the source sequence and returns the key to use for comparison.</param>
-    /// <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
-    /// <remarks>Basically just another <see cref="Enumerable.ExceptBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TKey}, Func{TSource, TKey})"/> overload that... actually makes sense.</remarks>
-    public static IEnumerable<TSource> ExceptBy<TSource, TKey>(this IEnumerable<TSource> source, IEnumerable<TSource> other, Func<TSource, TKey> keySelector)
-    {
-        var keys = new HashSet<TKey>(other.Select(keySelector));
-        foreach (var element in source)
-        {
-            if (keys.Add(keySelector(element)))
-            {
-                yield return element;
-            }
-        }
-    }
-
     #region Mode
     /// <summary>
     /// Determines the mode of a sequence of values from a given key extracted from each value (that is, the value that appears most frequently).
@@ -454,37 +426,17 @@ public static partial class IEnumerableExtensions
         ArgumentNullException.ThrowIfNull(source);
         equalityComparer ??= EqualityComparer<TSelect>.Default;
 
-        using var enumerator = source.GetEnumerator();
-        // This call is technically more expensive than !.Any(), but since we need the enumerator anyway, might as well use it
-        if (!enumerator.MoveNext())
-        {
-            throw new ArgumentException("Sequence contains no elements.", nameof(source));
-        }
         if (selector is null)
         {
             return source.Mode();
         }
-
-        var freqs = new Dictionary<TSelect, (int count, TSource elem)>(equalityComparer);
-        var current = enumerator.Current;
-        freqs[selector(current)] = (1, current);
-
-        var maxCount = 1;
-        var mode = current;
-
-        while (enumerator.MoveNext())
+        if (!source.Any())
         {
-            current = enumerator.Current;
-            var key = selector(current);
-            ref var tuple = ref CollectionsMarshal.GetValueRefOrAddDefault(freqs, key, out _);
-            if (++tuple.count > maxCount)
-            {
-                maxCount = tuple.count;
-                mode = current;
-            }
+            throw new ArgumentException("Sequence contains no elements.", nameof(source));
         }
 
-        return mode;
+        var counts = source.CountsBy(selector, equalityComparer);
+        return counts.MaxBy(t => t.Value).Key;
     }
 
     /// <summary>
@@ -505,13 +457,8 @@ public static partial class IEnumerableExtensions
             throw new ArgumentException("Sequence contains no elements.", nameof(source));
         }
 
-        // We can steal the implementation from EnumerableExtensions.MapCounts since that's basically all this is
-        var countsMap = new Dictionary<T, int>(equalityComparer);
-        foreach (var item in source)
-        {
-            CollectionsMarshal.GetValueRefOrAddDefault(countsMap, item, out _)++;
-        }
-        return countsMap.MaxBy(static pair => pair.Value).Key;
+        var counts = source.Counts(equalityComparer);
+        return counts.MaxBy(t => t.Value).Key;
     }
     #endregion
 
@@ -704,7 +651,7 @@ public static partial class IEnumerableExtensions
     /// <remarks>
     /// <typeparamref name="TDerived"/> is not constrained with regards to <typeparamref name="TSource"/>, so that consuming code needn't check for type relationships before calling this method.
     /// </remarks>
-    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source) where TSource : class where TDerived : class
+    public static IEnumerable<TSource> NotOfType<TSource, TDerived>(this IEnumerable<TSource> source)
         => typeof(TDerived).IsAssignableTo(typeof(TSource)) ? source.Where(static i => i is not TDerived) : source;
 
     /// <summary>
@@ -1071,7 +1018,7 @@ public static partial class IEnumerableExtensions
         }
         var result = new Dictionary<T, T>();
         var halfI = enumerated.Count / 2;
-        for (var i = 0; i < enumerated.Count; i += 2)
+        for (var i = 0; i < halfI; i++)
         {
             result[enumerated[i]] = enumerated[i + halfI];
         }

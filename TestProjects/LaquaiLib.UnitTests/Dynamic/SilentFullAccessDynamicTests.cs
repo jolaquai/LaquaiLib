@@ -67,7 +67,7 @@ public class DelegateTestClass
 {
     public Func<string, int, string> MyDelegate { get; set; }
 
-    public DelegateTestClass() => MyDelegate = (s, i) => $"{s}: {i}";
+    public DelegateTestClass() => MyDelegate = static (s, i) => $"{s}: {i}";
 }
 
 public class SilentFullAccessDynamicTests
@@ -641,7 +641,7 @@ public class SilentFullAccessDynamicTests
     [Fact]
     public void TryInvokeWithDelegateInvokesDelegate()
     {
-        var testDelegate = new Func<string, int, string>((s, i) => $"{s}: {i}");
+        var testDelegate = new Func<string, int, string>(static (s, i) => $"{s}: {i}");
         dynamic wrapper = new SilentFullAccessDynamic<Func<string, int, string>>(testDelegate);
 
         var result = wrapper("Hello", 42);

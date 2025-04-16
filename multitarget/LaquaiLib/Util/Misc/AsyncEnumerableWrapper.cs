@@ -11,7 +11,7 @@
 /// <remarks>
 /// <see cref="ParallelQuery{TSource}"/> is supported.
 /// </remarks>
-public readonly struct AsyncEnumerableWrapper<T>(IEnumerable<T> from) : IAsyncEnumerable<T>
+public sealed class AsyncEnumerableWrapper<T>(IEnumerable<T> from) : IAsyncEnumerable<T>
 {
     /// <summary>
     /// Gets an empty <see cref="AsyncEnumerableWrapper{T}"/> (that is, an instance that yields no elements).
@@ -20,5 +20,5 @@ public readonly struct AsyncEnumerableWrapper<T>(IEnumerable<T> from) : IAsyncEn
 
     private readonly IEnumerable<T> _from = from;
     /// <inheritdoc/>
-    public readonly IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new AsyncEnumeratorWrapper<T>(_from.GetEnumerator(), cancellationToken);
+    public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new AsyncEnumeratorWrapper<T>(_from.GetEnumerator(), cancellationToken);
 }

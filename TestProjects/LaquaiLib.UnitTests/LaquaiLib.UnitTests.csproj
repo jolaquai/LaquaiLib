@@ -17,6 +17,7 @@
     <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
 
     <Using Include="Xunit" />
+    <Using Include="System.Collections" />
   </ItemGroup>
 
   <Target Name="Warn" AfterTargets="Build">

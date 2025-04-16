@@ -8,7 +8,7 @@
 /// </summary>
 /// <typeparam name="T">The Type of elements the <see cref="IEnumerator{T}"/> yields.</typeparam>
 /// <param name="from">The <see cref="IEnumerator{T}"/> to wrap.</param>
-public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from, CancellationToken cancellationToken = default) : IAsyncEnumerator<T>
+public sealed class AsyncEnumeratorWrapper<T>(IEnumerator<T> from, CancellationToken cancellationToken = default) : IAsyncEnumerator<T>
 {
     /// <summary>
     /// Gets an empty <see cref="AsyncEnumeratorWrapper{T}"/> (that is, an instance that yields no elements).
@@ -28,14 +28,15 @@ public readonly struct AsyncEnumeratorWrapper<T>(IEnumerator<T> from, Cancellati
     public AsyncEnumeratorWrapper(IEnumerable<T> from, CancellationToken cancellationToken = default) : this(from.GetEnumerator(), cancellationToken) { }
 
     /// <inheritdoc/>
-    public readonly T Current => _from.Current;
+    public T Current => _from.Current;
     /// <inheritdoc/>
-    public readonly ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
+        GC.SuppressFinalize(this);
         _from.Dispose();
         return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc/>
-    public readonly async ValueTask<bool> MoveNextAsync() => await Task.Run(_from.MoveNext, _cancellationToken).ConfigureAwait(false);
+    public async ValueTask<bool> MoveNextAsync() => await Task.Run(_from.MoveNext, _cancellationToken).ConfigureAwait(false);
 }

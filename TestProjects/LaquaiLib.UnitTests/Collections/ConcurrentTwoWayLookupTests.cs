@@ -46,9 +46,10 @@ public class ConcurrentTwoWayLookupTests
     [Fact]
     public void AddWithValidKeyValueAddsSuccessfully()
     {
-        var lookup = new ConcurrentTwoWayLookup<int, string>();
-
-        lookup.Add(1, "One");
+        var lookup = new ConcurrentTwoWayLookup<int, string>
+        {
+            { 1, "One" }
+        };
 
         Assert.Equal(1, lookup.Count);
         Assert.Equal("One", lookup.GetForward(1));

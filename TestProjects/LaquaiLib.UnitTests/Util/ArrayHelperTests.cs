@@ -138,7 +138,7 @@ public class ArrayHelperTests
         string[] keys = ["aaaa", "bb", "c", "ddd"];
         int[] values = [1, 3, 2, 4];
 
-        var comparer = Comparer<string>.Create((x, y) => x.Length.CompareTo(y.Length));
+        var comparer = Comparer<string>.Create(static (x, y) => x.Length.CompareTo(y.Length));
 
         ArrayHelper.SortDescending(keys, comparer, values);
 
@@ -176,7 +176,7 @@ public class ArrayHelperTests
 
         int[] values = [1, 2, 3];
 
-        ArrayHelper.Sort(people, p => p.Name, values);
+        ArrayHelper.Sort(people, static p => p.Name, values);
 
         Assert.Equal("Alice", people[0].Name);
         Assert.Equal("Bob", people[1].Name);
@@ -197,7 +197,7 @@ public class ArrayHelperTests
 
         int[] values = [1, 2, 3];
 
-        ArrayHelper.SortDescending(people, p => p.Age, values);
+        ArrayHelper.SortDescending(people, static p => p.Age, values);
 
         Assert.Equal("Bob", people[0].Name);
         Assert.Equal("Charlie", people[1].Name);
@@ -218,7 +218,7 @@ public class ArrayHelperTests
 
         int[] values = [1, 2, 3];
 
-        ArrayHelper.Sort(people, p => p.Name, StringComparer.OrdinalIgnoreCase, values);
+        ArrayHelper.Sort(people, static p => p.Name, StringComparer.OrdinalIgnoreCase, values);
 
         Assert.Equal("alice", people[0].Name);
         Assert.Equal("Bob", people[1].Name);
@@ -239,7 +239,7 @@ public class ArrayHelperTests
 
         Array values = new int[] { 1, 2, 3 };
 
-        ArrayHelper.Sort(people, p => ((Person)p).Name, values);
+        ArrayHelper.Sort(people, static p => ((Person)p).Name, values);
 
         Assert.Equal("Alice", ((Person)people.GetValue(0)).Name);
         Assert.Equal("Bob", ((Person)people.GetValue(1)).Name);

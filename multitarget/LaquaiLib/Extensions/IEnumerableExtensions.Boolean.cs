@@ -1,9 +1,6 @@
 namespace LaquaiLib.Extensions;
 
-/// <summary>
-/// Provides extension methods for the <see cref="IEnumerable{T}"/> of <see cref="bool"/> Type.
-/// </summary>
-public static class IEnumerableExtensionsBool
+public static partial class IEnumerableExtensions
 {
     /// <summary>
     /// Determines whether all elements of a sequence of <see cref="bool"/> values are true.

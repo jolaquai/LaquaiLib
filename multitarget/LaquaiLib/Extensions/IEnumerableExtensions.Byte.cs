@@ -4,10 +4,7 @@ using LaquaiLib.Core;
 
 namespace LaquaiLib.Extensions;
 
-/// <summary>
-/// Provides extension methods for the <see cref="IEnumerable{T}"/> of <see cref="byte"/> Type.
-/// </summary>
-public static class IEnumerableExtensionsByte
+public static partial class IEnumerableExtensions
 {
     /// <summary>
     /// Using the specified <see cref="byte"/> sequence, creates a new <typeparamref name="T"/> instance.

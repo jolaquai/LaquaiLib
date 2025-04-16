@@ -52,7 +52,7 @@ public class IAsyncEnumeratorExtensionsTests
     }
 
     [Fact]
-    public async Task ChainWithNullArrayThrowsArgumentNullException() => await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+    public async Task ChainWithNullArrayThrowsArgumentNullException() => await Assert.ThrowsAsync<ArgumentNullException>(static async () =>
     {
         var combined = IAsyncEnumeratorExtensions.Chain<int>(toChain: null);
         await CollectResults(combined);
