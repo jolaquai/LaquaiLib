@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net9.0-windows;net10.0-windows</TargetFrameworks>
+
+    <UseWPF>True</UseWPF>
+    <UseWindowsForms>True</UseWindowsForms>
+
+    <Title>LaquaiLib.Windows</Title>
+    <PackageDescription>Contains functionality specifically for Windows. Adds references to WinForms, WPF and several other assemblies that are Windows-specific.</PackageDescription>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CoreAudio" Version="1.40.0" />
+    <PackageReference Include="System.Management" Version="9.0.4" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" />
+
+    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib\LaquaiLib.csproj" />
+  </ItemGroup>
+</Project>
