@@ -9,7 +9,7 @@ using LaquaiLib.Extensions;
 using LaquaiLib.IO;
 using LaquaiLib.Util;
 
-namespace LaquaiLib.Unsafe;
+namespace LaquaiLib.UnsafeUtils;
 
 #pragma warning disable CA1069 // Enums values should not be duplicated
 

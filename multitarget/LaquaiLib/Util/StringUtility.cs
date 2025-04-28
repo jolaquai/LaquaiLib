@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-using LaquaiLib.Unsafe;
+using LaquaiLib.UnsafeUtils;
 
 namespace LaquaiLib.Core;
 

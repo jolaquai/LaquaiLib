@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace LaquaiLib.Analyzers.Performance;
+namespace LaquaiLib.Analyzers.Performance__0XXX_;
 
 /// <summary>
 /// Recommends usage of <see langword="stackalloc"/>'d buffers over heap-allocating arrays for temporary buffers with a known (and safe) size.

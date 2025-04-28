@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
-namespace LaquaiLib.Analyzers.Performance;
+namespace LaquaiLib.Analyzers.Performance__0XXX_;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer

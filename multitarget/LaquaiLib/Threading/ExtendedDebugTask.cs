@@ -427,7 +427,7 @@ public class ExtendedDebugTask<TResult>(Task<TResult> task)
     public static ExtendedDebugTask<TResult> Run(Func<Task<TResult>> function, CancellationToken cancellationToken) => new(System.Threading.Tasks.Task.Run(function, cancellationToken));
 
     /// <summary>
-    /// Gets the current instance typed as <see cref="System.Threading.Tasks.Task"/>.
+    /// Gets the current instance typed as <see cref="Task{TResult}"/>.
     /// </summary>
     public Task<TResult> Task { get; } = task;
 

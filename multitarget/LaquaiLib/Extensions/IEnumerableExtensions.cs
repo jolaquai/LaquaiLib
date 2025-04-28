@@ -24,10 +24,10 @@ public static partial class IEnumerableExtensions
         switch (source)
         {
             case T[]:
-                span = System.Runtime.CompilerServices.Unsafe.As<T[]>(source);
+                span = Unsafe.As<T[]>(source);
                 break;
             case List<T>:
-                span = CollectionsMarshal.AsSpan(System.Runtime.CompilerServices.Unsafe.As<List<T>>(source));
+                span = CollectionsMarshal.AsSpan(Unsafe.As<List<T>>(source));
                 break;
             default:
                 span = default;
@@ -529,7 +529,7 @@ public static partial class IEnumerableExtensions
         foreach (var item in second)
         {
             ref var count = ref CollectionsMarshal.GetValueRefOrNullRef(counts, item);
-            if (System.Runtime.CompilerServices.Unsafe.IsNullRef(ref count) || --count < 0)
+            if (Unsafe.IsNullRef(ref count) || --count < 0)
             {
                 // Item in second but not in first
                 return false;

@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace LaquaiLib.Analyzers.CorrectUsage;
+namespace LaquaiLib.Analyzers.CorrectUsage__9XXX_;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class FullAccessProxyAttributeUsageAnalyzer : DiagnosticAnalyzer

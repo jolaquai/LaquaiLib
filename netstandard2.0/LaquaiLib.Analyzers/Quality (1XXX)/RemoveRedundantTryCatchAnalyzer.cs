@@ -1,5 +1,4 @@
-﻿namespace LaquaiLib.Analyzers.Quality;
-
+﻿namespace LaquaiLib.Analyzers.Quality__1XXX_;
 
 // LAQ1001
 internal class RemoveRedundantTryCatchAnalyzer

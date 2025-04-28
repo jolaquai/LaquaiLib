@@ -58,7 +58,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.SelectMany().ToArray();
 
-        Assert.Equal(new[] { 1, 2, 3, 4, 5, 6 }, result);
+        Assert.Equal([1, 2, 3, 4, 5, 6], result);
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class IEnumerableExtensionsTests
     [Fact]
     public void SplitThrowsForNullPredicate()
     {
-        IEnumerable<int> source = new[] { 1, 2, 3 };
+        IEnumerable<int> source = [1, 2, 3];
 
         Assert.Throws<ArgumentNullException>(() => source.Split(null));
     }
@@ -157,8 +157,8 @@ public class IEnumerableExtensionsTests
 
         var (first, second) = source.Halve();
 
-        Assert.Equal(new[] { 1, 2 }, first);
-        Assert.Equal(new[] { 3, 4 }, second);
+        Assert.Equal([1, 2], first);
+        Assert.Equal([3, 4], second);
     }
 
     [Fact]
@@ -168,8 +168,8 @@ public class IEnumerableExtensionsTests
 
         var (first, second) = source.Halve();
 
-        Assert.Equal(new[] { 1, 2 }, first);
-        Assert.Equal(new[] { 3, 4, 5 }, second);
+        Assert.Equal([1, 2], first);
+        Assert.Equal([3, 4, 5], second);
     }
 
     [Fact]
@@ -257,7 +257,7 @@ public class IEnumerableExtensionsTests
 
         var result = first.Interlace(second).ToArray();
 
-        Assert.Equal(new[] { 1, 2, 3, 4, 5, 6 }, result);
+        Assert.Equal([1, 2, 3, 4, 5, 6], result);
     }
 
     [Fact]
@@ -268,7 +268,7 @@ public class IEnumerableExtensionsTests
 
         var result = first.Interlace(second).ToArray();
 
-        Assert.Equal(new[] { 1, 2, 3, 4, 5, 7 }, result);
+        Assert.Equal([1, 2, 3, 4, 5, 7], result);
     }
 
     [Fact]
@@ -279,7 +279,7 @@ public class IEnumerableExtensionsTests
 
         var result = first.Interlace(second).ToArray();
 
-        Assert.Equal(new[] { 1, 2, 3, 4, 6, 8 }, result);
+        Assert.Equal([1, 2, 3, 4, 6, 8], result);
     }
 
     [Fact]
@@ -410,7 +410,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.GetRange(1..4).ToArray();
 
-        Assert.Equal(new[] { 2, 3, 4 }, result);
+        Assert.Equal([2, 3, 4], result);
     }
 
     [Fact]
@@ -420,7 +420,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.GetRange(2..).ToArray();
 
-        Assert.Equal(new[] { 3, 4, 5 }, result);
+        Assert.Equal([3, 4, 5], result);
     }
 
     [Fact]
@@ -430,7 +430,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.GetRange(..3).ToArray();
 
-        Assert.Equal(new[] { 1, 2, 3 }, result);
+        Assert.Equal([1, 2, 3], result);
     }
 
     [Fact]
@@ -446,11 +446,11 @@ public class IEnumerableExtensionsTests
     [Fact]
     public void GetRangeWithNonIndexableCollectionWorks()
     {
-        IEnumerable<int> source = Enumerable.Range(1, 5);
+        var source = Enumerable.Range(1, 5);
 
         var result = source.GetRange(1..4).ToArray();
 
-        Assert.Equal(new[] { 2, 3, 4 }, result);
+        Assert.Equal([2, 3, 4], result);
     }
     #endregion
 
@@ -620,7 +620,7 @@ public class IEnumerableExtensionsTests
 
         Assert.Equal(10, result.Length);
 
-        for (int i = 1; i < result.Length; i++)
+        for (var i = 1; i < result.Length; i++)
         {
             Assert.True(result[i] > result[i - 1]);
         }
@@ -737,7 +737,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.SelectWhere(x => x % 2 == 0, x => x * 10).ToArray();
 
-        Assert.Equal(new[] { 1, 20, 3, 40, 5 }, result);
+        Assert.Equal([1, 20, 3, 40, 5], result);
     }
 
     [Fact]
@@ -747,7 +747,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.SelectWhere((x, i) => i % 2 == 0, (x, i) => x + i).ToArray();
 
-        Assert.Equal(new[] { 10, 20, 32, 40, 54 }, result);
+        Assert.Equal([10, 20, 32, 40, 54], result);
     }
 
     [Fact]
@@ -757,7 +757,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.SelectOnlyWhere(x => x % 2 == 0, x => x * 10).ToArray();
 
-        Assert.Equal(new[] { 20, 40 }, result);
+        Assert.Equal([20, 40], result);
     }
 
     [Fact]
@@ -813,7 +813,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.IfWhere(true, x => x % 2 == 0).ToArray();
 
-        Assert.Equal(new[] { 2, 4 }, result);
+        Assert.Equal([2, 4], result);
     }
 
     [Fact]
@@ -833,7 +833,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.WhereNot(x => x % 2 == 0).ToArray();
 
-        Assert.Equal(new[] { 1, 3, 5 }, result);
+        Assert.Equal([1, 3, 5], result);
     }
     #endregion
 

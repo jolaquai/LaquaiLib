@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -44,9 +45,6 @@ public static partial class MemoryExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TResult[] ToArray<TSource, TResult>(this ReadOnlyMemory<TSource> memory, Func<TSource, TResult> selector) => memory.Span.ToArray(selector);
 
-    // I don't know what's going on here, but static analysis seems to be broken
-#pragma warning disable IDE0059 // Unnecessary assignment of a value
-#pragma warning disable IDE0060 // Remove unused parameter
     /// <summary>
     /// Splits the specified <paramref name="span"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
     /// </summary>
@@ -79,8 +77,6 @@ public static partial class MemoryExtensions
             }
         }
     }
-#pragma warning restore IDE0059 // Unnecessary assignment of a value
-#pragma warning restore IDE0060 // Remove unused parameter
     /// <summary>
     /// Splits the specified <paramref name="memory"/> into the specified destination <see cref="Memory{T}"/>s based on the given <paramref name="predicate"/>.
     /// </summary>
@@ -184,15 +180,27 @@ public static partial class MemoryExtensions
     /// <exception cref="ArgumentException">Thrown if the specified <paramref name="span"/> ends before a null terminator was encountered.</exception>
     public static string ReadString(this ReadOnlySpan<byte> span, ref int ptr, Encoding encoding = null)
     {
-        const byte zero = 0;
         encoding ??= Encoding.UTF8;
+        Span<byte> zeroSeq = stackalloc byte[encoding.GetMaxByteCount(1)];
+        // Should never fail
+        Debug.Assert(encoding.TryGetBytes(['\0'], zeroSeq, out _));
 
         var slice = span[ptr..];
-        var end = slice.IndexOf(zero);
+        var end = slice.IndexOf(zeroSeq);
+        // even if the index was found, we need to make sure we're aligned to the encoding
+        if (zeroSeq.Length != 1)
+        {
+            var forwAlign = end % zeroSeq.Length;
+            if (forwAlign != 0)
+            {
+                end += forwAlign;
+            }
+        }
+
         switch (end)
         {
             case -1:
-                throw new ArgumentException($"The specified span ends before a null terminator was encountered (started reading at {ptr}).");
+                throw new ArgumentException($"The specified span ends before a null terminator was encountered (started reading at {ptr}; that pointer was not modified).");
             case 0:
                 ptr++;
                 return "";
@@ -232,31 +240,8 @@ public static partial class MemoryExtensions
     /// Reading to the end of the <paramref name="span"/> without encountering a <c>\0</c> <see langword="byte"/> is considered illegal behavior and will throw an exception.
     /// </remarks>
     /// <exception cref="ArgumentException">Thrown if the specified <paramref name="span"/> ends before a null terminator was encountered.</exception>
-    public static string ReadString(this ReadOnlySpan<byte> span, int ptr, Encoding encoding = null)
-    {
-        const byte zero = 0;
-        encoding ??= Encoding.UTF8;
-
-        var slice = span[ptr..];
-        var end = slice.IndexOf(zero);
-        switch (end)
-        {
-            case -1:
-                throw new ArgumentException($"The specified span ends before a null terminator was encountered (started reading at {ptr}).");
-            case 0:
-                ptr++;
-                return "";
-            default:
-                ptr += end + 1;
-                unsafe
-                {
-                    fixed (byte* p = &slice[0])
-                    {
-                        return encoding.GetString(p, end);
-                    }
-                }
-        }
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string ReadString(this ReadOnlySpan<byte> span, int ptr, Encoding encoding = null) => span.ReadString(ref ptr, encoding);
     /// <summary>
     /// Reads a <c>\0</c>-terminated <see langword="string"/> from the specified <paramref name="memory"/>. This terminator is stripped from the input.
     /// </summary>
@@ -508,28 +493,4 @@ public static partial class MemoryExtensions
     /// <returns>An array of <typeparamref name="T"/> of type <paramref name="count"/> read from the <paramref name="memory"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T[] Read<T>(this ReadOnlyMemory<byte> memory, int ptr, int count) where T : struct => memory.Span.Read<T>(ptr, count);
-
-    /// <summary>
-    /// Converts a <see cref="ReadOnlySpan{T}"/> of <see cref="byte"/> to its equivalent string representation that is encoded with uppercase hex characters.
-    /// </summary>
-    /// <param name="bytes">The <see cref="byte"/> span to convert.</param>
-    /// <returns>The string as described.</returns>
-    /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
-    public static string ToHexString(this ReadOnlySpan<byte> bytes)
-    {
-        var str = StringUtility.AllocString(bytes.Length * 2);
-        using (var pin = PinWrapper.Pin(str))
-        {
-            var span = pin.AsSpan(str.Length);
-            Convert.TryToHexString(bytes, span, out _);
-        }
-        return str;
-    }
-    /// <summary>
-    /// Converts a <see cref="ReadOnlyMemory{T}"/> of <see cref="byte"/> to its equivalent string representation that is encoded with uppercase hex characters.
-    /// </summary>
-    /// <param name="bytes">The <see cref="byte"/> memory to convert.</param>
-    /// <returns>The string as described.</returns>
-    /// <remarks>This method uses the internal <see cref="Convert.ToHexString(byte[])"/> method for the conversion, but its output is reversed appropriately to account for endianness differences.</remarks>
-    public static string ToHexString(this ReadOnlyMemory<byte> bytes) => bytes.Span.ToHexString();
 }

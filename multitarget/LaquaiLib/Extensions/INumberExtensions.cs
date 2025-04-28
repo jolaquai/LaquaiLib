@@ -15,8 +15,7 @@ public static class NumberExtensions
     /// <param name="number">The number.</param>
     /// <param name="other">The other number.</param>
     /// <returns>Whether the specified number has the specified flag(s) set.</returns>
-    public static bool HasFlag<T>(this T number, T other)
-        where T : IEqualityOperators<T, T, bool>, IBitwiseOperators<T, T, T> => (number & other) == other;
+    public static bool HasFlag<T>(this T number, T other) where T : IEqualityOperators<T, T, bool>, IBitwiseOperators<T, T, T> => (number & other) == other;
 
     /// <summary>
     /// Converts the specified number to its binary representation.

@@ -1,6 +1,6 @@
 ﻿using LaquaiLib.Util;
 
-namespace LaquaiLib.UnitTests.Util;
+namespace LaquaiLib.UnitTests.Text;
 
 public class NaturalStringComparerTests
 {

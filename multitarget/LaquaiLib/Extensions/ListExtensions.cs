@@ -62,7 +62,15 @@ public static class ListExtensions
         return list.AsSpan()[offset..(offset + length)];
     }
 
-    // this should be used as cautiously as CollectionsMarshal.SetCount itself since it may expose garbage data if the entire Span isn't filled
+    // these should be used as cautiously as CollectionsMarshal.SetCount itself since they may expose garbage data
+    /// <summary>
+    /// Sets the <see cref="List{T}.Count"/> of the specified <paramref name="list"/> to the specified <paramref name="count"/>.
+    /// This is done through <see cref="CollectionsMarshal.SetCount{T}(List{T}, int)"/> and should be used as cautiously as that method.
+    /// </summary>
+    /// <typeparam name="T">The Type of the elements in the <see cref="List{T}"/>.</typeparam>
+    /// <param name="list">The <see cref="List{T}"/> to modify.</param>
+    /// <param name="count">The new <see cref="List{T}.Count"/> of the specified <paramref name="list"/>.</param>
+    public static void SetCount<T>(this List<T> list, int count) => CollectionsMarshal.SetCount(list, count);
     /// <summary>
     /// Increases the capacity of the <paramref name="list"/> so it can hold at least <paramref name="count"/> elements in addition to its current <see cref="List{T}.Count"/>.
     /// </summary>
@@ -73,6 +81,10 @@ public static class ListExtensions
     /// <returns>A <see cref="Span{T}"/> over the requested space in <paramref name="list"/>.</returns>
     public static Span<T> ExpandBy<T>(this List<T> list, int count, int startAt = -1)
     {
+        if (count == 0)
+        {
+            return default;
+        }
         if (startAt == -1)
         {
             startAt = list.Count;
