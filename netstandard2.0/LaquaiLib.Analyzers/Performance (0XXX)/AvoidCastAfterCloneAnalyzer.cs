@@ -75,9 +75,14 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
             return true;
         }
 
+        var baseSymbol = methodSymbol;
+        while (baseSymbol.OverriddenMethod is not null)
+        {
+            baseSymbol = baseSymbol.OverriddenMethod;
+        }
+
         // Also report for Open XML Clone or CloneNode methods (regardless of arguments to the latter since casting either way is unnecessary)
-        var isOpenXmlElement = methodSymbol.OriginalDefinition.ContainingType.ToDisplayString() == "DocumentFormat.OpenXml.OpenXmlElement";
-        Debug.WriteLine(methodSymbol.OriginalDefinition.ContainingType.ToDisplayString());
+        var isOpenXmlElement = baseSymbol.OriginalDefinition.ContainingType.ToDisplayString() == "DocumentFormat.OpenXml.OpenXmlElement";
         if (symbolName is "Clone" or "CloneNode" && isOpenXmlElement)
         {
             targetName = "DocumentFormat.OpenXml.OpenXmlElement." + symbolName;

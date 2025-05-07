@@ -34,8 +34,12 @@ public class AvoidCastAfterCloneAnalyzerFix : CodeFixProvider
     }
     private static async Task<Document> ReplaceWithUnsafeAsAsync(Document document, ExpressionSyntax expression, CancellationToken cancellationToken)
     {
-        var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+        var root = await document.GetRootAsync(cancellationToken).ConfigureAwait(false);
 
+        var annot = new SyntaxAnnotation();
+        root = root.ReplaceNode(expression, expression.WithAdditionalAnnotations(annot));
+
+        expression = root.GetAnnotatedNodes(annot).OfType<ExpressionSyntax>().First();
         ExpressionSyntax replaceTarget = null;
         TypeSyntax targetType = null;
         if (expression is CastExpressionSyntax castExpression)
@@ -53,9 +57,9 @@ public class AvoidCastAfterCloneAnalyzerFix : CodeFixProvider
         if (replaceTarget is not null && targetType is not null)
         {
             // Create Unsafe.As<T>(obj) expression
-            var targetTypeSyntax = SyntaxFactory.GenericName(SyntaxFactory.Identifier("As"), SyntaxFactory.TypeArgumentList(SyntaxFactory.SingletonSeparatedList(targetType)));
-            var unsafeNamespace = SyntaxFactory.ParseName("System.Runtime.CompilerServices.Unsafe").WithAdditionalAnnotations(Simplifier.Annotation);
-            var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, unsafeNamespace, targetTypeSyntax);
+            var genericNameSyntax = SyntaxFactory.GenericName(SyntaxFactory.Identifier("As"), SyntaxFactory.TypeArgumentList(SyntaxFactory.SingletonSeparatedList(targetType)));
+            var unsafeType = SyntaxFactory.ParseName("System.Runtime.CompilerServices.Unsafe").WithAdditionalAnnotations(Simplifier.Annotation, Simplifier.AddImportsAnnotation);
+            var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, unsafeType, genericNameSyntax);
             var argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Argument(replaceTarget)));
             var newExpression = SyntaxFactory.InvocationExpression(memberAccess, argumentList).WithAdditionalAnnotations(Formatter.Annotation);
 
