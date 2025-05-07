@@ -31,8 +31,8 @@ public static class MetaHelpers
         static string GetUnrooted(string path) => path.StartsWith(Path.DirectorySeparatorChar) ? path[1..] : path[3..];
         string[] programFiles = [architecture.HasFlag(Architecture.x64) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) : null, architecture.HasFlag(Architecture.x86) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) : null];
         programFiles = [.. drives.Zip(programFiles.Where(static pf => pf is not null), static (drive, programFile) => Path.Combine(drive, GetUnrooted(programFile)))];
-        var vsVersions = Array.ConvertAll(versions.GetFlags(), static flag => flag.GetDescription());
-        var vsEditions = Array.ConvertAll(edition.GetFlags(), static flag => flag.GetDescription());
+        var vsVersions = Array.ConvertAll(versions.Flags, static flag => flag.Description);
+        var vsEditions = Array.ConvertAll(edition.Flags, static flag => flag.Description);
 
         for (var i = 0; i < programFiles.Length; i++)
         {
@@ -61,7 +61,7 @@ public static class MetaHelpers
     /// <param name="edition">The edition(s) of Visual Studio that should be included in the search.</param>
     /// <param name="architecture">The architecture(s) of an app or tool that should be included in the search.</param>
     /// <returns>The paths of the tool that matched.</returns>
-    public static string[] FindTool(MetaTool tool, VSVersion versions = VSVersion.Any, VSEdition edition = VSEdition.Any, Architecture architecture = Architecture.Any) => FindTool(tool.GetDescription(), versions, edition, architecture);
+    public static string[] FindTool(MetaTool tool, VSVersion versions = VSVersion.Any, VSEdition edition = VSEdition.Any, Architecture architecture = Architecture.Any) => FindTool(tool.Description, versions, edition, architecture);
     /// <summary>
     /// Attempts to find a file in Visual Studio installations that are located in default installation directories, constrained by the specified parameters.
     /// </summary>
@@ -76,8 +76,8 @@ public static class MetaHelpers
         static string GetUnrooted(string path) => path.StartsWith(Path.DirectorySeparatorChar) ? path[1..] : path[3..];
         string[] programFiles = [architecture.HasFlag(Architecture.x64) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) : null, architecture.HasFlag(Architecture.x86) ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) : null];
         programFiles = [.. drives.Zip(programFiles.Where(pf => pf is not null), (drive, programFile) => Path.Combine(drive, GetUnrooted(programFile)))];
-        var vsVersions = Array.ConvertAll(versions.GetFlags(), flag => flag.GetDescription());
-        var vsEditions = Array.ConvertAll(edition.GetFlags(), flag => flag.GetDescription());
+        var vsVersions = Array.ConvertAll(versions.Flags, flag => flag.Description);
+        var vsEditions = Array.ConvertAll(edition.Flags, flag => flag.Description);
 
         List<Task<string>> tasks = [];
         for (var i = 0; i < programFiles.Length; i++)
@@ -104,7 +104,7 @@ public static class MetaHelpers
                 }
             }
         }
-        Task.WhenAll(tasks).GetAwaiter().GetResult();
+        _ = Task.WhenAll(tasks).GetAwaiter().GetResult();
 
         return [.. tasks.Where(t => t.Result is not null).Select(t => t.Result)];
     }

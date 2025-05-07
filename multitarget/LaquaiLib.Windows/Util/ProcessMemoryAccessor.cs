@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
 
 using LaquaiLib.Core;
 using LaquaiLib.Extensions;
@@ -57,7 +55,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     public ProcessMemoryAccessor(int pid)
     {
         Process.EnterDebugMode();
-        Interlocked.Increment(ref _instanceCount);
+        _ = Interlocked.Increment(ref _instanceCount);
 
         _pid = pid;
         EnsureAllowTarget();
@@ -102,7 +100,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var module = _modules.FirstOrDefault(m => m.BaseAddress <= address && address < m.BaseAddress + m.ModuleMemorySize)
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
-        var size = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+        var size = Unsafe.SizeOf<T>();
         Span<byte> buffer = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
@@ -135,7 +133,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         var module = _modules.FirstOrDefault(m => m.BaseAddress <= address && address < m.BaseAddress + m.ModuleMemorySize)
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
-        var size = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+        var size = Unsafe.SizeOf<T>();
         Span<byte> buffer = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
@@ -415,7 +413,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
         if (_handle != nint.Zero)
         {
-            Interop.CloseHandle(_handle);
+            _ = Interop.CloseHandle(_handle);
             _handle = nint.Zero;
         }
     }
@@ -434,7 +432,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         [LibraryImport("kernel32.dll")]
         public static partial nint GetCurrentProcess();
 
-        public static void VirtualQueryEx(nint hProcess, out MEMORY_BASIC_INFORMATION lpBuffer) => VirtualQueryExImpl(hProcess, nint.Zero, out lpBuffer, Marshal.SizeOf<MEMORY_BASIC_INFORMATION>());
+        public static void VirtualQueryEx(nint hProcess, out MEMORY_BASIC_INFORMATION lpBuffer) => VirtualQueryExImpl(hProcess, nint.Zero, out lpBuffer, Unsafe.SizeOf<MEMORY_BASIC_INFORMATION>());
         [LibraryImport("kernel32.dll", EntryPoint = nameof(VirtualQueryEx))]
         public static partial nint VirtualQueryExImpl(nint hProcess, nint lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, nint sizeT);
 

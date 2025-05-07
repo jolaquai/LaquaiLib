@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Runtime.InteropServices;
-
-using LaquaiLib.Interfaces;
+﻿using LaquaiLib.Interfaces;
 
 namespace LaquaiLib.Collections.Enumeration;
 
@@ -29,7 +26,7 @@ public unsafe struct MultiDimArrayEnumerable<T> : IEnumerable<T>, IEnumerator<T>
     /// Gets a <see cref="Memory{T}"/> over the entire array.
     /// </summary>
     // this is fine since the array is already pinned by the time callers can get in here
-    public readonly Memory<T> Memory => new Memory<T>(System.Runtime.CompilerServices.Unsafe.As<T[]>(_array));
+    public readonly Memory<T> Memory => new Memory<T>(Unsafe.As<T[]>(_array));
 
     /// <inheritdoc/>
     public bool MoveNext()

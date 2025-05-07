@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace LaquaiLib.Wrappers;
+﻿namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Provides factory methods for <see cref="UsingWrapper{T}"/> instances.

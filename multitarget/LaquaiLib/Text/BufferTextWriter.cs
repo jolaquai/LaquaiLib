@@ -1,8 +1,6 @@
 ﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 using LaquaiLib.Core;
 using LaquaiLib.Extensions;
@@ -49,7 +47,7 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
     public override string ToString() => new string(_buffer.WrittenSpan);
     public override void Write(bool value)
     {
-        value.TryFormat(_buffer.GetSpan(5), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(5), out var written);
         _buffer.Advance(written);
     }
     public override void Write(char value)
@@ -69,22 +67,22 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
     }
     public override void Write(decimal value)
     {
-        value.TryFormat(_buffer.GetSpan(128), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(128), out var written);
         _buffer.Advance(written);
     }
     public override void Write(double value)
     {
-        value.TryFormat(_buffer.GetSpan(50), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(50), out var written);
         _buffer.Advance(written);
     }
     public override void Write(int value)
     {
-        value.TryFormat(_buffer.GetSpan(20), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(20), out var written);
         _buffer.Advance(written);
     }
     public override void Write(long value)
     {
-        value.TryFormat(_buffer.GetSpan(30), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(30), out var written);
         _buffer.Advance(written);
     }
     public override void Write(object value)
@@ -123,7 +121,7 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
     }
     public override void Write(float value)
     {
-        value.TryFormat(_buffer.GetSpan(25), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(25), out var written);
         _buffer.Advance(written);
     }
     public override void Write(string value)
@@ -265,12 +263,12 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
     }
     public override void Write(uint value)
     {
-        value.TryFormat(_buffer.GetSpan(14), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(14), out var written);
         _buffer.Advance(written);
     }
     public override void Write(ulong value)
     {
-        value.TryFormat(_buffer.GetSpan(30), out var written);
+        _ = value.TryFormat(_buffer.GetSpan(30), out var written);
         _buffer.Advance(written);
     }
     public override void WriteLine()

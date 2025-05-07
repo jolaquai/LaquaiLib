@@ -1,11 +1,4 @@
-﻿using System.Collections.Immutable;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-
-using static Microsoft.CodeAnalysis.SpecialType;
+﻿using static Microsoft.CodeAnalysis.SpecialType;
 
 namespace LaquaiLib.Analyzers.Performance__0XXX_;
 

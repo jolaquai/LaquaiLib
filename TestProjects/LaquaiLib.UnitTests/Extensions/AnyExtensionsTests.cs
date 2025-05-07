@@ -249,7 +249,7 @@ public class AnyExtensionsTests
     {
         string obj = null;
 
-        var result = obj.IsNull();
+        var result = obj.IsNull;
 
         Assert.True(result);
     }
@@ -259,7 +259,7 @@ public class AnyExtensionsTests
     {
         var obj = "test";
 
-        var result = obj.IsNull();
+        var result = obj.IsNull;
 
         Assert.False(result);
     }
@@ -270,8 +270,8 @@ public class AnyExtensionsTests
         int? nullableInt = null;
         int? nonNullInt = 42;
 
-        var nullResult = nullableInt.IsNull();
-        var nonNullResult = nonNullInt.IsNull();
+        var nullResult = nullableInt.IsNull;
+        var nonNullResult = nonNullInt.IsNull;
 
         Assert.True(nullResult);
         Assert.False(nonNullResult);

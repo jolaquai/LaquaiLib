@@ -1,11 +1,4 @@
-﻿using System.Collections.Immutable;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-
-namespace LaquaiLib.Analyzers.Performance__0XXX_;
+﻿namespace LaquaiLib.Analyzers.Performance__0XXX_;
 
 /// <summary>
 /// Recommends usage of <see langword="stackalloc"/>'d buffers over heap-allocating arrays for temporary buffers with a known (and safe) size.
@@ -73,7 +66,7 @@ public class PreferStackallocForTemporaryBuffersAnalyzer : DiagnosticAnalyzer
 
         // Is the size safe to stackalloc?
         var typeBeingCreated = type.ElementType;
-        var sizeofType = context.SemanticModel.GetTypeInfo(typeBeingCreated).Type?.SizeOf(context.Compilation);
+        var sizeofType = context.SemanticModel.GetTypeInfo(typeBeingCreated).Type?.SizeOf();
         // Cutoff is 768 since anything above that tends to not even really help when stackalloc'd, but anything below 512 is definitely safe and worth it
         const int cutoff = 768;
         if (sizeofType is null or 0 || sizeofType == 1 && size > cutoff || size * (int)sizeofType > cutoff)

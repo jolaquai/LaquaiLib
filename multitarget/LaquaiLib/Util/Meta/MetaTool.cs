@@ -16,5 +16,10 @@ public enum MetaTool
     /// Indicates that <c>dumpbin.exe</c> should be searched for.
     /// </summary>
     [Description("dumpbin.exe")]
-    Dumpbin
+    Dumpbin,
+    /// <summary>
+    /// Indicates that <c>csc.exe</c> should be searched for.
+    /// </summary>
+    [Description("csc.exe")]
+    Csc,
 }

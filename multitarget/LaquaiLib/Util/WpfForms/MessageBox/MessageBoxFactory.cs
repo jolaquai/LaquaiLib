@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 /// <summary>

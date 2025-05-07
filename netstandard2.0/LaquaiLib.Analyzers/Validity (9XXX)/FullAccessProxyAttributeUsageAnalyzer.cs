@@ -1,11 +1,4 @@
-﻿using System.Collections.Immutable;
-
-using LaquaiLib.Analyzers.Shared.Attributes;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
+﻿using LaquaiLib.Analyzers.Shared.Attributes;
 
 namespace LaquaiLib.Analyzers.CorrectUsage__9XXX_;
 

@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using LaquaiLib.Core;
@@ -113,7 +112,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             cts = new CancellationTokenSource();
 
             // Create destination directory
-            Directory.CreateDirectory(destinationPath);
+            _ = Directory.CreateDirectory(destinationPath);
 
             DirectoryCopyState copyState;
             var isResume = false;
@@ -170,7 +169,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
                     var destFilePath = Path.Combine(destinationPath, fileState.RelativePath);
 
                     // Ensure destination directory exists
-                    Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
+                    _ = Directory.CreateDirectory(Path.GetDirectoryName(destFilePath));
 
                     // Copy the individual file
                     var fileSuccess = await MigrateFileAsync(
@@ -257,7 +256,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
         finally
         {
             cts = null;
-            Interlocked.Exchange(ref running, 0);
+            _ = Interlocked.Exchange(ref running, 0);
         }
     }
     private async Task<bool> MigrateFileAsync(

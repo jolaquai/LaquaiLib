@@ -29,6 +29,16 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" PrivateAssets="all" />
 
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="True" PackagePath="analyzers/dotnet/cs" />
+
+        <Using Include="System.Collections.Immutable" />
+        <Using Include="System.ComponentModel" />
+        <Using Include="System.Runtime.CompilerServices" />
+        <Using Include="Microsoft.CodeAnalysis" />
+        <Using Include="Microsoft.CodeAnalysis.CSharp" />
+        <Using Include="Microsoft.CodeAnalysis.CSharp.Syntax" />
+        <Using Include="Microsoft.CodeAnalysis.Diagnostics" />
+        <Using Include="Microsoft.CodeAnalysis.Text" />
+        <Using Include="System.Diagnostics" />
     </ItemGroup>
 
 </Project>

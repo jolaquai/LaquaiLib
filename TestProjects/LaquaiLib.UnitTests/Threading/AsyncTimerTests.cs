@@ -73,8 +73,8 @@ public class AsyncTimerTests
     {
         await using var timer = new AsyncTimer(TimeSpan.FromMilliseconds(100));
 
-        bool callback1Invoked = false;
-        bool callback2Invoked = false;
+        var callback1Invoked = false;
+        var callback2Invoked = false;
 
         Task callback1(object _, CancellationToken ct)
         {
@@ -92,7 +92,7 @@ public class AsyncTimerTests
         timer.Callback += callback2;
 
         await timer.StartAsync();
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
         await timer.StopAsync();
 
         Assert.True(callback1Invoked);
@@ -104,7 +104,7 @@ public class AsyncTimerTests
         timer.Callback -= callback1;
 
         await timer.StartAsync();
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
         await timer.StopAsync();
 
         Assert.False(callback1Invoked);
@@ -125,7 +125,7 @@ public class AsyncTimerTests
         await using var timer = new AsyncTimer(TimeSpan.FromMilliseconds(50), callback);
         await timer.StartAsync();
 
-        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(500));
+        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(500, TestContext.Current.CancellationToken));
         await timer.StopAsync();
 
         Assert.Same(callbackInvoked.Task, result);
@@ -151,10 +151,10 @@ public class AsyncTimerTests
         await timer.StartAsync();
 
         await callbackInvoked.Task;
-        await timer.StopAsync();
+        await timer.StopAsync(TestContext.Current.CancellationToken);
 
         var initialCount = callCount;
-        await Task.Delay(300);
+        await Task.Delay(300, TestContext.Current.CancellationToken);
 
         Assert.Equal(initialCount, callCount);
     }
@@ -178,7 +178,7 @@ public class AsyncTimerTests
         timer.Callback += callback;
         await timer.StartAsync();
 
-        var result = await Task.WhenAny(stateReceived.Task, Task.Delay(500));
+        var result = await Task.WhenAny(stateReceived.Task, Task.Delay(500, TestContext.Current.CancellationToken));
         await timer.StopAsync();
 
         Assert.Same(stateReceived.Task, result);
@@ -210,10 +210,10 @@ public class AsyncTimerTests
         timer.Callback += callback;
         await timer.StartAsync();
 
-        await Task.Delay(70);
+        await Task.Delay(70, TestContext.Current.CancellationToken);
         timer.State = newState;
 
-        var result = await Task.WhenAny(callbackInvokedTwice.Task, Task.Delay(500));
+        var result = await Task.WhenAny(callbackInvokedTwice.Task, Task.Delay(500, TestContext.Current.CancellationToken));
         await timer.StopAsync();
 
         Assert.Same(callbackInvokedTwice.Task, result);
@@ -262,7 +262,7 @@ public class AsyncTimerTests
         await timer.StartAsync();
 
         await Task.WhenAll(callback1Started.Task, callback2Started.Task);
-        var result = await Task.WhenAny(bothCallbacksRunning.Task, Task.Delay(100));
+        var result = await Task.WhenAny(bothCallbacksRunning.Task, Task.Delay(100, TestContext.Current.CancellationToken));
 
         startTcs.SetResult(true);
         await timer.StopAsync();
@@ -287,20 +287,20 @@ public class AsyncTimerTests
                 minimumCallsReceived.SetResult(true);
             }
 
-            await Task.Delay(150);
+            await Task.Delay(150, TestContext.Current.CancellationToken);
         }
 
         await using var timer = new AsyncTimer(TimeSpan.FromMilliseconds(50), callback);
         await timer.StartAsync();
 
-        var result = await Task.WhenAny(minimumCallsReceived.Task, Task.Delay(1000));
+        var result = await Task.WhenAny(minimumCallsReceived.Task, Task.Delay(1000, TestContext.Current.CancellationToken));
         await timer.StopAsync();
 
         Assert.Same(minimumCallsReceived.Task, result);
         Assert.True(await minimumCallsReceived.Task);
 
         var timeArray = callTimes.ToArray();
-        for (int i = 1; i < timeArray.Length; i++)
+        for (var i = 1; i < timeArray.Length; i++)
         {
             var timeDiff = timeArray[i] - timeArray[i - 1];
             Assert.True(timeDiff >= TimeSpan.FromMilliseconds(150 - 20));
@@ -341,7 +341,7 @@ public class AsyncTimerTests
         await firstCallReceived.Task;
         timer.Period = newPeriod;
 
-        var result = await Task.WhenAny(minimumCallsReceived.Task, Task.Delay(500));
+        var result = await Task.WhenAny(minimumCallsReceived.Task, Task.Delay(500, TestContext.Current.CancellationToken));
         await timer.StopAsync();
 
         Assert.Same(minimumCallsReceived.Task, result);
@@ -369,7 +369,7 @@ public class AsyncTimerTests
         await using var timer = new AsyncTimer(TimeSpan.FromMilliseconds(50), callback);
         await timer.StartAsync();
 
-        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(500));
+        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(500, TestContext.Current.CancellationToken));
         await timer.StopAsync();
 
         Assert.Same(callbackInvoked.Task, result);
@@ -396,7 +396,7 @@ public class AsyncTimerTests
         await timer.StopAsync();
 
         var initialCount = callCount;
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
 
         Assert.Equal(initialCount, callCount);
     }
@@ -417,7 +417,7 @@ public class AsyncTimerTests
         await timer.StartAsync();
         await timer.StartAsync();
 
-        var result = Task.WhenAny(callbackInvoked.Task, Task.Delay(200)).Result;
+        var result = Task.WhenAny(callbackInvoked.Task, Task.Delay(200, TestContext.Current.CancellationToken)).Result;
         await timer.StopAsync();
 
         Assert.Same(callbackInvoked.Task, result);
@@ -458,7 +458,7 @@ public class AsyncTimerTests
             return Task.CompletedTask;
         };
 
-        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(200));
+        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(200, TestContext.Current.CancellationToken));
 
         Assert.Same(callbackInvoked.Task, result);
         Assert.True(await callbackInvoked.Task);
@@ -477,7 +477,7 @@ public class AsyncTimerTests
 
         await using var timer = AsyncTimer.Start(TimeSpan.FromMilliseconds(50), callback);
 
-        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(200));
+        var result = await Task.WhenAny(callbackInvoked.Task, Task.Delay(200, TestContext.Current.CancellationToken));
 
         Assert.Same(callbackInvoked.Task, result);
         Assert.True(await callbackInvoked.Task);
@@ -506,8 +506,8 @@ public class AsyncTimerTests
 
         await using var timer = AsyncTimer.Start(TimeSpan.FromMilliseconds(50), state, callback1, callback2);
 
-        var result1 = await Task.WhenAny(callbackInvoked1.Task, Task.Delay(200));
-        var result2 = await Task.WhenAny(callbackInvoked2.Task, Task.Delay(200));
+        var result1 = await Task.WhenAny(callbackInvoked1.Task, Task.Delay(200, TestContext.Current.CancellationToken));
+        var result2 = await Task.WhenAny(callbackInvoked2.Task, Task.Delay(200, TestContext.Current.CancellationToken));
 
         Assert.Same(callbackInvoked1.Task, result1);
         Assert.Same(callbackInvoked2.Task, result2);
@@ -536,7 +536,7 @@ public class AsyncTimerTests
 
         await timer.DisposeAsync();
 
-        await Task.Delay(200);
+        await Task.Delay(200, TestContext.Current.CancellationToken);
         Assert.Equal(initialCount, callCount);
     }
 
@@ -570,7 +570,7 @@ public class AsyncTimerTests
         var initialCount = callCount;
         await timer.StartAsync();
 
-        var result = await Task.WhenAny(secondCallbackInvoked.Task, Task.Delay(200));
+        var result = await Task.WhenAny(secondCallbackInvoked.Task, Task.Delay(200, TestContext.Current.CancellationToken));
         await timer.StopAsync();
 
         Assert.Equal(1, initialCount);

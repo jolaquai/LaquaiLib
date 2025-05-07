@@ -3,6 +3,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.13.0" PrivateAssets="all" />
+
+    <Using Include="System.Composition" />
+    <Using Include="Microsoft.CodeAnalysis.CodeActions" />
+    <Using Include="Microsoft.CodeAnalysis.CodeFixes" />
+    <Using Include="Microsoft.CodeAnalysis.Simplification" />
+    <Using Include="Microsoft.CodeAnalysis.Formatting" />
   </ItemGroup>
 
 </Project>

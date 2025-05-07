@@ -1,7 +1,3 @@
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-
 using LaquaiLib.Interfaces;
 
 namespace LaquaiLib.Wrappers;
@@ -63,14 +59,14 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TempAlloc Create<T>() where T : struct => new TempAlloc(Marshal.SizeOf<T>());
+    public static TempAlloc Create<T>() where T : struct => new TempAlloc(Unsafe.SizeOf<T>());
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly one instance of the given <see cref="Type"/>, optionally clearing any previous data.
     /// </summary>
     /// <typeparam name="T">The <see cref="Type"/> to allocate memory for.</typeparam>
     /// <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TempAlloc Create<T>(bool clear) where T : struct => new TempAlloc(Marshal.SizeOf<T>(), clear);
+    public static TempAlloc Create<T>(bool clear) where T : struct => new TempAlloc(Unsafe.SizeOf<T>(), clear);
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
@@ -80,7 +76,7 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
     public static TempAlloc Create<T>(int count)
         where T : struct => count <= 0
             ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
-            : new TempAlloc(Marshal.SizeOf<T>() * count);
+            : new TempAlloc(Unsafe.SizeOf<T>() * count);
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="Type"/>.
     /// </summary>
@@ -91,7 +87,7 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
     public static TempAlloc Create<T>(int count, bool clear)
         where T : struct => count <= 0
             ? throw new ArgumentOutOfRangeException(nameof(count), "Count must be greater than zero.")
-            : new TempAlloc(Marshal.SizeOf<T>() * count, clear);
+            : new TempAlloc(Unsafe.SizeOf<T>() * count, clear);
     /// <summary>
     /// Initializes a new <see cref="TempAlloc"/> for the
     /// </summary>
@@ -100,7 +96,7 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
     public static TempAlloc Create<T>(T value)
         where T : struct
     {
-        var alloc = new TempAlloc(Marshal.SizeOf<T>());
+        var alloc = new TempAlloc(Unsafe.SizeOf<T>());
         Marshal.StructureToPtr(value, alloc._address, true);
         return alloc;
     }
@@ -412,7 +408,7 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
                 {
                     data[i - shiftAmount] = data[i];
                 }
-                Reallocate(data.Length - shiftAmount);
+                _ = Reallocate(data.Length - shiftAmount);
                 data = Span;
             }
 
@@ -438,13 +434,13 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
         for (var i = 0; i < _size; i += 4)
         {
             var slice = data[i..(i + 4 > _size ? _size : i + 4)];
-            sb.Append(Convert.ToHexString(slice));
+            _ = sb.Append(Convert.ToHexString(slice));
             if ((i + 4) % 32 == 0)
             {
-                sb.AppendLine();
+                _ = sb.AppendLine();
                 continue;
             }
-            sb.Append(' ');
+            _ = sb.Append(' ');
         }
         return sb.ToString().Trim(' ');
     }
@@ -460,9 +456,9 @@ public unsafe struct TempAlloc : ISpanProvider<byte>, IDisposable
         {
             foreach (var b in i < 4 ? data[..i] : data.Slice(i - 4, 4))
             {
-                sb.Insert(0, Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
+                _ = sb.Insert(0, Convert.ToString(b, toBase: 2).PadLeft(8, '0'));
             }
-            sb.Insert(0, ' ');
+            _ = sb.Insert(0, ' ');
         }
         return sb.ToString().Trim(' ');
     }

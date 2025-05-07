@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace LaquaiLib.Util.WpfForms;
 
@@ -26,7 +24,7 @@ public static partial class ToolTip
         {
             var hdc = GetDC(nint.Zero);
             var dpi = GetDeviceCaps(hdc, 88);
-            ReleaseDC(nint.Zero, hdc);
+            _ = ReleaseDC(nint.Zero, hdc);
             return dpi;
         }
 
@@ -93,13 +91,13 @@ public static partial class ToolTip
         internal static partial bool GetCursorPos(out POINT lpPoint);
         internal static MONITORINFO GetMonitorInfoFromCursor()
         {
-            GetCursorPos(out var cursorPos);
+            _ = GetCursorPos(out var cursorPos);
 
             var hMonitor = MonitorFromPoint(cursorPos, 2);
 
             var monitorInfo = default(MONITORINFO) with
             {
-                cbSize = Marshal.SizeOf<MONITORINFO>()
+                cbSize = Unsafe.SizeOf<MONITORINFO>()
             };
 
             if (GetMonitorInfo(hMonitor, ref monitorInfo))
@@ -151,8 +149,8 @@ public static partial class ToolTip
                 var msg = default(MSG);
                 while (GetMessage(out msg, hWnd, 0, 0))
                 {
-                    TranslateMessage(ref msg);
-                    DispatchMessage(ref msg);
+                    _ = TranslateMessage(ref msg);
+                    _ = DispatchMessage(ref msg);
                 }
             }
             _runningMessageLoop = false;
@@ -221,7 +219,7 @@ public static partial class ToolTip
         }
 
         var monitorinfo = Interop.GetMonitorInfoFromCursor();
-        Interop.GetCursorPos(out var cursorPos);
+        _ = Interop.GetCursorPos(out var cursorPos);
         var textRect = Interop._win8OrGreater ? monitorinfo.rcWork : monitorinfo.rcMonitor;
 
         int xActual;
@@ -259,7 +257,7 @@ public static partial class ToolTip
             throw new Exception("Unable to create tooltip window.", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
         }
 
-        Task.Run(() => Interop.RunMessageLoop(tooltipHwnd));
+        _ = Task.Run(() => Interop.RunMessageLoop(tooltipHwnd));
 
         unsafe
         {
@@ -280,15 +278,15 @@ public static partial class ToolTip
             var block = (nint)(&ti);
 
             // Technically, because of pointer bullshit and P/Invoke source generation, this could still be somewhat fast xd
-            Interop.SendMessage(tooltipHwnd, Interop.TTM_ADJUSTRECT, 0, (nint)(&textRect));
-            Interop.SendMessage(tooltipHwnd, Interop.TTM_SETMAXTIPWIDTH, 0, (textRect.right - textRect.left) * 96 / Interop.ScreenDpi);
+            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_ADJUSTRECT, 0, (nint)(&textRect));
+            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_SETMAXTIPWIDTH, 0, (textRect.right - textRect.left) * 96 / Interop.ScreenDpi);
 
-            Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
-            Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
+            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
+            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
 
-            Interop.SendMessage(tooltipHwnd, Interop.TTM_UPDATETIPTEXT, 0, block);
+            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_UPDATETIPTEXT, 0, block);
 
-            Interop.GetWindowRect(tooltipHwnd, out var ttw);
+            _ = Interop.GetWindowRect(tooltipHwnd, out var ttw);
             var height = ttw.bottom - ttw.top;
             var width = ttw.right - ttw.left;
             if (xActual + width > textRect.right)
@@ -310,8 +308,8 @@ public static partial class ToolTip
                 yActual = cursorPos.y - height - 5;
             }
 
-            Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
-            Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
+            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
+            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
 
             return new ToolTipHandle(tooltipHwnd, ti.lpszText, displayTime.Value);
         }
@@ -370,7 +368,7 @@ public struct ToolTipHandle
 
         DisplayTask = Task.Delay(displayTime);
         var self = this;
-        DisplayTask.ContinueWith(_ => Dispose(self));
+        _ = DisplayTask.ContinueWith(_ => Dispose(self));
     }
 
     private static void Dispose(ToolTipHandle handle)
@@ -378,7 +376,7 @@ public struct ToolTipHandle
         if (!handle.IsDisposed)
         {
             Marshal.FreeHGlobal(handle._lpszText);
-            ToolTip.Interop.DestroyWindow(handle._tooltipHwnd);
+            _ = ToolTip.Interop.DestroyWindow(handle._tooltipHwnd);
             handle.DisplayTask.Dispose();
             handle.IsDisposed = true;
         }

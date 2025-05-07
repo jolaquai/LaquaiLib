@@ -1,12 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-
-namespace LaquaiLib.Analyzers.Performance__0XXX_;
+﻿namespace LaquaiLib.Analyzers.Performance__0XXX_;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer

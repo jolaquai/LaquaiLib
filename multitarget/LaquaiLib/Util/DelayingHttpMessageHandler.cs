@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace LaquaiLib.Util;
+﻿namespace LaquaiLib.Util;
 
 /// <summary>
 /// Implements a <see cref="HttpMessageHandler"/> that delays requests by a minimum amount of time. Useful for preventing rate limiting.
@@ -84,7 +82,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
             }
             finally
             {
-                _semaphore.Release();
+                _ = _semaphore.Release();
             }
         }
         else
@@ -98,7 +96,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
                 }
                 finally
                 {
-                    Interlocked.Exchange(ref running, 0);
+                    _ = Interlocked.Exchange(ref running, 0);
                 }
             }
         }
@@ -124,7 +122,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
             }
             finally
             {
-                _semaphore.Release();
+                _ = _semaphore.Release();
             }
         }
         else
@@ -139,7 +137,7 @@ public class DelayingHttpMessageHandler : DelegatingHandler
                 }
                 finally
                 {
-                    Interlocked.Exchange(ref running, 0);
+                    _ = Interlocked.Exchange(ref running, 0);
                 }
             }
         }

@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Collections.LimitedCollections;
 
@@ -139,7 +137,7 @@ public sealed class LimitedQueue<T> : ICollection<T>
         // Dequeue before Enqueue if the collection is at capacity to prevent resizing the backing store
         if (queue.Count > 0 && queue.Count >= Capacity)
         {
-            Dequeue();
+            _ = Dequeue();
         }
         queue.Enqueue(item);
     }
@@ -253,7 +251,7 @@ public sealed class LimitedQueue<T> : ICollection<T>
             Capacity = size;
             do
             {
-                Dequeue();
+                _ = Dequeue();
             } while (queue.Count > size);
         }
     }

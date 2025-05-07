@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 using LaquaiLib.Core;
 using LaquaiLib.Extensions;
@@ -177,7 +176,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
         finally
         {
             cts = null;
-            Interlocked.Exchange(ref running, 0);
+            _ = Interlocked.Exchange(ref running, 0);
         }
     }
     private async Task SaveStateAsync(CopyState state)

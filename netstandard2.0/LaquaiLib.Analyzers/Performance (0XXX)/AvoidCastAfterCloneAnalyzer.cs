@@ -1,21 +1,13 @@
-﻿using System.Collections.Immutable;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
-
-namespace LaquaiLib.Analyzers.Performance__0XXX_;
+﻿namespace LaquaiLib.Analyzers.Performance__0XXX_;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
 {
     public static DiagnosticDescriptor Descriptor { get; } = new(
         id: "LAQ0002",
-        title: "Do not cast after ICloneable.Clone() invocations",
-        messageFormat: "Do not cast after ICloneable.Clone invocations, use Unsafe.As instead",
-        description: "Sane ICloneable.Clone() implementations will return the same type as the object being cloned. Casting the result of Clone() is unnecessary and can be replaced with Unsafe.As to improve performance.",
+        title: "Do not cast after clone operations",
+        messageFormat: "Do not cast after {0} invocations, use Unsafe.As instead",
+        description: "Sane implementations of clone methods will return the same type as the object being cloned. Casting the result incurs an unnecessary type check and can be replaced with Unsafe.As to improve performance.",
         category: AnalyzerCategories.Performance,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
@@ -39,32 +31,59 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Check if this is a call to ICloneable.Clone()
-        if (methodSymbol.Name != "Clone" || methodSymbol.ContainingType.AllInterfaces.All(static i => i.ToDisplayString() != "System.ICloneable"))
+        var targetName = "";
+        if (!IsApplicable(methodSymbol, ref targetName))
         {
             return;
         }
 
         // Look for parent cast expression
         Location loc = null;
-        if (invocation.Parent is CastExpressionSyntax castExpression)
+        if (invocation.FirstAncestorOrSelf<CastExpressionSyntax>() is CastExpressionSyntax castExpression)
         {
             // Report diagnostic for using cast after Clone()
             var locStart = castExpression.OpenParenToken.GetLocation().SourceSpan.Start;
             var locEnd = castExpression.CloseParenToken.GetLocation().SourceSpan.End;
             loc = Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(locStart, locEnd));
         }
-        else if (invocation.Parent is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression))
+        else if (invocation.FirstAncestorOrSelf<BinaryExpressionSyntax>() is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression))
         {
             // Report diagnostic for using as expression after Clone()
             var locStart = binaryExpr.OperatorToken.GetLocation().SourceSpan.Start;
             var locEnd = binaryExpr.Right.GetLocation().SourceSpan.End;
             loc = Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(locStart, locEnd));
         }
-        if (loc is not null)
+        if (loc is not null && targetName is not null)
         {
-            var diagnostic = Diagnostic.Create(Descriptor, loc);
+            var diagnostic = Diagnostic.Create(Descriptor, loc, targetName);
             context.ReportDiagnostic(diagnostic);
         }
+    }
+
+    /// <summary>
+    /// Gets whether the method symbol is applicable for this analyzer. Returns <see langword="true"/> only for definitively known clone methods.
+    /// Their implementations are assumed to be sane.
+    /// </summary>
+    private static bool IsApplicable(IMethodSymbol methodSymbol, ref string targetName)
+    {
+        var symbolName = methodSymbol.Name;
+        // Check if this is a call to ICloneable.Clone()
+        var isICloneable = methodSymbol.ContainingType.AllInterfaces.Any(static i => i.ToDisplayString() == "System.ICloneable");
+        if (symbolName is "Clone" && isICloneable)
+        {
+            targetName = "System.ICloneable.Clone";
+            return true;
+        }
+
+        // Also report for Open XML Clone or CloneNode methods (regardless of arguments to the latter since casting either way is unnecessary)
+        var isOpenXmlElement = methodSymbol.OriginalDefinition.ContainingType.ToDisplayString() == "DocumentFormat.OpenXml.OpenXmlElement";
+        Debug.WriteLine(methodSymbol.OriginalDefinition.ContainingType.ToDisplayString());
+        if (symbolName is "Clone" or "CloneNode" && isOpenXmlElement)
+        {
+            targetName = "DocumentFormat.OpenXml.OpenXmlElement." + symbolName;
+            return true;
+        }
+
+        return false;
     }
 }

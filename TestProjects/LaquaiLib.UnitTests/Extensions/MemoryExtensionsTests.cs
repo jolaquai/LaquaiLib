@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -20,7 +21,7 @@ public class MemoryExtensionsTests
     [Fact]
     public void ToArrayWithSelectorHandlesEmptySpan()
     {
-        ReadOnlySpan<int> source = Array.Empty<int>();
+        ReadOnlySpan<int> source = [];
 
         var result = source.ToArray(i => i.ToString());
 
@@ -32,7 +33,7 @@ public class MemoryExtensionsTests
     {
         ReadOnlyMemory<int> source = new[] { 1, 2, 3 };
 
-        var result = source.ToArray(i => i.ToString());
+        var result = source.Span.ToArray(i => i.ToString());
 
         Assert.Equal(new[] { "1", "2", "3" }, result);
     }
@@ -82,7 +83,7 @@ public class MemoryExtensionsTests
         var whereTrue = new Memory<int>(new int[3]);
         var whereFalse = new Memory<int>(new int[2]);
 
-        source.Split(whereTrue, whereFalse, i => i % 2 == 1);
+        source.Span.Split(whereTrue.Span, whereFalse.Span, i => i % 2 == 1);
 
         Assert.Equal([1, 3, 5], whereTrue.ToArray());
         Assert.Equal([2, 4], whereFalse.ToArray());
@@ -164,13 +165,13 @@ public class MemoryExtensionsTests
     }
 
     [Fact]
-    public void FormatIntoWritesStructToByteSpan()
+    public void WriteWritesStructToByteSpan()
     {
         var testStruct = new TestStruct { Value = 42, DoubleValue = 3.14 };
-        var buffer = new byte[Marshal.SizeOf<TestStruct>()];
+        var buffer = new byte[Unsafe.SizeOf<TestStruct>()];
         var span = new Span<byte>(buffer);
 
-        var result = span.FormatInto(testStruct);
+        var result = span.Write(testStruct);
 
         Assert.Equal(0, result.Length);
         var readBack = MemoryMarshal.Cast<byte, TestStruct>(span)[0];
@@ -179,14 +180,14 @@ public class MemoryExtensionsTests
     }
 
     [Fact]
-    public void FormatIntoWithIndexWritesStructAtSpecifiedPosition()
+    public void WriteWithIndexWritesStructAtSpecifiedPosition()
     {
         var testStruct = new TestStruct { Value = 42, DoubleValue = 3.14 };
-        var structSize = Marshal.SizeOf<TestStruct>();
+        var structSize = Unsafe.SizeOf<TestStruct>();
         var buffer = new byte[structSize + 10];
         var span = new Span<byte>(buffer);
 
-        var result = span.FormatInto(testStruct, 5);
+        var result = span.Write(testStruct, 5);
 
         Assert.Equal(5, buffer.Take(5).Count(b => b == 0));
         var readBack = MemoryMarshal.Read<TestStruct>(buffer.AsSpan(5));
@@ -195,26 +196,26 @@ public class MemoryExtensionsTests
     }
 
     [Fact]
-    public void FormatIntoThrowsWhenSpanTooSmall()
+    public void WriteThrowsWhenSpanTooSmall()
     {
         var testStruct = new TestStruct { Value = 42, DoubleValue = 3.14 };
-        var buffer = new byte[Marshal.SizeOf<TestStruct>() - 1];
+        var buffer = new byte[Unsafe.SizeOf<TestStruct>() - 1];
 
         Assert.Throws<ArgumentException>(() =>
         {
             var span = new Span<byte>(buffer);
-            span.FormatInto(testStruct);
+            span.Write(testStruct);
         });
     }
 
     [Fact]
-    public void FormatIntoWorksWithMemory()
+    public void WriteWorksWithMemory()
     {
         var testStruct = new TestStruct { Value = 42, DoubleValue = 3.14 };
-        var buffer = new byte[Marshal.SizeOf<TestStruct>()];
+        var buffer = new byte[Unsafe.SizeOf<TestStruct>()];
         var memory = new Memory<byte>(buffer);
 
-        var result = memory.FormatInto(testStruct);
+        _ = memory.Span.Write(testStruct);
 
         var readBack = MemoryMarshal.Cast<byte, TestStruct>(buffer)[0];
         Assert.Equal(42, readBack.Value);
@@ -291,7 +292,7 @@ public class MemoryExtensionsTests
         var memory = new ReadOnlyMemory<byte>(bytes);
         var ptr = 0;
 
-        var result = memory.ReadString(ref ptr);
+        var result = memory.Span.ReadString(ref ptr);
 
         Assert.Equal("Hello", result);
         Assert.Equal(6, ptr);
@@ -301,7 +302,7 @@ public class MemoryExtensionsTests
     public void ReadValueReadsStructFromByteSpan()
     {
         var testStruct = new TestStruct { Value = 42, DoubleValue = 3.14 };
-        var structSize = Marshal.SizeOf<TestStruct>();
+        var structSize = Unsafe.SizeOf<TestStruct>();
         var buffer = new byte[structSize];
         var span = new Span<byte>(buffer);
         unsafe
@@ -318,26 +319,6 @@ public class MemoryExtensionsTests
         Assert.Equal(42, result.Value);
         Assert.Equal(3.14, result.DoubleValue);
         Assert.Equal(structSize, ptr);
-    }
-
-    [Fact]
-    public void ReadValueThrowsForReferenceTypes()
-    {
-        var buffer = new byte[10];
-        var ptr = 0;
-
-        // Cannot test with string as parameter type due to constraint, but we can test the exception
-        Assert.Throws<ArgumentException>(() =>
-        {
-            // TestInvalidReadType will try to read a reference type, which should throw
-            TestInvalidReadType<string>(new ReadOnlySpan<byte>(buffer), ref ptr);
-        });
-    }
-
-    private void TestInvalidReadType<T>(ReadOnlySpan<byte> span, ref int ptr) where T : class
-    {
-        // This method does nothing but allows us to pass in a reference type to Read<T>
-        // which should throw an exception
     }
 
     [Fact]
@@ -361,14 +342,14 @@ public class MemoryExtensionsTests
         byte[] buffer = [1, 2];
         var ptr = 0;
 
-        Assert.Throws<ArgumentException>(() => new ReadOnlySpan<byte>(buffer).Read<long>(ref ptr));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new ReadOnlySpan<byte>(buffer).Read<long>(ref ptr));
     }
 
     [Fact]
     public void ReadValueWorksWithMemory()
     {
         var testStruct = new TestStruct { Value = 42, DoubleValue = 3.14 };
-        var structSize = Marshal.SizeOf<TestStruct>();
+        var structSize = Unsafe.SizeOf<TestStruct>();
         var buffer = new byte[structSize];
         unsafe
         {
@@ -379,7 +360,7 @@ public class MemoryExtensionsTests
         }
 
         var ptr = 0;
-        var result = new ReadOnlyMemory<byte>(buffer).Read<TestStruct>(ref ptr);
+        var result = new ReadOnlyMemory<byte>(buffer).Span.Read<TestStruct>(ref ptr);
 
         Assert.Equal(42, result.Value);
         Assert.Equal(3.14, result.DoubleValue);
@@ -391,7 +372,7 @@ public class MemoryExtensionsTests
     {
         var testStruct1 = new TestStruct { Value = 42, DoubleValue = 3.14 };
         var testStruct2 = new TestStruct { Value = 123, DoubleValue = 2.71 };
-        var structSize = Marshal.SizeOf<TestStruct>();
+        var structSize = Unsafe.SizeOf<TestStruct>();
         var buffer = new byte[structSize * 2];
         unsafe
         {
@@ -418,7 +399,7 @@ public class MemoryExtensionsTests
     {
         var testStruct1 = new TestStruct { Value = 42, DoubleValue = 3.14 };
         var testStruct2 = new TestStruct { Value = 123, DoubleValue = 2.71 };
-        var structSize = Marshal.SizeOf<TestStruct>();
+        var structSize = Unsafe.SizeOf<TestStruct>();
         var buffer = new byte[structSize * 2];
         unsafe
         {
@@ -430,7 +411,7 @@ public class MemoryExtensionsTests
         }
 
         var ptr = 0;
-        var results = new ReadOnlyMemory<byte>(buffer).Read<TestStruct>(ref ptr, 2);
+        var results = new ReadOnlyMemory<byte>(buffer).Span.Read<TestStruct>(ref ptr, 2);
 
         Assert.Equal(2, results.Length);
         Assert.Equal(42, results[0].Value);

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace LaquaiLib.Util;
 
@@ -35,8 +34,8 @@ public static class ArrayHelper
         comparer ??= Comparer<TKey>.Default;
 
         // What's in these is irrelevant if ValidateAndGetKeys returns false so we can skip initialization
-        System.Runtime.CompilerServices.Unsafe.SkipInit(out int keysLength);
-        System.Runtime.CompilerServices.Unsafe.SkipInit(out int[] indices);
+        Unsafe.SkipInit(out int keysLength);
+        Unsafe.SkipInit(out int[] indices);
         if (!ValidateAndGetKeys(keys, null, comparer, itemsArrays, ref keysLength, ref indices))
         {
             return;
@@ -65,8 +64,8 @@ public static class ArrayHelper
         comparer ??= Comparer.Default;
 
         // What's in these is irrelevant if ValidateAndGetKeys returns false so we can skip initialization
-        System.Runtime.CompilerServices.Unsafe.SkipInit(out int keysLength);
-        System.Runtime.CompilerServices.Unsafe.SkipInit(out int[] indices);
+        Unsafe.SkipInit(out int keysLength);
+        Unsafe.SkipInit(out int[] indices);
         if (!ValidateAndGetKeys<object>(keys, comparer, null, itemsArrays, ref keysLength, ref indices))
         {
             return;
@@ -86,7 +85,7 @@ public static class ArrayHelper
             // Reassign each index using the sorted indices
             for (var j = 0; j < keysLength; j++)
             {
-                System.Runtime.CompilerServices.Unsafe.As<Array>(itemsArrays.GetValue(i)).SetValue(temp[indices[j]], j);
+                Unsafe.As<Array>(itemsArrays.GetValue(i)).SetValue(temp[indices[j]], j);
             }
         }
     }

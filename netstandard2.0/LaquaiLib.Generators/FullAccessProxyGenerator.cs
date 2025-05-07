@@ -1,10 +1,4 @@
-﻿
-using System.Runtime.CompilerServices;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-namespace LaquaiLib.Generators;
+﻿namespace LaquaiLib.Generators;
 
 [Generator(LanguageNames.CSharp)]
 public class FullAccessProxyGenerator : IIncrementalGenerator

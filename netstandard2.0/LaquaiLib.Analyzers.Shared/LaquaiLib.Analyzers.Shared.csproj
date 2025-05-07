@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <None Remove="bin\Debug\netstandard2.0\\LaquaiLib.Analyzers.Shared.dll" />
+    <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.Shared.dll" />
   </ItemGroup>
 </Project>

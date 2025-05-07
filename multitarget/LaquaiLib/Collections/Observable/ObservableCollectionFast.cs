@@ -1,5 +1,3 @@
-
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
@@ -228,7 +226,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     {
         ArgumentNullException.ThrowIfNull(collection);
 
-        collection.AddTo(items);
+        _ = collection.AddTo(items);
         RaiseCollectionChanged();
     }
     /// <summary>
@@ -363,7 +361,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
 
         foreach (var item in collection)
         {
-            RemoveSilent(item);
+            _ = RemoveSilent(item);
         }
         RaiseCollectionChanged();
     }

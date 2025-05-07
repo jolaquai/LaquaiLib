@@ -58,8 +58,8 @@ public static partial class FirstChanceExceptionHandlers
         }
     }
 
-    private static string[] allPaths;
-    private static string[] pathExts;
+    private static HashSet<string> allPaths;
+    private static HashSet<string> pathExts;
     /// <summary>
     /// Wraps <see cref="EntryPointNotFoundException"/>s in a <see cref="FirstChanceException"/> with additional information about the DLL and entry point.
     /// <para/>Rethrows the original exception if no additional information could be gathered.
@@ -102,9 +102,8 @@ public static partial class FirstChanceExceptionHandlers
                 pathExts = [.. pathExts.Select(p => p.Trim()).Distinct().OrderDescending()];
 
                 var fullPath = "";
-                for (var i = 0; i < allPaths.Length; i++)
+                foreach (var path in allPaths)
                 {
-                    var path = allPaths[i];
                     var possiblePath = Path.Combine(path, dllName);
                     if (File.Exists(possiblePath))
                     {

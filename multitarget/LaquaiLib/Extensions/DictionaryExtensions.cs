@@ -1,6 +1,3 @@
-using System.Collections.Concurrent;
-using System.Runtime.InteropServices;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -177,7 +174,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
+            _ = concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e));
             return;
         }
 
@@ -214,7 +211,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
+            _ = concurrent.AddOrUpdate(key, addValue, (k, e) => updateValueFactory(e, addValue));
             return;
         }
 
@@ -251,7 +248,7 @@ public static class IDictionaryExtensions
         // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
         if (source is ConcurrentDictionary<TKey, TValue> concurrent)
         {
-            concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
+            _ = concurrent.AddOrUpdate(key, k => addValueFactory(), (k, e) => updateValueFactory(e));
             return;
         }
 
@@ -284,7 +281,7 @@ public static class IDictionaryExtensions
         ArgumentNullException.ThrowIfNull(dictionary);
         ArgumentNullException.ThrowIfNull(key);
         ref var reference = ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
-        existed = !System.Runtime.CompilerServices.Unsafe.IsNullRef(ref reference);
+        existed = !Unsafe.IsNullRef(ref reference);
         return ref reference;
     }
     /// <summary>

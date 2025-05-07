@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
-
-namespace LaquaiLib.Collections;
+﻿namespace LaquaiLib.Collections;
 
 /// <summary>
 /// Implements a concurrent (thread-safe) version of <see cref="TwoWayLookup{T1, T2}"/>.
@@ -129,7 +125,7 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             using var wLock = uLock.Upgrade();
             if (_forward.TryAdd(key, value))
             {
-                _reverse.TryAdd(value, key);
+                _ = _reverse.TryAdd(value, key);
                 return true;
             }
         }
@@ -149,7 +145,7 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
             using var wLock = uLock.Upgrade();
             if (_reverse.TryAdd(key, value))
             {
-                _forward.TryAdd(value, key);
+                _ = _forward.TryAdd(value, key);
                 return true;
             }
         }
@@ -210,11 +206,11 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         // Any previous pairs in either dictionary associated with either of the inputs are removed
         if (_forward.TryRemove(key, out var oldValue))
         {
-            _reverse.TryRemove(oldValue, out _);
+            _ = _reverse.TryRemove(oldValue, out _);
         }
         if (_reverse.TryRemove(value, out var oldKey))
         {
-            _forward.TryRemove(oldKey, out _);
+            _ = _forward.TryRemove(oldKey, out _);
         }
 
         _forward[key] = value;
@@ -234,11 +230,11 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         // Same as above
         if (_reverse.TryRemove(key, out var oldKey))
         {
-            _forward.TryRemove(oldKey, out _);
+            _ = _forward.TryRemove(oldKey, out _);
         }
         if (_forward.TryRemove(value, out var oldValue))
         {
-            _reverse.TryRemove(oldValue, out _);
+            _ = _reverse.TryRemove(oldValue, out _);
         }
 
         _reverse[key] = value;

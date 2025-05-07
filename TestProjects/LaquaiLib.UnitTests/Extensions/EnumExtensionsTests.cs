@@ -48,7 +48,7 @@ public class EnumExtensionsTests
     {
         var value = TestEnum.First;
 
-        var result = value.GetDescription();
+        var result = value.Description;
 
         Assert.Equal("First Value", result);
     }
@@ -58,7 +58,7 @@ public class EnumExtensionsTests
     {
         var value = TestEnum.Second;
 
-        var result = value.GetDescription();
+        var result = value.Description;
 
         Assert.Equal("Second", result);
     }
@@ -68,7 +68,7 @@ public class EnumExtensionsTests
     {
         var value = TestFlagsEnum.Flag1And2;
 
-        var result = value.GetDescription();
+        var result = value.Description;
 
         Assert.Equal("Flag1And2", result);
     }
@@ -82,7 +82,7 @@ public class EnumExtensionsTests
     {
         var value = TestFlagsEnum.Flag1;
 
-        var result = value.GetFlags();
+        var result = value.Flags;
 
         Assert.Equal(2, result.Length);
         Assert.Contains(TestFlagsEnum.None, result);
@@ -94,7 +94,7 @@ public class EnumExtensionsTests
     {
         var value = TestFlagsEnum.Flag1And2;
 
-        var result = value.GetFlags();
+        var result = value.Flags;
 
         Assert.Equal(4, result.Length);
         Assert.Contains(TestFlagsEnum.None, result);
@@ -108,7 +108,7 @@ public class EnumExtensionsTests
     {
         var value = TestFlagsEnum.All;
 
-        var result = value.GetFlags();
+        var result = value.Flags;
 
         Assert.Equal(8, result.Length);
         Assert.Contains(TestFlagsEnum.None, result);
@@ -126,7 +126,7 @@ public class EnumExtensionsTests
     {
         var value = TestFlagsEnum.None;
 
-        var result = value.GetFlags();
+        var result = value.Flags;
 
         Assert.Contains(TestFlagsEnum.None, result);
     }
@@ -136,7 +136,7 @@ public class EnumExtensionsTests
     {
         var value = NonFlagsEnum.Value1;
 
-        var exception = Assert.Throws<ArgumentException>(() => value.GetFlags());
+        var exception = Assert.Throws<ArgumentException>(() => value.Flags);
         Assert.Contains("is not marked with [FlagsAttribute]", exception.Message);
     }
 

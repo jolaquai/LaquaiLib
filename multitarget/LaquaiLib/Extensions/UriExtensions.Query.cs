@@ -1,53 +1,56 @@
 ﻿namespace LaquaiLib.Extensions;
 
-public partial class UriExtensions
+public static partial class UriExtensions
 {
-    /// <summary>
-    /// Creates a new <see cref="Uri"/> with the specified query parameter set.
-    /// </summary>
-    /// <param name="uri">The <see cref="Uri"/> to set the query parameter in.</param>
-    /// <param name="name">The name of the query parameter.</param>
-    /// <param name="value">The value of the query parameter. If <see langword="null"/>, removes all values associated with the specified <paramref name="name"/> from the query.</param>
-    public static Uri SetQueryParameter(this Uri uri, string name, object value)
+    extension(Uri uri)
     {
-        var builder = new QueryBuilder(uri);
-        builder[name] = value;
-        return builder.Build();
-    }
-    /// <summary>
-    /// Creates a new <see cref="Uri"/> with the specified query parameters set.
-    /// </summary>
-    /// <param name="uri">The <see cref="Uri"/> to begin with.</param>
-    /// <param name="parameters">The parameters to set in the query.</param>
-    /// <returns>A new <see cref="Uri"/> with the specified query parameters set.</returns>
-    public static Uri SetQueryParameters(this Uri uri, params ReadOnlySpan<(string, object)> parameters)
-    {
-        var builder = new QueryBuilder(uri);
-        foreach (var (name, value) in parameters)
+        /// <summary>
+        /// Creates a new <see cref="Uri"/> with the specified query parameter set.
+        /// </summary>
+        /// <param name="uri">The <see cref="Uri"/> to set the query parameter in.</param>
+        /// <param name="name">The name of the query parameter.</param>
+        /// <param name="value">The value of the query parameter. If <see langword="null"/>, removes all values associated with the specified <paramref name="name"/> from the query.</param>
+        public Uri SetQueryParameter(string name, object value)
         {
+            var builder = new QueryBuilder(uri);
             builder[name] = value;
+            return builder.Build();
         }
-        return builder.Build();
-    }
-    /// <summary>
-    /// Creates a new <see cref="Uri"/> with the specified query parameters set.
-    /// </summary>
-    /// <param name="uri">The <see cref="Uri"/> to begin with.</param>
-    /// <param name="parameters">The parameters to set in the query. This must be an even number of strings, beginning with a name and followed by a value (which may be another <see langword="string"/> or <see langword="null"/>). <see langword="null"/> causes existing pairs with the same name to be removed.</param>
-    /// <returns>A new <see cref="Uri"/> with the specified query parameters set.</returns>
-    /// <exception cref="ArgumentException">Thrown when the number of parameters is not even or is less than or equal to zero.</exception>
-    public static Uri SetQueryParameters(this Uri uri, params ReadOnlySpan<string> parameters)
-    {
-        if (parameters.Length <= 0 || parameters.Length % 2 != 0)
+        /// <summary>
+        /// Creates a new <see cref="Uri"/> with the specified query parameters set.
+        /// </summary>
+        /// <param name="uri">The <see cref="Uri"/> to begin with.</param>
+        /// <param name="parameters">The parameters to set in the query.</param>
+        /// <returns>A new <see cref="Uri"/> with the specified query parameters set.</returns>
+        public Uri SetQueryParameters(params ReadOnlySpan<(string, object)> parameters)
         {
-            throw new ArgumentException("The number of parameters must be even and greater than zero.", nameof(parameters));
+            var builder = new QueryBuilder(uri);
+            foreach (var (name, value) in parameters)
+            {
+                builder[name] = value;
+            }
+            return builder.Build();
         }
-        var builder = new QueryBuilder(uri);
-        for (var i = 0; i < parameters.Length; i += 2)
+        /// <summary>
+        /// Creates a new <see cref="Uri"/> with the specified query parameters set.
+        /// </summary>
+        /// <param name="uri">The <see cref="Uri"/> to begin with.</param>
+        /// <param name="parameters">The parameters to set in the query. This must be an even number of strings, beginning with a name and followed by a value (which may be another <see langword="string"/> or <see langword="null"/>). <see langword="null"/> causes existing pairs with the same name to be removed.</param>
+        /// <returns>A new <see cref="Uri"/> with the specified query parameters set.</returns>
+        /// <exception cref="ArgumentException">Thrown when the number of parameters is not even or is less than or equal to zero.</exception>
+        public Uri SetQueryParameters(params ReadOnlySpan<string> parameters)
         {
-            builder[parameters[i]] = parameters[i + 1];
+            if (parameters.Length <= 0 || parameters.Length % 2 != 0)
+            {
+                throw new ArgumentException("The number of parameters must be even and greater than zero.", nameof(parameters));
+            }
+            var builder = new QueryBuilder(uri);
+            for (var i = 0; i < parameters.Length; i += 2)
+            {
+                builder[parameters[i]] = parameters[i + 1];
+            }
+            return builder.Build();
         }
-        return builder.Build();
     }
 }
 
@@ -64,7 +67,7 @@ internal readonly struct QueryBuilder
         {
             if (value is null)
             {
-                _components.Remove(name);
+                _ = _components.Remove(name);
             }
             else
             {

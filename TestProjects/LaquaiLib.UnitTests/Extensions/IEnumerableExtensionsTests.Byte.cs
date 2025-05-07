@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 using LaquaiLib.Extensions;
@@ -70,7 +71,7 @@ public class IEnumerableExtensionsByteTests
 
     private static byte[] StructToBytes<T>(T value) where T : struct
     {
-        var size = Marshal.SizeOf<T>();
+        var size = Unsafe.SizeOf<T>();
         var arr = new byte[size];
         var handle = GCHandle.Alloc(arr, GCHandleType.Pinned);
         try

@@ -11,7 +11,7 @@ namespace LaquaiLib.Threading;
 /// </remarks>
 public class AsyncTimer : IAsyncDisposable
 {
-    private TaskCompletionSource _tcs = new TaskCompletionSource();
+    private TaskCompletionSource _tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
     private CancellationTokenSource cts = new CancellationTokenSource();
     private volatile short invoke = 0;
     private readonly PeriodicTimer timer;
@@ -86,14 +86,16 @@ public class AsyncTimer : IAsyncDisposable
         timer = new PeriodicTimer(interval);
         new Thread(async () =>
         {
-            while (true)
+            while (!disposed)
             {
                 // While not signaled to run, await that signal to conserve resources
-                await _tcs.Task.ConfigureAwait(false);
+                await _tcs.Task.WaitSafeAsync(cts.Token).ConfigureAwait(false);
+                if (!_tcs.Task.IsCompletedSuccessfully || cts.IsCancellationRequested || disposed) continue;
 
                 if (await timer.WaitForNextTickAsync().ConfigureAwait(false))
                 {
-                    run = Task.Run(async () =>
+                    if (!_tcs.Task.IsCompletedSuccessfully || cts.IsCancellationRequested || disposed) continue;
+                    run ??= Task.Run(async () =>
                     {
                         var callbacks = Callback.GetTypedInvocationList();
                         var tasks = new Task[callbacks.Length];
@@ -128,12 +130,21 @@ public class AsyncTimer : IAsyncDisposable
     /// <param name="callbacks">The callbacks to invoke periodically.</param>
     public static AsyncTimer Start(TimeSpan interval, object state, params ReadOnlySpan<Func<object, CancellationToken, Task>> callbacks) => new AsyncTimer(interval, state, callbacks, true);
 
+    private bool disposed;
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()
     {
+        if (disposed)
+        {
+            return;
+        }
+
+        disposed = true;
         GC.SuppressFinalize(this);
 
         await StopAsync().ConfigureAwait(false);
+        Callback = null;
+
         cts.Dispose();
         timer.Dispose();
         run?.Dispose();
@@ -144,7 +155,7 @@ public class AsyncTimer : IAsyncDisposable
     /// </summary>
     public async ValueTask StartAsync()
     {
-        _tcs.TrySetResult();
+        _ = (_tcs?.TrySetResult());
 
         // Reset the cancellation token source
         cts?.Dispose();
@@ -152,17 +163,18 @@ public class AsyncTimer : IAsyncDisposable
     }
     /// <summary>
     /// Stops invoking the callback(s) periodically and signals cancellation any callbacks that are still running.
-    /// The method blocks the current thread until all callbacks are completed or cancelled.
+    /// The method blocks asynchronously until all callbacks complete or respond to cancellation, or <paramref name="cancellationToken"/> is canceled.
     /// </summary>
-    public async ValueTask StopAsync()
+    public async ValueTask StopAsync(CancellationToken cancellationToken = default)
     {
-        // Stop invoking
-        _tcs = new TaskCompletionSource();
         // Cancel current callbacks
         cts?.Cancel();
+        // Stop invoking
+        _ = (_tcs?.TrySetCanceled(cancellationToken));
+        _tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         if (run is not null)
         {
-            await run.WaitAsync(default(CancellationToken)).ConfigureAwait(false);
+            await run.WaitAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

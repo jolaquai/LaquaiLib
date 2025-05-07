@@ -7,24 +7,27 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class IEnumeratorExtensions
 {
-    /// <summary>
-    /// Consumes the specified <see cref="IEnumerator{T}"/> starting at its current position, yielding each element.
-    /// </summary>
-    /// <param name="source">The <see cref="IEnumerator{T}"/> to iterate over.</param>
-    /// <returns>The elements of the <paramref name="source"/> as an <see cref="IEnumerable{T}"/>.</returns>
-    public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> source)
+    extension<T>(IEnumerator<T> source)
     {
-        while (source.MoveNext())
+        /// <summary>
+        /// Consumes the specified <see cref="IEnumerator{T}"/> starting at its current position, yielding each element.
+        /// </summary>
+        /// <param name="source">The <see cref="IEnumerator{T}"/> to iterate over.</param>
+        /// <returns>The elements of the <paramref name="source"/> as an <see cref="IEnumerable{T}"/>.</returns>
+        public IEnumerable<T> AsEnumerable()
         {
-            yield return source.Current;
+            while (source.MoveNext())
+            {
+                yield return source.Current;
+            }
         }
-    }
 
-    /// <summary>
-    /// Returns an <see cref="IAsyncEnumerator{T}"/> wrapper around the specified <see cref="IEnumerator{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of elements in the <see cref="IEnumerator{T}"/>.</typeparam>
-    /// <param name="source">The <see cref="IEnumerator{T}"/> to wrap.</param>
-    /// <returns>The <paramref name="source"/> as an <see cref="IAsyncEnumerator{T}"/>.</returns>
-    public static IAsyncEnumerator<T> AsAsynchronous<T>(this IEnumerator<T> source) => new AsyncEnumeratorWrapper<T>(source);
+        /// <summary>
+        /// Returns an <see cref="IAsyncEnumerator{T}"/> wrapper around the specified <see cref="IEnumerator{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in the <see cref="IEnumerator{T}"/>.</typeparam>
+        /// <param name="source">The <see cref="IEnumerator{T}"/> to wrap.</param>
+        /// <returns>The <paramref name="source"/> as an <see cref="IAsyncEnumerator{T}"/>.</returns>
+        public IAsyncEnumerator<T> AsAsynchronous() => new AsyncEnumeratorWrapper<T>(source);
+    }
 }

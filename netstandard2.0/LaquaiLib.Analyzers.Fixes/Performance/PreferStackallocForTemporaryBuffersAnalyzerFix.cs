@@ -1,13 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Composition;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-namespace LaquaiLib.Analyzers;
+﻿namespace LaquaiLib.Analyzers.Fixes.Performance;
 
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PreferStackallocForTemporaryBuffersAnalyzerFix)), Shared]
 public class PreferStackallocForTemporaryBuffersAnalyzerFix : CodeFixProvider

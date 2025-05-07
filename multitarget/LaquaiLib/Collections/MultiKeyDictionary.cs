@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 
 using SrcsUnsafe = System.Runtime.CompilerServices.Unsafe;
 
@@ -230,7 +229,7 @@ public class MultiKeyDictionary<TValue>
         ArgumentOutOfRangeException.ThrowIfZero(keys.Length);
 
         // Setting doesn't care about whether we were already allocated or not
-        TryAllocate(keys.Length);
+        _ = TryAllocate(keys.Length);
 
         ref var theRef = ref GetRef(keys, true, out _);
         theRef = value;

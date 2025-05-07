@@ -1,7 +1,6 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.IO.Compression;
-using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 
 using LaquaiLib.Core;
@@ -49,13 +48,13 @@ public static partial class FileSystemHelper
         ValidateMigrateArguments(source, destination, allowExisting, ref maxDegreeOfParallelism);
 
         // Create the directory structure first
-        Directory.CreateDirectory(destination);
+        _ = Directory.CreateDirectory(destination);
         var directories = Directory.GetDirectories(source, "*", SearchOption.AllDirectories);
         for (var i = 0; i < directories.Length; i++)
         {
             var dirPath = directories[i];
             var newDirPath = dirPath.Replace(source, destination);
-            Directory.CreateDirectory(newDirPath);
+            _ = Directory.CreateDirectory(newDirPath);
 
             if (OperatingSystem.IsWindows())
             {
@@ -172,13 +171,13 @@ public static partial class FileSystemHelper
         cancellationToken.ThrowIfCancellationRequested();
 
         // First, create the directory structure
-        Directory.CreateDirectory(destination);
+        _ = Directory.CreateDirectory(destination);
         var directories = Directory.GetDirectories(source, "*", SearchOption.AllDirectories);
         for (var i = 0; i < directories.Length; i++)
         {
             var dirPath = directories[i];
             var newDirPath = dirPath.Replace(source, destination);
-            Directory.CreateDirectory(newDirPath);
+            _ = Directory.CreateDirectory(newDirPath);
             if (OperatingSystem.IsWindows())
             {
                 if (restorePermissionsAndAttributes)
@@ -332,19 +331,19 @@ public static partial class FileSystemHelper
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
 
         // Now copy the rules from the source
@@ -380,19 +379,19 @@ public static partial class FileSystemHelper
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
         {
-            sec.RemoveAccessRule(rule);
+            _ = sec.RemoveAccessRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).Cast<FileSystemAuditRule>())
         {
-            sec.RemoveAuditRule(rule);
+            _ = sec.RemoveAuditRule(rule);
         }
 
         // Now copy the rules from the source
@@ -801,12 +800,12 @@ public static partial class FileSystemHelper
                 }
 
                 // Final read with bAbort = true
-                BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
+                _ = BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
                 return true;
             }
             finally
             {
-                CloseHandle(handle);
+                _ = CloseHandle(handle);
             }
         }
     }

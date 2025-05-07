@@ -1,7 +1,6 @@
 using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 using LaquaiLib.Core;
@@ -70,8 +69,8 @@ public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOn
         Span<char> chars = len <= Configuration.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : new char[len];
         var left = chars[..x.Length];
         var right = chars[x.Length..];
-        x.ToUpperInvariant(left);
-        y.ToUpperInvariant(right);
+        _ = x.ToUpperInvariant(left);
+        _ = y.ToUpperInvariant(right);
 
         if (left.SequenceEqual(right))
         {
@@ -281,7 +280,7 @@ public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOn
 
         // Process from right to left
         Span<char> upper = roman.Length <= Configuration.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : new char[roman.Length];
-        roman.ToUpperInvariant(upper);
+        _ = roman.ToUpperInvariant(upper);
         for (var i = roman.Length - 1; i >= 0; i--)
         {
             var currentValue = alt[upper[i..(i + 1)]];

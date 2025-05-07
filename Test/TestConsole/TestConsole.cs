@@ -1,9 +1,6 @@
-﻿using System.Buffers;
-using System.IO;
+﻿using System.IO;
 
 using LaquaiLib.Analyzers.Shared.Attributes;
-using LaquaiLib.Threading;
-using LaquaiLib.UnsafeUtils;
 
 namespace TestConsole;
 
@@ -31,8 +28,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var buffer = new ArrayBufferWriter<char>(2047);
-        var span = buffer.GetSpan(2048);
+        
 
         ;
     }

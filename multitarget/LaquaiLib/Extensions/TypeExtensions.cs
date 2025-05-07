@@ -12,154 +12,789 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static partial class TypeExtensions
 {
-    /// <summary>
-    /// Attempts to instantiate a new object of the supplied <paramref name="type"/> using the given <paramref name="parameters"/>.
-    /// </summary>
-    /// <param name="type">A <see cref="Type"/> instance representing the type to instantiate.</param>
-    /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
-    /// <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
-    public static object New(this Type type, params object[] parameters)
+    extension(Type type)
     {
-        try
+        /// <summary>
+        /// Attempts to instantiate a new object of the supplied <paramref name="type"/> using the given <paramref name="parameters"/>.
+        /// </summary>
+        /// <param name="type">A <see cref="Type"/> instance representing the type to instantiate.</param>
+        /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
+        /// <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
+        public object New(params object[] parameters)
         {
-            if (parameters.Length == 0)
+            try
             {
-                return Activator.CreateInstance(type);
+                if (parameters.Length == 0)
+                {
+                    return Activator.CreateInstance(type);
+                }
+                var types = parameters.ToArray(static obj => obj?.GetType());
+                return type.GetConstructor(types).Invoke(parameters);
             }
-            var types = parameters.ToArray(static obj => obj?.GetType());
-            return type.GetConstructor(types).Invoke(parameters);
-        }
-        catch
-        {
-            return default;
-        }
-    }
-    /// <summary>
-    /// Returns a (potentially boxed) instance of the default value for the supplied type.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to get the default value for.</param>
-    /// <returns>The default value for the supplied type.</returns>
-    public static object GetDefault(this Type type) => type.IsValueType ? Activator.CreateInstance(type) : (type == typeof(string) ? string.Empty : null);
-
-    /// <summary>
-    /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all instance fields and properties of the supplied type from the given object, optionally calling all parameterless methods that do not return void.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
-    /// <param name="obj">The object to use to collect the values from.</param>
-    /// <param name="callMethods">Whether to call all parameterless methods that do not return void instead of adding all method names to the output dictionary. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
-    /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
-    public static Dictionary<string, object> GetInstanceValues(this Type type, object obj, bool callMethods = false)
-    {
-        var dict = new Dictionary<string, object>();
-        var members = type.GetMembers();
-
-        foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
-            or MemberTypes.Property
-            or MemberTypes.Method))
-        {
-            switch (memberInfo.MemberType)
+            catch
             {
-                case MemberTypes.Field:
-                    var fieldInfo = (FieldInfo)memberInfo;
-                    dict.Add(fieldInfo.Name, fieldInfo.GetValue(obj));
-                    break;
-                case MemberTypes.Property:
-                    var propertyInfo = (PropertyInfo)memberInfo;
-                    dict.Add(propertyInfo.Name, propertyInfo.GetValue(obj));
-                    break;
-                case MemberTypes.Method:
-                    var methodInfo = (MethodInfo)memberInfo;
-                    if (callMethods)
-                    {
-                        if (methodInfo.ReturnType != typeof(void))
-                        {
-                            dict.Add(methodInfo.Name, methodInfo.Invoke(obj, null));
-                        }
-                    }
-                    else
-                    {
-                        dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))}", null);
-                    }
-                    break;
-                case MemberTypes.Constructor:
-                    break;
-                case MemberTypes.Event:
-                    break;
-                case MemberTypes.TypeInfo:
-                    break;
-                case MemberTypes.Custom:
-                    break;
-                case MemberTypes.NestedType:
-                    break;
-                case MemberTypes.All:
-                    break;
-                default:
-                    break;
+                return default;
             }
         }
+        /// <summary>
+        /// Returns a (potentially boxed) instance of the default value for the supplied type.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to get the default value for.</param>
+        /// <returns>The default value for the supplied type.</returns>
+        public object GetDefault() => type.IsValueType ? Activator.CreateInstance(type) : (type == typeof(string) ? string.Empty : null);
 
-        return dict;
-    }
-    /// <summary>
-    /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all static fields and properties of the supplied type, optionally calling all parameterless methods that do not return void.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
-    /// <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
-    /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
-    public static Dictionary<string, object> GetStaticValues(this Type type, bool callMethods = false)
-    {
-        var dict = new Dictionary<string, object>();
-        var members = type.GetMembers(BindingFlags.Public | BindingFlags.Static);
-
-        foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
-            or MemberTypes.Property
-            or MemberTypes.Method))
+        /// <summary>
+        /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all instance fields and properties of the supplied type from the given object, optionally calling all parameterless methods that do not return void.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
+        /// <param name="obj">The object to use to collect the values from.</param>
+        /// <param name="callMethods">Whether to call all parameterless methods that do not return void instead of adding all method names to the output dictionary. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
+        /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
+        public Dictionary<string, object> GetInstanceValues(object obj, bool callMethods = false)
         {
-            switch (memberInfo.MemberType)
+            var dict = new Dictionary<string, object>();
+            var members = type.GetMembers();
+
+            foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
+                or MemberTypes.Property
+                or MemberTypes.Method))
             {
-                case MemberTypes.Field:
-                    var fieldInfo = (FieldInfo)memberInfo;
-                    dict.Add(fieldInfo.Name, fieldInfo.GetValue(null));
-                    break;
-                case MemberTypes.Property:
-                    var propertyInfo = (PropertyInfo)memberInfo;
-                    dict.Add(propertyInfo.Name, propertyInfo.GetValue(null));
-                    break;
-                case MemberTypes.Method:
-                    var methodInfo = (MethodInfo)memberInfo;
-                    if (!methodInfo.IsAccessor())
-                    {
+                switch (memberInfo.MemberType)
+                {
+                    case MemberTypes.Field:
+                        var fieldInfo = (FieldInfo)memberInfo;
+                        dict.Add(fieldInfo.Name, fieldInfo.GetValue(obj));
+                        break;
+                    case MemberTypes.Property:
+                        var propertyInfo = (PropertyInfo)memberInfo;
+                        dict.Add(propertyInfo.Name, propertyInfo.GetValue(obj));
+                        break;
+                    case MemberTypes.Method:
+                        var methodInfo = (MethodInfo)memberInfo;
                         if (callMethods)
                         {
                             if (methodInfo.ReturnType != typeof(void))
                             {
-                                dict.Add(methodInfo.Name, methodInfo.Invoke(null, null));
+                                dict.Add(methodInfo.Name, methodInfo.Invoke(obj, null));
                             }
                         }
                         else
                         {
-                            dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))})", null);
+                            dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))}", null);
                         }
-                    }
-                    break;
-                case MemberTypes.Constructor:
-                    break;
-                case MemberTypes.Event:
-                    break;
-                case MemberTypes.TypeInfo:
-                    break;
-                case MemberTypes.Custom:
-                    break;
-                case MemberTypes.NestedType:
-                    break;
-                case MemberTypes.All:
-                    break;
-                default:
-                    break;
+                        break;
+                    case MemberTypes.Constructor:
+                        break;
+                    case MemberTypes.Event:
+                        break;
+                    case MemberTypes.TypeInfo:
+                        break;
+                    case MemberTypes.Custom:
+                        break;
+                    case MemberTypes.NestedType:
+                        break;
+                    case MemberTypes.All:
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            return dict;
+        }
+        /// <summary>
+        /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all static fields and properties of the supplied type, optionally calling all parameterless methods that do not return void.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
+        /// <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
+        /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
+        public Dictionary<string, object> GetStaticValues(bool callMethods = false)
+        {
+            var dict = new Dictionary<string, object>();
+            var members = type.GetMembers(BindingFlags.Public | BindingFlags.Static);
+
+            foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
+                or MemberTypes.Property
+                or MemberTypes.Method))
+            {
+                switch (memberInfo.MemberType)
+                {
+                    case MemberTypes.Field:
+                        var fieldInfo = (FieldInfo)memberInfo;
+                        dict.Add(fieldInfo.Name, fieldInfo.GetValue(null));
+                        break;
+                    case MemberTypes.Property:
+                        var propertyInfo = (PropertyInfo)memberInfo;
+                        dict.Add(propertyInfo.Name, propertyInfo.GetValue(null));
+                        break;
+                    case MemberTypes.Method:
+                        var methodInfo = (MethodInfo)memberInfo;
+                        if (!methodInfo.IsAccessor)
+                        {
+                            if (callMethods)
+                            {
+                                if (methodInfo.ReturnType != typeof(void))
+                                {
+                                    dict.Add(methodInfo.Name, methodInfo.Invoke(null, null));
+                                }
+                            }
+                            else
+                            {
+                                dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))})", null);
+                            }
+                        }
+                        break;
+                    case MemberTypes.Constructor:
+                        break;
+                    case MemberTypes.Event:
+                        break;
+                    case MemberTypes.TypeInfo:
+                        break;
+                    case MemberTypes.Custom:
+                        break;
+                    case MemberTypes.NestedType:
+                        break;
+                    case MemberTypes.All:
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return dict;
         }
 
-        return dict;
+        /// <summary>
+        /// Determines if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to check.</param>
+        /// <param name="other">The <see cref="Type"/> to check against.</param>
+        /// <returns><see langword="true"/> if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
+        public bool HasNarrowingConversion(Type other)
+        {
+            var (first, second) = GetSaneTypeCodes(type, other);
+            if (first == second)
+            {
+                return false;
+            }
+
+            if (_narrowingConversions.TryGetValue(first, out var narrowingConversions))
+            {
+                return narrowingConversions.Contains(second);
+            }
+            // No narrowing conversions exist for the first type
+            return false;
+        }
+        /// <summary>
+        /// Determines if there exists a consistent widening conversion (that is, a conversion that is guaranteed to not lose any information) from this <see cref="Type"/> to <paramref name="other"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to check.</param>
+        /// <param name="other">The <see cref="Type"/> to check against.</param>
+        /// <returns><see langword="true"/> if there exists a consistent widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
+        public bool HasConsistentWideningConversion(Type other)
+        {
+            var (first, second) = GetSaneTypeCodes(type, other);
+            if (first == second)
+            {
+                return false;
+            }
+
+            if (_consistentWideningConversions.TryGetValue(first, out var consistentWideningConversions))
+            {
+                return Array.IndexOf(consistentWideningConversions, second) != -1;
+            }
+            // No consistent widening conversions exist for the first type
+            return false;
+        }
+        /// <summary>
+        /// Determines if there exists a lossy widening conversion (that is, a conversion that may lose information) from this <see cref="Type"/> to <paramref name="other"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to check.</param>
+        /// <param name="other">The <see cref="Type"/> to check against.</param>
+        /// <returns><see langword="true"/> if there exists a lossy widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
+        public bool HasLossyWideningConversion(Type other)
+        {
+            var (first, second) = GetSaneTypeCodes(type, other);
+            if (first == second)
+            {
+                return false;
+            }
+
+            if (_lossyWideningConversions.TryGetValue(first, out var lossyWideningConversions))
+            {
+                return Array.IndexOf(lossyWideningConversions, second) != -1;
+            }
+            // No lossy widening conversions exist for the first type
+            return false;
+        }
+        /// <summary>
+        /// Determines if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to check.</param>
+        /// <param name="other">The <see cref="Type"/> to check against.</param>
+        /// <returns><see langword="true"/> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
+        public bool HasWideningConversion(Type other) => type.HasConsistentWideningConversion(other) || type.HasLossyWideningConversion(other);
+
+#warning TODO: Support not just classes, make this work for structs, interfaces etc. as well
+        /// <summary>
+        /// Reflects the entirety of this <see cref="Type"/> and generates C# code that can be used to replicate it.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to reflect.</param>
+        /// <param name="options.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="NotImplementedException"/>s.</param>
+        /// <returns>A <see cref="string"/> containing the generated code.</returns>
+        /// <remarks>
+        /// It is almost guaranteed that this method will not generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
+        /// </remarks>
+        public string Reflect(ReflectionOptions options = default)
+        {
+            var bindingFlags =
+                BindingFlags.Public
+                | BindingFlags.NonPublic
+                | BindingFlags.Instance
+                | BindingFlags.Static;
+            if (!options.IncludeHierarchy)
+            {
+                bindingFlags |= BindingFlags.DeclaredOnly;
+            }
+
+            ArgumentNullException.ThrowIfNull(type);
+            var friendlyTypeName = type.GetFriendlyName();
+
+            if (type.IsSealed && options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
+            {
+                throw new TypeAccessException($"Cannot generate code for a type that inherits from sealed type '{friendlyTypeName}'.");
+            }
+
+            using var sw = new StringWriter();
+            using var itw = new IndentedTextWriter(sw, "    ");
+
+            if (!string.IsNullOrWhiteSpace(options.Namespace))
+            {
+                itw.WriteLine($"namespace {options.Namespace};");
+            }
+
+            #region Type Declaration
+            itw.WriteLine($"""
+                /// <summary>
+                /// [Reflected from {friendlyTypeName} (Assembly '{type.Assembly.GetName().Name}')]
+                /// </summary>
+                """);
+            itw.Write($"public class {type.Name}");
+
+            if (type.IsGenericType)
+            {
+                itw.Write("<");
+                itw.Write(string.Join(", ", type.GetGenericArguments().Select(t => t.FullName)));
+                itw.Write(">");
+            }
+            else
+            {
+                itw.WriteLine();
+            }
+
+            if (options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
+            {
+                itw.WriteLine($" : {friendlyTypeName}");
+            }
+            #endregion
+
+            itw.WriteLine("{");
+
+            itw.Indent++;
+
+            #region options.Inheriting is ReflectionOptions.InheritanceBehavior.FieldDelegation
+            if (options.Inherit is ReflectionOptions.InheritanceBehavior.FieldDelegation)
+            {
+                itw.WriteLine($"private readonly {friendlyTypeName} _base = new {friendlyTypeName}();");
+            }
+            #endregion
+
+            #region Fields
+            var fields = type.GetFields(bindingFlags);
+            for (var i = 0; i < fields.Length; i++)
+            {
+                var field = fields[i];
+                var accessibility = field.GetAccessibility();
+                if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
+                {
+                    continue;
+                }
+
+                // If the field is anything above or equal to protected, it's prooooobably gonna have a documentation comment
+                // Since fields cannot be made virtual though, the interitance relationship doesn't matter
+                if (options.AddXmlDocCrefs && accessibility.Equals("public", StringComparison.OrdinalIgnoreCase))
+                {
+                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{field.Name}" />""");
+                }
+
+                itw.Write(accessibility);
+                itw.Write(' ');
+                if (field.IsStatic)
+                {
+                    itw.Write("static ");
+                }
+                itw.Write(field.FieldType.GetFriendlyName());
+                itw.Write(' ');
+                itw.Write(field.Name);
+                itw.WriteLine(';');
+            }
+            #endregion
+
+            itw.WriteLine();
+
+            #region Properties
+            var props = type.GetProperties(bindingFlags);
+            for (var i = 0; i < props.Length; i++)
+            {
+                var property = props[i];
+                var accessibility = property.GetAccessibility();
+                if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
+                {
+                    continue;
+                }
+
+                // If the property is anything above or equal to protected, it's prooooobably gonna have a documentation comment
+                if (options.AddXmlDocCrefs && (accessibility.Equals("public", StringComparison.OrdinalIgnoreCase) || (AccessibilityIsAtLeastFamily(accessibility) && !type.IsSealed)))
+                {
+                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{property.Name}" />""");
+                }
+
+                itw.Write(accessibility);
+                itw.Write(' ');
+                if (property.GetMethod?.IsStatic is true || property.SetMethod?.IsStatic is true)
+                {
+                    itw.Write("static ");
+                }
+                itw.Write(property.PropertyType.GetFriendlyName());
+                itw.Write(' ');
+                itw.WriteLine(property.Name);
+                itw.WriteLine("{");
+
+                itw.Indent++;
+                if (property.GetMethod is not null)
+                {
+                    var getAccessibility = property.GetMethod.GetAccessibility();
+                    if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit))
+                    {
+                        itw.Write(getAccessibility);
+                        itw.Write(" get => ");
+                        switch (options.Inherit)
+                        {
+                            case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit):
+                                itw.WriteLine($"base.{property.Name};");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.GetMethod.IsPublic:
+                                itw.WriteLine($"this._base.{property.Name};");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.Inherit:
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.get()' is not accessible.");""");
+                                break;
+                            default:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.get()' is not implemented.");""");
+                                break;
+                        }
+                    }
+                }
+                if (property.SetMethod is not null)
+                {
+                    var setAccessibility = property.SetMethod.GetAccessibility();
+                    if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit))
+                    {
+                        itw.Write(setAccessibility);
+                        itw.Write(" set => ");
+                        switch (options.Inherit)
+                        {
+                            case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit):
+                                itw.WriteLine($"base.{property.Name} = value;");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.SetMethod.IsPublic:
+                                itw.WriteLine($"this._base.{property.Name} = value;");
+                                break;
+                            case ReflectionOptions.InheritanceBehavior.Inherit:
+                            case ReflectionOptions.InheritanceBehavior.FieldDelegation:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.set()' is not accessible.");""");
+                                break;
+                            default:
+                                itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.set()' is not implemented.");""");
+                                break;
+                        }
+                    }
+                }
+                itw.Indent--;
+
+                itw.WriteLine("}");
+            }
+            #endregion
+
+            itw.WriteLine();
+
+            #region Methods
+            var methods = type
+                .GetMethods(bindingFlags)
+                .Where(m => !m.IsSpecialName
+                    && !UnspeakableMemberNameRegex().IsMatch(m.Name)
+                    && (!options.IgnoreInaccessible
+                        || !IsInaccessibleAsReflectedType(m.GetAccessibility(), options.Inherit)
+                    )
+                )
+                .OrderBy(m => m.IsPrivate)          // private
+                .ThenBy(m => m.IsFamilyOrAssembly)  // private protected
+                .ThenBy(m => m.IsFamily)            // protected
+                .ThenBy(m => m.IsAssembly)          // internal
+                .ThenBy(m => m.IsFamilyAndAssembly) // protected internal
+                .ThenBy(m => m.IsPublic)            // public
+                .ThenBy(m => m.Name)                // name
+                .ThenBy(m => m.IsGenericMethod)     // generic?
+                .ToArray();
+            for (var i = 0; i < methods.Length; i++)
+            {
+                var method = methods[i];
+                var accessibility = method.GetAccessibility();
+                // Determine if the generic method requires an unsafe context
+                var unsafeRequired = method.GetParameters().Any(p => p.ParameterType.IsPointer);
+
+                // If the method is anything above or equal to protected, it's prooooobably gonna have a documentation comment
+                if (options.AddXmlDocCrefs && (accessibility.Equals("public", StringComparison.OrdinalIgnoreCase) || (AccessibilityIsAtLeastFamily(accessibility) && !type.IsSealed)))
+                {
+                    itw.Write($"""/// <inheritdoc cref="{friendlyTypeName}.{method.Name}""");
+
+                    if (method.IsGenericMethod)
+                    {
+                        var genericTypeParams = method.GetGenericArguments();
+                        itw.Write('{');
+                        itw.Write(string.Join(", ", genericTypeParams.Select(t => t.Name)));
+                        itw.Write('}');
+                    }
+
+                    itw.Write('(');
+                    itw.Write(string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
+                    itw.Write(')');
+
+                    itw.WriteLine("\" />");
+                }
+
+                itw.Write(accessibility);
+                itw.Write(' ');
+                if (method.IsStatic)
+                {
+                    itw.Write("static ");
+                }
+                if (unsafeRequired)
+                {
+                    itw.Write("unsafe ");
+                }
+                itw.Write(method.ReturnType.GetFriendlyName());
+                itw.Write(' ');
+                itw.Write(method.Name);
+
+                if (method.IsGenericMethod)
+                {
+                    itw.Write($"<{string.Join(", ", method.GetGenericArguments().Select(t => t.Name))}>");
+                }
+
+                itw.Write('(');
+                itw.Write(string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.GetFriendlyName()} {p.Name}")));
+                itw.Write(')');
+                switch (options.Inherit)
+                {
+                    case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(accessibility, options.Inherit):
+                        itw.WriteLine($" => base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
+                        break;
+                    case ReflectionOptions.InheritanceBehavior.FieldDelegation when method.IsPublic:
+                        itw.WriteLine($" => this._base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
+                        break;
+                    case ReflectionOptions.InheritanceBehavior.Inherit:
+                    case ReflectionOptions.InheritanceBehavior.FieldDelegation:
+                        itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{friendlyTypeName}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not accessible.");""");
+                        break;
+                    default:
+                        itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{friendlyTypeName}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not implemented.");""");
+                        break;
+                }
+            }
+            #endregion
+
+            if (options.Deep)
+            {
+                var types = type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic);
+                for (var i = 0; i < types.Length; i++)
+                {
+                    var nestedType = types[i];
+                    itw.WriteLine();
+                    itw.WriteLine(nestedType.Reflect(options));
+                }
+            }
+
+            itw.Indent--;
+            itw.WriteLine("}");
+
+            return sw.ToString();
+        }
+
+        /// <summary>
+        /// Constructs a more easily readable name for the specified <see cref="Type"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to construct a more easily readable name for.</param>
+        /// <param name="includeNamespace">Whether to include the namespace in the name.</param>
+        /// <returns>A more easily readable name for the specified <see cref="Type"/>.</returns>
+        public string GetFriendlyName(bool includeNamespace = true)
+        {
+            string operateOn;
+            if (includeNamespace)
+            {
+                operateOn = type.FullName ?? type.Namespace + '.' + type.Name;
+            }
+            else
+            {
+                operateOn = type.Name;
+            }
+
+            if (type.IsGenericParameter)
+            {
+                return type.Name;
+            }
+            else if (type.IsArray && type.GetElementType() is Type elementType)
+            {
+                return elementType.GetFriendlyName() + "[]";
+            }
+            if (operateOn.Contains('+', StringComparison.OrdinalIgnoreCase))
+            {
+                operateOn = type.Namespace + '.' + type.Name;
+            }
+            if (operateOn.EndsWith('&'))
+            {
+                return "ref " + AsKeyword(operateOn[..^1]);
+            }
+            if (operateOn.EndsWith('*'))
+            {
+                return AsKeyword(operateOn[..^1]) + '*';
+            }
+            if (operateOn.EndsWith("[]", StringComparison.OrdinalIgnoreCase))
+            {
+                return AsKeyword(operateOn[..^2]) + "[]";
+            }
+
+            if (type.IsGenericType)
+            {
+                var tickAt = operateOn.IndexOf('`', StringComparison.OrdinalIgnoreCase);
+                if (tickAt != -1)
+                {
+                    operateOn = operateOn[..tickAt];
+                }
+                var args = string.Join(", ", type.GetGenericArguments().Select(static t => t.GetFriendlyName()));
+
+                return $"{operateOn}<{args}>";
+            }
+
+            return AsKeyword(operateOn);
+        }
+        /// <summary>
+        /// Converts a <see cref="Type"/> to its C# keyword, if it exists.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to convert.</param>
+        /// <returns>The <see cref="Type"/>'s name as a C# keyword, if it exists, otherwise the original <see cref="Type"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string AsKeyword() => AsKeyword(type.FullName);
+
+        /// <summary>
+        /// Determines whether the specified <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to check.</param>
+        /// <param name="returnType">An <see langword="out"/> variable that receives the <see cref="Func{TResult}"/> <see langword="delegate"/> overload that the <paramref name="type"/> is assignable to, if any.</param>
+        /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
+        public bool IsFunc([NotNullWhen(true)] out Type returnType)
+        {
+            returnType = null;
+            if (!type.IsGenericType)
+            {
+                return false;
+            }
+
+            var gtd = type.GetGenericTypeDefinition();
+            if (gtd == typeof(Func<>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+            else if (gtd == typeof(Func<,,,,,,,,,,,,,,,,>))
+            {
+                returnType = type;
+            }
+
+            if (returnType is not null)
+            {
+                returnType = returnType.GetGenericArguments()[^1];
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Determines whether the specified <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to check.</param>
+        /// <param name="takesParameters">Whether the <paramref name="type"/> takes parameters. If <see langword="false"/>, <paramref name="type"/> is not generic.</param>
+        /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
+        public bool IsAction(out bool takesParameters)
+        {
+            takesParameters = false;
+            if (type == typeof(Action))
+            {
+                return true;
+            }
+
+            takesParameters = true;
+            var gtd = type.GetGenericTypeDefinition();
+            if (gtd == typeof(Action<>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,,,,,,,>))
+            {
+                return true;
+            }
+            else if (gtd == typeof(Action<,,,,,,,,,,,,,,,>))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Finds <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible (i.e. that are not <see langword="interface"/>s, <see langword="abstract"/> or <see langword="static"/>).
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to find constructible subtypes of.</param>
+        /// <param name="assembly">The <see cref="Assembly"/> to search in. If <see langword="null"/>, the assembly of the specified <paramref name="type"/> is used.</param>
+        /// <returns>An <see cref="Array"/> of <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible.</returns>
+        public Type[] FindConstructibleSubtypes(Assembly assembly = null)
+        {
+            assembly ??= type.Assembly;
+            // RCS1256 says this is an invalid null check because the parameter is optional with the default set to null, BUT we compound-assigned type's assembly
+            // If THAT is null, something's wrong anyway
+            ArgumentNullException.ThrowIfNull(assembly);
+
+            return [.. assembly.GetTypes()
+            .Where(t => t.IsAssignableTo(type)
+                && !t.IsAbstract
+                && !t.IsInterface
+                && t.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Length > 0 // cannot be static if it has constructors
+        )];
+        }
     }
 
     #region Mappings
@@ -242,390 +877,13 @@ public static partial class TypeExtensions
     }.ToFrozenDictionary();
     #endregion
 
-    // "sane" because this method throws if the types are not numeric primitive types
-    private static (TypeCode First, TypeCode Second) GetSaneTypeCodes(Type first, Type second)
-    {
-        var ret = (Type.GetTypeCode(first), Type.GetTypeCode(second));
-
-        if (ret.Item1 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
-        {
-            throw new ArgumentException("Type must be a numeric primitive type.", nameof(first));
-        }
-        if (ret.Item2 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
-        {
-            throw new ArgumentException("Type must be a numeric primitive type.", nameof(second));
-        }
-
-        return ret;
-    }
-
     /// <summary>
-    /// Determines if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>.
+    /// Converts a type name to its C# keyword, if it exists.
     /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check.</param>
-    /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><see langword="true"/> if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
-    public static bool HasNarrowingConversion(this Type type, Type other)
-    {
-        var (first, second) = GetSaneTypeCodes(type, other);
-        if (first == second)
-        {
-            return false;
-        }
-
-        if (_narrowingConversions.TryGetValue(first, out var narrowingConversions))
-        {
-            return narrowingConversions.Contains(second);
-        }
-        // No narrowing conversions exist for the first type
-        return false;
-    }
-    /// <summary>
-    /// Determines if there exists a consistent widening conversion (that is, a conversion that is guaranteed to not lose any information) from this <see cref="Type"/> to <paramref name="other"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check.</param>
-    /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><see langword="true"/> if there exists a consistent widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
-    public static bool HasConsistentWideningConversion(this Type type, Type other)
-    {
-        var (first, second) = GetSaneTypeCodes(type, other);
-        if (first == second)
-        {
-            return false;
-        }
-
-        if (_consistentWideningConversions.TryGetValue(first, out var consistentWideningConversions))
-        {
-            return Array.IndexOf(consistentWideningConversions, second) != -1;
-        }
-        // No consistent widening conversions exist for the first type
-        return false;
-    }
-    /// <summary>
-    /// Determines if there exists a lossy widening conversion (that is, a conversion that may lose information) from this <see cref="Type"/> to <paramref name="other"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check.</param>
-    /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><see langword="true"/> if there exists a lossy widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
-    public static bool HasLossyWideningConversion(this Type type, Type other)
-    {
-        var (first, second) = GetSaneTypeCodes(type, other);
-        if (first == second)
-        {
-            return false;
-        }
-
-        if (_lossyWideningConversions.TryGetValue(first, out var lossyWideningConversions))
-        {
-            return Array.IndexOf(lossyWideningConversions, second) != -1;
-        }
-        // No lossy widening conversions exist for the first type
-        return false;
-    }
-    /// <summary>
-    /// Determines if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check.</param>
-    /// <param name="other">The <see cref="Type"/> to check against.</param>
-    /// <returns><see langword="true"/> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
-    public static bool HasWideningConversion(this Type type, Type other) => type.HasConsistentWideningConversion(other) || type.HasLossyWideningConversion(other);
-
-#warning TODO: Support not just classes, make this work for structs, interfaces etc. as well
-    /// <summary>
-    /// Reflects the entirety of this <see cref="Type"/> and generates C# code that can be used to replicate it.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to reflect.</param>
-    /// <param name="options.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="NotImplementedException"/>s.</param>
-    /// <returns>A <see cref="string"/> containing the generated code.</returns>
-    /// <remarks>
-    /// It is almost guaranteed that this method will not generate compilable code. It is intended to be used as a starting point for replicating existing types you may not have access to.
-    /// </remarks>
-    public static string Reflect(this Type type, ReflectionOptions options = default)
-    {
-        var bindingFlags =
-            BindingFlags.Public
-            | BindingFlags.NonPublic
-            | BindingFlags.Instance
-            | BindingFlags.Static;
-        if (!options.IncludeHierarchy)
-        {
-            bindingFlags |= BindingFlags.DeclaredOnly;
-        }
-
-        ArgumentNullException.ThrowIfNull(type);
-        var friendlyTypeName = type.GetFriendlyName();
-
-        if (type.IsSealed && options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
-        {
-            throw new TypeAccessException($"Cannot generate code for a type that inherits from sealed type '{friendlyTypeName}'.");
-        }
-
-        using var sw = new StringWriter();
-        using var itw = new IndentedTextWriter(sw, "    ");
-
-        if (!string.IsNullOrWhiteSpace(options.Namespace))
-        {
-            itw.WriteLine($"namespace {options.Namespace};");
-        }
-
-        #region Type Declaration
-        itw.WriteLine($"""
-                /// <summary>
-                /// [Reflected from {friendlyTypeName} (Assembly '{type.Assembly.GetName().Name}')]
-                /// </summary>
-                """);
-        itw.Write($"public class {type.Name}");
-
-        if (type.IsGenericType)
-        {
-            itw.Write("<");
-            itw.Write(string.Join(", ", type.GetGenericArguments().Select(t => t.FullName)));
-            itw.Write(">");
-        }
-        else
-        {
-            itw.WriteLine();
-        }
-
-        if (options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
-        {
-            itw.WriteLine($" : {friendlyTypeName}");
-        }
-        #endregion
-
-        itw.WriteLine("{");
-
-        itw.Indent++;
-
-        #region options.Inheriting is ReflectionOptions.InheritanceBehavior.FieldDelegation
-        if (options.Inherit is ReflectionOptions.InheritanceBehavior.FieldDelegation)
-        {
-            itw.WriteLine($"private readonly {friendlyTypeName} _base = new {friendlyTypeName}();");
-        }
-        #endregion
-
-        #region Fields
-        var fields = type.GetFields(bindingFlags);
-        for (var i = 0; i < fields.Length; i++)
-        {
-            var field = fields[i];
-            var accessibility = field.GetAccessibility();
-            if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
-            {
-                continue;
-            }
-
-            // If the field is anything above or equal to protected, it's prooooobably gonna have a documentation comment
-            // Since fields cannot be made virtual though, the interitance relationship doesn't matter
-            if (options.AddXmlDocCrefs && accessibility.Equals("public", StringComparison.OrdinalIgnoreCase))
-            {
-                itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{field.Name}" />""");
-            }
-
-            itw.Write(accessibility);
-            itw.Write(' ');
-            if (field.IsStatic)
-            {
-                itw.Write("static ");
-            }
-            itw.Write(field.FieldType.GetFriendlyName());
-            itw.Write(' ');
-            itw.Write(field.Name);
-            itw.WriteLine(';');
-        }
-        #endregion
-
-        itw.WriteLine();
-
-        #region Properties
-        var props = type.GetProperties(bindingFlags);
-        for (var i = 0; i < props.Length; i++)
-        {
-            var property = props[i];
-            var accessibility = property.GetAccessibility();
-            if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
-            {
-                continue;
-            }
-
-            // If the property is anything above or equal to protected, it's prooooobably gonna have a documentation comment
-            if (options.AddXmlDocCrefs && (accessibility.Equals("public", StringComparison.OrdinalIgnoreCase) || (AccessibilityIsAtLeastFamily(accessibility) && !type.IsSealed)))
-            {
-                itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{property.Name}" />""");
-            }
-
-            itw.Write(accessibility);
-            itw.Write(' ');
-            if (property.GetMethod?.IsStatic is true || property.SetMethod?.IsStatic is true)
-            {
-                itw.Write("static ");
-            }
-            itw.Write(property.PropertyType.GetFriendlyName());
-            itw.Write(' ');
-            itw.WriteLine(property.Name);
-            itw.WriteLine("{");
-
-            itw.Indent++;
-            if (property.GetMethod is not null)
-            {
-                var getAccessibility = property.GetMethod.GetAccessibility();
-                if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit))
-                {
-                    itw.Write(getAccessibility);
-                    itw.Write(" get => ");
-                    switch (options.Inherit)
-                    {
-                        case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(getAccessibility, options.Inherit):
-                            itw.WriteLine($"base.{property.Name};");
-                            break;
-                        case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.GetMethod.IsPublic:
-                            itw.WriteLine($"this._base.{property.Name};");
-                            break;
-                        case ReflectionOptions.InheritanceBehavior.Inherit:
-                        case ReflectionOptions.InheritanceBehavior.FieldDelegation:
-                            itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.get()' is not accessible.");""");
-                            break;
-                        default:
-                            itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.get()' is not implemented.");""");
-                            break;
-                    }
-                }
-            }
-            if (property.SetMethod is not null)
-            {
-                var setAccessibility = property.SetMethod.GetAccessibility();
-                if (!options.IgnoreInaccessible || !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit))
-                {
-                    itw.Write(setAccessibility);
-                    itw.Write(" set => ");
-                    switch (options.Inherit)
-                    {
-                        case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(setAccessibility, options.Inherit):
-                            itw.WriteLine($"base.{property.Name} = value;");
-                            break;
-                        case ReflectionOptions.InheritanceBehavior.FieldDelegation when property.SetMethod.IsPublic:
-                            itw.WriteLine($"this._base.{property.Name} = value;");
-                            break;
-                        case ReflectionOptions.InheritanceBehavior.Inherit:
-                        case ReflectionOptions.InheritanceBehavior.FieldDelegation:
-                            itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.set()' is not accessible.");""");
-                            break;
-                        default:
-                            itw.WriteLine($"""throw new NotImplementedException("Reflected member '{friendlyTypeName}.{property.Name}.set()' is not implemented.");""");
-                            break;
-                    }
-                }
-            }
-            itw.Indent--;
-
-            itw.WriteLine("}");
-        }
-        #endregion
-
-        itw.WriteLine();
-
-        #region Methods
-        var methods = type
-            .GetMethods(bindingFlags)
-            .Where(m => !m.IsSpecialName
-                && !UnspeakableMemberNameRegex().IsMatch(m.Name)
-                && (!options.IgnoreInaccessible
-                    || !IsInaccessibleAsReflectedType(m.GetAccessibility(), options.Inherit)
-                )
-            )
-            .OrderBy(m => m.IsPrivate)          // private
-            .ThenBy(m => m.IsFamilyOrAssembly)  // private protected
-            .ThenBy(m => m.IsFamily)            // protected
-            .ThenBy(m => m.IsAssembly)          // internal
-            .ThenBy(m => m.IsFamilyAndAssembly) // protected internal
-            .ThenBy(m => m.IsPublic)            // public
-            .ThenBy(m => m.Name)                // name
-            .ThenBy(m => m.IsGenericMethod)     // generic?
-            .ToArray();
-        for (var i = 0; i < methods.Length; i++)
-        {
-            var method = methods[i];
-            var accessibility = method.GetAccessibility();
-            // Determine if the generic method requires an unsafe context
-            var unsafeRequired = method.GetParameters().Any(p => p.ParameterType.IsPointer);
-
-            // If the method is anything above or equal to protected, it's prooooobably gonna have a documentation comment
-            if (options.AddXmlDocCrefs && (accessibility.Equals("public", StringComparison.OrdinalIgnoreCase) || (AccessibilityIsAtLeastFamily(accessibility) && !type.IsSealed)))
-            {
-                itw.Write($"""/// <inheritdoc cref="{friendlyTypeName}.{method.Name}""");
-
-                if (method.IsGenericMethod)
-                {
-                    var genericTypeParams = method.GetGenericArguments();
-                    itw.Write('{');
-                    itw.Write(string.Join(", ", genericTypeParams.Select(t => t.Name)));
-                    itw.Write('}');
-                }
-
-                itw.Write('(');
-                itw.Write(string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
-                itw.Write(')');
-
-                itw.WriteLine("\" />");
-            }
-
-            itw.Write(accessibility);
-            itw.Write(' ');
-            if (method.IsStatic)
-            {
-                itw.Write("static ");
-            }
-            if (unsafeRequired)
-            {
-                itw.Write("unsafe ");
-            }
-            itw.Write(method.ReturnType.GetFriendlyName());
-            itw.Write(' ');
-            itw.Write(method.Name);
-
-            if (method.IsGenericMethod)
-            {
-                itw.Write($"<{string.Join(", ", method.GetGenericArguments().Select(t => t.Name))}>");
-            }
-
-            itw.Write('(');
-            itw.Write(string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.GetFriendlyName()} {p.Name}")));
-            itw.Write(')');
-            switch (options.Inherit)
-            {
-                case ReflectionOptions.InheritanceBehavior.Inherit when !IsInaccessibleAsReflectedType(accessibility, options.Inherit):
-                    itw.WriteLine($" => base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
-                    break;
-                case ReflectionOptions.InheritanceBehavior.FieldDelegation when method.IsPublic:
-                    itw.WriteLine($" => this._base.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.Name))});");
-                    break;
-                case ReflectionOptions.InheritanceBehavior.Inherit:
-                case ReflectionOptions.InheritanceBehavior.FieldDelegation:
-                    itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{friendlyTypeName}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not accessible.");""");
-                    break;
-                default:
-                    itw.WriteLine($""" => throw new NotImplementedException("Reflected member '{friendlyTypeName}.{method.Name}({string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName()))})' is not implemented.");""");
-                    break;
-            }
-        }
-        #endregion
-
-        if (options.Deep)
-        {
-            var types = type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic);
-            for (var i = 0; i < types.Length; i++)
-            {
-                var nestedType = types[i];
-                itw.WriteLine();
-                itw.WriteLine(nestedType.Reflect(options));
-            }
-        }
-
-        itw.Indent--;
-        itw.WriteLine("}");
-
-        return sw.ToString();
-    }
+    /// <param name="type">The type name to convert.</param>
+    /// <returns>The type name as a C# keyword, if it exists, otherwise the original type name.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string AsKeyword(string type) => _typeKeywordMap.TryGetValue(type, out var keyword) ? keyword : type;
 
     internal static bool AccessibilityIsAtLeastFamily(string accessibility) => accessibility.ToUpperInvariant() switch
     {
@@ -750,252 +1008,21 @@ public static partial class TypeExtensions
         return "private";
     }
 
-    /// <summary>
-    /// Constructs a more easily readable name for the specified <see cref="Type"/>.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to construct a more easily readable name for.</param>
-    /// <param name="includeNamespace">Whether to include the namespace in the name.</param>
-    /// <returns>A more easily readable name for the specified <see cref="Type"/>.</returns>
-    public static string GetFriendlyName(this Type type, bool includeNamespace = true)
+    // "sane" because this method throws if the types are not numeric primitive types
+    private static (TypeCode First, TypeCode Second) GetSaneTypeCodes(Type type, Type other)
     {
-        string operateOn;
-        if (includeNamespace)
+        var ret = (Type.GetTypeCode(type), Type.GetTypeCode(other));
+
+        if (ret.Item1 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
         {
-            operateOn = type.FullName ?? type.Namespace + '.' + type.Name;
+            throw new ArgumentException("Type must be a numeric primitive type.", nameof(type));
         }
-        else
+        if (ret.Item2 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
         {
-            operateOn = type.Name;
+            throw new ArgumentException("Type must be a numeric primitive type.", nameof(other));
         }
 
-        if (type.IsGenericParameter)
-        {
-            return type.Name;
-        }
-        else if (type.IsArray && type.GetElementType() is Type elementType)
-        {
-            return elementType.GetFriendlyName() + "[]";
-        }
-        if (operateOn.Contains('+', StringComparison.OrdinalIgnoreCase))
-        {
-            operateOn = type.Namespace + '.' + type.Name;
-        }
-        if (operateOn.EndsWith('&'))
-        {
-            return "ref " + AsKeyword(operateOn[..^1]);
-        }
-        if (operateOn.EndsWith('*'))
-        {
-            return AsKeyword(operateOn[..^1]) + '*';
-        }
-        if (operateOn.EndsWith("[]", StringComparison.OrdinalIgnoreCase))
-        {
-            return AsKeyword(operateOn[..^2]) + "[]";
-        }
-
-        if (type.IsGenericType)
-        {
-            var tickAt = operateOn.IndexOf('`', StringComparison.OrdinalIgnoreCase);
-            if (tickAt != -1)
-            {
-                operateOn = operateOn[..tickAt];
-            }
-            var args = string.Join(", ", type.GetGenericArguments().Select(static t => t.GetFriendlyName()));
-
-            return $"{operateOn}<{args}>";
-        }
-
-        return AsKeyword(operateOn);
-    }
-    /// <summary>
-    /// Converts a type name to its C# keyword, if it exists.
-    /// </summary>
-    /// <param name="type">The type name to convert.</param>
-    /// <returns>The type name as a C# keyword, if it exists, otherwise the original type name.</returns>
-    public static string AsKeyword(string type) => _typeKeywordMap.TryGetValue(type, out var keyword) ? keyword : type;
-    /// <summary>
-    /// Converts a <see cref="Type"/> to its C# keyword, if it exists.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to convert.</param>
-    /// <returns>The <see cref="Type"/>'s name as a C# keyword, if it exists, otherwise the original <see cref="Type"/>.</returns>
-    public static string AsKeyword(this Type type) => AsKeyword(type.FullName);
-
-    /// <summary>
-    /// Determines whether the specified <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check.</param>
-    /// <param name="returnType">An <see langword="out"/> variable that receives the <see cref="Func{TResult}"/> <see langword="delegate"/> overload that the <paramref name="type"/> is assignable to, if any.</param>
-    /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
-    public static bool IsFunc(this Type type, [NotNullWhen(true)] out Type returnType)
-    {
-        returnType = null;
-        if (!type.IsGenericType)
-        {
-            return false;
-        }
-
-        var gtd = type.GetGenericTypeDefinition();
-        if (gtd == typeof(Func<>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-        else if (gtd == typeof(Func<,,,,,,,,,,,,,,,,>))
-        {
-            returnType = type;
-        }
-
-        if (returnType is not null)
-        {
-            returnType = returnType.GetGenericArguments()[^1];
-            return true;
-        }
-        return false;
-    }
-    /// <summary>
-    /// Determines whether the specified <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload.
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to check.</param>
-    /// <param name="takesParameters">Whether the <paramref name="type"/> takes parameters. If <see langword="false"/>, <paramref name="type"/> is not generic.</param>
-    /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
-    public static bool IsAction(this Type type, out bool takesParameters)
-    {
-        takesParameters = false;
-        if (type == typeof(Action))
-        {
-            return true;
-        }
-
-        takesParameters = true;
-        var gtd = type.GetGenericTypeDefinition();
-        if (gtd == typeof(Action<>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,,,,,,,>))
-        {
-            return true;
-        }
-        else if (gtd == typeof(Action<,,,,,,,,,,,,,,,>))
-        {
-            return true;
-        }
-        return false;
+        return ret;
     }
 
     /*
@@ -1006,25 +1033,4 @@ public static partial class TypeExtensions
     */
     [GeneratedRegex(@"<.*?>\p{Ll}__(\p{L}|\p{Nd}|\||_)+?_\p{Nd}+?(?=\(.*?\))?", RegexOptions.ExplicitCapture)]
     private static partial Regex UnspeakableMemberNameRegex();
-
-    /// <summary>
-    /// Finds <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible (i.e. that are not <see langword="interface"/>s, <see langword="abstract"/> or <see langword="static"/>).
-    /// </summary>
-    /// <param name="type">The <see cref="Type"/> to find constructible subtypes of.</param>
-    /// <param name="assembly">The <see cref="Assembly"/> to search in. If <see langword="null"/>, the assembly of the specified <paramref name="type"/> is used.</param>
-    /// <returns>An <see cref="Array"/> of <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible.</returns>
-    public static Type[] FindConstructibleSubtypes(this Type type, Assembly assembly = null)
-    {
-        assembly ??= type.Assembly;
-        // RCS1256 says this is an invalid null check because the parameter is optional with the default set to null, BUT we compound-assigned type's assembly
-        // If THAT is null, something's wrong anyway
-        ArgumentNullException.ThrowIfNull(assembly);
-
-        return [.. assembly.GetTypes()
-            .Where(t => t.IsAssignableTo(type)
-                && !t.IsAbstract
-                && !t.IsInterface
-                && t.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Length > 0 // cannot be static if it has constructors
-        )];
-    }
 }

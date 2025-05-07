@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Runtime.InteropServices;
 
 using static LaquaiLib.Util.WpfForms.VirtualKey;
 
@@ -114,7 +113,7 @@ public static partial class VirtualKeyUtils
         cultureInfo ??= CultureInfo.CurrentCulture;
 
         Span<byte> kbStateBuffer = stackalloc byte[256];
-        Interop.GetKeyboardState(kbStateBuffer);
+        _ = Interop.GetKeyboardState(kbStateBuffer);
 
         var keyboardLayout = cultureInfo.KeyboardLayoutId;
         var receiver = new string('\0', 2);

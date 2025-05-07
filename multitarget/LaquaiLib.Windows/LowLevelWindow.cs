@@ -6,7 +6,7 @@ namespace LaquaiLib.Windows;
 /// <summary>
 /// Proxies low-level <see cref="Window"/> functionality out of <see cref="HwndSource"/> to inheriting classes.
 /// </summary>
-public abstract class LowLevelWindow : Window
+public class LowLevelWindow : Window
 {
     /// <summary>
     /// Retrieves the <see cref="HwndSource"/> of the window.

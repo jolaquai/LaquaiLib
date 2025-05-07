@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <None Remove="bin\Debug\netstandard2.0\\LaquaiLib.Analyzers.dll" />
+    <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.dll" />
   </ItemGroup>
 
   <ItemGroup>

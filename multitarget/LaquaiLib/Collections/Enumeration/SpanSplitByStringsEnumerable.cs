@@ -26,7 +26,7 @@ public ref struct SpanSplitByStringsEnumerable
         _searchValues = new HashSet<string>(StringComparer.FromComparison(_stringComparison));
         for (var i = 0; i < strings.Length; i++)
         {
-            _searchValues.Add(strings[i]);
+            _ = _searchValues.Add(strings[i]);
         }
     }
 

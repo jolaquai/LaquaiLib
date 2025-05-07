@@ -20,28 +20,31 @@ public static class IAsyncEnumerableExtensions
         return new AsyncEnumerableCombiner<T>(toChain);
     }
 
-    /// <summary>
-    /// Chains the specified <see cref="IAsyncEnumerable{T}"/> instances with the specified <paramref name="source"/> into a single <see cref="IAsyncEnumerable{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">The Type of elements the <see cref="IAsyncEnumerable{T}"/> instances yield.</typeparam>
-    /// <param name="source">The <see cref="IAsyncEnumerable{T}"/> to start with.</param>
-    /// <param name="with">The <see cref="IAsyncEnumerable{T}"/> instances to chain together.</param>
-    /// <returns>An <see cref="IAsyncEnumerable{T}"/> implementation that iterates over each <paramref name="source"/> and <paramref name="with"/> in turn.</returns>
-    public static IAsyncEnumerable<T> Concat<T>(this IAsyncEnumerable<T> source, params ReadOnlySpan<IAsyncEnumerable<T>> with)
+    extension<T>(IAsyncEnumerable<T> source)
     {
-        ArgumentNullException.ThrowIfNull(source);
-        for (var i = 0; i < with.Length; i++)
+        /// <summary>
+        /// Chains the specified <see cref="IAsyncEnumerable{T}"/> instances with the specified <paramref name="source"/> into a single <see cref="IAsyncEnumerable{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The Type of elements the <see cref="IAsyncEnumerable{T}"/> instances yield.</typeparam>
+        /// <param name="source">The <see cref="IAsyncEnumerable{T}"/> to start with.</param>
+        /// <param name="with">The <see cref="IAsyncEnumerable{T}"/> instances to chain together.</param>
+        /// <returns>An <see cref="IAsyncEnumerable{T}"/> implementation that iterates over each <paramref name="source"/> and <paramref name="with"/> in turn.</returns>
+        public IAsyncEnumerable<T> Concat(params ReadOnlySpan<IAsyncEnumerable<T>> with)
         {
-            ArgumentNullException.ThrowIfNull(with[i]);
-        }
+            ArgumentNullException.ThrowIfNull(source);
+            for (var i = 0; i < with.Length; i++)
+            {
+                ArgumentNullException.ThrowIfNull(with[i]);
+            }
 
-        if (source is AsyncEnumerableCombiner<T> combiner)
-        {
-            combiner.AddIterators(with);
-            return combiner;
-        }
+            if (source is AsyncEnumerableCombiner<T> combiner)
+            {
+                combiner.AddIterators(with);
+                return combiner;
+            }
 
-        return new AsyncEnumerableCombiner<T>([source, .. with]);
+            return new AsyncEnumerableCombiner<T>([source, .. with]);
+        }
     }
 }
 

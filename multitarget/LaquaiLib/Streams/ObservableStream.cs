@@ -1,5 +1,4 @@
 using System.Buffers;
-using System.Runtime.CompilerServices;
 
 namespace LaquaiLib.Streams;
 
@@ -113,7 +112,7 @@ public class ObservableStream<T> : Stream
     /// <inheritdoc/>
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        _ = await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         DataRead?.Invoke(this, new ReadEventArgs(buffer));
         return buffer.Length;
     }

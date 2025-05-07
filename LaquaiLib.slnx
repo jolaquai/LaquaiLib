@@ -11,6 +11,7 @@
         <File Path="UNLICENSE" />
     </Folder>
     <Folder Name="/Test/">
+        <Project Path="Test\AnalyzerPlayground\AnalyzerPlayground.csproj" />
         <Project Path="Test\TestBenchmark\TestBenchmark.csproj" />
         <Project Path="Test\TestConsole\TestConsole.csproj" />
         <Project Path="Test\TestCore\TestCore.csproj" />

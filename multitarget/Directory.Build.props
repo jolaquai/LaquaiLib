@@ -25,5 +25,12 @@
       <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
 
       <InternalsVisibleTo Include="LaquaiLib.UnitTests" />
+
+      <Using Include="System.Collections"/>
+      <Using Include="System.Collections.Concurrent"/>
+      <Using Include="System.Runtime.CompilerServices"/>
+      <Using Include="System.Runtime.InteropServices"/>
+      <Using Include="System.Text"/>
+      <Using Include="System.Text.Json"/>
     </ItemGroup>
 </Project>
