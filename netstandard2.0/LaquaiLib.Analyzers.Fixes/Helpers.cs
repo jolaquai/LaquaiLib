@@ -1,7 +1,4 @@
-﻿
-
-
-namespace LaquaiLib.Analyzers.Fixes;
+﻿namespace LaquaiLib.Analyzers.Fixes;
 
 internal static class Helpers
 {

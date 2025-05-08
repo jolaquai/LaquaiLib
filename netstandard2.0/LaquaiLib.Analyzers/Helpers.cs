@@ -28,4 +28,13 @@ internal static class Helpers
             return 0;
         }
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ReportAll(this ref SyntaxNodeAnalysisContext context, params IEnumerable<Diagnostic> diagnostics)
+    {
+        foreach (var diag in diagnostics)
+        {
+            context.ReportDiagnostic(diag);
+        }
+    }
 }
