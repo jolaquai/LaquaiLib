@@ -14,8 +14,8 @@ public class RemoveRedundantTryCatchAnalyzer : DiagnosticAnalyzer
     );
     public static DiagnosticDescriptor RedundantCatch { get; } = new(
         id: "LAQ1001",
-        title: "Remove redundant catch block",
-        messageFormat: "Remove redundant catch block",
+        title: "Remove redundant catch clause",
+        messageFormat: "Remove redundant catch clause",
         description: "This catch clause's only statement is a rethrow of the exception it catches.",
         category: AnalyzerCategories.CodeQuality,
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -23,8 +23,8 @@ public class RemoveRedundantTryCatchAnalyzer : DiagnosticAnalyzer
     );
     public static DiagnosticDescriptor RedundantFinally { get; } = new(
         id: "LAQ1001",
-        title: "Remove redundant finally block",
-        messageFormat: "Remove redundant finally block",
+        title: "Remove redundant finally clause",
+        messageFormat: "Remove redundant finally clause",
         description: "This finally clause is empty or throws an exception (the latter is discouraged).",
         category: AnalyzerCategories.CodeQuality,
         defaultSeverity: DiagnosticSeverity.Warning,

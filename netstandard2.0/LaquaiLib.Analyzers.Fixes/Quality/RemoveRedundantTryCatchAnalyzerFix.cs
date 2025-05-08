@@ -1,114 +1,101 @@
-﻿namespace LaquaiLib.Analyzers.Fixes.Quality;
+﻿using Microsoft.CodeAnalysis.Editing;
+
+namespace LaquaiLib.Analyzers.Fixes.Quality;
 
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RemoveRedundantTryCatchAnalyzerFix)), Shared]
 public class RemoveRedundantTryCatchAnalyzerFix : CodeFixProvider
 {
     public override ImmutableArray<string> FixableDiagnosticIds { get; } = ["LAQ1001"];
-    public sealed override FixAllProvider GetFixAllProvider() => FixAllProvider.Create(async (fixAllContext, document, diagnostics) =>
+
+    // Function to get fix info based on diagnostic
+    private static (string title, Action<DocumentEditor> fixAction) GetFixInfo(SyntaxNode root, Diagnostic diagnostic)
     {
-        if (diagnostics.IsEmpty)
-        {
-            return document;
-        }
-
-        // Get the document root
-        var root = await document.GetSyntaxRootAsync(fixAllContext.CancellationToken).ConfigureAwait(false);
-        if (root == null)
-        {
-            return document;
-        }
-
-        // Group all the fixes we need to make
-        var nodesToReplace = new Dictionary<SyntaxNode, SyntaxNode>();
-        var nodesToRemove = new List<SyntaxNode>();
-
-        // Process all diagnostics at once
-        foreach (var diagnostic in diagnostics)
-        {
-            var token = root.FindToken(diagnostic.Location.SourceSpan.Start);
-
-            switch (token.Kind())
-            {
-                case SyntaxKind.TryKeyword when token.Parent is TryStatementSyntax tryStatement:
-                {
-                    var replacementBlock = SyntaxFactory.Block(tryStatement.Block.Statements).WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
-                    nodesToReplace[tryStatement] = replacementBlock;
-                    break;
-                }
-                case SyntaxKind.CatchKeyword when token.Parent is CatchClauseSyntax catchClause:
-                {
-                    nodesToRemove.Add(catchClause);
-                    break;
-                }
-                case SyntaxKind.FinallyKeyword when token.Parent is FinallyClauseSyntax finallyClause:
-                {
-                    nodesToRemove.Add(finallyClause);
-                    break;
-                }
-            }
-        }
-
-        // Apply all changes at once
-        var newRoot = root;
-
-        // First replace the try statements
-        if (nodesToReplace.Count > 0)
-        {
-            newRoot = newRoot.ReplaceNodes(nodesToReplace.Keys, (original, _) => nodesToReplace[original]);
-        }
-        // Then remove the catch and finally clauses
-        if (nodesToRemove.Count > 0)
-        {
-            newRoot = newRoot.RemoveNodes(nodesToRemove, SyntaxRemoveOptions.KeepNoTrivia);
-        }
-
-        return document.WithSyntaxRoot(newRoot);
-    });
-
-    public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
-    {
-        var document = context.Document;
-        var diags = context.Diagnostics;
-        for (var i = 0; i < diags.Length; i++)
-        {
-            var diagnostic = diags[i];
-
-            var fix = await CreateCodeActionForDocumentAsync(document, diagnostic).ConfigureAwait(false);
-            context.RegisterCodeFix(fix, diagnostic);
-        }
-    }
-
-    internal static async Task<CodeAction> CreateCodeActionForDocumentAsync(Document document, Diagnostic diagnostic)
-    {
-        var root = await document.GetRootAsync().ConfigureAwait(false);
-        var diagnosticSpan = diagnostic.Location.SourceSpan;
-        var token = root.FindToken(diagnosticSpan.Start);
+        var token = root.FindToken(diagnostic.Location.SourceSpan.Start);
 
         switch (token.Kind())
         {
-            case SyntaxKind.TryKeyword when token.Parent is TryStatementSyntax tryStatementSyntax:
+            case SyntaxKind.TryKeyword when token.Parent is TryStatementSyntax tryStatement:
             {
-                return CodeAction.Create(
-                    title: "Remove try statement",
-                    createChangedDocument: c => Task.FromResult(document.WithSyntaxRoot(root.ReplaceNode(tryStatementSyntax, tryStatementSyntax.Block.Statements.Select(s => s.WithAdditionalAnnotations(Formatter.Annotation))))),
-                    equivalenceKey: "Remove try statement");
+                return
+                (
+                    "Remove try statement",
+                    editor =>
+                    {
+                        var replacementBlock = tryStatement.Block.WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation);
+                        editor.ReplaceNode(tryStatement, replacementBlock);
+                    }
+                );
             }
-            case SyntaxKind.CatchKeyword when token.Parent is CatchClauseSyntax catchClauseSyntax:
+            case SyntaxKind.CatchKeyword when token.Parent is CatchClauseSyntax catchClause:
             {
-                return CodeAction.Create(
-                    title: "Remove catch clause",
-                    createChangedDocument: c => Task.FromResult(document.WithSyntaxRoot(root.RemoveNode(catchClauseSyntax, SyntaxRemoveOptions.KeepNoTrivia))),
-                    equivalenceKey: "Remove catch clause");
+                return
+                (
+                    "Remove catch clause",
+                    editor => editor.RemoveNode(catchClause, SyntaxRemoveOptions.KeepNoTrivia)
+                );
             }
-            case SyntaxKind.FinallyKeyword when token.Parent is FinallyClauseSyntax finallyClauseSyntax:
+            case SyntaxKind.FinallyKeyword when token.Parent is FinallyClauseSyntax finallyClause:
             {
-                return CodeAction.Create(
-                    title: "Remove finally clause",
-                    createChangedDocument: c => Task.FromResult(document.WithSyntaxRoot(root.RemoveNode(finallyClauseSyntax, SyntaxRemoveOptions.KeepNoTrivia))),
-                    equivalenceKey: "Remove finally clause");
+                return
+                (
+                    "Remove finally clause",
+                    editor => editor.RemoveNode(finallyClause, SyntaxRemoveOptions.KeepNoTrivia)
+                );
             }
+            default:
+                return ("Fix redundant try-catch element", _ => { });
         }
-
-        throw new InvalidOperationException($"Unexpected token type: {token.ValueText}");
     }
+
+    // For single fixes
+    public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+        var document = context.Document;
+        var root = await document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+
+        foreach (var diagnostic in context.Diagnostics)
+        {
+            var (title, fixAction) = GetFixInfo(root, diagnostic);
+
+            context.RegisterCodeFix(
+                CodeAction.Create(
+                    title: title,
+                    createChangedDocument: async c =>
+                    {
+                        var editor = await DocumentEditor.CreateAsync(document, c);
+                        fixAction(editor);
+                        return editor.GetChangedDocument();
+                    },
+                    // Use different equivalence keys based on the fix type
+                    equivalenceKey: $"RemoveRedundantTryCatch_{title.Replace(" ", "")}"),
+                diagnostic);
+        }
+    }
+
+    // For batch fixes - unified action with a generic title
+    public sealed override FixAllProvider GetFixAllProvider() => FixAllProvider.Create(
+        async (fixAllContext, document, diagnostics) =>
+        {
+            if (diagnostics.IsEmpty)
+                return document;
+
+            var root = await document.GetSyntaxRootAsync(fixAllContext.CancellationToken).ConfigureAwait(false);
+            var editor = await DocumentEditor.CreateAsync(document, fixAllContext.CancellationToken);
+
+            foreach (var diagnostic in diagnostics)
+            {
+                var (_, fixAction) = GetFixInfo(root, diagnostic);
+                fixAction(editor);
+            }
+
+            return editor.GetChangedDocument();
+        });
+}
+
+/// <summary>
+/// Provides a base class for all code fix providers in the LaquaiLib library with some shared functionality for implementing single and batch fixes in a more streamlined way.
+/// </summary>
+public abstract class LaquaiLibCodeFixProvider : CodeFixProvider
+{
+#warning TODO
 }
