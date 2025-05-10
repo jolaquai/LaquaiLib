@@ -4,23 +4,13 @@ internal static class Program
 {
     public static void Main(string[] args)
     {
-        try
-        {
-            _ = Task.WhenAll();
-        }
-        catch (OperationCanceledException)
-        {
-        }
-        catch (InvalidOperationException)
-        {
-            throw;
-        }
-        catch
-        {
-            throw;
-        }
-        finally
-        {
-        }
+        var cloneable = new Cloneable();
+        _ = (Cloneable)cloneable.Clone();
+        _ = cloneable.Clone() as Cloneable;
+    }
+
+    public class Cloneable : ICloneable
+    {
+        public object Clone() => new Cloneable();
     }
 }
