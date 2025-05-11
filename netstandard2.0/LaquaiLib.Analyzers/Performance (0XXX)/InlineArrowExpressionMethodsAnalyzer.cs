@@ -4,9 +4,9 @@
 public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
 {
     public static DiagnosticDescriptor Descriptor { get; } = new(
-        id: "LAQ0004",
+        id: "LAQ0003",
         title: "Inline small methods",
-        messageFormat: "Apply [MethodImpl(MethodImplOptions.AggressiveInlining)] to small methods to improve performance.",
+        messageFormat: "Inline small methods to improve performance",
         description: "Methods that are very small (for example, ones declared using an arrow expression) should be aggressively inlined to improve performance.",
         category: AnalyzerCategories.Performance,
         defaultSeverity: DiagnosticSeverity.Warning,
@@ -26,12 +26,13 @@ public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
     private void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
         var node = Unsafe.As<ArrowExpressionClauseSyntax>(context.Node);
+        var loc = node.ArrowToken.GetLocation();
 
         switch (node.Parent)
         {
             case MethodDeclarationSyntax methodDeclarationSyntax:
             {
-                AnalyzeDeclaration(context, methodDeclarationSyntax, methodDeclarationSyntax.Identifier.GetLocation());
+                AnalyzeDeclaration(context, methodDeclarationSyntax, loc);
                 break;
             }
             case PropertyDeclarationSyntax propertyDeclarationSyntax:
@@ -39,13 +40,13 @@ public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
                 var propertySymbol = context.SemanticModel.GetDeclaredSymbol(propertyDeclarationSyntax);
                 if (propertySymbol?.GetMethod != null)
                 {
-                    AnalyzeSymbol(context, propertySymbol.GetMethod, propertyDeclarationSyntax.Identifier.GetLocation());
+                    AnalyzeSymbol(context, propertySymbol.GetMethod, loc);
                 }
                 break;
             }
             case AccessorDeclarationSyntax accessorDeclarationSyntax:
             {
-                AnalyzeDeclaration(context, accessorDeclarationSyntax, accessorDeclarationSyntax.Keyword.GetLocation());
+                AnalyzeDeclaration(context, accessorDeclarationSyntax, loc);
                 break;
             }
             case IndexerDeclarationSyntax indexerDeclarationSyntax:
@@ -53,23 +54,23 @@ public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
                 var indexerSymbol = context.SemanticModel.GetDeclaredSymbol(indexerDeclarationSyntax);
                 if (indexerSymbol?.GetMethod != null)
                 {
-                    AnalyzeSymbol(context, indexerSymbol.GetMethod, indexerDeclarationSyntax.ThisKeyword.GetLocation());
+                    AnalyzeSymbol(context, indexerSymbol.GetMethod, loc);
                 }
                 break;
             }
             case OperatorDeclarationSyntax operatorDeclarationSyntax:
             {
-                AnalyzeDeclaration(context, operatorDeclarationSyntax, operatorDeclarationSyntax.OperatorToken.GetLocation());
+                AnalyzeDeclaration(context, operatorDeclarationSyntax, loc);
                 break;
             }
             case ConversionOperatorDeclarationSyntax conversionOperatorDeclarationSyntax:
             {
-                AnalyzeDeclaration(context, conversionOperatorDeclarationSyntax, conversionOperatorDeclarationSyntax.Type.GetLocation());
+                AnalyzeDeclaration(context, conversionOperatorDeclarationSyntax, loc);
                 break;
             }
             case LocalFunctionStatementSyntax localFunctionStatementSyntax:
             {
-                AnalyzeDeclaration(context, localFunctionStatementSyntax, localFunctionStatementSyntax.Identifier.GetLocation());
+                AnalyzeDeclaration(context, localFunctionStatementSyntax, loc);
                 break;
             }
             default:
@@ -97,7 +98,7 @@ public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
     }
 
     private const int _aggressiveInlining = (int)MethodImplOptions.AggressiveInlining;
-    private static bool HasAggressiveInliningAttribute(ISymbol symbol)
+    internal static bool HasAggressiveInliningAttribute(ISymbol symbol)
     {
         // Check for [MethodImpl(MethodImplOptions.AggressiveInlining)]
         foreach (var attribute in symbol.GetAttributes())

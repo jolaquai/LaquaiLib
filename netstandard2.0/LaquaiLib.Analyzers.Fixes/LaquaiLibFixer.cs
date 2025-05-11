@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 
 namespace LaquaiLib.Analyzers.Fixes;
@@ -20,7 +21,13 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
         for (var i = 0; i < context.Diagnostics.Length; i++)
         {
             var diagnostic = diagnostics[i];
-            var (title, key, fixAction) = GetFixInfo(compilationUnitSyntax, diagnostic);
+            var fixInfo = GetFixInfo(compilationUnitSyntax, diagnostic);
+            if (!fixInfo.HasFix)
+            {
+                continue;
+            }
+
+            var (title, key, fixAction) = fixInfo;
 
             context.RegisterCodeFix(CodeAction.Create(
                 title: title,
@@ -30,8 +37,6 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
                     await fixAction(editor).ConfigureAwait(false);
                     var changed = editor.GetChangedDocument();
                     changed = await ExecutePostFixes(changed).ConfigureAwait(false);
-                    // In the single fix instance, we need to reset the PostFixAction to null, otherwise those might be executed multiple times (in the odd case where there this does actually fix multiple diagnostics)
-                    PostFixAction = null;
                     return changed;
                 },
                 equivalenceKey: $"{Prefix}_{key}"
@@ -56,7 +61,12 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
         for (var i = 0; i < diagnostics.Length; i++)
         {
             var diagnostic = diagnostics[i];
-            var (title, key, fixAction) = GetFixInfo(root, diagnostic);
+            var fixInfo = GetFixInfo(root, diagnostic);
+            if (!fixInfo.HasFix)
+            {
+                continue;
+            }
+            var (title, key, fixAction) = fixInfo;
             await fixAction(editor).ConfigureAwait(false);
         }
 
@@ -72,9 +82,12 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
         {
             for (var i = 0; i < postFixes.Length; i++)
             {
-                changed = await postFixes[i](changed).ConfigureAwait(false);
+                var func = postFixes[i];
+                changed = await func(changed).ConfigureAwait(false);
+                PostFixAction -= func;
             }
         }
+        PostFixAction = null;
 
         return changed;
     }
@@ -94,6 +107,21 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
     /// They are invoked in order of registration and awaited individually. Their changes are introduced sequentially, each invocation <see langword="await"/>ed and passed the result of the previous invocation (if there are multiple).
     /// </summary>
     public event Func<Document, ValueTask<Document>> PostFixAction;
+
+    /// <summary>
+    /// Contains cached delegates for common actions intended to be wrapped for use in <see cref="PostFixAction"/>.
+    /// </summary>
+    public static class WellKnownPostFixActions
+    {
+        public static async ValueTask<Document> AddUsingsIfNotExist(Document document, params string[] usings)
+        {
+            var compilationUnitSyntax = await document.Root.ConfigureAwait(false);
+            var newUsings = new HashSet<string>(usings);
+            newUsings.ExceptWith(compilationUnitSyntax.Usings.Select(static u => u.Name.ToString()));
+            var filtered = newUsings.Select(u => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(u))).ToArray();
+            return document.WithSyntaxRoot(filtered.Length == 0 ? compilationUnitSyntax : compilationUnitSyntax.AddUsings(filtered));
+        }
+    }
 }
 
 /// <summary>
@@ -140,14 +168,25 @@ public abstract class LaquaiLibNodeFixer(params ImmutableArray<string> fixableDi
 /// <summary>
 /// Encapsulates the information required to construct a <see cref="CodeAction"/>.
 /// </summary>
-public readonly partial struct FixInfo(string title, Func<DocumentEditor, ValueTask> fixAction, string equivalenceKey = null)
+public readonly partial struct FixInfo
 {
     private static readonly Regex _keyNormalizationRegex = new Regex(@"[^A-Za-z]", RegexOptions.Compiled);
+
     /// <summary>
     /// Gets a <see cref="FixInfo"/> with no fix information. Executing it does nothing.
     /// </summary>
     public static FixInfo Empty { get; } = new FixInfo();
-    public FixInfo() : this("", _ => ValueTask.CompletedTask) { }
+
+    public FixInfo() : this("", _ => ValueTask.CompletedTask, null, false) { }
+    public FixInfo(string title, Func<DocumentEditor, ValueTask> fixAction, string equivalenceKey = null) : this(title, fixAction, equivalenceKey, true) { }
+    private FixInfo(string title, Func<DocumentEditor, ValueTask> fixAction, string equivalenceKey, bool hasFix)
+    {
+        Title = title;
+        EquivalenceKey = !string.IsNullOrWhiteSpace(equivalenceKey) ? equivalenceKey : _keyNormalizationRegex.Replace(title.ToTitleCase(), "");
+        FixAction = fixAction;
+
+        HasFix = hasFix;
+    }
 
     public void Deconstruct(out string title, out string equivalenceKey, out Func<DocumentEditor, ValueTask> fixAction)
     {
@@ -156,16 +195,19 @@ public readonly partial struct FixInfo(string title, Func<DocumentEditor, ValueT
         fixAction = FixAction;
     }
     /// <summary>
+    /// Gets whether this <see cref="FixInfo"/> is not equivalent to <see cref="Empty"/> (that is, whether executing it has any effect on the document).
+    /// </summary>
+    public readonly bool HasFix { get; }
+    /// <summary>
     /// The title of the code action.
     /// </summary>
-    public string Title { get; } = title;
+    public string Title { get; }
     /// <summary>
     /// The equivalence key for the code action. Need not be set, in which case it is automatically generated from <see cref="Title"/>.
     /// </summary>
-    public string EquivalenceKey { get; } = !string.IsNullOrWhiteSpace(equivalenceKey) ? equivalenceKey : _keyNormalizationRegex.Replace(title.ToTitleCase(), "");
+    public string EquivalenceKey { get; }
     /// <summary>
     /// A <see langword="delegate"/> that uses a <see cref="DocumentEditor"/> to produce a new <see cref="Document"/> that contains the fix.
     /// </summary>
-    public Func<DocumentEditor, ValueTask> FixAction { get; } = fixAction;
-
+    public Func<DocumentEditor, ValueTask> FixAction { get; }
 }

@@ -45,12 +45,7 @@ public class AvoidCastAfterCloneAnalyzerFix() : LaquaiLibNodeFixer("LAQ0002")
             documentEditor.ReplaceNode(expression, newExpression.WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation));
         }
 
-        PostFixAction += async d =>
-        {
-            var root = await d.Root.ConfigureAwait(false);
-            var newRoot = root.AddUsingsIfNotExists(SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Runtime.CompilerServices")));
-            return d.WithSyntaxRoot(newRoot);
-        };
+        PostFixAction += d => WellKnownPostFixActions.AddUsingsIfNotExist(d, "System.Runtime.CompilerServices");
 
         return ValueTask.CompletedTask;
     }

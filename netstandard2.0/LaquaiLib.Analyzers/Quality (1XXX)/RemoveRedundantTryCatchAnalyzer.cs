@@ -8,7 +8,7 @@ public class RemoveRedundantTryCatchAnalyzer : DiagnosticAnalyzer
         title: "Remove redundant try statement",
         messageFormat: "Remove redundant try statement",
         description: "All present clauses of this try statement have been proven to be redundant.",
-        category: AnalyzerCategories.CodeQuality,
+        category: AnalyzerCategories.Quality,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
@@ -17,7 +17,7 @@ public class RemoveRedundantTryCatchAnalyzer : DiagnosticAnalyzer
         title: "Remove redundant catch clause",
         messageFormat: "Remove redundant catch clause",
         description: "This catch clause's only statement is a rethrow of the exception it catches.",
-        category: AnalyzerCategories.CodeQuality,
+        category: AnalyzerCategories.Quality,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
@@ -26,7 +26,7 @@ public class RemoveRedundantTryCatchAnalyzer : DiagnosticAnalyzer
         title: "Remove redundant finally clause",
         messageFormat: "Remove redundant finally clause",
         description: "This finally clause is empty or throws an exception (the latter is discouraged).",
-        category: AnalyzerCategories.CodeQuality,
+        category: AnalyzerCategories.Quality,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true
     );
