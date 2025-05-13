@@ -4,9 +4,7 @@ namespace LaquaiLib.Interfaces;
 /// Implements a typed version of the <see cref="ICloneable"/> interface.
 /// </summary>
 /// <typeparam name="TSelf">The type of the implementing type.</typeparam>
-public interface ICloneable<TSelf> :
-    ICloneable
-    where TSelf : ICloneable<TSelf>
+public interface ICloneable<TSelf> : ICloneable where TSelf : ICloneable<TSelf>
 {
     /// <summary>
     /// Clones the current instance.

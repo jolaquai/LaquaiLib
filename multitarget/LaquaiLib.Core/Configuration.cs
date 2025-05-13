@@ -12,7 +12,9 @@ public static class Configuration
     /// </summary>
     public static int MaxStackallocSize
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => field == -1 ? field = Internal.GetMaxStackallocSize() : field;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set => field = value;
     } = -1;
 }

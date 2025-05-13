@@ -185,6 +185,14 @@ public static class MethodInfoExtensions
             if (modifiersTransform is not null)
             {
                 modifiersTransform(modifiers);
+                if (modifiers.Contains("abstract") && bodyGenerator is not null)
+                {
+                    throw new InvalidOperationException("Cannot generate body for an abstract method.");
+                }
+            }
+            else if (methodInfo.IsAbstract && bodyGenerator is not null)
+            {
+                throw new InvalidOperationException("Cannot generate body for an abstract method.");
             }
 
             sb.Append(accessibility);
@@ -217,7 +225,10 @@ public static class MethodInfoExtensions
                     genericParametersTransform(genericParameters);
                 }
 
-                sb.Append($"<{string.Join(", ", genericParameters)}>");
+                if (genericParameters.Count > 0)
+                {
+                    sb.Append($"<{string.Join(", ", genericParameters)}>");
+                }
             }
 
             var parameters = methodInfo.GetParameters().Select(static p => (p.ParameterType.GetFriendlyName(), p.Name, p.DefaultValue)).ToList();

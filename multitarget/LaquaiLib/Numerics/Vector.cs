@@ -6,7 +6,7 @@ using LaquaiLib.Interfaces;
 namespace LaquaiLib.Numerics;
 
 /// <summary>
-/// Represents a vector of arbitrary dimensions.
+/// Represents the concept of a geometric vector of arbitrary dimensions.
 /// <typeparamref name="T"/> must implement <see cref="ISignedNumber{TSelf}"/>.
 /// </summary>
 public readonly struct Vector<T> : IEnumerable<T>,

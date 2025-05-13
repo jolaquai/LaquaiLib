@@ -51,7 +51,6 @@ public class MultiStream : Stream, IDisposable
     public override long Position
     {
         get => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
-
         set => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
     }
     /// <summary>

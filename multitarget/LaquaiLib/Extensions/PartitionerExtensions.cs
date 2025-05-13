@@ -56,5 +56,10 @@ public static class PartitionerExtensions
                 yield return TransformPartition(item);
             }
         }
+        /// <summary>
+        /// Flattens a <see cref="Partitioner{TSource}"/> back into a single <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        /// <returns>The flattened <see cref="IEnumerable{T}"/>.</returns>
+        public IEnumerable<T> Flatten() => partitioner.AsEnumerable(1).SelectMany();
     }
 }
