@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0-windows;net10.0-windows</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0-preview-25107-01" />
+    <PackageReference Include="xunit.v3" Version="2.0.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
+
+    <Using Include="Xunit" />
+    <Using Include="System.Collections" />
+  </ItemGroup>
+
+  <Target Name="Warn" AfterTargets="Build">
+      <Warning Text="Write a comprehensive xunit.v3 unit test suite for this. No underscores in method names, no comments whatsoever." />
+  </Target>
+
+</Project>
