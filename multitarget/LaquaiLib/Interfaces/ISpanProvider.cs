@@ -4,7 +4,7 @@
 /// Defines a contract for types that provide a <see cref="Span{T}"/> over an arbitrary data structure.
 /// </summary>
 /// <typeparam name="T">The type of elements in the span.</typeparam>
-public interface ISpanProvider<T> : IReadOnlySpanProvider<T>, IDisposable
+public interface ISpanProvider<T> : IReadOnlySpanProvider<T>
 {
     /// <summary>
     /// Gets the <see cref="Span{T}"/> provided by the implementing type.
@@ -30,7 +30,7 @@ public interface IReadOnlySpanProvider<T> : IDisposable
 /// Defines a contract for types that provide a <see cref="Memory{T}"/> over an arbitrary data structure.
 /// </summary>
 /// <typeparam name="T">The type of elements in the memory.</typeparam>
-public interface IMemoryProvider<T> : IReadOnlyMemoryProvider<T>, IDisposable
+public interface IMemoryProvider<T> : ISpanProvider<T>, IReadOnlyMemoryProvider<T>
 {
     /// <summary>
     /// Gets the <see cref="Memory{T}"/> provided by the implementing type.
@@ -38,16 +38,20 @@ public interface IMemoryProvider<T> : IReadOnlyMemoryProvider<T>, IDisposable
     public Memory<T> Memory { get; }
 
     ReadOnlyMemory<T> IReadOnlyMemoryProvider<T>.ReadOnlyMemory => Memory;
+    Span<T> ISpanProvider<T>.Span => Span;
+    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan => ReadOnlySpan;
 }
 
 /// <summary>
 /// Defines a contract for types that provide a <see cref="ReadOnlyMemory{T}"/> over an arbitrary data structure.
 /// </summary>
 /// <typeparam name="T">The type of elements in the memory.</typeparam>
-public interface IReadOnlyMemoryProvider<T> : IDisposable
+public interface IReadOnlyMemoryProvider<T> : IReadOnlySpanProvider<T>
 {
     /// <summary>
     /// Gets the <see cref="ReadOnlyMemory{T}"/> provided by the implementing type.
     /// </summary>
     public ReadOnlyMemory<T> ReadOnlyMemory { get; }
+
+    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan => ReadOnlySpan;
 }

@@ -14,7 +14,7 @@ public class FullAccessProxyAttributeUsageAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true
     );
     public static DiagnosticDescriptor IncludeHierarchyPropertyIsIgnoredOnStructsDescriptor { get; } = new(
-        id: "LAQ9002",
+        id: "LAQ9001",
         title: $"{nameof(FullAccessProxyAttribute<>)}.{nameof(FullAccessProxyAttribute<>.IncludeHierarchy)} is ignored when the attribute marks a struct declaration",
         messageFormat: $"{nameof(FullAccessProxyAttribute<>)}.{nameof(FullAccessProxyAttribute<>.IncludeHierarchy)} is ignored when the attribute marks a struct declaration",
         category: AnalyzerCategories.Validity,

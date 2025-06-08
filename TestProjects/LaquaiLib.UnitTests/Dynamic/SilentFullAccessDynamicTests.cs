@@ -56,7 +56,10 @@ public class TestClassWithEquals
     public override bool Equals(object obj)
     {
         if (obj is TestClassWithEquals other)
+        {
             return Id == other.Id;
+        }
+
         return false;
     }
 

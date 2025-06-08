@@ -12,6 +12,35 @@ public static partial class MemoryExtensions
     extension<T>(ReadOnlySpan<T> span)
     {
         /// <summary>
+        /// Invokes the specified <paramref name="action"/> for each element in the <see cref="ReadOnlySpan{T}"/>.
+        /// </summary>
+        /// <param name="action">The <see cref="Action{T}"/> to invoke for each element.</param>
+        /// <returns>The original <see cref="ReadOnlySpan{T}"/>.</returns>
+        public ReadOnlySpan<T> ForEach(Action<T> action)
+        {
+            ArgumentNullException.ThrowIfNull(action);
+            for (var i = 0; i < span.Length; i++)
+            {
+                action(span[i]);
+            }
+            return span;
+        }
+        /// <summary>
+        /// Invokes the specified <paramref name="action"/> for each element in the <see cref="ReadOnlySpan{T}"/>, passing the element and its index.
+        /// </summary>
+        /// <param name="action">The <see cref="Action{T1, T2}"/> to invoke for each element.</param>
+        /// <returns>The original <see cref="ReadOnlySpan{T}"/>.</returns>
+        public ReadOnlySpan<T> ForEach(Action<T, int> action)
+        {
+            ArgumentNullException.ThrowIfNull(action);
+            for (var i = 0; i < span.Length; i++)
+            {
+                action(span[i], i);
+            }
+            return span;
+        }
+
+        /// <summary>
         /// Converts the elements of a <see cref="ReadOnlySpan{T}"/> using a <paramref name="selector"/> function.
         /// </summary>
         /// <typeparam name="TSource">The type of the elements of the input span.</typeparam>
@@ -29,6 +58,39 @@ public static partial class MemoryExtensions
             }
             return ret;
         }
+
+#if !NET10_0_OR_GREATER
+        /// <summary>
+        /// Finds the index of the first occurrence of a specified value in the <see cref="ReadOnlySpan{T}"/> using an <see cref="IEqualityComparer{T}"/>.
+        /// </summary>
+        /// <param name="value">The value to locate in the <see cref="ReadOnlySpan{T}"/>.</param>
+        /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> implementation to use for comparison. If <see langword="null"/>, the default equality comparer for <typeparamref name="T"/> is used.</param>
+        /// <returns>The zero-based index of the first occurrence of <paramref name="value"/> within the <see cref="ReadOnlySpan{T}"/>, if found; otherwise, -1.</returns>
+        public int IndexOf(T value, IEqualityComparer<T> equalityComparer = null)
+        {
+            if (value is IEquatable<T> equatable)
+            {
+                for (var i = 0; i < span.Length; i++)
+                {
+                    if (equatable.Equals(span[i]))
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            equalityComparer ??= EqualityComparer<T>.Default;
+            for (var i = 0; i < span.Length; i++)
+            {
+                if (equalityComparer.Equals(span[i], value))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+#endif
 
         /// <summary>
         /// Splits the specified <paramref name="span"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
@@ -299,6 +361,37 @@ public static partial class MemoryExtensions
         /// <remarks><typeparamref name="T"/> must implement <see cref="IEquatable{T}"/>.</remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanSplitBySequenceEnumerable<T> EnumerateSplitsBySequence(ReadOnlySpan<T> sequence) => new SpanSplitBySequenceEnumerable<T>(span, sequence);
+    }
+    extension<T>(Span<T> span)
+    {
+        /// <summary>
+        /// Invokes the specified <paramref name="action"/> for each element in the <see cref="Span{T}"/>.
+        /// </summary>
+        /// <param name="action">The <see cref="Action{T}"/> to invoke for each element.</param>
+        /// <returns>The original <see cref="Span{T}"/>.</returns>
+        public Span<T> ForEach(Action<T> action)
+        {
+            ArgumentNullException.ThrowIfNull(action);
+            for (var i = 0; i < span.Length; i++)
+            {
+                action(span[i]);
+            }
+            return span;
+        }
+        /// <summary>
+        /// Invokes the specified <paramref name="action"/> for each element in the <see cref="Span{T}"/>, passing the element and its index.
+        /// </summary>
+        /// <param name="action">The <see cref="Action{T1, T2}"/> to invoke for each element.</param>
+        /// <returns>The original <see cref="Span{T}"/>.</returns>
+        public Span<T> ForEach(Action<T, int> action)
+        {
+            ArgumentNullException.ThrowIfNull(action);
+            for (var i = 0; i < span.Length; i++)
+            {
+                action(span[i], i);
+            }
+            return span;
+        }
     }
     extension(Span<byte> span)
     {

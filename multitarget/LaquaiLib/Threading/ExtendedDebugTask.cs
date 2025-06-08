@@ -108,6 +108,7 @@ public class ExtendedDebugTask(Task task)
     /// </summary>
     /// <param name="action">The action to execute.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask Run(Action action) => new(Task.Run(action));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified action.
@@ -115,12 +116,14 @@ public class ExtendedDebugTask(Task task)
     /// <param name="action">The action to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask Run(Action action, CancellationToken cancellationToken) => new(Task.Run(action, cancellationToken));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified action.
     /// </summary>
     /// <param name="function">The action to execute.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask Run(Func<Task> function) => new(Task.Run(function));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified action.
@@ -128,6 +131,7 @@ public class ExtendedDebugTask(Task task)
     /// <param name="function">The action to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask Run(Func<Task> function, CancellationToken cancellationToken) => new(Task.Run(function, cancellationToken));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
@@ -135,6 +139,7 @@ public class ExtendedDebugTask(Task task)
     /// <typeparam name="TResult">The return type of the task.</typeparam>
     /// <param name="function">The function to execute.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask<TResult> Run<TResult>(Func<TResult> function) => new(Task.Run(function));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
@@ -143,6 +148,7 @@ public class ExtendedDebugTask(Task task)
     /// <param name="function">The function to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask<TResult> Run<TResult>(Func<TResult> function, CancellationToken cancellationToken) => new(Task.Run(function, cancellationToken));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
@@ -150,6 +156,7 @@ public class ExtendedDebugTask(Task task)
     /// <typeparam name="TResult">The return type of the task.</typeparam>
     /// <param name="function">The function to execute.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask<TResult> Run<TResult>(Func<Task<TResult>> function) => new(Task.Run(function));
     /// <summary>
     /// Creates and starts a <see cref="ExtendedDebugTask"/> that executes the specified function.
@@ -158,6 +165,7 @@ public class ExtendedDebugTask(Task task)
     /// <param name="function">The function to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> that cancels the task if it has not yet started.</param>
     /// <returns>The started task.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ExtendedDebugTask<TResult> Run<TResult>(Func<Task<TResult>> function, CancellationToken cancellationToken) => new(Task.Run(function, cancellationToken));
 
     /// <summary>
@@ -170,17 +178,20 @@ public class ExtendedDebugTask(Task task)
     /// </summary>
     /// <param name="continueOnCapturedContext">Whether to attempt to marshal the continuation back to the original context captured.</param>
     /// <returns>An awaitable object.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ConfiguredExtendedDebugTaskAwaitable ConfigureAwait(bool continueOnCapturedContext) => new(Task, this, _creationStack, continueOnCapturedContext);
     /// <summary>
     /// Gets an awaitable object that allows for configured awaits on the wrapped <see cref="System.Threading.Tasks.Task"/>.
     /// </summary>
     /// <param name="options">Options for configuring the await.</param>
     /// <returns>An awaitable object.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ConfiguredExtendedDebugTaskAwaitable ConfigureAwait(ConfigureAwaitOptions options) => new(Task, this, _creationStack, options);
     /// <summary>
     /// Gets an awaiter for this task.
     /// </summary>
     /// <returns>The awaiter.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ExtendedDebugTaskAwaiter GetAwaiter() => new(Task.GetAwaiter(), this, _creationStack);
 }
 
@@ -573,7 +584,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
 
 #region ExtendedDebugTaskExceptions
 /// <summary>
-/// The exception that is thrown as a proxy to the original exception thrown by a <see cref="Task"/> that is wrapped by an <see cref="ExtendedDebugTask"/>.
+/// The exception that is thrown as a proxy to the original exception thrown by a <see cref="System.Threading.Tasks.Task"/> that is wrapped by an <see cref="ExtendedDebugTask"/>.
 /// </summary>
 public class ExtendedDebugTaskException : Exception
 {
@@ -588,13 +599,13 @@ public class ExtendedDebugTaskException : Exception
     /// <summary>
     /// Gets the <see cref="ExtendedDebugTask"/> that threw the exception.
     /// </summary>
-    public ExtendedDebugTask ExtendedDebugTask { get; }
+    public ExtendedDebugTask Task { get; }
 
     internal ExtendedDebugTaskException(string message, Exception innerException, StackTrace creationStack, StackTrace awaitStack, ExtendedDebugTask throwingEdt) : base(message, innerException)
     {
         CreationStack = creationStack;
         AwaitStack = awaitStack;
-        ExtendedDebugTask = throwingEdt;
+        Task = throwingEdt;
     }
 }
 
@@ -604,23 +615,23 @@ public class ExtendedDebugTaskException : Exception
 public class ExtendedDebugTaskException<TResult> : Exception
 {
     /// <summary>
-    /// Gets a <see cref="StackTrace"/> that represents the call stack at the point where the <see cref="ExtendedDebugTask"/> was created.
+    /// Gets a <see cref="StackTrace"/> that represents the call stack at the point where the <see cref="ExtendedDebugTask{TResult}"/> was created.
     /// </summary>
     public StackTrace CreationStack { get; }
     /// <summary>
-    /// Gets a <see cref="StackTrace"/> that represents the call stack at the point where the <see cref="ExtendedDebugTask"/> was awaited (or <c>.GetResult()</c> was called on an awaiter for it).
+    /// Gets a <see cref="StackTrace"/> that represents the call stack at the point where the <see cref="ExtendedDebugTask{TResult}"/> was awaited (or <c>.GetResult()</c> was called on an awaiter for it).
     /// </summary>
     public StackTrace AwaitStack { get; }
     /// <summary>
-    /// Gets the <see cref="ExtendedDebugTask"/> that threw the exception.
+    /// Gets the <see cref="ExtendedDebugTask{TResult}"/> that threw the exception.
     /// </summary>
-    public ExtendedDebugTask<TResult> ExtendedDebugTask { get; }
+    public ExtendedDebugTask<TResult> Task { get; }
 
     internal ExtendedDebugTaskException(string message, Exception innerException, StackTrace creationStack, StackTrace awaitStack, ExtendedDebugTask<TResult> throwingEdt) : base(message, innerException)
     {
         CreationStack = creationStack;
         AwaitStack = awaitStack;
-        ExtendedDebugTask = throwingEdt;
+        Task = throwingEdt;
     }
 }
 #endregion

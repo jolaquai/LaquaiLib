@@ -9,7 +9,7 @@ public class InlineMethodsCalledOnceAnalyzer : DiagnosticAnalyzer
         id: "LAQ0004",
         title: "Inline methods called only once",
         messageFormat: "Inline to methods called only once to improve performance",
-        description: "Methods called only once are usually not worth the method call overhead, no matter their size, so they should be inlined.",
+        description: "Methods called only once are not worth the method call overhead, so they should be inlined.",
         category: AnalyzerCategories.Performance,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true

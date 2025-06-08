@@ -7,10 +7,9 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class RegexExtensions
 {
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref Regex _regex(this Match _);
     extension(Match match)
     {
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] private extern ref Regex _regex();
-
         /// <summary>
         /// Retrieves the <see cref="Regex"/> instance that was used to create this <see cref="Match"/>.
         /// </summary>
@@ -23,10 +22,9 @@ public static class RegexExtensions
         }
     }
 
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "<Text>k__BackingField")] private static extern ref string get_Text(this Capture _);
     extension(Capture capture)
     {
-        [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "<Text>k__BackingField")] private extern ref string get_Text();
-
         /// <summary>
         /// Retrieves the original <see cref="string"/> that was matched by a <see cref="Regex"/> instance to produce this <paramref name="capture"/>.
         /// </summary>

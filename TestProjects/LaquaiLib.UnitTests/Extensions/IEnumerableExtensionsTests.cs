@@ -10,7 +10,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new[] { 1, 2, 3 };
 
-        var result = source.TryGetSpan(out var span);
+        var result = source.TryGetReadOnlySpan(out var span);
 
         Assert.True(result);
         Assert.Equal(3, span.Length);
@@ -24,7 +24,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new List<int> { 1, 2, 3 };
 
-        var result = source.TryGetSpan(out var span);
+        var result = source.TryGetReadOnlySpan(out var span);
 
         Assert.True(result);
         Assert.Equal(3, span.Length);
@@ -38,7 +38,7 @@ public class IEnumerableExtensionsTests
     {
         IEnumerable<int> source = new HashSet<int> { 1, 2, 3 };
 
-        var result = source.TryGetSpan(out var span);
+        var result = source.TryGetReadOnlySpan(out var span);
 
         Assert.False(result);
         Assert.Equal(0, span.Length);

@@ -1,6 +1,12 @@
 ﻿// THIS FILE IS CURRENTLY NOT INCLUDED FOR COMPILATION.
 
+using System.Diagnostics.Tracing;
+
+using LaquaiLib.Collections.Enumeration;
+
 namespace LaquaiLib.Extensions;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 public partial class MemoryExtensions
 {
@@ -78,191 +84,173 @@ public partial class MemoryExtensions
         }
         #endregion
 
-        #region Append
-        /// <inheritdoc cref="Enumerable.Append{TSource}(IEnumerable{TSource}, TSource)" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Append(TSource element)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Prepend
-        /// <inheritdoc cref="Enumerable.Prepend{TSource}(IEnumerable{TSource}, TSource)" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Prepend(TSource element)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
         #region Average
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, int})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Average(Func<TSource, int> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                return 0;
             }
+            double sum = Sum(source, selector);
+            return sum / source.Length;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, long})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Average(Func<TSource, long> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                return 0;
             }
+            double sum = Sum(source, selector);
+            return sum / source.Length;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, float})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Average(Func<TSource, float> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                return 0;
             }
+            var sum = Sum(source, selector);
+            return sum / source.Length;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, double})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Average(Func<TSource, double> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                return 0;
             }
+            var sum = Sum(source, selector);
+            return sum / source.Length;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, decimal})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal Average(Func<TSource, decimal> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                return 0;
             }
+            var sum = Sum(source, selector);
+            return sum / source.Length;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double? Average(Func<TSource, int?> selector)
         {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            double? sum = Sum(source, selector);
+            return sum.HasValue ? sum.Value / source.Length : null;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double? Average(Func<TSource, long?> selector)
         {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            double? sum = Sum(source, selector);
+            return sum.HasValue ? sum.Value / source.Length : null;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float? Average(Func<TSource, float?> selector)
         {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            var sum = Sum(source, selector);
+            return sum.HasValue ? sum.Value / source.Length : null;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double? Average(Func<TSource, double?> selector)
         {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            var sum = Sum(source, selector);
+            return sum.HasValue ? sum.Value / source.Length : null;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal? Average(Func<TSource, decimal?> selector)
         {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            var sum = Sum(source, selector);
+            return sum.HasValue ? sum.Value / source.Length : null;
         }
         #endregion
 
         #region Cast
-        /// <inheritdoc cref="Enumerable.Cast{TResult}(Collections.IEnumerable)" />
+        /// <inheritdoc cref="Enumerable.Cast{TResult}(IEnumerable)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Cast()
+        public TResult[] Cast<TResult>()
         {
+            var canDowncast = typeof(TResult).IsAssignableTo(typeof(TSource));
+            if (!canDowncast && !typeof(TSource).IsAssignableTo(typeof(TResult)))
+            {
+                // Neither cast direction is possible
+                throw new InvalidCastException($"Cannot cast {typeof(TSource)} to {typeof(TResult)}.");
+            }
+
+            var destination = new TResult[source.Length];
+            Cast(source, destination);
+            return destination;
+        }
+        /// <inheritdoc cref="Enumerable.Cast{TResult}(IEnumerable)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Cast<TResult>(Span<TResult> destination)
+        {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            if (!typeof(TSource).IsAssignableTo(typeof(TResult)))
+            {
+                // Neither cast direction is possible
+                throw new InvalidCastException($"Cannot cast {typeof(TSource)} to {typeof(TResult)}.");
+            }
+
             for (var i = 0; i < source.Length; i++)
             {
+                destination[i] = (TResult)(object)source[i];
             }
+            return source.Length;
         }
         #endregion
 
         #region Chunk
         /// <inheritdoc cref="Enumerable.Chunk{TSource}(IEnumerable{TSource}, int)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource[]> Chunk(int size)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Concat
-        /// <inheritdoc cref="Enumerable.Concat{TSource}(IEnumerable{TSource}, IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Concat(IEnumerable<TSource> second)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public SpanChunkEnumerable<TSource> Chunk(int size) => new SpanChunkEnumerable<TSource>(source, size);
         #endregion
 
         #region Contains
         /// <inheritdoc cref="Enumerable.Contains{TSource}(IEnumerable{TSource}, TSource)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(TSource value)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public bool Contains(TSource value) => source.IndexOf(value) > -1;
 
         /// <inheritdoc cref="Enumerable.Contains{TSource}(IEnumerable{TSource}, TSource, IEqualityComparer{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(TSource value, IEqualityComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public bool Contains(TSource value, IEqualityComparer<TSource> comparer) => source.IndexOf(value, comparer) > -1;
         #endregion
 
         #region AggregateBy
         /// <inheritdoc cref="Enumerable.AggregateBy{TSource, TKey, TAccumulate}(IEnumerable{TSource}, Func{TSource, TKey}, TAccumulate, Func{TAccumulate, TSource, TAccumulate}, IEqualityComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<KeyValuePair<TKey, TAccumulate>> AggregateBy<TKey, TAccumulate>(Func<TSource, TKey> keySelector, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> func, IEqualityComparer<TKey> keyComparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+            => GroupBy(source, keySelector, keyComparer).Select(g => KeyValuePair.Create(g.Key, g.Aggregate(seed, func)));
 
         /// <inheritdoc cref="Enumerable.AggregateBy{TSource, TKey, TAccumulate}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TKey, TAccumulate}, Func{TAccumulate, TSource, TAccumulate}, IEqualityComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<KeyValuePair<TKey, TAccumulate>> AggregateBy<TKey, TAccumulate>(Func<TSource, TKey> keySelector, Func<TKey, TAccumulate> seedSelector, Func<TAccumulate, TSource, TAccumulate> func, IEqualityComparer<TKey> keyComparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+            => GroupBy(source, keySelector, keyComparer).Select(g => KeyValuePair.Create(g.Key, g.Aggregate(seedSelector(g.Key), func)));
         #endregion
 
         #region CountBy
@@ -270,9 +258,13 @@ public partial class MemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<KeyValuePair<TKey, int>> CountBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> keyComparer)
         {
+            var dict = new Dictionary<TKey, int>(keyComparer);
             for (var i = 0; i < source.Length; i++)
             {
+                var key = keySelector(source[i]);
+                dict.AddOrUpdate(key, 1, (k, v) => v + 1);
             }
+            return dict;
         }
         #endregion
 
@@ -306,21 +298,11 @@ public partial class MemoryExtensions
         #region LongCount
         /// <inheritdoc cref="Enumerable.LongCount{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long LongCount()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public long LongCount() => source.Length;
 
         /// <inheritdoc cref="Enumerable.LongCount{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long LongCount(Func<TSource, bool> predicate)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public long LongCount(Func<TSource, bool> predicate) => Count(source, predicate);
         #endregion
 
         #region DefaultIfEmpty
@@ -328,41 +310,102 @@ public partial class MemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TSource> DefaultIfEmpty()
         {
-            for (var i = 0; i < source.Length; i++)
+            return source.Length == 0 ? [default] : DefaultIfEmptyIterator(source);
+
+            static IEnumerable<TSource> DefaultIfEmptyIterator(ReadOnlySpan<TSource> source)
             {
+                for (var i = 0; i < source.Length; i++)
+                {
+                    yield return source[i];
+                }
             }
         }
-
-        /// <inheritdoc cref="Enumerable.DefaultIfEmpty{TSource}(IEnumerable{TSource}, TSource)" />
+        /// <summary>
+        /// Leaves the specified <paramref name="destination"/> <see cref="Span{T}"/> unchanged if the source <see cref="ReadOnlySpan{T}"/> is not empty; otherwise, the first element of the destination span is set to the <see langword="default"/> value of <typeparamref name="TSource"/>.
+        /// </summary>
+        /// <param name="destination">The destination span to potentially receive the <see langword="default"/> value.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the destination span is too short to hold the <see langword="default"/> value.</exception>
+        /// <returns>The number of elements written to in <paramref name="destination"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> DefaultIfEmpty(TSource defaultValue)
+        public int DefaultIfEmpty(Span<TSource> destination)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                if (destination.Length == 0)
+                {
+                    throw new ArgumentException("Destination span is too short.", nameof(destination));
+                }
+                destination[0] = default;
+                return 1;
             }
+            return 0;
+        }
+
+        /// <summary>
+        /// Assigns the <see langword="default"/> value of <typeparamref name="TSource"/> to the <paramref name="defaultValue"/> parameter if the source <see cref="ReadOnlySpan{T}"/> is empty; otherwise, leaves <paramref name="defaultValue"/> unchanged.
+        /// </summary>
+        /// <param name="defaultValue">The variable to potentially receive the <see langword="default"/> value.</param>
+        /// <returns><see langword="true"/> if the source <see cref="ReadOnlySpan{T}"/> is not empty (that is, <paramref name="defaultValue"/> was not modified by the call to this method); otherwise, <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool DefaultIfEmpty(ref TSource defaultValue)
+        {
+            if (source.Length == 0)
+            {
+                defaultValue = default;
+                return false;
+            }
+            return true;
         }
         #endregion
 
         #region Distinct
+        // Unfortunately, this is basically what Enumerable.Distinct does, except that THAT method remains lazy, BUT since we 
         /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Distinct()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public IEnumerable<TSource> Distinct() => Distinct(source, null);
 
         /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TSource> Distinct(IEqualityComparer<TSource> comparer)
         {
+        }
+
+        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Distinct(Span<TSource> destination)
+        {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            var destIndex = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (destIndex == 0 || source[..destIndex].IndexOf(source[i]) == -1)
+                {
+                    destination[destIndex++] = source[i];
+                }
+            }
+            return destIndex;
+        }
+
+        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Distinct(IEqualityComparer<TSource> comparer, Span<TSource> destination)
+        {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
             for (var i = 0; i < source.Length; i++)
             {
             }
         }
         #endregion
 
+#warning TODO
         #region DistinctBy
         /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -381,119 +424,64 @@ public partial class MemoryExtensions
             {
             }
         }
+
+        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int DistinctBy<TKey>(Func<TSource, TKey> keySelector, Span<TSource> destination)
+        {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            for (var i = 0; i < source.Length; i++)
+            {
+            }
+        }
+
+        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int DistinctBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, Span<TSource> destination)
+        {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            for (var i = 0; i < source.Length; i++)
+            {
+            }
+        }
         #endregion
 
         #region ElementAt
         /// <inheritdoc cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, int)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource ElementAt(int index)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource ElementAt(int index) => source[index];
 
         /// <inheritdoc cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, Index)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource ElementAt(Index index)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource ElementAt(Index index) => source[index];
         #endregion
 
         #region ElementAtOrDefault
         /// <inheritdoc cref="Enumerable.ElementAtOrDefault{TSource}(IEnumerable{TSource}, int)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource ElementAtOrDefault(int index)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource ElementAtOrDefault(int index) => index >= 0 && index < source.Length ? source[index] : default;
 
         /// <inheritdoc cref="Enumerable.ElementAtOrDefault{TSource}(IEnumerable{TSource}, Index)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource ElementAtOrDefault(Index index)
         {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region AsEnumerable
-        /// <inheritdoc cref="Enumerable.AsEnumerable{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> AsEnumerable()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Empty
-        /// <inheritdoc cref="Enumerable.Empty{TResult}()" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Empty()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Except
-        /// <inheritdoc cref="Enumerable.Except{TSource}(IEnumerable{TSource}, IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Except(IEnumerable<TSource> second)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Except{TSource}(IEnumerable{TSource}, IEnumerable{TSource}, IEqualityComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Except(IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region ExceptBy
-        /// <inheritdoc cref="Enumerable.ExceptBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TKey}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> ExceptBy<TKey>(IEnumerable<TKey> second, Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ExceptBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TKey}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> ExceptBy<TKey>(IEnumerable<TKey> second, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            var offset = index.GetOffset(source.Length);
+            return offset < 0 || offset >= source.Length ? default : source[offset];
         }
         #endregion
 
         #region First
         /// <inheritdoc cref="Enumerable.First{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource First()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource First() => source[0];
 
         /// <inheritdoc cref="Enumerable.First{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -501,28 +489,23 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                if (predicate(source[i]))
+                {
+                    return source[i];
+                }
             }
+            throw new InvalidOperationException("Span does not contain any elements that match the predicate.");
         }
         #endregion
 
         #region FirstOrDefault
         /// <inheritdoc cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource FirstOrDefault()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource FirstOrDefault() => source.Length > 0 ? source[0] : default;
 
         /// <inheritdoc cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, TSource)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource FirstOrDefault(TSource defaultValue)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource FirstOrDefault(TSource defaultValue) => source.Length > 0 ? source[0] : defaultValue;
 
         /// <inheritdoc cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -530,7 +513,12 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                if (predicate(source[i]))
+                {
+                    return source[i];
+                }
             }
+            return default;
         }
 
         /// <inheritdoc cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool}, TSource)" />
@@ -539,53 +527,40 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                if (predicate(source[i]))
+                {
+                    return source[i];
+                }
             }
+            return defaultValue;
         }
         #endregion
 
         #region GroupBy
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<IGrouping<TKey, TSource>> GroupBy<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public IEnumerable<IGrouping<TKey, TSource>> GroupBy<TKey>(Func<TSource, TKey> keySelector) => ToLookup(source, keySelector);
 
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<IGrouping<TKey, TSource>> GroupBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public IEnumerable<IGrouping<TKey, TSource>> GroupBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer) => ToLookup(source, keySelector, comparer);
 
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<IGrouping<TKey, TElement>> GroupBy<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public IEnumerable<IGrouping<TKey, TElement>> GroupBy<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector) => GroupBy(source, keySelector, elementSelector);
 
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, IEqualityComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<IGrouping<TKey, TElement>> GroupBy<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public IEnumerable<IGrouping<TKey, TElement>> GroupBy<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer) => GroupBy(source, keySelector, elementSelector, comparer);
 
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey, TResult}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TKey, IEnumerable{TSource}, TResult})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TResult>(Func<TSource, TKey> keySelector, Func<TKey, IEnumerable<TSource>, TResult> resultSelector)
         {
-            for (var i = 0; i < source.Length; i++)
+            var lookup = ToLookup(source, keySelector);
+            foreach (var group in lookup)
             {
+                yield return resultSelector(group.Key, group);
             }
         }
 
@@ -593,8 +568,10 @@ public partial class MemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TResult>(Func<TSource, TKey> keySelector, Func<TKey, IEnumerable<TSource>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
         {
-            for (var i = 0; i < source.Length; i++)
+            var lookup = ToLookup(source, keySelector, comparer);
+            foreach (var group in lookup)
             {
+                yield return resultSelector(group.Key, group);
             }
         }
 
@@ -602,8 +579,10 @@ public partial class MemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TElement, TResult>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector)
         {
-            for (var i = 0; i < source.Length; i++)
+            var lookup = ToLookup(source, keySelector, elementSelector);
+            foreach (var group in lookup)
             {
+                yield return resultSelector(group.Key, group);
             }
         }
 
@@ -611,99 +590,10 @@ public partial class MemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TElement, TResult>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
         {
-            for (var i = 0; i < source.Length; i++)
+            var lookup = ToLookup(source, keySelector, elementSelector, comparer);
+            foreach (var group in lookup)
             {
-            }
-        }
-        #endregion
-
-        #region GroupJoin
-        /// <inheritdoc cref="Enumerable.GroupJoin{TOuter, TInner, TKey, TResult}(IEnumerable{TOuter}, IEnumerable{TInner}, Func{TOuter, TKey}, Func{TInner, TKey}, Func{TOuter, IEnumerable{TInner}, TResult})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> GroupJoin<TInner, TKey, TResult>(IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.GroupJoin{TOuter, TInner, TKey, TResult}(IEnumerable{TOuter}, IEnumerable{TInner}, Func{TOuter, TKey}, Func{TInner, TKey}, Func{TOuter, IEnumerable{TInner}, TResult}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> GroupJoin<TInner, TKey, TResult>(IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Index
-        /// <inheritdoc cref="Enumerable.Index{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<ValueTuple<int, TSource>> Index()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Intersect
-        /// <inheritdoc cref="Enumerable.Intersect{TSource}(IEnumerable{TSource}, IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Intersect(IEnumerable<TSource> second)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Intersect{TSource}(IEnumerable{TSource}, IEnumerable{TSource}, IEqualityComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Intersect(IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region IntersectBy
-        /// <inheritdoc cref="Enumerable.IntersectBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TKey}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> IntersectBy<TKey>(IEnumerable<TKey> second, Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.IntersectBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TKey}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> IntersectBy<TKey>(IEnumerable<TKey> second, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Join
-        /// <inheritdoc cref="Enumerable.Join{TOuter, TInner, TKey, TResult}(IEnumerable{TOuter}, IEnumerable{TInner}, Func{TOuter, TKey}, Func{TInner, TKey}, Func{TOuter, TInner, TResult})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Join<TInner, TKey, TResult>(IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Join{TOuter, TInner, TKey, TResult}(IEnumerable{TOuter}, IEnumerable{TInner}, Func{TOuter, TKey}, Func{TInner, TKey}, Func{TOuter, TInner, TResult}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Join<TInner, TKey, TResult>(IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
+                yield return resultSelector(group.Key, group);
             }
         }
         #endregion
@@ -711,505 +601,563 @@ public partial class MemoryExtensions
         #region Last
         /// <inheritdoc cref="Enumerable.Last{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource Last()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource Last() => source[^1];
 
         /// <inheritdoc cref="Enumerable.Last{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource Last(Func<TSource, bool> predicate)
         {
-            for (var i = 0; i < source.Length; i++)
+            for (var i = source.Length - 1; i >= 0; i--)
             {
+                if (predicate(source[i]))
+                {
+                    return source[i];
+                }
             }
+            throw new InvalidOperationException("Span does not contain any elements that match the predicate.");
         }
         #endregion
 
         #region LastOrDefault
         /// <inheritdoc cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource LastOrDefault()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource LastOrDefault() => source.Length > 0 ? source[^1] : default;
 
         /// <inheritdoc cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, TSource)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource LastOrDefault(TSource defaultValue)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource LastOrDefault(TSource defaultValue) => source.Length > 0 ? source[^1] : defaultValue;
 
         /// <inheritdoc cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource LastOrDefault(Func<TSource, bool> predicate)
         {
-            for (var i = 0; i < source.Length; i++)
+            for (var i = source.Length - 1; i >= 0; i--)
             {
+                if (predicate(source[i]))
+                {
+                    return source[i];
+                }
             }
+            return default;
         }
 
         /// <inheritdoc cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool}, TSource)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource LastOrDefault(Func<TSource, bool> predicate, TSource defaultValue)
         {
-            for (var i = 0; i < source.Length; i++)
+            for (var i = source.Length - 1; i >= 0; i--)
             {
+                if (predicate(source[i]))
+                {
+                    return source[i];
+                }
             }
-        }
-        #endregion
-
-        #region ToLookup
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ILookup<TKey, TSource> ToLookup<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ILookup<TKey, TSource> ToLookup<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ILookup<TKey, TElement> ToLookup<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ILookup<TKey, TElement> ToLookup<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            return defaultValue;
         }
         #endregion
 
         #region Max
-        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource Max()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, IComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource Max(IComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
 
         /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, int})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Max(Func<TSource, int> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int? Max(Func<TSource, int?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value > max)
+                {
+                    max = value;
+                }
             }
+            return max;
         }
 
         /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, long})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long Max(Func<TSource, long> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long? Max(Func<TSource, long?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value > max)
+                {
+                    max = value;
+                }
             }
+            return max;
         }
 
         /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, float})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Max(Func<TSource, float> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float? Max(Func<TSource, float?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value > max)
+                {
+                    max = value;
+                }
             }
+            return max;
         }
 
         /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, double})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Max(Func<TSource, double> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double? Max(Func<TSource, double?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value > max)
+                {
+                    max = value;
+                }
             }
+            return max;
         }
 
         /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, decimal})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal Max(Func<TSource, decimal> selector)
         {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value > max)
+                {
+                    max = value;
+                }
+            }
+            return max;
+        }
+
+        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int? Max(Func<TSource, int?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var max = selector(source[0]);
             for (var i = 0; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value.HasValue && (!max.HasValue || value.Value > max.Value))
+                {
+                    max = value;
+                }
             }
+            return max;
+        }
+
+        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long? Max(Func<TSource, long?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!max.HasValue || value.Value > max.Value))
+                {
+                    max = value;
+                }
+            }
+            return max;
+        }
+
+        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float? Max(Func<TSource, float?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!max.HasValue || value.Value > max.Value))
+                {
+                    max = value;
+                }
+            }
+            return max;
+        }
+
+        /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double? Max(Func<TSource, double?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!max.HasValue || value.Value > max.Value))
+                {
+                    max = value;
+                }
+            }
+            return max;
         }
 
         /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal? Max(Func<TSource, decimal?> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
+            var max = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!max.HasValue || value.Value > max.Value))
+                {
+                    max = value;
+                }
+            }
+            return max;
         }
 
         /// <inheritdoc cref="Enumerable.Max{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TResult Max<TResult>(Func<TSource, TResult> selector)
+        public TResult Max<TResult>(Func<TSource, TResult> selector, IComparer<TResult> comparer = null)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
+            var max = selector(source[0]);
+            comparer ??= Comparer<TResult>.Default;
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (comparer.Compare(value, max) > 0)
+                {
+                    max = value;
+                }
+            }
+            return max;
         }
         #endregion
 
         #region MaxBy
         /// <inheritdoc cref="Enumerable.MaxBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource MaxBy<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource MaxBy<TKey>(Func<TSource, TKey> keySelector) => MaxBy(source, keySelector, Comparer<TKey>.Default);
 
         /// <inheritdoc cref="Enumerable.MaxBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource MaxBy<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
+            var maxItem = source[0];
+            var maxKey = keySelector(maxItem);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var item = source[i];
+                var key = keySelector(item);
+                if (comparer.Compare(key, maxKey) > 0)
+                {
+                    maxItem = item;
+                    maxKey = key;
+                }
+            }
+            return maxItem;
         }
         #endregion
 
         #region Min
-        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource Min()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, IComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource Min(IComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
         /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, int})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Min(Func<TSource, int> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int? Min(Func<TSource, int?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value < min)
+                {
+                    min = value;
+                }
             }
+            return min;
         }
 
         /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, long})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long Min(Func<TSource, long> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long? Min(Func<TSource, long?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value < min)
+                {
+                    min = value;
+                }
             }
+            return min;
         }
 
         /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, float})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Min(Func<TSource, float> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float? Min(Func<TSource, float?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value < min)
+                {
+                    min = value;
+                }
             }
+            return min;
         }
 
         /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, double})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Min(Func<TSource, double> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-
-        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double? Min(Func<TSource, double?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
             {
+                var value = selector(source[i]);
+                if (value < min)
+                {
+                    min = value;
+                }
             }
+            return min;
         }
 
         /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, decimal})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal Min(Func<TSource, decimal> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value < min)
+                {
+                    min = value;
+                }
+            }
+            return min;
+        }
+
+        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int? Min(Func<TSource, int?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!min.HasValue || value.Value < min.Value))
+                {
+                    min = value;
+                }
+            }
+            return min;
+        }
+
+        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long? Min(Func<TSource, long?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!min.HasValue || value.Value < min.Value))
+                {
+                    min = value;
+                }
+            }
+            return min;
+        }
+
+        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float? Min(Func<TSource, float?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!min.HasValue || value.Value < min.Value))
+                {
+                    min = value;
+                }
+            }
+            return min;
+        }
+
+        /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double? Min(Func<TSource, double?> selector)
+        {
+            if (source.Length == 0)
+            {
+                throw new InvalidOperationException("Span is empty.");
+            }
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!min.HasValue || value.Value < min.Value))
+                {
+                    min = value;
+                }
+            }
+            return min;
         }
 
         /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal? Min(Func<TSource, decimal?> selector)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
+            var min = selector(source[0]);
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue && (!min.HasValue || value.Value < min.Value))
+                {
+                    min = value;
+                }
+            }
+            return min;
         }
 
         /// <inheritdoc cref="Enumerable.Min{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TResult Min<TResult>(Func<TSource, TResult> selector)
+        public TResult Min<TResult>(Func<TSource, TResult> selector, IComparer<TResult> comparer = null)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
+            var min = selector(source[0]);
+            comparer ??= Comparer<TResult>.Default;
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (comparer.Compare(value, min) < 0)
+                {
+                    min = value;
+                }
+            }
+            return min;
         }
         #endregion
 
         #region MinBy
         /// <inheritdoc cref="Enumerable.MinBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource MinBy<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource MinBy<TKey>(Func<TSource, TKey> keySelector) => MinBy(source, keySelector, Comparer<TKey>.Default);
 
         /// <inheritdoc cref="Enumerable.MinBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource MinBy<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
         {
-            for (var i = 0; i < source.Length; i++)
+            if (source.Length == 0)
             {
+                throw new InvalidOperationException("Span is empty.");
             }
-        }
-        #endregion
-
-        #region OfType
-        /// <inheritdoc cref="Enumerable.OfType{TResult}(Collections.IEnumerable)" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> OfType()
-        {
-            for (var i = 0; i < source.Length; i++)
+            var minItem = source[0];
+            var minKey = keySelector(minItem);
+            for (var i = 1; i < source.Length; i++)
             {
+                var item = source[i];
+                var key = keySelector(item);
+                if (comparer.Compare(key, minKey) < 0)
+                {
+                    minItem = item;
+                    minKey = key;
+                }
             }
-        }
-        #endregion
-
-        #region Order
-        /// <inheritdoc cref="Enumerable.Order{T}(IEnumerable{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<T> Order()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Order{T}(IEnumerable{T}, IComparer{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<T> Order(IComparer<T> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region OrderBy
-        /// <inheritdoc cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> OrderBy<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> OrderBy<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region OrderDescending
-        /// <inheritdoc cref="Enumerable.OrderDescending{T}(IEnumerable{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<T> OrderDescending()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.OrderDescending{T}(IEnumerable{T}, IComparer{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<T> OrderDescending(IComparer<T> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region OrderByDescending
-        /// <inheritdoc cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> OrderByDescending<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> OrderByDescending<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region ThenBy
-        /// <inheritdoc cref="Enumerable.ThenBy{TSource, TKey}(IOrderedEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> ThenBy<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ThenBy{TSource, TKey}(IOrderedEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> ThenBy<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region ThenByDescending
-        /// <inheritdoc cref="Enumerable.ThenByDescending{TSource, TKey}(IOrderedEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> ThenByDescending<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ThenByDescending{TSource, TKey}(IOrderedEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IOrderedEnumerable<TSource> ThenByDescending<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
+            return minItem;
         }
         #endregion
 
@@ -1220,6 +1168,7 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                yield return selector(source[i]);
             }
         }
 
@@ -1229,7 +1178,53 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                yield return selector(source[i], i);
             }
+        }
+
+        // These are safe to invoke when source and destination point to the same location
+        /// <summary>
+        /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into a new form and stores the results in a specified destination <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the elements in the result sequence.</typeparam>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns a transformed element.</param>
+        /// <param name="destination">A <see cref="Span{T}"/> to store the results of the projection.</param>
+        /// <exception cref="ArgumentException">Thrown when the destination span is not large enough to hold the projected elements.</exception>
+        /// <returns>The number of elements written to in <paramref name="destination"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Select<TResult>(Func<TSource, TResult> selector, Span<TResult> destination)
+        {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+            for (var i = 0; i < source.Length; i++)
+            {
+                destination[i] = selector(source[i]);
+            }
+            return source.Length;
+        }
+
+        /// <summary>
+        /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into a new form while incorporating the element's index and stores the results in a specified destination <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the elements in the result sequence.</typeparam>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and its index in the source <see cref="ReadOnlySpan{T}"/> and returns a transformed element.</param>
+        /// <param name="destination">A <see cref="Span{T}"/> to store the results of the projection.</param>
+        /// <exception cref="ArgumentException">Thrown when the destination span is not large enough to hold the projected elements.</exception>
+        /// <returns>The number of elements written to in <paramref name="destination"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Select<TResult>(Func<TSource, int, TResult> selector, Span<TResult> destination)
+        {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+            for (var i = 0; i < source.Length; i++)
+            {
+                destination[i] = selector(source[i], i);
+            }
+            return source.Length;
         }
         #endregion
 
@@ -1240,6 +1235,10 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                foreach (var item in selector(source[i]))
+                {
+                    yield return item;
+                }
             }
         }
 
@@ -1249,6 +1248,10 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                foreach (var item in selector(source[i], i))
+                {
+                    yield return item;
+                }
             }
         }
 
@@ -1258,6 +1261,11 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
+                var collection = collectionSelector(source[i], i);
+                foreach (var item in collection)
+                {
+                    yield return resultSelector(source[i], item);
+                }
             }
         }
 
@@ -1267,81 +1275,893 @@ public partial class MemoryExtensions
         {
             for (var i = 0; i < source.Length; i++)
             {
-            }
-        }
-        #endregion
-
-        #region SequenceEqual
-        /// <inheritdoc cref="Enumerable.SequenceEqual{TSource}(IEnumerable{TSource}, IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SequenceEqual(IEnumerable<TSource> second)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
+                var collection = collectionSelector(source[i]);
+                foreach (var item in collection)
+                {
+                    yield return resultSelector(source[i], item);
+                }
             }
         }
 
-        /// <inheritdoc cref="Enumerable.SequenceEqual{TSource}(IEnumerable{TSource}, IEnumerable{TSource}, IEqualityComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool SequenceEqual(IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        // SelectMany has no overload with a destination since we have no idea how many elements will be produced
+        // As such, we cannot guarantee that the destination span is large enough to hold all results without allocating or doing multiple enumerations
         #endregion
 
         #region Single
         /// <inheritdoc cref="Enumerable.Single{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource Single()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource Single() => source.Length != 1 ? throw new InvalidOperationException("Span does not contain exactly one element.") : source[0];
 
         /// <inheritdoc cref="Enumerable.Single{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource Single(Func<TSource, bool> predicate)
         {
+            TSource result = default;
+            var found = false;
             for (var i = 0; i < source.Length; i++)
             {
+                if (predicate(source[i]))
+                {
+                    if (found)
+                    {
+                        throw new InvalidOperationException("Span contains more than one element that matches the predicate.");
+                    }
+                    result = source[i];
+                    found = true;
+                }
             }
+            return !found ? throw new InvalidOperationException("Span does not contain any elements that match the predicate.") : result;
         }
         #endregion
 
         #region SingleOrDefault
         /// <inheritdoc cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource SingleOrDefault()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public TSource SingleOrDefault() => SingleOrDefault(source, default(TSource));
 
         /// <inheritdoc cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, TSource)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TSource SingleOrDefault(TSource defaultValue)
         {
-            for (var i = 0; i < source.Length; i++)
+            return source.Length switch
             {
-            }
+                0 => defaultValue,
+                > 1 => throw new InvalidOperationException("Span contains more than one element."),
+                _ => source[0]
+            };
         }
 
         /// <inheritdoc cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource SingleOrDefault(Func<TSource, bool> predicate)
+        public TSource SingleOrDefault(Func<TSource, bool> predicate) => SingleOrDefault(source, predicate, default);
+
+        /// <inheritdoc cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool}, TSource)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TSource SingleOrDefault(Func<TSource, bool> predicate, TSource defaultValue)
+        {
+            var result = defaultValue;
+            var found = false;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i]))
+                {
+                    if (found)
+                    {
+                        throw new InvalidOperationException("Span contains more than one element that matches the predicate.");
+                    }
+                    result = source[i];
+                    found = true;
+                }
+            }
+            return found ? result : defaultValue;
+        }
+        #endregion
+
+        #region Skip
+        /// <inheritdoc cref="Enumerable.Skip{TSource}(IEnumerable{TSource}, int)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> Skip(int count) => source[count..];
+        #endregion
+
+        #region SkipWhile
+        /// <inheritdoc cref="Enumerable.SkipWhile{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> SkipWhile(Func<TSource, bool> predicate)
+        {
+            var newStart = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (!predicate(source[i]))
+                {
+                    newStart = i;
+                    break;
+                }
+            }
+            return source[newStart..];
+        }
+
+        /// <inheritdoc cref="Enumerable.SkipWhile{TSource}(IEnumerable{TSource}, Func{TSource, int, bool})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> SkipWhile(Func<TSource, int, bool> predicate)
+        {
+            var newStart = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (!predicate(source[i], i))
+                {
+                    newStart = i;
+                    break;
+                }
+            }
+            return source[newStart..];
+        }
+        #endregion
+
+        #region SkipLast
+        /// <inheritdoc cref="Enumerable.SkipLast{TSource}(IEnumerable{TSource}, int)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> SkipLast(int count) => source[..^count];
+        #endregion
+
+        #region Sum
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Sum(Func<TSource, int> selector)
+        {
+            var buf = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                buf += selector(source[i]);
+            }
+            return buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long Sum(Func<TSource, long> selector)
+        {
+            var buf = 0L;
+            for (var i = 0; i < source.Length; i++)
+            {
+                buf += selector(source[i]);
+            }
+            return buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float Sum(Func<TSource, float> selector)
+        {
+            var buf = 0f;
+            for (var i = 0; i < source.Length; i++)
+            {
+                buf += selector(source[i]);
+            }
+            return buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double Sum(Func<TSource, double> selector)
+        {
+            var buf = 0d;
+            for (var i = 0; i < source.Length; i++)
+            {
+                buf += selector(source[i]);
+            }
+            return buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public decimal Sum(Func<TSource, decimal> selector)
+        {
+            var buf = 0m;
+            for (var i = 0; i < source.Length; i++)
+            {
+                buf += selector(source[i]);
+            }
+            return buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int? Sum(Func<TSource, int?> selector)
+        {
+            int? buf = 0;
+            var allNull = true;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    allNull = false;
+                    buf += value.Value;
+                }
+            }
+            return allNull ? null : buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long? Sum(Func<TSource, long?> selector)
+        {
+            long? buf = 0L;
+            var allNull = true;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    allNull = false;
+                    buf += value.Value;
+                }
+            }
+            return allNull ? null : buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float? Sum(Func<TSource, float?> selector)
+        {
+            float? buf = 0f;
+            var allNull = true;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    allNull = false;
+                    buf += value.Value;
+                }
+            }
+            return allNull ? null : buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double? Sum(Func<TSource, double?> selector)
+        {
+            double? buf = 0d;
+            var allNull = true;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    allNull = false;
+                    buf += value.Value;
+                }
+            }
+            return allNull ? null : buf;
+        }
+
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public decimal? Sum(Func<TSource, decimal?> selector)
+        {
+            decimal? buf = 0m;
+            var allNull = true;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    allNull = false;
+                    buf += value.Value;
+                }
+            }
+            return allNull ? null : buf;
+        }
+        #endregion
+
+        #region Take
+        /// <inheritdoc cref="Enumerable.Take{TSource}(IEnumerable{TSource}, int)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> Take(int count) => source.Length < count ? source : source[..count];
+
+        /// <inheritdoc cref="Enumerable.Take{TSource}(IEnumerable{TSource}, Range)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> Take(Range range) => source[range];
+        #endregion
+
+        #region TakeWhile
+        /// <inheritdoc cref="Enumerable.TakeWhile{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> TakeWhile(Func<TSource, bool> predicate)
+        {
+            var count = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (!predicate(source[i]))
+                {
+                    break;
+                }
+                count++;
+            }
+            return source[..count];
+        }
+
+        /// <inheritdoc cref="Enumerable.TakeWhile{TSource}(IEnumerable{TSource}, Func{TSource, int, bool})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> TakeWhile(Func<TSource, int, bool> predicate)
+        {
+            var count = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (!predicate(source[i], i))
+                {
+                    break;
+                }
+                count++;
+            }
+            return source[..count];
+        }
+        #endregion
+
+        #region TakeLast
+        /// <inheritdoc cref="Enumerable.TakeLast{TSource}(IEnumerable{TSource}, int)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadOnlySpan<TSource> TakeLast(int count) => source.Length < count ? source : source[^count..];
+        #endregion
+
+        #region Where
+        /// <inheritdoc cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<TSource> Where(Func<TSource, bool> predicate)
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i]))
+                {
+                    yield return source[i];
+                }
+            }
+        }
+
+        /// <inheritdoc cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, int, bool})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<TSource> Where(Func<TSource, int, bool> predicate)
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i], i))
+                {
+                    yield return source[i];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Filters the elements of the <see cref="ReadOnlySpan{T}"/> becased on a <paramref name="predicate"/> function and stores all matching elements in a specified <paramref name="destination"/> <see cref="Span{T}"/>.
+        /// </summary>
+        /// <param name="predicate">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns a <see langword="bool"/> indicating whether the element should be included in the result.</param>
+        /// <param name="destination">A <see cref="Span{T}"/> to store the results of the filtering.</param>
+        /// <returns>The number of elements written to in <paramref name="destination"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown when the destination span is not large enough to hold the filtered elements.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Where(Func<TSource, bool> predicate, Span<TSource> destination)
+        {
+            var requiredSpace = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i]))
+                {
+                    requiredSpace++;
+                }
+            }
+            if (destination.Length < requiredSpace)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+            var index = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i]))
+                {
+                    destination[index++] = source[i];
+                }
+            }
+            return requiredSpace;
+        }
+
+        /// <summary>
+        /// Filters the elements of the <see cref="ReadOnlySpan{T}"/> becased on a <paramref name="predicate"/> function and stores all matching elements in a specified <paramref name="destination"/> <see cref="Span{T}"/>.
+        /// </summary>
+        /// <param name="predicate">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and its index in the source <see cref="ReadOnlySpan{T}"/> and returns a <see langword="bool"/> indicating whether the element should be included in the result.</param>
+        /// <param name="destination">A <see cref="Span{T}"/> to store the results of the filtering.</param>
+        /// <returns>The number of elements written to in <paramref name="destination"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown when the destination span is not large enough to hold the filtered elements.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Where(Func<TSource, int, bool> predicate, Span<TSource> destination)
+        {
+            var requiredSpace = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i], i))
+                {
+                    requiredSpace++;
+                }
+            }
+            if (destination.Length < requiredSpace)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+            var index = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i], i))
+                {
+                    destination[index++] = source[i];
+                }
+            }
+            return requiredSpace;
+        }
+        #endregion
+
+        #region Zip
+        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond, TResult}(IEnumerable{TFirst}, IEnumerable{TSecond}, Func{TFirst, TSecond, TResult})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<TResult> Zip<TSecond, TResult>(IEnumerable<TSecond> second, Func<TSource, TSecond, TResult> resultSelector)
+        {
+            if (source.Length == 0)
+            {
+                yield break;
+            }
+
+            using var enumerator = second.GetEnumerator();
+            if (!enumerator.MoveNext())
+            {
+                yield break;
+            }
+
+            var curr = enumerator.Current;
+            for (var i = 0; i < source.Length && enumerator.MoveNext(); i++)
+            {
+                yield return resultSelector(source[i], curr);
+            }
+        }
+
+        /// <summary>
+        /// Merges two <see cref="ReadOnlySpan{T}"/>s into another <see cref="Span{T}"/> by applying a result selector function to each pair of elements.
+        /// </summary>
+        /// <typeparam name="TSecond">The type of the elements in the second <see cref="ReadOnlySpan{T}"/>.</typeparam>
+        /// <typeparam name="TResult">The type of the elements in the result <see cref="ReadOnlySpan{T}"/>.</typeparam>
+        /// <param name="second">The second <see cref="ReadOnlySpan{T}"/> to merge with the source <see cref="ReadOnlySpan{T}"/>.</param>
+        /// <param name="resultSelector">A <see cref="Func{T1, T2, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and the corresponding element of the second <see cref="ReadOnlySpan{T}"/>, and returns a transformed element.</param>
+        /// <param name="destination">The destination <see cref="Span{T}"/> to store the results of the merge.</param>
+        /// <exception cref="ArgumentException">Thrown when the destination span is not large enough to hold the results.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Zip<TSecond, TResult>(ReadOnlySpan<TSecond> second, Func<TSource, TSecond, TResult> resultSelector, Span<TResult> destination)
+        {
+            var minLen = Math.Min(source.Length, second.Length);
+            if (minLen > destination.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+            var i = 0;
+            for (; i < source.Length && i < second.Length; i++)
+            {
+                destination[i] = resultSelector(source[i], second[i]);
+            }
+            return minLen;
+        }
+
+        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond}(IEnumerable{TFirst}, IEnumerable{TSecond})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<(TSource, TSecond)> Zip<TSecond>(IEnumerable<TSecond> second)
+        {
+            if (source.Length == 0)
+            {
+                yield break;
+            }
+
+            using var enumerator = second.GetEnumerator();
+            if (!enumerator.MoveNext())
+            {
+                yield break;
+            }
+
+            var curr = enumerator.Current;
+            for (var i = 0; i < source.Length && enumerator.MoveNext(); i++)
+            {
+                yield return (source[i], curr);
+            }
+        }
+
+        /// <summary>
+        /// Merges two <see cref="ReadOnlySpan{T}"/>s into another <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TSecond">The type of the elements in the second <see cref="ReadOnlySpan{T}"/>.</typeparam>
+        /// <param name="second">The second <see cref="ReadOnlySpan{T}"/> to merge with the source <see cref="ReadOnlySpan{T}"/>.</param>
+        /// <param name="destination">The destination <see cref="Span{T}"/> to store the results of the merge.</param>
+        /// <exception cref="ArgumentException">Thrown when the destination span is not large enough to hold the results.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Zip<TSecond>(ReadOnlySpan<TSecond> second, Span<(TSource, TSecond)> destination)
+        {
+            var minLen = Math.Min(source.Length, second.Length);
+            if (minLen > destination.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            var i = 0;
+            for (; i < source.Length && i < second.Length; i++)
+            {
+                destination[i] = (source[i], second[i]);
+            }
+            return minLen;
+        }
+
+        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond, TThird}(IEnumerable{TFirst}, IEnumerable{TSecond}, IEnumerable{TThird})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<(TSource, TSecond, TThird)> Zip<TSecond, TThird>(IEnumerable<TSecond> second, IEnumerable<TThird> third)
+        {
+            if (source.Length == 0)
+            {
+                yield break;
+            }
+
+            using var enumerator2 = second.GetEnumerator();
+            if (!enumerator2.MoveNext())
+            {
+                yield break;
+            }
+            using var enumerator3 = third.GetEnumerator();
+            if (!enumerator3.MoveNext())
+            {
+                yield break;
+            }
+
+            var curr2 = enumerator2.Current;
+            var curr3 = enumerator3.Current;
+            for (var i = 0; i < source.Length && enumerator2.MoveNext() && enumerator3.MoveNext(); i++)
+            {
+                yield return (source[i], curr2, curr3);
+            }
+        }
+
+        /// <summary>
+        /// Merges three <see cref="ReadOnlySpan{T}"/>s into another <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TSecond">The type of the elements in the second <see cref="ReadOnlySpan{T}"/>.</typeparam>
+        /// <typeparam name="TThird">The type of the elements in the third <see cref="ReadOnlySpan{T}"/>.</typeparam>
+        /// <param name="second">The second <see cref="ReadOnlySpan{T}"/> to merge with the source <see cref="ReadOnlySpan{T}"/>.</param>
+        /// <param name="third">The third <see cref="ReadOnlySpan{T}"/> to merge with the source <see cref="ReadOnlySpan{T}"/>.</param>
+        /// <param name="destination">The destination <see cref="Span{T}"/> to store the results of the merge.</param>
+        /// <exception cref="ArgumentException">Thrown when the destination span is not large enough to hold the results.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Zip<TSecond, TThird>(ReadOnlySpan<TSecond> second, ReadOnlySpan<TThird> third, Span<(TSource, TSecond, TThird)> destination)
+        {
+            var minLen = Math.Min(source.Length, Math.Min(second.Length, third.Length));
+            if (minLen > destination.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            var i = 0;
+            for (; i < source.Length && i < second.Length && i < third.Length; i++)
+            {
+                destination[i] = (source[i], second[i], third[i]);
+            }
+            return minLen;
+        }
+        #endregion
+
+        #region ToLookup
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ILookup<TKey, TSource> ToLookup<TKey>(Func<TSource, TKey> keySelector)
+        {
+            var spanLookup = new SpanLookup<TKey, TSource>(source.Length, null);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+
+                var list = spanLookup._lookup[key] ??= [];
+                list.Add(value);
+            }
+            return spanLookup;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ILookup<TKey, TSource> ToLookup<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
+        {
+            var spanLookup = new SpanLookup<TKey, TSource>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+                var list = spanLookup._lookup[key] ??= [];
+                list.Add(value);
+            }
+            return spanLookup;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ILookup<TKey, TElement> ToLookup<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
+        {
+            var spanLookup = new SpanLookup<TKey, TElement>(source.Length, null);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+                var element = elementSelector(value);
+                var list = spanLookup._lookup[key] ??= [];
+                list.Add(element);
+            }
+            return spanLookup;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ILookup<TKey, TElement> ToLookup<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer)
+        {
+            var spanLookup = new SpanLookup<TKey, TElement>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+                var element = elementSelector(value);
+                var list = spanLookup._lookup[key] ??= [];
+                list.Add(element);
+            }
+            return spanLookup;
+        }
+        #endregion
+
+        #region ToList
+        /// <inheritdoc cref="Enumerable.ToList{TSource}(IEnumerable{TSource})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public List<TSource> ToList()
+        {
+            var list = new List<TSource>();
+            list.SetCount(source.Length);
+            var span = list.AsSpan();
+            source.CopyTo(span);
+            return list;
+        }
+        #endregion
+
+        #region ToDictionary
+        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Dictionary<TKey, TSource> ToDictionary<TKey, TValue>(Func<TSource, TKey> keySelector)
+        {
+            var dict = new Dictionary<TKey, TSource>(source.Length);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+                if (!dict.TryAdd(key, value))
+                {
+                    throw new ArgumentException($"Duplicate key found: {key}");
+                }
+            }
+            return dict;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Dictionary<TKey, TSource> ToDictionary<TKey, TValue>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
+        {
+            var dict = new Dictionary<TKey, TSource>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+                if (!dict.TryAdd(key, value))
+                {
+                    throw new ArgumentException($"Duplicate key found: {key}");
+                }
+            }
+            return dict;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Dictionary<TKey, TElement> ToDictionary<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
+        {
+            var dict = new Dictionary<TKey, TElement>(source.Length);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+                var element = elementSelector(value);
+                if (!dict.TryAdd(key, element))
+                {
+                    throw new ArgumentException($"Duplicate key found: {key}");
+                }
+            }
+            return dict;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Dictionary<TKey, TElement> ToDictionary<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer)
+        {
+            var dict = new Dictionary<TKey, TElement>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                var key = keySelector(value);
+                var element = elementSelector(value);
+                if (!dict.TryAdd(key, element))
+                {
+                    throw new ArgumentException($"Duplicate key found: {key}");
+                }
+            }
+            return dict;
+        }
+        #endregion
+
+        #region ToHashSet
+        /// <inheritdoc cref="Enumerable.ToHashSet{TSource}(IEnumerable{TSource})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public HashSet<TSource> ToHashSet()
+        {
+            var set = new HashSet<TSource>(source.Length);
+            for (var i = 0; i < source.Length; i++)
+            {
+                _ = set.Add(source[i]);
+            }
+            return set;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToHashSet{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public HashSet<TSource> ToHashSet(IEqualityComparer<TSource> comparer)
+        {
+            var set = new HashSet<TSource>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                _ = set.Add(source[i]);
+            }
+            return set;
+        }
+        #endregion
+
+        #region CUSTOM
+        /// <summary>
+        /// Copies the contents of the source <see cref="ReadOnlySpan{T}"/> into the specified <paramref name="destination"/> <see cref="Span{T}"/> if the source is not empty.
+        /// </summary>
+        /// <param name="destination">The destination span to copy the elements into.</param>
+        /// <exception cref="ArgumentException">Thrown when the destination span is too short to hold the elements from the source.</exception>
+        public int CopyToIfNotEmpty(Span<TSource> destination)
+        {
+            if (source.Length != 0)
+            {
+                return 0;
+            }
+
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            source.CopyTo(destination);
+            return source.Length;
+        }
+
+        #region OnlyOrDefault
+        // Imma be honest, I stole these right out of System.Linq
+        /// <summary>
+        /// Determines whether a <see cref="ReadOnlySpan{T}"/> contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+        /// This behaves exactly like <see cref="SingleOrDefault{TSource}(ReadOnlySpan{TSource}, TSource)"/> without throwing exceptions.
+        /// </summary>
+        /// <param name="defaultValue">The value to return if the source <see cref="ReadOnlySpan{T}"/> contains no elements or more than one element.</param>
+        /// <returns>The single element in the source <see cref="ReadOnlySpan{T}"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TSource OnlyOrDefault(TSource defaultValue = default) => source.Length != 1 ? defaultValue : source[0];
+        /// <summary>
+        /// Determines whether a <see cref="ReadOnlySpan{T}"/> contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+        /// This behaves exactly like <see cref="SingleOrDefault{TSource}(ReadOnlySpan{TSource}, Func{TSource, bool}, TSource)"/> without throwing exceptions.
+        /// </summary>
+        /// <param name="predicate">The condition to check for.</param>
+        /// <param name="defaultValue">The value to return if the source <see cref="ReadOnlySpan{T}"/> contains no elements or more than one element.</param>
+        /// <returns>The single element in the source <see cref="ReadOnlySpan{T}"/> that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TSource OnlyOrDefault(Func<TSource, bool> predicate, TSource defaultValue = default)
+        {
+            var result = defaultValue;
+            var found = false;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (predicate(source[i]))
+                {
+                    if (found)
+                    {
+                        return defaultValue;
+                    }
+                    result = source[i];
+                    found = true;
+                }
+            }
+            return found ? result : defaultValue;
+        }
+        #endregion
+        #endregion
+    }
+
+    // In here goes anything that NEEDS to modify the source OR requires the return type to be the same as the source type (i.e. anything that returns a Span<T>, namely Skip* and Take*)
+    // All of these should return either a reference to the original span or a slice from it so calls can be chained
+    extension<TSource>(Span<TSource> source)
+    {
+#warning TODO
+        #region Order
+        /// <inheritdoc cref="Enumerable.Order{T}(IEnumerable{T})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<TSource> Sort()
+        {
+            source.
+        }
+
+        /// <inheritdoc cref="Enumerable.Order{T}(IEnumerable{T}, IComparer{T})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<TSource> Sort(IComparer<TSource> comparer)
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+            }
+        }
+        #endregion
+
+        #region OrderBy
+        /// <inheritdoc cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<TSource> SortBy<TKey>(Func<TSource, TKey> keySelector)
         {
             for (var i = 0; i < source.Length; i++)
             {
             }
         }
 
-        /// <inheritdoc cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool}, TSource)" />
+        /// <inheritdoc cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource SingleOrDefault(Func<TSource, bool> predicate, TSource defaultValue)
+        public Span<TSource> SortBy<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+            }
+        }
+        #endregion
+
+        #region OrderDescending
+        /// <inheritdoc cref="Enumerable.OrderDescending{T}(IEnumerable{T})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<TSource> SortDescending()
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+            }
+        }
+
+        /// <inheritdoc cref="Enumerable.OrderDescending{T}(IEnumerable{T}, IComparer{T})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<TSource> SortDescending(IComparer<TSource> comparer)
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+            }
+        }
+        #endregion
+
+        #region OrderByDescending
+        /// <inheritdoc cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<TSource> SortByDescending<TKey>(Func<TSource, TKey> keySelector)
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+            }
+        }
+
+        /// <inheritdoc cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<TSource> SortByDescending<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
         {
             for (var i = 0; i < source.Length; i++)
             {
@@ -1352,392 +2172,264 @@ public partial class MemoryExtensions
         #region Skip
         /// <inheritdoc cref="Enumerable.Skip{TSource}(IEnumerable{TSource}, int)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Skip(int count)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public Span<TSource> Skip(int count) => source[count..];
         #endregion
 
         #region SkipWhile
         /// <inheritdoc cref="Enumerable.SkipWhile{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> SkipWhile(Func<TSource, bool> predicate)
+        public Span<TSource> SkipWhile(Func<TSource, bool> predicate)
         {
+            var newStart = 0;
             for (var i = 0; i < source.Length; i++)
             {
+                if (!predicate(source[i]))
+                {
+                    newStart = i;
+                    break;
+                }
             }
+            return source[newStart..];
         }
 
         /// <inheritdoc cref="Enumerable.SkipWhile{TSource}(IEnumerable{TSource}, Func{TSource, int, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> SkipWhile(Func<TSource, int, bool> predicate)
+        public Span<TSource> SkipWhile(Func<TSource, int, bool> predicate)
         {
+            var newStart = 0;
             for (var i = 0; i < source.Length; i++)
             {
+                if (!predicate(source[i], i))
+                {
+                    newStart = i;
+                    break;
+                }
             }
+            return source[newStart..];
         }
         #endregion
 
         #region SkipLast
         /// <inheritdoc cref="Enumerable.SkipLast{TSource}(IEnumerable{TSource}, int)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> SkipLast(int count)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Sum
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Sum(Func<TSource, int> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long Sum(Func<TSource, long> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Sum(Func<TSource, float> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Sum(Func<TSource, double> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public decimal Sum(Func<TSource, decimal> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int? Sum(Func<TSource, int?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long? Sum(Func<TSource, long?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float? Sum(Func<TSource, float?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double? Sum(Func<TSource, double?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public decimal? Sum(Func<TSource, decimal?> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public Span<TSource> SkipLast(int count) => source[..^count];
         #endregion
 
         #region Take
         /// <inheritdoc cref="Enumerable.Take{TSource}(IEnumerable{TSource}, int)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Take(int count)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public Span<TSource> Take(int count) => source.Length < count ? source : source[..count];
 
         /// <inheritdoc cref="Enumerable.Take{TSource}(IEnumerable{TSource}, Range)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Take(Range range)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public Span<TSource> Take(Range range) => source[range];
         #endregion
 
         #region TakeWhile
         /// <inheritdoc cref="Enumerable.TakeWhile{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> TakeWhile(Func<TSource, bool> predicate)
+        public Span<TSource> TakeWhile(Func<TSource, bool> predicate)
         {
+            var count = 0;
             for (var i = 0; i < source.Length; i++)
             {
+                if (!predicate(source[i]))
+                {
+                    break;
+                }
+                count++;
             }
+            return source[..count];
         }
 
         /// <inheritdoc cref="Enumerable.TakeWhile{TSource}(IEnumerable{TSource}, Func{TSource, int, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> TakeWhile(Func<TSource, int, bool> predicate)
+        public Span<TSource> TakeWhile(Func<TSource, int, bool> predicate)
         {
+            var count = 0;
             for (var i = 0; i < source.Length; i++)
             {
+                if (!predicate(source[i], i))
+                {
+                    break;
+                }
+                count++;
             }
+            return source[..count];
         }
         #endregion
 
         #region TakeLast
         /// <inheritdoc cref="Enumerable.TakeLast{TSource}(IEnumerable{TSource}, int)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> TakeLast(int count)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
+        public Span<TSource> TakeLast(int count) => source.Length < count ? source : source[^count..];
         #endregion
+    }
 
-        #region ToArray
-        /// <inheritdoc cref="Enumerable.ToArray{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource[] ToArray()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
+    #region Specific types
 
-        #region ToList
-        /// <inheritdoc cref="Enumerable.ToList{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public List<TSource> ToList()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region ToDictionary
-        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TValue> ToDictionary<TValue>()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TValue> ToDictionary<TValue>(IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
+    #region extension<TKey, TValue>(ReadOnlySpan<KeyValuePair<TKey, TValue>> source)
+    extension<TKey, TValue>(ReadOnlySpan<ValueTuple<TKey, TValue>> source)
+    {
         /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{ValueTuple{TKey, TValue}})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TValue> ToDictionary<TValue>()
+        public Dictionary<TKey, TValue> ToDictionary()
         {
+            var dictionary = new Dictionary<TKey, TValue>(source.Length);
             for (var i = 0; i < source.Length; i++)
             {
+                var pair = source[i];
+                dictionary.Add(pair.Item1, pair.Item2);
             }
+            return dictionary;
         }
 
         /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{ValueTuple{TKey, TValue}}, IEqualityComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TValue> ToDictionary<TValue>(IEqualityComparer<TKey> comparer)
+        public Dictionary<TKey, TValue> ToDictionary(IEqualityComparer<TKey> comparer)
         {
+            var dictionary = new Dictionary<TKey, TValue>(source.Length, comparer);
             for (var i = 0; i < source.Length; i++)
             {
+                var pair = source[i];
+                dictionary.Add(pair.Item1, pair.Item2);
             }
+            return dictionary;
         }
-
-        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TSource> ToDictionary<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TSource> ToDictionary<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TElement> ToDictionary<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToDictionary{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Dictionary<TKey, TElement> ToDictionary<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region ToHashSet
-        /// <inheritdoc cref="Enumerable.ToHashSet{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public HashSet<TSource> ToHashSet()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.ToHashSet{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public HashSet<TSource> ToHashSet(IEqualityComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Union
-        /// <inheritdoc cref="Enumerable.Union{TSource}(IEnumerable{TSource}, IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Union(IEnumerable<TSource> second)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Union{TSource}(IEnumerable{TSource}, IEnumerable{TSource}, IEqualityComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Union(IEnumerable<TSource> second, IEqualityComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region UnionBy
-        /// <inheritdoc cref="Enumerable.UnionBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> UnionBy<TKey>(IEnumerable<TSource> second, Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.UnionBy{TSource, TKey}(IEnumerable{TSource}, IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> UnionBy<TKey>(IEnumerable<TSource> second, Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Where
-        /// <inheritdoc cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Where(Func<TSource, bool> predicate)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, int, bool})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Where(Func<TSource, int, bool> predicate)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region Zip
-        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond, TResult}(IEnumerable{TFirst}, IEnumerable{TSecond}, Func{TFirst, TSecond, TResult})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Zip<TSecond, TResult>(IEnumerable<TSecond> second, Func<TFirst, TSecond, TResult> resultSelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond}(IEnumerable{TFirst}, IEnumerable{TSecond})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<ValueTuple<TFirst, TSecond>> Zip<TSecond>(IEnumerable<TSecond> second)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond, TThird}(IEnumerable{TFirst}, IEnumerable{TSecond}, IEnumerable{TThird})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<ValueTuple<TFirst, TSecond, TThird>> Zip<TSecond, TThird>(IEnumerable<TSecond> second, IEnumerable<TThird> third)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
     }
+    #endregion
+
+    #region extension<TKey, TValue>(ReadOnlySpan<ValueTuple<TKey, TValue>> source)
+    extension<TKey, TValue>(ReadOnlySpan<KeyValuePair<TKey, TValue>> source)
+    {
+        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Dictionary<TKey, TValue> ToDictionary()
+        {
+            var dictionary = new Dictionary<TKey, TValue>(source.Length);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var pair = source[i];
+                dictionary.Add(pair.Key, pair.Value);
+            }
+            return dictionary;
+        }
+
+        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Dictionary<TKey, TValue> ToDictionary(IEqualityComparer<TKey> comparer)
+        {
+            var dictionary = new Dictionary<TKey, TValue>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                var pair = source[i];
+                dictionary.Add(pair.Key, pair.Value);
+            }
+            return dictionary;
+        }
+    }
+    #endregion
+
+    /*
+    [Average methods]
+
+    /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TSource Max()
+    {
+        for (var i = 0; i < source.Length; i++)
+        {
+        }
+    }
+
+    /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, IComparer{TSource})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TSource Max(IComparer<TSource> comparer)
+    {
+        for (var i = 0; i < source.Length; i++)
+        {
+        }
+    }
+
+    
+    /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TSource Min()
+    {
+        for (var i = 0; i < source.Length; i++)
+        {
+        }
+    }
+
+    /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, IComparer{TSource})" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public TSource Min(IComparer<TSource> comparer)
+    {
+        for (var i = 0; i < source.Length; i++)
+        {
+        }
+    }
+    */
+
+    extension(ReadOnlySpan<int> source) { }
+    extension(ReadOnlySpan<uint> source) { }
+    extension(ReadOnlySpan<long> source) { }
+    extension(ReadOnlySpan<ulong> source) { }
+    extension(ReadOnlySpan<double> source) { }
+    extension(ReadOnlySpan<float> source) { }
+    extension(ReadOnlySpan<decimal> source) { }
+    extension(ReadOnlySpan<sbyte> source) { }
+    extension(ReadOnlySpan<byte> source) { }
+    extension(ReadOnlySpan<int?> source) { }
+    extension(ReadOnlySpan<uint?> source) { }
+    extension(ReadOnlySpan<long?> source) { }
+    extension(ReadOnlySpan<ulong?> source) { }
+    extension(ReadOnlySpan<double?> source) { }
+    extension(ReadOnlySpan<float?> source) { }
+    extension(ReadOnlySpan<decimal?> source) { }
+    extension(ReadOnlySpan<sbyte?> source) { }
+    extension(ReadOnlySpan<byte?> source) { }
+
+    #endregion
+}
+
+internal class SpanLookup<TKey, TElement>(int capacity, IEqualityComparer<TKey> equalityComparer) : ILookup<TKey, TElement>
+{
+    internal readonly Dictionary<TKey, List<TElement>> _lookup = new Dictionary<TKey, List<TElement>>(capacity, equalityComparer);
+    public IEnumerator<IGrouping<TKey, TElement>> GetEnumerator()
+    {
+        foreach (var kvp in _lookup)
+        {
+            yield return new Grouping<TKey, TElement>(kvp.Key, kvp.Value);
+        }
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public int Count
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _lookup.Count;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Contains(TKey key) => _lookup.ContainsKey(key);
+    public IEnumerable<TElement> this[TKey key]
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _lookup.TryGetValue(key, out var list) ? list : [];
+    }
+}
+
+// I'd have loved to make this useless thing a ref struct, but since we're only going to be handed around as IGrouping<TKey, TElement>, I can't
+// And not even a normal struct makes sense since the interface cast will box us anyway
+internal class Grouping<TKey, TElement>(TKey key, List<TElement> elements) : IGrouping<TKey, TElement>
+{
+    public TKey Key
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => key;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IEnumerator<TElement> GetEnumerator() => elements.GetEnumerator();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

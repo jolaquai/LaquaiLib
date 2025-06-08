@@ -90,11 +90,18 @@ public class AsyncTimer : IAsyncDisposable
             {
                 // While not signaled to run, await that signal to conserve resources
                 await _tcs.Task.WaitSafeAsync(cts.Token).ConfigureAwait(false);
-                if (!_tcs.Task.IsCompletedSuccessfully || cts.IsCancellationRequested || disposed) continue;
+                if (!_tcs.Task.IsCompletedSuccessfully || cts.IsCancellationRequested || disposed)
+                {
+                    continue;
+                }
 
                 if (await timer.WaitForNextTickAsync().ConfigureAwait(false))
                 {
-                    if (!_tcs.Task.IsCompletedSuccessfully || cts.IsCancellationRequested || disposed) continue;
+                    if (!_tcs.Task.IsCompletedSuccessfully || cts.IsCancellationRequested || disposed)
+                    {
+                        continue;
+                    }
+
                     run ??= Task.Run(async () =>
                     {
                         var callbacks = Callback.GetTypedInvocationList();

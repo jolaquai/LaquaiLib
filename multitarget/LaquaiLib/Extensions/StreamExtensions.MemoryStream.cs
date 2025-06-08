@@ -5,17 +5,13 @@
 /// </summary>
 public static partial class StreamExtensions
 {
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref byte[] _buffer(this MemoryStream _);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _capacity(this MemoryStream _);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _length(this MemoryStream _);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _position(this MemoryStream _);
+
     extension(MemoryStream stream)
     {
-        [UnsafeAccessor(UnsafeAccessorKind.Field)]
-        private extern ref byte[] _buffer();
-        [UnsafeAccessor(UnsafeAccessorKind.Field)]
-        private extern ref int _capacity();
-        [UnsafeAccessor(UnsafeAccessorKind.Field)]
-        private extern ref int _length();
-        [UnsafeAccessor(UnsafeAccessorKind.Field)]
-        private extern ref int _position();
-
         /// <summary>
         /// Gets a <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>

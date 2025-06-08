@@ -396,7 +396,9 @@ public class AnyExtensionsTests
         public bool Equals(TestObject other)
         {
             if (other is null)
+            {
                 return false;
+            }
 
             return Id == other.Id && Name == other.Name;
         }
