@@ -11,6 +11,7 @@ public static partial class IEnumerableExtensions
         /// <param name="source">The input sequence.</param>
         /// <param name="n">The number of elements to check for.</param>
         /// <returns><see langword="true"/> if the input sequence contains less than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasLessThan(int n) => (source.TryGetNonEnumeratedCount(out var count) ? count : source.Count()) < n;
         /// <summary>
         /// Determines if a sequence contains less than or exactly the specified number of elements.
@@ -19,6 +20,7 @@ public static partial class IEnumerableExtensions
         /// <param name="source">The input sequence.</param>
         /// <param name="n">The number of elements to check for.</param>
         /// <returns><see langword="true"/> if the input sequence contains less than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasLessThanOr(int n) => (source.TryGetNonEnumeratedCount(out var count) ? count : source.Count()) <= n;
         /// <summary>
         /// Determines if a sequence contains exactly the specified number of elements.
@@ -28,6 +30,7 @@ public static partial class IEnumerableExtensions
         /// <param name="source">The input sequence.</param>
         /// <param name="n">The number of elements to check for.</param>
         /// <returns>The result of the check.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasExactly(int n) => (source.TryGetNonEnumeratedCount(out var count) ? count : source.Count()) == n;
         /// <summary>
         /// Determines if a sequence contains more than or exactly the specified number of elements.
@@ -36,6 +39,7 @@ public static partial class IEnumerableExtensions
         /// <param name="source">The input sequence.</param>
         /// <param name="n">The number of elements to check for.</param>
         /// <returns><see langword="true"/> if the input sequence contains more than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasMoreThanOr(int n) => (source.TryGetNonEnumeratedCount(out var count) ? count : source.Count()) >= n;
         /// <summary>
         /// Determines if a sequence contains more than the specified number of elements.
@@ -44,6 +48,7 @@ public static partial class IEnumerableExtensions
         /// <param name="source">The input sequence.</param>
         /// <param name="n">The number of elements to check for.</param>
         /// <returns><see langword="true"/> if the input sequence contains more than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasMoreThan(int n) => (source.TryGetNonEnumeratedCount(out var count) ? count : source.Count()) > n;
 
         /// <summary>

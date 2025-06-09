@@ -1,6 +1,4 @@
-﻿// THIS FILE IS CURRENTLY NOT INCLUDED FOR COMPILATION.
-
-using System.Diagnostics.Tracing;
+﻿#warning TODO: Documentation is currently largely inheritdoc'd from System.Linq.Enumerable - Rewrite that
 
 using LaquaiLib.Collections.Enumeration;
 
@@ -189,18 +187,18 @@ public partial class MemoryExtensions
         #region Cast
         /// <inheritdoc cref="Enumerable.Cast{TResult}(IEnumerable)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TResult[] Cast<TResult>()
+        public IEnumerable<TResult> Cast<TResult>()
         {
-            var canDowncast = typeof(TResult).IsAssignableTo(typeof(TSource));
-            if (!canDowncast && !typeof(TSource).IsAssignableTo(typeof(TResult)))
+            var canCast = typeof(TSource).IsAssignableTo(typeof(TResult));
+            if (!canCast)
             {
-                // Neither cast direction is possible
                 throw new InvalidCastException($"Cannot cast {typeof(TSource)} to {typeof(TResult)}.");
             }
 
-            var destination = new TResult[source.Length];
-            Cast(source, destination);
-            return destination;
+            for (var i = 0; i < source.Length; i++)
+            {
+                yield return (TResult)(object)source[i];
+            }
         }
         /// <inheritdoc cref="Enumerable.Cast{TResult}(IEnumerable)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -213,7 +211,6 @@ public partial class MemoryExtensions
 
             if (!typeof(TSource).IsAssignableTo(typeof(TResult)))
             {
-                // Neither cast direction is possible
                 throw new InvalidCastException($"Cannot cast {typeof(TSource)} to {typeof(TResult)}.");
             }
 
@@ -362,17 +359,82 @@ public partial class MemoryExtensions
         // Unfortunately, this is basically what Enumerable.Distinct does, except that THAT method remains lazy, BUT since we 
         /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Distinct() => Distinct(source, null);
+        public IEnumerable<TSource> Distinct() => Distinct(source, EqualityComparer<TSource>.Default);
 
         /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Distinct(IEqualityComparer<TSource> comparer)
+        public IEnumerable<TSource> Distinct(IEqualityComparer<TSource> comparer) => ToHashSet(source, comparer);
+
+        /// <summary>
+        /// Filters the source <see cref="ReadOnlySpan{T}"/> for distinct elements and stores them in the specified <paramref name="destination"/> <see cref="Span{T}"/>.
+        /// </summary>
+        /// <param name="destination">The destination <see cref="Span{T}"/> to store the distinct elements.</param>
+        /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> implementation to use for comparing elements.</param>
+        /// <returns>The number of distinct elements written to the <paramref name="destination"/>.</returns>
+        /// <exception cref="ArgumentException">Thrown when the <paramref name="destination"/> is shorter than the source <see cref="ReadOnlySpan{T}"/> (this is enforced because all elements could already be distinct).</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Distinct(Span<TSource> destination, IEqualityComparer<TSource> comparer = null)
         {
+            if (destination.Length < source.Length)
+            {
+                throw new ArgumentException("Destination span is too short.", nameof(destination));
+            }
+
+            comparer ??= EqualityComparer<TSource>.Default;
+            var destIndex = 0;
+            // Around 10^7 elements is the point where the performance of using a HashSet becomes better than using a simple loop to check for duplicates
+            // This and this method alone is unfortunately the only place where we can avoid HashSet
+            if (source.Length < 10_000_000)
+            {
+                for (var i = 0; i < source.Length; i++)
+                {
+                    if (destIndex == 0 || destination[..destIndex].IndexOf(source[i], comparer) < 0)
+                    {
+                        destination[destIndex++] = source[i];
+                    }
+                }
+                return destIndex;
+            }
+
+            var hashSet = new HashSet<TSource>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (hashSet.Add(source[i]))
+                {
+                    destination[destIndex++] = source[i];
+                }
+            }
+            return destIndex;
+        }
+        #endregion
+
+        #region DistinctBy
+        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<TSource> DistinctBy<TKey>(Func<TSource, TKey> keySelector) => DistinctBy(source, keySelector, EqualityComparer<TKey>.Default);
+
+        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<TSource> DistinctBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
+        {
+            comparer ??= EqualityComparer<TKey>.Default;
+            var hashSet = new HashSet<TKey>(source.Length, comparer);
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (hashSet.Add(keySelector(source[i])))
+                {
+                    yield return source[i];
+                }
+            }
         }
 
-        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource})" />
+        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Distinct(Span<TSource> destination)
+        public int DistinctBy<TKey>(Func<TSource, TKey> keySelector, Span<TSource> destination) => DistinctBy(source, keySelector, destination, EqualityComparer<TKey>.Default);
+
+        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int DistinctBy<TKey>(Func<TSource, TKey> keySelector, Span<TSource> destination, IEqualityComparer<TKey> comparer)
         {
             if (destination.Length < source.Length)
             {
@@ -380,77 +442,16 @@ public partial class MemoryExtensions
             }
 
             var destIndex = 0;
+            comparer ??= EqualityComparer<TKey>.Default;
+            var hashSet = new HashSet<TKey>(source.Length, comparer);
             for (var i = 0; i < source.Length; i++)
             {
-                if (destIndex == 0 || source[..destIndex].IndexOf(source[i]) == -1)
+                if (hashSet.Add(keySelector(source[i])))
                 {
                     destination[destIndex++] = source[i];
                 }
             }
             return destIndex;
-        }
-
-        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Distinct(IEqualityComparer<TSource> comparer, Span<TSource> destination)
-        {
-            if (destination.Length < source.Length)
-            {
-                throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
-
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-#warning TODO
-        #region DistinctBy
-        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> DistinctBy<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> DistinctBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int DistinctBy<TKey>(Func<TSource, TKey> keySelector, Span<TSource> destination)
-        {
-            if (destination.Length < source.Length)
-            {
-                throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
-
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int DistinctBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer, Span<TSource> destination)
-        {
-            if (destination.Length < source.Length)
-            {
-                throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
-
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
         }
         #endregion
 
@@ -1321,15 +1322,12 @@ public partial class MemoryExtensions
 
         /// <inheritdoc cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, TSource)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TSource SingleOrDefault(TSource defaultValue)
+        public TSource SingleOrDefault(TSource defaultValue) => source.Length switch
         {
-            return source.Length switch
-            {
-                0 => defaultValue,
-                > 1 => throw new InvalidOperationException("Span contains more than one element."),
-                _ => source[0]
-            };
-        }
+            0 => defaultValue,
+            > 1 => throw new InvalidOperationException("Span contains more than one element."),
+            _ => source[0]
+        };
 
         /// <inheritdoc cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2046,6 +2044,18 @@ public partial class MemoryExtensions
             return source.Length;
         }
 
+        /// <summary>
+        /// Enables arbitrary LINQ on the source <see cref="ReadOnlySpan{T}"/> by returning an <see cref="IEnumerable{T}"/> that iterates over its elements.
+        /// </summary>
+        /// <returns>The enumerable that iterates over the elements of the source <see cref="ReadOnlySpan{T}"/>.</returns>
+        public IEnumerable<TSource> ToEnumerable()
+        {
+            for (var i = 0; i < source.Length; i++)
+            {
+                yield return source[i];
+            }
+        }
+
         #region OnlyOrDefault
         // Imma be honest, I stole these right out of System.Linq
         /// <summary>
@@ -2090,84 +2100,7 @@ public partial class MemoryExtensions
     // All of these should return either a reference to the original span or a slice from it so calls can be chained
     extension<TSource>(Span<TSource> source)
     {
-#warning TODO
-        #region Order
-        /// <inheritdoc cref="Enumerable.Order{T}(IEnumerable{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> Sort()
-        {
-            source.
-        }
-
-        /// <inheritdoc cref="Enumerable.Order{T}(IEnumerable{T}, IComparer{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> Sort(IComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region OrderBy
-        /// <inheritdoc cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> SortBy<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.OrderBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> SortBy<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region OrderDescending
-        /// <inheritdoc cref="Enumerable.OrderDescending{T}(IEnumerable{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> SortDescending()
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.OrderDescending{T}(IEnumerable{T}, IComparer{T})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> SortDescending(IComparer<TSource> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
-
-        #region OrderByDescending
-        /// <inheritdoc cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> SortByDescending<TKey>(Func<TSource, TKey> keySelector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.OrderByDescending{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<TSource> SortByDescending<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-            }
-        }
-        #endregion
+        // Order* are already provided by System.MemoryExtensions
 
         #region Skip
         /// <inheritdoc cref="Enumerable.Skip{TSource}(IEnumerable{TSource}, int)" />
@@ -2268,8 +2201,8 @@ public partial class MemoryExtensions
 
     #region Specific types
 
-    #region extension<TKey, TValue>(ReadOnlySpan<KeyValuePair<TKey, TValue>> source)
-    extension<TKey, TValue>(ReadOnlySpan<ValueTuple<TKey, TValue>> source)
+    #region extension<TKey, TValue>(ReadOnlySpan<ValueTuple<TKey, TValue>> source)
+    extension<TKey, TValue>(ReadOnlySpan<(TKey, TValue)> source)
     {
         /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{ValueTuple{TKey, TValue}})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2299,7 +2232,7 @@ public partial class MemoryExtensions
     }
     #endregion
 
-    #region extension<TKey, TValue>(ReadOnlySpan<ValueTuple<TKey, TValue>> source)
+    #region extension<TKey, TValue>(ReadOnlySpan<KeyValuePair<TKey, TValue>> source)
     extension<TKey, TValue>(ReadOnlySpan<KeyValuePair<TKey, TValue>> source)
     {
         /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}})" />
@@ -2370,6 +2303,15 @@ public partial class MemoryExtensions
         }
     }
     */
+
+    extension(ReadOnlySpan<bool> source)
+    {
+        /// <summary>
+        /// Determines whether all values in the source <see cref="ReadOnlySpan{T}"/> are <see langword="true"/>.
+        /// </summary>
+        /// <returns><see langword="true"/> if all values in the source <see cref="ReadOnlySpan{T}"/> are <see langword="true"/>; otherwise, <see langword="false"/>.</returns>
+        public bool All() => source.Length > 0 && source.All(static x => x);
+    }
 
     extension(ReadOnlySpan<int> source) { }
     extension(ReadOnlySpan<uint> source) { }

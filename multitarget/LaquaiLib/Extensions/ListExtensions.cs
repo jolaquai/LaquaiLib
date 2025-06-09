@@ -11,6 +11,7 @@ public static class ListExtensions
         /// Removes the element at the specified <paramref name="index"/> from this <see cref="List{T}"/>.
         /// </summary>
         /// <param name="index">An <see cref="Index"/> instance that indicates where the item to be removed is located in the <see cref="IList{T}"/>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(Index index) => list.RemoveAt(index.GetOffset(list.Count));
     }
 
@@ -33,6 +34,7 @@ public static class ListExtensions
         /// Removes all elements from this <see cref="List{T}"/> that do not match the conditions defined by the specified <paramref name="predicate"/>.
         /// </summary>
         /// <param name="predicate">The <see cref="Predicate{T}"/> delegate that defines the conditions of the elements to keep.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void KeepOnly(Func<T, bool> predicate) => list.RemoveAll(item => !predicate(item));
 
         /// <summary>
@@ -99,6 +101,7 @@ public static class ListExtensions
         /// This is done through <see cref="CollectionsMarshal.SetCount{T}(List{T}, int)"/> and should be used as cautiously as that method.
         /// </summary>
         /// <param name="count">The new <see cref="List{T}.Count"/> of the specified <see cref="List{T}"/>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetCount(int count) => CollectionsMarshal.SetCount(list, count);
         /// <summary>
         /// Increases the capacity of the <see cref="List{T}"/> so it can hold at least <paramref name="count"/> elements in addition to its current <see cref="List{T}.Count"/>.

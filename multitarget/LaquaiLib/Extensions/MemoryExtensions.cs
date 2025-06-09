@@ -364,6 +364,39 @@ public static partial class MemoryExtensions
     }
     extension<T>(Span<T> span)
     {
+#if !NET10_0_OR_GREATER
+        /// <summary>
+        /// Finds the index of the first occurrence of a specified value in the <see cref="ReadOnlySpan{T}"/> using an <see cref="IEqualityComparer{T}"/>.
+        /// </summary>
+        /// <param name="value">The value to locate in the <see cref="ReadOnlySpan{T}"/>.</param>
+        /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> implementation to use for comparison. If <see langword="null"/>, the default equality comparer for <typeparamref name="T"/> is used.</param>
+        /// <returns>The zero-based index of the first occurrence of <paramref name="value"/> within the <see cref="ReadOnlySpan{T}"/>, if found; otherwise, -1.</returns>
+        public int IndexOf(T value, IEqualityComparer<T> equalityComparer = null)
+        {
+            if (value is IEquatable<T> equatable)
+            {
+                for (var i = 0; i < span.Length; i++)
+                {
+                    if (equatable.Equals(span[i]))
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            equalityComparer ??= EqualityComparer<T>.Default;
+            for (var i = 0; i < span.Length; i++)
+            {
+                if (equalityComparer.Equals(span[i], value))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+#endif
+
         /// <summary>
         /// Invokes the specified <paramref name="action"/> for each element in the <see cref="Span{T}"/>.
         /// </summary>

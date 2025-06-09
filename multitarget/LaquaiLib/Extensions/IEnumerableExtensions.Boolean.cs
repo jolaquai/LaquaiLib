@@ -9,6 +9,7 @@ public static partial class IEnumerableExtensions
         /// </summary>
         /// <param name="source">The sequence of <see cref="bool"/> values to check.</param>
         /// <returns>A value that indicates whether all elements of the sequence are true.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool All() => source.All(static x => x);
     }
 }

@@ -15,10 +15,10 @@ public static class RegexExtensions
         /// </summary>
         /// <param name="match">The <see cref="Match"/> instance to retrieve the <see cref="Regex"/> instance from.</param>
         /// <returns>The <see cref="Regex"/> instance that was used to create this <see cref="Match"/>.</returns>
-        public Regex GetRegex()
+        public Regex Regex
         {
-            ArgumentNullException.ThrowIfNull(match);
-            return match._regex();
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => match._regex();
         }
     }
 

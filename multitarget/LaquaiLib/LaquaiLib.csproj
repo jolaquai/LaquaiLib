@@ -5,12 +5,6 @@
     <PackageDescription>Personal library. General purpose.</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Extensions\MemoryExtensions.Linq_BAK.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Extensions\MemoryExtensions.Linq_BAK.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
     <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Core\LaquaiLib.Core.csproj" />
   </ItemGroup>

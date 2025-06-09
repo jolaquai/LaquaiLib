@@ -184,6 +184,7 @@ public static partial class IEnumerableExtensions
         /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="List{T}"/> to copy elements to.</param>
         /// <returns>The number of elements written to the target collection.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int AddTo(List<T> target) => source.Into(target, target.Count);
         /// <summary>
         /// Copies the elements of the input sequence into the specified <see cref="Span{T}"/>.
@@ -336,20 +337,12 @@ public static partial class IEnumerableExtensions
             return i;
         }
         /// <summary>
-        /// Copies the elements of the input sequence into the specified <see cref="Dictionary{T, TValue}"/> using the
-        /// specified <paramref name="keyFactory"/> to generate keys for each value.
+        /// Copies the elements of the input sequence into the specified <see cref="Dictionary{T, TValue}"/> using the specified <paramref name="keyFactory"/> to generate keys for each value.
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys in the input sequence.</typeparam>
-        /// <typeparam name="T">The Type of the values in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="Dictionary{T, TValue}"/> to copy elements to.</param>
-        /// <param name="keyFactory">
-        /// A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a key for the
-        /// corresponding value.
-        /// </param>
-        /// <param name="overwrite">
-        /// Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see
-        /// langword="false"/>.
+        /// <param name="keyFactory">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a key for the corresponding value.</param>
+        /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.
         /// </param>
         /// <returns>The number of elements written to the target collection.</returns>
         public int Into<TKey>(IDictionary<TKey, T> target, Func<T, TKey> keyFactory, bool overwrite = false)

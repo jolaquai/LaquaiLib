@@ -60,6 +60,7 @@ public static class PartitionerExtensions
         /// Flattens a <see cref="Partitioner{TSource}"/> back into a single <see cref="IEnumerable{T}"/>.
         /// </summary>
         /// <returns>The flattened <see cref="IEnumerable{T}"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<T> Flatten() => partitioner.AsEnumerable(1).SelectMany();
     }
 }
