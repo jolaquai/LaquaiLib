@@ -1,0 +1,44 @@
+<Project>
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IsPackable>False</IsPackable>
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <IncludeBuildOutput>True</IncludeBuildOutput>
+        <SuppressDependenciesWhenPacking>True</SuppressDependenciesWhenPacking>
+        <DevelopmentDependency>True</DevelopmentDependency>
+
+        <LangVersion>preview</LangVersion>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DebugType>full</DebugType>
+        <DebugSymbols>True</DebugSymbols>
+        <IncludeSymbols>True</IncludeSymbols>
+        <IncludeSource>True</IncludeSource>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <AnalysisLevel>preview-all</AnalysisLevel>
+        <AnalysisMode>all</AnalysisMode>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" PrivateAssets="all" />
+
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="True" PackagePath="analyzers/dotnet/cs" />
+
+        <Using Include="System.Collections.Immutable" />
+        <Using Include="System.ComponentModel" />
+        <Using Include="System.Runtime.CompilerServices" />
+        <Using Include="Microsoft.CodeAnalysis" />
+        <Using Include="Microsoft.CodeAnalysis.CSharp" />
+        <Using Include="Microsoft.CodeAnalysis.CSharp.Syntax" />
+        <Using Include="Microsoft.CodeAnalysis.Diagnostics" />
+        <Using Include="Microsoft.CodeAnalysis.Text" />
+        <Using Include="System.Diagnostics" />
+    </ItemGroup>
+
+</Project>

@@ -1,33 +1,40 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-    <Platform Name="x64" />
-    <Platform Name="x86" />
-  </Configurations>
-  <Folder Name="/Solution Items/">
-    <File Path=".gitignore" />
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Build.targets" />
-    <File Path="README.md" />
-    <File Path="UNLICENSE" />
-  </Folder>
-  <Folder Name="/Solution Items/Scripts/" Id="eb4a6ed1-506c-a9c3-2245-c7e44ed24a1b">
-    <File Path="PublishAll.ps1" />
-    <File Path="Scripts/pushall.bat" />
-  </Folder>
-  <Folder Name="/Test/">
-    <Project Path="TestBenchmark/TestBenchmark.csproj" Id="67a16bf2-5dd2-4e44-8dd0-ecb61bc80936" />
-    <Project Path="TestConsole\TestConsole.csproj" />
-    <Project Path="TestCore\TestCore.csproj" />
-    <Project Path="TestWpf\TestWpf.csproj" />
-  </Folder>
-  <Project Path="LaquaiLib.Analyzers/LaquaiLib.Analyzers.csproj" Id="85d7011f-6162-403a-b68b-5f4464f3adf6" />
-  <Project Path="LaquaiLib.Compound\LaquaiLib.Compound.csproj" />
-  <Project Path="LaquaiLib.Core\LaquaiLib.Core.csproj" />
-  <Project Path="LaquaiLib.DependencyInjection/LaquaiLib.DependencyInjection.csproj" Id="0af7bc36-e21f-45c5-8813-f993e244a6ba" />
-  <Project Path="LaquaiLib.EF/LaquaiLib.EF.csproj" Id="7bc7e0bf-d17e-4a86-ac78-d5b5a28f16d9" />
-  <Project Path="LaquaiLib.Generators/LaquaiLib.Generators.csproj" Id="471284f4-3ee8-462f-8a15-f01e3a9179cf" />
-  <Project Path="LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
-  <Project Path="LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
-  <Project Path="LaquaiLib\LaquaiLib.csproj" />
+    <Configurations>
+        <Platform Name="Any CPU" />
+        <Platform Name="x64" />
+        <Platform Name="x86" />
+    </Configurations>
+    <Folder Name="/Solution Items/">
+        <File Path=".gitignore" />
+        <File Path="Directory.Build.props" />
+        <File Path="README.md" />
+        <File Path="UNLICENSE" />
+    </Folder>
+    <Folder Name="/Test/">
+        <Project Path="Test\AnalyzerPlayground\AnalyzerPlayground.csproj" />
+        <Project Path="Test\TestBenchmark\TestBenchmark.csproj" />
+        <Project Path="Test\TestConsole\TestConsole.csproj" />
+        <Project Path="Test\TestCore\TestCore.csproj" />
+        <Project Path="Test\TestWpf\TestWpf.csproj" />
+    </Folder>
+    <Folder Name="/TestProjects/">
+        <File Path="TestProjects/.editorconfig" />
+        <Project Path="TestProjects\LaquaiLib.UnitTests\LaquaiLib.UnitTests.csproj" />
+    </Folder>
+    <Folder Name="/netstandard2.0/">
+        <File Path="netstandard2.0\Directory.Build.props" />
+        <Project Path="netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" />
+        <Project Path="netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" />
+        <Project Path="netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" />
+        <Project Path="netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" />
+    </Folder>
+    <Folder Name="/multitarget/">
+        <File Path="multitarget\Directory.Build.props" />
+        <File Path="multitarget\Directory.Build.targets" />
+        <Project Path="multitarget\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+        <Project Path="multitarget\LaquaiLib.EF\LaquaiLib.EF.csproj" />
+        <Project Path="multitarget\LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
+        <Project Path="multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+        <Project Path="multitarget\LaquaiLib\LaquaiLib.csproj" />
+    </Folder>
 </Solution>

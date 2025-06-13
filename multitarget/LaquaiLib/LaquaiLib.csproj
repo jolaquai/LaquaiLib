@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>LaquaiLib</Title>
+    <PackageDescription>Personal library. General purpose.</PackageDescription>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="UnicodeInformation" Version="2.7.1" />
+    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Core\LaquaiLib.Core.csproj" />
+  </ItemGroup>
+</Project>

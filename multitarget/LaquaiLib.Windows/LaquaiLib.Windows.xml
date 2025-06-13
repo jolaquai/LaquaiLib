@@ -1,0 +1,876 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LaquaiLib.Windows</name>
+    </assembly>
+    <members>
+        <member name="T:LaquaiLib.Windows.Extensions.ColorExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:System.Drawing.Color"/> Type.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.Extensions.ColorExtensions.<>E__0.Html">
+            <summary>
+            Formats the <see cref="T:System.Drawing.Color"/> as a HTML color string.
+            </summary>
+            <param name="color">The <see cref="T:System.Drawing.Color"/> to format.</param>
+            <returns>The HTML color string.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.ColorExtensions.get_Html(System.Drawing.Color)">
+            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.ColorExtensions.<>E__0.Html"/>
+        </member>
+        <member name="T:LaquaiLib.Windows.Extensions.DependencyObjectExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Windows.DependencyObject"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.<>E__0.UpdateBindings">
+            <summary>
+            Enumerates all binding expressions in the specified <see cref="T:System.Windows.DependencyObject"/> and forces them to fetch new values.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.<>E__0.UpdateBindingsRecurse">
+            <summary>
+            Enumerates all binding expressions in the specified <see cref="T:System.Windows.DependencyObject"/> and its child hierarchy and forces them to fetch new values.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.UpdateBindings(System.Windows.DependencyObject)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.<>E__0.UpdateBindings"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.UpdateBindingsRecurse(System.Windows.DependencyObject)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.<>E__0.UpdateBindingsRecurse"/>
+        </member>
+        <member name="T:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Windows.Threading.DispatcherObject"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.Dispatch(System.Action)">
+            <summary>
+            Invokes the specified <paramref name="action"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="action"/>.</param>
+            <param name="action">The <see cref="T:System.Action"/> to invoke.</param>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.Dispatch(System.Delegate,System.ReadOnlySpan{System.Object})">
+            <summary>
+            Invokes the specified <paramref name="method"/> with the given <paramref name="arguments"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="method"/>.</param>
+            <param name="method">The <see cref="T:System.Delegate"/> to invoke.</param>
+            <param name="arguments">The arguments to pass to the <paramref name="method"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.Dispatch``1(System.Func{``0})">
+            <summary>
+            Invokes the specified <paramref name="func"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <typeparam name="T">The type of the result returned by the <paramref name="func"/>.</typeparam>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="func"/>.</param>
+            <param name="func">The <see cref="T:System.Func`1"/> to invoke.</param>
+            <returns>The result returned by the <paramref name="func"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.DispatchAsync(System.Action)">
+            <summary>
+            Asynchronously invokes the specified <paramref name="action"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="action"/>.</param>
+            <param name="action">The <see cref="T:System.Action"/> to invoke.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.DispatchAsync(System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="asyncDelegate"/>.</param>
+            <param name="asyncDelegate">The <see cref="T:System.Func`1"/> to invoke.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> returned by the <paramref name="asyncDelegate"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.DispatchAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+            <summary>
+            Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
+            </summary>
+            <typeparam name="T">The type of the result returned by the <paramref name="asyncDelegate"/>.</typeparam>
+            <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="asyncDelegate"/>.</param>
+            <param name="asyncDelegate">The <see cref="T:System.Func`1"/> to invoke.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> returned by the <paramref name="asyncDelegate"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Action)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.Dispatch(System.Action)"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Delegate,System.ReadOnlySpan{System.Object})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.Dispatch(System.Delegate,System.ReadOnlySpan{System.Object})"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch``1(System.Windows.Threading.DispatcherObject,System.Func{``0})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.Dispatch``1(System.Func{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Action)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.DispatchAsync(System.Action)"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.DispatchAsync(System.Func{System.Threading.Tasks.Task})"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync``1(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task{``0}})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.<>E__0.DispatchAsync``1(System.Func{System.Threading.Tasks.Task{``0}})"/>
+        </member>
+        <member name="T:LaquaiLib.Windows.Extensions.IconExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Drawing.Icon"/> Type.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.Extensions.IconExtensions.<>E__0.ImageSource">
+            <summary>
+            Converts this <see cref="T:System.Drawing.Icon"/> instance to an <see cref="T:System.Windows.Media.ImageSource"/>.
+            </summary>
+            <param name="icon">The <see cref="T:System.Drawing.Icon"/> instance to convert.</param>
+            <returns>The created <see cref="T:System.Windows.Media.ImageSource"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.IconExtensions.get_ImageSource(System.Drawing.Icon)">
+            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.IconExtensions.<>E__0.ImageSource"/>
+        </member>
+        <member name="T:LaquaiLib.Windows.Extensions.IDataObjectExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Windows.Forms.IDataObject"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.<>E__0.TryGetData(System.String,System.Object@)">
+            <summary>
+            Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="T:System.Windows.Forms.IDataObject"/>.
+            </summary>
+            <param name="dataObject">The <see cref="T:System.Windows.Forms.IDataObject"/> to retrieve the data from.</param>
+            <param name="format">The format of the data to retrieve.</param>
+            <param name="data">A <c>ref <see cref="T:System.Object"/>?</c> variable that receives the data if the retrieval was successful.</param>
+            <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.<>E__0.TryGetData``1(System.String,``0@)">
+            <summary>
+            Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="T:System.Windows.Forms.IDataObject"/>.
+            </summary>
+            <typeparam name="T">The actual type of which the data is expected to be.</typeparam>
+            <param name="dataObject">The <see cref="T:System.Windows.Forms.IDataObject"/> to retrieve the data from.</param>
+            <param name="format">The format of the data to retrieve.</param>
+            <param name="data">A <c>ref <typeparamref name="T"/>?</c> variable that receives the data if the retrieval was successful.</param>
+            <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.TryGetData(System.Windows.Forms.IDataObject,System.String,System.Object@)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.<>E__0.TryGetData(System.String,System.Object@)"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.TryGetData``1(System.Windows.Forms.IDataObject,System.String,``0@)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.<>E__0.TryGetData``1(System.String,``0@)"/>
+        </member>
+        <member name="T:LaquaiLib.Windows.Extensions.ProcessExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Diagnostics.Process"/> Type.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.Extensions.ProcessExtensions.<>E__0.CommandLine">
+            <summary>
+            Retrieves the command line of the specified <see cref="T:System.Diagnostics.Process"/>.
+            This is done either by using the <see cref="T:System.Diagnostics.ProcessStartInfo"/> property of the <see cref="T:System.Diagnostics.Process"/> instance or, if that is <see langword="null"/>, by using WMI.
+            </summary>
+            <param name="process">A <see cref="T:System.Diagnostics.Process"/> instance.</param>
+            <returns>The command line of the specified <see cref="T:System.Diagnostics.Process"/> or <see langword="null"/> if it could not be retrieved.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.ProcessExtensions.get_CommandLine(System.Diagnostics.Process)">
+            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.ProcessExtensions.<>E__0.CommandLine"/>
+        </member>
+        <member name="T:LaquaiLib.Windows.LowLevelWindow">
+            <summary>
+            Proxies low-level <see cref="T:System.Windows.Window"/> functionality out of <see cref="P:LaquaiLib.Windows.LowLevelWindow.HwndSource"/> to inheriting classes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.LowLevelWindow.HwndSource">
+            <summary>
+            Retrieves the <see cref="P:LaquaiLib.Windows.LowLevelWindow.HwndSource"/> of the window.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.LowLevelWindow.Handle">
+            <summary>
+            Retrieves the handle of the window.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.LowLevelWindow.OnSourceInitialized(System.EventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Windows.LowLevelWindow.OnMessageReceived(System.Windows.Interop.MSG,System.Boolean@)">
+            <summary>
+            Invoked when a message is received by the window.
+            Inheriting classes should delegate to <see langword="base"/> if their own logic does not handle the message, otherwise the window may become unresponsive.
+            </summary>
+            <param name="message">A <see cref="T:System.Windows.Interop.MSG"/> struct representing the message.</param>
+            <param name="handled">A <see langword="ref"/> <see cref="T:System.Boolean"/> that should be set to <see langword="true"/> if the message was handled.</param>
+            <returns>A return value dependent on the message. Check the MSDN documentation on the message you are processing to determine the appropriate return value(s).</returns>
+        </member>
+        <member name="T:LaquaiLib.Windows.Util.TaskbarProgress">
+            <summary>
+            Represents a handler for a progress display on the current window's taskbar icon.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.TaskbarProgress.#ctor(System.Windows.Window)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Windows.Util.TaskbarProgress"/> with reference to a specified <paramref name="window"/>.
+            </summary>
+            <param name="window">The <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.TaskbarProgress.#ctor(System.IntPtr)">
+            <summary>
+            Creates or directly returns an existing instance of <see cref="T:LaquaiLib.Windows.Util.TaskbarProgress"/> with reference to a <see cref="T:System.Windows.Window"/> identified by its <paramref name="hwnd"/>.
+            </summary>
+            <remarks>
+            The application calling this method or using its return value must own the <see cref="T:System.Windows.Window"/> pointed to by <paramref name="hwnd"/>.
+            </remarks>
+            <param name="hwnd">The hwnd to the <see cref="T:System.Windows.Window"/> the taskbar icon of which is to display progress.</param>
+            <returns>A <see cref="T:LaquaiLib.Windows.Util.TaskbarProgress"/> instance.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.TaskbarProgress.SetState(System.Windows.Shell.TaskbarItemProgressState)">
+            <summary>
+            Sets the state of the taskbar progress visual.
+            </summary>
+            <param name="state">The new state of the taskbar progress visual.</param>
+            <returns>The value of the <see cref="P:System.Windows.Shell.TaskbarItemInfo.ProgressState"/> property after the attempted set operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.TaskbarProgress.AnimateToValueAsync(System.Double,System.Int32,System.Int32)">
+            <summary>
+            Animates towards a specified progress <paramref name="target"/> within a specified <paramref name="duration"/>.
+            </summary>
+            <param name="target">The value to animate progress towards.</param>
+            <param name="duration">The amount of time for the animation to take in milliseconds. It may not be possible to obey this (exactly) in all cases.</param>
+            <param name="steps">The number of steps to take to reach the target value. This is ignored if greater than <paramref name="duration"/>.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that completes when the animation has finished.</returns>
+        </member>
+        <member name="P:LaquaiLib.Windows.Util.TaskbarProgress.Value">
+            <summary>
+            Gets or sets the current value of the taskbar progress bar.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController">
+            <summary>
+            Represents a controller for managing the volume of a specific window or process.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.Util.VolumeManager.VolumeController.ProcessNameOrTitle">
+            <summary>
+            The name of the process or window title this handler targets.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.Util.VolumeManager.VolumeController.OnFocusReceived">
+            <summary>
+            The <see cref="T:System.Action`1"/> that is invoked when the targeted window gains focus.
+            It is passed the <see cref="T:CoreAudio.AudioSessionControl2"/> representing the window.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Windows.Util.VolumeManager.VolumeController.OnFocusLost">
+            <summary>
+            The <see cref="T:System.Action`1"/> that is invoked when the targeted window loses focus.
+            It is passed the <see cref="T:CoreAudio.AudioSessionControl2"/> representing the window.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.VolumeManager.VolumeController.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/> class.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Windows.Util.VolumeManager.VolumeControllerManager">
+            <summary>
+            Implements a manager for creating <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/>s.
+            </summary>
+            <remarks>
+            Initializes a new <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeControllerManager"/> with the specified default focus received and lost actions.
+            </remarks>
+            <param name="defaultOnFocusReceived">The <see cref="T:System.Action`1"/> to be called when a window or process represented by a <see cref="T:CoreAudio.AudioSessionControl2"/> receives focus.</param>
+            <param name="defaultOnFocusLost">The <see cref="T:System.Action`1"/> to be called when a window or process represented by a <see cref="T:CoreAudio.AudioSessionControl2"/> loses focus.</param>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.VolumeManager.VolumeControllerManager.#ctor(System.Action{CoreAudio.AudioSessionControl2},System.Action{CoreAudio.AudioSessionControl2})">
+            <summary>
+            Implements a manager for creating <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/>s.
+            </summary>
+            <remarks>
+            Initializes a new <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeControllerManager"/> with the specified default focus received and lost actions.
+            </remarks>
+            <param name="defaultOnFocusReceived">The <see cref="T:System.Action`1"/> to be called when a window or process represented by a <see cref="T:CoreAudio.AudioSessionControl2"/> receives focus.</param>
+            <param name="defaultOnFocusLost">The <see cref="T:System.Action`1"/> to be called when a window or process represented by a <see cref="T:CoreAudio.AudioSessionControl2"/> loses focus.</param>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.VolumeManager.VolumeControllerManager.CreateController(System.String,System.Action{CoreAudio.AudioSessionControl2},System.Action{CoreAudio.AudioSessionControl2})">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/> with the specified process name or title and focus received and lost actions.
+            </summary>
+            <param name="processNameOrTitle">The name or title of the window or process to be controlled by the <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/>.</param>
+            <param name="onFocusReceived">The <see cref="T:System.Action`1"/> to be called when the window or process represented by the <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/> receives focus. If omitted or <see langword="null"/>, the default focus received action will be used.</param>
+            <param name="onFocusLost">The <see cref="T:System.Action`1"/> to be called when the window or process represented by the <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/> loses focus. If omitted or <see langword="null"/>, the default focus lost action will be used.</param>
+            <returns>The created <see cref="T:LaquaiLib.Windows.Util.VolumeManager.VolumeController"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Windows.Util.WindowsServices">
+            <summary>
+            Contains helper methods for Windows services.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.Util.WindowsServices.IsRunningAsService(System.String,System.Int32)">
+            <summary>
+            Determines whether the process with the specified <paramref name="processId"/> is running as a Windows service with the specified <paramref name="serviceName"/>.
+            </summary>
+            <param name="serviceName">The name of the Windows service.</param>
+            <param name="processId">The ID of the process to check.</param> 
+            <returns><see langword="true"/> if the process is running as a Windows service, otherwise <see langword="false"/>.</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Windows.Util.WindowsServices.IsRunningAsService(System.String,System.Diagnostics.Process)" -->
+        <member name="T:LaquaiLib.Windows.Util.WpfHelper">
+            <summary>
+            Provides utility methods for WPF applications.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Windows.ValueConverters.BoolInverterConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that inverts a <see cref="T:System.Boolean"/> value.ss
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.ValueConverters.BoolInverterConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts a <see cref="T:System.Boolean"/> value to its inverse.
+            </summary>
+            <param name="value">The input bool value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns>The inverse of the input <paramref name="value"/>.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the input <paramref name="value"/> is not a <see cref="T:System.Boolean"/>.</exception>
+        </member>
+        <member name="M:LaquaiLib.Windows.ValueConverters.BoolInverterConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts an "inverse" <see cref="T:System.Boolean"/> value to its original value.
+            </summary>
+            <param name="value">The input bool value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns>The inverse of the input <paramref name="value"/>.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the input <paramref name="value"/> is not a <see cref="T:System.Boolean"/>.</exception>
+        </member>
+        <member name="T:LaquaiLib.Windows.ValueConverters.NullToBoolConverter">
+            <summary>
+            Represents an <see cref="T:System.Windows.Data.IValueConverter"/> implementation that returns a <see cref="T:System.Boolean"/> value depending on whether the given input is null. Passing <see langword="true"/> as the parameter inverts the result of the conversion.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Windows.ValueConverters.NullToBoolConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Converts a given <paramref name="value"/> to a <see cref="T:System.Boolean"/>.
+            If <paramref name="parameter"/> is <see langword="true"/> or the string "true", the result of the conversion is precisely <c>value is not <see langword="null"/></c>, otherwise it is precisely <c>value is <see langword="null"/></c>.
+            </summary>
+            <param name="value">The input value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter that, when equal to <see langword="true"/>, inverts the result of the conversion.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.ValueConverters.NullToBoolConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            [Unsupported] Converts a previously converted <paramref name="value"/> back to its original value. This method unconditionally throws a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+            <param name="value">The input value.</param>
+            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
+            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
+            <param name="culture">Which culture to use when converting / formatting the value.</param>
+            <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor">
+            <summary>
+            Allows reading and writing arbitrary memory of the current or another process.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.AllowSystemModules">
+            <summary>
+            Gets whether the internals of <see cref="T:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor"/> will map and allow access to the memory spaces of system modules.
+            This field is constant.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.AllowForeignModules">
+            <summary>
+            Gets whether the internals of <see cref="T:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor"/> will map and allow access to the memory spaces of modules that do not belong to the target process.
+            This field is constant.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Force">
+            <summary>
+            Gets whether <see cref="M:System.Diagnostics.Process.EnterDebugMode"/> is called when an instance of this type is initialized.
+            This field is constant.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.#ctor(System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor"/> with the specified process ID.
+            Failure to acquire a handle to the target process will throw an <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+            <param name="pid">The process ID of the target process.</param>
+            <remarks>
+            <see cref="T:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor"/> can only be initialized with PIDs since names may not be unique.
+            <para/>Manual disposal of instances of this type is paramount to prevent resource leaks.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.#ctor(System.Diagnostics.Process)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor"/> with the specified process ID.
+            Failure to acquire a handle to the target process will throw an <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+            <param name="process">A <see cref="T:System.Diagnostics.Process"/> instance that represents the target process.</param>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.DumpInfo(System.Int64@)">
+            <summary>
+            Attempts to find information about the approximate amount of space required to dump the entire owned memory of the current process into a buffer or file.
+            </summary>
+            <param name="memory">The amount of memory required to dump the entire owned memory of the current process.</param>
+            <remarks>
+            This requires exactly the same processing as <see cref="!:Dump(Span&lt;T&gt;)"/> or <see cref="!:Dump(Stream)"/>, so guarding calls to those methods with this one is extremely wasteful.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.TryRead``1(System.IntPtr,System.IntPtr,``0@)">
+            <summary>
+            Attempts to read a single value of type <typeparamref name="T"/> from the target process at the specified address and offset.
+            </summary>
+            <typeparam name="T">The type of the value to read. Must be a <see langword="struct"/>.</typeparam>
+            <param name="address">The address within the target process's memory space to read from.</param>
+            <param name="offset">The offset from the address to read from.</param>
+            <returns><see langword="true"/> if the read operation was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.TryRead``1(System.IntPtr,``0@)">
+            <summary>
+            Attempts to read a single value of type <typeparamref name="T"/> at the specified offset in the <see cref="P:System.Diagnostics.Process.MainModule"/> of the target process.
+            </summary>
+            <param name="offset">The offset from the base address of the <see cref="P:System.Diagnostics.Process.MainModule"/> to read from.</param>
+            <typeparam name="T">The type of the value to read. Must be a <see langword="struct"/>.</typeparam>
+            <returns><see langword="true"/> if the read operation was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Read``1(System.IntPtr,System.IntPtr)">
+            <summary>
+            Reads a single value of type <typeparamref name="T"/> from the target process at the specified address and offset.
+            </summary>
+            <typeparam name="T">The type of the value to read. Must be a <see langword="struct"/>.</typeparam>
+            <param name="address">The address within the target process's memory space to read from.</param>
+            <param name="offset">The offset from the address to read from.</param>
+            <returns>The value of type <typeparamref name="T"/> read from the target process.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Read``1(System.IntPtr)">
+            <summary>
+            Reads a single value of type <typeparamref name="T"/> at the specified offset in the <see cref="P:System.Diagnostics.Process.MainModule"/> of the target process.
+            </summary>
+            <param name="offset">The offset from the base address of the <see cref="P:System.Diagnostics.Process.MainModule"/> to read from.</param>
+            <typeparam name="T">The type of the value to read. Must be a <see langword="struct"/>.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.TryRead(System.IntPtr,System.IntPtr,System.Span{System.Byte})">
+            <summary>
+            Attempts to read as many bytes as will fit into <paramref name="destination"/> from the target process's memory space at the specified address and offset.
+            </summary>
+            <param name="address">The address within the target process's memory space to read from.</param>
+            <param name="offset">The offset from the address to read from.</param>
+            <param name="destination">The span to write the value to.</param>
+            <returns><see langword="true"/> if the read operation was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.TryRead(System.IntPtr,System.Span{System.Byte})">
+            <summary>
+            Attempts to read as many bytes as will fit into <paramref name="destination"/> at the specified offset in the <see cref="P:System.Diagnostics.Process.MainModule"/> of the target process.
+            </summary>
+            <returns><see langword="true"/> if the read operation was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Read(System.IntPtr,System.IntPtr,System.Span{System.Byte})">
+            <summary>
+            Reads as many bytes as will fit into <paramref name="destination"/> from the target process's memory space at the specified address and offset.
+            </summary>
+            <param name="address">The address within the target process's memory space to read from.</param>
+            <param name="offset">The offset from the address to read from.</param>
+            <param name="destination">The span to write the data into.</param>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Read(System.IntPtr,System.Span{System.Byte})">
+            <summary>
+            Reads as many bytes as will fit into <paramref name="destination"/> at the specified offset in the <see cref="P:System.Diagnostics.Process.MainModule"/> of the target process.
+            </summary>
+            <param name="offset">The offset from the base address of the <see cref="P:System.Diagnostics.Process.MainModule"/> to read from.</param>
+            <param name="destination">The span to write the data into.</param>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Find(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Attempts to find a sequence of bytes in the target process's memory space.
+            The search is conducted in all supported modules of the target process.
+            </summary>
+            <param name="data">The sequence of bytes to search for.</param>
+            <returns>The address of the first occurrence of the sequence of bytes in the target process's memory space, or <see cref="F:System.IntPtr.Zero"/> if the sequence was not found.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Find``1(``0)">
+            <summary>
+            Attempts to find the sequence of bytes that make up the specified instance of <typeparamref name="T"/> in the target process's memory space.
+            The search is conducted in all supported modules of the target process.
+            </summary>
+            <typeparam name="T">The type of the instance to search for. Must be a <see langword="struct"/>.</typeparam>
+            <param name="instance">The instance to search for.</param>
+            <returns>The address of the first occurrence of the sequence of bytes in the target process's memory space, or <see cref="F:System.IntPtr.Zero"/> if the sequence was not found.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Find(System.String,System.Text.Encoding)">
+            <summary>
+            Attempts to find the specified string in the target process's memory space.
+            The search is conducted in all supported modules of the target process.
+            </summary>
+            <param name="str">The string to search for.</param>
+            <param name="encoding">The encoding to use when converting the string to bytes. If <see langword="null"/>, the default encoding is used.</param>
+            <returns>The address of the first occurrence of the string in the target process's memory space, or <see cref="F:System.IntPtr.Zero"/> if the string was not found.</returns>
+            <remarks>
+            <see cref="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Find(System.String,System.Text.Encoding)"/> is the only <c>Find</c> overload that must allocate to work. It is recommended for callers to utilize an existing buffer and use <see cref="M:System.Text.Encoding.GetMaxByteCount(System.Int32)"/> and <see cref="M:System.Text.Encoding.GetBytes(System.ReadOnlySpan{System.Char},System.Span{System.Byte})"/> and call <see cref="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Find(System.ReadOnlySpan{System.Byte})"/> to avoid unnecessary allocations.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Write(System.IntPtr,System.IntPtr,System.ReadOnlySpan{System.Byte},System.Boolean)">
+            <summary>
+            Writes a sequence of bytes to the target process's memory space at the specified address and offset, optionally writing a reversed copy for little-endian systems instead.
+            </summary>
+            <param name="address">The address within the target process's memory space to write to.</param>
+            <param name="offset">The offset from the address to write to.</param>
+            <param name="data">The sequence of bytes to write.</param>
+            <param name="reverseLittleEndian">Whether to create a reversed copy the data for little-endian systems. Passing large enough <paramref name="data"/> buffers may require allocation. This parameter is ignored when <see cref="F:System.BitConverter.IsLittleEndian"/> is <see langword="false"/>.</param>
+            <returns><see langword="true"/> if the write operation was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Write(System.IntPtr,System.IntPtr,System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Writes a sequence of bytes to the target process's memory space at the specified address and offset.
+            The byte sequence is not reversed for little-endian systems.
+            </summary>
+            <param name="address">The address within the target process's memory space to write to.</param>
+            <param name="offset">The offset from the address to write to.</param>
+            <param name="data">The sequence of bytes to write.</param>
+            <returns><see langword="true"/> if the write operation was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor.Write``1(System.IntPtr,System.IntPtr,``0)">
+            <summary>
+            Writes the bytes that make up a single value of type <typeparamref name="T"/> to the target process's memory space at the specified address and offset.
+            </summary>
+            <typeparam name="T">The type of the value to write. Must be a <see langword="struct"/>.</typeparam>
+            <param name="address">The address within the target process's memory space to write to.</param>
+            <param name="offset">The offset from the address to write to.</param>
+            <param name="instance">The value to write.</param>
+            <returns><see langword="true"/> if the write operation was successful, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.Delete">
+            <summary>
+            Required to delete the object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ReadControl">
+            <summary>
+            Required to read information in the security descriptor for the object, not including the information in the SACL.
+            To read or write the SACL, you must request the <b>ACCESS_SYSTEM_SECURITY</b> access right.
+            For more information, see <see href="https://learn.microsoft.com/en-us/windows/win32/secauthz/sacl-access-right">SACL Access Right</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.Synchronize">
+            <summary>
+            The right to use the object for synchronization.
+            This enables a thread to wait until the object is in the signaled state.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.WriteDac">
+            <summary>
+            Required to modify the DACL in the security descriptor for the object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.WriteOwner">
+            <summary>
+            Required to change the owner in the security descriptor for the object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.StandardRightsAll">
+            <summary>
+            Combines <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.Delete"/>, <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ReadControl"/>, <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.WriteDac"/>, <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.WriteOwner"/>, and <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.Synchronize"/> access.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.StandardRightsRequired">
+            <summary>
+            Combines <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.Delete"/>, <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ReadControl"/>, <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.WriteDac"/> and <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.WriteOwner"/> access.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessAllAccess">
+            <summary>
+            All possible access rights for a process object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessCreateProcess">
+            <summary>
+            Required to use this process as the parent process with <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute">PROC_THREAD_ATTRIBUTE_PARENT_PROCESS</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessCreateThread">
+            <summary>
+            Required to create a thread in the process.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessDupHandle">
+            <summary>
+            Required to duplicate a handle using <see href="https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle">DuplicateHandle</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessQueryInformation">
+            <summary>
+            Required to retrieve certain information about a process, such as its token, exit code, and priority class (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocesstoken">OpenProcessToken</see>).
+            A handle that has this access right is implicitly also granted the <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessQueryInformation"/> access right.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessQueryLimitedInformation">
+            <summary>
+            Required to retrieve certain information about a process (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess">GetExitCodeProcess</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getpriorityclass">GetPriorityClass</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/jobapi/nf-jobapi-isprocessinjob">IsProcessInJob</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamea">QueryFullProcessImageName</see>).
+            A handle that has the <see cref="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessQueryInformation"/> access right is implicitly also granted this access right.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessSetInformation">
+            <summary>
+            Required to set certain information about a process, such as its priority class (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setpriorityclass">SetPriorityClass</see>).
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessSetQuota">
+            <summary>
+            Required to set memory limits using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-setprocessworkingsetsize">SetProcessWorkingSetSize</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessSuspendResume">
+            <summary>
+            Required to suspend or resume a process.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessTerminate">
+            <summary>
+            Required to terminate a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess">TerminateProcess</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessVMOperation">
+            <summary>
+            Required to perform an operation on the address space of a process (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualprotectex">VirtualProtectEx</see> and <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>).
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessVMRead">
+            <summary>
+            Required to read memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory">ReadProcessMemory</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.UnsafeUtils.ProcessOpenAccess.ProcessVMWrite">
+            <summary>
+            Required to write to memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ScreenCapture">
+            <summary>
+            Wraps some screenshot functionality from <see cref="T:System.Drawing.Bitmap"/> and <see cref="T:System.Drawing.Graphics"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.ResolutionScales">
+            <summary>
+            The resolution scales set in Windows Settings for each monitor. They are used whenever the capture region is automatically set.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Captures a region of the screen. Passed coordinates are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <returns>The <see cref="T:System.Drawing.Bitmap"/> created by capturing the region.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.Drawing.Rectangle)">
+            <summary>
+            Captures a region of the screen.
+            Position coordinates of the passed <see cref="T:System.Drawing.Rectangle"/> are not corrected using <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/>.
+            </summary>
+            <param name="region">The region to capture.</param>
+            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the given region.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture(System.IntPtr)">
+            <summary>
+            Captures a region of the screen as defined by the bounding rectangle of the passed <paramref name="hWnd"/>.
+            </summary>
+            <param name="hWnd">The handle of the window to capture.</param>
+            <returns>The <see cref="T:System.Drawing.Bitmap"/> created by capturing the region.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Capture">
+            <summary>
+            Captures the entire primary screen.
+            </summary>
+            <returns>A <see cref="T:System.Drawing.Bitmap"/> object containing the capture created from the primary screen.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.TestRegion(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Creates a test image to show which region the passed coordinates would capture. If <paramref name="extract"/> is <see langword="false"/>, a red rectangle is painted onto the created capture <see cref="T:System.Drawing.Bitmap"/> to show this region. Otherwise, only the pixels inside the region are written to the output file. A singular blue pixel shows the center of this region.
+            </summary>
+            <remarks>
+            The blue center pixel may be off-center if the chosen region has even width and/or height.
+            </remarks>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <param name="extract">Whether to only write the pixels inside the region to the output image.</param>
+            <returns>The path to saved <see cref="T:System.Drawing.Bitmap"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@)">
+            <summary>
+            Scales the passed coordinates using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
+            <param name="x">The <c>x</c>-coordinate to scale.</param>
+            <param name="y">The <c>y</c>-coordinate to scale.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+            Scales the passed coordinates using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
+            <param name="x1">The <c>x</c>-coordinate of the top-left point to scale.</param>
+            <param name="y1">The <c>y</c>-coordinate of the top-left point to scale.</param>
+            <param name="x2">The <c>x</c>-coordinate of the bottom-right point to scale.</param>
+            <param name="y2">The <c>y</c>-coordinate of the bottom-right point to scale.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScaleCoordinates(System.Int32,System.Boolean,System.Drawing.Rectangle@)">
+            <summary>
+            Scales the passed <see cref="T:System.Drawing.Rectangle"/> using the <see cref="P:LaquaiLib.Util.ScreenCapture.ResolutionScales"/> to monitor coordinates.
+            </summary>
+            <param name="monitor">The monitor to scale the coordinates for.</param>
+            <param name="scaleDown">Whether to scale down (<see langword="true"/>) or up (<see langword="false"/>).</param>
+            <param name="rect">The <see cref="T:System.Drawing.Rectangle"/> to scale.</param>
+        </member>
+        <member name="E:LaquaiLib.Util.ScreenCapture.Captured">
+            <summary>
+            Occurs when this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures the configured region, but only if <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> is satisfied.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.Predicate">
+            <summary>
+            The predicate that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Util.ScreenCapture.Timer">
+            <summary>
+            The <see cref="T:System.Threading.Timer"/> that controls when captures are made.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.IsCapturing">
+            <summary>
+            Whether this <see cref="T:LaquaiLib.Util.ScreenCapture"/> is currently creating captures and may raise the <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.Region">
+            <summary>
+            The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.IsCaptureRegionScreen">
+            <summary>
+            Whether the configured capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> is the entire primary screen.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Start">
+            <summary>
+            Causes this <see cref="T:LaquaiLib.Util.ScreenCapture"/> to create captures and raise the <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Stop">
+            <summary>
+            Causes this <see cref="T:LaquaiLib.Util.ScreenCapture"/> to no longer create captures and raise the <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Func{System.Boolean})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the entire primary screen and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Drawing.Rectangle)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="region">The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Drawing.Rectangle,System.Func{System.Boolean})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to the passed <paramref name="region"/> and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="region">The region this <see cref="T:LaquaiLib.Util.ScreenCapture"/> captures.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Func{System.Boolean})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> created from a series of passed coordinates and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="x1">The x-coordinate of the top-left point of the region.</param>
+            <param name="y1">The y-coordinate of the top-left point of the region.</param>
+            <param name="x2">The x-coordinate of the bottom-right point of the region.</param>
+            <param name="y2">The y-coordinate of the bottom-right point of the region.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that allows all created captures.
+            </summary>
+            <param name="monitor">The number of the monitor to capture.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.#ctor(System.Int32,System.Func{System.Boolean})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.ScreenCapture"/> with the capture <see cref="P:LaquaiLib.Util.ScreenCapture.Region"/> set to a specific screen and a passed <paramref name="predicate"/>.
+            </summary>
+            <param name="monitor">The number of the monitor to capture.</param>
+            <param name="predicate">The <see cref="P:LaquaiLib.Util.ScreenCapture.Predicate"/> that is checked whenever a capture would occur. If this returns <see langword="false"/>, the capture is discarded.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.InitTimer">
+            <summary>
+            Initializes the <see cref="F:LaquaiLib.Util.ScreenCapture.Timer"/> that controls when captures are made.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.RaiseEvent(LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs)">
+            <summary>
+            Event raise wrapper.
+            </summary>
+            <param name="e">The <see cref="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs"/> passed when raising the event.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.Finalize">
+            <summary>
+            Destructor. Ensures that the <see cref="F:LaquaiLib.Util.ScreenCapture.Timer"/> no longer causes captures to be made when this <see cref="T:LaquaiLib.Util.ScreenCapture"/> dies.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs">
+            <summary>
+            Event args that are passed when raising a <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+            <remarks>
+            Initializes <see cref="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+            </remarks>
+            <param name="bitmap"></param>
+            <param name="timestamp"></param>
+        </member>
+        <member name="M:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs.#ctor(System.Drawing.Bitmap,System.DateTime)">
+            <summary>
+            Event args that are passed when raising a <see cref="E:LaquaiLib.Util.ScreenCapture.Captured"/> event.
+            </summary>
+            <remarks>
+            Initializes <see cref="T:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+            </remarks>
+            <param name="bitmap"></param>
+            <param name="timestamp"></param>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs.Bitmap">
+            <summary>
+            The created <see cref="T:System.Drawing.Bitmap"/> capture.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ScreenCapture.ScreenCaptureEventArgs.CaptureTime">
+            <summary>
+            When the capture was created.
+            </summary>
+        </member>
+    </members>
+</doc>

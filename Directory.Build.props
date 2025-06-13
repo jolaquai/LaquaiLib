@@ -1,49 +1,40 @@
 <Project>
-    <PropertyGroup>
-        <CoreFramework>net9.0</CoreFramework>
-        <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
-        <CoreVersion>1.3.8</CoreVersion>
+    <PropertyGroup>
+        <CoreVersion>10.0.0</CoreVersion>
         <PackageVersion>$(CoreVersion)</PackageVersion>
         <FileVersion>$(CoreVersion)</FileVersion>
         <AssemblyVersion>$(CoreVersion)</AssemblyVersion>
 
-        <CoreAuthors>Joshua Laquai</CoreAuthors>
-        <CoreDescription>Personal libary.</CoreDescription>
-        <CoreUrl>https://github.com/jolaquai/LaquaiLib</CoreUrl>
-        <Authors>$(CoreAuthors)</Authors>
-        <Description>$(CoreDescription)</Description>
-        <Copyright>(C) $(CoreAuthors) 20xx</Copyright><IncludeSource>True</IncludeSource>
-        <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
-        <PackageId>$(Title)</PackageId>
-        <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-    </PropertyGroup>
-
-    <PropertyGroup>
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <DebugType>embedded</DebugType>
+        <DebugType>full</DebugType>
         <DebugSymbols>True</DebugSymbols>
         <IncludeSymbols>True</IncludeSymbols>
         <IncludeSource>True</IncludeSource>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <AnalysisLevel>preview-all</AnalysisLevel>
         <AnalysisMode>all</AnalysisMode>
-        <Platforms>AnyCPU;x64;x86</Platforms>
 
-        <NoWarn>$(NoWarn);CS8714;IDE0290;IDE0010;IDE0045;IDE0046;IDE0079;IDE0072;IDE0058;IDE0060</NoWarn>
+        <NoWarn>$(NoWarn);CS8714;IDE0010;IDE0045;IDE0046;IDE0079;IDE0072;IDE0058;IDE0060</NoWarn>
 
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>obj\Generated</CompilerGeneratedFilesOutputPath>
+        <Title>$([System.IO.Path]::GetFileNameWithoutExtension('$(MSBuildProjectFullPath)'))</Title>
+        <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
+        <CoreAuthors>Joshua Laquai</CoreAuthors>
+        <CoreDescription>Personal libary.</CoreDescription>
+        <CoreUrl>https://github.com/jolaquai/LaquaiLib</CoreUrl>
+        <Authors>$(CoreAuthors)</Authors>
+        <Description>$(CoreDescription)</Description>
+        <PackageDescription>$(CoreDescription)</PackageDescription>
+        <Copyright>(C) $(CoreAuthors) $([System.DateTime]::Now.Year.ToString())</Copyright>
+        <IncludeSource>True</IncludeSource>
+        <PackageProjectUrl>$(CoreUrl)</PackageProjectUrl>
+        <PackageId>$(Title)</PackageId>
+        <RepositoryUrl>$(CoreUrl)</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Analyzers' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="..\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
-      <ProjectReference Condition="'$(MSBuildProjectName)' != 'LaquaiLib.Generators' And '$(MSBuildProjectName)' != 'LaquaiLib.Generators'" Include="..\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" PrivateAssets="all" />
-    </ItemGroup>
 </Project>
