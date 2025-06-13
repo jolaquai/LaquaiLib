@@ -3,6 +3,8 @@
 
     <PropertyGroup>
         <PackageDescription>Contains core functionality shared among the other parts of LaquaiLib.</PackageDescription>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
 
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>

@@ -283,7 +283,7 @@ public class IEnumerableTaskTResultExtensionsTests
             Task.Run<int>(async () => throw new ArgumentException("Error 2"))
         };
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await tasks.WhenAll());
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(tasks.WhenAll);
 
         Assert.IsType<InvalidOperationException>(exception);
     }

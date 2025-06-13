@@ -151,8 +151,7 @@ public static partial class FirstChanceExceptionHandlers
                         .SkipWhile(l => !l.Contains("ordinal hint RVA", StringComparison.OrdinalIgnoreCase))
                         .Skip(1)
                         .TakeWhile(l => !string.IsNullOrWhiteSpace(l))
-                        .Select(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last())
-                        .ToArray();
+                        .ToArray(l => l.Split(' ', StringSplitOptions.RemoveEmptyEntries).Last());
                     possibleEntryPoints = Array.FindAll(entryPoints, ep => ep.StartsWith(entryPoint, StringComparison.OrdinalIgnoreCase));
                     Array.Sort(possibleEntryPoints);
                 }

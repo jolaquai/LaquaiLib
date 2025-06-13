@@ -11,27 +11,30 @@ public static partial class IEnumerableExtensions
     {
         #region ToStack
         /// <summary>
-        /// Creates a new <see cref="Stack{T}"/> from the specified <see cref="IEnumerable{T}"/>.
+        /// Creates a new <see cref="Stack{T}"/> from the specified <see cref="IEnumerable{T}"/>, optionally preserving the order of elements (that is, the default behavior of <see cref="Stack{T}"/> would cause the elements to be popped in reverse order).
         /// </summary>
+        /// <param name="preserveOrder">Whether to preserve the order of elements in the resulting <see cref="Stack{T}"/>. If set to <see langword="true"/>, the elements will be popped in the same order as they appear in the source collection.</param>
         /// <returns>The created <see cref="Stack{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Stack<T> ToStack() => new Stack<T>(source);
+        public Stack<T> ToStack(bool preserveOrder = false) => preserveOrder ? new Stack<T>(source.Reverse()) : new Stack<T>(source);
         /// <summary>
-        /// Creates a new <see cref="Stack{T}"/> from the specified <see cref="IEnumerable{T}"/> using the specified <paramref name="selector"/> function.
+        /// Creates a new <see cref="Stack{T}"/> from the specified <see cref="IEnumerable{T}"/> using the specified <paramref name="selector"/> function, optionally preserving the order of elements (that is, the default behavior of <see cref="Stack{T}"/> would cause the elements to be popped in reverse order).
         /// </summary>
         /// <typeparam name="TResult">The type of the elements in the resulting <see cref="Stack{T}"/>.</typeparam>
         /// <param name="selector">The function to transform each element of the source collection.</param>
+        /// <param name="preserveOrder">Whether to preserve the order of elements in the resulting <see cref="Stack{T}"/>. If set to <see langword="true"/>, the elements will be popped in the same order as they appear in the source collection.</param>
         /// <returns>The created <see cref="Stack{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Stack<TResult> ToStack<TResult>(Func<T, TResult> selector) => source.Select(selector).ToStack();
+        public Stack<TResult> ToStack<TResult>(Func<T, TResult> selector, bool preserveOrder = false) => ToStack(source.Select(selector), preserveOrder);
         /// <summary>
-        /// Creates a new <see cref="Stack{T}"/> from the specified <see cref="IEnumerable{T}"/> using the specified <paramref name="selector"/> function.
+        /// Creates a new <see cref="Stack{T}"/> from the specified <see cref="IEnumerable{T}"/> using the specified <paramref name="selector"/> function, optionally preserving the order of elements (that is, the default behavior of <see cref="Stack{T}"/> would cause the elements to be popped in reverse order).
         /// </summary>
         /// <typeparam name="TResult">The type of the elements in the resulting <see cref="Stack{T}"/>.</typeparam>
         /// <param name="selector">The function to transform each element of the source collection.</param>
+        /// <param name="preserveOrder">Whether to preserve the order of elements in the resulting <see cref="Stack{T}"/>. If set to <see langword="true"/>, the elements will be popped in the same order as they appear in the source collection.</param>
         /// <returns>The created <see cref="Stack{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Stack<TResult> ToStack<TResult>(Func<T, int, TResult> selector) => source.Select(selector).ToStack();
+        public Stack<TResult> ToStack<TResult>(Func<T, int, TResult> selector, bool preserveOrder = false) => ToStack(source.Select(selector), preserveOrder);
         #endregion
 
         #region ToQueue

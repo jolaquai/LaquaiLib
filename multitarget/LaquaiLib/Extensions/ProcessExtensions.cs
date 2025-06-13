@@ -73,7 +73,6 @@ public static partial class ProcessExtensions
         /// </summary>
         /// <param name="process">The <see cref="Process"/> instance.</param>
         /// <returns><see langword="true"/> if the new affinity mask could be set, otherwise <see langword="false"/>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // same as above, plus an additional right-shift by 2 to divide by 4
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SetGamingAffinity() => process.SetNegativeAffinity((1ul << (Environment.ProcessorCount >> 2)) - 1);

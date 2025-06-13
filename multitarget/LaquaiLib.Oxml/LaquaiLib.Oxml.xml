@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LaquaiLib.Oxml</name>
+    </assembly>
+    <members>
+        <member name="T:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions">
+            <summary>
+            Provides extension methods for <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> and derived types.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.IsOnlyChild">
+            <summary>
+            Determines if this element is the only child of its parent.
+            This takes into account various *Properties elements that should not be counted as children.
+            </summary>
+            <param name="element">The element to check.</param>
+            <returns><see langword="true"/> if <paramref name="element"/> is the only child of its parent, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.IsOnlyChildOf(DocumentFormat.OpenXml.OpenXmlElement)">
+            <summary>
+            Determines if this element is the only child of <paramref name="potentialParent"/>.
+            If <paramref name="potentialParent"/> is not the actual parent of <paramref name="element"/>, this method returns <see langword="false"/>.
+            </summary>
+            <param name="element">The element to check.</param>
+            <param name="potentialParent">The potential parent to check against.</param>
+            <returns><see langword="true"/> if <paramref name="element"/> is the only child of <paramref name="potentialParent"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="P:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.NormalizedOuterXml">
+            <summary>
+            Returns a normalized version of the <see cref="P:DocumentFormat.OpenXml.OpenXmlElement.OuterXml"/> property, removing all namespace declarations and prefixes, and all RSID attributes.
+            </summary>
+            <param name="element">The element to normalize.</param>
+            <returns>The normalized XML as an <see cref="T:System.Xml.Linq.XElement"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.DeepEquals(DocumentFormat.OpenXml.OpenXmlElement)">
+            <summary>
+            Determines whether two <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> instances are equal, taking into account their entire element trees.
+            </summary>
+            <param name="element">The first <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> to compare.</param>
+            <param name="other">The second <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> to compare.</param>
+            <returns><see langword="true"/> if the specified <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> instances are equal, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.ElementsBetween(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement)">
+            <summary>
+            Returns an array of the <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/>s that lie between <paramref name="child1"/> and <paramref name="child2"/> in the child element list of <paramref name="element"/>.
+            This method fully enumerates the child elements of <paramref name="element"/>.
+            </summary>
+            <param name="element">The element to search in.</param>
+            <param name="child1">The first child element.</param>
+            <param name="child2">The second child element.</param>
+            <returns>The array as specified.</returns>
+            <remarks>
+            If either specified element is not a child of <paramref name="element"/>, an <see cref="T:System.ArgumentException"/> is thrown.
+            <para/>If <paramref name="child2"/> appears before <paramref name="child1"/> in the child element list, the order of the elements in the returned array is reversed as well.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.ElementsUpTo(DocumentFormat.OpenXml.OpenXmlElement)">
+            <summary>
+            Enumerates the <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/>s that lie between <paramref name="element"/> and the <paramref name="last"/> element. Neither is included in the enumeration.
+            </summary>
+            <param name="element">The element to start from.</param>
+            <param name="last">The element to stop at.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that enumerates the elements as specified.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.ElementsUpTo``1(DocumentFormat.OpenXml.OpenXmlElement)">
+            <summary>
+            Enumerates the <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/>s of type <typeparamref name="T"/> that lie between <paramref name="element"/> and the <paramref name="last"/> element. Neither is included in the enumeration.
+            </summary>
+            <typeparam name="T">The type of <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> to enumerate.</typeparam>
+            <param name="element">The element to start from.</param>
+            <param name="last">The element to stop at.</param>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that enumerates the elements as specified.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.get_IsOnlyChild(DocumentFormat.OpenXml.OpenXmlElement)">
+            <inheritdoc cref="P:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.IsOnlyChild"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.IsOnlyChildOf(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement)">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.IsOnlyChildOf(DocumentFormat.OpenXml.OpenXmlElement)"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.get_NormalizedOuterXml(DocumentFormat.OpenXml.OpenXmlElement)">
+            <inheritdoc cref="P:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.NormalizedOuterXml"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.DeepEquals(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement)">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.DeepEquals(DocumentFormat.OpenXml.OpenXmlElement)"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.ElementsBetween(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement)">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.ElementsBetween(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement)"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.ElementsUpTo(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement)">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.ElementsUpTo(DocumentFormat.OpenXml.OpenXmlElement)"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.ElementsUpTo``1(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.OpenXmlElement)">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__0.ElementsUpTo``1(DocumentFormat.OpenXml.OpenXmlElement)"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__1.CloneAll">
+            <summary>
+            Creates an array of deep clones of the specified elements.
+            </summary>
+            <param name="elements">The elements to clone.</param>
+            <returns>The created clones.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.CloneAll(System.Collections.Generic.IEnumerable{DocumentFormat.OpenXml.OpenXmlElement})">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__1.CloneAll"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__2`1.IsOnlyChildOfType">
+            <summary>
+            Determines if this element is the only child of its parent of type <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of the child element.</typeparam>
+            <param name="element">The element to check.</param>
+            <returns>The result of the check.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__2`1.ReplaceWith``1(``0)">
+            <summary>
+            Replaces the specified element with new content. The new element must not have parents.
+            </summary>
+            <typeparam name="TFrom">The type of the element that is replaced.</typeparam>
+            <typeparam name="TTo">The type of the new element.</typeparam>
+            <param name="element">The element to replace.</param>
+            <param name="newElement">The new element to replace the specified element with.</param>
+            <returns>A reference to the new element. Its parent is the same as the parent of the removed element.</returns>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__2`1.ReplaceWith(System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Replaces the specified element with new content. The new elements must not have parents.
+            </summary>
+            <typeparam name="T">The type of the element that is replaced.</typeparam>
+            <param name="element">The element to replace.</param>
+            <param name="newElements">The new elements to replace the specified element with.</param>
+            <returns>A reference to the removed element (which no longer has a parent).</returns>
+            <remarks>
+            Because this overload may insert multiple elements, the returned reference is to the removed element and not to one of the inserted elements.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.IsOnlyChildOfType``1(``0)">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__2`1.IsOnlyChildOfType"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.ReplaceWith``2(``0,``1)">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__2`1.ReplaceWith``1(``0)"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.ReplaceWith``1(``0,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__2`1.ReplaceWith(System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__3`1.InsertAt(System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
+            <summary>
+            Inserts the specified new elements at the specified index into the child list of the specified element. The order of <paramref name="newElements"/> is preserved.
+            Resolving the specified <paramref name="index"/> unfortunately requires fully enumerating the child elements of <paramref name="element"/>.
+            </summary>
+            <typeparam name="T">The type of the element that is inserted into.</typeparam>
+            <param name="element">The element to insert into.</param>
+            <param name="index">The index to insert the first new element at.</param>
+            <param name="newElements">The new elements to insert into the specified element.</param>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.InsertAt``1(``0,System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__3`1.InsertAt(System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})"/>
+        </member>
+    </members>
+</doc>

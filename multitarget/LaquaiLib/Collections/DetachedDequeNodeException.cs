@@ -4,13 +4,18 @@ namespace LaquaiLib.Collections;
 /// The exception that is thrown when <see cref="Deque{T}.EnsureIntegrity"/> encounters a <see cref="DequeNode{T}"/> that is not attached to a <see cref="Deque{T}"/>.
 /// </summary>
 /// <typeparam name="T">The type of the value the detached <see cref="DequeNode{T}"/> contains.</typeparam>
-public sealed class DetachedDequeNodeException<T> : Exception
+/// <remarks>
+/// Initializes a new <see cref="DetachedDequeNodeException{T}"/> with the offending <paramref name="node"/> and the kind of <paramref name="offense"/> that caused this exception to be thrown.
+/// </remarks>
+/// <param name="node">The detached <see cref="DequeNode{T}"/>.</param>
+/// <param name="offense">The kind of offense that <paramref name="node"/> committed which caused this exception to be thrown.</param>
+public sealed class DetachedDequeNodeException<T>(DequeNode<T> node, DetachedDequeNodeException<T>.OffenseKind offense) : Exception
 {
     /// <inheritdoc />
     public override string Message
     {
         get;
-    }
+    } = GetOffenseString(offense);
     /// <inheritdoc cref="Exception.InnerException"/>
     public new Exception InnerException
     {
@@ -22,26 +27,15 @@ public sealed class DetachedDequeNodeException<T> : Exception
     public DequeNode<T> Node
     {
         get;
-    }
+    } = node;
     /// <summary>
     /// The kind of offense that <see cref="Node"/> committed which caused this exception to be thrown.
     /// </summary>
     public OffenseKind Offense
     {
         get;
-    }
+    } = offense;
 
-    /// <summary>
-    /// Initializes a new <see cref="DetachedDequeNodeException{T}"/> with the offending <paramref name="node"/> and the kind of <paramref name="offense"/> that caused this exception to be thrown.
-    /// </summary>
-    /// <param name="node">The detached <see cref="DequeNode{T}"/>.</param>
-    /// <param name="offense">The kind of offense that <paramref name="node"/> committed which caused this exception to be thrown.</param>
-    public DetachedDequeNodeException(DequeNode<T> node, OffenseKind offense)
-    {
-        Message = GetOffenseString(offense);
-        Node = node;
-        Offense = offense;
-    }
     /// <summary>
     /// Initializes a new <see cref="DetachedDequeNodeException{T}"/> with the offending <paramref name="node"/>, the kind of <paramref name="offense"/> that caused this exception to be thrown, and an <paramref name="innerException"/>.
     /// </summary>

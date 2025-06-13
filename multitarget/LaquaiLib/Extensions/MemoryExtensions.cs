@@ -40,25 +40,6 @@ public static partial class MemoryExtensions
             return span;
         }
 
-        /// <summary>
-        /// Converts the elements of a <see cref="ReadOnlySpan{T}"/> using a <paramref name="selector"/> function.
-        /// </summary>
-        /// <typeparam name="TSource">The type of the elements of the input span.</typeparam>
-        /// <typeparam name="TResult">The type of the elements of the output array.</typeparam>
-        /// <param name="span">The input span.</param>
-        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input span and returns the result.</param>
-        /// <returns>The array of the results.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TResult[] ToArray<TResult>(Func<T, TResult> selector)
-        {
-            var ret = new TResult[span.Length];
-            for (var i = 0; i < span.Length; i++)
-            {
-                ret[i] = selector(span[i]);
-            }
-            return ret;
-        }
-
 #if !NET10_0_OR_GREATER
         /// <summary>
         /// Finds the index of the first occurrence of a specified value in the <see cref="ReadOnlySpan{T}"/> using an <see cref="IEqualityComparer{T}"/>.

@@ -13,8 +13,11 @@ public static class DelegateExtensions
         /// <typeparam name="TDelegate">The type of the <see cref="Delegate"/>.</typeparam>
         /// <param name="del">The <typeparamref name="TDelegate"/> to get the invocation list of.</param>
         /// <returns>The invocation list of the specified <see cref="Delegate"/> retyped as an array of <typeparamref name="TDelegate"/>, or <see langword="null"/> of that type if the delegate has no invocation list.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TDelegate[] GetTypedInvocationList() => Unsafe.As<TDelegate[]>(del?.GetInvocationList());
+        public TDelegate[] TypedInvocationList
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Unsafe.As<TDelegate[]>(del?.GetInvocationList());
+        }
     }
     extension(Delegate del)
     {
@@ -29,5 +32,22 @@ public static class DelegateExtensions
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TDelegate[] GetInvocationList<TDelegate>() where TDelegate : Delegate => Unsafe.As<TDelegate[]>(del?.GetInvocationList());
+
+        /// <summary>
+        /// Gets whether the specified <see cref="Delegate"/> is static.
+        /// </summary>
+        public bool IsStatic
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => del.Target is null && del.Method.IsStatic;
+        }
+        /// <summary>
+        /// Gets whether the specified <see cref="Delegate"/> is a closure (that is, a delegate that captures state from its surrounding scope where it was defined).
+        /// </summary>
+        public bool IsClosure
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => del.Target?.GetType().Name.Contains("DisplayClass") is true;
+        }
     }
 }

@@ -382,25 +382,20 @@ public partial class ScreenCapture
     /// <summary>
     /// Event args that are passed when raising a <see cref="Captured"/> event.
     /// </summary>
-    public class ScreenCaptureEventArgs : EventArgs
+    /// <remarks>
+    /// Initializes <see cref="ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
+    /// </remarks>
+    /// <param name="bitmap"></param>
+    /// <param name="timestamp"></param>
+    public class ScreenCaptureEventArgs(Bitmap bitmap, DateTime timestamp) : EventArgs
     {
         /// <summary>
         /// The created <see cref="System.Drawing.Bitmap"/> capture.
         /// </summary>
-        public Bitmap Bitmap { get; init; }
+        public Bitmap Bitmap { get; init; } = bitmap;
         /// <summary>
         /// When the capture was created.
         /// </summary>
-        public DateTime CaptureTime { get; init; }
-        /// <summary>
-        /// Initializes <see cref="ScreenCaptureEventArgs"/> with the passed <paramref name="bitmap"/> and <paramref name="timestamp"/>.
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <param name="timestamp"></param>
-        public ScreenCaptureEventArgs(Bitmap bitmap, DateTime timestamp)
-        {
-            Bitmap = bitmap;
-            CaptureTime = timestamp;
-        }
+        public DateTime CaptureTime { get; init; } = timestamp;
     }
 }

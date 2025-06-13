@@ -1217,7 +1217,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new[] { "a", "b", "c", "A", "B" };
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryLinear());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryLinear);
     }
 
     [Fact]
@@ -1225,7 +1225,7 @@ public class IEnumerableExtensionsTests
     {
         var source = Array.Empty<string>();
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryLinear());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryLinear);
     }
 
     [Fact]
@@ -1246,7 +1246,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new[] { "a", "A", "b", "B", "c" };
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryZipped());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryZipped);
     }
 
     [Fact]
@@ -1254,7 +1254,7 @@ public class IEnumerableExtensionsTests
     {
         var source = Array.Empty<string>();
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryZipped());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryZipped);
     }
 
     [Fact]

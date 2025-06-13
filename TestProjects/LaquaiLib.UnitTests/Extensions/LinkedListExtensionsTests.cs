@@ -36,7 +36,7 @@ public class LinkedListNodeExtensionsTests
     {
         LinkedListNode<int> node = null;
 
-        Assert.Throws<ArgumentNullException>(() => node.DequeNext());
+        Assert.Throws<ArgumentNullException>(node.DequeNext);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class LinkedListNodeExtensionsTests
     {
         LinkedListNode<int> node = null;
 
-        Assert.Throws<ArgumentNullException>(() => node.DequePrevious());
+        Assert.Throws<ArgumentNullException>(node.DequePrevious);
     }
 
     [Fact]

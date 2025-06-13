@@ -104,7 +104,7 @@ public class AsyncTimer : IAsyncDisposable
 
                     run ??= Task.Run(async () =>
                     {
-                        var callbacks = Callback.GetTypedInvocationList();
+                        var callbacks = Callback.TypedInvocationList;
                         var tasks = new Task[callbacks.Length];
                         for (var i = 0; i < callbacks.Length; i++)
                         {

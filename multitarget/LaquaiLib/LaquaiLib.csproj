@@ -3,6 +3,8 @@
   <PropertyGroup>
     <Title>LaquaiLib</Title>
     <PackageDescription>Personal library. General purpose.</PackageDescription>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />

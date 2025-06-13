@@ -201,12 +201,10 @@ public class IAsyncEnumerableExtensionsTests
         Assert.False(second.WasEnumerated);
     }
 
-    private class TrackingAsyncEnumerable<T> : IAsyncEnumerable<T>
+    private class TrackingAsyncEnumerable<T>(IAsyncEnumerable<T> inner) : IAsyncEnumerable<T>
     {
-        private readonly IAsyncEnumerable<T> _inner;
+        private readonly IAsyncEnumerable<T> _inner = inner;
         public bool WasEnumerated { get; private set; }
-
-        public TrackingAsyncEnumerable(IAsyncEnumerable<T> inner) => _inner = inner;
 
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
@@ -215,25 +213,17 @@ public class IAsyncEnumerableExtensionsTests
         }
     }
 
-    private class DisposeTrackingAsyncEnumerable<T> : IAsyncEnumerable<T>
+    private class DisposeTrackingAsyncEnumerable<T>(IAsyncEnumerable<T> inner) : IAsyncEnumerable<T>
     {
-        private readonly IAsyncEnumerable<T> _inner;
+        private readonly IAsyncEnumerable<T> _inner = inner;
         public bool IsDisposed { get; private set; }
-
-        public DisposeTrackingAsyncEnumerable(IAsyncEnumerable<T> inner) => _inner = inner;
 
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new DisposeTrackingEnumerator(this, _inner.GetAsyncEnumerator(cancellationToken));
 
-        private class DisposeTrackingEnumerator : IAsyncEnumerator<T>
+        private class DisposeTrackingEnumerator(IAsyncEnumerableExtensionsTests.DisposeTrackingAsyncEnumerable<T> parent, IAsyncEnumerator<T> innerEnumerator) : IAsyncEnumerator<T>
         {
-            private readonly DisposeTrackingAsyncEnumerable<T> _parent;
-            private readonly IAsyncEnumerator<T> _innerEnumerator;
-
-            public DisposeTrackingEnumerator(DisposeTrackingAsyncEnumerable<T> parent, IAsyncEnumerator<T> innerEnumerator)
-            {
-                _parent = parent;
-                _innerEnumerator = innerEnumerator;
-            }
+            private readonly DisposeTrackingAsyncEnumerable<T> _parent = parent;
+            private readonly IAsyncEnumerator<T> _innerEnumerator = innerEnumerator;
 
             public T Current => _innerEnumerator.Current;
 

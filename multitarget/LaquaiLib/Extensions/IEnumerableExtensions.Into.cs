@@ -1,18 +1,25 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using LaquaiLib.Interfaces;
+
+namespace LaquaiLib.Extensions;
 
 public static partial class IEnumerableExtensions
 {
     extension<T>(IEnumerable<T> source)
     {
         /// <summary>
+        /// Copies the elements of the input sequence into the <see cref="Span{T}"/> provided by the specified <see cref="ISpanProvider{T}"/>.
+        /// </summary>
+        /// <param name="spanProvider">An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> to copy elements to.</param>
+        /// <param name="startIndex">The index in the target <see cref="Span{T}"/> at which to start copying elements.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        public int CopyTo(ISpanProvider<T> spanProvider, int startIndex = 0) => Into(source, spanProvider.Span, startIndex);
+        /// <summary>
         /// Copies the elements of the input sequence into the specified <see cref="Array"/>, starting at the specified
         /// index.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="Array"/> to copy elements to.</param>
         /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-        /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Span{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the <paramref name="source"/> to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
+        /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Span{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
         /// <returns>The number of elements written to the target collection.</returns>
         public int Into(T[] target, int startIndex = 0, bool allowUnsafeMutation = false)
         {
@@ -95,13 +102,10 @@ public static partial class IEnumerableExtensions
             }
         }
         /// <summary>
-        /// Copies the elements of the input sequence into the specified <see cref="List{T}"/>, starting at the specified
-        /// index. The <see cref="List{T}"/> will be resized if the input sequence contains more elements than the <see
-        /// cref="List{T}"/>'s current capacity. Efficient <see cref="Span{T}"/>-based copying is employed when possible,
-        /// otherwise falling back to <see cref="List{T}.AddRange(IEnumerable{T})"/>.
+        /// Copies the elements of the input sequence into the specified <see cref="List{T}"/>, starting at the specified index.
+        /// The <see cref="List{T}"/> will be resized if the input sequence contains more elements than the <see cref="List{T}"/>'s current capacity.
+        /// Efficient <see cref="Span{T}"/>-based copying is employed when possible, otherwise falling back to <see cref="List{T}.AddRange(IEnumerable{T})"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="List{T}"/> to copy elements to.</param>
         /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
         /// <returns>The number of elements written to the target collection.</returns>
@@ -180,8 +184,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Adds the elements of the input sequence to the end of the specified <see cref="List{T}"/>. The <see cref="List{T}"/> will be resized if the input sequence contains more elements than the <see cref="List{T}"/>'s current capacity (beyond its count). Efficient <see cref="Span{T}"/>-based copying is employed when possible, otherwise falling back to <see cref="List{T}.AddRange(IEnumerable{T})"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="List{T}"/> to copy elements to.</param>
         /// <returns>The number of elements written to the target collection.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -189,11 +191,9 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Copies the elements of the input sequence into the specified <see cref="Span{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="Span{T}"/> to copy elements to.</param>
         /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-        /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Span{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the <paramref name="source"/> to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
+        /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Span{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
         /// <returns>The number of elements written to the target collection.</returns>
         public int Into(Span<T> target, int startIndex = 0, bool allowUnsafeMutation = false)
         {
@@ -275,29 +275,19 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Copies the elements of the input sequence into the specified <see cref="Memory{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="Memory{T}"/> to copy elements to.</param>
         /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
-        /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Memory{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the <paramref name="source"/> to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
+        /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="Memory{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
         /// <returns>The number of elements written to the target collection.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Into(Memory<T> target, int startIndex = 0, bool allowUnsafeMutation = false) => source.Into(target.Span, startIndex, allowUnsafeMutation);
         /// <summary>
-        /// Copies the elements of the input sequence into the specified <see cref="Dictionary{T, TValue}"/> using the
-        /// specified <paramref name="valueFactory"/> to generate values for each key.
+        /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the specified <paramref name="valueFactory"/> to generate values for each key.
         /// </summary>
-        /// <typeparam name="T">The Type of the keys in the input sequence.</typeparam>
         /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
-        /// <param name="target">The <see cref="Dictionary{T, TValue}"/> to copy elements to.</param>
-        /// <param name="valueFactory">
-        /// A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a value for the
-        /// corresponding key.
-        /// </param>
-        /// <param name="overwrite">
-        /// Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see
-        /// langword="false"/>.
-        /// </param>
+        /// <param name="target">The <see cref="Dictionary{TKey, TValue}"/> to copy elements to.</param>
+        /// <param name="valueFactory">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a value for the corresponding key.</param>
+        /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
         /// <returns>The number of elements written to the target collection.</returns>
         public int Into<TValue>(IDictionary<T, TValue> target, Func<T, TValue> valueFactory, bool overwrite = false)
         {
@@ -337,13 +327,11 @@ public static partial class IEnumerableExtensions
             return i;
         }
         /// <summary>
-        /// Copies the elements of the input sequence into the specified <see cref="Dictionary{T, TValue}"/> using the specified <paramref name="keyFactory"/> to generate keys for each value.
+        /// Copies the elements of the input sequence into the specified <see cref="Dictionary{TKey, TValue}"/> using the specified <paramref name="keyFactory"/> to generate keys for each value.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys in the input sequence.</typeparam>
-        /// <param name="target">The <see cref="Dictionary{T, TValue}"/> to copy elements to.</param>
+        /// <param name="target">The <see cref="Dictionary{TKey, TValue}"/> to copy elements to.</param>
         /// <param name="keyFactory">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and produces a key for the corresponding value.</param>
-        /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.
-        /// </param>
+        /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
         /// <returns>The number of elements written to the target collection.</returns>
         public int Into<TKey>(IDictionary<TKey, T> target, Func<T, TKey> keyFactory, bool overwrite = false)
         {
@@ -384,24 +372,15 @@ public static partial class IEnumerableExtensions
             }
             return i;
         }
+
+        // Since ICollection<T>.Add(T) semantics are unknown and we can't make assumptions about what that method does, we have no choice but to use it instead of trying to cast the value around
         /// <summary>
-        /// Copies the elements of the input sequence into the specified <see cref="ICollection{T}"/>. Efficient overloads
-        /// of this method are used, if possible.
+        /// Copies the elements of the input sequence into the specified <see cref="ICollection{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The sequence to copy elements from.</param>
         /// <param name="target">The <see cref="ICollection{T}"/> to copy elements to.</param>
         /// <returns>The number of elements written to the target collection.</returns>
         public int Into(ICollection<T> target)
         {
-            switch (target)
-            {
-                case T[] arr:
-                    return source.Into(arr);
-                case List<T> list:
-                    return source.Into(list);
-            }
-
             if (target.IsReadOnly)
             {
                 throw new InvalidOperationException("The target collection is read-only.");
@@ -412,6 +391,212 @@ public static partial class IEnumerableExtensions
             {
                 i++;
                 target.Add(item);
+            }
+            return i;
+        }
+    }
+
+    // We'll call these down here CopyTo to align with the existing (ReadOnly)Span.CopyTo method to prevent confusion over the name
+    // The cool part is that there will never be unsafe mutation since we always know the length of the ReadOnlySpan
+    extension<T>(ReadOnlySpan<T> source)
+    {
+        /// <summary>
+        /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the <see cref="Span{T}"/> provided by the specified <see cref="ISpanProvider{T}"/>.
+        /// </summary>
+        /// <param name="spanProvider">An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> to copy elements to.</param>
+        /// <param name="startIndex">The index in the target <see cref="Span{T}"/> at which to start copying elements.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        public int CopyTo(ISpanProvider<T> spanProvider, int startIndex = 0)
+        {
+            var target = spanProvider.Span[startIndex..];
+            if (startIndex < 0 || startIndex >= target.Length)
+            {
+                throw new IndexOutOfRangeException($"Start index must be within the bounds of the {typeof(Span<>)} provided by {nameof(spanProvider)}.");
+            }
+            if (source.Length > target.Length)
+            {
+                throw new ArgumentException($"The destination {typeof(Span<>)} cannot accommodate the source {typeof(ReadOnlySpan<>)}.", nameof(spanProvider));
+            }
+
+            source.CopyTo(target);
+            return source.Length;
+        }
+        /// <summary>
+        /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified array of <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="target">The array to copy elements to.</param>
+        /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        public int CopyTo(T[] target, int startIndex = 0)
+        {
+            if (startIndex < 0 || startIndex >= target.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex), $"{nameof(startIndex)} must be within the bounds of the target array.");
+            }
+            if (source.Length + startIndex > target.Length)
+            {
+                throw new ArgumentException($"The destination array cannot accommodate the source {typeof(ReadOnlySpan<>)}.", nameof(target));
+            }
+
+            source.CopyTo(target.AsSpan(startIndex));
+            return source.Length;
+        }
+        /// <summary>
+        /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified <see cref="List{T}"/>, starting at the specified index.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="startIndex"></param>
+        /// <returns></returns>
+        public int CopyTo(List<T> target, int startIndex = 0)
+        {
+            var length = source.Length;
+            if (startIndex + length > target.Count)
+            {
+                CollectionsMarshal.SetCount(target, startIndex + length);
+            }
+            var dest = target.AsSpan(startIndex, length);
+            source.CopyTo(dest);
+            return length;
+        }
+        /// <summary>
+        /// Adds the elements of the input <see cref="ReadOnlySpan{T}"/> to the end of the specified <see cref="List{T}"/>.
+        /// The <see cref="List{T}"/> will be resized if the input <see cref="ReadOnlySpan{T}"/> contains more elements than the <see cref="List{T}"/>'s current capacity (beyond its count).
+        /// </summary>
+        /// <param name="target">The <see cref="List{T}"/> to copy elements to.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int AddTo(List<T> target) => CopyTo(source, target, target.Count);
+        /// <summary>
+        /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified <see cref="Memory{T}"/>.
+        /// </summary>
+        /// <param name="target">The <see cref="Memory{T}"/> to copy elements to.</param>
+        /// <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        public int CopyTo(Memory<T> target, int startIndex = 0)
+        {
+            if (startIndex < 0 || startIndex >= target.Length)
+            {
+                throw new IndexOutOfRangeException($"Start index must be within the bounds of the target {typeof(Memory<>)}.");
+            }
+            if (source.Length + startIndex > target.Length)
+            {
+                throw new ArgumentException($"The destination {typeof(Memory<>)} cannot accommodate the source {typeof(ReadOnlySpan<>)}.", nameof(target));
+            }
+
+            source.CopyTo(target.Span[startIndex..]);
+            return source.Length;
+        }
+        /// <summary>
+        /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified <see cref="Dictionary{TKey, TValue}"/> using the specified <paramref name="valueFactory"/> to generate values for each key.
+        /// </summary>
+        /// <typeparam name="TValue">The Type of the values in the input <see cref="ReadOnlySpan{T}"/>.</typeparam>
+        /// <param name="target">The <see cref="Dictionary{TKey, TValue}"/> to copy elements to.</param>
+        /// <param name="valueFactory">A <see cref="Func{T, TResult}"/> that is passed each element of the input <see cref="ReadOnlySpan{T}"/> and produces a value for the corresponding key.</param>
+        /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        public int CopyTo<TValue>(IDictionary<T, TValue> target, Func<T, TValue> valueFactory, bool overwrite = false)
+        {
+            var i = 0;
+            if (target is Dictionary<T, TValue> concreteDict)
+            {
+                for (; i < source.Length; i++)
+                {
+                    var key = source[i];
+                    ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                    if (overwrite || !exists)
+                    {
+                        i++;
+                        dest = valueFactory(key);
+                    }
+                    else if (exists)
+                    {
+                        throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
+                    }
+                }
+            }
+            else
+            {
+                for (; i < source.Length; i++)
+                {
+                    var key = source[i];
+                    var exists = target.ContainsKey(key);
+                    if (overwrite || !exists)
+                    {
+                        i++;
+                        target[key] = valueFactory(key);
+                    }
+                    else if (exists)
+                    {
+                        throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
+                    }
+                }
+            }
+            return i;
+        }
+        /// <summary>
+        /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified <see cref="Dictionary{TKey, TValue}"/> using the specified <paramref name="keyFactory"/> to generate keys for each value.
+        /// </summary>
+        /// <param name="target">The <see cref="Dictionary{TKey, TValue}"/> to copy elements to.</param>
+        /// <param name="keyFactory">A <see cref="Func{T, TResult}"/> that is passed each element of the input <see cref="ReadOnlySpan{T}"/> and produces a key for the corresponding value.</param>
+        /// <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        public int CopyTo<TKey>(IDictionary<TKey, T> target, Func<T, TKey> keyFactory, bool overwrite = false)
+        {
+            var i = 0;
+            if (target is Dictionary<TKey, T> concreteDict)
+            {
+                for (; i < source.Length; i++)
+                {
+                    var value = source[i];
+                    var key = keyFactory(value);
+                    ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                    if (overwrite || !exists)
+                    {
+                        i++;
+                        dest = value;
+                    }
+                    else if (exists)
+                    {
+                        throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
+                    }
+                }
+            }
+            else
+            {
+                for (; i < source.Length; i++)
+                {
+                    var value = source[i];
+                    var key = keyFactory(value);
+                    var exists = target.ContainsKey(key);
+                    if (overwrite || !exists)
+                    {
+                        i++;
+                        target[key] = value;
+                    }
+                    else if (exists)
+                    {
+                        throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
+                    }
+                }
+            }
+            return i;
+        }
+        /// <summary>
+        /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified <see cref="ICollection{T}"/>.
+        /// </summary>
+        /// <param name="target">The <see cref="ICollection{T}"/> to copy elements to.</param>
+        /// <returns>The number of elements written to the target collection.</returns>
+        public int CopyTo(ICollection<T> target)
+        {
+            if (target.IsReadOnly)
+            {
+                throw new InvalidOperationException("The target collection is read-only.");
+            }
+
+            var i = 0;
+            for (; i < source.Length; i++)
+            {
+                target.Add(source[i]);
             }
             return i;
         }

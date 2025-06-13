@@ -5,16 +5,14 @@ namespace LaquaiLib.Collections.Observable;
 /// Represents the event arguments for the Removed event.
 /// </summary>
 /// <typeparam name="T">The type of the item being removed.</typeparam>
-public class RemovedEventArgs<T>
+/// <remarks>
+/// Initializes a new instance of the <see cref="RemovedEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="item">The item that was removed.</param>
+public class RemovedEventArgs<T>(T item)
 {
     /// <summary>
     /// Gets the item that was removed.
     /// </summary>
-    public T Item { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RemovedEventArgs{T}"/> class.
-    /// </summary>
-    /// <param name="item">The item that was removed.</param>
-    public RemovedEventArgs(T item) => Item = item;
+    public T Item { get; } = item;
 }

@@ -185,21 +185,7 @@ public partial class MemoryExtensions
         #endregion
 
         #region Cast
-        /// <inheritdoc cref="Enumerable.Cast{TResult}(IEnumerable)" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Cast<TResult>()
-        {
-            var canCast = typeof(TSource).IsAssignableTo(typeof(TResult));
-            if (!canCast)
-            {
-                throw new InvalidCastException($"Cannot cast {typeof(TSource)} to {typeof(TResult)}.");
-            }
 
-            for (var i = 0; i < source.Length; i++)
-            {
-                yield return (TResult)(object)source[i];
-            }
-        }
         /// <inheritdoc cref="Enumerable.Cast{TResult}(IEnumerable)" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Cast<TResult>(Span<TResult> destination)
@@ -229,13 +215,11 @@ public partial class MemoryExtensions
         #endregion
 
         #region Contains
-        /// <inheritdoc cref="Enumerable.Contains{TSource}(IEnumerable{TSource}, TSource)" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(TSource value) => source.IndexOf(value) > -1;
-
+#if !NET10_0_OR_GREATER
         /// <inheritdoc cref="Enumerable.Contains{TSource}(IEnumerable{TSource}, TSource, IEqualityComparer{TSource})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(TSource value, IEqualityComparer<TSource> comparer) => source.IndexOf(value, comparer) > -1;
+#endif
         #endregion
 
         #region AggregateBy
@@ -303,20 +287,6 @@ public partial class MemoryExtensions
         #endregion
 
         #region DefaultIfEmpty
-        /// <inheritdoc cref="Enumerable.DefaultIfEmpty{TSource}(IEnumerable{TSource})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> DefaultIfEmpty()
-        {
-            return source.Length == 0 ? [default] : DefaultIfEmptyIterator(source);
-
-            static IEnumerable<TSource> DefaultIfEmptyIterator(ReadOnlySpan<TSource> source)
-            {
-                for (var i = 0; i < source.Length; i++)
-                {
-                    yield return source[i];
-                }
-            }
-        }
         /// <summary>
         /// Leaves the specified <paramref name="destination"/> <see cref="Span{T}"/> unchanged if the source <see cref="ReadOnlySpan{T}"/> is not empty; otherwise, the first element of the destination span is set to the <see langword="default"/> value of <typeparamref name="TSource"/>.
         /// </summary>
@@ -409,25 +379,6 @@ public partial class MemoryExtensions
         #endregion
 
         #region DistinctBy
-        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> DistinctBy<TKey>(Func<TSource, TKey> keySelector) => DistinctBy(source, keySelector, EqualityComparer<TKey>.Default);
-
-        /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> DistinctBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
-        {
-            comparer ??= EqualityComparer<TKey>.Default;
-            var hashSet = new HashSet<TKey>(source.Length, comparer);
-            for (var i = 0; i < source.Length; i++)
-            {
-                if (hashSet.Add(keySelector(source[i])))
-                {
-                    yield return source[i];
-                }
-            }
-        }
-
         /// <inheritdoc cref="Enumerable.DistinctBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int DistinctBy<TKey>(Func<TSource, TKey> keySelector, Span<TSource> destination) => DistinctBy(source, keySelector, destination, EqualityComparer<TKey>.Default);
@@ -557,46 +508,22 @@ public partial class MemoryExtensions
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey, TResult}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TKey, IEnumerable{TSource}, TResult})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TResult>(Func<TSource, TKey> keySelector, Func<TKey, IEnumerable<TSource>, TResult> resultSelector)
-        {
-            var lookup = ToLookup(source, keySelector);
-            foreach (var group in lookup)
-            {
-                yield return resultSelector(group.Key, group);
-            }
-        }
+            => ToLookup(source, keySelector).Select(group => resultSelector(group.Key, group));
 
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey, TResult}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TKey, IEnumerable{TSource}, TResult}, IEqualityComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TResult>(Func<TSource, TKey> keySelector, Func<TKey, IEnumerable<TSource>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
-        {
-            var lookup = ToLookup(source, keySelector, comparer);
-            foreach (var group in lookup)
-            {
-                yield return resultSelector(group.Key, group);
-            }
-        }
+            => ToLookup(source, keySelector, comparer).Select(group => resultSelector(group.Key, group));
 
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey, TElement, TResult}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, Func{TKey, IEnumerable{TElement}, TResult})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TElement, TResult>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector)
-        {
-            var lookup = ToLookup(source, keySelector, elementSelector);
-            foreach (var group in lookup)
-            {
-                yield return resultSelector(group.Key, group);
-            }
-        }
+            => ToLookup(source, keySelector, elementSelector).Select(group => resultSelector(group.Key, group));
 
         /// <inheritdoc cref="Enumerable.GroupBy{TSource, TKey, TElement, TResult}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, Func{TKey, IEnumerable{TElement}, TResult}, IEqualityComparer{TKey})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TResult> GroupBy<TKey, TElement, TResult>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
-        {
-            var lookup = ToLookup(source, keySelector, elementSelector, comparer);
-            foreach (var group in lookup)
-            {
-                yield return resultSelector(group.Key, group);
-            }
-        }
+            => ToLookup(source, keySelector, elementSelector, comparer).Select(group => resultSelector(group.Key, group));
         #endregion
 
         #region Last
@@ -1163,27 +1090,7 @@ public partial class MemoryExtensions
         #endregion
 
         #region Select
-        /// <inheritdoc cref="Enumerable.Select{TSource, TResult}(IEnumerable{TSource}, Func{TSource, TResult})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Select<TResult>(Func<TSource, TResult> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-                yield return selector(source[i]);
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Select{TSource, TResult}(IEnumerable{TSource}, Func{TSource, int, TResult})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Select<TResult>(Func<TSource, int, TResult> selector)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-                yield return selector(source[i], i);
-            }
-        }
-
-        // These are safe to invoke when source and destination point to the same location
+        // These are safe to invoke when source and destination point to the same location (if the types are compatible)
         /// <summary>
         /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into a new form and stores the results in a specified destination <see cref="Span{T}"/>.
         /// </summary>
@@ -1230,62 +1137,126 @@ public partial class MemoryExtensions
         #endregion
 
         #region SelectMany
-        /// <inheritdoc cref="Enumerable.SelectMany{TSource, TResult}(IEnumerable{TSource}, Func{TSource, IEnumerable{TResult}})" />
+        /// <summary>
+        /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into an <see cref="IEnumerable{T}"/> of <typeparamref name="TResult"/> and stores those elements in the specified <paramref name="destination"/> <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the elements in the result sequence.</typeparam>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns an <see cref="IEnumerable{T}"/> of projected elements.</param>
+        /// <param name="destination">The <see cref="Span{T}"/> to store the results of the projection.</param>
+        /// <returns>The number of elements written to <paramref name="destination"/>.</returns>
+        /// <remarks>
+        /// This and the other overloads of this method group should only be used with spans owned and controlled by the caller to ensure no unexpected results occur.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> SelectMany<TResult>(Func<TSource, IEnumerable<TResult>> selector)
+        public int SelectMany<TResult>(Func<TSource, IEnumerable<TResult>> selector, Span<TResult> destination)
         {
+            var destIndex = 0;
             for (var i = 0; i < source.Length; i++)
             {
                 foreach (var item in selector(source[i]))
                 {
-                    yield return item;
+                    if (destIndex >= destination.Length)
+                    {
+                        return destIndex; // Last assigned index
+                    }
+
+                    destination[destIndex++] = item;
                 }
             }
+            return destIndex;
         }
 
-        /// <inheritdoc cref="Enumerable.SelectMany{TSource, TResult}(IEnumerable{TSource}, Func{TSource, int, IEnumerable{TResult}})" />
+        /// <summary>
+        /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into an <see cref="IEnumerable{T}"/> of <typeparamref name="TResult"/> and stores those elements in the specified <paramref name="destination"/> <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the elements in the result sequence.</typeparam>
+        /// <param name="selector">A <see cref="Func{T1, T2, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and its index in the source <see cref="ReadOnlySpan{T}"/> and returns an <see cref="IEnumerable{T}"/> of projected elements.</param>
+        /// <param name="destination">The <see cref="Span{T}"/> to store the results of the projection.</param>
+        /// <returns>The number of elements written to <paramref name="destination"/>.</returns>
+        /// <remarks>
+        /// This and the other overloads of this method group should only be used with spans owned and controlled by the caller to ensure no unexpected results occur.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> SelectMany<TResult>(Func<TSource, int, IEnumerable<TResult>> selector)
+        public int SelectMany<TResult>(Func<TSource, int, IEnumerable<TResult>> selector, Span<TResult> destination)
         {
+            var destIndex = 0;
             for (var i = 0; i < source.Length; i++)
             {
                 foreach (var item in selector(source[i], i))
                 {
-                    yield return item;
+                    if (destIndex >= destination.Length)
+                    {
+                        return destIndex; // Last assigned index
+                    }
+
+                    destination[destIndex++] = item;
                 }
             }
+            return destIndex;
         }
 
-        /// <inheritdoc cref="Enumerable.SelectMany{TSource, TCollection, TResult}(IEnumerable{TSource}, Func{TSource, int, IEnumerable{TCollection}}, Func{TSource, TCollection, TResult})" />
+        /// <summary>
+        /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into an <see cref="IEnumerable{T}"/> of <typeparamref name="TCollection"/>, which is then projected into an <see cref="IEnumerable{T}"/> of <typeparamref name="TResult"/>, and stores those elements in the specified <paramref name="destination"/> <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TCollection">The type of the elements in the collection returned by <paramref name="collectionSelector"/>.</typeparam>
+        /// <typeparam name="TResult">The type of the elements in the result sequence.</typeparam>
+        /// <param name="collectionSelector">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns an <see cref="IEnumerable{T}"/> of <typeparamref name="TCollection"/> of projected elements.</param>
+        /// <param name="resultSelector">A <see cref="Func{T1, T2, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and, in turn, each corresponding element from the <see cref="IEnumerable{T}"/> returned by <paramref name="collectionSelector"/>, and returns the projected elements of type <typeparamref name="TResult"/>.</param>
+        /// <param name="destination">The <see cref="Span{T}"/> to store the results of the projection.</param>
+        /// <returns>The number of elements written to <paramref name="destination"/>.</returns>
+        /// <remarks>
+        /// This and the other overloads of this method group should only be used with spans owned and controlled by the caller to ensure no unexpected results occur.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> SelectMany<TCollection, TResult>(Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
+        public int SelectMany<TCollection, TResult>(Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector, Span<TResult> destination)
         {
-            for (var i = 0; i < source.Length; i++)
-            {
-                var collection = collectionSelector(source[i], i);
-                foreach (var item in collection)
-                {
-                    yield return resultSelector(source[i], item);
-                }
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.SelectMany{TSource, TCollection, TResult}(IEnumerable{TSource}, Func{TSource, IEnumerable{TCollection}}, Func{TSource, TCollection, TResult})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> SelectMany<TCollection, TResult>(Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
-        {
+            var destIndex = 0;
             for (var i = 0; i < source.Length; i++)
             {
                 var collection = collectionSelector(source[i]);
                 foreach (var item in collection)
                 {
-                    yield return resultSelector(source[i], item);
+                    if (destination.Length <= i)
+                    {
+                        return destIndex;
+                    }
+                    destination[i] = resultSelector(source[i], item);
                 }
             }
+            return destIndex;
         }
 
-        // SelectMany has no overload with a destination since we have no idea how many elements will be produced
-        // As such, we cannot guarantee that the destination span is large enough to hold all results without allocating or doing multiple enumerations
+
+        /// <summary>
+        /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into an <see cref="IEnumerable{T}"/> of <typeparamref name="TCollection"/>, which is then projected into an <see cref="IEnumerable{T}"/> of <typeparamref name="TResult"/>, and stores those elements in the specified <paramref name="destination"/> <see cref="Span{T}"/>.
+        /// </summary>
+        /// <typeparam name="TCollection">The type of the elements in the collection returned by <paramref name="collectionSelector"/>.</typeparam>
+        /// <typeparam name="TResult">The type of the elements in the result sequence.</typeparam>
+        /// <param name="collectionSelector">A <see cref="Func{T1, T2, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and its index in the source <see cref="ReadOnlySpan{T}"/> and returns an <see cref="IEnumerable{T}"/> of <typeparamref name="TCollection"/> of projected elements.</param>
+        /// <param name="resultSelector">A <see cref="Func{T1, T2, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and, in turn, each corresponding element from the <see cref="IEnumerable{T}"/> returned by <paramref name="collectionSelector"/>, and returns the projected elements of type <typeparamref name="TResult"/>.</param>
+        /// <param name="destination">The <see cref="Span{T}"/> to store the results of the projection.</param>
+        /// <returns>The number of elements written to <paramref name="destination"/>.</returns>
+        /// <remarks>
+        /// This and the other overloads of this method group should only be used with spans owned and controlled by the caller to ensure no unexpected results occur.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int SelectMany<TCollection, TResult>(Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector, Span<TResult> destination)
+        {
+            var destIndex = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var collection = collectionSelector(source[i], i);
+                foreach (var item in collection)
+                {
+                    if (destination.Length <= i)
+                    {
+                        return destIndex;
+                    }
+                    destination[i] = resultSelector(source[i], item);
+                }
+            }
+            return destIndex;
+        }
         #endregion
 
         #region Single
@@ -1604,32 +1575,6 @@ public partial class MemoryExtensions
         #endregion
 
         #region Where
-        /// <inheritdoc cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Where(Func<TSource, bool> predicate)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-                if (predicate(source[i]))
-                {
-                    yield return source[i];
-                }
-            }
-        }
-
-        /// <inheritdoc cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, int, bool})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TSource> Where(Func<TSource, int, bool> predicate)
-        {
-            for (var i = 0; i < source.Length; i++)
-            {
-                if (predicate(source[i], i))
-                {
-                    yield return source[i];
-                }
-            }
-        }
-
         /// <summary>
         /// Filters the elements of the <see cref="ReadOnlySpan{T}"/> becased on a <paramref name="predicate"/> function and stores all matching elements in a specified <paramref name="destination"/> <see cref="Span{T}"/>.
         /// </summary>
@@ -1698,28 +1643,6 @@ public partial class MemoryExtensions
         #endregion
 
         #region Zip
-        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond, TResult}(IEnumerable{TFirst}, IEnumerable{TSecond}, Func{TFirst, TSecond, TResult})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<TResult> Zip<TSecond, TResult>(IEnumerable<TSecond> second, Func<TSource, TSecond, TResult> resultSelector)
-        {
-            if (source.Length == 0)
-            {
-                yield break;
-            }
-
-            using var enumerator = second.GetEnumerator();
-            if (!enumerator.MoveNext())
-            {
-                yield break;
-            }
-
-            var curr = enumerator.Current;
-            for (var i = 0; i < source.Length && enumerator.MoveNext(); i++)
-            {
-                yield return resultSelector(source[i], curr);
-            }
-        }
-
         /// <summary>
         /// Merges two <see cref="ReadOnlySpan{T}"/>s into another <see cref="Span{T}"/> by applying a result selector function to each pair of elements.
         /// </summary>
@@ -1745,28 +1668,6 @@ public partial class MemoryExtensions
             return minLen;
         }
 
-        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond}(IEnumerable{TFirst}, IEnumerable{TSecond})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<(TSource, TSecond)> Zip<TSecond>(IEnumerable<TSecond> second)
-        {
-            if (source.Length == 0)
-            {
-                yield break;
-            }
-
-            using var enumerator = second.GetEnumerator();
-            if (!enumerator.MoveNext())
-            {
-                yield break;
-            }
-
-            var curr = enumerator.Current;
-            for (var i = 0; i < source.Length && enumerator.MoveNext(); i++)
-            {
-                yield return (source[i], curr);
-            }
-        }
-
         /// <summary>
         /// Merges two <see cref="ReadOnlySpan{T}"/>s into another <see cref="Span{T}"/>.
         /// </summary>
@@ -1789,34 +1690,6 @@ public partial class MemoryExtensions
                 destination[i] = (source[i], second[i]);
             }
             return minLen;
-        }
-
-        /// <inheritdoc cref="Enumerable.Zip{TFirst, TSecond, TThird}(IEnumerable{TFirst}, IEnumerable{TSecond}, IEnumerable{TThird})" />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<(TSource, TSecond, TThird)> Zip<TSecond, TThird>(IEnumerable<TSecond> second, IEnumerable<TThird> third)
-        {
-            if (source.Length == 0)
-            {
-                yield break;
-            }
-
-            using var enumerator2 = second.GetEnumerator();
-            if (!enumerator2.MoveNext())
-            {
-                yield break;
-            }
-            using var enumerator3 = third.GetEnumerator();
-            if (!enumerator3.MoveNext())
-            {
-                yield break;
-            }
-
-            var curr2 = enumerator2.Current;
-            var curr3 = enumerator3.Current;
-            for (var i = 0; i < source.Length && enumerator2.MoveNext() && enumerator3.MoveNext(); i++)
-            {
-                yield return (source[i], curr2, curr3);
-            }
         }
 
         /// <summary>
@@ -2045,15 +1918,90 @@ public partial class MemoryExtensions
         }
 
         /// <summary>
-        /// Enables arbitrary LINQ on the source <see cref="ReadOnlySpan{T}"/> by returning an <see cref="IEnumerable{T}"/> that iterates over its elements.
+        /// Combines <see cref="Select{TSource, TResult}(ReadOnlySpan{TSource}, Func{TSource, TResult}, Span{TResult})"/> and <see cref="ReadOnlySpan{T}.ToArray"/>
         /// </summary>
-        /// <returns>The enumerable that iterates over the elements of the source <see cref="ReadOnlySpan{T}"/>.</returns>
-        public IEnumerable<TSource> ToEnumerable()
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns a transformed element.</param>
+        /// <returns>An array of <typeparamref name="TResult"/> containing the elements produced by the <paramref name="selector"/>.</returns>
+        /// <remarks>
+        /// This is provided as a replacement for something like <c>AsEnumerable</c>, since yielding is not possible with <see cref="ReadOnlySpan{T}"/>.
+        /// </remarks>
+        public TResult[] ToArray<TResult>(Func<TSource, TResult> selector)
         {
+            var arr = GC.AllocateUninitializedArray<TResult>(source.Length);
             for (var i = 0; i < source.Length; i++)
             {
-                yield return source[i];
+                arr[i] = selector(source[i]);
             }
+            return arr;
+        }
+        /// <summary>
+        /// Combines <see cref="Select{TSource, TResult}(ReadOnlySpan{TSource}, Func{TSource, int, TResult}, Span{TResult})"/> and <see cref="ReadOnlySpan{T}.ToArray"/>
+        /// </summary>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns a transformed element.</param>
+        /// <returns>An array of <typeparamref name="TResult"/> containing the elements produced by the <paramref name="selector"/>.</returns>
+        /// <remarks>
+        /// This is provided as a replacement for something like <c>AsEnumerable</c>, since yielding is not possible with <see cref="ReadOnlySpan{T}"/>.
+        /// </remarks>
+        public TResult[] ToArray<TResult>(Func<TSource, int, TResult> selector)
+        {
+            var arr = GC.AllocateUninitializedArray<TResult>(source.Length);
+            for (var i = 0; i < source.Length; i++)
+            {
+                arr[i] = selector(source[i], i);
+            }
+            return arr;
+        }
+
+        /// <summary>
+        /// Combines <see cref="Where{TSource}(ReadOnlySpan{TSource}, Func{TSource, bool}, Span{TSource})"/> and <see cref="Select{TSource, TResult}(ReadOnlySpan{TSource}, Func{TSource, TResult}, Span{TResult})"/> and returns an array of <typeparamref name="TResult"/> containing the results.
+        /// Neither parameter may be <see langword="null"/>.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the elements in the resulting array.</typeparam>
+        /// <param name="where">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns a <see langword="bool"/> indicating whether the element should be included in the result.</param>
+        /// <param name="select">A <see cref="Func{T, TResult}"/> that is passed each element of the source <see cref="ReadOnlySpan{T}"/> and returns a transformed element.</param>
+        /// <returns>The created array of <typeparamref name="TResult"/>.</returns>
+        public TResult[] WhereSelectToArray<TResult>(Func<TSource, bool> where, Func<TSource, TResult> select)
+        {
+            ArgumentNullException.ThrowIfNull(where);
+            ArgumentNullException.ThrowIfNull(select);
+
+            if (where.IsStatic && select.IsStatic)
+            {
+                return UWSToArray(source, where, select);
+            }
+            else
+            {
+                var ret = GC.AllocateUninitializedArray<TResult>(source.Length);
+                var k = 0;
+                for (var i = 0; i < source.Length; i++)
+                {
+                    if (where(source[i]))
+                    {
+                        ret[k++] = select(source[i]);
+                    }
+                }
+                Array.Resize(ref ret, k);
+                return ret;
+            }
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe TResult[] UWSToArray<TResult>(Func<TSource, bool> where, Func<TSource, TResult> select)
+        {
+            // Optimize for static methods by using function pointers
+            var wherePtr = (delegate*<TSource, bool>)where.Method.MethodHandle.GetFunctionPointer();
+            var selectPtr = (delegate*<TSource, TResult>)select.Method.MethodHandle.GetFunctionPointer();
+
+            var ret = GC.AllocateUninitializedArray<TResult>(source.Length);
+            var k = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                if (wherePtr(source[i]))
+                {
+                    ret[k++] = selectPtr(source[i]);
+                }
+            }
+            Array.Resize(ref ret, k);
+            return ret;
         }
 
         #region OnlyOrDefault
@@ -2100,7 +2048,7 @@ public partial class MemoryExtensions
     // All of these should return either a reference to the original span or a slice from it so calls can be chained
     extension<TSource>(Span<TSource> source)
     {
-        // Order* are already provided by System.MemoryExtensions
+        // Order* are already provided by System.MemoryExtensions through the Sort* methods
 
         #region Skip
         /// <inheritdoc cref="Enumerable.Skip{TSource}(IEnumerable{TSource}, int)" />
@@ -2284,7 +2232,7 @@ public partial class MemoryExtensions
         }
     }
 
-    
+
     /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource})" />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TSource Min()

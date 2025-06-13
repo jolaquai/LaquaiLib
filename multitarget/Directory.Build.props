@@ -3,8 +3,6 @@
         <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
 
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <GenerateDocumentationFile>True</GenerateDocumentationFile>
-        <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
 
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
