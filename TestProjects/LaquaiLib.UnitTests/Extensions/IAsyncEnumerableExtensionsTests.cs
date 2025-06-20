@@ -220,7 +220,7 @@ public class IAsyncEnumerableExtensionsTests
 
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new DisposeTrackingEnumerator(this, _inner.GetAsyncEnumerator(cancellationToken));
 
-        private class DisposeTrackingEnumerator(IAsyncEnumerableExtensionsTests.DisposeTrackingAsyncEnumerable<T> parent, IAsyncEnumerator<T> innerEnumerator) : IAsyncEnumerator<T>
+        private class DisposeTrackingEnumerator(DisposeTrackingAsyncEnumerable<T> parent, IAsyncEnumerator<T> innerEnumerator) : IAsyncEnumerator<T>
         {
             private readonly DisposeTrackingAsyncEnumerable<T> _parent = parent;
             private readonly IAsyncEnumerator<T> _innerEnumerator = innerEnumerator;

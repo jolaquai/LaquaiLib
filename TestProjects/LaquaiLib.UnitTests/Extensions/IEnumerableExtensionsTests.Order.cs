@@ -464,7 +464,7 @@ public class IEnumerableExtensionsOrderTests
             new Person { Name = "Charlie", Age = 35 }
         };
 
-        var result = source.OrderBy<Person, string>(static (p, i) => p.Name + i).ToArray();
+        var result = source.OrderBy(static (p, i) => p.Name + i).ToArray();
 
         Assert.Equal(new[] { "Alice", "Bob", "Charlie" }, result.Select(static p => p.Name).ToArray());
     }
@@ -478,7 +478,7 @@ public class IEnumerableExtensionsOrderTests
             new Person { Name = "Charlie", Age = 35 }
         };
 
-        var result = source.OrderBy<Person, string>(static (p, i) => p.Name, new ReverseComparer<string>()).ToArray();
+        var result = source.OrderBy(static (p, i) => p.Name, new ReverseComparer<string>()).ToArray();
 
         Assert.Equal(new[] { "Charlie", "Bob", "Alice" }, result.Select(static p => p.Name).ToArray());
     }
@@ -495,7 +495,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenBy<Person, string>(static (p, i) => p.Name + i)
+            .ThenBy(static (p, i) => p.Name + i)
             .ToArray();
 
         Assert.Equal(new[] { "Bob", "Dave", "Alice", "Charlie" }, result.Select(static p => p.Name).ToArray());
@@ -513,7 +513,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenBy<Person, string>(static (p, i) => p.Name, new ReverseComparer<string>())
+            .ThenBy(static (p, i) => p.Name, new ReverseComparer<string>())
             .ToArray();
 
         Assert.Equal(new[] { "Dave", "Bob", "Charlie", "Alice" }, result.Select(static p => p.Name).ToArray());
@@ -528,7 +528,7 @@ public class IEnumerableExtensionsOrderTests
             new Person { Name = "Charlie", Age = 35 }
         };
 
-        var result = source.OrderByDescending<Person, string>(static (p, i) => p.Name + i).ToArray();
+        var result = source.OrderByDescending(static (p, i) => p.Name + i).ToArray();
 
         Assert.Equal(new[] { "Charlie", "Bob", "Alice" }, result.Select(static p => p.Name).ToArray());
     }
@@ -542,7 +542,7 @@ public class IEnumerableExtensionsOrderTests
             new Person { Name = "Charlie", Age = 35 }
         };
 
-        var result = source.OrderByDescending<Person, string>(static (p, i) => p.Name, new ReverseComparer<string>()).ToArray();
+        var result = source.OrderByDescending(static (p, i) => p.Name, new ReverseComparer<string>()).ToArray();
 
         Assert.Equal(new[] { "Alice", "Bob", "Charlie" }, result.Select(static p => p.Name).ToArray());
     }
@@ -559,7 +559,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenByDescending<Person, string>(static (p, i) => p.Name + i)
+            .ThenByDescending(static (p, i) => p.Name + i)
             .ToArray();
 
         Assert.Equal(new[] { "Dave", "Bob", "Charlie", "Alice" }, result.Select(static p => p.Name).ToArray());
@@ -577,7 +577,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenByDescending<Person, string>(static (p, i) => p.Name, new ReverseComparer<string>())
+            .ThenByDescending(static (p, i) => p.Name, new ReverseComparer<string>())
             .ToArray();
 
         Assert.Equal(new[] { "Bob", "Dave", "Alice", "Charlie" }, result.Select(static p => p.Name).ToArray());
@@ -593,7 +593,7 @@ public class IEnumerableExtensionsOrderTests
         };
         var keys = new[] { "Z", "X", "Y" };
 
-        var result = source.OrderBy<Person, string>(keys).ToArray();
+        var result = source.OrderBy(keys).ToArray();
 
         Assert.Equal(new[] { "Bob", "Charlie", "Alice" }, result.Select(static p => p.Name).ToArray());
     }
@@ -608,7 +608,7 @@ public class IEnumerableExtensionsOrderTests
         };
         var keys = new[] { "Z", "X", "Y" };
 
-        var result = source.OrderBy<Person, string>(keys, new ReverseComparer<string>()).ToArray();
+        var result = source.OrderBy(keys, new ReverseComparer<string>()).ToArray();
 
         Assert.Equal(new[] { "Alice", "Charlie", "Bob" }, result.Select(static p => p.Name).ToArray());
     }
@@ -626,7 +626,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenBy<Person, string>(keys)
+            .ThenBy(keys)
             .ToArray();
 
         Assert.Equal(new[] { "Bob", "Dave", "Alice", "Charlie" }, result.Select(static p => p.Name).ToArray());
@@ -645,7 +645,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenBy<Person, string>(keys, new ReverseComparer<string>())
+            .ThenBy(keys, new ReverseComparer<string>())
             .ToArray();
 
         Assert.Equal(new[] { "Dave", "Bob", "Charlie", "Alice" }, result.Select(static p => p.Name).ToArray());
@@ -661,7 +661,7 @@ public class IEnumerableExtensionsOrderTests
         };
         var keys = new[] { "Z", "X", "Y" };
 
-        var result = source.OrderByDescending<Person, string>(keys).ToArray();
+        var result = source.OrderByDescending(keys).ToArray();
 
         Assert.Equal(new[] { "Alice", "Charlie", "Bob" }, result.Select(static p => p.Name).ToArray());
     }
@@ -676,7 +676,7 @@ public class IEnumerableExtensionsOrderTests
         };
         var keys = new[] { "Z", "X", "Y" };
 
-        var result = source.OrderByDescending<Person, string>(keys, new ReverseComparer<string>()).ToArray();
+        var result = source.OrderByDescending(keys, new ReverseComparer<string>()).ToArray();
 
         Assert.Equal(new[] { "Bob", "Charlie", "Alice" }, result.Select(static p => p.Name).ToArray());
     }
@@ -694,7 +694,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenByDescending<Person, string>(keys)
+            .ThenByDescending(keys)
             .ToArray();
 
         Assert.Equal(new[] { "Dave", "Bob", "Charlie", "Alice" }, result.Select(static p => p.Name).ToArray());
@@ -713,7 +713,7 @@ public class IEnumerableExtensionsOrderTests
 
         var result = source
             .OrderBy(static p => p.Age)
-            .ThenByDescending<Person, string>(keys, new ReverseComparer<string>())
+            .ThenByDescending(keys, new ReverseComparer<string>())
             .ToArray();
 
         Assert.Equal(new[] { "Bob", "Dave", "Alice", "Charlie" }, result.Select(static p => p.Name).ToArray());

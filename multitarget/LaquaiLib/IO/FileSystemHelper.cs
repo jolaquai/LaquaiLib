@@ -753,10 +753,10 @@ public static partial class FileSystemHelper
                             break;
                         }
 
-                        var streamId = buffer.Read<int>(offset);
-                        var streamAttributes = buffer.Read<uint>(offset + 4);
-                        var streamSize = buffer.Read<long>(offset + 8);
-                        var streamNameSize = buffer.Read<uint>(offset + 16);
+                        var streamId = MemoryMarshal.Read<int>(buffer[offset..]);
+                        var streamAttributes = MemoryMarshal.Read<uint>(buffer[(offset + 4)..]);
+                        var streamSize = MemoryMarshal.Read<long>(buffer[(offset + 8)..]);
+                        var streamNameSize = MemoryMarshal.Read<uint>(buffer[(offset + 16)..]);
 
                         var headerSize = 20 + (int)streamNameSize;
 

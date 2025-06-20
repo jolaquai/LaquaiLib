@@ -41,6 +41,6 @@ public class IEnumerableExtensionsBoolTests
 
         public IEnumerator<bool> GetEnumerator() => ((IEnumerable<bool>)_values).GetEnumerator();
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _values.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _values.GetEnumerator();
     }
 }

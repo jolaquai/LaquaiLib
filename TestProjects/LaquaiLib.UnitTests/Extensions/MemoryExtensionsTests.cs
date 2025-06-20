@@ -2,6 +2,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
+using LaquaiLib.Extensions.Memory.Linq;
+using LaquaiLib.Extensions.Memory;
 using LaquaiLib.Extensions;
 
 namespace LaquaiLib.UnitTests.Extensions;
