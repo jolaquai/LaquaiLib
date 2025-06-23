@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 
 using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Extensions;
+using LaquaiLib.Interfaces;
 
 namespace LaquaiLib.Collections.Observable;
 
@@ -10,7 +11,7 @@ namespace LaquaiLib.Collections.Observable;
 /// Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
 /// </summary>
 /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection<T>, IEnumerable<T>
+public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection<T>, IEnumerable<T>, IReadOnlySpanProvider<T>
 {
     #region Fields / Properties
     /// <summary>
@@ -82,6 +83,13 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// </summary>
     public int Count => items.Count;
     bool ICollection<T>.IsReadOnly => false;
+
+    /// <summary>
+    /// Gets a <see cref="ReadOnlySpan{T}"/> over the items in the <see cref="ObservableCollection{T}"/>.
+    /// Only valid slots in the backing store are included (only its actual count is respected, not its capacity). Allows for more efficient enumeration than use of <see cref="IEnumerable{T}"/>.
+    /// </summary>
+    public ReadOnlySpan<T> ReadOnlySpan => CollectionsMarshal.AsSpan(items);
+    void IDisposable.Dispose() => GC.SuppressFinalize(this);
     #endregion
 
     #region Constructors
