@@ -472,6 +472,77 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
 
+    #region Find*
+    /// <summary>
+    /// Finds the first item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <param name="predicate">A <see cref="Func{T, TResult}"/> that is passed each item in the <see cref="ObservableCollectionFast{T}"/> to determine whether it matches.</param>
+    /// <returns>The first item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>, or the <see langword="default"/> of <typeparamref name="T"/> if no such item exists.</returns>
+    public T Find(Func<T, bool> predicate)
+    {
+        var span = ReadOnlySpan;
+        for (var i = 0; i < span.Length; i++)
+        {
+            if (predicate(span[i]))
+            {
+                return span[i];
+            }
+        }
+        return default;
+    }
+    /// <summary>
+    /// Finds the last item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <param name="predicate">A <see cref="Func{T, TResult}"/> that is passed each item in the <see cref="ObservableCollectionFast{T}"/> to determine whether it matches.</param>
+    /// <returns>The last item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>, or the <see langword="default"/> of <typeparamref name="T"/> if no such item exists.</returns>
+    public T FindLast(Func<T, bool> predicate)
+    {
+        var span = ReadOnlySpan;
+        for (var i = span.Length - 1; i >= 0; i--)
+        {
+            if (predicate(span[i]))
+            {
+                return span[i];
+            }
+        }
+        return default;
+    }
+    /// <summary>
+    /// Finds the index of the first item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <param name="predicate">A <see cref="Func{T, TResult}"/> that is passed each item in the <see cref="ObservableCollectionFast{T}"/> to determine whether it matches.</param>
+    /// <returns>The index of the first item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>, or <c>-1</c> if no such item exists.</returns>
+    public int FindIndex(Func<T, bool> predicate)
+    {
+        var span = ReadOnlySpan;
+        for (var i = 0; i < span.Length; i++)
+        {
+            if (predicate(span[i]))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+    /// <summary>
+    /// Finds the index of the last item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <param name="predicate">A <see cref="Func{T, TResult}"/> that is passed each item in the <see cref="ObservableCollectionFast{T}"/> to determine whether it matches.</param>
+    /// <returns>The index of the last item in the <see cref="ObservableCollectionFast{T}"/> that matches the specified <paramref name="predicate"/>, or <c>-1</c> if no such item exists.</returns>
+    public int FindLastIndex(Func<T, bool> predicate)
+    {
+        var span = ReadOnlySpan;
+        for (var i = span.Length - 1; i >= 0; i--)
+        {
+            if (predicate(span[i]))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+    #endregion
+
     #region Events
     /// <inheritdoc/>
     public event NotifyCollectionChangedEventHandler CollectionChanged;
