@@ -17,6 +17,7 @@ public static class NumberExtensions
         /// <param name="number">The number.</param>
         /// <param name="other">The other number.</param>
         /// <returns>Whether the specified number has the specified flag(s) set.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasFlag(T other) => (number & other) == other;
     }
 
@@ -28,6 +29,7 @@ public static class NumberExtensions
         /// <typeparam name="T">The type of the number.</typeparam>
         /// <param name="number">The number.</param>
         /// <returns>The binary representation of the specified number.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string AsBinary() => number.ToString("B", null);
         /// <summary>
         /// Converts the specified number to its hexadecimal representation.
@@ -35,6 +37,7 @@ public static class NumberExtensions
         /// <typeparam name="T">The type of the number.</typeparam>
         /// <param name="number">The number.</param>
         /// <returns>The hexadecimal representation of the specified number.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string AsHex() => number.ToString("X", null);
     }
 }

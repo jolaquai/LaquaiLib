@@ -20,7 +20,7 @@ public class ICollectionExtensionTests
         public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
         public bool Remove(T item) => _items.Remove(item);
         public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _items.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
     }
 
     [Fact]

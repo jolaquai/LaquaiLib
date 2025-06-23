@@ -1,0 +1,8 @@
+<Project>
+    <UsingTask TaskName="Csc" AssemblyFile="C:\Program Files\dotnet\sdk\10.0.100-preview.4.25258.110\Roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll" />
+
+    <PropertyGroup>
+        <CscToolExe>csc.dll</CscToolExe>
+        <CscToolPath>C:\Program Files\dotnet\sdk\10.0.100-preview.4.25258.110\Roslyn\bincore</CscToolPath>
+    </PropertyGroup>
+</Project>

@@ -12,7 +12,7 @@ public class RegexExtensionsTests
         var regex = new Regex(@"\d+");
         var match = regex.Match("abc123def");
 
-        var result = match.GetRegex();
+        var result = match.Regex;
 
         Assert.Same(regex, result);
     }
@@ -22,7 +22,7 @@ public class RegexExtensionsTests
     {
         Match match = null;
 
-        Assert.Throws<ArgumentNullException>(() => match.GetRegex());
+        Assert.Throws<ArgumentNullException>(() => match.Regex);
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class RegexExtensionsTests
         var regex = new Regex(pattern);
         var match = regex.Match("abc123def");
 
-        var result = match.GetRegex();
+        var result = match.Regex;
 
         Assert.Equal(pattern, result.ToString());
     }
@@ -44,7 +44,7 @@ public class RegexExtensionsTests
         var regex = new Regex(pattern, RegexOptions.IgnoreCase);
         var match = regex.Match("ABC123");
 
-        var result = match.GetRegex();
+        var result = match.Regex;
 
         Assert.Equal(RegexOptions.IgnoreCase, result.Options);
     }
@@ -93,7 +93,7 @@ public class RegexExtensionsTests
     {
         Capture capture = null;
 
-        Assert.Throws<ArgumentNullException>(() => capture.GetOriginalText());
+        Assert.Throws<ArgumentNullException>(capture.GetOriginalText);
     }
 
     [Fact]

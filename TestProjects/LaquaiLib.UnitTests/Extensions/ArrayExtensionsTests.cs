@@ -420,7 +420,7 @@ public class ArrayExtensionsTests
         int[] first = [1, 2, 3, 4, 5];
         int[] second = [1, 2, 3, 4, 5];
 
-        var result = first.SequenceEqual<int>(second);
+        var result = first.SequenceEqual(second);
 
         Assert.True(result);
     }
@@ -431,7 +431,7 @@ public class ArrayExtensionsTests
         int[] first = [1, 2, 3, 4, 5];
         int[] second = [1, 2, 3, 5, 4];
 
-        var result = first.SequenceEqual<int>(second);
+        var result = first.SequenceEqual(second);
 
         Assert.False(result);
     }
@@ -442,7 +442,7 @@ public class ArrayExtensionsTests
         int[] first = [1, 2, 3, 4, 5];
         int[] second = [1, 2, 3, 4];
 
-        var result = first.SequenceEqual<int>(second);
+        var result = first.SequenceEqual(second);
 
         Assert.False(result);
     }
@@ -498,7 +498,7 @@ public class ArrayExtensionsTests
         string[] second = ["A", "B", "C"];
         var comparer = StringComparer.OrdinalIgnoreCase;
 
-        var result = first.SequenceEqual<string>(second, comparer);
+        var result = first.SequenceEqual(second, comparer);
 
         Assert.True(result);
     }

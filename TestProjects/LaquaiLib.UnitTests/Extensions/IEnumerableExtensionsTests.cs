@@ -10,7 +10,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new[] { 1, 2, 3 };
 
-        var result = source.TryGetSpan(out var span);
+        var result = source.TryGetReadOnlySpan(out var span);
 
         Assert.True(result);
         Assert.Equal(3, span.Length);
@@ -24,7 +24,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new List<int> { 1, 2, 3 };
 
-        var result = source.TryGetSpan(out var span);
+        var result = source.TryGetReadOnlySpan(out var span);
 
         Assert.True(result);
         Assert.Equal(3, span.Length);
@@ -38,7 +38,7 @@ public class IEnumerableExtensionsTests
     {
         IEnumerable<int> source = new HashSet<int> { 1, 2, 3 };
 
-        var result = source.TryGetSpan(out var span);
+        var result = source.TryGetReadOnlySpan(out var span);
 
         Assert.False(result);
         Assert.Equal(0, span.Length);
@@ -1217,7 +1217,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new[] { "a", "b", "c", "A", "B" };
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryLinear());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryLinear);
     }
 
     [Fact]
@@ -1225,7 +1225,7 @@ public class IEnumerableExtensionsTests
     {
         var source = Array.Empty<string>();
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryLinear());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryLinear);
     }
 
     [Fact]
@@ -1246,7 +1246,7 @@ public class IEnumerableExtensionsTests
     {
         var source = new[] { "a", "A", "b", "B", "c" };
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryZipped());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryZipped);
     }
 
     [Fact]
@@ -1254,7 +1254,7 @@ public class IEnumerableExtensionsTests
     {
         var source = Array.Empty<string>();
 
-        Assert.Throws<ArgumentException>(() => source.BuildDictionaryZipped());
+        Assert.Throws<ArgumentException>(source.BuildDictionaryZipped);
     }
 
     [Fact]

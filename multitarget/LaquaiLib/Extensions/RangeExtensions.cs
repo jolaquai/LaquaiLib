@@ -34,6 +34,7 @@ public static class RangeExtensions
         /// <remarks>
         /// This wouldn't typically be called directly, but rather through a <see langword="foreach"/> loop.
         /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerator<int> GetEnumerator() => range.GetRange().GetEnumerator();
     }
 }

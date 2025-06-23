@@ -1,3 +1,4 @@
+using LaquaiLib.Interfaces;
 using LaquaiLib.Util.Misc;
 
 namespace LaquaiLib.Extensions;
@@ -10,18 +11,38 @@ public static partial class IEnumerableExtensions
     extension<T>(IEnumerable<T> source)
     {
         /// <summary>
-        /// Attempts to retrieve a <see cref="ReadOnlySpan{T}"/> over the specified <paramref name="source"/> collection.
+        /// Attempts to retrieve a <see cref="ReadOnlySpan{T}"/> over the specified source collection.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-        /// <param name="source">The collection to retrieve a <see cref="ReadOnlySpan{T}"/> over.</param>
         /// <param name="span">An <see langword="out"/> variable that receives the <see cref="ReadOnlySpan{T}"/> if the operation is successful.</param>
         /// <returns><see langword="true"/> if a <see cref="ReadOnlySpan{T}"/> could be created, otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool TryGetSpan(out ReadOnlySpan<T> span)
+        public bool TryGetReadOnlySpan(out ReadOnlySpan<T> span)
+        {
+            // Since any Span<T> can also be cast to ReadOnlySpan<T>, we can use the same method to retrieve a ReadOnlySpan<T>
+            // In here go only any cases where we can ONLY get a ReadOnlySpan<T> directly, but not a Span<T>
+            var result = TryGetSpan(source, out var ros);
+            if (result)
+            {
+                span = ros;
+                return true;
+            }
+            span = default;
+            return false;
+        }
+        /// <summary>
+        /// Attempts to retrieve a <see cref="ReadOnlySpan{T}"/> over the specified source collection.
+        /// </summary>
+        /// <param name="span">An <see langword="out"/> variable that receives the <see cref="ReadOnlySpan{T}"/> if the operation is successful.</param>
+        /// <returns><see langword="true"/> if a <see cref="ReadOnlySpan{T}"/> could be created, otherwise <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetSpan(out Span<T> span)
         {
             var result = true;
             switch (source)
             {
+                case ISpanProvider<T> spanProvider:
+                    span = spanProvider.Span;
+                    break;
                 case T[]:
                     span = Unsafe.As<T[]>(source);
                     break;
@@ -39,8 +60,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Splits a sequence of values into two sequences based on a predicate.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
         /// <returns>A <see cref="ValueTuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
         public (List<T> True, List<T> False) Split(Func<T, bool> predicate)
@@ -59,8 +78,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Halves the input sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <returns>A <see cref="ValueTuple{T1, T2}"/> that contains the two halves of the input sequence.</returns>
         public (T[] First, T[] Second) Halve()
         {
@@ -76,18 +93,14 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Selects a random element from the input sequence using <see cref="Random.Shared"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
-        /// <returns>A random element from <paramref name="source"/>.</returns>
+        /// <returns>A random element from source.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Random() => source.Random(System.Random.Shared);
         /// <summary>
         /// Selects a random element from the input sequence using the specified <paramref name="random"/> instance.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="random">The <see cref="System.Random"/> instance to use for random number generation.</param>
-        /// <returns>The random element from <paramref name="source"/>.</returns>
+        /// <returns>The random element from source.</returns>
         public T Random(Random random = null)
         {
             ArgumentNullException.ThrowIfNull(source);
@@ -147,8 +160,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Executes the specified <paramref name="action"/> on each element of the source collection.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-        /// <param name="source">The source collection to iterate over.</param>
         /// <param name="action">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
         public void ForEach(Action<T> action)
         {
@@ -156,7 +167,7 @@ public static partial class IEnumerableExtensions
             {
                 return;
             }
-            if (source.TryGetSpan(out var span) && span.Length > 0)
+            if (source.TryGetReadOnlySpan(out var span) && span.Length > 0)
             {
                 for (var i = 0; i < span.Length; i++)
                 {
@@ -188,8 +199,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Executes the specified <paramref name="action"/> on each element of the source collection, incorporating each element's index in the <see cref="Action{T1, T2}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-        /// <param name="source">The source collection to iterate over.</param>
         /// <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
         public void ForEach(Action<T, int> action)
         {
@@ -197,7 +206,7 @@ public static partial class IEnumerableExtensions
             {
                 return;
             }
-            if (source.TryGetSpan(out var span) && span.Length > 0)
+            if (source.TryGetReadOnlySpan(out var span) && span.Length > 0)
             {
                 for (var i = 0; i < span.Length; i++)
                 {
@@ -230,8 +239,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Asynchronously executes the specified <paramref name="func"/> on each element of the source collection.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-        /// <param name="source">The source collection to iterate over.</param>
         /// <param name="func">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
         public async Task ForEachAsync(Func<T, Task> func)
         {
@@ -274,8 +281,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Asynchronously executes the specified <paramref name="func"/> on each element of the source collection, incorporating each element's index in the <see cref="Func{T1, T2, T3}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-        /// <param name="source">The source collection to iterate over.</param>
         /// <param name="func">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
         public async Task ForEachAsync(Func<T, int, Task> func)
         {
@@ -319,11 +324,9 @@ public static partial class IEnumerableExtensions
 
         /// <summary>
         /// Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
-        /// If <paramref name="source"/> is not indexable, the entire sequence is enumerated.
+        /// If sourc eis not indexable, the entire sequence is enumerated.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-        /// <param name="source">The collection to extract elements from.</param>
-        /// <param name="range">A <see cref="Range"/> instance that indicates where the items to be extracted are located in the <paramref name="source"/>.</param>
+        /// <param name="range">A <see cref="Range"/> instance that indicates where the items to be extracted are located in the source.</param>
         public IEnumerable<T> GetRange(Range range)
         {
             if (source is IReadOnlyList<T> rol)
@@ -345,9 +348,7 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the objects to compare.</typeparam>
-        /// <param name="source">The collection that contains the items to compare. An exception is thrown if the collection is empty.</param>
-        /// <returns><see langword="true"/> if all objects in the passed <paramref name="source"/> collection are equal, otherwise <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if all objects in the passed sourc ecollection are equal, otherwise <see langword="false"/>.</returns>
         public bool AllEqual()
         {
             if (!source.Any())
@@ -370,11 +371,9 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Determines the mode of a sequence of values (that is, the value that appears most frequently). If multiple items share the highest frequency, the first one encountered is returned.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in <paramref name="source"/>.</typeparam>
-        /// <param name="source">The sequence of values to determine the mode of.</param>
         /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
-        /// <returns>The mode of <paramref name="source"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
+        /// <returns>The mode of source.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if sourc eis empty.</exception>
         public T Mode(IEqualityComparer<T> equalityComparer = null)
         {
             ArgumentNullException.ThrowIfNull(source);
@@ -392,8 +391,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Samples a specified number of elements from the input sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence to sample.</param>
         /// <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
         /// <returns>The sampled elements.</returns>
         public T[] Sample(int itemCount = -1)
@@ -404,8 +401,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Samples a specified number of elements from the input sequence, ensuring that the sampled elements remain in the same order as they were in the input sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence to sample.</param>
         /// <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
         /// <returns>The sampled elements.</returns>
         public IEnumerable<T> OrderedSample(int itemCount = -1)
@@ -422,8 +417,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/> and returning all other items unchanged.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
         /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
         /// <returns>The transformed elements.</returns>
@@ -432,10 +425,8 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
-        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
-        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
+        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the sourc ecollection and determines whether the element should be transformed.</param>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the sourc ecollection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
         /// <returns>The transformed elements.</returns>
         public IEnumerable<T> SelectWhere(Func<T, int, bool> predicate, Func<T, int, T> selector)
             => source.Select((item, index) => predicate(item, index) ? selector(item, index) : item);
@@ -443,8 +434,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Filters a sequence of values based on a predicate if <paramref name="expr"/> is <see langword="true"/>, otherwise returns exactly the input sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence to filter.</param>
         /// <param name="expr">A value that determines whether the input sequence should be filtered.</param>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
         /// <returns>The filtered input sequence if <paramref name="expr"/> is <see langword="true"/>, otherwise the input sequence as is.</returns>
@@ -453,8 +442,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Filters a sequence of values based on a predicate. The predicate's result is inverted.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
         /// <returns>The elements in the input sequence that do not satisfy the predicate.</returns>
         /// <remarks>
@@ -465,23 +452,17 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Indexes the elements in the input sequence; that is, each element is paired with its number of occurrences in the sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <returns>A sequence of key-value pairs where the key is an element from the input sequence and the value is the number of occurrences of that element in the input sequence.</returns>
         public IEnumerable<KeyValuePair<T, int>> Indexed() => source.CountBy(static i => i);
 
         /// <summary>
         /// Determines if a sequence is empty.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <returns><see langword="true"/> if the input sequence is empty, otherwise <see langword="false"/>.</returns>
         public bool None() => !source.Any();
         /// <summary>
         /// Determines if a sequence contains no elements that satisfy a condition.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="predicate">The condition to check for.</param>
         /// <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
         public bool None(Func<T, bool> predicate) => !source.Any(predicate);
@@ -491,8 +472,6 @@ public static partial class IEnumerableExtensions
         /// Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
         /// This behaves exactly like <see cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, TSource)"/> without throwing exceptions.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
         /// <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
         public T OnlyOrDefault(T defaultValue = default)
@@ -531,14 +510,12 @@ public static partial class IEnumerableExtensions
         /// Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
         /// This behaves exactly like <see cref="Enumerable.SingleOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool}, TSource)"/> without throwing exceptions.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="predicate">The condition to check for.</param>
         /// <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
         /// <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
         public T OnlyOrDefault(Func<T, bool> predicate, T defaultValue = default)
         {
-            if (source.TryGetSpan(out var span))
+            if (source.TryGetReadOnlySpan(out var span))
             {
                 for (var i = 0; i < span.Length; i++)
                 {
@@ -583,8 +560,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Attempts to retrieve the element at the specified index from the input sequence if that index is valid for the sequence, otherwise a default value is returned.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="i">The index of the element to retrieve.</param>
         /// <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
         /// <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
@@ -610,15 +585,13 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Finds the first index of the specified <paramref name="item"/> in the input sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="item">The item to find the index of.</param>
         /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
         /// <returns>The index of the first occurrence of the specified <paramref name="item"/> in the input sequence, or -1 if the item is not found.</returns>
         public int IndexOf(T item, IEqualityComparer<T> equalityComparer = null)
         {
             equalityComparer ??= EqualityComparer<T>.Default;
-            if (source.TryGetSpan(out var span))
+            if (source.TryGetReadOnlySpan(out var span))
             {
 #if NET9_0
                 for (var i = 0; i < span.Length; i++)
@@ -659,8 +632,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Finds the first starting index of the specified <paramref name="sequence"/> in the input sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="sequence">The sequence to find the index of.</param>
         /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
         /// <returns>The index of the first occurrence of the specified <paramref name="sequence"/> in the input sequence, or -1 if the sequence is not found.</returns>
@@ -674,7 +645,7 @@ public static partial class IEnumerableExtensions
                         return 0;
                     case 1:
                     {
-                        if (sequence.TryGetSpan(out var asSpan))
+                        if (sequence.TryGetReadOnlySpan(out var asSpan))
                         {
                             return source.IndexOf(asSpan[0], equalityComparer);
                         }
@@ -694,7 +665,7 @@ public static partial class IEnumerableExtensions
                 return 0;
             }
 
-            if (source.TryGetSpan(out var span))
+            if (source.TryGetReadOnlySpan(out var span))
             {
 #if NET9_0
                 for (var i = 0; i < span.Length - enumerated.Length + 1; i++)
@@ -796,8 +767,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Determines whether the majority of a sequence's elements satisfy a condition.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="predicate">The condition to check for.</param>
         /// <returns><see langword="true"/> if the majority of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
         public bool Majority(Func<T, bool> predicate)
@@ -813,8 +782,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Builds a <see cref="Dictionary{TKey, TValue}"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The first half of the elements are used as keys, the second half as values.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
         /// <exception cref="ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
         public Dictionary<T, T> BuildDictionaryLinear()
@@ -835,8 +802,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Builds a <see cref="Dictionary{TKey, TValue}"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The elements are considered to be repeating key-value pairs.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
         /// <exception cref="ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
         public Dictionary<T, T> BuildDictionaryZipped()
@@ -858,17 +823,14 @@ public static partial class IEnumerableExtensions
         /// Returns an <see cref="IAsyncEnumerable{T}"/> wrapper around the specified <see cref="IEnumerable{T}"/>. This is fundamentally different from <see cref="AsyncEnumerable.ToAsyncEnumerable{TSource}(IEnumerable{TSource})"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
         /// <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> or similar). Instead, call <see cref="AsyncEnumerable.ToAsyncEnumerable{TSource}(IEnumerable{TSource})"/>, then use a method such as <see cref="AsyncEnumerable.ToListAsync{TSource}(IAsyncEnumerable{TSource}, CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="IEnumerator{T}"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="AsyncEnumerable"/> is recommended (which are optimized for their purpose).
         /// </summary>
-        /// <typeparam name="T">The type of elements in the <see cref="IEnumerable{T}"/>.</typeparam>
-        /// <param name="source">The <see cref="IEnumerable{T}"/> to wrap.</param>
-        /// <returns>The <paramref name="source"/> as an <see cref="IAsyncEnumerable{T}"/>.</returns>
+        /// <returns>The sourc eas an <see cref="IAsyncEnumerable{T}"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IAsyncEnumerable<T> AsAsynchronous() => new AsyncEnumerableWrapper<T>(source);
 
         /// <summary>
         /// Returns an <see cref="IEnumerable{T}"/> that enumerates the elements of the input sequences is turn; that is, the first element of the first sequence, the first element of the second sequence, the second element of the first sequence, the second element of the second sequence, and so on.
         /// If the sequences are of unequal length, the remaining elements of the longer sequence will end up at the end of the resulting sequence.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequences.</typeparam>
-        /// <param name="first">The first sequence.</param>
         /// <param name="second">The second sequence.</param>
         /// <returns>A single sequence that contains the elements of both input sequences, interlaced.</returns>
         public IEnumerable<T> Interlace(IEnumerable<T> second)
@@ -898,8 +860,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Determines whether two sequences are equivalent, that is, whether they contain the same elements in any order.
         /// </summary>
-        /// <typeparam name="T">The type of the elements of the input sequences.</typeparam>
-        /// <param name="first">The first sequence to compare.</param>
         /// <param name="second">The second sequence to compare.</param>
         /// <param name="comparer">An <see cref="IEqualityComparer{T}"/> implementation to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
         /// <returns><see langword="true"/> if the two source sequences are of equal length and are equivalent, otherwise <see langword="false"/>. If one of the sequences is <see langword="null"/>, both sequences must be <see langword="null"/> to be considered equivalent.</returns>
@@ -947,13 +907,11 @@ public static partial class IEnumerableExtensions
         /// Determines the mode of a sequence of values from a given key extracted from each value (that is, the value that appears most frequently).
         /// If multiple items share the highest frequency, the first one encountered is returned.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in <paramref name="source"/>.</typeparam>
         /// <typeparam name="TSelect">The Type of the elements <paramref name="selector"/> produces.</typeparam>
-        /// <param name="source">The sequence of values to determine the mode of.</param>
-        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of <paramref name="source"/> and produces a value that is used to determine the mode of <paramref name="source"/>.</param>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of sourc eand produces a value that is used to determine the mode of source.</param>
         /// <param name="equalityComparer">An <see cref="IEqualityComparer{T}"/> of <typeparamref name="TSelect"/> to use when comparing values, or null to use the default <see cref="EqualityComparer{T}.Default"/> for the type of the values.</param>
-        /// <returns>The mode of <paramref name="source"/>.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> is empty.</exception>
+        /// <returns>The mode of source.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if sourc eis empty.</exception>
         public T ModeBy<TSelect>(Func<T, TSelect> selector, IEqualityComparer<TSelect> equalityComparer = null)
         {
             ArgumentNullException.ThrowIfNull(source);
@@ -975,9 +933,7 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
         /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
         /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
         /// <returns>The transformed elements.</returns>
@@ -986,11 +942,9 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
         /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
-        /// <param name="source">The input sequence.</param>
-        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection and determines whether the element should be transformed.</param>
-        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the <paramref name="source"/> collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the sourc ecollection and determines whether the element should be transformed.</param>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the sourc ecollection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
         /// <returns>The transformed elements.</returns>
         public IEnumerable<TResult> SelectOnlyWhere<TResult>(Func<T, int, bool> predicate, Func<T, int, TResult> selector)
             => source.Where(predicate).Select(selector);
@@ -998,10 +952,8 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
         /// <typeparam name="TDerived">The Type of the elements to exclude from the output sequence. Must be, derive from or implement <typeparamref name="T"/>. If <typeparamref name="TDerived"/> is not assignable to <typeparamref name="T"/>, the input sequence is returned as is.</typeparam>
-        /// <param name="source">The input sequence.</param>
-        /// <returns>A sequence of all objects from <paramref name="source"/> that are not of type <typeparamref name="TDerived"/>.</returns>
+        /// <returns>A sequence of all objects from sourc ethat are not of type <typeparamref name="TDerived"/>.</returns>
         /// <remarks>
         /// <typeparamref name="TDerived"/> is not constrained with regards to <typeparamref name="T"/>, so that consuming code needn't check for type relationships before calling this method.
         /// </remarks>
@@ -1011,7 +963,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Builds a <see cref="Dictionary{TKey, TValue}"/> from two separate input sequences representing the keys and values respectively.
         /// </summary>
-        /// <typeparam name="T">The Type of the keys in the input sequence.</typeparam>
         /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
         /// <param name="keys">The sequence of keys.</param>
         /// <param name="values">The sequence of values.</param>
@@ -1035,7 +986,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Builds a <see cref="Dictionary{TKey, TValue}"/> from the input sequence, using the specified <paramref name="valueFactory"/> to generate values for each key.
         /// </summary>
-        /// <typeparam name="T">The Type of the keys in the input sequence.</typeparam>
         /// <typeparam name="TValue">The Type of the values in the output dictionary.</typeparam>
         /// <param name="keys">The input sequence of keys.</param>
         /// <param name="valueFactory">The <see cref="Func{T, TResult}"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
@@ -1045,12 +995,10 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Maps every element in the input sequence to a single value in the specified <paramref name="second"/> sequence. A <paramref name="predicate"/> decides
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the <paramref name="source"/> sequence.</typeparam>
         /// <typeparam name="TOther">The Type of the elements in the <paramref name="second"/> sequence.</typeparam>
-        /// <param name="source">The first sequence.</param>
         /// <param name="second">The second sequence.</param>
-        /// <param name="predicate">A <see cref="Func{T1, T2, TResult}"/> that, in turn, is passed an element from the <paramref name="source"/> sequence and an element from the <paramref name="second"/> sequence and determines whether they should be paired. It must return <see langword="true"/> for exactly one combination.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> of tuples where each tuple contains an element from the <paramref name="source"/> sequence and an element from the <paramref name="second"/> sequence, the combination of which satisfied the <paramref name="predicate"/>.</returns>
+        /// <param name="predicate">A <see cref="Func{T1, T2, TResult}"/> that, in turn, is passed an element from the sourc esequence and an element from the <paramref name="second"/> sequence and determines whether they should be paired. It must return <see langword="true"/> for exactly one combination.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of tuples where each tuple contains an element from the sourc esequence and an element from the <paramref name="second"/> sequence, the combination of which satisfied the <paramref name="predicate"/>.</returns>
         public IEnumerable<(T, TOther)> Correlate<TOther>(IEnumerable<TOther> second, Func<T, TOther, bool> predicate)
         {
             var mat = second as IReadOnlyCollection<TOther> ?? second.ToArray();
@@ -1064,8 +1012,6 @@ public static partial class IEnumerableExtensions
         /// Blits the elements in the input sequence into a sequence of bytes.
         /// <typeparamref name="T"/> must be an unmanaged Type.
         /// </summary>
-        /// <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-        /// <param name="source">The input sequence.</param>
         /// <returns>All elements in the input sequence, blitted into a sequence of bytes and concatenated.</returns>
         public IEnumerable<byte> Blitted()
         {
@@ -1102,8 +1048,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
         /// </summary>
-        /// <typeparam name="T">The type of the elements in the sequence.</typeparam>
-        /// <param name="source">The sequence of nested sequences to flatten.</param>
         /// <returns>A sequence that contains all the elements of the nested sequences.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<T> SelectMany() => source.SelectMany(static item => item);

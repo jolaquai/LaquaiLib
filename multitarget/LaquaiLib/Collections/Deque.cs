@@ -586,14 +586,12 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
 /// Represents a node in a <see cref="Deque{T}"/>.
 /// </summary>
 /// <typeparam name="T">The type of the value this node contains. It must be compatible with the type of the <see cref="Deque{T}"/> this node belongs to.</typeparam>
-public class DequeNode<T> : IEquatable<DequeNode<T>>
+/// <remarks>
+/// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
+/// </remarks>
+/// <param name="value">The value this node contains.</param>
+public class DequeNode<T>(T value) : IEquatable<DequeNode<T>>
 {
-    /// <summary>
-    /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has no neighbors.
-    /// </summary>
-    /// <param name="value">The value this node contains.</param>
-    public DequeNode(T value) => Value = value;
-
     /// <summary>
     /// Initializes a new <see cref="DequeNode{T}"/> with the specified value that is not attached to a <see cref="Deque{T}"/> and has the specified neighbors.
     /// </summary>
@@ -635,7 +633,7 @@ public class DequeNode<T> : IEquatable<DequeNode<T>>
     /// <summary>
     /// Returns the value this node contains.
     /// </summary>
-    public T Value { get; set; }
+    public T Value { get; set; } = value;
 
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

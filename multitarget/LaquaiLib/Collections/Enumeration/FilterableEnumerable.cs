@@ -5,9 +5,13 @@ namespace LaquaiLib.Collections.Enumeration;
 /// This implementation is stateless; all caching is done through the internals of <see cref="IEnumerable{T}"/>, meaning this enumerator may be reused.
 /// </summary>
 /// <typeparam name="T">The type of the items to iterate over.</typeparam>
-public struct FilterableEnumerable<T>
+/// <remarks>
+/// Initializes a new <see cref="FilterableEnumerable{T}"/> that iterates over all items in the given collection.
+/// </remarks>
+/// <param name="items">The type of the items to iterate over.</param>
+public struct FilterableEnumerable<T>(IEnumerable<T> items)
 {
-    private readonly IEnumerable<T> _items;
+    private readonly IEnumerable<T> _items = items;
 
     /// <summary>
     /// Retrieves the current item at which the enumerator is positioned.
@@ -31,11 +35,7 @@ public struct FilterableEnumerable<T>
     public FilterableEnumerable() : this([])
     {
     }
-    /// <summary>
-    /// Initializes a new <see cref="FilterableEnumerable{T}"/> that iterates over all items in the given collection.
-    /// </summary>
-    /// <param name="items">The type of the items to iterate over.</param>
-    public FilterableEnumerable(IEnumerable<T> items) => _items = items;
+
     /// <summary>
     /// Initializes a new <see cref="FilterableEnumerable{T}"/>.
     /// </summary>

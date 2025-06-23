@@ -9,7 +9,7 @@ namespace LaquaiLib.Util.ExceptionManagement;
 public static class Assert
 {
     [DoesNotReturn]
-    private static T Throw<T>(T value, string message = null)
+    private static T Throw<T>(T value, [CallerArgumentExpression(nameof(value))] string message = null)
     {
         Debugger.Break();
         throw new AssertionFailureException<T>(value, message: message);

@@ -91,7 +91,7 @@ public class IEnumerableExtensionsByteTests
 
         public IEnumerator<byte> GetEnumerator() => ((IEnumerable<byte>)_bytes).GetEnumerator();
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _bytes.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _bytes.GetEnumerator();
     }
 
     [StructLayout(LayoutKind.Sequential)]

@@ -7,10 +7,9 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class StackTraceExtensions
 {
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref StackFrame[] _stackFrames(this StackTrace _);
     extension(StackTrace stackTrace)
     {
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] private extern ref StackFrame[] _stackFrames();
-
         /// <summary>
         /// Gets a <see cref="ReadOnlyMemory{T}"/> slice of <see cref="StackFrame"/>s from the <paramref name="stackTrace"/>.
         /// <paramref name="start"/> counts from the end of the <see cref="StackFrame"/> array, to match the behavior of <see cref="StackTrace.GetFrame"/>.

@@ -6,11 +6,9 @@ namespace LaquaiLib.UnitTests.Extensions;
 
 public class IGroupingExtensionsTests
 {
-    private class TestGrouping<TKey, TElement> : List<TElement>, IGrouping<TKey, TElement>
+    private class TestGrouping<TKey, TElement>(TKey key, IEnumerable<TElement> elements) : List<TElement>(elements), IGrouping<TKey, TElement>
     {
-        public TKey Key { get; }
-
-        public TestGrouping(TKey key, IEnumerable<TElement> elements) : base(elements) => Key = key;
+        public TKey Key { get; } = key;
     }
 
     [Fact]

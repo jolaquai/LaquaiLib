@@ -116,7 +116,7 @@ public class IEnumerableIDisposableExtensionsTests
 
         public IEnumerator<IDisposable> GetEnumerator() => ((IEnumerable<IDisposable>)_disposables).GetEnumerator();
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _disposables.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _disposables.GetEnumerator();
 
         public void Dispose() => IsDisposed = true;
     }

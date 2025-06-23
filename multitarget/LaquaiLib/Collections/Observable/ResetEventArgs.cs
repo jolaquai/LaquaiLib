@@ -5,16 +5,14 @@ namespace LaquaiLib.Collections.Observable;
 /// Represents the event arguments for the Reset event.
 /// </summary>
 /// <typeparam name="T">The type of the new contents.</typeparam>
-public class ResetEventArgs<T>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ResetEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="newContents">The new contents.</param>
+public class ResetEventArgs<T>(IEnumerable<T> newContents)
 {
     /// <summary>
     /// Gets the new contents.
     /// </summary>
-    public IEnumerable<T> NewContents { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ResetEventArgs{T}"/> class.
-    /// </summary>
-    /// <param name="newContents">The new contents.</param>
-    public ResetEventArgs(IEnumerable<T> newContents) => NewContents = newContents;
+    public IEnumerable<T> NewContents { get; } = newContents;
 }

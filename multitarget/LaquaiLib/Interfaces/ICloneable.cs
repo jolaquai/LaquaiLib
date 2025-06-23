@@ -12,5 +12,6 @@ public interface ICloneable<TSelf> : ICloneable where TSelf : ICloneable<TSelf>
     /// <returns>A new instance of the current type with the same values as the original instance.</returns>
     public new TSelf Clone();
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     object ICloneable.Clone() => Clone();
 }

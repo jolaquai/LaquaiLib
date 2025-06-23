@@ -396,7 +396,9 @@ public class AnyExtensionsTests
         public bool Equals(TestObject other)
         {
             if (other is null)
+            {
                 return false;
+            }
 
             return Id == other.Id && Name == other.Name;
         }
@@ -404,16 +406,10 @@ public class AnyExtensionsTests
         public override int GetHashCode() => HashCode.Combine(Id, Name);
     }
 
-    public class TrackingEnumerable<T> : IEnumerable<T>
+    public class TrackingEnumerable<T>(IEnumerable<T> source) : IEnumerable<T>
     {
-        private readonly IEnumerable<T> _source;
-        public int EnumeratedCount { get; private set; }
-
-        public TrackingEnumerable(IEnumerable<T> source)
-        {
-            _source = source;
-            EnumeratedCount = 0;
-        }
+        private readonly IEnumerable<T> _source = source;
+        public int EnumeratedCount { get; private set; } = 0;
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -424,7 +420,7 @@ public class AnyExtensionsTests
             }
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 
     public class Base { }

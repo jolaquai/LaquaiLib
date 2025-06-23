@@ -52,7 +52,7 @@ public static class AnyExtensions
         /// <returns><see langword="true"/> if all passed objects are equal, otherwise <see langword="false"/>.</returns>
         public bool AllEqual(IEnumerable<T> enumerable, IEqualityComparer<T> equalityComparer = null)
         {
-            if (enumerable.TryGetSpan(out var span))
+            if (enumerable.TryGetReadOnlySpan(out var span))
             {
                 return source.AllEqual(span, equalityComparer);
             }
@@ -120,7 +120,7 @@ public static class AnyExtensions
         /// <returns><see langword="true"/> if all the results produced by <paramref name="transform"/> are all equal, otherwise <see langword="false"/>.</returns>
         public bool EqualBy<TCompare>(Func<T, TCompare> transform, IEnumerable<T> enumerable, IEqualityComparer<TCompare> equalityComparer = null)
         {
-            if (enumerable.TryGetSpan(out var span))
+            if (enumerable.TryGetReadOnlySpan(out var span))
             {
                 return source.EqualBy(transform, span, equalityComparer);
             }

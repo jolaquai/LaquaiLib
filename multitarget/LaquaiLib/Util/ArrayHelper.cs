@@ -47,7 +47,7 @@ public static class ArrayHelper
         }
 
         // Since we know all the passed arrays have the same length, we can use the same temp array for all of them in turn
-        var temp = new TValue[keysLength];
+        var temp = GC.AllocateUninitializedArray<TValue>(keysLength);
         for (var i = 0; i < itemsArrays.Length; i++)
         {
             // Copy the current array to the temp array

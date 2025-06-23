@@ -152,7 +152,7 @@ public class ArrayHelperTests
         Array keys = new string[] { "banana", "apple", "cherry" };
         Array values = new int[] { 3, 1, 2 };
 
-        System.Collections.IComparer comparer = StringComparer.OrdinalIgnoreCase;
+        IComparer comparer = StringComparer.OrdinalIgnoreCase;
 
         ArrayHelper.Sort(keys, comparer, values);
 

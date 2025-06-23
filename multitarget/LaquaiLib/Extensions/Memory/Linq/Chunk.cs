@@ -1,0 +1,13 @@
+using LaquaiLib.Collections.Enumeration;
+
+namespace LaquaiLib.Extensions.Memory.Linq;
+
+public static partial class LinqMemoryExtensions
+{
+    extension<TSource>(ReadOnlySpan<TSource> source)
+    {
+        /// <inheritdoc cref="Enumerable.Chunk{TSource}(IEnumerable{TSource}, int)" />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public SpanChunkEnumerable<TSource> Chunk(int size) => new SpanChunkEnumerable<TSource>(source, size);
+    }
+}

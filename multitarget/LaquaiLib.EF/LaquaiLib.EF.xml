@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LaquaiLib.EF</name>
+    </assembly>
+    <members>
+        <member name="T:LaquaiLib.EF.Extensions.DbContextExtensions">
+            <summary>
+            Provides Extension Methods for <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingObjects">
+            <summary>
+            Enumerates all <see langword="object"/>s which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <see langword="object"/>s from.</param>
+            <returns>The pending <see langword="object"/>s.</returns>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingObjects``1">
+            <summary>
+            Enumerates all <typeparamref name="TUnderlying"/> instances which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <typeparamref name="TUnderlying"/> instances from.</param>
+            <returns>The pending <typeparamref name="TUnderlying"/> instances.</returns>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingEntries">
+            <summary>
+            Enumerates all <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s from.</param>
+            <returns>The pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s.</returns>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingEntries``1">
+            <summary>
+            Enumerates all <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry`1"/> of <typeparamref name="TUnderlying"/> which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
+            </summary>
+            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s from.</param>
+            <returns>The pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry`1"/> of <typeparamref name="TUnderlying"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.EnumeratePendingObjects(Microsoft.EntityFrameworkCore.DbContext)">
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingObjects"/>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.EnumeratePendingObjects``1(Microsoft.EntityFrameworkCore.DbContext)">
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingObjects``1"/>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.EnumeratePendingEntries(Microsoft.EntityFrameworkCore.DbContext)">
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingEntries"/>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.EnumeratePendingEntries``1(Microsoft.EntityFrameworkCore.DbContext)">
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbContextExtensions.<>E__0.EnumeratePendingEntries``1"/>
+        </member>
+        <member name="T:LaquaiLib.EF.Extensions.DbSetExtensions">
+            <summary>
+            Provides Extension Methods for the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> Type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.<>E__0`1.GetOrAdd(System.Func{`0,System.Boolean},System.Func{System.Threading.Tasks.Task{`0}})">
+            <summary>
+            Gets an entity of type <typeparamref name="TEntity"/> if the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> contains one that fulfills the conditions of the <paramref name="selector"/>. If no entity is found, a new entity is created and added to the set using the <paramref name="factory"/>.
+            </summary>
+            <typeparam name="TEntity">The type of the entity.</typeparam>
+            <param name="set">The <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> to search in.</param>
+            <param name="selector">A <see cref="T:System.Func`2"/> that defines the conditions of the entity to search for. If multiple entities fulfill the conditions, the first match is returned, so it is advisable to incorporate <typeparamref name="TEntity"/>'s primary key(s) in the conditions.</param>
+            <param name="factory">A <see cref="T:System.Func`1"/> that asynchronously creates a new entity if no entity is found.</param>
+            <returns>The found or created entity.</returns>
+            <remarks>
+            This method does not persist changes to the database.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.<>E__0`1.AddOrUpdate(`0,System.Object[])">
+            <summary>
+            Adds the specified <paramref name="entity"/> object to the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> if no entity with the specified <paramref name="keys"/> is found.
+            Otherwise, it updates the existing entity found by the specified <paramref name="keys"/> with the specified <paramref name="entity"/> object.
+            </summary>
+            <typeparam name="TEntity">The type of the entity.</typeparam>
+            <param name="set">The <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> to add or update the entity in.</param>
+            <param name="entity">The actual entity object to add or update.</param>
+            <param name="keys">The primary key(s) of the entity to search for.</param>
+            <returns>The existing entity from the database (which will not yet reflect the changes made to the <paramref name="entity"/> object) if an entity with the specified <paramref name="keys"/> is found, otherwise <paramref name="entity"/> object itself.</returns>
+            <remarks>
+            This method does not persist changes to the database.
+            <para/>To prevent double-adding entities, <paramref name="entity"/> is attached to the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> before anything else is done.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.GetOrAdd``1(Microsoft.EntityFrameworkCore.DbSet{``0},System.Func{``0,System.Boolean},System.Func{System.Threading.Tasks.Task{``0}})">
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbSetExtensions.<>E__0`1.GetOrAdd(System.Func{`0,System.Boolean},System.Func{System.Threading.Tasks.Task{`0}})"/>
+        </member>
+        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.AddOrUpdate``1(Microsoft.EntityFrameworkCore.DbSet{``0},``0,System.Object[])">
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbSetExtensions.<>E__0`1.AddOrUpdate(`0,System.Object[])"/>
+        </member>
+    </members>
+</doc>

@@ -3,14 +3,11 @@
   <PropertyGroup>
     <Title>LaquaiLib</Title>
     <PackageDescription>Personal library. General purpose.</PackageDescription>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
     <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Core\LaquaiLib.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Extensions\MemoryExtensions.Linq.cs" />
-    <None Include="Extensions\MemoryExtensions.Linq.cs" />
   </ItemGroup>
 </Project>

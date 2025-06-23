@@ -131,7 +131,10 @@ internal static class Helpers
     }
     private static bool IsSpanType(ITypeSymbol type)
     {
-        if (type == null) return false;
+        if (type == null)
+        {
+            return false;
+        }
 
         // Check if it's Span<T> or ReadOnlySpan<T>
         return type.OriginalDefinition?.ToString() is "System.Span<T>" or "System.ReadOnlySpan<T>";

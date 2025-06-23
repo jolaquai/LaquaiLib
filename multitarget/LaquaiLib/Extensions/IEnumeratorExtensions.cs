@@ -28,6 +28,7 @@ public static class IEnumeratorExtensions
         /// <typeparam name="T">The type of elements in the <see cref="IEnumerator{T}"/>.</typeparam>
         /// <param name="source">The <see cref="IEnumerator{T}"/> to wrap.</param>
         /// <returns>The <paramref name="source"/> as an <see cref="IAsyncEnumerator{T}"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IAsyncEnumerator<T> AsAsynchronous() => new AsyncEnumeratorWrapper<T>(source);
     }
 }
