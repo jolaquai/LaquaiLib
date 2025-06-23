@@ -8,23 +8,6 @@ namespace LaquaiLib.Core;
 public static class StringUtility
 {
     /// <summary>
-    /// Allocates a new <see langword="string"/> with the specified length, then invokes the specified <see cref="SpanAction{T}"/> to fill it.
-    /// </summary>
-    /// <param name="length">The length of the <see cref="string"/> to create.</param>
-    /// <param name="spanAction">A <see cref="SpanAction{T}"/> that takes a <see cref="Span{T}"/> of <see cref="char"/>.</param>
-    /// <returns>The created <see cref="string"/>.</returns>
-    /// <remarks>
-    /// <paramref name="spanAction"/> MUST fill the entire <see cref="Span{T}"/> with valid <see cref="char"/> values, otherwise uninitialized memory will be exposed through the <see cref="string"/>.
-    /// </remarks>
-    public static string CreateString(int length, SpanAction<char> spanAction)
-    {
-        var str = AllocString(length);
-        var mut = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(str.AsSpan()), str.Length);
-        spanAction(mut);
-        return str;
-    }
-
-    /// <summary>
     /// Allocates an uninitialized string from unmanaged memory.
     /// </summary>
     /// <param name="length">The length of the string to allocate.</param>

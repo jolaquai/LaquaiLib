@@ -348,7 +348,7 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
         /// </summary>
-        /// <returns><see langword="true"/> if all objects in the passed sourc ecollection are equal, otherwise <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if all objects in the passed source collection are equal, otherwise <see langword="false"/>.</returns>
         public bool AllEqual()
         {
             if (!source.Any())
@@ -425,8 +425,8 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
         /// </summary>
-        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the sourc ecollection and determines whether the element should be transformed.</param>
-        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the sourc ecollection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
+        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the source collection and determines whether the element should be transformed.</param>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the source collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
         /// <returns>The transformed elements.</returns>
         public IEnumerable<T> SelectWhere(Func<T, int, bool> predicate, Func<T, int, T> selector)
             => source.Select((item, index) => predicate(item, index) ? selector(item, index) : item);
@@ -943,8 +943,8 @@ public static partial class IEnumerableExtensions
         /// Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
         /// </summary>
         /// <typeparam name="TResult">The Type of the elements the <paramref name="selector"/> produces.</typeparam>
-        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the sourc ecollection and determines whether the element should be transformed.</param>
-        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the sourc ecollection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
+        /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and its index in the source collection and determines whether the element should be transformed.</param>
+        /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each element of the input sequence and its index in the source collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
         /// <returns>The transformed elements.</returns>
         public IEnumerable<TResult> SelectOnlyWhere<TResult>(Func<T, int, bool> predicate, Func<T, int, TResult> selector)
             => source.Where(predicate).Select(selector);
