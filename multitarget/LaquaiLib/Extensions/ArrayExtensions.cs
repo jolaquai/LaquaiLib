@@ -17,6 +17,7 @@ public static partial class ArrayExtensions
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
         /// <param name="source">The <see cref="Array"/> to transform.</param>
         /// <returns>The reinterpreted reference to <paramref name="source"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<T> AsEnumerable<T>() => new MultiDimArrayEnumerable<T>(source);
         /// <summary>
         /// Gets an <see cref="ISpanProvider{T}"/> for the specified <paramref name="source"/>.
@@ -25,6 +26,7 @@ public static partial class ArrayExtensions
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
         /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
         /// <returns>An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> over the array.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ISpanProvider<T> GetSpanProvider<T>() => new MultiDimArrayEnumerable<T>(source);
         /// <summary>
         /// Gets an <see cref="ISpanProvider{T}"/> for the specified <paramref name="source"/>.
@@ -33,6 +35,7 @@ public static partial class ArrayExtensions
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
         /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
         /// <returns>An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> over the array.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IReadOnlySpanProvider<T> GetReadOnlySpanProvider<T>() => new MultiDimArrayEnumerable<T>(source);
 
         /// <summary>
@@ -41,6 +44,7 @@ public static partial class ArrayExtensions
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
         /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimCopyTo<T>(Array destination) => source.MultiDimCopyTo<T>(0, destination, 0, source.Length);
         /// <summary>
         /// Copies a range of elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array, starting at position <c>0</c> in all dimensions of both arrays.
@@ -49,6 +53,7 @@ public static partial class ArrayExtensions
         /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="length">The total number of elements to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimCopyTo<T>(Array destination, int length) => source.MultiDimCopyTo<T>(0, destination, 0, length);
         /// <summary>
         /// Copies a range of elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array.
@@ -59,6 +64,7 @@ public static partial class ArrayExtensions
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="destinationIndex">The index in the destination array at which storing begins.</param>
         /// <param name="length">The total number of elements to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimCopyTo<T>(long sourceIndex, Array destination, long destinationIndex, long length)
             => source.MultiDimCopyTo<T>((int)sourceIndex, destination, (int)destinationIndex, (int)length);
         /// <summary>
@@ -135,6 +141,7 @@ public static partial class ArrayExtensions
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
         /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimConstrainedCopyTo<T>(Array destination) => source.MultiDimConstrainedCopyTo<T>(0, destination, 0, source.Length);
         /// <summary>
         /// Copies a range of elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array, starting at position <c>0</c> in all dimensions of both arrays.
@@ -144,6 +151,7 @@ public static partial class ArrayExtensions
         /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="length">The total number of elements to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimConstrainedCopyTo<T>(Array destination, int length) => source.MultiDimConstrainedCopyTo<T>(0, destination, 0, length);
         /// <summary>
         /// Copies a range of elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array.
@@ -155,6 +163,7 @@ public static partial class ArrayExtensions
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="destinationIndex">The index in the destination array at which storing begins.</param>
         /// <param name="length">The total number of elements to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimConstrainedCopyTo<T>(long sourceIndex, Array destination, long destinationIndex, long length)
             => source.MultiDimConstrainedCopyTo<T>((int)sourceIndex, destination, (int)destinationIndex, (int)length);
         /// <summary>

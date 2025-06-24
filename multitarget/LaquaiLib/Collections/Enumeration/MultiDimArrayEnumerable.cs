@@ -8,41 +8,44 @@ namespace LaquaiLib.Collections.Enumeration;
 /// Implements the enumerator pattern to enumerate the elements of a (potentially) multidimensional array sequentially.
 /// </summary>
 /// <typeparam name="T">The type of the elements in the array. This must be exactly the same type as the array, otherwise users of this type will be faced with non-sensical exceptions.</typeparam>
-public unsafe struct MultiDimArrayEnumerable<T> : IEnumerable<T>, IEnumerator<T>, ISpanProvider<T>, IMemoryProvider<T>
+public unsafe class MultiDimArrayEnumerable<T> : IEnumerable<T>, ISpanProvider<T>
 {
     private readonly Array _array;
     private readonly int _length;
     private readonly GCHandle _handle;
     private readonly T* _start;
-    private T* ptr;
 
-    /// <inheritdoc/>
-    public T Current { get; private set; }
     /// <summary>
     /// Gets a <see cref="Span{T}"/> over the entire array.
     /// </summary>
-    public readonly Span<T> Span => new Span<T>(_start, _length);
+    public Span<T> Span => new Span<T>(_start, _length);
+
     /// <summary>
-    /// Gets a <see cref="Memory{T}"/> over the entire array.
+    /// Enables enumeration of the items of the <see cref="Array"/> a <see cref="MultiDimArrayEnumerable{T}"/> pins.
     /// </summary>
-    // this is fine since the array is already pinned by the time callers can get in here
-    public readonly Memory<T> Memory => new Memory<T>(Unsafe.As<T[]>(_array));
-
-    /// <inheritdoc/>
-    public bool MoveNext()
+    public struct Enumerator : IEnumerator<T>
     {
-        if (ptr - _start < _length)
+        private readonly MultiDimArrayEnumerable<T> _parent;
+        private readonly T* _start, _end;
+        private T* cur;
+        internal Enumerator(MultiDimArrayEnumerable<T> parent)
         {
-            Current = *ptr;
-            ptr++;
-            return true;
+            _start = parent._start;
+            _end = parent._start + parent._length;
+            cur = _start - 1; // Start before the first element
+            _parent = parent;
         }
-        return false;
-    }
-    /// <inheritdoc/>
-    public void Reset() => ptr = _start;
 
-    readonly object IEnumerator.Current => Current;
+        /// <inheritdoc/>
+        public bool MoveNext() => ++cur < _end;
+        /// <inheritdoc/>
+        public void Reset() => cur = _start - 1;
+        /// <inheritdoc/>
+        public T Current => _parent.disposed == 0 ? *cur : throw new ObjectDisposedException(nameof(MultiDimArrayEnumerable<>));
+        object IEnumerator.Current => Current;
+        /// <inheritdoc/>
+        public void Dispose() { }
+    }
 
     /// <summary>
     /// Initializes a new <see cref="MultiDimArrayEnumerable{T}"/> with the specified <paramref name="array"/>.
@@ -52,30 +55,26 @@ public unsafe struct MultiDimArrayEnumerable<T> : IEnumerable<T>, IEnumerator<T>
     {
         _array = array;
         _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-        _start = (T*)_handle.AddrOfPinnedObject();
+        // The array is pinned here already so this is safe
+        _start = (T*)Unsafe.AsPointer(ref Unsafe.As<byte, T>(ref MemoryMarshal.GetArrayDataReference(array)));
         _length = array.Length;
-        ptr = _start;
     }
 
     /// <inheritdoc/>
-    public readonly IEnumerator<T> GetEnumerator() => this;
-    readonly IEnumerator IEnumerable.GetEnumerator() => this;
+    public IEnumerator<T> GetEnumerator() => new Enumerator(this);
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    private volatile byte disposed;
+    ~MultiDimArrayEnumerable() => Dispose();
     /// <summary>
     /// Frees the <see cref="GCHandle"/> used to pin the target array.
     /// </summary>
-    public readonly void Dispose()
+    public void Dispose()
     {
-        _handle.Free();
-        GC.SuppressFinalize(this);
+        if (Interlocked.Exchange(ref disposed, 1) == 0)
+        {
+            _handle.Free();
+            GC.SuppressFinalize(this);
+        }
     }
-
-    /// <summary>
-    /// Implicitly creates an <see cref="MultiDimArrayEnumerable{T}"/> from an <see cref="Array"/>.
-    /// </summary>
-    /// <param name="array">The array to wrap.</param>
-    public static implicit operator MultiDimArrayEnumerable<T>(Array array) => new MultiDimArrayEnumerable<T>(array);
-
-    // there are no implicit conversions to Span<T> or Memory<T> to discourage "throwaway use"
-    // not disposing instances of this type means serious resource leaks and performance impacts since the pinned array can't be moved
 }

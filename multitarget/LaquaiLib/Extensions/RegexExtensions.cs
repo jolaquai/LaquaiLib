@@ -18,7 +18,11 @@ public static class RegexExtensions
         public Regex Regex
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => match._regex();
+            get
+            {
+                ArgumentNullException.ThrowIfNull(match);
+                return match._regex();
+            }
         }
     }
 

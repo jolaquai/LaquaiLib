@@ -653,4 +653,191 @@ public class BufferTextWriterTests
 
         public override string ToString() => new string('X', _size);
     }
+
+    #region WriteTo(Stream)
+    [Fact]
+    public void WriteTo_EmptyBuffer_ReturnsZero()
+    {
+        var writer = new BufferTextWriter();
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: Encoding.UTF8);
+
+        Assert.Equal(0, result);
+        Assert.Equal(0, stream.Length);
+    }
+
+    [Fact]
+    public void WriteTo_SimpleText_EncodesCorrectly()
+    {
+        var writer = new BufferTextWriter();
+        writer.Write("Hello World");
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: Encoding.UTF8);
+
+        var expected = Encoding.UTF8.GetBytes("Hello World");
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Theory]
+    [InlineData("UTF-8")]
+    [InlineData("UTF-16")]
+    [InlineData("ASCII")]
+    [InlineData("UTF-32")]
+    public void WriteTo_DifferentEncodings_EncodesCorrectly(string encodingName)
+    {
+        var encoding = Encoding.GetEncoding(encodingName);
+        var text = "Test Text 123";
+        var writer = new BufferTextWriter();
+        writer.Write(text);
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: encoding);
+
+        var expected = encoding.GetBytes(text);
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void WriteTo_UnicodeCharacters_EncodesCorrectly()
+    {
+        var writer = new BufferTextWriter();
+        writer.Write("Hello 🌍 World 你好");
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: Encoding.UTF8);
+
+        var expected = Encoding.UTF8.GetBytes("Hello 🌍 World 你好");
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Theory]
+    [InlineData(512)]
+    [InlineData(1024)]
+    [InlineData(4096)]
+    public void WriteTo_DifferentBufferSizes_ProducesCorrectOutput(int bufferSize)
+    {
+        var text = new string('A', 10000);
+        var writer = new BufferTextWriter();
+        writer.Write(text);
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, Encoding.UTF8, bufferSize);
+
+        var expected = Encoding.UTF8.GetBytes(text);
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void WriteTo_LargeText_HandlesCorrectly()
+    {
+        var text = new string('X', 100000);
+        var writer = new BufferTextWriter();
+        writer.Write(text);
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: Encoding.UTF8);
+
+        var expected = Encoding.UTF8.GetBytes(text);
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void WriteTo_NullEncodingAndNullInstanceEncoding_ThrowsArgumentNullException()
+    {
+        var writer = new BufferTextWriter();
+        writer.Write("test");
+        using var stream = new MemoryStream();
+
+        var exception = Assert.Throws<ArgumentNullException>(() => writer.WriteTo(stream, encoding: null));
+
+        Assert.Equal("encoding", exception.ParamName);
+    }
+
+    [Fact]
+    public void WriteTo_NullEncodingButValidInstanceEncoding_UsesInstanceEncoding()
+    {
+        var writer = new BufferTextWriter(encoding: Encoding.UTF8);
+        writer.Write("test");
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: null);
+        var expected = Encoding.UTF8.GetBytes("test");
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void WriteTo_ConcurrentModification_ThrowsInvalidOperationException()
+    {
+        var writer = new BufferTextWriter();
+        // If the write fits into a single buffer, it won't throw because it won't recheck for more data
+        // This is by design since technically, after that first write, we're no longer "writing" (even if the method hasn't returned yet)
+        // 9000 is definitely larger than the default buffer size
+        writer.Write(new string('a', 9000));
+        var stream = new SlowWriteStream(() => writer.Write("more text"));
+
+        Assert.Throws<InvalidOperationException>(() => writer.WriteTo(stream, encoding: Encoding.UTF8));
+    }
+
+    [Fact]
+    public void WriteTo_MultipleWrites_ConcatenatesCorrectly()
+    {
+        var writer = new BufferTextWriter();
+        writer.Write("Hello");
+        writer.Write(" ");
+        writer.Write("World");
+        writer.WriteLine();
+        writer.Write("Line 2");
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: Encoding.UTF8);
+
+        var expected = Encoding.UTF8.GetBytes($"Hello World{Environment.NewLine}Line 2");
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void WriteTo_DefaultBufferSize_WorksCorrectly()
+    {
+        var writer = new BufferTextWriter();
+        writer.Write("test with default buffer size");
+        using var stream = new MemoryStream();
+
+        var result = writer.WriteTo(stream, encoding: Encoding.UTF8);
+
+        var expected = Encoding.UTF8.GetBytes("test with default buffer size");
+        Assert.Equal(expected.Length, result);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    private class SlowWriteStream(Action onWrite) : Stream
+    {
+        private readonly Action _onWrite = onWrite;
+        private readonly MemoryStream _inner = new MemoryStream();
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            _onWrite?.Invoke();
+            _inner.Write(buffer, offset, count);
+        }
+
+        public override bool CanRead => _inner.CanRead;
+        public override bool CanSeek => _inner.CanSeek;
+        public override bool CanWrite => _inner.CanWrite;
+        public override long Length => _inner.Length;
+        public override long Position { get => _inner.Position; set => _inner.Position = value; }
+        public override void Flush() => _inner.Flush();
+        public override int Read(byte[] buffer, int offset, int count) => _inner.Read(buffer, offset, count);
+        public override long Seek(long offset, SeekOrigin origin) => _inner.Seek(offset, origin);
+        public override void SetLength(long value) => _inner.SetLength(value);
+    }
+    #endregion
 }

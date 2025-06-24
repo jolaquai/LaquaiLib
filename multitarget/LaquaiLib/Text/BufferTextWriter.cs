@@ -11,10 +11,13 @@ namespace LaquaiLib.Text;
 /// Implements a <see cref="TextWriter"/> that uses an <see cref="ArrayBufferWriter{T}"/> to buffer the written characters.
 /// </summary>
 /// <param name="capacity">A starting capacity for the internal buffer.</param>
-/// <param name="encoding">The encoding to use for the <see cref="TextWriter"/>. Defaults to <see cref="Encoding.Default"/>.</param>
-public class BufferTextWriter(int capacity = 2048) : TextWriter
+/// <param name="encoding">The <see cref="System.Text.Encoding"/> to use when encoding the <see langword="char"/>s written to this <see cref="TextWriter"/> to <see langword="byte"/>s.
+public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : TextWriter
 {
     private const string ArgumentNullException_AttemptedNullStringNullWrite = "Cannot write a null value when NullString is itself null.";
+    private const string ArgumentNullException_NoFallbackEncoding = "No encoding was specified for this call and the instance's encoding was also null.";
+    private const string InvalidOperationException_BufferMutatedWhileEncoding = "The instance was written to while encoding data.";
+
     private readonly ArrayBufferWriter<char> _buffer = new ArrayBufferWriter<char>(capacity);
 
     /// <summary>
@@ -30,10 +33,13 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
 
     #region TextWriter
     /// <summary>
-    /// Always returns <see langword="null"/>. <see cref="System.Text.Encoding"/> is not supported when writing <see langword="char"/>s.
+    /// Gets the <see cref="System.Text.Encoding"/> to use when encoding the <see langword="char"/>s written to this <see cref="TextWriter"/> to <see langword="byte"/>s.
+    /// This has no effect when writing to this <see cref="TextWriter"/> directly.
     /// </summary>
-    public override Encoding Encoding { get; } = null;
+    public override Encoding Encoding { get; } = encoding;
+    /// <inheritdoc/>
     public override IFormatProvider FormatProvider => CultureInfo.CurrentCulture;
+    /// <inheritdoc/>
     public override string NewLine { get; set; } = Environment.NewLine;
     /// <summary>
     /// Gets or sets the <see langword="string"/> that is written to the buffer when a <see cref="null"/> value is written.
@@ -41,50 +47,63 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
     /// </summary>
     public string NullString { get; set; } = "null";
 
+    /// <inheritdoc/>
     public override void Flush() { }
+    /// <inheritdoc/>
     public override Task FlushAsync() => Task.CompletedTask;
+    /// <inheritdoc/>
     public override Task FlushAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    /// <inheritdoc/>
     public override string ToString() => new string(_buffer.WrittenSpan);
+    /// <inheritdoc/>
     public override void Write(bool value)
     {
         _ = value.TryFormat(_buffer.GetSpan(5), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void Write(char value)
     {
         _buffer.GetSpan(1)[0] = value;
         _buffer.Advance(1);
     }
+    /// <inheritdoc/>
     public override void Write(char[] buffer)
     {
         buffer.CopyTo(_buffer.GetSpan(buffer.Length));
         _buffer.Advance(buffer.Length);
     }
+    /// <inheritdoc/>
     public override void Write(char[] buffer, int index, int count)
     {
         buffer.AsSpan(index, count).CopyTo(_buffer.GetSpan(count));
         _buffer.Advance(count);
     }
+    /// <inheritdoc/>
     public override void Write(decimal value)
     {
         _ = value.TryFormat(_buffer.GetSpan(128), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void Write(double value)
     {
         _ = value.TryFormat(_buffer.GetSpan(50), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void Write(int value)
     {
         _ = value.TryFormat(_buffer.GetSpan(20), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void Write(long value)
     {
         _ = value.TryFormat(_buffer.GetSpan(30), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void Write(object value)
     {
         if (value is null)
@@ -108,6 +127,7 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
             _buffer.Advance(str.Length);
         }
     }
+    /// <inheritdoc/>
     public override void Write(ReadOnlySpan<char> buffer)
     {
         buffer.CopyTo(_buffer.GetSpan(buffer.Length));
@@ -119,22 +139,29 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
         buffer.Span.CopyTo(_buffer.GetSpan(buffer.Length));
         _buffer.Advance(buffer.Length);
     }
+    /// <inheritdoc/>
     public override void Write(float value)
     {
         _ = value.TryFormat(_buffer.GetSpan(25), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void Write(string value)
     {
         value.CopyTo(_buffer.GetSpan(value.Length));
         _buffer.Advance(value.Length);
     }
+    /// <inheritdoc/>
     public override void Write([StringSyntax("CompositeFormat")] string format, object arg0) => Write(format, [arg0]);
+    /// <inheritdoc/>
     public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1) => Write(format, [arg0, arg1]);
+    /// <inheritdoc/>
     public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2) => Write(format, [arg0, arg1, arg2]);
+    /// <inheritdoc/>
     public override void Write([StringSyntax("CompositeFormat")] string format, params object[] arg) => Write(format, (ReadOnlySpan<object>)arg);
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_segments")]
     private static extern ref (string Literal, int ArgIndex, int Alignment, string Format)[] FormatSegments(CompositeFormat comp);
+    /// <inheritdoc/>
     public override unsafe void Write([StringSyntax("CompositeFormat")] string format, params scoped ReadOnlySpan<object> arg)
     {
         var comp = CompositeFormat.Parse(format);
@@ -252,6 +279,7 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
             }
         }
     }
+    /// <inheritdoc/>
     public override void Write(StringBuilder value)
     {
         var chunks = value.GetChunks();
@@ -261,104 +289,178 @@ public class BufferTextWriter(int capacity = 2048) : TextWriter
             _buffer.Advance(chunk.Length);
         }
     }
+    /// <inheritdoc/>
     public override void Write(uint value)
     {
         _ = value.TryFormat(_buffer.GetSpan(14), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void Write(ulong value)
     {
         _ = value.TryFormat(_buffer.GetSpan(30), out var written);
         _buffer.Advance(written);
     }
+    /// <inheritdoc/>
     public override void WriteLine()
     {
         NewLine.CopyTo(_buffer.GetSpan(NewLine.Length));
         _buffer.Advance(NewLine.Length);
     }
+    /// <inheritdoc/>
     public override void WriteLine(bool value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(char value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(char[] buffer)
     {
         Write(buffer);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(char[] buffer, int index, int count)
     {
         Write(buffer, index, count);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(decimal value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(double value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(int value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(long value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(object value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(ReadOnlySpan<char> buffer)
     {
         Write(buffer);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(float value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(string value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0) => WriteLine(format, [arg0]);
+    /// <inheritdoc/>
     public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1) => WriteLine(format, [arg0, arg1]);
+    /// <inheritdoc/>
     public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2) => WriteLine(format, [arg0, arg1, arg2]);
+    /// <inheritdoc/>
     public override void WriteLine([StringSyntax("CompositeFormat")] string format, params object[] arg) => WriteLine(format, (ReadOnlySpan<object>)arg);
+    /// <inheritdoc/>
     public override void WriteLine([StringSyntax("CompositeFormat")] string format, params scoped ReadOnlySpan<object> arg)
     {
         Write(format, arg);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(StringBuilder value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(uint value)
     {
         Write(value);
         WriteLine();
     }
+    /// <inheritdoc/>
     public override void WriteLine(ulong value)
     {
         Write(value);
         WriteLine();
     }
     #endregion
+
+    /// <summary>
+    /// Encodes the characters written to this <see cref="TextWriter"/> to <see langword="byte"/>s and writes them to the specified <paramref name="stream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> to write the encoded <see langword="byte"/>s to.</param>
+    /// <param name="encoding">The <see cref="System.Text.Encoding"/> to use when encoding. If <see langword="null"/>, <see cref="Encoding"/> is used instead. If that is also <see langword="null"/>, an <see cref="ArgumentNullException"/> is thrown.</param>
+    /// <param name="bufferSize">The size of the buffer to use when writing to the <paramref name="stream"/>. If <c>-1</c>, the default buffer size is used.</param>
+    /// <returns>The number of <see langword="byte"/>s written to the <paramref name="stream"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="encoding"/> is <see langword="null"/> and the instance's <see cref="Encoding"/> is also <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when the instance is written to while this method is encoding data.</exception>
+    public int WriteTo(Stream stream, Encoding encoding = null, int bufferSize = -1)
+    {
+        var encoder = (encoding ?? Encoding ?? throw new ArgumentNullException(nameof(encoding), ArgumentNullException_NoFallbackEncoding)).GetEncoder();
+
+        var bytesWritten = 0;
+        var charsConsumed = 0;
+        var chars = _buffer.WrittenSpan;
+        var charLength = chars.Length;
+
+        // Ignore bufferSize if it's smaller than what we can afford to stackalloc, otherwise obey the user
+        var bufferActual = bufferSize <= Configuration.MaxStackallocSize ? Configuration.MaxStackallocSize : Math.Clamp(bufferSize, Configuration.MaxStackallocSize, bufferSize);
+        Span<byte> scratch = bufferActual == Configuration.MaxStackallocSize ? stackalloc byte[bufferActual] : new byte[bufferActual];
+        bool completed;
+        var flush = false;
+        do
+        {
+            if (charLength != _buffer.WrittenCount)
+            {
+                throw new InvalidOperationException(InvalidOperationException_BufferMutatedWhileEncoding);
+            }
+
+            encoder.Convert(chars[charsConsumed..], scratch, flush, out var charsConsumedLocal, out var bytesWrittenLocal, out completed);
+            if (bytesWrittenLocal == 0 && !flush)
+            {
+                // No more characters to write
+                flush = true;
+                continue;
+            }
+
+            if (bytesWrittenLocal > 0)
+            {
+                stream.Write(scratch[..bytesWrittenLocal]);
+            }
+            bytesWritten += bytesWrittenLocal;
+            charsConsumed += charsConsumedLocal;
+
+            flush = charsConsumed >= charLength;
+        } while (!completed);
+
+        return bytesWritten;
+    }
 }

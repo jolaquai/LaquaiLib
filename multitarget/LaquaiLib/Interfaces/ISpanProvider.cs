@@ -11,7 +11,11 @@ public interface ISpanProvider<T> : IReadOnlySpanProvider<T>
     /// </summary>
     public Span<T> Span { get; }
 
-    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan => Span;
+    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => Span;
+    }
 }
 
 /// <summary>
@@ -37,9 +41,21 @@ public interface IMemoryProvider<T> : ISpanProvider<T>, IReadOnlyMemoryProvider<
     /// </summary>
     public Memory<T> Memory { get; }
 
-    ReadOnlyMemory<T> IReadOnlyMemoryProvider<T>.ReadOnlyMemory => Memory;
-    Span<T> ISpanProvider<T>.Span => Span;
-    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan => ReadOnlySpan;
+    ReadOnlyMemory<T> IReadOnlyMemoryProvider<T>.ReadOnlyMemory
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => Memory;
+    }
+    Span<T> ISpanProvider<T>.Span
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => Memory.Span;
+    }
+    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => Memory.Span;
+    }
 }
 
 /// <summary>
@@ -53,5 +69,9 @@ public interface IReadOnlyMemoryProvider<T> : IReadOnlySpanProvider<T>
     /// </summary>
     public ReadOnlyMemory<T> ReadOnlyMemory { get; }
 
-    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan => ReadOnlySpan;
+    ReadOnlySpan<T> IReadOnlySpanProvider<T>.ReadOnlySpan
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => ReadOnlyMemory.Span;
+    }
 }
