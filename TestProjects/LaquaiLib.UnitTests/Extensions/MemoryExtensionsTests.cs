@@ -122,7 +122,8 @@ public class MemoryExtensionsTests
             list.Add(new string(span.ToArray()));
         }
 
-        Assert.Empty(list);
+        var i = Assert.Single(list);
+        Assert.Equal("", i);
     }
 
     [Fact]
@@ -156,7 +157,8 @@ public class MemoryExtensionsTests
             list.Add(new string(span));
         }
 
-        Assert.Empty(list);
+        var i = Assert.Single(list);
+        Assert.Equal("", i);
     }
 
     [StructLayout(LayoutKind.Sequential)]

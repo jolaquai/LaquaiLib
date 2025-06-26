@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace LaquaiLib.Dynamic;
@@ -38,9 +39,29 @@ public static class FullAccessDynamicFactory
     /// <param name="instance">The instance to wrap.</param>
     /// <returns>A new instance of <see cref="FullAccessDynamic{T}"/> that has the specified <paramref name="type"/> and wraps the specified object <paramref name="instance"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static dynamic Create(Type type, object instance) => type == typeof(void)
-            ? null
-            : (dynamic)Activator.CreateInstance(typeof(FullAccessDynamic<>).MakeGenericType(type), bindingAttr: BindingFlags.Instance | BindingFlags.NonPublic, null, [instance], null);
+    public static dynamic Create(Type type, object instance)
+    {
+        // The generic version of this method is more efficient by orders of magnitude
+        // The problem is, given only a Type, we have no choice but to use reflection to create the instance
+        // Only smart thing to make this worthwhile is to emit an optimized Func<object, dynamic> for each type
+
+        if (type == typeof(void))
+        {
+            return null;
+        }
+
+        if (!_createCache.TryGetValue(type, out var func))
+        {
+            var parameter = Expression.Parameter(typeof(object), "instance");
+            var convertedParameter = Expression.Convert(parameter, type);
+            var ctorInfo = typeof(FullAccessDynamic<>).MakeGenericType(type).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, [type]);
+            var newExpression = Expression.New(ctorInfo, convertedParameter);
+            func = Expression.Lambda<Func<object, dynamic>>(newExpression, parameter).Compile();
+            _createCache[type] = func;
+        }
+        return func(instance);
+    }
+    private static readonly ConcurrentDictionary<Type, Func<object, dynamic>> _createCache = [];
 
     /// <summary>
     /// Creates a new instance of <see cref="FullAccessDynamic{T}"/> that wraps the current object instance.

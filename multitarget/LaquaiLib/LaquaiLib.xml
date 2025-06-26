@@ -674,11 +674,6 @@
             Gets a <see cref="T:System.Span`1"/> over the entire array.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Memory">
-            <summary>
-            Gets a <see cref="T:System.Memory`1"/> over the entire array.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator">
             <summary>
             Enables enumeration of the items of the <see cref="T:System.Array"/> a <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> pins.
@@ -2028,16 +2023,7 @@
         <member name="T:LaquaiLib.Dynamic.FullAccessDynamic`1">
             <summary>
             Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level.
-            <para/>Note that all dynamically retrieved members are also instances of <see cref="T:LaquaiLib.Dynamic.FullAccessDynamic`1"/> to allow for further dynamic access. The only value explicitly propagated to allow <c>?.</c> <see langword="null"/> propagation is <see langword="null"/>. This does <b>not</b> work directly on an object of type <see cref="T:LaquaiLib.Dynamic.FullAccessDynamic`1"/>, i.e. the following method invocation will always take place:
-            <code language="csharp">
-            MyClass? myInstance = null;
-            var myFullAccessDynamic = FullAccessDynamic.Create(typeof(MyClass), myInstance);
-            // This incovation will happen no matter if the underlying object myInstance is null or not, because the null propagation will check the FullAccessDynamic instance, rather than the underlying object
-            myFullAccessDynamic?.MyMethod();
-            // These ones will not, however, if MyProperty is null or MyNullReturningMethod returns null
-            myFullAccessDynamic.MyProperty?.MyMethod();
-            myFullAccessDynamic.MyNullReturningMethod()?.MyMethod();
-            </code>
+            <para/>For more information on this type, see the readme in the repository.
             <para/><b>Warning!</b> Nothing prevents the underlying object instance of <typeparamref name="T"/> from being <see langword="null"/>. As such, <see cref="M:LaquaiLib.Dynamic.FullAccessDynamic`1.Unwrap"/> may return <see langword="null"/>.
             </summary>
             <typeparam name="T">The type of the object to wrap.</typeparam>
@@ -2136,115 +2122,6 @@
             <typeparam name="T">The type of the object to wrap.</typeparam>
             <param name="instance">The instance to wrap.</param>
             <returns>The created <see cref="T:LaquaiLib.Dynamic.FullAccessDynamic`1"/> instance.</returns>
-        </member>
-        <member name="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1">
-            <summary>
-            Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level. All binding failures and binding-related exceptions are swallowed and will result in <see langword="null"/> returns.
-            <para/>Note that all dynamically retrieved members are also instances of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> to allow for further dynamic access. The only value explicitly propagated to allow <c>?.</c> <see langword="null"/> propagation is <see langword="null"/>. This does <b>not</b> work directly on an object of type <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/>, i.e. the following method invocation will always take place:
-            <code language="csharp">
-            MyClass? myInstance = null;
-            var mySilentFullAccessDynamic = SilentFullAccessDynamic.Create(typeof(MyClass), myInstance);
-            // This incovation will happen no matter if the underlying object myInstance is null or not, because the null propagation will check the SilentFullAccessDynamic instance, rather than the underlying object
-            mySilentFullAccessDynamic?.MyMethod();
-            // These ones will not, however, if MyProperty is null or MyNullReturningMethod returns null
-            mySilentFullAccessDynamic.MyProperty?.MyMethod();
-            mySilentFullAccessDynamic.MyNullReturningMethod()?.MyMethod();
-            </code>
-            <para/><b>Warning!</b> Nothing prevents the underlying object instance of <typeparamref name="T"/> from being <see langword="null"/>. As such, <see cref="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.Unwrap"/> may return <see langword="null"/>.
-            </summary>
-            <typeparam name="T">The type of the object to wrap.</typeparam>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.TryInvokeMember(System.Dynamic.InvokeMemberBinder,System.Object[],System.Object@)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.TryGetMember(System.Dynamic.GetMemberBinder,System.Object@)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.TrySetMember(System.Dynamic.SetMemberBinder,System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.TryConvert(System.Dynamic.ConvertBinder,System.Object@)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.TryGetIndex(System.Dynamic.GetIndexBinder,System.Object[],System.Object@)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.TrySetIndex(System.Dynamic.SetIndexBinder,System.Object[],System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.TryInvoke(System.Dynamic.InvokeBinder,System.Object[],System.Object@)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.GetDynamicMemberNames">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.Unwrap">
-            <summary>
-            Returns the underlying <typeparamref name="T"/> instance.
-            </summary>
-            <returns>The underlying <typeparamref name="T"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.GetFirstNonNull``1(System.Func{System.Reflection.BindingFlags,``0})">
-            <summary>
-            Executes a <see cref="T:System.Func`2"/> that is passed each <see cref="T:System.Reflection.BindingFlags"/> value in order of preference, and returns the result of the first non-null invocation.
-            </summary>
-            <param name="func">The function to execute.</param>
-            <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.Equals(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.op_Equality(LaquaiLib.Dynamic.SilentFullAccessDynamic{`0},System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.op_Inequality(LaquaiLib.Dynamic.SilentFullAccessDynamic{`0},System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamic`1.GetHashCode">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Dynamic.SilentFullAccessDynamicFactory">
-            <summary>
-            Provides static factory methods for <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> instances.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamicFactory.Create``1">
-            <summary>
-            Creates a new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that wraps a new instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The type of the object to wrap.</typeparam>
-            <returns>A new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that wraps a new instance of <typeparamref name="T"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamicFactory.Create``1(``0)">
-            <summary>
-            Creates a new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that wraps the specified instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The type of the object to wrap.</typeparam>
-            <param name="instance">The instance to wrap.</param>
-            <returns>A new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that wraps the specified instance of <typeparamref name="T"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamicFactory.Create(System.Type)">
-            <summary>
-            Creates a new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that has the specified <paramref name="type"/> and wraps a new instance of that type.
-            </summary>
-            <param name="type">The type of the object to wrap.</param>
-            <returns>A new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that has the specified <paramref name="type"/> and wraps a new instance of that type.</returns>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamicFactory.Create(System.Type,System.Object)">
-            <summary>
-            Creates a new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that has the specified <paramref name="type"/> and wraps the specified object <paramref name="instance"/>. This may be <see langword="null"/>.
-            </summary>
-            <param name="type">The type of the object to wrap.</param>
-            <param name="instance">The instance to wrap.</param>
-            <returns>A new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that has the specified <paramref name="type"/> and wraps the specified object <paramref name="instance"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Dynamic.SilentFullAccessDynamicFactory.GetSilentFullAccessDynamic``1(``0)">
-            <summary>
-            Creates a new instance of <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> that wraps the current object instance.
-            </summary>
-            <typeparam name="T">The type of the object to wrap.</typeparam>
-            <param name="instance">The instance to wrap.</param>
-            <returns>The created <see cref="T:LaquaiLib.Dynamic.SilentFullAccessDynamic`1"/> instance.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.AnyExtensions">
             <summary>
@@ -4219,11 +4096,12 @@
             <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.ICollection{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.ICollection{`0},System.Boolean)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Collections.Generic.ICollection`1"/>.
             </summary>
             <param name="target">The <see cref="T:System.Collections.Generic.ICollection`1"/> to copy elements to.</param>
+            <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="T:System.Collections.Generic.ICollection`1"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.Collections.Generic.IEnumerable{``0},LaquaiLib.Interfaces.ISpanProvider{``0},System.Int32)">
@@ -4250,8 +4128,8 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IDictionary{``1,``0},System.Func{``0,``1},System.Boolean)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.ICollection{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.ICollection{`0})"/>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.ICollection{``0},System.Boolean)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.ICollection{`0},System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)">
             <summary>
@@ -7320,34 +7198,6 @@
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
         <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.Fill"/>
         </member>
@@ -7362,18 +7212,6 @@
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.Fill(System.Func{System.Int32,`0,`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.FillAsync``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{System.Threading.Tasks.ValueTask{`0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.FillAsync``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{``0,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.FillAsync``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.FillAsync``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__6`1.FillAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__7`1.Fill">
             <summary>

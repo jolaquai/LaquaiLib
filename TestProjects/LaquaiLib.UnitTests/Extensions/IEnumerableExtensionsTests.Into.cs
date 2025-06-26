@@ -678,10 +678,7 @@ public class IEnumerableExtensionsIntoTests
         var source = new List<int> { 1, 2, 3 };
         ICollection<int> target = new int[3];
 
-        var result = source.Into(target);
-
-        Assert.Equal(3, result);
-        Assert.Equal([1, 2, 3], target);
+        Assert.Throws<InvalidOperationException>(() => source.Into(target));
     }
 
     [Fact]
@@ -693,7 +690,7 @@ public class IEnumerableExtensionsIntoTests
         var result = source.Into(target);
 
         Assert.Equal(3, result);
-        Assert.Equal([1, 2, 3], target);
+        Assert.Equal([0, 0, 0, 1, 2, 3], target);
     }
 
     [Fact]

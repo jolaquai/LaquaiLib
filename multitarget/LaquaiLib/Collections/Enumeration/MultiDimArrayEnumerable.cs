@@ -73,7 +73,10 @@ public unsafe class MultiDimArrayEnumerable<T> : IEnumerable<T>, ISpanProvider<T
     {
         if (Interlocked.Exchange(ref disposed, 1) == 0)
         {
-            _handle.Free();
+            if (_handle.IsAllocated)
+            {
+                _handle.Free();
+            }
             GC.SuppressFinalize(this);
         }
     }

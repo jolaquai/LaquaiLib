@@ -373,17 +373,25 @@ public static partial class IEnumerableExtensions
             return i;
         }
 
-        // Since ICollection<T>.Add(T) semantics are unknown and we can't make assumptions about what that method does, we have no choice but to use it instead of trying to cast the value around
         /// <summary>
         /// Copies the elements of the input sequence into the specified <see cref="ICollection{T}"/>.
         /// </summary>
         /// <param name="target">The <see cref="ICollection{T}"/> to copy elements to.</param>
+        /// <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="ICollection{T}"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
         /// <returns>The number of elements written to the target collection.</returns>
-        public int Into(ICollection<T> target)
+        public int Into(ICollection<T> target, bool allowUnsafeMutation = false)
         {
             if (target.IsReadOnly)
             {
                 throw new InvalidOperationException("The target collection is read-only.");
+            }
+
+            switch (target)
+            {
+                case List<T> list:
+                    return source.AddTo(list); // Act like ICollection<T>.Add would and append to the end of the list
+                case T[] array:
+                    return source.Into(array, 0, allowUnsafeMutation);
             }
 
             var i = 0;

@@ -8,7 +8,10 @@ public class FullAccessDynamicTests
 {
     #region Test Fixture Classes
 
-    public class DummyClass { }
+    public class DummyClass
+    {
+        public string PublicProperty { get; set; } = "DummyClass's PublicValue";
+    }
 
     private class TestClass
     {
@@ -430,9 +433,9 @@ public class FullAccessDynamicTests
         var testObj = new TestClass();
         dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
 
-        var result = dynamicObj.NonNullProperty.PublicProperty;
+        string result = dynamicObj.NonNullProperty.PublicProperty;
 
-        Assert.Equal("PublicValue", result);
+        Assert.Equal("DummyClass's PublicValue", result);
     }
 
     #endregion
@@ -456,7 +459,8 @@ public class FullAccessDynamicTests
         var testObj = new TestClass();
         dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
 
-        Assert.Throws<InvalidCastException>(() => {
+        Assert.Throws<InvalidCastException>(() =>
+        {
             int converted = dynamicObj;
         });
     }
@@ -600,8 +604,8 @@ public class FullAccessDynamicTests
         var testObj = new TestClass();
         dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
 
-        var value1 = dynamicObj.PrivateProperty;
-        var value2 = dynamicObj.PrivateProperty;
+        string value1 = dynamicObj.PrivateProperty;
+        string value2 = dynamicObj.PrivateProperty;
 
         Assert.Equal(value1, value2);
     }

@@ -5,22 +5,16 @@ namespace LaquaiLib.Dynamic;
 
 /// <summary>
 /// Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level.
-/// <para/>Note that all dynamically retrieved members are also instances of <see cref="FullAccessDynamic{T}"/> to allow for further dynamic access. The only value explicitly propagated to allow <c>?.</c> <see langword="null"/> propagation is <see langword="null"/>. This does <b>not</b> work directly on an object of type <see cref="FullAccessDynamic{T}"/>, i.e. the following method invocation will always take place:
-/// <code language="csharp">
-/// MyClass? myInstance = null;
-/// var myFullAccessDynamic = FullAccessDynamic.Create(typeof(MyClass), myInstance);
-/// // This incovation will happen no matter if the underlying object myInstance is null or not, because the null propagation will check the FullAccessDynamic instance, rather than the underlying object
-/// myFullAccessDynamic?.MyMethod();
-/// // These ones will not, however, if MyProperty is null or MyNullReturningMethod returns null
-/// myFullAccessDynamic.MyProperty?.MyMethod();
-/// myFullAccessDynamic.MyNullReturningMethod()?.MyMethod();
-/// </code>
+/// <para/>For more information on this type, see the readme in the repository.
 /// <para/><b>Warning!</b> Nothing prevents the underlying object instance of <typeparamref name="T"/> from being <see langword="null"/>. As such, <see cref="Unwrap"/> may return <see langword="null"/>.
 /// </summary>
 /// <typeparam name="T">The type of the object to wrap.</typeparam>
+// [Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute<>)}.")]
 public class FullAccessDynamic<T> : DynamicObject
 {
-    private readonly T _instance;
+    private static readonly ConcurrentDictionary<string, MemberInfo> _memberCache = [];
+
+    private T _instance;
     private readonly Type _instanceType = typeof(T);
     private const BindingFlags publicInstance = BindingFlags.Instance | BindingFlags.Public;
     private const BindingFlags anyInstance = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -28,9 +22,7 @@ public class FullAccessDynamic<T> : DynamicObject
     private const BindingFlags anyStatic = BindingFlags.Static | BindingFlags.NonPublic;
     private const BindingFlags bindingFlags = publicInstance | anyInstance | publicStatic | anyStatic;
 
-    private static readonly Dictionary<string, MemberInfo> _memberCache = [];
-
-    internal FullAccessDynamic() => _instance = Activator.CreateInstance<T>();
+    internal FullAccessDynamic() : this(Activator.CreateInstance<T>()) { }
     internal FullAccessDynamic(T instance) => _instance = instance;
     /// <inheritdoc/>
     public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
@@ -193,9 +185,14 @@ public class FullAccessDynamic<T> : DynamicObject
     /// <inheritdoc/>
     public override bool TryConvert(ConvertBinder binder, out object result)
     {
-        if (binder.Type.IsAssignableFrom(_instanceType))
+        if (_instanceType.IsAssignableTo(binder.Type))
         {
             result = _instance;
+            return true;
+        }
+        if (binder.Type == typeof(FullAccessDynamic<T>))
+        {
+            result = this;
             return true;
         }
 
@@ -269,10 +266,9 @@ public class FullAccessDynamic<T> : DynamicObject
     /// </summary>
     /// <param name="func">The function to execute.</param>
     /// <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
-    private static TMember GetFirstNonNull<TMember>(Func<BindingFlags, TMember> func)
+    private static unsafe TMember GetFirstNonNull<TMember>(Func<BindingFlags, TMember> func)
     {
-        var member =
-            func(publicStatic)
+        var member = func(publicStatic)
             ?? func(anyStatic)
             ?? func(publicInstance)
             ?? func(anyInstance)
@@ -283,9 +279,10 @@ public class FullAccessDynamic<T> : DynamicObject
     private MethodInfo FindMethod(InvokeMemberBinder binder, object[] args)
     {
         var targetType = _instanceType;
+        var argTypes = Array.ConvertAll(args, item => item.GetType());
         while (targetType != null)
         {
-            var method = GetFirstNonNull(bf => targetType.GetMethod(binder.Name, bf, null, Array.ConvertAll(args, item => item.GetType()), null));
+            var method = GetFirstNonNull(bf => targetType.GetMethod(binder.Name, bf, null, argTypes, null));
             if (method is not null)
             {
                 return method;
@@ -295,6 +292,20 @@ public class FullAccessDynamic<T> : DynamicObject
         return null;
     }
     private FieldInfo FindField(GetMemberBinder binder)
+    {
+        var targetType = _instanceType;
+        while (targetType != null)
+        {
+            var field = GetFirstNonNull(bf => targetType.GetField(binder.Name, bf));
+            if (field is not null)
+            {
+                return field;
+            }
+            targetType = targetType.BaseType;
+        }
+        return null;
+    }
+    private FieldInfo FindField(SetMemberBinder binder)
     {
         var targetType = _instanceType;
         while (targetType != null)
@@ -322,20 +333,6 @@ public class FullAccessDynamic<T> : DynamicObject
         }
         return null;
     }
-    private FieldInfo FindField(SetMemberBinder binder)
-    {
-        var targetType = _instanceType;
-        while (targetType != null)
-        {
-            var field = GetFirstNonNull(bf => targetType.GetField(binder.Name, bf));
-            if (field is not null)
-            {
-                return field;
-            }
-            targetType = targetType.BaseType;
-        }
-        return null;
-    }
     private PropertyInfo FindProperty(SetMemberBinder binder)
     {
         var targetType = _instanceType;
@@ -353,9 +350,12 @@ public class FullAccessDynamic<T> : DynamicObject
     private PropertyInfo FindIndexer(GetIndexBinder binder, object[] indexes)
     {
         var targetType = _instanceType;
+        var indexTypes = Array.ConvertAll(indexes, item => item.GetType());
         while (targetType != null)
         {
-            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
+            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, indexTypes, null));
+            // The return type may not make it in here (as in, mangled to object), so try without a constrained return type
+            indexer ??= GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, null, indexTypes, null));
             if (indexer is not null)
             {
                 return indexer;
@@ -367,9 +367,12 @@ public class FullAccessDynamic<T> : DynamicObject
     private PropertyInfo FindIndexer(SetIndexBinder binder, object[] indexes)
     {
         var targetType = _instanceType;
+        var indexTypes = Array.ConvertAll(indexes, item => item.GetType());
         while (targetType != null)
         {
-            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, Array.ConvertAll(indexes, item => item.GetType()), null));
+            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, indexTypes, null));
+            // The return type may not make it in here (as in, mangled to object), so try without a constrained return type
+            indexer ??= GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, null, indexTypes, null));
             if (indexer is not null)
             {
                 return indexer;

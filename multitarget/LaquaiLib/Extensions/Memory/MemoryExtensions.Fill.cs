@@ -95,35 +95,6 @@ public static partial class MemoryExtensions
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Fill(Func<int, T, T> factory) => multiDimArrayEnumerable.Span.Fill(factory);
-
-        /// <summary>
-        /// Asynchronously fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>.
-        /// </summary>
-        /// <param name="factory">The factory method that produces the values to fill the span with.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task FillAsync(Func<ValueTask<T>> factory) => multiDimArrayEnumerable.Memory.FillAsync(factory);
-        /// <summary>
-        /// Asynchronously fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
-        /// </summary>
-        /// <param name="factory">The factory method that produces the values to fill the span with.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task FillAsync(Func<T, ValueTask<T>> factory) => multiDimArrayEnumerable.Memory.FillAsync(factory);
-        /// <summary>
-        /// Asynchronously fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
-        /// </summary>
-        /// <param name="factory">The factory method that produces the values to fill the span with.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task FillAsync(Func<int, ValueTask<T>> factory) => multiDimArrayEnumerable.Memory.FillAsync(factory);
-        /// <summary>
-        /// Asynchronously fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value.
-        /// </summary>
-        /// <param name="factory">The factory method that produces the values to fill the span with.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Task FillAsync(Func<int, T, ValueTask<T>> factory) => multiDimArrayEnumerable.Memory.FillAsync(factory);
     }
 
     extension<T>(Memory<T> memory)
