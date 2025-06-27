@@ -36,4 +36,6 @@ The above applies to implicit casts as well, such as when assigning `dynamic` to
 
 ## Equality handling
 
-A value returned by some member access through a `FullAccessDynamic<>` instance (that is, in the absense of a cast, as specified above) will never compare equal to the underlying value, even if they were reference-equal. To perform equality checks correctly, perform them using the value returned by `Unwrap` or cast it to the underlying type.
+A value returned by some member access through a `FullAccessDynamic<>` instance (that is, in the absense of a cast, as specified above) will never compare equal to the underlying value, even if they were reference-equal, since the value returned is a `FullAccessDynamic<>` instance of the value's type.
+
+To perform equality checks correctly, perform them using the value returned by `Unwrap` or cast it to the underlying type. To help you do this, you can also keep a reference to the instance typed as `FullAccessDynamic<>` and perform equality checks using that reference. `FullAccessDynamic<T>` implements `IEquatable<FullAccessDynamic<T>>` and `IEquatable<T>` with all comparisons targeting the underlying value (the equality and inequality operators are also overloaded to use `Equals`).

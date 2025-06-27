@@ -1,5 +1,8 @@
 using System.Dynamic;
+using System.Linq.Expressions;
 using System.Reflection;
+
+using LaquaiLib.Extensions;
 
 namespace LaquaiLib.Dynamic;
 
@@ -10,177 +13,245 @@ namespace LaquaiLib.Dynamic;
 /// </summary>
 /// <typeparam name="T">The type of the object to wrap.</typeparam>
 // [Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute<>)}.")]
-public class FullAccessDynamic<T> : DynamicObject
+public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<T>>, IEquatable<T>
 {
     private static readonly ConcurrentDictionary<string, MemberInfo> _memberCache = [];
+    private static readonly ConcurrentDictionary<MethodInfo, Delegate> _delegateCache = [];
 
-    private T _instance;
+    private readonly T _instance;
     private readonly Type _instanceType = typeof(T);
-    private const BindingFlags publicInstance = BindingFlags.Instance | BindingFlags.Public;
-    private const BindingFlags anyInstance = BindingFlags.Instance | BindingFlags.NonPublic;
-    private const BindingFlags publicStatic = BindingFlags.Static | BindingFlags.Public;
-    private const BindingFlags anyStatic = BindingFlags.Static | BindingFlags.NonPublic;
-    private const BindingFlags bindingFlags = publicInstance | anyInstance | publicStatic | anyStatic;
+    private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
     internal FullAccessDynamic() : this(Activator.CreateInstance<T>()) { }
     internal FullAccessDynamic(T instance) => _instance = instance;
     /// <inheritdoc/>
     public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
     {
-        if (_instance is null)
-        {
-            result = null;
-            return false;
-        }
-
         // Proxy all the object-inherited methods back to the instance
         switch (binder.Name)
         {
             case "ToString":
-                result = _instance.ToString();
+                result = _instance?.ToString();
                 return true;
             case "GetHashCode":
-                result = _instance.GetHashCode();
+                result = _instance?.GetHashCode();
                 return true;
             case "GetType":
-                result = _instance.GetType();
+                result = _instance?.GetType();
                 return true;
             case "Equals" when args is not null and { Length: 1 }:
-                result = _instance.Equals(args[0]);
+                result = _instance?.Equals(args[0]);
                 return true;
             case "Unwrap":
-                result = Unwrap();
+                result = _instance;
                 return true;
             default:
                 break;
         }
 
         // Attempt to find the method with the specified name and parameter types.
-        var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name + '(' + string.Join(", ", Array.ConvertAll(args, static item =>
-        {
-            var itemType = item.GetType();
-            return itemType.Namespace + '.' + itemType.Name;
-        })) + ')';
+        var key = $"{_instanceType.Namespace}.{_instanceType.Name}.{binder.Name}({string.Join(',', args.Select(o => o.GetType().GetFriendlyName()))})";
         MethodInfo method;
-        if (_memberCache.TryGetValue(key, out var value) && value is MethodInfo info)
+        if (_memberCache.TryGetValue(key, out var value) && value is MethodInfo methodInfo)
         {
-            method = info;
+            method = methodInfo;
         }
         else
         {
-            method = FindMethod(binder, args);
+            var targetType = _instanceType;
+            var argTypes = Array.ConvertAll(args, item => item.GetType());
+            method = null;
+            while (targetType is not null && method is null)
+            {
+                method = targetType.GetMethod(binder.Name, bindingFlags, null, argTypes, null);
+                if (method is not null)
+                {
+                    break;
+                }
+                targetType = targetType.BaseType;
+            }
+
             _memberCache[key] = method;
         }
 
-        if (method is not null)
+        if (method is null)
         {
-            result = FullAccessDynamicFactory.Create(method.ReturnType, method.Invoke(_instance, args));
-            return true;
+            result = null;
+            return false;
         }
 
-        result = null;
-        return false;
+        if (!method.IsStatic && _instance is null)
+        {
+            throw new NullReferenceException($"Cannot invoke instance method '{method.Name}' on a null instance of type '{_instanceType.FullName}'.");
+        }
+
+        result = FullAccessDynamicFactory.Create(method.ReturnType, method.Invoke(method.IsStatic ? null : _instance, args));
+        return true;
     }
     /// <inheritdoc/>
     public override bool TryGetMember(GetMemberBinder binder, out object result)
     {
         var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name;
 
-        PropertyInfo prop = null;
-        FieldInfo field = null;
-        if (_memberCache.TryGetValue(key, out var value))
+        if (_memberCache.TryGetValue(key, out var member))
         {
-            switch (value)
-            {
-                case PropertyInfo propInfo:
-                    prop = propInfo;
-                    break;
-                case FieldInfo fieldInfo:
-                    field = fieldInfo;
-                    break;
-                default:
-                    break;
-            }
+            goto memberAssigned;
         }
 
-        try
+        var members = _instanceType.GetMember(binder.Name, bindingFlags);
+        switch (members.Length)
         {
-            prop ??= FindProperty(binder);
-            if (prop is not null)
-            {
-                var propValue = prop.GetValue(_instance);
-                result = propValue is null ? null : FullAccessDynamicFactory.Create(prop.PropertyType, propValue);
-                _memberCache[key] = prop;
-                return true;
-            }
-        }
-        catch
-        {
+            case 0:
+                result = null;
+                return false;
+            case > 1:
+                throw new AmbiguousMatchException($"The member '{binder.Name}' is ambiguous in type '{_instanceType.FullName}'.");
         }
 
-        try
+        member = members[0];
+        memberAssigned:
+        switch (member)
         {
-            field ??= FindField(binder);
-            if (field is not null)
+            case PropertyInfo propInfo:
             {
-                var fieldValue = field.GetValue(_instance);
-                result = fieldValue is null ? null : FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
-                _memberCache[key] = field;
-                return true;
+                result = GetProp(propInfo);
+                return result is not null;
             }
-        }
-        catch
-        {
-        }
-
-        // Before failing (which base.TryGetMember will do once we call it), check if the property or field we were searching for was not null
-        // This means the property exists, but either _instance is null or the member's value is null
-        if (_instance is null && (prop is not null || field is not null))
-        {
-            result = null;
-            return true;
+            case FieldInfo fieldInfo:
+            {
+                result = GetField(fieldInfo);
+                return result is not null;
+            }
+            case MethodInfo methodInfo:
+            {
+                result = GetMethodDelegate(methodInfo);
+                return result is not null;
+            }
         }
 
         result = null;
-        return false;
+        return true;
+
+        object GetProp(PropertyInfo prop)
+        {
+            var getter = prop.GetGetMethod(true);
+            if (getter is null)
+            {
+                // I've decided against making this a binding failure since, technically, the binding was successful, the property exists, but it just has no getter
+                throw new MissingMethodException($"The property '{prop.Name}' in type '{_instanceType.FullName}' does not have a getter.");
+            }
+
+            if (!getter.IsStatic && _instance is null)
+            {
+                throw new NullReferenceException($"Cannot invoke instance property getter '{getter.Name}' on a null instance of type '{_instanceType.FullName}'.");
+            }
+
+            var propValue = prop.GetValue(getter.IsStatic ? null : _instance);
+            var result = FullAccessDynamicFactory.Create(prop.PropertyType, propValue);
+            _memberCache[key] = prop;
+            return result;
+        }
+
+        object GetField(FieldInfo field)
+        {
+            if (!field.IsStatic && _instance is null)
+            {
+                throw new NullReferenceException($"Cannot get value of instance field '{field.Name}' on a null instance of type '{_instanceType.FullName}'.");
+            }
+
+            var fieldValue = field.GetValue(field.IsStatic ? null : _instance);
+            var result = FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
+            _memberCache[key] = field;
+            return result;
+        }
+
+        object GetMethodDelegate(MethodInfo methodInfo)
+        {
+            if (!_delegateCache.TryGetValue(methodInfo, out var delg))
+            {
+                if (!methodInfo.IsStatic && _instance is null)
+                {
+                    throw new InvalidOperationException($"Cannot create delegate for instance method '{methodInfo.Name}' on a null instance of type '{_instanceType.FullName}'.");
+                }
+
+                var delegateType = GetDelegateType(methodInfo);
+                _memberCache[key] = methodInfo;
+                delg = _delegateCache[methodInfo] = methodInfo.CreateDelegate(delegateType, methodInfo.IsStatic ? null : _instance);
+            }
+
+            return delg;
+        }
     }
     /// <inheritdoc/>
     public override bool TrySetMember(SetMemberBinder binder, object value)
     {
-        if (_instance is null)
+        var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name;
+
+        if (_memberCache.TryGetValue(key, out var member))
         {
-            return false;
+            goto memberAssigned;
         }
 
-        PropertyInfo prop = null;
-        FieldInfo field = null;
-        if (_memberCache.TryGetValue(binder.Name, out var member))
+        var members = _instanceType.GetMember(binder.Name, bindingFlags);
+        switch (members.Length)
         {
-            if (member is PropertyInfo propInfo)
+            case 0:
+                return false;
+            case > 1:
+                throw new AmbiguousMatchException($"The member '{binder.Name}' is ambiguous in type '{_instanceType.FullName}'.");
+        }
+
+        member = members[0];
+        memberAssigned:
+        switch (member)
+        {
+            case PropertyInfo propInfo:
             {
-                prop = propInfo;
+                SetProp(propInfo);
+                return true;
             }
-            else if (member is FieldInfo fieldInfo)
+            case FieldInfo fieldInfo:
             {
-                field = fieldInfo;
+                SetField(fieldInfo);
+                return true;
             }
-        }
-
-        prop ??= FindProperty(binder);
-        if (prop is not null)
-        {
-            prop.SetValue(_instance, value);
-            return true;
-        }
-
-        field ??= FindField(binder);
-        if (field is not null)
-        {
-            field.SetValue(_instance, value);
-            return true;
+            case MethodInfo:
+            {
+                // Still cache the MethodInfo to prevent future reflection lookups
+                _memberCache[key] = member;
+                throw new InvalidOperationException($"Cannot set member '{binder.Name}' of type '{_instanceType.FullName}' because it resolved to a method.");
+            }
         }
 
         return false;
+
+        void SetProp(PropertyInfo prop)
+        {
+            var setter = prop.GetSetMethod(true);
+            if (setter is null)
+            {
+                // I've decided against making this a binding failure since, technically, the binding was successful, the property exists, but it just has no getter
+                throw new MissingMethodException($"The property '{prop.Name}' in type '{_instanceType.FullName}' does not have a sgetter.");
+            }
+            if (!setter.IsStatic && _instance is null)
+            {
+                throw new NullReferenceException($"Cannot invoke instance property setter '{setter.Name}' on a null instance of type '{_instanceType.FullName}'.");
+            }
+
+            prop.SetValue(setter.IsStatic ? null : _instance, value);
+            _memberCache[key] = prop;
+        }
+
+        void SetField(FieldInfo field)
+        {
+            if (!field.IsStatic && _instance is null)
+            {
+                throw new NullReferenceException($"Cannot set value of instance field '{field.Name}' on a null instance of type '{_instanceType.FullName}'.");
+            }
+
+            field.SetValue(field.IsStatic ? null : _instance, value);
+            _memberCache[key] = field;
+        }
     }
     /// <inheritdoc/>
     public override bool TryConvert(ConvertBinder binder, out object result)
@@ -201,19 +272,18 @@ public class FullAccessDynamic<T> : DynamicObject
     /// <inheritdoc/>
     public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
     {
+        // Static indexers don't exist
         if (_instance is null)
         {
             result = null;
             return false;
         }
 
-        var itemProp = FindIndexer(binder, indexes);
+        var itemProp = FindIndexer(indexes);
         if (itemProp is not null)
         {
             var itemValue = itemProp.GetValue(_instance, indexes);
-            result = itemValue is null
-                ? null
-                : (object)FullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
+            result = FullAccessDynamicFactory.Create(itemProp.PropertyType, itemValue);
             return true;
         }
 
@@ -223,12 +293,13 @@ public class FullAccessDynamic<T> : DynamicObject
     /// <inheritdoc/>
     public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
     {
+        // Static indexers don't exist
         if (_instance is null)
         {
             return false;
         }
 
-        var itemProp = FindIndexer(binder, indexes);
+        var itemProp = FindIndexer(indexes);
         if (itemProp is not null)
         {
             itemProp.SetValue(_instance, value, indexes);
@@ -242,6 +313,8 @@ public class FullAccessDynamic<T> : DynamicObject
     {
         switch (_instance)
         {
+            case null:
+                throw new NullReferenceException($"Cannot perform an invocation on a null instance of type '{_instanceType.FullName}' (and invocations on a type have no meaning).");
             case MethodInfo methodInfo:
                 result = methodInfo.Invoke(methodInfo.IsStatic ? null : _instance, args);
                 return true;
@@ -252,127 +325,47 @@ public class FullAccessDynamic<T> : DynamicObject
                 throw new InvalidOperationException($"Object of type '{_instanceType.FullName}' is not invocable, expected '{typeof(MethodInfo).FullName}' or any '{typeof(Delegate)}'-like type.");
         }
     }
+
+    // We can cache these since we're not like ExpandoObject
+    private HashSet<string> _dynamicMemberNames;
     /// <inheritdoc/>
-    public override IEnumerable<string> GetDynamicMemberNames() => _instanceType.GetMembers(bindingFlags).Select(static p => p.Name);
+    public override IEnumerable<string> GetDynamicMemberNames() => _dynamicMemberNames ??= _instanceType.GetMembers(bindingFlags & ~BindingFlags.FlattenHierarchy).Select(static p => p.Name).ToHashSet();
 
     /// <summary>
     /// Returns the underlying <typeparamref name="T"/> instance.
     /// </summary>
     /// <returns>The underlying <typeparamref name="T"/> instance.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T Unwrap() => _instance;
 
     /// <summary>
-    /// Executes a <see cref="Func{T, TResult}"/> that is passed each <see cref="BindingFlags"/> value in order of preference, and returns the result of the first non-null invocation.
+    /// Finds the correct <see cref="Delegate"/>-derived <see cref="Type"/> for the specified <see cref="MethodInfo"/>.
     /// </summary>
-    /// <param name="func">The function to execute.</param>
-    /// <returns>The result of the first non-null invocation of <paramref name="func"/> or <see langword="null"/> if all invocations return <see langword="null"/>.</returns>
-    private static unsafe TMember GetFirstNonNull<TMember>(Func<BindingFlags, TMember> func)
+    private static Type GetDelegateType(MethodInfo method)
     {
-        var member = func(publicStatic)
-            ?? func(anyStatic)
-            ?? func(publicInstance)
-            ?? func(anyInstance)
-            ?? func(bindingFlags | BindingFlags.FlattenHierarchy);
+        var paramTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
-        return member;
-    }
-    private MethodInfo FindMethod(InvokeMemberBinder binder, object[] args)
-    {
-        var targetType = _instanceType;
-        var argTypes = Array.ConvertAll(args, item => item.GetType());
-        while (targetType != null)
+        if (method.ReturnType == typeof(void))
         {
-            var method = GetFirstNonNull(bf => targetType.GetMethod(binder.Name, bf, null, argTypes, null));
-            if (method is not null)
-            {
-                return method;
-            }
-            targetType = targetType.BaseType;
+            return Expression.GetActionType(paramTypes);
         }
-        return null;
-    }
-    private FieldInfo FindField(GetMemberBinder binder)
-    {
-        var targetType = _instanceType;
-        while (targetType != null)
+        else
         {
-            var field = GetFirstNonNull(bf => targetType.GetField(binder.Name, bf));
-            if (field is not null)
-            {
-                return field;
-            }
-            targetType = targetType.BaseType;
+            return Expression.GetFuncType([.. paramTypes, method.ReturnType]);
         }
-        return null;
     }
-    private FieldInfo FindField(SetMemberBinder binder)
-    {
-        var targetType = _instanceType;
-        while (targetType != null)
-        {
-            var field = GetFirstNonNull(bf => targetType.GetField(binder.Name, bf));
-            if (field is not null)
-            {
-                return field;
-            }
-            targetType = targetType.BaseType;
-        }
-        return null;
-    }
-    private PropertyInfo FindProperty(GetMemberBinder binder)
-    {
-        var targetType = _instanceType;
-        while (targetType != null)
-        {
-            var property = GetFirstNonNull(bf => targetType.GetProperty(binder.Name, bf));
-            if (property is not null)
-            {
-                return property;
-            }
-            targetType = targetType.BaseType;
-        }
-        return null;
-    }
-    private PropertyInfo FindProperty(SetMemberBinder binder)
-    {
-        var targetType = _instanceType;
-        while (targetType != null)
-        {
-            var property = GetFirstNonNull(bf => targetType.GetProperty(binder.Name, bf));
-            if (property is not null)
-            {
-                return property;
-            }
-            targetType = targetType.BaseType;
-        }
-        return null;
-    }
-    private PropertyInfo FindIndexer(GetIndexBinder binder, object[] indexes)
+
+    /// <summary>
+    /// Finds an overloaded indexer property defined in the type of the wrapped instance using its argument's types.
+    /// </summary>
+    private PropertyInfo FindIndexer(object[] indexes)
     {
         var targetType = _instanceType;
         var indexTypes = Array.ConvertAll(indexes, item => item.GetType());
         while (targetType != null)
         {
-            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, indexTypes, null));
             // The return type may not make it in here (as in, mangled to object), so try without a constrained return type
-            indexer ??= GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, null, indexTypes, null));
-            if (indexer is not null)
-            {
-                return indexer;
-            }
-            targetType = targetType.BaseType;
-        }
-        return null;
-    }
-    private PropertyInfo FindIndexer(SetIndexBinder binder, object[] indexes)
-    {
-        var targetType = _instanceType;
-        var indexTypes = Array.ConvertAll(indexes, item => item.GetType());
-        while (targetType != null)
-        {
-            var indexer = GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, binder.ReturnType, indexTypes, null));
-            // The return type may not make it in here (as in, mangled to object), so try without a constrained return type
-            indexer ??= GetFirstNonNull(bf => targetType.GetProperty("Item", bf, null, null, indexTypes, null));
+            var indexer = targetType.GetProperty("Item", bindingFlags, null, null, indexTypes, null);
             if (indexer is not null)
             {
                 return indexer;
@@ -383,13 +376,69 @@ public class FullAccessDynamic<T> : DynamicObject
     }
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => Equals(Unwrap(), obj);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override bool Equals(object obj) => Equals(obj as FullAccessDynamic<T>) || (obj is T t && Equals(t));
     /// <inheritdoc/>
-    public static bool operator ==(FullAccessDynamic<T> left, object right) => Equals(left.Unwrap(), right);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Equals(T other) => _instance.Equals(other);
     /// <inheritdoc/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Equals(FullAccessDynamic<T> other) => _instance.Equals(other._instance);
+    /// <summary>
+    /// Determines whether the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance is equal to the specified object.
+    /// </summary>
+    /// <param name="left">The left <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <param name="right">The right object to compare against.</param>
+    /// <returns><see langword="true"/> if the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance compares equal to the specified object; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool operator ==(FullAccessDynamic<T> left, object right) => left.Equals(right);
+    /// <summary>
+    /// Determines whether the underlying values of the specified <see cref="FullAccessDynamic{T}"/> instances are equal.
+    /// </summary>
+    /// <param name="left">The left <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <param name="right">The right <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <returns><see langword="true"/> if the underlying values of the specified <see cref="FullAccessDynamic{T}"/> instances compare equal; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool operator ==(FullAccessDynamic<T> left, FullAccessDynamic<T> right) => left.Equals(right);
+    /// <summary>
+    /// Determines whether the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance is equal to the specified value of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="left">The left <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <param name="right">The right value of type <typeparamref name="T"/>.</param>
+    /// <returns><see langword="true"/> if the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance compares equal to the specified value of type <typeparamref name="T"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool operator ==(FullAccessDynamic<T> left, T right) => left.Equals(right);
+    /// <summary>
+    /// Determines whether the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance is not equal to the specified object.
+    /// </summary>
+    /// <param name="left">The left <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <param name="right">The right object to compare against.</param>
+    /// <returns><see langword="true"/> if the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance compares not equal to the specified object; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(FullAccessDynamic<T> left, object right) => !(left == right);
-    /// <inheritdoc/>
-    public override int GetHashCode() => Unwrap()?.GetHashCode() ?? 0;
-    /// <inheritdoc/>
-    public override string ToString() => _instance.ToString();
+    /// <summary>
+    /// Determines whether the underlying values of the specified <see cref="FullAccessDynamic{T}"/> instances are not equal.
+    /// </summary>
+    /// <param name="left">The left <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <param name="right">The right <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <returns><see langword="true"/> if the underlying values of the specified <see cref="FullAccessDynamic{T}"/> instances compare not equal; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool operator !=(FullAccessDynamic<T> left, FullAccessDynamic<T> right) => !(left == right);
+    /// <summary>
+    /// Determines whether the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance is not equal to the specified value of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="left">The left <see cref="FullAccessDynamic{T}"/> instance.</param>
+    /// <param name="right">The right value of type <typeparamref name="T"/>.</param>
+    /// <returns><see langword="true"/> if the underlying value of the specified <see cref="FullAccessDynamic{T}"/> instance compares not equal to the specified value of type <typeparamref name="T"/>; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool operator !=(FullAccessDynamic<T> left, T right) => !(left == right);
+    /// <summary>
+    /// Gets the hash code of the underlying instance or its <see cref="Type"/> if it is <see langword="null"/>.
+    /// </summary>
+    /// <returns>The hash code of the underlying instance or its <see cref="Type"/> if it is <see langword="null"/>.</returns>
+    public override int GetHashCode() => _instance?.GetHashCode() ?? _instanceType.GetHashCode();
+    /// <summary>
+    /// Returns the result of the underlying instance's <see cref="T.ToString"/> method or <see langword="null"/> if the instance is <see langword="null"/>.
+    /// </summary>
+    /// <returns>The underlying instance's <see langword="string"/> representation or <see langword="null"/> if the instance is <see langword="null"/>.</returns>
+    public override string ToString() => _instance?.ToString();
 }

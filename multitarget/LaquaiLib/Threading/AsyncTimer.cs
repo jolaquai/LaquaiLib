@@ -1,4 +1,6 @@
-﻿using LaquaiLib.Extensions;
+﻿using System.Diagnostics;
+
+using LaquaiLib.Extensions;
 
 namespace LaquaiLib.Threading;
 
@@ -154,6 +156,7 @@ public class AsyncTimer : IAsyncDisposable
 
         cts.Dispose();
         timer.Dispose();
+        Debug.Assert(run is null || run.IsCompleted);
         run?.Dispose();
     }
 
@@ -169,7 +172,7 @@ public class AsyncTimer : IAsyncDisposable
         cts = new CancellationTokenSource();
     }
     /// <summary>
-    /// Stops invoking the callback(s) periodically and signals cancellation any callbacks that are still running.
+    /// Stops invoking the callback(s) periodically and signals cancellation to any callbacks that are still running.
     /// The method blocks asynchronously until all callbacks complete or respond to cancellation, or <paramref name="cancellationToken"/> is canceled.
     /// </summary>
     public async ValueTask StopAsync(CancellationToken cancellationToken = default)

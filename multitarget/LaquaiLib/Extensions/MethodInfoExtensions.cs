@@ -111,7 +111,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Gets a string representation of the signature of the method represented by the specified <see cref="MethodInfo"/>, optionally applying any transforms as specified by the provided factory methods or generating a body.
         /// </summary>
-        /// <param name="method">The <see cref="MethodInfo"/> instance representing the method.</param>
         /// <param name="inheritdoc">Whether to include an <c>inheritdoc</c> tag above the actual method.</param>
         /// <param name="accessibilityTransform">A transform to apply to the method's accessibility.</param>
         /// <param name="modifiersTransform">A transform to apply to the method's modifiers.</param>

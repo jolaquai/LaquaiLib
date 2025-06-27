@@ -382,7 +382,7 @@ public class FullAccessDynamicTests
         TestClass testObj = null;
         dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
 
-        Assert.Null(dynamicObj.PublicProperty);
+        Assert.Throws<NullReferenceException>(() => dynamicObj.PublicProperty);
     }
 
     [Fact]
