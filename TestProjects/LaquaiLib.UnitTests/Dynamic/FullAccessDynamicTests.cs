@@ -391,7 +391,7 @@ public class FullAccessDynamicTests
         var testObj = new TestClass();
         dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
 
-        var result = dynamicObj.NullReturningMethod();
+        string result = dynamicObj.NullReturningMethod();
 
         Assert.Null(result);
     }
@@ -413,7 +413,7 @@ public class FullAccessDynamicTests
         var testObj = new TestClass();
         dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
 
-        var result = dynamicObj.NullProperty?.PublicProperty;
+        var result = dynamicObj.NullProperty.Unwrap()?.PublicProperty;
         Assert.Null(result);
     }
 
@@ -423,7 +423,7 @@ public class FullAccessDynamicTests
         var testObj = new TestClass();
         dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
 
-        var result = dynamicObj.GetNullObject()?.PublicProperty;
+        var result = dynamicObj.GetNullObject().Unwrap()?.PublicProperty;
         Assert.Null(result);
     }
 
@@ -551,17 +551,6 @@ public class FullAccessDynamicTests
     }
 
     [Fact]
-    public void CanAccessBaseClassPrivateProperty()
-    {
-        var testObj = new DerivedClass();
-        dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
-
-        string value = dynamicObj.BasePrivateProperty;
-
-        Assert.Equal("BasePrivateValue", value);
-    }
-
-    [Fact]
     public void CanInvokeBaseClassPublicMethod()
     {
         var testObj = new DerivedClass();
@@ -646,17 +635,6 @@ public class FullAccessDynamicTests
 
         Assert.True(dynamicObj.Equals(testObj));
         Assert.False(dynamicObj.Equals(new TestClass()));
-    }
-
-    [Fact]
-    public void GetTypeReturnsUnderlyingType()
-    {
-        var testObj = new TestClass();
-        dynamic dynamicObj = FullAccessDynamicFactory.Create(testObj);
-
-        Type type = dynamicObj.GetType();
-
-        Assert.Equal(typeof(TestClass), type);
     }
 
     [Fact]

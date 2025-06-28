@@ -20,7 +20,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
 
     private readonly T _instance;
     private readonly Type _instanceType = typeof(T);
-    private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+    private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
     internal FullAccessDynamic() : this(Activator.CreateInstance<T>()) { }
     internal FullAccessDynamic(T instance) => _instance = instance;
@@ -36,17 +36,12 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
             case "GetHashCode":
                 result = _instance?.GetHashCode();
                 return true;
-            case "GetType":
-                result = _instance?.GetType();
-                return true;
             case "Equals" when args is not null and { Length: 1 }:
                 result = _instance?.Equals(args[0]);
                 return true;
             case "Unwrap":
                 result = _instance;
                 return true;
-            default:
-                break;
         }
 
         // Attempt to find the method with the specified name and parameter types.
@@ -59,19 +54,14 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         else
         {
             var targetType = _instanceType;
-            var argTypes = Array.ConvertAll(args, item => item.GetType());
+            var argTypes = args.Length == 0 ? Type.EmptyTypes : Array.ConvertAll(args, item => item.GetType());
             method = null;
             while (targetType is not null && method is null)
             {
                 method = targetType.GetMethod(binder.Name, bindingFlags, null, argTypes, null);
-                if (method is not null)
-                {
-                    break;
-                }
+                method ??= targetType.GetMethod(binder.Name, bindingFlags | BindingFlags.FlattenHierarchy, null, argTypes, null);
                 targetType = targetType.BaseType;
             }
-
-            _memberCache[key] = method;
         }
 
         if (method is null)
@@ -79,6 +69,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
             result = null;
             return false;
         }
+        _memberCache[key] = method;
 
         if (!method.IsStatic && _instance is null)
         {
@@ -99,6 +90,10 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         }
 
         var members = _instanceType.GetMember(binder.Name, bindingFlags);
+        if (members?.Length is 0 or null)
+        {
+            members = _instanceType.GetMember(binder.Name, bindingFlags | BindingFlags.FlattenHierarchy);
+        }
         switch (members.Length)
         {
             case 0:
@@ -124,7 +119,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
             }
             case MethodInfo methodInfo:
             {
-                result = GetMethodDelegate(methodInfo);
+                result = GetMethodDelegate(methodInfo, key);
                 return result is not null;
             }
         }
@@ -164,23 +159,6 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
             _memberCache[key] = field;
             return result;
         }
-
-        object GetMethodDelegate(MethodInfo methodInfo)
-        {
-            if (!_delegateCache.TryGetValue(methodInfo, out var delg))
-            {
-                if (!methodInfo.IsStatic && _instance is null)
-                {
-                    throw new InvalidOperationException($"Cannot create delegate for instance method '{methodInfo.Name}' on a null instance of type '{_instanceType.FullName}'.");
-                }
-
-                var delegateType = GetDelegateType(methodInfo);
-                _memberCache[key] = methodInfo;
-                delg = _delegateCache[methodInfo] = methodInfo.CreateDelegate(delegateType, methodInfo.IsStatic ? null : _instance);
-            }
-
-            return delg;
-        }
     }
     /// <inheritdoc/>
     public override bool TrySetMember(SetMemberBinder binder, object value)
@@ -193,6 +171,10 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         }
 
         var members = _instanceType.GetMember(binder.Name, bindingFlags);
+        if (members?.Length is 0 or null)
+        {
+            members = _instanceType.GetMember(binder.Name, bindingFlags | BindingFlags.FlattenHierarchy);
+        }
         switch (members.Length)
         {
             case 0:
@@ -329,7 +311,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
     // We can cache these since we're not like ExpandoObject
     private HashSet<string> _dynamicMemberNames;
     /// <inheritdoc/>
-    public override IEnumerable<string> GetDynamicMemberNames() => _dynamicMemberNames ??= _instanceType.GetMembers(bindingFlags & ~BindingFlags.FlattenHierarchy).Select(static p => p.Name).ToHashSet();
+    public override IEnumerable<string> GetDynamicMemberNames() => _dynamicMemberNames ??= _instanceType.GetMembers(bindingFlags).Select(static p => p.Name).ToHashSet();
 
     /// <summary>
     /// Returns the underlying <typeparamref name="T"/> instance.
@@ -337,6 +319,30 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
     /// <returns>The underlying <typeparamref name="T"/> instance.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T Unwrap() => _instance;
+    /// <summary>
+    /// Gets the <see cref="System.Type"/> of the wrapped instance.
+    /// </summary>
+    public Type Type
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _instanceType;
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="FullAccessDynamic{T}"/> with the same underlying instance as the current instance, but with <typeparamref name="TCast"/> as the type argument.
+    /// <typeparamref name="T"/> must be assignable to <typeparamref name="TCast"/>; otherwise, an <see cref="InvalidCastException"/> is thrown.
+    /// </summary>
+    /// <typeparam name="TCast">The type to cast the underlying instance to.</typeparam>
+    /// <returns>The new <see cref="FullAccessDynamic{TCast}"/> instance with the same underlying instance as the current instance.</returns>
+    public FullAccessDynamic<TCast> Cast<TCast>()
+    {
+        // If we have a value, we can check for the cast the easy way
+        if (_instance is TCast || (_instance is null && _instanceType.IsAssignableTo(typeof(TCast))))
+        {
+            return FullAccessDynamicFactory.Create(typeof(TCast), _instance);
+        }
+        throw new InvalidCastException($"Cannot cast object of type '{_instanceType.FullName}' to '{typeof(TCast).FullName}'.");
+    }
 
     /// <summary>
     /// Finds the correct <see cref="Delegate"/>-derived <see cref="Type"/> for the specified <see cref="MethodInfo"/>.
@@ -354,6 +360,22 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
             return Expression.GetFuncType([.. paramTypes, method.ReturnType]);
         }
     }
+    private Delegate GetMethodDelegate(MethodInfo methodInfo, string key)
+    {
+        if (!_delegateCache.TryGetValue(methodInfo, out var delg))
+        {
+            if (!methodInfo.IsStatic && _instance is null)
+            {
+                throw new InvalidOperationException($"Cannot create delegate for instance method '{methodInfo.Name}' on a null instance of type '{_instanceType.FullName}'.");
+            }
+
+            var delegateType = GetDelegateType(methodInfo);
+            _memberCache[key] = methodInfo;
+            delg = _delegateCache[methodInfo] = methodInfo.CreateDelegate(delegateType, methodInfo.IsStatic ? null : _instance);
+        }
+
+        return delg;
+    }
 
     /// <summary>
     /// Finds an overloaded indexer property defined in the type of the wrapped instance using its argument's types.
@@ -366,6 +388,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         {
             // The return type may not make it in here (as in, mangled to object), so try without a constrained return type
             var indexer = targetType.GetProperty("Item", bindingFlags, null, null, indexTypes, null);
+            indexer ??= targetType.GetProperty("Item", bindingFlags | BindingFlags.FlattenHierarchy, null, null, indexTypes, null);
             if (indexer is not null)
             {
                 return indexer;
