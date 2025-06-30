@@ -6,6 +6,9 @@
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        
+        <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,6 +18,13 @@
     <ItemGroup>
         <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
         <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
     </ItemGroup>
 
     <ItemGroup>

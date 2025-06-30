@@ -3507,48 +3507,7 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThrowIfAllCancelled(System.Collections.Generic.IEnumerable{System.Threading.CancellationToken})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__2.ThrowIfAllCancelled"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.ExceptBy``1(System.Collections.Generic.IEnumerable{`0},System.Func{`0,``0})">
-            <summary>
-            Produces the set difference of two sequences according to a specified key selector function.
-            </summary>
-            <typeparam name="TSource">The type of the elements of the input sequences.</typeparam>
-            <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
-            <param name="source">The first sequence to compare.</param>
-            <param name="other">The second sequence to compare.</param>
-            <param name="keySelector">The <see cref="T:System.Func`2"/> that is passed each element of the source sequence and returns the key to use for comparison.</param>
-            <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
-            <remarks>Basically just another <see cref="M:System.Linq.Enumerable.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1})"/> overload that... actually makes sense.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle">
-            <summary>
-            Shuffles the elements in the input sequence using <see cref="P:System.Random.Shared"/>.
-            </summary>
-            <remarks>
-            If the calling code already has an instance of <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/>, it should use the <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)"/> overload.
-            </remarks>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <returns>A shuffled sequence of the elements in the input sequence.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle(System.Random)">
-            <summary>
-            Shuffles the elements in the input sequence, using a specified <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/> instance.
-            </summary>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <param name="random">The <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/> instance to use for shuffling.</param>
-            <returns>A shuffled sequence of the elements in the input sequence.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.ExceptBy``1(System.Collections.Generic.IEnumerable{`0},System.Func{`0,``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle(System.Random)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThan(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThan(System.Int32)">
             <summary>
             Determines if a sequence contains less than the specified number of elements.
             </summary>
@@ -3557,7 +3516,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains less than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThanOr(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThanOr(System.Int32)">
             <summary>
             Determines if a sequence contains less than or exactly the specified number of elements.
             </summary>
@@ -3566,7 +3525,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains less than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasExactly(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasExactly(System.Int32)">
             <summary>
             Determines if a sequence contains exactly the specified number of elements.
             An attempt is made to avoid enumerating the input sequence, but if this fails, it is done regardless.
@@ -3576,7 +3535,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns>The result of the check.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThanOr(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThanOr(System.Int32)">
             <summary>
             Determines if a sequence contains more than or exactly the specified number of elements.
             </summary>
@@ -3585,7 +3544,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains more than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThan(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThan(System.Int32)">
             <summary>
             Determines if a sequence contains more than the specified number of elements.
             </summary>
@@ -3594,7 +3553,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains more than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Counts(System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Counts(System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/>, mapping the item to the number of times it appears in the input sequence.
             </summary>
@@ -3603,7 +3562,7 @@
             <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing items.</param>
             <returns>The resulting <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/>, mapping the item to the number of times it appears as counted using a <paramref name="selector"/> function in the input sequence.
             </summary>
@@ -3614,104 +3573,104 @@
             <returns>The resulting <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasLessThan``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThan(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThan(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasLessThanOr``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThanOr(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThanOr(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasExactly``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasExactly(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasExactly(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasMoreThanOr``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThanOr(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThanOr(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasMoreThan``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThan(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThan(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Counts``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Counts(System.Collections.Generic.IEqualityComparer{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Counts(System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CountsBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.TryGetReadOnlySpan(System.ReadOnlySpan{`0}@)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.TryGetReadOnlySpan(System.ReadOnlySpan{`0}@)">
             <summary>
             Attempts to retrieve a <see cref="T:System.ReadOnlySpan`1"/> over the specified source collection.
             </summary>
             <param name="span">An <see langword="out"/> variable that receives the <see cref="T:System.ReadOnlySpan`1"/> if the operation is successful.</param>
             <returns><see langword="true"/> if a <see cref="T:System.ReadOnlySpan`1"/> could be created, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.TryGetSpan(System.Span{`0}@)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.TryGetSpan(System.Span{`0}@)">
             <summary>
             Attempts to retrieve a <see cref="T:System.ReadOnlySpan`1"/> over the specified source collection.
             </summary>
             <param name="span">An <see langword="out"/> variable that receives the <see cref="T:System.ReadOnlySpan`1"/> if the operation is successful.</param>
             <returns><see langword="true"/> if a <see cref="T:System.ReadOnlySpan`1"/> could be created, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Split(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Split(System.Func{`0,System.Boolean})">
             <summary>
             Splits a sequence of values into two sequences based on a predicate.
             </summary>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
             <returns>A <see cref="T:System.ValueTuple`2"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Halve">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Halve">
             <summary>
             Halves the input sequence.
             </summary>
             <returns>A <see cref="T:System.ValueTuple`2"/> that contains the two halves of the input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Random">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Random">
             <summary>
             Selects a random element from the input sequence using <see cref="P:System.Random.Shared"/>.
             </summary>
             <returns>A random element from source.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Random(System.Random)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Random(System.Random)">
             <summary>
             Selects a random element from the input sequence using the specified <paramref name="random"/> instance.
             </summary>
             <param name="random">The <see cref="T:System.Random"/> instance to use for random number generation.</param>
             <returns>The random element from source.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEach(System.Action{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEach(System.Action{`0})">
             <summary>
             Executes the specified <paramref name="action"/> on each element of the source collection.
             </summary>
             <param name="action">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEach(System.Action{`0,System.Int32})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEach(System.Action{`0,System.Int32})">
             <summary>
             Executes the specified <paramref name="action"/> on each element of the source collection, incorporating each element's index in the <see cref="T:System.Action`2"/>.
             </summary>
             <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEachAsync(System.Func{`0,System.Threading.Tasks.Task})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEachAsync(System.Func{`0,System.Threading.Tasks.Task})">
             <summary>
             Asynchronously executes the specified <paramref name="func"/> on each element of the source collection.
             </summary>
             <param name="func">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEachAsync(System.Func{`0,System.Int32,System.Threading.Tasks.Task})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEachAsync(System.Func{`0,System.Int32,System.Threading.Tasks.Task})">
             <summary>
             Asynchronously executes the specified <paramref name="func"/> on each element of the source collection, incorporating each element's index in the <see cref="T:System.Func`3"/>.
             </summary>
             <param name="func">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.GetRange(System.Range)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.GetRange(System.Range)">
             <summary>
             Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
             If sourc eis not indexable, the entire sequence is enumerated.
             </summary>
             <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be extracted are located in the source.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.AllEqual">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.AllEqual">
             <summary>
             Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
             </summary>
             <returns><see langword="true"/> if all objects in the passed source collection are equal, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Mode(System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Mode(System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
             Determines the mode of a sequence of values (that is, the value that appears most frequently). If multiple items share the highest frequency, the first one encountered is returned.
             </summary>
@@ -3719,21 +3678,21 @@
             <returns>The mode of source.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown if sourc eis empty.</exception>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Sample(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Sample(System.Int32)">
             <summary>
             Samples a specified number of elements from the input sequence.
             </summary>
             <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
             <returns>The sampled elements.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OrderedSample(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.OrderedSample(System.Int32)">
             <summary>
             Samples a specified number of elements from the input sequence, ensuring that the sampled elements remain in the same order as they were in the input sequence.
             </summary>
             <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
             <returns>The sampled elements.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectWhere(System.Func{`0,System.Boolean},System.Func{`0,`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectWhere(System.Func{`0,System.Boolean},System.Func{`0,`0})">
             <summary>
             Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/> and returning all other items unchanged.
             </summary>
@@ -3741,7 +3700,7 @@
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
             <returns>The transformed elements.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectWhere(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectWhere(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,`0})">
             <summary>
             Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
             </summary>
@@ -3749,7 +3708,7 @@
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the source collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
             <returns>The transformed elements.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IfWhere(System.Boolean,System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IfWhere(System.Boolean,System.Func{`0,System.Boolean})">
             <summary>
             Filters a sequence of values based on a predicate if <paramref name="expr"/> is <see langword="true"/>, otherwise returns exactly the input sequence.
             </summary>
@@ -3757,7 +3716,7 @@
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
             <returns>The filtered input sequence if <paramref name="expr"/> is <see langword="true"/>, otherwise the input sequence as is.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.WhereNot(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.WhereNot(System.Func{`0,System.Boolean})">
             <summary>
             Filters a sequence of values based on a predicate. The predicate's result is inverted.
             </summary>
@@ -3767,26 +3726,26 @@
             This has essentially no purpose but to avoid the need to create a lambda that inverts the result of the predicate.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Indexed">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Indexed">
             <summary>
             Indexes the elements in the input sequence; that is, each element is paired with its number of occurrences in the sequence.
             </summary>
             <returns>A sequence of key-value pairs where the key is an element from the input sequence and the value is the number of occurrences of that element in the input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.None">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.None">
             <summary>
             Determines if a sequence is empty.
             </summary>
             <returns><see langword="true"/> if the input sequence is empty, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.None(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.None(System.Func{`0,System.Boolean})">
             <summary>
             Determines if a sequence contains no elements that satisfy a condition.
             </summary>
             <param name="predicate">The condition to check for.</param>
             <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OnlyOrDefault(`0)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.OnlyOrDefault(`0)">
             <summary>
             Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
             This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)"/> without throwing exceptions.
@@ -3794,7 +3753,7 @@
             <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
             <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)">
             <summary>
             Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
             This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)"/> without throwing exceptions.
@@ -3803,7 +3762,7 @@
             <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
             <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ElementAtOrDefault(System.Int32,`0)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ElementAtOrDefault(System.Int32,`0)">
             <summary>
             Attempts to retrieve the element at the specified index from the input sequence if that index is valid for the sequence, otherwise a default value is returned.
             </summary>
@@ -3811,7 +3770,7 @@
             <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
             <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
             Finds the first index of the specified <paramref name="item"/> in the input sequence.
             </summary>
@@ -3819,7 +3778,7 @@
             <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
             <returns>The index of the first occurrence of the specified <paramref name="item"/> in the input sequence, or -1 if the item is not found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IndexOf(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IndexOf(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
             Finds the first starting index of the specified <paramref name="sequence"/> in the input sequence.
             </summary>
@@ -3827,35 +3786,35 @@
             <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
             <returns>The index of the first occurrence of the specified <paramref name="sequence"/> in the input sequence, or -1 if the sequence is not found.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Majority(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Majority(System.Func{`0,System.Boolean})">
             <summary>
             Determines whether the majority of a sequence's elements satisfy a condition.
             </summary>
             <param name="predicate">The condition to check for.</param>
             <returns><see langword="true"/> if the majority of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.BuildDictionaryLinear">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionaryLinear">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The first half of the elements are used as keys, the second half as values.
             </summary>
             <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</returns>
             <exception cref="T:System.ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.BuildDictionaryZipped">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionaryZipped">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The elements are considered to be repeating key-value pairs.
             </summary>
             <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</returns>
             <exception cref="T:System.ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.AsAsynchronous">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.AsAsynchronous">
             <summary>
-            Returns an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> wrapper around the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>. This is fundamentally different from <see cref="!:AsyncEnumerable.ToAsyncEnumerable&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
-            <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})"/> or similar). Instead, call <see cref="!:AsyncEnumerable.ToAsyncEnumerable&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)"/>, then use a method such as <see cref="!:AsyncEnumerable.ToListAsync&lt;TSource&gt;(IAsyncEnumerable&lt;TSource&gt;, CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="!:AsyncEnumerable"/> is recommended (which are optimized for their purpose).
+            Returns an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> wrapper around the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>. This is fundamentally different from <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
+            <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})"/> or similar). Instead, call <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/>, then use a method such as <see cref="M:System.Linq.AsyncEnumerable.ToListAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Threading.CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="T:System.Linq.AsyncEnumerable"/> is recommended (which are optimized for their purpose).
             </summary>
             <returns>The sourc eas an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Interlace(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Interlace(System.Collections.Generic.IEnumerable{`0})">
             <summary>
             Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> that enumerates the elements of the input sequences is turn; that is, the first element of the first sequence, the first element of the second sequence, the second element of the first sequence, the second element of the second sequence, and so on.
             If the sequences are of unequal length, the remaining elements of the longer sequence will end up at the end of the resulting sequence.
@@ -3863,7 +3822,7 @@
             <param name="second">The second sequence.</param>
             <returns>A single sequence that contains the elements of both input sequences, interlaced.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SequenceEquivalent(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SequenceEquivalent(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
             Determines whether two sequences are equivalent, that is, whether they contain the same elements in any order.
             </summary>
@@ -3871,7 +3830,7 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing values, or null to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
             <returns><see langword="true"/> if the two source sequences are of equal length and are equivalent, otherwise <see langword="false"/>. If one of the sequences is <see langword="null"/>, both sequences must be <see langword="null"/> to be considered equivalent.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ModeBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ModeBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})">
             <summary>
             Determines the mode of a sequence of values from a given key extracted from each value (that is, the value that appears most frequently).
             If multiple items share the highest frequency, the first one encountered is returned.
@@ -3882,7 +3841,7 @@
             <returns>The mode of source.</returns>
             <exception cref="T:System.ArgumentNullException">Thrown if sourc eis empty.</exception>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectOnlyWhere``1(System.Func{`0,System.Boolean},System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectOnlyWhere``1(System.Func{`0,System.Boolean},System.Func{`0,``0})">
             <summary>
             Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
             </summary>
@@ -3891,7 +3850,7 @@
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
             <returns>The transformed elements.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectOnlyWhere``1(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectOnlyWhere``1(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,``0})">
             <summary>
             Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
             </summary>
@@ -3900,7 +3859,7 @@
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the source collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value.</param>
             <returns>The transformed elements.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.NotOfType``1">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.NotOfType``1">
             <summary>
             Filters a sequence of values by their type, omitting all objects of type <typeparamref name="TDerived"/>.
             </summary>
@@ -3910,7 +3869,7 @@
             <typeparamref name="TDerived"/> is not constrained with regards to <typeparamref name="T"/>, so that consuming code needn't check for type relationships before calling this method.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.BuildDictionary``1(System.Collections.Generic.IEnumerable{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionary``1(System.Collections.Generic.IEnumerable{``0})">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> from two separate input sequences representing the keys and values respectively.
             </summary>
@@ -3920,7 +3879,7 @@
             <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequences.</returns>
             <exception cref="T:System.ArgumentException">Thrown if the input sequences do not have the same length.</exception>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.MapTo``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.MapTo``1(System.Func{`0,``0})">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> from the input sequence, using the specified <paramref name="valueFactory"/> to generate values for each key.
             </summary>
@@ -3929,7 +3888,7 @@
             <param name="valueFactory">The <see cref="T:System.Func`2"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
             <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Correlate``1(System.Collections.Generic.IEnumerable{``0},System.Func{`0,``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Correlate``1(System.Collections.Generic.IEnumerable{``0},System.Func{`0,``0,System.Boolean})">
             <summary>
             Maps every element in the input sequence to a single value in the specified <paramref name="second"/> sequence. A <paramref name="predicate"/> decides
             </summary>
@@ -3939,126 +3898,126 @@
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of tuples where each tuple contains an element from the sourc esequence and an element from the <paramref name="second"/> sequence, the combination of which satisfied the <paramref name="predicate"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.TryGetReadOnlySpan``1(System.Collections.Generic.IEnumerable{``0},System.ReadOnlySpan{``0}@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.TryGetReadOnlySpan(System.ReadOnlySpan{`0}@)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.TryGetReadOnlySpan(System.ReadOnlySpan{`0}@)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.TryGetSpan``1(System.Collections.Generic.IEnumerable{``0},System.Span{``0}@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.TryGetSpan(System.Span{`0}@)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.TryGetSpan(System.Span{`0}@)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Split``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Split(System.Func{`0,System.Boolean})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Split(System.Func{`0,System.Boolean})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Halve``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Halve"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Halve"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Random"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Random"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0},System.Random)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Random(System.Random)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Random(System.Random)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEach(System.Action{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEach(System.Action{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0,System.Int32})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEach(System.Action{`0,System.Int32})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEach(System.Action{`0,System.Int32})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Threading.Tasks.Task})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEachAsync(System.Func{`0,System.Threading.Tasks.Task})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEachAsync(System.Func{`0,System.Threading.Tasks.Task})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ForEachAsync``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Threading.Tasks.Task})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ForEachAsync(System.Func{`0,System.Int32,System.Threading.Tasks.Task})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEachAsync(System.Func{`0,System.Int32,System.Threading.Tasks.Task})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetRange``1(System.Collections.Generic.IEnumerable{``0},System.Range)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.GetRange(System.Range)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.GetRange(System.Range)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AllEqual``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.AllEqual"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.AllEqual"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Mode``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Mode(System.Collections.Generic.IEqualityComparer{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Mode(System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Sample``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Sample(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Sample(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderedSample``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OrderedSample(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.OrderedSample(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectWhere``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectWhere(System.Func{`0,System.Boolean},System.Func{`0,`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectWhere(System.Func{`0,System.Boolean},System.Func{`0,`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectWhere``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean},System.Func{``0,System.Int32,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectWhere(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectWhere(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.IfWhere``1(System.Collections.Generic.IEnumerable{``0},System.Boolean,System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IfWhere(System.Boolean,System.Func{`0,System.Boolean})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IfWhere(System.Boolean,System.Func{`0,System.Boolean})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhereNot``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.WhereNot(System.Func{`0,System.Boolean})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.WhereNot(System.Func{`0,System.Boolean})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Indexed``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Indexed"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Indexed"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.None``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.None"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.None"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.None``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.None(System.Func{`0,System.Boolean})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.None(System.Func{`0,System.Boolean})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OnlyOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OnlyOrDefault(`0)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.OnlyOrDefault(`0)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OnlyOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Int32,``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ElementAtOrDefault(System.Int32,`0)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ElementAtOrDefault(System.Int32,`0)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.IndexOf``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.IndexOf``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IndexOf(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IndexOf(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Majority``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Majority(System.Func{`0,System.Boolean})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Majority(System.Func{`0,System.Boolean})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.BuildDictionaryLinear``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.BuildDictionaryLinear"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionaryLinear"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.BuildDictionaryZipped``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.BuildDictionaryZipped"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionaryZipped"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AsAsynchronous``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.AsAsynchronous"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.AsAsynchronous"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Interlace``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Interlace(System.Collections.Generic.IEnumerable{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Interlace(System.Collections.Generic.IEnumerable{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SequenceEquivalent``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SequenceEquivalent(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SequenceEquivalent(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ModeBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ModeBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ModeBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectOnlyWhere``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectOnlyWhere``1(System.Func{`0,System.Boolean},System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectOnlyWhere``1(System.Func{`0,System.Boolean},System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectOnlyWhere``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectOnlyWhere``1(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.SelectOnlyWhere``1(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.NotOfType``2(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.NotOfType``1"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.NotOfType``1"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.BuildDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.BuildDictionary``1(System.Collections.Generic.IEnumerable{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionary``1(System.Collections.Generic.IEnumerable{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.MapTo``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.MapTo``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.MapTo``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Correlate``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Correlate``1(System.Collections.Generic.IEnumerable{``0},System.Func{`0,``0,System.Boolean})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Correlate``1(System.Collections.Generic.IEnumerable{``0},System.Func{`0,``0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__6`1.Blitted">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Blitted">
             <summary>
             Blits the elements in the input sequence into a sequence of bytes.
             <typeparamref name="T"/> must be an unmanaged Type.
@@ -4066,18 +4025,18 @@
             <returns>All elements in the input sequence, blitted into a sequence of bytes and concatenated.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Blitted``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__6`1.Blitted"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Blitted"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__7`1.SelectMany">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__6`1.SelectMany">
             <summary>
             Flattens a sequence of nested sequences of the same type <typeparamref name="T"/> into a single sequence without transformation.
             </summary>
             <returns>A sequence that contains all the elements of the nested sequences.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.SelectMany``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__7`1.SelectMany"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__6`1.SelectMany"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8.Dispose">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__7.Dispose">
             <summary>
             Disposes all elements in this sequence of <see cref="T:System.IDisposable"/> objects.
             </summary>
@@ -4088,9 +4047,9 @@
             </remarks>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Dispose(System.Collections.Generic.IEnumerable{System.IDisposable})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8.Dispose"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__7.Dispose"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)">
             <summary>
             Copies the elements of the input sequence into the <see cref="T:System.Span`1"/> provided by the specified <see cref="T:LaquaiLib.Interfaces.ISpanProvider`1"/>.
             </summary>
@@ -4098,7 +4057,7 @@
             <param name="startIndex">The index in the target <see cref="T:System.Span`1"/> at which to start copying elements.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(`0[],System.Int32,System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(`0[],System.Int32,System.Boolean)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Array"/>, starting at the specified
             index.
@@ -4108,7 +4067,7 @@
             <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="T:System.Span`1"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.List{`0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Collections.Generic.List{`0},System.Int32)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Collections.Generic.List`1"/>, starting at the specified index.
             The <see cref="T:System.Collections.Generic.List`1"/> will be resized if the input sequence contains more elements than the <see cref="T:System.Collections.Generic.List`1"/>'s current capacity.
@@ -4122,14 +4081,14 @@
             <para/>Note that this method inherently exposes unsafe behavior, such as results from setting <paramref name="startIndex"/> to a value greater than the current <see cref="P:System.Collections.Generic.List`1.Count"/>. Unassigned elements are left in an undefined state.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.AddTo(System.Collections.Generic.List{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.AddTo(System.Collections.Generic.List{`0})">
             <summary>
             Adds the elements of the input sequence to the end of the specified <see cref="T:System.Collections.Generic.List`1"/>. The <see cref="T:System.Collections.Generic.List`1"/> will be resized if the input sequence contains more elements than the <see cref="T:System.Collections.Generic.List`1"/>'s current capacity (beyond its count). Efficient <see cref="T:System.Span`1"/>-based copying is employed when possible, otherwise falling back to <see cref="M:System.Collections.Generic.List`1.AddRange(System.Collections.Generic.IEnumerable{`0})"/>.
             </summary>
             <param name="target">The <see cref="T:System.Collections.Generic.List`1"/> to copy elements to.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Span{`0},System.Int32,System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Span{`0},System.Int32,System.Boolean)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Span`1"/>.
             </summary>
@@ -4138,7 +4097,7 @@
             <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="T:System.Span`1"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Memory{`0},System.Int32,System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Memory{`0},System.Int32,System.Boolean)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Memory`1"/>.
             </summary>
@@ -4147,7 +4106,7 @@
             <param name="allowUnsafeMutation">Whether the method is allowed to begin mutating the <see cref="T:System.Memory`1"/> if it is unable to ascertain whether all elements will fit. Defaults to <see langword="false"/>. May cause the source to be enumerated to copy into <paramref name="target"/>, but will only throw an exception when the items will not fit.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Collections.Generic.Dictionary`2"/> using the specified <paramref name="valueFactory"/> to generate values for each key.
             </summary>
@@ -4157,7 +4116,7 @@
             <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Collections.Generic.Dictionary`2"/> using the specified <paramref name="keyFactory"/> to generate keys for each value.
             </summary>
@@ -4166,7 +4125,7 @@
             <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.ICollection{`0},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Collections.Generic.ICollection{`0},System.Boolean)">
             <summary>
             Copies the elements of the input sequence into the specified <see cref="T:System.Collections.Generic.ICollection`1"/>.
             </summary>
@@ -4175,33 +4134,33 @@
             <returns>The number of elements written to the target collection.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.Collections.Generic.IEnumerable{``0},LaquaiLib.Interfaces.ISpanProvider{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},``0[],System.Int32,System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(`0[],System.Int32,System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(`0[],System.Int32,System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.List{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.List{`0},System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Collections.Generic.List{`0},System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AddTo``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.List{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.AddTo(System.Collections.Generic.List{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.AddTo(System.Collections.Generic.List{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},System.Span{``0},System.Int32,System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Span{`0},System.Int32,System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Span{`0},System.Int32,System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},System.Memory{``0},System.Int32,System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Memory{`0},System.Int32,System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Memory{`0},System.Int32,System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IDictionary{``0,``1},System.Func{``0,``1},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IDictionary{``1,``0},System.Func{``0,``1},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.ICollection{``0},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.Into(System.Collections.Generic.ICollection{`0},System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__8`1.Into(System.Collections.Generic.ICollection{`0},System.Boolean)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)">
             <summary>
             Copies the elements of the input <see cref="T:System.ReadOnlySpan`1"/> into the <see cref="T:System.Span`1"/> provided by the specified <see cref="T:LaquaiLib.Interfaces.ISpanProvider`1"/>.
             </summary>
@@ -4209,7 +4168,7 @@
             <param name="startIndex">The index in the target <see cref="T:System.Span`1"/> at which to start copying elements.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(`0[],System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(`0[],System.Int32)">
             <summary>
             Copies the elements of the input <see cref="T:System.ReadOnlySpan`1"/> into the specified array of <typeparamref name="T"/>.
             </summary>
@@ -4217,7 +4176,7 @@
             <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(System.Collections.Generic.List{`0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(System.Collections.Generic.List{`0},System.Int32)">
             <summary>
             Copies the elements of the input <see cref="T:System.ReadOnlySpan`1"/> into the specified <see cref="T:System.Collections.Generic.List`1"/>, starting at the specified index.
             </summary>
@@ -4225,7 +4184,7 @@
             <param name="startIndex"></param>
             <returns></returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.AddTo(System.Collections.Generic.List{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.AddTo(System.Collections.Generic.List{`0})">
             <summary>
             Adds the elements of the input <see cref="T:System.ReadOnlySpan`1"/> to the end of the specified <see cref="T:System.Collections.Generic.List`1"/>.
             The <see cref="T:System.Collections.Generic.List`1"/> will be resized if the input <see cref="T:System.ReadOnlySpan`1"/> contains more elements than the <see cref="T:System.Collections.Generic.List`1"/>'s current capacity (beyond its count).
@@ -4233,7 +4192,7 @@
             <param name="target">The <see cref="T:System.Collections.Generic.List`1"/> to copy elements to.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(System.Memory{`0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(System.Memory{`0},System.Int32)">
             <summary>
             Copies the elements of the input <see cref="T:System.ReadOnlySpan`1"/> into the specified <see cref="T:System.Memory`1"/>.
             </summary>
@@ -4241,7 +4200,7 @@
             <param name="startIndex">The index in <paramref name="target"/> at which to start copying elements.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)">
             <summary>
             Copies the elements of the input <see cref="T:System.ReadOnlySpan`1"/> into the specified <see cref="T:System.Collections.Generic.Dictionary`2"/> using the specified <paramref name="valueFactory"/> to generate values for each key.
             </summary>
@@ -4251,7 +4210,7 @@
             <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)">
             <summary>
             Copies the elements of the input <see cref="T:System.ReadOnlySpan`1"/> into the specified <see cref="T:System.Collections.Generic.Dictionary`2"/> using the specified <paramref name="keyFactory"/> to generate keys for each value.
             </summary>
@@ -4260,7 +4219,7 @@
             <param name="overwrite">Whether to overwrite existing values in the <paramref name="target"/> dictionary. Defaults to <see langword="false"/>.</param>
             <returns>The number of elements written to the target collection.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(System.Collections.Generic.ICollection{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(System.Collections.Generic.ICollection{`0})">
             <summary>
             Copies the elements of the input <see cref="T:System.ReadOnlySpan`1"/> into the specified <see cref="T:System.Collections.Generic.ICollection`1"/>.
             </summary>
@@ -4268,30 +4227,30 @@
             <returns>The number of elements written to the target collection.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},LaquaiLib.Interfaces.ISpanProvider{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},``0[],System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(`0[],System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(`0[],System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},System.Collections.Generic.List{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(System.Collections.Generic.List{`0},System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(System.Collections.Generic.List{`0},System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AddTo``1(System.ReadOnlySpan{``0},System.Collections.Generic.List{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.AddTo(System.Collections.Generic.List{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.AddTo(System.Collections.Generic.List{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},System.Memory{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(System.Memory{`0},System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(System.Memory{`0},System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``2(System.ReadOnlySpan{``0},System.Collections.Generic.IDictionary{``0,``1},System.Func{``0,``1},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``2(System.ReadOnlySpan{``0},System.Collections.Generic.IDictionary{``1,``0},System.Func{``0,``1},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},System.Collections.Generic.ICollection{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.CopyTo(System.Collections.Generic.ICollection{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__9`1.CopyTo(System.Collections.Generic.ICollection{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Sorts the elements of a sequence in ascending order according to a key extracted from each element.
             </summary>
@@ -4301,7 +4260,7 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use for comparing the keys.</param>
             <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Sorts the elements of a sequence in descending order according to a key extracted from each element.
             </summary>
@@ -4311,7 +4270,7 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use for comparing the keys.</param>
             <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Sorts the elements of a sequence in ascending order according to another sequence that specifies the keys to use for sorting.
             </summary>
@@ -4321,7 +4280,7 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use for comparing the keys.</param>
             <returns>The sorted input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Sorts the elements of a sequence in descending order according to another sequence that specifies the keys to use for sorting.
             </summary>
@@ -4332,18 +4291,18 @@
             <returns>The sorted input sequence.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__10`1.OrderByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Augments the sort order of a previously sorted sequence according to a key extracted from each element.
             </summary>
@@ -4353,7 +4312,7 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use for comparing the keys.</param>
             <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Augments the sort order of a previously sorted sequence according to a key extracted from each element.
             </summary>
@@ -4363,7 +4322,7 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use for comparing the keys.</param>
             <returns>An <see cref="T:System.Linq.IOrderedEnumerable`1"/> that iterates over the sorted input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Augments the sort order of a previously sorted sequence using the specified sequence that specifies the keys to use for sorting.
             </summary>
@@ -4373,7 +4332,7 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use for comparing the keys.</param>
             <returns>The sorted input sequence.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})">
             <summary>
             Augments the sort order of a previously sorted sequence using the specified sequence that specifies the keys to use for sorting.
             </summary>
@@ -4384,125 +4343,125 @@
             <returns>The sorted input sequence.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,System.Int32,``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenBy``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,System.Int32,``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenByDescending``1(System.Func{`0,System.Int32,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenBy``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12`1.ThenByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__11`1.ThenByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.Start">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.Start">
             <summary>
             Starts all tasks in the specified collection.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WaitAll(System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WaitAll(System.Threading.CancellationToken)">
             <summary>
             Synchronously waits for all <see cref="T:System.Threading.Tasks.Task"/>s in the specified enumerable to complete unless that wait is cancelled.
             </summary>
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that can be used to cancel the wait.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WaitAny(System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WaitAny(System.Threading.CancellationToken)">
             <summary>
             Synchronously waits for any <see cref="T:System.Threading.Tasks.Task"/> in the specified enumerable to complete unless that wait is cancelled.
             </summary>
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that can be used to cancel the wait.</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task"/> that completed.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WhenAll">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WhenAll">
             <summary>
             Asynchronously waits for all <see cref="T:System.Threading.Tasks.Task"/>s in the specified enumerable to complete.
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous wait operation.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WhenAny">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WhenAny">
             <summary>
             Asynchronously waits for any <see cref="T:System.Threading.Tasks.Task"/> in the specified enumerable to complete.
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous wait operation. Its result resolves to the <see cref="T:System.Threading.Tasks.Task"/> that completed.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WhenEach">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WhenEach">
             <summary>
             Gets an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> that will yield the specified <see cref="T:System.Threading.Tasks.Task"/>s as they complete.
             </summary>
             <returns>An <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> that iterates through the specified <see cref="T:System.Threading.Tasks.Task"/>s as they complete.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Start(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.Start"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.Start"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WaitAll(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WaitAll(System.Threading.CancellationToken)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WaitAll(System.Threading.CancellationToken)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WaitAny(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task},System.Threading.CancellationToken)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WaitAny(System.Threading.CancellationToken)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WaitAny(System.Threading.CancellationToken)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhenAll(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WhenAll"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WhenAll"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhenAny(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WhenAny"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WhenAny"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhenEach(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13.WhenEach"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__12.WhenEach"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WaitAll(System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WaitAll(System.Threading.CancellationToken)">
             <summary>
             Synchronously waits for all <see cref="T:System.Threading.Tasks.Task"/>s in the specified enumerable to complete unless that wait is cancelled.
             </summary>
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that can be used to cancel the wait.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WaitAny(System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WaitAny(System.Threading.CancellationToken)">
             <summary>
             Synchronously waits for any <see cref="T:System.Threading.Tasks.Task"/> in the specified enumerable to complete unless that wait is cancelled.
             </summary>
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that can be used to cancel the wait.</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task"/> that completed.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WhenAll">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WhenAll">
             <summary>
             Asynchronously waits for all <see cref="T:System.Threading.Tasks.Task"/>s in the specified enumerable to complete.
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous wait operation.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WhenAny">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WhenAny">
             <summary>
             Asynchronously waits for any <see cref="T:System.Threading.Tasks.Task"/> in the specified enumerable to complete.
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous wait operation. Its result resolves to the <see cref="T:System.Threading.Tasks.Task"/> that completed.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WhenEach">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WhenEach">
             <summary>
             Gets an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> that will yield the specified <see cref="T:System.Threading.Tasks.Task"/>s as they complete.
             </summary>
             <returns>An <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> that iterates through the specified <see cref="T:System.Threading.Tasks.Task"/>s as they complete.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WaitAll``1(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WaitAll(System.Threading.CancellationToken)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WaitAll(System.Threading.CancellationToken)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WaitAny``1(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WaitAny(System.Threading.CancellationToken)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WaitAny(System.Threading.CancellationToken)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhenAll``1(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WhenAll"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WhenAll"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhenAny``1(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WhenAny"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WhenAny"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.WhenEach``1(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.WhenEach"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__13`1.WhenEach"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToStack(System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToStack(System.Boolean)">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.Stack`1"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>, optionally preserving the order of elements (that is, the default behavior of <see cref="T:System.Collections.Generic.Stack`1"/> would cause the elements to be popped in reverse order).
             </summary>
             <param name="preserveOrder">Whether to preserve the order of elements in the resulting <see cref="T:System.Collections.Generic.Stack`1"/>. If set to <see langword="true"/>, the elements will be popped in the same order as they appear in the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.Stack`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToStack``1(System.Func{`0,``0},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToStack``1(System.Func{`0,``0},System.Boolean)">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.Stack`1"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function, optionally preserving the order of elements (that is, the default behavior of <see cref="T:System.Collections.Generic.Stack`1"/> would cause the elements to be popped in reverse order).
             </summary>
@@ -4511,7 +4470,7 @@
             <param name="preserveOrder">Whether to preserve the order of elements in the resulting <see cref="T:System.Collections.Generic.Stack`1"/>. If set to <see langword="true"/>, the elements will be popped in the same order as they appear in the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.Stack`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToStack``1(System.Func{`0,System.Int32,``0},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToStack``1(System.Func{`0,System.Int32,``0},System.Boolean)">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.Stack`1"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function, optionally preserving the order of elements (that is, the default behavior of <see cref="T:System.Collections.Generic.Stack`1"/> would cause the elements to be popped in reverse order).
             </summary>
@@ -4520,13 +4479,13 @@
             <param name="preserveOrder">Whether to preserve the order of elements in the resulting <see cref="T:System.Collections.Generic.Stack`1"/>. If set to <see langword="true"/>, the elements will be popped in the same order as they appear in the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.Stack`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToQueue">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToQueue">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.Queue`1"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </summary>
             <returns>The created <see cref="T:System.Collections.Generic.Queue`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToQueue``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToQueue``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.Queue`1"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4534,7 +4493,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.Queue`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToQueue``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToQueue``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.Queue`1"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4542,7 +4501,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.Queue`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToArray``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToArray``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Array"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4550,7 +4509,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created array.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToArray``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToArray``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Array"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4558,7 +4517,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created array.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableArray``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableArray``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Immutable.ImmutableArray`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4566,7 +4525,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Immutable.ImmutableArray`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableArray``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableArray``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Immutable.ImmutableArray`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4574,7 +4533,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Immutable.ImmutableArray`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToList``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToList``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.List`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4582,7 +4541,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.List`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToList``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToList``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.List`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4590,7 +4549,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.List`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToHashSet``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToHashSet``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.HashSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4598,7 +4557,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.HashSet`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToHashSet``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToHashSet``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Generic.HashSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4606,7 +4565,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Generic.HashSet`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToFrozenSet``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToFrozenSet``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Frozen.FrozenSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4614,7 +4573,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Frozen.FrozenSet`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToFrozenSet``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToFrozenSet``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Frozen.FrozenSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4622,7 +4581,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Frozen.FrozenSet`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableHashSet``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableHashSet``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Immutable.ImmutableHashSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4630,7 +4589,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Immutable.ImmutableHashSet`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableHashSet``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableHashSet``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Immutable.ImmutableHashSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4638,7 +4597,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Immutable.ImmutableHashSet`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableSortedSet``1(System.Func{`0,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableSortedSet``1(System.Func{`0,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4646,7 +4605,7 @@
             <param name="selector">The function to transform each element of the source collection.</param>
             <returns>The created <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableSortedSet``1(System.Func{`0,System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableSortedSet``1(System.Func{`0,System.Int32,``0})">
             <summary>
             Creates a new <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/> of <typeparamref name="TResult"/> from the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/> using the specified <paramref name="selector"/> function.
             </summary>
@@ -4655,64 +4614,64 @@
             <returns>The created <see cref="T:System.Collections.Immutable.ImmutableSortedSet`1"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToStack``1(System.Collections.Generic.IEnumerable{``0},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToStack(System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToStack(System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToStack``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToStack``1(System.Func{`0,``0},System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToStack``1(System.Func{`0,``0},System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToStack``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1},System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToStack``1(System.Func{`0,System.Int32,``0},System.Boolean)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToStack``1(System.Func{`0,System.Int32,``0},System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToQueue``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToQueue"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToQueue"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToQueue``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToQueue``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToQueue``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToQueue``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToQueue``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToQueue``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToArray``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToArray``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToArray``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToArray``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToArray``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToArray``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToImmutableArray``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableArray``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableArray``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToImmutableArray``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableArray``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableArray``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToList``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToList``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToList``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToList``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToList``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToList``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToHashSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToHashSet``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToHashSet``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToHashSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToHashSet``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToHashSet``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToFrozenSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToFrozenSet``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToFrozenSet``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToFrozenSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToFrozenSet``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToFrozenSet``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToImmutableHashSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableHashSet``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableHashSet``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToImmutableHashSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableHashSet``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableHashSet``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToImmutableSortedSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableSortedSet``1(System.Func{`0,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableSortedSet``1(System.Func{`0,``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ToImmutableSortedSet``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__15`1.ToImmutableSortedSet``1(System.Func{`0,System.Int32,``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__14`1.ToImmutableSortedSet``1(System.Func{`0,System.Int32,``0})"/>
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumeratorExtensions">
             <summary>
@@ -5068,44 +5027,49 @@
         <member name="M:LaquaiLib.Extensions.ListExtensions.RemoveRange``1(System.Collections.Generic.List{``0},System.Range)">
             <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.RemoveRange(System.Range)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.ListExtensions.KeepOnly``1(System.Collections.Generic.List{``0},System.Func{``0,System.Boolean`0,``1},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.ListExtensions.KeepOnly``1(System.Collections.Generic.List{``0},System.Func{``0,System.Boolean})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.KeepOnly(System.Func{`0,System.Boolean})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.AsMemory``1(System.Collections.Generic.List{``0},System.Index,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.AsMemory(System.Index,System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.AsMemory``1(System.Collections.Generic.List{``0},System.Range)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.AsMemory(System.Range)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.AsSpan``1(System.Collections.Generic.List{``0},System.Index,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.AsSpan(System.Index,System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.AsSpan``1(System.Collections.Generic.List{``0},System.Range)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.AsSpan(System.Range)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.SetCount``1(System.Collections.Generic.List{``0},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.SetCount(System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.ExpandBy``1(System.Collections.Generic.List{``0},System.Int32,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.<>E__1`1.ExpandBy(System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__0`1.Aggregate(System.Func{`0,`0,`0})">
+            <inheritdoc cref="M:System.Linq.Enumerable.Aggregate``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,``0})" />
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__0`1.Aggregate``1(``0,System.Func{``0,`0,``0})">
+            <inheritdoc cref="M:System.Linq.Enumerable.Aggregate``2(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1})" />
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__0`1.Aggregate``2(``0,System.Func{``0,`0,``0},System.Func{``0,``1})">
+            <inheritdoc cref="M:System.Linq.Enumerable.Aggregate``3(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1},System.Func{``1,``2})" />
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Aggregate``1(System.ReadOnlySpan{``0},System.Func{``0,``0,``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__0`1.Aggregate(System.Func{`0,`0,`0})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Aggregate``2(System.ReadOnlySpan{``0},``1,System.Func{``1,``0,``1})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__0`1.Aggregate``1(``0,System.Func{``0,`0,``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Aggregate``3(System.ReadOnlySpan{``0},``1,System.Func{``1,``0,``1},System.Func{``1,``2})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__0`1.Aggregate``2(``0,System.Func{``0,`0,``0},System.Func{``0,``1})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__1`1.AggregateBy``2(System.Func{`0,``0},``1,System.Func{``1,`0,``1},System.Collections.Generic.IEqualityComparer{``0})">
             <inheritdoc cref="M:System.Linq.Enumerable.AggregateBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},``2,System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})" />
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__1`1.AggregateBy``2(System.Func{`0,``0},System.Func{``0,``1},System.Func{``1,`0,``1},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.AggregateBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.AggregateBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},``2,System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__1`1.AggregateBy``2(System.Func{`0,``0},``1,System.Func{``1,`0,``1},System.Collections.Generic.IEqualityComparer{``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.AggregateBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__1`1.AggregateBy``2(System.Func{`0,``0},System.Func{``0,``1},System.Func{``1,`0,``1},System.Collections.Generic.IEqualityComparer{``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__2`1.All(System.Func{`0,System.Boolean})">
-            <inheritdoc cref="M:System.Linq.Enumerable.All``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.All``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__2`1.All(System.Func{`0,System.Boolean})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__3`1.Any">
-            <inheritdoc cref="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0})" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__3`1.Any(System.Func{`0,System.Boolean})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Any``1(System.ReadOnlySpan{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__3`1.Any"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Any``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__3`1.Any(System.Func{`0,System.Boolean})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__4`1.Average(System.Func{`0,System.Int32})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__4`1.Average(System.Func{`0,System.Int64})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__4`1.Average(System.Func{`0,System.Single})">
-            <inheritdomoryExtensions.<>E__1`1.AggregateBy``2(System.Func{`0,``0},System.Func{``0,``1},System.Func{``1,`0,``1},System.Collections.Generic.IEqualityComparer{``0})">
             <inheritdoc cref="M:System.Linq.Enumerable.AggregateBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})" />
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.AggregateBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},``2,System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
@@ -5204,12 +5168,6 @@
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Chunk``1(System.ReadOnlySpan{``0},System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__6`1.Chunk(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__7`1.Contains(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Contains``1(System.ReadOnlySpan{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__7`1.Contains(`0,System.Collections.Generic.IEqualityComparer{`0})"/>
-        </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__8`1.Count">
             <inheritdoc cref="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})" />
         </member>
@@ -5259,43 +5217,49 @@
             <inheritdoc cref="M:System.Linq.Enumerable.DistinctBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})" />
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.DistinctBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Span{``0})">
-            <inhertensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault(System.Func{`0,System.Boolean})">
-            <inheritdoc cref="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__11`1.DistinctBy``1(System.Func{`0,``0},System.Span{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault(System.Func{`0,System.Boolean},`0)">
-            <inheritdoc cref="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.DistinctBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Span{``0},System.Collections.Generic.IEqualityComparer{``1})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__11`1.DistinctBy``1(System.Func{`0,``0},System.Span{`0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__12`1.ElementAt(System.Int32)">
+            <inheritdoc cref="M:System.Linq.Enumerable.ElementAt``1(System.Collections.Generic.IEnumerable{``0},System.Int32)" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0},``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault(`0)"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__12`1.ElementAt(System.Index)">
+            <inheritdoc cref="M:System.Linq.Enumerable.ElementAt``1(System.Collections.Generic.IEnumerable{``0},System.Index)" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault(System.Func{`0,System.Boolean})"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.ElementAt``1(System.ReadOnlySpan{``0},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__12`1.ElementAt(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault(System.Func{`0,System.Boolean},`0)"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.ElementAt``1(System.ReadOnlySpan{``0},System.Index)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__12`1.ElementAt(System.Index)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``1(System.Func{`0,``0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__13`1.ElementAtOrDefault(System.Int32)">
+            <inheritdoc cref="M:System.Linq.Enumerable.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Int32)" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__13`1.ElementAtOrDefault(System.Index)">
+            <inheritdoc cref="M:System.Linq.Enumerable.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Index)" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``2(System.Func{`0,``0},System.Func{`0,``1})">
-            <inheritdoc cref="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.ElementAtOrDefault``1(System.ReadOnlySpan{``0},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__13`1.ElementAtOrDefault(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``2(System.Func{`0,``0},System.Func{`0,``1},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.ElementAtOrDefault``1(System.ReadOnlySpan{``0},System.Index)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__13`1.ElementAtOrDefault(System.Index)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``2(System.Func{`0,``0},System.Func{``0,System.Collections.Generic.IEnumerable{`0},``1})">
-            <inheritdoc cref="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__14`1.First">
+            <inheritdoc cref="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``2(System.Func{`0,``0},System.Func{``0,System.Collections.Generic.IEnumerable{`0},``1},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2},System.Collections.Generic.IEqualityComparer{``1})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__14`1.First(System.Func{`0,System.Boolean})">
+            <inheritdoc cref="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
         </member>
-        umerable{``0})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.First``1(System.ReadOnlySpan{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__14`1.First"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.First``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__14`1.First(System.Func{`0,System.Boolean})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault">
+            <inheritdoc cref="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0})" />
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__15`1.FirstOrDefault(`0)">
             <inheritdoc cref="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)" />
@@ -5361,48 +5325,49 @@
             <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``2(System.Func{`0,``0},System.Func{``0,System.Collections.Generic.IEnumerable{`0},``1},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.GroupBy``4(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``3(System.Func{`0,``0},System.Func{`0,``1},System.Func{``0,Syste(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``3(System.Func{`0,``0},System.Func{`0,``1},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``2})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.LongCount``1(System.ReadOnlySpan{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__19`1.LongCount"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.GroupBy``4(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3},System.Collections.Generic.IEqualityComparer{``1})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__16`1.GroupBy``3(System.Func{`0,``0},System.Func{`0,``1},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``2},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.LongCount``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__19`1.LongCount(System.Func{`0,System.Boolean})"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__17`1.Last">
+            <inheritdoc cref="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Int32})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__17`1.Last(System.Func{`0,System.Boolean})">
+            <inheritdoc cref="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Int64})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Last``1(System.ReadOnlySpan{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__17`1.Last"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Single})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Last``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__17`1.Last(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Double})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault">
+            <inheritdoc cref="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Decimal})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault(`0)">
+            <inheritdoc cref="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Int32}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault(System.Func{`0,System.Boolean})">
+            <inheritdoc cref="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Int64}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault(System.Func{`0,System.Boolean},`0)">
+            <inheritdoc cref="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Single}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Double}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0},``0)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault(`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Decimal}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Max``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},``0)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__18`1.LastOrDefault(System.Func{`0,System.Boolean},`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtens      <inheritdoc cref="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__19`1.LongCount">
+            <inheritdoc cref="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0})" />
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__19`1.LongCount(System.Func{`0,System.Boolean})">
             <inheritdoc cref="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})" />
@@ -5443,46 +5408,46 @@
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Decimal}})">
             <inheritdoc cref="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Liner name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.MaxBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__21`1.MaxBy``1(System.Func{`0,``0})"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})">
+            <inheritdoc cref="M:System.Linq.Enumerable.Max``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.MaxBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__21`1.MaxBy``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})"/>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Int32})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int64})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Int64})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Int64})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Single})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Single})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Single})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Single})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Double})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Double})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Double})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Decimal})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Decimal})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Decimal})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Decimal})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int32}})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Int32}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Nullable{System.Int32}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int32}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int64}})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Int64}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Nullable{System.Int64}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Int64}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Single}})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Single}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Nullable{System.Single}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Single}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Double}})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Double}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Nullable{System.Double}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Double}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max(System.Func{`0,System.Nullable{System.Decimal}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min(System.Func{`0,System.Nullable{System.Decimal}})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Nullable{System.Decimal}})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__20`1.Max``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__22`1.Min``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Min``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})" />
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__21`1.MaxBy``1(System.Func{`0,``0})">
+            <inheritdoc cref="M:System.Linq.Enumerable.MaxBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})" />
         </member>
-        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Min``1(System.Reons.Memory.Linq.LinqMemoryExtensions.<>E__21`1.MaxBy``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__21`1.MaxBy``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})">
             <inheritdoc cref="M:System.Linq.Enumerable.MaxBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})" />
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.MaxBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1})">
@@ -6200,7 +6165,66 @@
             <returns>The maximum value in the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="short"/>s.</returns>
             <exception cref="T:System.InvalidOperationException">Thrown when the <see cref="T:System.ReadOnlySpan`1"/> is empty.</exception>
         </member>
-        <member name="M:LaquaiLib.ExtMemory.Linq.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int32})">
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__54.Min">
+            <summary>
+            Finds the minimum value in a <see cref="T:System.ReadOnlySpan`1"/> of <see langword="short"/>s.
+            </summary>
+            <returns>The minimum value in the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="short"/>s.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown when the <see cref="T:System.ReadOnlySpan`1"/> is empty.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__54.Sum">
+            <summary>
+            Calculates the sum of a <see cref="T:System.ReadOnlySpan`1"/> of <see langword="short"/>s.
+            </summary>
+            <returns>The sum of the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="short"/>s.</returns>
+            <exception cref="T:System.OverflowException">Thrown when the calculation would overflow.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int16})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__54.Average"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int16})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__54.Max"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int16})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__54.Min"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int16})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__54.Sum"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__55.Average">
+            <summary>
+            Calculates the average of a <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.
+            </summary>
+            <returns>The average of the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__55.Max">
+            <summary>
+            Finds the maximum value in a <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.
+            </summary>
+            <returns>The maximum value in the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown when the <see cref="T:System.ReadOnlySpan`1"/> is empty.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__55.Min">
+            <summary>
+            Finds the minimum value in a <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.
+            </summary>
+            <returns>The minimum value in the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown when the <see cref="T:System.ReadOnlySpan`1"/> is empty.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__55.Sum">
+            <summary>
+            Calculates the sum of a <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.
+            </summary>
+            <returns>The sum of the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="int"/>s.</returns>
+            <exception cref="T:System.OverflowException">Thrown when the calculation would overflow.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int32})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__55.Average"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int32})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__55.Max"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.<>E__55.Min"/>
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.Linq.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int32})">
@@ -7078,81 +7102,6 @@
             </summary>
             <param name="action">The <see cref="T:System.Action`2"/> to invoke for each element.</param>
             <returns>The original <see cref="T:System.Span`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.ForEach``1(System.Span{``0},System.Action{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__3`1.ForEach(System.Action{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.ForEach``1(System.Span{``0},System.Action{``0,System.Int32})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__3`1.ForEach(System.Action{`0,System.Int32})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__4.Write``1(``0,System.Int32)">
-            <summary>
-            Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.
-            </summary>
-            <typeparam name="T">The type of the <paramref name="data"/> instance.</typeparam>
-            <param name="span">The target <see cref="T:System.Span`1"/> of <see langword="byte"/>.</param>
-            <param name="data">The <paramref name="data"/> instance to format into the <paramref name="span"/>.</param>
-            <param name="index">The index at which to start writing the <paramref name="data"/> instance into the <paramref name="span"/>.</param>
-            <returns>
-            A slice of the input span that begins immediately after the last byte written. It may have length 0.
-            This can be used to chain calls to this method.
-            </returns>
-            <exception cref="T:System.ArgumentException">Thrown if the target <paramref name="span"/> cannot accomodate the specified <paramref name="data"/> instance.</exception>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.Write``1(System.Span{System.Byte},``0,System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__4.Write``1(``0,System.Int32)"/>
-        </member>
-       "M:LaquaiLib.Extensions.Memory.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32,System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__1.Read``1(System.Int32,System.Int32)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__2`1.EnumerateSplits(System.ReadOnlySpan{`0})">
-            <summary>
-            Returns a <see cref="T:LaquaiLib.Collections.Enumeration.SpanSplitEnumerable`1"/> that enumerates the segments of a <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/>s that are separated by any of the <typeparamref name="T"/>s specified by <paramref name="splits"/>.
-            </summary>
-            <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
-            <param name="splits">The <see langword="t"/>s to use as delimiters.</param>
-            <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.SpanSplitEnumerable`1"/>.</returns>
-            <remarks><typeparamref name="T"/> must implement <see cref="T:System.IEquatable`1"/>.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__2`1.EnumerateSplitsBySequence(System.ReadOnlySpan{`0})">
-            <summary>
-            Returns a <see cref="T:LaquaiLib.Collections.Enumeration.SpanSplitEnumerable`1"/> that enumerates the segments of a <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/>s that are separated by the specified <paramref name="sequence"/>.
-            </summary>
-            <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
-            <param name="sequence">The sequence of <typeparamref name="T"/>s to use as a delimiter.</param>
-            <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.SpanSplitEnumerable`1"/>.</returns>
-            <remarks><typeparamref name="T"/> must implement <see cref="T:System.IEquatable`1"/>.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.EnumerateSplits``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__2`1.EnumerateSplits(System.ReadOnlySpan{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.EnumerateSplitsBySequence``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__2`1.EnumerateSplitsBySequence(System.ReadOnlySpan{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__3`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Finds the index of the first occurrence of a specified value in the <see cref="T:System.ReadOnlySpan`1"/> using an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>.
-            </summary>
-            <param name="value">The value to locate in the <see cref="T:System.ReadOnlySpan`1"/>.</param>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use for comparison. If <see langword="null"/>, the default equality comparer for <typeparamref name="T"/> is used.</param>
-            <returns>The zero-based index of the first occurrence of <paramref name="value"/> within the <see cref="T:System.ReadOnlySpan`1"/>, if found; otherwise, -1.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__3`1.ForEach(System.Action{`0})">
-            <summary>
-            Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.Span`1"/>.
-            </summary>
-            <param name="action">The <see cref="T:System.Action`1"/> to invoke for each element.</param>
-            <returns>The original <see cref="T:System.Span`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__3`1.ForEach(System.Action{`0,System.Int32})">
-            <summary>
-            Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.Span`1"/>, passing the element and its index.
-            </summary>
-            <param name="action">The <see cref="T:System.Action`2"/> to invoke for each element.</param>
-            <returns>The original <see cref="T:System.Span`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.IndexOf``1(System.Span{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__3`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.Memory.MemoryExtensions.ForEach``1(System.Span{``0},System.Action{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.Memory.MemoryExtensions.<>E__3`1.ForEach(System.Action{`0})"/>

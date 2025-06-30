@@ -13,19 +13,10 @@ public class FullAccessProxyAttributeUsageAnalyzer : DiagnosticAnalyzer
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true
     );
-    public static DiagnosticDescriptor IncludeHierarchyPropertyIsIgnoredOnStructsDescriptor { get; } = new(
-        id: "LAQ9001",
-        title: $"{nameof(FullAccessProxyAttribute<>)}.{nameof(FullAccessProxyAttribute<>.IncludeHierarchy)} is ignored when the attribute marks a struct declaration",
-        messageFormat: $"{nameof(FullAccessProxyAttribute<>)}.{nameof(FullAccessProxyAttribute<>.IncludeHierarchy)} is ignored when the attribute marks a struct declaration",
-        category: AnalyzerCategories.Validity,
-        defaultSeverity: DiagnosticSeverity.Warning,
-        isEnabledByDefault: true
-    );
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
     [
         InvalidAttributePlacementDescriptor,
-        IncludeHierarchyPropertyIsIgnoredOnStructsDescriptor,
     ];
 
     public override void Initialize(AnalysisContext context)
@@ -59,23 +50,6 @@ public class FullAccessProxyAttributeUsageAnalyzer : DiagnosticAnalyzer
                 InvalidAttributePlacementDescriptor,
                 attributeSyntax.GetLocation());
             context.ReportDiagnostic(diagnostic);
-        }
-
-        // LAQ9002: Check if IncludeHierarchy is specified on a struct
-        if (typeDecl is StructDeclarationSyntax)
-        {
-            // Look for the IncludeHierarchy named argument
-            foreach (var arg in attributeSyntax.ArgumentList?.Arguments ?? [])
-            {
-                if (arg.NameEquals?.Name.Identifier.ValueText == nameof(FullAccessProxyAttribute<>.IncludeHierarchy) && arg.Expression.Kind() == SyntaxKind.TrueLiteralExpression)
-                {
-                    var diagnostic = Diagnostic.Create(
-                        IncludeHierarchyPropertyIsIgnoredOnStructsDescriptor,
-                        arg.GetLocation());
-                    context.ReportDiagnostic(diagnostic);
-                    break;
-                }
-            }
         }
     }
 
