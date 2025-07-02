@@ -1,4 +1,5 @@
-﻿namespace LaquaiLib.Analyzers.Performance__0XXX_;
+﻿
+namespace LaquaiLib.Analyzers.Performance__0XXX_;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
@@ -91,19 +92,19 @@ public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
 
     private static void AnalyzeSymbol(SyntaxNodeAnalysisContext context, ISymbol symbol, Location location)
     {
-        if (!HasAggressiveInliningAttribute(symbol))
+        if (!IsInliningCandidate(symbol))
         {
             context.ReportDiagnostic(Diagnostic.Create(Descriptor, location));
         }
     }
 
     private const int _aggressiveInlining = (int)MethodImplOptions.AggressiveInlining;
-    internal static bool HasAggressiveInliningAttribute(ISymbol symbol)
+    internal static bool IsInliningCandidate(ISymbol symbol)
     {
         // Check for [MethodImpl(MethodImplOptions.AggressiveInlining)]
         foreach (var attribute in symbol.GetAttributes())
         {
-            if (IsMethodImplAttribute(attribute.AttributeClass))
+            if (IsMethodImpl(attribute.AttributeClass))
             {
                 if (attribute.ConstructorArguments.Length > 0)
                 {
@@ -119,22 +120,31 @@ public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
                             // MethodImplOptions.AggressiveInlining is 256
                             if ((intValue & _aggressiveInlining) != 0)
                             {
-                                return true;
+                                return false;
                             }
                         }
                     }
                     // Or it might be directly an integer
                     else if (constructorArg.Value is int intValue && (intValue & _aggressiveInlining) != 0)
                     {
-                        return true;
+                        return false;
                     }
                 }
             }
+            else if (IsLibraryOrDllImport(attribute.AttributeClass))
+            {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
-    private static bool IsMethodImplAttribute(ITypeSymbol typeSymbol)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsLibraryOrDllImport(ITypeSymbol attributeClass) => attributeClass.Name == "LibraryImportAttribute" ||
+        (attributeClass.Name == "DllImportAttribute" && attributeClass.ContainingNamespace.ToString() == "System.Runtime.InteropServices");
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsMethodImpl(ITypeSymbol typeSymbol)
     {
         var containingNs = typeSymbol.ContainingNamespace.ToString();
         return typeSymbol.Name == "MethodImplAttribute" && (containingNs == "System.Runtime.CompilerServices" || containingNs.EndsWith(".System.Runtime.CompilerServices"));

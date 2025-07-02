@@ -1,7 +1,8 @@
 ﻿using System.CodeDom.Compiler;
-using System.Collections.Frozen;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
+using System.Xml.Linq;
 
 using LaquaiLib.Analyzers.Shared;
 using LaquaiLib.Analyzers.Shared.Attributes;
@@ -99,7 +100,14 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             .Where(static i => i is "System.IDisposable" or "System.IAsyncDisposable")
         );
 
-        writer.Write($"public partial class {proxyClassName}");
+        writer.WriteLine("/// <summary>");
+        writer.WriteLine($"/// Wraps an instance of <c>{proxiedType.FullName}</c> to provide full access to its members, regardless of visibility. Members with a result type that is not public cannot be proxied.");
+        writer.WriteLine($"/// <para/>Use the static <c>FromProxiedConstructor</c> methods to create instances using any of the instance constructors on that type. They also proxy non-public constructors.");
+        writer.WriteLine("/// </summary>");
+
+        writer.WriteLine(Constants.GeneratedCodeAttribute(typeof(FullAccessProxyGenerator)));
+
+        writer.Write($"public sealed partial class {proxyClassName}");
         if (interfaces.Count > 0)
         {
             writer.Write(" : ");
@@ -226,7 +234,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
             writer.WriteLine("/// <summary>");
             writer.WriteLine($"/// Initializes a new instance of this proxy class for <c>{proxiedType.GetFriendlyName()}</c> using the following instance constructor overload of that type:");
-            writer.WriteLine($"/// <para/><c>{ctor.Signature}</c>");
+            writer.WriteLine($"/// <para/><c>{ctor.Signature.XmlEscape()}</c>");
             writer.WriteLine("/// </summary>");
             writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
             writer.WriteLine($"public static {proxyClassName} FromProxiedConstructor({ctor.ParameterString})");
@@ -298,22 +306,47 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         writer.WriteLine("}");
     }
 
-    private static HashSet<string> _ignoreMethods = ["object.Equals", "object.GetHashCode", "object.GetType", "object.ToString", "System.IDisposable.Dispose", "System.IAsyncDisposable.DisposeAsync"];
+    private static readonly Type _object = typeof(object);
+    private static readonly ConcurrentDictionary<Type, (Type Interface, InterfaceMapping Map)[]> _interfaceCache = [];
+    private static readonly ConcurrentDictionary<(Type, MethodInfo), bool> _ignoreCache = [];
     private static void GenerateMethodProxy(IndentedTextWriter writer, MethodInfo method, Type proxiedType)
     {
+        // Ignore non-public return types since we can't proxy those
         if (method.ReturnType.IsNotPublic)
         {
             return;
         }
 
-        if (_ignoreMethods.Contains($"{method.DeclaringType.GetFriendlyName()}.{method.Name}"))
+        if (!_ignoreCache.TryGetValue((proxiedType, method), out var ignore))
         {
+            _ignoreCache[(proxiedType, method)] = ignore = method.DeclaringType == _object;
+            if (ignore)
+            {
+                Helpers.WriteDebugDiagnostic($"Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because it is declared on System.Object.");
+                return;
+            }
+
+            if (!_interfaceCache.TryGetValue(proxiedType, out var mapMap))
+            {
+                Helpers.WriteDebugDiagnostic($"Generating interface map for {proxiedType.GetFriendlyName()}.");
+                mapMap = _interfaceCache[proxiedType] = proxiedType.GetInterfaces().Select(i => (i, proxiedType.GetInterfaceMap(i))).ToArray();
+            }
+            ignore = _ignoreCache[(proxiedType, method)] = mapMap.Any(t => t.Map.TargetMethods.Contains(method));
+            if (ignore)
+            {
+                Helpers.WriteDebugDiagnostic($"Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because it is declared on an interface that is implemented by that type.");
+                return;
+            }
+        }
+        if (ignore)
+        {
+            Helpers.WriteDebugDiagnostic($"Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because of a cache hit.");
             return;
         }
 
         writer.WriteLine("/// <summary>");
         writer.WriteLine($"/// Proxies the following method from <c>{proxiedType.GetFriendlyName()}</c>:");
-        writer.WriteLine($"/// <para/><c>{method.Signature}</c>");
+        writer.WriteLine($"/// <para/><c>{method.Signature.XmlEscape()}</c>");
         writer.WriteLine("/// </summary>");
 
         var parameterString = method.ParameterString;
@@ -326,7 +359,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         if (method.IsStatic)
         {
             writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
-            writer.WriteLine($"public {(method.ReturnType.IsByRef ? "ref " : "")}{method.ReturnType.GetFriendlyName()} {method.Name}({parameterString}) => Accessors.{method.Name}(null{argumentString});");
+            writer.WriteLine($"public static {(method.ReturnType.IsByRef ? "ref " : "")}{method.ReturnType.GetFriendlyName()} {method.Name}({parameterString}) => Accessors.{method.Name}(null{argumentString});");
         }
         else
         {
@@ -347,26 +380,33 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
         // Fields will be proxied with a property of the same name
 
-        writer.WriteLine($"public {field.FieldType.GetFriendlyName()} {field.Name}");
-        writer.WriteLine("{");
-        writer.Indent++;
+        if (field.IsStatic)
         {
-            if (field.IsStatic)
+            writer.WriteLine($"public static {field.FieldType.GetFriendlyName()} {field.Name}");
+            writer.WriteLine("{");
+            writer.Indent++;
             {
                 writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"get => Accessors.{field.Name}(null);");
                 writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"set => Accessors.{field.Name}(null) = value;");
+                writer.Indent--;
+                writer.WriteLine("}");
             }
-            else
+        }
+        else
+        {
+            writer.WriteLine($"public {field.FieldType.GetFriendlyName()} {field.Name}");
+            writer.WriteLine("{");
+            writer.Indent++;
             {
                 writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"get => Accessors.{field.Name}(_instance);");
                 writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"set => Accessors.{field.Name}(_instance) = value;");
+                writer.Indent--;
+                writer.WriteLine("}");
             }
         }
-        writer.Indent--;
-        writer.WriteLine("}");
     }
 }

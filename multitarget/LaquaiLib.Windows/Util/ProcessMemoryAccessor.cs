@@ -117,6 +117,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// <param name="offset">The offset from the base address of the <see cref="Process.MainModule"/> to read from.</param>
     /// <typeparam name="T">The type of the value to read. Must be a <see langword="struct"/>.</typeparam>
     /// <returns><see langword="true"/> if the read operation was successful, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryRead<T>(nint offset, out T value) where T : struct => TryRead(_process.MainModule.BaseAddress, offset, out value);
     /// <summary>
     /// Reads a single value of type <typeparamref name="T"/> from the target process at the specified address and offset.
@@ -147,6 +148,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// </summary>
     /// <param name="offset">The offset from the base address of the <see cref="Process.MainModule"/> to read from.</param>
     /// <typeparam name="T">The type of the value to read. Must be a <see langword="struct"/>.</typeparam>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T Read<T>(nint offset) where T : struct => Read<T>(_process.MainModule.BaseAddress, offset);
 
     /// <summary>
@@ -171,6 +173,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// Attempts to read as many bytes as will fit into <paramref name="destination"/> at the specified offset in the <see cref="Process.MainModule"/> of the target process.
     /// </summary>
     /// <returns><see langword="true"/> if the read operation was successful, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryRead(nint offset, Span<byte> destination) => TryRead(_process.MainModule.BaseAddress, offset, destination);
     /// <summary>
     /// Reads as many bytes as will fit into <paramref name="destination"/> from the target process's memory space at the specified address and offset.
@@ -196,6 +199,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// </summary>
     /// <param name="offset">The offset from the base address of the <see cref="Process.MainModule"/> to read from.</param>
     /// <param name="destination">The span to write the data into.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Read(nint offset, Span<byte> destination) => Read(_process.MainModule.BaseAddress, offset, destination);
 
     /// <summary>
@@ -255,6 +259,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// <typeparam name="T">The type of the instance to search for. Must be a <see langword="struct"/>.</typeparam>
     /// <param name="instance">The instance to search for.</param>
     /// <returns>The address of the first occurrence of the sequence of bytes in the target process's memory space, or <see cref="nint.Zero"/> if the sequence was not found.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public nint Find<T>(T instance) where T : struct => Find(MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref instance, 1)));
     /// <summary>
     /// Attempts to find the specified string in the target process's memory space.
@@ -315,6 +320,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
             return succeeded;
         }
     }
+
     /// <summary>
     /// Writes a sequence of bytes to the target process's memory space at the specified address and offset.
     /// The byte sequence is not reversed for little-endian systems.
@@ -323,6 +329,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// <param name="offset">The offset from the address to write to.</param>
     /// <param name="data">The sequence of bytes to write.</param>
     /// <returns><see langword="true"/> if the write operation was successful, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Write(nint address, nint offset, params ReadOnlySpan<byte> data) => Write(address, offset, data, false);
     /// <summary>
     /// Writes the bytes that make up a single value of type <typeparamref name="T"/> to the target process's memory space at the specified address and offset.
@@ -332,9 +339,11 @@ internal partial class ProcessMemoryAccessor : IDisposable
     /// <param name="offset">The offset from the address to write to.</param>
     /// <param name="instance">The value to write.</param>
     /// <returns><see langword="true"/> if the write operation was successful, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Write<T>(nint address, nint offset, T instance) where T : struct
         => Write(address, offset, MemoryMarshal.AsBytes(MemoryMarshal.CreateSpan(ref instance, 1)), false);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static int HResultFromWin32Error(int x) => x <= 0 ? x : ((int)((x & 0x0000FFFF) | (7 << 16) | 0x80000000));
     [DoesNotReturn]
     private static void ThrowForLastError(string outerMsg)
@@ -349,6 +358,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         throw new InvalidOperationException(message, ex);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AcquireHandle()
     {
         if (!TryAcquireHandle())
@@ -359,12 +369,14 @@ internal partial class ProcessMemoryAccessor : IDisposable
             throw new InvalidOperationException($"Failed to acquire a handle to the target process ('{msg}').", ex);
         }
     }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool TryAcquireHandle()
     {
         _handle = Interop.OpenProcess(ProcessOpenAccess.ProcessVMOperation | ProcessOpenAccess.ProcessVMRead | ProcessOpenAccess.ProcessVMWrite | ProcessOpenAccess.ProcessQueryInformation | ProcessOpenAccess.StandardRightsRequired, false, _pid);
         return _handle != nint.Zero;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EnsureAllowTarget()
     {
         switch (_pid)
@@ -383,6 +395,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     // Maps the modules of the target process into our arrays
     // By default, only modules (DLLs) belonging to the process are mapped, meaning they must come from somewhere in the main module's directory
     // There should be a damn good reason for ever explicitly disabling this safety net... then again, this type is designed to read other processes' memory...
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void MapModules()
     {
         var main = Path.GetDirectoryName(_process.MainModule.FileName);
@@ -417,6 +430,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
             _handle = nint.Zero;
         }
     }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override string ToString() => $"{_process.ProcessName} ({_pid}, 0x{_handle:X16})";
 
     #region private static partial class Interop
@@ -432,6 +446,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         [LibraryImport("kernel32.dll")]
         public static partial nint GetCurrentProcess();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void VirtualQueryEx(nint hProcess, out MEMORY_BASIC_INFORMATION lpBuffer) => VirtualQueryExImpl(hProcess, nint.Zero, out lpBuffer, Unsafe.SizeOf<MEMORY_BASIC_INFORMATION>());
         [LibraryImport("kernel32.dll", EntryPoint = nameof(VirtualQueryEx))]
         public static partial nint VirtualQueryExImpl(nint hProcess, nint lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, nint sizeT);
@@ -452,11 +467,13 @@ internal partial class ProcessMemoryAccessor : IDisposable
         public static bool ReadProcessMemory(nint hProcess, nint lpBaseAddress, Span<byte> lpBuffer, out int lpNumberOfBytesRead) => ReadProcessMemory(hProcess, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesRead);
         [LibraryImport("kernel32.dll", EntryPoint = nameof(ReadProcessMemory))]
         [return: MarshalAs(UnmanagedType.Bool)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static partial bool ReadProcessMemory(nint hProcess, nint lpBaseAddress, Span<byte> lpBuffer, int dwSize, out int lpNumberOfBytesRead);
 
         public static bool WriteProcessMemory(nint hProcess, nint lpBaseAddress, ReadOnlySpan<byte> lpBuffer, out nint lpNumberOfBytesWritten) => WriteProcessMemory(hProcess, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
         [LibraryImport("kernel32.dll", EntryPoint = nameof(WriteProcessMemory))]
         [return: MarshalAs(UnmanagedType.Bool)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static partial bool WriteProcessMemory(nint hProcess, nint lpBaseAddress, ReadOnlySpan<byte> lpBuffer, int nSize, out nint lpNumberOfBytesWritten);
     }
     #endregion

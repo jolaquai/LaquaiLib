@@ -28,7 +28,7 @@ public static partial class TestConsole
     {
         var client = serviceProvider.GetRequiredService<HttpClient>();
 
-        var t = MemoryStreamProxy.FromProxiedConstructor();
+        var t = MemoryStreamProxy.FromProxiedConstructor(256);
     }
 }
 

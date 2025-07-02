@@ -65,14 +65,12 @@ public class InlineMethodsCalledOnceAnalyzer : DiagnosticAnalyzer
                 {
                     if (references.Count == 1)
                     {
-                        var hasAttribute = InlineArrowExpressionMethodsAnalyzer.HasAggressiveInliningAttribute(methodDecl.Key);
-                        if (hasAttribute)
+                        var isInlineCandidate = InlineArrowExpressionMethodsAnalyzer.IsInliningCandidate(methodDecl.Key);
+                        if (isInlineCandidate)
                         {
-                            continue;
+                            var diagnostic = Diagnostic.Create(Descriptor, methodDecl.Value);
+                            compilationContext.ReportDiagnostic(diagnostic);
                         }
-
-                        var diagnostic = Diagnostic.Create(Descriptor, methodDecl.Value);
-                        compilationContext.ReportDiagnostic(diagnostic);
                     }
                 }
             }
