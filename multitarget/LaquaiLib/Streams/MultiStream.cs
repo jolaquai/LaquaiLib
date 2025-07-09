@@ -115,48 +115,8 @@ public class MultiStream : Stream, IDisposable
     [DoesNotReturn]
     public override void SetLength(long value) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support changing the underlying streams' lengths.");
 
-    #region Dispose pattern
-    private bool _disposed;
-
-    /// <summary>
-    /// Releases the unmanaged and optionally the managed resources used by this <see cref="MultiStream"/> instance.
-    /// </summary>
-    /// <param name="disposing">Whether to release the managed resources used by this <see cref="MultiStream"/> instance.</param>
-    protected override void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                // Dispose of managed resources (Streams etc.)
-                var streams = _streams;
-                for (var i = 0; i < streams.Length; i++)
-                {
-                    streams[i].Dispose();
-                }
-            }
-
-            // Dispose of unmanaged resources (native allocated memory etc.)
-
-            _disposed = true;
-        }
-    }
-
-    /// <summary>
-    /// Finalizes this <see cref="MultiStream"/> instance, releasing any unmanaged resources.
-    /// </summary>
-    ~MultiStream()
-    {
-        Dispose(false);
-    }
-
-    /// <summary>
-    /// Releases the managed and unmanaged resources used by this <see cref="MultiStream"/> instance.
-    /// </summary>
     public new void Dispose()
     {
-        Dispose(true);
         GC.SuppressFinalize(this);
     }
-    #endregion
 }
