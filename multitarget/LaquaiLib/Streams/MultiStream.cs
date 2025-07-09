@@ -22,7 +22,7 @@ public class MultiStream : Stream, IDisposable
         _streams = [.. streams];
         for (var i = 0; i < streams.Length; i++)
         {
-            if (!stream.CanWrite)
+            if (!streams[i].CanWrite)
             {
                 throw new InvalidOperationException("Cannot wrap a stream that is not writable.");
             }
@@ -36,10 +36,10 @@ public class MultiStream : Stream, IDisposable
     {
         _streams = [.. streams];
 
-        var streams = _streams;
-        for (var i = 0; i < streams.Length; i++)
+        var strs = _streams;
+        for (var i = 0; i < strs.Length; i++)
         {
-            if (!stream.CanWrite)
+            if (!strs[i].CanWrite)
             {
                 throw new InvalidOperationException("Cannot wrap a stream that is not writable.");
             }
@@ -54,7 +54,7 @@ public class MultiStream : Stream, IDisposable
     /// <summary>
     /// Unconditionally returns <see langword="false"/>; <see cref="MultiStream"/> does not support seeking.
     /// </summary>
-    public override bool CanSeek => false
+    public override bool CanSeek => false;
     /// <summary>
     /// Unconditionally returns <see langword="true"/>; <see cref="MultiStream"/> broadcasts writes directly to the wrapped instances.
     /// </summary>
@@ -70,7 +70,14 @@ public class MultiStream : Stream, IDisposable
     /// <summary>
     /// Flushes all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
-    public override void Flush() => _streams.ForEach(static stream => stream.Flush());
+    public override void Flush()
+    {
+        var streams = _streams;
+        for (var i = 0; i < streams.Length; i++)
+        {
+            streams[i].Flush();
+        }
+    }
     /// <summary>
     /// Unconditionally throws an <see cref="InvalidOperationException"/>. <see cref="MultiStream"/> does not support seeking.
     /// </summary>
