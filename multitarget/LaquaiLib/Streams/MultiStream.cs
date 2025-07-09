@@ -6,7 +6,7 @@ namespace LaquaiLib.Streams;
 
 /// <summary>
 /// Represents a wrapper for multiple <see cref="Stream"/> instances to be written to as one.
-/// The order in which writes are performed is undefined.
+/// Writes are not guaranteed to be performed on each passed <see cref="Stream"/> in the order they were passed, however, no two writes on two <see cref="Stream"/> will ever occur concurrently.
 /// </summary>
 public class MultiStream : Stream, IDisposable
 {
@@ -17,62 +17,66 @@ public class MultiStream : Stream, IDisposable
     /// Initializes a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
-    public MultiStream(params ReadOnlySpan<Stream> streams) => _streams = [.. streams];
+    public MultiStream(params ReadOnlySpan<Stream> streams)
+    {
+        _streams = [.. streams];
+        for (var i = 0; i < streams.Length; i++)
+        {
+            if (!stream.CanWrite)
+            {
+                throw new InvalidOperationException("Cannot wrap a stream that is not writable.");
+            }
+        }
+    }
     /// <summary>
     /// Initializes a new <see cref="MultiStream"/> with the given <see cref="Stream"/>s.
     /// </summary>
     /// <param name="streams">A collection of <see cref="Stream"/> instances that are to be written to simultaneously.</param>
-    public MultiStream(IEnumerable<Stream> streams) => _streams = [.. streams];
+    public MultiStream(IEnumerable<Stream> streams)
+    {
+        _streams = [.. streams];
+
+        var streams = _streams;
+        for (var i = 0; i < streams.Length; i++)
+        {
+            if (!stream.CanWrite)
+            {
+                throw new InvalidOperationException("Cannot wrap a stream that is not writable.");
+            }
+        }
+    }
     #endregion
 
     /// <summary>
-    /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be read from.
+    /// Unconditionally returns <see langword="false"/>; <see cref="MultiStream"/> does not support reading.
     /// </summary>
-    public override bool CanRead => _streams.Select(static stream => stream.CanRead).All();
+    public override bool CanRead => false;
     /// <summary>
-    /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be seeked.
+    /// Unconditionally returns <see langword="false"/>; <see cref="MultiStream"/> does not support seeking.
     /// </summary>
-    public override bool CanSeek => _streams.Select(static stream => stream.CanSeek).All();
+    public override bool CanSeek => false
     /// <summary>
-    /// A value that indicates whether all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance can be written to.
+    /// Unconditionally returns <see langword="true"/>; <see cref="MultiStream"/> broadcasts writes directly to the wrapped instances.
     /// </summary>
-    public override bool CanWrite => _streams.Select(static stream => stream.CanWrite).All();
-    /// <summary>
-    /// A collection of <see cref="long"/>s that indicate the lengths of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
-    /// </summary>
-    public long[] Lengths => [.. _streams.Select(static stream => stream.Length)];
+    public override bool CanWrite => true;
     /// <inheritdoc/>
-    public override long Length => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Length)}. Use {nameof(Lengths)} instead.");
-    /// <summary>
-    /// A collection of <see cref="long"/>s taht indicate the current positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
-    /// </summary>
-    public long[] Positions => [.. _streams.Select(static stream => stream.Position)];
+    public override long Length => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Length)}.");
     /// <inheritdoc/>
     public override long Position
     {
-        get => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
-        set => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Position)}. Use {nameof(Positions)} instead.");
+        get => throw new InvalidOperationException($"{nameof(MultiStream)} does not support seeking.");
+        set => throw new InvalidOperationException($"{nameof(MultiStream)} does not support seeking.");
     }
     /// <summary>
     /// Flushes all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
     /// </summary>
     public override void Flush() => _streams.ForEach(static stream => stream.Flush());
     /// <summary>
-    /// Seeks all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
+    /// Unconditionally throws an <see cref="InvalidOperationException"/>. <see cref="MultiStream"/> does not support seeking.
     /// </summary>
-    /// <param name="offset">The offset to seek by.</param>
-    /// <param name="origin">A <see cref="SeekOrigin"/> value that indicates the reference point used to obtain the new position.</param>
-    /// <returns>-1. Use <see cref="Positions"/> to obtain the new positions of the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.</returns>
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        _streams.ForEach(stream => stream.Seek(offset, origin));
-        return -1;
-    }
-    /// <summary>
-    /// Sets a new length for all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.
-    /// </summary>
-    /// <param name="value">The new length for the <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance.</param>
-    public void SetLengths(long value) => _streams.ForEach(stream => stream.SetLength(value));
+    [DoesNotReturn]
+    public override long Seek(long offset, SeekOrigin origin) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support seeking.");
+
     /// <summary>
     /// Writes a sequence of bytes to all <see cref="Stream"/>s wrapped by this <see cref="MultiStream"/> instance and advances the current position within the <see cref="Stream"/>s by the number of <see cref="byte"/>s written.
     /// </summary>
@@ -91,14 +95,18 @@ public class MultiStream : Stream, IDisposable
             _streams[i].Write(buffer);
         }
     }
+#warning TODO: Implement the other Write overloads and add WriteAsync support
 
     /// <summary>
     /// Unconditionally throws an <see cref="InvalidOperationException"/>.
     /// </summary>
     [DoesNotReturn]
-    public override int Read(byte[] buffer, int offset, int count) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support using {nameof(Stream.Read)}.");
-    /// <inheritdoc cref="SetLengths(long)"/>
-    public override void SetLength(long value) => SetLengths(value);
+    public override int Read(byte[] buffer, int offset, int count) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support reading.");
+    /// <summary>
+    /// Unconditionally throws an <see cref="InvalidOperationException"/>. <see cref="MultiStream"/> does not support operations affecting the underlying streams directly (beyond broadcasted writes).
+    /// </summary>
+    [DoesNotReturn]
+    public override void SetLength(long value) => throw new InvalidOperationException($"{nameof(MultiStream)} does not support changing the underlying streams' lengths.");
 
     #region Dispose pattern
     private bool _disposed;
@@ -114,7 +122,11 @@ public class MultiStream : Stream, IDisposable
             if (disposing)
             {
                 // Dispose of managed resources (Streams etc.)
-                _streams.Dispose();
+                var streams = _streams;
+                for (var i = 0; i < streams.Length; i++)
+                {
+                    streams[i].Dispose();
+                }
             }
 
             // Dispose of unmanaged resources (native allocated memory etc.)
