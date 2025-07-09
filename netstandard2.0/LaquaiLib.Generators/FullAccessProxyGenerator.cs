@@ -2,10 +2,10 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
-using System.Xml.Linq;
 
 using LaquaiLib.Analyzers.Shared;
 using LaquaiLib.Analyzers.Shared.Attributes;
+using LaquaiLib.Generators.Extensions;
 
 namespace LaquaiLib.Generators;
 
@@ -14,75 +14,58 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var classDeclarationSyntaxProvider = context.SyntaxProvider.CreateSyntaxProvider(
-            static (node, _) => node is ClassDeclarationSyntax { AttributeLists.Count: > 0 },
-            static (context, _) =>
-            {
-                var classDeclarationSyntax = Unsafe.As<ClassDeclarationSyntax>(context.Node);
-                var attribute = classDeclarationSyntax.AttributeLists.SelectMany(static x => x.Attributes)
-                    .FirstOrDefault(static x => x.Name.ToString().Contains("FullAccessProxy"));
-                if (attribute is not null)
-                {
-                    return classDeclarationSyntax;
-                }
-                return null;
-            }
-        ).Where(static m => m is not null);
+        var classDeclarationSyntaxProvider = context.SyntaxProvider
+            .ForAttributeWithMetadataNameOn<ClassDeclarationSyntax>("LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute`1");
 
-        var compilationProvider = context.CompilationProvider;
-        var combined = compilationProvider.Combine(classDeclarationSyntaxProvider.Collect());
-
-        context.RegisterSourceOutput(combined, static (spc, source) =>
+        context.RegisterSourceOutput(classDeclarationSyntaxProvider, static (spc, source) =>
         {
-            var (compilation, classDeclarations) = source;
-            for (var i = 0; i < classDeclarations.Length; i++)
+            var decl = Unsafe.As<ClassDeclarationSyntax>(source.TargetNode);
+            var attribute = source.Attributes[0];
+
+            var semanticModel = source.SemanticModel;
+            if (semanticModel is null)
             {
-                var decl = classDeclarations[i];
-                if (decl is null) continue;
-                var semanticModel = compilation.GetSemanticModel(decl.SyntaxTree);
-                if (semanticModel is null) continue;
-
-                // Get the class symbol
-                var proxyClassSymbol = semanticModel.GetDeclaredSymbol(decl);
-                if (proxyClassSymbol is null) return;
-                var proxyClassName = proxyClassSymbol.Name;
-                var namespaceName = proxyClassSymbol.ContainingNamespace.ToDisplayString();
-
-                // Find the FullAccessProxy attribute and its type argument
-                var attribute = proxyClassSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString().Contains("FullAccessProxy") == true);
-                if (attribute is null) return;
-                var attrClass = attribute.AttributeClass;
-
-                // Get the type argument from the attribute (e.g., MemoryStream)
-                var typeArg = attrClass.TypeArguments[0];
-                var targetTypeString = typeArg.ToDisplayString();
-                var proxiedType = Type.GetType(targetTypeString);
-
-                // Attribute data
-                var fullAccessProxyAttributeType = typeof(FullAccessProxyAttribute<>).MakeGenericType([proxiedType]);
-                var attributeInstance = Unsafe.As<FullAccessProxyAttribute<object>>(Activator.CreateInstance(fullAccessProxyAttributeType));
-
-                var properties = fullAccessProxyAttributeType.GetProperties().ToDictionary(p => p.Name);
-
-                var bindingFlagsProp = properties[nameof(attributeInstance.BindingFlags)];
-                var bindingFlagsPropNamedValue = attribute.NamedArguments.FirstOrDefault(kv => kv.Key == nameof(BindingFlags));
-                if (bindingFlagsPropNamedValue.Value.Value is BindingFlags bf)
-                {
-                    attributeInstance.BindingFlags = bf;
-                }
-
-                var includeHierarchyProp = properties[nameof(attributeInstance.IncludeHierarchy)];
-                var includeHierarchyPropNamedValue = attribute.NamedArguments.FirstOrDefault(kv => kv.Key == nameof(attributeInstance.IncludeHierarchy));
-                if (includeHierarchyPropNamedValue.Value.Value is bool b)
-                {
-                    attributeInstance.IncludeHierarchy = b;
-                }
-
-                // Generate the proxied members into the class
-                var proxyClassSource = GenerateProxyClass(namespaceName, proxyClassName, proxiedType, attributeInstance);
-
-                spc.AddSource($"{proxyClassName}_{proxiedType.Name}.g.cs", SourceText.From(proxyClassSource, Encoding.UTF8));
+                return;
             }
+
+            var proxyClassSymbol = (INamedTypeSymbol)source.TargetSymbol;
+            var namespaceName = proxyClassSymbol.ContainingNamespace.ToDisplayString();
+
+            if (attribute is null)
+            {
+                return;
+            }
+
+            // Get the type argument from the attribute (e.g., MemoryStream)
+            var attrClass = attribute.AttributeClass;
+            var typeArg = attrClass.TypeArguments[0];
+            var targetTypeString = typeArg.ToDisplayString();
+            var proxiedType = Type.GetType(targetTypeString);
+
+            // Attribute data
+            var fullAccessProxyAttributeType = typeof(FullAccessProxyAttribute<>).MakeGenericType([proxiedType]);
+            var attributeInstance = Unsafe.As<FullAccessProxyAttribute<object>>(Activator.CreateInstance(fullAccessProxyAttributeType));
+
+            var properties = fullAccessProxyAttributeType.GetProperties().ToDictionary(p => p.Name);
+
+            var bindingFlagsProp = properties[nameof(attributeInstance.BindingFlags)];
+            var bindingFlagsPropNamedValue = attribute.NamedArguments.FirstOrDefault(kv => kv.Key == nameof(BindingFlags));
+            if (bindingFlagsPropNamedValue.Value.Value is BindingFlags bf)
+            {
+                attributeInstance.BindingFlags = bf;
+            }
+
+            var includeHierarchyProp = properties[nameof(attributeInstance.IncludeHierarchy)];
+            var includeHierarchyPropNamedValue = attribute.NamedArguments.FirstOrDefault(kv => kv.Key == nameof(attributeInstance.IncludeHierarchy));
+            if (includeHierarchyPropNamedValue.Value.Value is bool b)
+            {
+                attributeInstance.IncludeHierarchy = b;
+            }
+
+            // Generate the proxied members into the class
+            var proxyClassSource = GenerateProxyClass(namespaceName, proxyClassSymbol.Name, proxiedType, attributeInstance);
+
+            spc.AddSource($"{proxyClassSymbol.Name}_{proxiedType.Name}.g.cs", SourceText.From(proxyClassSource, Encoding.UTF8));
         });
     }
 
@@ -92,7 +75,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         using var sw = new StringWriter(sb);
         using var writer = new IndentedTextWriter(sw);
 
-        writer.WriteLine(Constants.GeneratedFileHeader);
+        writer.WriteLine(SourceCodeEmitterHelper.GeneratedFileHeader);
         writer.WriteLine($"namespace {namespaceName};");
 
         var interfaces = new HashSet<string>(proxiedType.GetInterfaces()
@@ -105,7 +88,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         writer.WriteLine($"/// <para/>Use the static <c>FromProxiedConstructor</c> methods to create instances using any of the instance constructors on that type. They also proxy non-public constructors.");
         writer.WriteLine("/// </summary>");
 
-        writer.WriteLine(Constants.GeneratedCodeAttribute(typeof(FullAccessProxyGenerator)));
+        writer.WriteLines(SourceCodeEmitterHelper.GeneratedCodeAttribute(typeof(FullAccessProxyGenerator)));
 
         writer.Write($"public sealed partial class {proxyClassName}");
         if (interfaces.Count > 0)
@@ -117,8 +100,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         {
             writer.WriteLine();
         }
-        writer.WriteLine("{");
-        writer.Indent++;
+        using (writer.Scope)
         {
             var flags = data.BindingFlags;
             if (data.IncludeHierarchy)
@@ -147,10 +129,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                         break;
                 }
             }
-
-            writer.Indent--;
         }
-        writer.WriteLine("}");
         writer.Flush();
         sw.Flush();
         return sb.ToString();
@@ -161,43 +140,31 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         if (interfaces.Contains("System.IDisposable"))
         {
             writer.WriteLine("/// <inheritdoc/>");
-            writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+            writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
             writer.WriteLine("public void Dispose()");
-            writer.WriteLine("{");
-            writer.Indent++;
+            using (writer.Scope)
             {
                 writer.WriteLine("if (_instance is IDisposable disposable)");
-                writer.WriteLine("{");
-                writer.Indent++;
+                using (writer.Scope)
                 {
                     writer.WriteLine("disposable.Dispose();");
                 }
-                writer.Indent--;
-                writer.WriteLine("}");
             }
-            writer.Indent--;
-            writer.WriteLine("}");
         }
 
         if (interfaces.Contains("System.IAsyncDisposable"))
         {
             writer.WriteLine("/// <inheritdoc/>");
-            writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+            writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
             writer.WriteLine("public async ValueTask DisposeAsync()");
-            writer.WriteLine("{");
-            writer.Indent++;
+            using (writer.Scope)
             {
                 writer.WriteLine("if (_instance is IAsyncDisposable asyncDisposable)");
-                writer.WriteLine("{");
-                writer.Indent++;
+                using (writer.Scope)
                 {
                     writer.WriteLine("await asyncDisposable.DisposeAsync().ConfigureAwait(false);");
                 }
-                writer.Indent--;
-                writer.WriteLine("}");
             }
-            writer.Indent--;
-            writer.WriteLine("}");
         }
     }
     private static void WriteInstanceFields(IndentedTextWriter writer, Type proxiedType)
@@ -218,13 +185,10 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         writer.WriteLine("/// </summary>");
         writer.WriteLine($"/// <param name=\"instance\">The instance of <c>{proxiedType.FullName}</c> to proxy. Must not be <see langword=\"null\"/>, otherwise an exception is thrown.</param>");
         writer.WriteLine($"public {proxyClassName}({proxiedType.GetFriendlyName()} instance)");
-        writer.WriteLine("{");
-        writer.Indent++;
+        using (writer.Scope)
         {
             writer.WriteLine("_instance = instance ?? throw new ArgumentNullException(nameof(instance));");
         }
-        writer.Indent--;
-        writer.WriteLine("}");
     }
     private static void WriteStaticCtorProxies(IndentedTextWriter writer, string proxyClassName, Type proxiedType, ConstructorInfo[] ctors)
     {
@@ -236,15 +200,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             writer.WriteLine($"/// Initializes a new instance of this proxy class for <c>{proxiedType.GetFriendlyName()}</c> using the following instance constructor overload of that type:");
             writer.WriteLine($"/// <para/><c>{ctor.Signature.XmlEscape()}</c>");
             writer.WriteLine("/// </summary>");
-            writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+            writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
             writer.WriteLine($"public static {proxyClassName} FromProxiedConstructor({ctor.ParameterString})");
-            writer.WriteLine("{");
-            writer.Indent++;
+            using (writer.Scope)
             {
                 writer.WriteLine($"return new {proxyClassName}(Accessors.ProxyCtor({ctor.ArgumentString}));");
             }
-            writer.Indent--;
-            writer.WriteLine("}");
         }
     }
     private static void WriteUnsafeAccessorUtility(IndentedTextWriter writer, Type proxiedType, MemberInfo[] members)
@@ -252,8 +213,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         var proxiedTypeName = proxiedType.FullName;
 
         writer.WriteLine("private static class Accessors");
-        writer.WriteLine("{");
-        writer.Indent++;
+        using (writer.Scope)
         {
             for (var i = 0; i < members.Length; i++)
             {
@@ -267,7 +227,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                             continue;
                         }
 
-                        writer.WriteLine(Constants.UnsafeAccessor_Method);
+                        writer.WriteLine(SourceCodeEmitterHelper.UnsafeAccessor_Method);
                         var parameterString = method.ParameterString;
                         if (parameterString.Length > 0)
                         {
@@ -281,12 +241,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                             continue;
                         }
 
-                        writer.WriteLine(Constants.UnsafeAccessor_Field);
+                        writer.WriteLine(SourceCodeEmitterHelper.UnsafeAccessor_Field);
                         writer.WriteLine($"public static extern ref {field.FieldType.GetFriendlyName()} {field.Name}({proxiedTypeName} target);");
                         break;
 
                     case ConstructorInfo ctor:
-                        writer.WriteLine(Constants.UnsafeAccessor_Ctor);
+                        writer.WriteLine(SourceCodeEmitterHelper.UnsafeAccessor_Ctor);
                         var ctorParameterString = ctor.ParameterString;
                         writer.WriteLine($"public static extern {proxiedTypeName} ProxyCtor({ctorParameterString});");
                         break;
@@ -302,8 +262,6 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 }
             }
         }
-        writer.Indent--;
-        writer.WriteLine("}");
     }
 
     private static readonly Type _object = typeof(object);
@@ -322,25 +280,25 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             _ignoreCache[(proxiedType, method)] = ignore = method.DeclaringType == _object;
             if (ignore)
             {
-                Helpers.WriteDebugDiagnostic($"Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because it is declared on System.Object.");
+                // Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because it is declared on System.Object.
                 return;
             }
 
             if (!_interfaceCache.TryGetValue(proxiedType, out var mapMap))
             {
-                Helpers.WriteDebugDiagnostic($"Generating interface map for {proxiedType.GetFriendlyName()}.");
+                // Generating interface map for {proxiedType.GetFriendlyName()}."
                 mapMap = _interfaceCache[proxiedType] = proxiedType.GetInterfaces().Select(i => (i, proxiedType.GetInterfaceMap(i))).ToArray();
             }
             ignore = _ignoreCache[(proxiedType, method)] = mapMap.Any(t => t.Map.TargetMethods.Contains(method));
             if (ignore)
             {
-                Helpers.WriteDebugDiagnostic($"Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because it is declared on an interface that is implemented by that type.");
+                // Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because it is declared on an interface that is implemented by that type."
                 return;
             }
         }
         if (ignore)
         {
-            Helpers.WriteDebugDiagnostic($"Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because of a cache hit.");
+            // Ignoring method {method.Name} on {proxiedType.GetFriendlyName()} because of a cache hit."
             return;
         }
 
@@ -358,12 +316,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
         if (method.IsStatic)
         {
-            writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+            writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
             writer.WriteLine($"public static {(method.ReturnType.IsByRef ? "ref " : "")}{method.ReturnType.GetFriendlyName()} {method.Name}({parameterString}) => Accessors.{method.Name}(null{argumentString});");
         }
         else
         {
-            writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+            writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
             writer.WriteLine($"public {(method.ReturnType.IsByRef ? "ref " : "")}{method.ReturnType.GetFriendlyName()} {method.Name}({parameterString}) => Accessors.{method.Name}(_instance{argumentString});");
         }
     }
@@ -383,29 +341,23 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         if (field.IsStatic)
         {
             writer.WriteLine($"public static {field.FieldType.GetFriendlyName()} {field.Name}");
-            writer.WriteLine("{");
-            writer.Indent++;
+            using (writer.Scope)
             {
-                writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"get => Accessors.{field.Name}(null);");
-                writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"set => Accessors.{field.Name}(null) = value;");
-                writer.Indent--;
-                writer.WriteLine("}");
             }
         }
         else
         {
             writer.WriteLine($"public {field.FieldType.GetFriendlyName()} {field.Name}");
-            writer.WriteLine("{");
-            writer.Indent++;
+            using (writer.Scope)
             {
-                writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"get => Accessors.{field.Name}(_instance);");
-                writer.WriteLine(Constants.MethodImpl_AggressiveInlining);
+                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"set => Accessors.{field.Name}(_instance) = value;");
-                writer.Indent--;
-                writer.WriteLine("}");
             }
         }
     }

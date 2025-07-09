@@ -10,6 +10,7 @@
         <IncludeBuildOutput>True</IncludeBuildOutput>
         <SuppressDependenciesWhenPacking>True</SuppressDependenciesWhenPacking>
         <DevelopmentDependency>True</DevelopmentDependency>
+        <IsRoslynComponent>True</IsRoslynComponent>
 
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>

@@ -26,9 +26,7 @@ public static partial class TestConsole
         => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
-        var client = serviceProvider.GetRequiredService<HttpClient>();
-
-        var t = MemoryStreamProxy.FromProxiedConstructor(256);
+        // var client = serviceProvider.GetRequiredService<HttpClient>();
     }
 }
 

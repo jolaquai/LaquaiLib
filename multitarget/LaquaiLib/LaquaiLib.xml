@@ -10577,7 +10577,7 @@
         <member name="T:LaquaiLib.Streams.MultiStream">
             <summary>
             Represents a wrapper for multiple <see cref="T:System.IO.Stream"/> instances to be written to as one.
-            The order in which writes are performed is undefined.
+            Writes are not guaranteed to be performed on each passed <see cref="T:System.IO.Stream"/> in the order they were passed, however, no two writes on two <see cref="T:System.IO.Stream"/> will ever occur concurrently.
             </summary>
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.#ctor(System.ReadOnlySpan{System.IO.Stream})">
@@ -10594,31 +10594,21 @@
         </member>
         <member name="P:LaquaiLib.Streams.MultiStream.CanRead">
             <summary>
-            A value that indicates whether all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance can be read from.
+            Unconditionally returns <see langword="false"/>; <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support reading.
             </summary>
         </member>
         <member name="P:LaquaiLib.Streams.MultiStream.CanSeek">
             <summary>
-            A value that indicates whether all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance can be seeked.
+            Unconditionally returns <see langword="false"/>; <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support seeking.
             </summary>
         </member>
         <member name="P:LaquaiLib.Streams.MultiStream.CanWrite">
             <summary>
-            A value that indicates whether all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance can be written to.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.MultiStream.Lengths">
-            <summary>
-            A collection of <see cref="T:System.Int64"/>s that indicate the lengths of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
+            Unconditionally returns <see langword="true"/>; <see cref="T:LaquaiLib.Streams.MultiStream"/> broadcasts writes directly to the wrapped instances.
             </summary>
         </member>
         <member name="P:LaquaiLib.Streams.MultiStream.Length">
             <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.MultiStream.Positions">
-            <summary>
-            A collection of <see cref="T:System.Int64"/>s taht indicate the current positions of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
-            </summary>
         </member>
         <member name="P:LaquaiLib.Streams.MultiStream.Position">
             <inheritdoc/>
@@ -10630,17 +10620,8 @@
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.Seek(System.Int64,System.IO.SeekOrigin)">
             <summary>
-            Seeks all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
+            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>. <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support seeking.
             </summary>
-            <param name="offset">The offset to seek by.</param>
-            <param name="origin">A <see cref="T:System.IO.SeekOrigin"/> value that indicates the reference point used to obtain the new position.</param>
-            <returns>-1. Use <see cref="P:LaquaiLib.Streams.MultiStream.Positions"/> to obtain the new positions of the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.SetLengths(System.Int64)">
-            <summary>
-            Sets a new length for all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
-            </summary>
-            <param name="value">The new length for the <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.</param>
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.Write(System.Byte[],System.Int32,System.Int32)">
             <summary>
@@ -10662,22 +10643,8 @@
             </summary>
         </member>
         <member name="M:LaquaiLib.Streams.MultiStream.SetLength(System.Int64)">
-            <inheritdoc cref="M:LaquaiLib.Streams.MultiStream.SetLengths(System.Int64)"/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Dispose(System.Boolean)">
             <summary>
-            Releases the unmanaged and optionally the managed resources used by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
-            </summary>
-            <param name="disposing">Whether to release the managed resources used by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Finalize">
-            <summary>
-            Finalizes this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance, releasing any unmanaged resources.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Dispose">
-            <summary>
-            Releases the managed and unmanaged resources used by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
+            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>. <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support operations affecting the underlying streams directly (beyond broadcasted writes).
             </summary>
         </member>
         <member name="T:LaquaiLib.Streams.NullStream">
@@ -16308,236 +16275,6 @@
             </summary>
             <typeparam name="T">The type of the elements in the <see cref="T:System.Span`1"/>.</typeparam>
         </member>
-        <member name="T:LaquaiLib.Wrappers.TempAlloc">
-            <summary>
-            Represents a temporarily allocated region of unmanaged memory that is automatically freed when its wrapper object is disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer.
-            </summary>
-            <param name="bytes">The amount of bytes to allocate.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.Int32,System.Boolean)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> with the given size as represented by a 32-bit integer, optionally clearing any previous data.
-            </summary>
-            <param name="bytes">The amount of bytes to allocate.</param>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.IntPtr,System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
-            </summary>
-            <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/>.</param>
-            <param name="size">The size of the memory region at <paramref name="address"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.#ctor(System.IntPtr,System.Int32,System.Boolean)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> as a wrapper around existing allocated memory.
-            </summary>
-            <param name="address">The address to the memory region to wrap with this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/>.</param>
-            <param name="size">The size of the memory region at <paramref name="address"/>.</param>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Boolean)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly one instance of the given <see cref="T:System.Type"/>, optionally clearing any previous data.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(System.Int32,System.Boolean)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> that can accomodate exactly <paramref name="count"/> instances of the given <see cref="T:System.Type"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to allocate memory for.</typeparam>
-            <param name="count">The amount of <typeparamref name="T"/> instances to allocate memory for.</param>
-            <param name="clear">A value indicating whether any previous data in the allocated memory region should be cleared.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Create``1(``0)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> for the
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> of the <paramref name="value"/> to allocate memory for.</typeparam>
-            <param name="value">A value of type <typeparamref name="T"/> to allocate memory for. The existing value is copied to the newly allocated memory region.</param>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.Item(System.Index)">
-            <summary>
-            Retrieves a pointer to the byte at the given <paramref name="index"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
-            </summary>
-            <param name="index">An <see cref="T:System.Index"/> that represents the index of the byte to retrieve.</param>
-            <returns>A pointer to the byte at the given <paramref name="index"/>.</returns>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.Item(System.Range)">
-            <summary>
-            Constructs a <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> sliced to the specified <paramref name="range"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
-            </summary>
-            <param name="range">A <see cref="T:System.Range"/> that represents the range of bytes to retrieve.</param>
-            <returns>The created <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> slice.</returns>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.Item(System.Int32,System.Int32)">
-            <summary>
-            Constructs a <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> sliced to the specified range in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
-            </summary>
-            <param name="start">The start index of the slice.</param>
-            <param name="length">The length of the slice.</param>
-            <returns>The created <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> slice.</returns>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.Address">
-            <summary>
-            The address of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.GetPointer">
-            <summary>
-            Returns the address of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as a pointer to an unspecified type.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.GetPointer``1">
-            <summary>
-            Returns the address of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as a pointer to an instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The unmanaged <see cref="T:System.Type"/> to cast the pointer to.</typeparam>
-            <returns>The pointer as specified.</returns>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.Size">
-            <summary>
-            The size of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps in bytes.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.Bits">
-            <summary>
-            The size of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps in bits.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.Span">
-            <summary>
-            A <see cref="T:System.Span`1"/> of <see cref="T:System.Byte"/> that represents the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.TempAlloc.IsDisposed">
-            <summary>
-            Whether this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> has been disposed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Reallocate(System.Int32)">
-            <summary>
-            Resizes the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps.
-            </summary>
-            <param name="bytes">The new size of the memory region in bytes.</param>
-            <returns>A value indicating whether the <see cref="P:LaquaiLib.Wrappers.TempAlloc.Address"/> of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps has changed. If <see langword="true"/>, reading from any previous addresses is considered undefined behavior.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.As``1">
-            <summary>
-            Attempts to cast the contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
-            <returns>The entire contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.As``1(System.Int32,System.Int32)">
-            <summary>
-            Attempts to cast the content of a slice of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to an instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The <see cref="T:System.Type"/> to cast the contents of the memory region to.</typeparam>
-            <param name="offset">The offset at which to start the slice.</param>
-            <param name="length">The length of the slice.</param>
-            <returns>The contents of the slice of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps as an instance of <typeparamref name="T"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Clear">
-            <summary>
-            Clears the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps (sets all bytes to zero).
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Replace(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
-            <summary>
-            Searches for the first occurrence of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps and replaces it with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
-            </summary>
-            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Wrappers.TempAlloc.Span"/>.</param>
-            <param name="replacement">The sequence of bytes to replace the first occurrence of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
-            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
-            <para/><list type="bullet">
-            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
-                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
-            </list>
-            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
-                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
-            </list>
-            </list>
-            </param>
-            <returns>A value that indicates whether a replacement was made.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.ReplaceAll(System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte},System.Boolean)">
-            <summary>
-            Searches for all occurrences of a given <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/> in the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps and replaces them with memory represented by another <see cref="T:System.ReadOnlySpan`1"/> of <see cref="T:System.Byte"/>.
-            </summary>
-            <param name="search">The sequence of bytes to find in <see cref="P:LaquaiLib.Wrappers.TempAlloc.Span"/>.</param>
-            <param name="replacement">The sequence of bytes to replace the occurrences of <paramref name="search"/> with. The length of this sequence need not be equal to the length of the <paramref name="search"/> sequence.</param>
-            <param name="shift">Whether to shift the bytes to the right of the replacement after it has been made.
-            <para/><list type="bullet">
-            <item/>If <c><paramref name="replacement"/>.Length &gt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes that would be overwritten by the <paramref name="replacement"/> are shifted right to fully accomodate the replacement.
-                <item/>and <c>!<paramref name="shift"/></c>, the <paramref name="replacement"/> bytes overwrite any bytes after <paramref name="search"/>.
-            </list>
-            <item/>If <c><paramref name="replacement"/>.Length &lt; <paramref name="search"/>.Length</c>, <list type="bullet">
-                <item/>and <c><paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are discarded and the bytes to the right of it are shifted left to fill the space. The size of the memory region is decreased by <c>(<paramref name="search"/>.Length - <paramref name="replacement"/>.Length)</c>.
-                <item/>and <c>!<paramref name="shift"/></c>, the bytes remaining in the space of <paramref name="search"/> after the replacement is made are left untouched. The size of the memory region does not change.
-            </list>
-            </list>
-            </param>
-            <returns>The number of replacements made.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.ToHexString">
-            <summary>
-            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to a <see cref="T:System.String"/> of hexadecimal characters, grouped into 4-byte words, grouped into 32-byte lines.
-            </summary>
-            <returns>The string as described.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.ToBinaryString">
-            <summary>
-            Serializes the contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps to a <see cref="T:System.String"/> of binary characters, grouped into 32-bit words.
-            </summary>
-            <returns>The string as described.</returns>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.op_Implicit(LaquaiLib.Wrappers.TempAlloc)~System.IntPtr">
-            <summary>
-            Implicitly converts a <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> instance to an <see langword="nint"/> representing the address of the memory region it wraps.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.op_Implicit(LaquaiLib.Wrappers.TempAlloc)~System.UIntPtr">
-            <summary>
-            Implicitly converts a <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> instance to a <see langword="nuint"/> representing the address of the memory region it wraps.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.op_Implicit(LaquaiLib.Wrappers.TempAlloc)~System.Void*">
-            <summary>
-            Implicitly converts a <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> instance to a <see langword="void"/>* representing the address of the memory region it wraps.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.Dispose">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.TempAlloc.DisposeSecure">
-            <summary>
-            In addition to performing application-defined tasks associated with freeing, releasing, or resetting unmanaged resources, clears the entire contents of the memory region this <see cref="T:LaquaiLib.Wrappers.TempAlloc"/> wraps (sets all bytes to zero).
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Wrappers.TempDirectory">
             <summary>
             Represents a temporary directory that is automatically deleted when its wrapper object is disposed.
@@ -16675,16 +16412,23 @@
         <member name="T:LaquaiLib.Wrappers.UsingWrapper`1">
             <summary>
             Wraps an instance of an object and, when disposed, executes dispose logic.
-            Allows usage of any object in a <see langword="using"/> block or statement for syntactic sugar or to make sure the desired actions aren't forgotten.
+            Allows for syntactic sugar (as in, allows you to omit a <see langword="try"/>-<see langword="finally"/> combination and "outsource" it into a <see langword="using"/>).
             </summary>
             <typeparam name="T">The type of the object to wrap.</typeparam>
         </member>
         <member name="M:LaquaiLib.Wrappers.UsingWrapper`1.#ctor(`0,System.Action{`0})">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> for the specified <paramref name="instance"/> of <typeparamref name="T"/>, optionally registering the <paramref name="dispose"/> action to the <see cref="E:System.AppDomain.ProcessExit"/> event.
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> for the specified <paramref name="instance"/> of <typeparamref name="T"/>.
             </summary>
             <param name="instance">The instance to wrap.</param>
             <param name="dispose">The <see cref="T:System.Action`1"/> that is executed when the <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> is disposed. It is passed the wrapped instance.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.UsingWrapper`1.#ctor(`0,System.Func{`0,System.Threading.Tasks.ValueTask})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> for the specified <paramref name="instance"/> of <typeparamref name="T"/>
+            </summary>
+            <param name="instance">The instance to wrap.</param>
+            <param name="dispose">The asynchronous <see cref="T:System.Func`2"/> that is executed when the <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> is disposed. It is passed the wrapped instance.</param>
         </member>
         <member name="P:LaquaiLib.Wrappers.UsingWrapper`1.Instance">
             <summary>
@@ -16692,14 +16436,19 @@
             If the instance is disposed, an <see cref="T:System.ObjectDisposedException"/> is thrown.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Wrappers.UsingWrapper`1.Dispose">
+        <member name="M:LaquaiLib.Wrappers.UsingWrapper`1.System#IDisposable#Dispose">
             <summary>
             Executes the registered dispose action on the wrapped instance.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Wrappers.UsingWrapper`1.System#IAsyncDisposable#DisposeAsync">
+            <summary>
+            Executes the registered asynchronous dispose action on the wrapped instance.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Wrappers.UsingWrapper`1.op_Implicit(LaquaiLib.Wrappers.UsingWrapper{`0})~`0">
             <summary>
-            Converts a <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> instance to the wrapped instance. The wrapper instance is lost if not kept track of separately
+            Converts a <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> instance to the wrapped instance. The wrapper instance is lost if not kept track of separately.
             </summary>
             <param name="wrapper">The <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> instance to convert.</param>
         </member>
@@ -16748,81 +16497,6 @@
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.CreateInstance">
-            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner">
-            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
-            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if a possible match was found; false if no more matches are possible.</returns>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2">
-            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EntryPointNotFoundExceptionDataRegex method.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.Instance">
-            <summary>Cached, thread-safe singleton instance.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.#ctor">
-            <summary>Initializes the instance.</summary>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory">
-            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.CreateInstance">
-            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner">
-            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
-            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if a possible match was found; false if no more matches are possible.</returns>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
-            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
-            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
-            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(System.Int32[],System.Int32@,System.Int32@,System.Int32@)">
-            <summary>Pops 2 values from the backtracking stack.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32)">
-            <summary>Pushes 1 value onto the backtracking stack.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
-            <summary>Pushes 2 values onto the backtracking stack.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
-            <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
-        </member>
-    </members>
-</doc>
-ex_1.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner">
