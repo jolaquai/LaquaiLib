@@ -28,36 +28,6 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
             var declaredInlineArrayClassesSource = GenerateExtensionClasses(typeSymbols);
             spc.AddSource($"InlineArraySpanExtensions.g.cs", SourceText.From(declaredInlineArrayClassesSource, Encoding.UTF8));
         });
-
-        // And here again for all other structs not part of our compilation
-        var compilationProvider = context.CompilationProvider;
-        context.RegisterSourceOutput(compilationProvider, static (spc, compilation) =>
-        {
-            var inlineArrayAttributeSymbol = compilation.GetTypeByMetadataName("System.Runtime.CompilerServices.InlineArrayAttribute");
-            List<INamedTypeSymbol> allTypeSymbols = [];
-            foreach (var reference in compilation.References)
-            {
-                if (compilation.GetAssemblyOrModuleSymbol(reference) is not IAssemblySymbol assemblySymbol)
-                {
-                    continue;
-                }
-
-                var visitor = new InlineArrayTypeVisitor(inlineArrayAttributeSymbol);
-                visitor.Visit(assemblySymbol.GlobalNamespace);
-                // Drop mangled names that were probably compiler-generated
-                _ = visitor.Results.RemoveAll(t => t.ToDisplayString().AsSpan().StartsWith(['<', '>'])
-                    || t.DeclaredAccessibility == Accessibility.Public);
-
-                // Add the results to the list of all type symbols
-                allTypeSymbols.AddRange(visitor.Results);
-            }
-
-            if (allTypeSymbols.Count > 0)
-            {
-                var externalExtensionClassesSource = GenerateExtensionClasses(allTypeSymbols);
-                spc.AddSource($"InlineArraySpanExtensions_External.g.cs", SourceText.From(externalExtensionClassesSource, Encoding.UTF8));
-            }
-        });
     }
     private static string GenerateExtensionClasses(List<INamedTypeSymbol> results)
     {
@@ -152,73 +122,5 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
                 }
             }
         }
-    }
-}
-
-internal class InlineArrayTypeVisitor(INamedTypeSymbol inlineArrayAttribute) : SymbolVisitor
-{
-    private readonly INamedTypeSymbol _inlineArrayAttribute = inlineArrayAttribute;
-
-    public readonly List<INamedTypeSymbol> Results = [];
-
-    public override void VisitNamespace(INamespaceSymbol symbol)
-    {
-        foreach (var member in symbol.GetMembers())
-        {
-            member.Accept(this);
-        }
-    }
-    public override void VisitNamedType(INamedTypeSymbol symbol)
-    {
-        if (symbol.DeclaredAccessibility != Accessibility.Public)
-        {
-            // Skip non-public types
-            return;
-        }
-
-        if (symbol.TypeKind == TypeKind.Struct &&
-        symbol.GetAttributes().Any(attr => SymbolEqualityComparer.Default.Equals(attr.AttributeClass, _inlineArrayAttribute)))
-        {
-            // Check if all fields have publicly accessible types
-            if (symbol.GetMembers().OfType<IFieldSymbol>().All(field => IsPubliclyAccessible(field.Type)))
-            {
-                Results.Add(symbol);
-            }
-        }
-
-        foreach (var member in symbol.GetTypeMembers())
-        {
-            member.Accept(this);
-        }
-    }
-
-    private static bool IsPubliclyAccessible(ITypeSymbol type)
-    {
-        return type switch
-        {
-            IArrayTypeSymbol arrayType => IsPubliclyAccessible(arrayType.ElementType),
-            INamedTypeSymbol namedType when namedType.IsTupleType =>
-                namedType.TupleElements.All(element => IsPubliclyAccessible(element.Type)),
-            INamedTypeSymbol namedType when namedType.IsGenericType =>
-                IsPubliclyAccessible(namedType.ConstructedFrom) &&
-                namedType.TypeArguments.All(IsPubliclyAccessible),
-            INamedTypeSymbol namedType => IsNamedTypePublic(namedType),
-            _ => true // Assume other types (like built-in types) are accessible
-        };
-    }
-
-    private static bool IsNamedTypePublic(INamedTypeSymbol namedType)
-    {
-        // Check the type itself and all containing types
-        var current = namedType;
-        while (current is not null)
-        {
-            if (current.DeclaredAccessibility != Accessibility.Public)
-            {
-                return false;
-            }
-            current = current.ContainingType;
-        }
-        return true;
     }
 }
