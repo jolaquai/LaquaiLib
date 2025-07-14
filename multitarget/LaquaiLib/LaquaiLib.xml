@@ -3753,48 +3753,54 @@
             <summary>
             Filters a sequence of values based on a predicate if <paramref name="expr"/> is <see langword="true"/>, otherwise returns exactly the input sequence.
             </summary>
-            <param name="expr">A value0},System.Func{``0,System.Boolean},``0)"/> without throwing exceptions.
+            <param name="expr">A value that determines whether the input sequence should be filtered.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
+            <returns>The filtered input sequence if <paramref name="expr"/> is <see langword="true"/>, otherwise the input sequence as is.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.WhereNot(System.Func{`0,System.Boolean})">
+            <summary>
+            Filters a sequence of values based on a predicate. The predicate's result is inverted.
+            </summary>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
+            <returns>The elements in the input sequence that do not satisfy the predicate.</returns>
+            <remarks>
+            This has essentially no purpose but to avoid the need to create a lambda that inverts the result of the predicate.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Indexed">
+            <summary>
+            Indexes the elements in the input sequence; that is, each element is paired with its number of occurrences in the sequence.
+            </summary>
+            <returns>A sequence of key-value pairs where the key is an element from the input sequence and the value is the number of occurrences of that element in the input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.None">
+            <summary>
+            Determines if a sequence is empty.
+            </summary>
+            <returns><see langword="true"/> if the input sequence is empty, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.None(System.Func{`0,System.Boolean})">
+            <summary>
+            Determines if a sequence contains no elements that satisfy a condition.
+            </summary>
+            <param name="predicate">The condition to check for.</param>
+            <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OnlyOrDefault(`0)">
+            <summary>
+            Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+            This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)"/> without throwing exceptions.
+            </summary>
+            <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
+            <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)">
+            <summary>
+            Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+            This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)"/> without throwing exceptions.
             </summary>
             <param name="predicate">The condition to check for.</param>
             <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
-            <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ElementAtOrDefault(System.Int32,`0)">
-            <summary>
-            Attempts to retrieve the element at the specified index from the input sequence if that index is valid for the sequence, otherwise a default value is returned.
-            </summary>
-            <param name="i">The index of the element to retrieve.</param>
-            <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
-            <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Finds the first index of the specified <paramref name="item"/> in the input sequence.
-            </summary>
-            <param name="item">The item to find the index of.</param>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
-            <returns>The index of the first occurrence of the specified <paramref name="item"/> in the input sequence, or -1 if the item is not found.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IndexOf(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Finds the first starting index of the specified <paramref name="sequence"/> in the input sequence.
-            </summary>
-            <param name="sequence">The sequence to find the index of.</param>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
-            <returns>The index of the first occurrence of the specified <paramref name="sequence"/> in the input sequence, or -1 if the sequence is not found.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Majority(System.Func{`0,System.Boolean})">
-            <summary>
-            Determines whether the majority of a sequence's elements satisfy a condition.
-            </summary>
-            <param name="predicate">The condition to check for.</param>
-            <returns><see langword="true"/> if the majority of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionaryLinear">
-            <summary>
-            Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The first half of the elements are used as keys, the second half as values.
-            </summary>
-            <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</reram>
             <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ElementAtOrDefault(System.Int32,`0)">
@@ -16251,7 +16257,7 @@
             Gets the current memory limit for the application in bytes or <c>0</c> if no limit is set or the value could not be retrieved.
             </summary>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.MAlloc(System.Int32,System.Boolean)">
+        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.UnsafeMAlloc(System.Int32,System.Boolean)">
             <summary>
             Allocates the specified number of bytes of unmanaged memory and returns a <see langword="void"/> pointer to the first byte.
             </summary>
@@ -16259,7 +16265,7 @@
             <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/>.</param>
             <returns>A <see langword="void"/> pointer to the first byte of the allocated memory.</returns>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.CAlloc``1(System.Int32,System.Boolean)">
+        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.UnsafeCAlloc``1(System.Int32,System.Boolean)">
             <summary>
             Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
             </summary>
@@ -16268,7 +16274,16 @@
             <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/>.</param>
             <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the allocated memory.</returns>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.ReMAlloc(System.Void*,System.Int32,System.Int64)">
+        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.CAlloc``1(System.Int32,System.Boolean)">
+            <summary>
+            Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
+            </summary>
+            <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
+            <param name="count">The number of instances to allocate memory for.</param>
+            <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/>.</param>
+            <returns>A <typeparamref name="T"/>-typed managed pointer to the first instance in the allocated memory region.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.UnsafeReMAlloc(System.Void*,System.Int32,System.Int64)">
             <summary>
             Resizes a previously allocated region of memory to the specified number of bytes and returns a <see langword="void"/> pointer to the first byte.
             </summary>
@@ -16277,7 +16292,7 @@
             <param name="oldLength">The old length of the block of memory that is being resized. Depending on the new size, either <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/> or <see cref="M:System.GC.RemoveMemoryPressure(System.Int64)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
             <returns>A <see langword="void"/> pointer to the first byte of the resized memory region.</returns>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.ReCAlloc``1(``0*,System.Int32,System.Int64)">
+        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.UnsafeReCAlloc``1(``0*,System.Int32,System.Int64)">
             <summary>
             Resizes a previously allocated region of memory to the specified number of instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
             </summary>
@@ -16286,6 +16301,16 @@
             <param name="count">The number of instances to allocate memory for.</param>
             <param name="oldCount">The number of instances the block of memory was previously assigned for. Depending on the new size, either <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/> or <see cref="M:System.GC.RemoveMemoryPressure(System.Int64)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
             <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the resized memory region.</returns>
+        </member>
+        <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.ReCAlloc``1(``0@,System.Int32,System.Int64)">
+            <summary>
+            Resizes a previously allocated region of memory to the specified number of instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
+            </summary>
+            <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
+            <param name="ptr">A pointer to the first byte of the previously allocated memory.</param>
+            <param name="count">The number of instances to allocate memory for.</param>
+            <param name="oldCount">The number of instances the block of memory was previously assigned for. Depending on the new size, either <see cref="M:System.GC.AddMemoryPressure(System.Int64)"/> or <see cref="M:System.GC.RemoveMemoryPressure(System.Int64)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
+            <returns>A <typeparamref name="T"/>-typed managed pointer to the first instance in the allocated memory region.</returns>
         </member>
         <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.Free(System.Void*,System.Int64)">
             <summary>

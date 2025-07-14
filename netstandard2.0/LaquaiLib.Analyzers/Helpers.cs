@@ -19,8 +19,8 @@ internal static class Helpers
 
         try
         {
-            var type = Type.GetType(typeSymbol.OriginalDefinition.ToDisplayString());
-            type ??= Type.GetType(typeSymbol.OriginalDefinition.ContainingNamespace.ToDisplayString() + '.' + typeSymbol.Name);
+            var type = Type.GetType(typeSymbol.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+            type ??= Type.GetType(typeSymbol.OriginalDefinition.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) + '.' + typeSymbol.Name);
             return (int)typeof(Unsafe).GetMethod(nameof(Unsafe.SizeOf)).MakeGenericMethod(type).Invoke(null, null);
         }
         catch

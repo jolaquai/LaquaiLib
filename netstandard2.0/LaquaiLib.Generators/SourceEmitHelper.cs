@@ -6,9 +6,9 @@ namespace LaquaiLib.Generators;
 
 #pragma warning disable IDE0058 // Expression value is never used
 
-internal static class SourceCodeEmitterHelper
+internal static class SourceEmitHelper
 {
-    private static readonly Assembly _ownAsm = typeof(SourceCodeEmitterHelper).Assembly;
+    private static readonly Assembly _ownAsm = typeof(SourceEmitHelper).Assembly;
     private static readonly AssemblyName _ownAsmName = _ownAsm.GetName();
 
     public const string GeneratedFileHeader = """

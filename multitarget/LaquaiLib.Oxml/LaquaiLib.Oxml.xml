@@ -155,5 +155,16 @@
         <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.InsertAt``1(``0,System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
             <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.<>E__3`1.InsertAt(System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})"/>
         </member>
+        <member name="P:LaquaiLib.Oxml.Extensions.ParagraphExtensions.<>E__0.Style">
+            <summary>
+            Gets or sets the style of the <see cref="T:DocumentFormat.OpenXml.Wordprocessing.Paragraph"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.ParagraphExtensions.get_Style(DocumentFormat.OpenXml.Wordprocessing.Paragraph)">
+            <inheritdoc cref="P:LaquaiLib.Oxml.Extensions.ParagraphExtensions.<>E__0.Style"/>
+        </member>
+        <member name="M:LaquaiLib.Oxml.Extensions.ParagraphExtensions.set_Style(DocumentFormat.OpenXml.Wordprocessing.Paragraph,System.String)">
+            <inheritdoc cref="P:LaquaiLib.Oxml.Extensions.ParagraphExtensions.<>E__0.Style"/>
+        </member>
     </members>
 </doc>

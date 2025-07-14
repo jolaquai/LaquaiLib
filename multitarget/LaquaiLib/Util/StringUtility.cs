@@ -14,7 +14,7 @@ public static class StringUtility
     /// <returns>A reference to the allocated string.</returns>
     internal static unsafe string AllocString(int length)
     {
-        var buffer = MemoryManager.CAlloc<char>(length + 1);
+        var buffer = MemoryManager.UnsafeCAlloc<char>(length + 1);
         buffer[length] = '\0';
         return new string(buffer, 0, length);
     }

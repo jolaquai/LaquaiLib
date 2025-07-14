@@ -45,6 +45,9 @@ internal static class IndentedTextWriterExtensions
                 }
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IDisposable Region(string name) => new RegionDisposable(itw, name);
     }
 
     private readonly struct ScopeDisposable : IDisposable
@@ -60,6 +63,23 @@ internal static class IndentedTextWriterExtensions
         {
             _itw.Indent--;
             _itw.WriteLine('}');
+        }
+    }
+    private readonly struct RegionDisposable : IDisposable
+    {
+        private readonly IndentedTextWriter _itw;
+        private readonly string _regionName;
+
+        public RegionDisposable(IndentedTextWriter itw, string regionName)
+        {
+            _itw = itw;
+            _regionName = regionName;
+
+            _itw.WriteLine($"#region {regionName}");
+        }
+        public readonly void Dispose()
+        {
+            _itw.WriteLine($"#endregion {_regionName}");
         }
     }
 }

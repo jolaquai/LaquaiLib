@@ -68,7 +68,7 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
     {
         var symbolName = methodSymbol.Name;
         // Check if this is a call to ICloneable.Clone()
-        var isICloneable = methodSymbol.ContainingType.AllInterfaces.Any(static i => i.ToDisplayString() == "System.ICloneable");
+        var isICloneable = methodSymbol.ContainingType.AllInterfaces.Any(static i => i.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == "System.ICloneable");
         if (symbolName is "Clone" && isICloneable)
         {
             targetName = "System.ICloneable.Clone";
@@ -82,7 +82,7 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
         }
 
         // Also report for Open XML Clone or CloneNode methods (regardless of arguments to the latter since casting either way is unnecessary)
-        var isOpenXmlElement = baseSymbol.OriginalDefinition.ContainingType.ToDisplayString() == "DocumentFormat.OpenXml.OpenXmlElement";
+        var isOpenXmlElement = baseSymbol.OriginalDefinition.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == "DocumentFormat.OpenXml.OpenXmlElement";
         if (symbolName is "Clone" or "CloneNode" && isOpenXmlElement)
         {
             targetName = "DocumentFormat.OpenXml.OpenXmlElement." + symbolName;

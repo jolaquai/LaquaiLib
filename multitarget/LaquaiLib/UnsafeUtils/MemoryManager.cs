@@ -29,7 +29,7 @@ public static unsafe class MemoryManager
     /// <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="GC.AddMemoryPressure(long)"/>.</param>
     /// <returns>A <see langword="void"/> pointer to the first byte of the allocated memory.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void* MAlloc(int bytes, bool pressure = false)
+    public static void* UnsafeMAlloc(int bytes, bool pressure = false)
     {
         if (pressure)
         {
@@ -45,7 +45,7 @@ public static unsafe class MemoryManager
     /// <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="GC.AddMemoryPressure(long)"/>.</param>
     /// <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the allocated memory.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T* CAlloc<T>(int count, bool pressure = false) where T : unmanaged
+    public static T* UnsafeCAlloc<T>(int count, bool pressure = false) where T : unmanaged
     {
         var bytes = count * sizeof(T);
         if (pressure)
@@ -54,6 +54,15 @@ public static unsafe class MemoryManager
         }
         return (T*)Marshal.AllocHGlobal(bytes);
     }
+    /// <summary>
+    /// Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
+    /// <param name="count">The number of instances to allocate memory for.</param>
+    /// <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="GC.AddMemoryPressure(long)"/>.</param>
+    /// <returns>A <typeparamref name="T"/>-typed managed pointer to the first instance in the allocated memory region.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static ref T CAlloc<T>(int count, bool pressure = false) where T : unmanaged => ref Unsafe.AsRef<T>(UnsafeCAlloc<T>(count, pressure));
 
     /// <summary>
     /// Resizes a previously allocated region of memory to the specified number of bytes and returns a <see langword="void"/> pointer to the first byte.
@@ -62,7 +71,7 @@ public static unsafe class MemoryManager
     /// <param name="bytes">The new size of the memory region in bytes.</param>
     /// <param name="oldLength">The old length of the block of memory that is being resized. Depending on the new size, either <see cref="GC.AddMemoryPressure(long)"/> or <see cref="GC.RemoveMemoryPressure(long)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
     /// <returns>A <see langword="void"/> pointer to the first byte of the resized memory region.</returns>
-    public static void* ReMAlloc(void* ptr, int bytes, long oldLength = 0)
+    public static void* UnsafeReMAlloc(void* ptr, int bytes, long oldLength = 0)
     {
         if (oldLength != 0)
         {
@@ -85,7 +94,7 @@ public static unsafe class MemoryManager
     /// <param name="count">The number of instances to allocate memory for.</param>
     /// <param name="oldCount">The number of instances the block of memory was previously assigned for. Depending on the new size, either <see cref="GC.AddMemoryPressure(long)"/> or <see cref="GC.RemoveMemoryPressure(long)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
     /// <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the resized memory region.</returns>
-    public static T* ReCAlloc<T>(T* ptr, int count, long oldCount = 0) where T : unmanaged
+    public static T* UnsafeReCAlloc<T>(T* ptr, int count, long oldCount = 0) where T : unmanaged
     {
         var bytes = count * sizeof(T);
         if (oldCount != 0)
@@ -101,6 +110,32 @@ public static unsafe class MemoryManager
             }
         }
         return (T*)Marshal.ReAllocHGlobal((nint)ptr, bytes);
+    }
+    /// <summary>
+    /// Resizes a previously allocated region of memory to the specified number of instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
+    /// <param name="ptr">A pointer to the first byte of the previously allocated memory.</param>
+    /// <param name="count">The number of instances to allocate memory for.</param>
+    /// <param name="oldCount">The number of instances the block of memory was previously assigned for. Depending on the new size, either <see cref="GC.AddMemoryPressure(long)"/> or <see cref="GC.RemoveMemoryPressure(long)"/> is called using this value. If omitted or <c>== 0</c>, no action is taken.</param>
+    /// <returns>A <typeparamref name="T"/>-typed managed pointer to the first instance in the allocated memory region.</returns>
+    public static ref T ReCAlloc<T>(ref T ptr, int count, long oldCount = 0) where T : unmanaged
+    {
+        var bytes = count * sizeof(T);
+        if (oldCount != 0)
+        {
+            var oldBytes = oldCount * sizeof(T);
+            if (bytes > oldBytes)
+            {
+                GC.AddMemoryPressure(bytes - oldBytes);
+            }
+            else if (bytes < oldBytes)
+            {
+                GC.RemoveMemoryPressure(oldBytes - bytes);
+            }
+        }
+        var pointer = (T*)Unsafe.AsPointer(ref ptr);
+        return ref Unsafe.AsRef<T>((void*)Marshal.ReAllocHGlobal((nint)pointer, bytes));
     }
 
     /// <summary>

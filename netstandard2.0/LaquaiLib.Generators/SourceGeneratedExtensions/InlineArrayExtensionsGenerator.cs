@@ -35,7 +35,7 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
         using var sw = new StringWriter(sb);
         using var writer = new IndentedTextWriter(sw);
 
-        writer.WriteLine(SourceCodeEmitterHelper.GeneratedFileHeader);
+        writer.WriteLine(SourceEmitHelper.GeneratedFileHeader);
 
         for (var i = 0; i < results.Count; i++)
         {
@@ -49,7 +49,7 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
             var fieldName = field.Name;
 
             // Get the AttributeData for the [InlineArray] attribute on this symbol, we know it's there
-            var inlineArrayAttribute = type.GetAttributes().First(attr => attr.AttributeClass.ToDisplayString() == "System.Runtime.CompilerServices.InlineArrayAttribute");
+            var inlineArrayAttribute = type.GetAttributes().First(attr => attr.AttributeClass.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == "System.Runtime.CompilerServices.InlineArrayAttribute");
             // ...and get its constructor argument
             var length = (int)inlineArrayAttribute.ConstructorArguments[0].Value;
             WriteExtensionsForClass(writer, type, typeName, typeNameNullable, field, fieldTypeName, fieldName, length);
@@ -63,12 +63,12 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
 
     private static void WriteExtensionsForClass(IndentedTextWriter writer, INamedTypeSymbol type, string typeName, string typeNameNullable, IFieldSymbol field, string fieldTypeName, string fieldName, int length)
     {
-        writer.WriteLine($"namespace {type.ContainingNamespace.ToDisplayString()}");
+        writer.WriteLine($"namespace {type.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}");
         using (writer.Scope)
         {
-            writer.WriteLines(SourceCodeEmitterHelper.GeneratedCodeAttribute(typeof(InlineArrayExtensionsGenerator)));
+            writer.WriteLines(SourceEmitHelper.GeneratedCodeAttribute(typeof(InlineArrayExtensionsGenerator)));
 
-            writer.WriteLines(SourceCodeEmitterHelper.Summary($"Provides <c>AsSpan</c> extension methods for <see cref=\"{typeName}\"/>."));
+            writer.WriteLines(SourceEmitHelper.Summary($"Provides <c>AsSpan</c> extension methods for <see cref=\"{typeName}\"/>."));
             writer.WriteLine($"public static class {type.Name}Extensions");
             using (writer.Scope)
             {
@@ -81,29 +81,29 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
                 var typeNameForDoc = typeName.Replace('<', '{').Replace('>', '}');
 
                 // Start with the nullable struct overloads
-                writer.WriteLines(SourceCodeEmitterHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified nullable <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/> or <see langword=\"default\"/>(<see cref=\"global::System.Span{{T}}\"/>) if it is <see langword=\"null\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified."));
-                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
+                writer.WriteLines(SourceEmitHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified nullable <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/> or <see langword=\"default\"/>(<see cref=\"global::System.Span{{T}}\"/>) if it is <see langword=\"null\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified."));
+                writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"public static System.Span<{useFieldTypeName}> AsSpan{typeParams}(this {typeNameNullable} instance) => instance.HasValue ? AsSpan(instance.Value, 0, {length}) : default;");
 
-                writer.WriteLines(SourceCodeEmitterHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over a portion of the specified nullable <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>, or <see langword=\"default\"/>(<see cref=\"global::System.Span{{T}}\"/>) if it is <see langword=\"null\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at.")]));
-                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
+                writer.WriteLines(SourceEmitHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over a portion of the specified nullable <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>, or <see langword=\"default\"/>(<see cref=\"global::System.Span{{T}}\"/>) if it is <see langword=\"null\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at.")]));
+                writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"public static System.Span<{useFieldTypeName}> AsSpan{typeParams}(this {typeNameNullable} instance, int start) => instance.HasValue ? AsSpan(instance.Value, start, {length} - start) : default;");
 
-                writer.WriteLines(SourceCodeEmitterHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over a portion of the specified nullable <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>, or <see langword=\"default\"/>(<see cref=\"global::System.Span{{T}}\"/>) if it is <see langword=\"null\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at."), ("length", "The length of the span.")]));
-                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
+                writer.WriteLines(SourceEmitHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over a portion of the specified nullable <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>, or <see langword=\"default\"/>(<see cref=\"global::System.Span{{T}}\"/>) if it is <see langword=\"null\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at."), ("length", "The length of the span.")]));
+                writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"public static System.Span<{useFieldTypeName}> AsSpan{typeParams}(this {typeNameNullable} instance, int start, int length) => instance.HasValue ? AsSpan(instance.Value, start, length) : default;");
 
                 // For reference types, we only use the non-annotated version
-                writer.WriteLines(SourceCodeEmitterHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified."));
-                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
+                writer.WriteLines(SourceEmitHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified."));
+                writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"public static System.Span<{useFieldTypeName}> AsSpan{typeParams}(this {typeName} instance) => AsSpan(instance, 0, {length});");
 
-                writer.WriteLines(SourceCodeEmitterHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at.")]));
-                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
+                writer.WriteLines(SourceEmitHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at.")]));
+                writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"public static System.Span<{useFieldTypeName}> AsSpan{typeParams}(this {typeName} instance, int start) => AsSpan(instance, start, {length} - start);");
 
-                writer.WriteLines(SourceCodeEmitterHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at."), ("length", "The length of the span.")]));
-                writer.WriteLine(SourceCodeEmitterHelper.MethodImpl_AggressiveInlining);
+                writer.WriteLines(SourceEmitHelper.Summary($"Gets a <see cref=\"global::System.Span{{T}}\"/> over the entirety of the specified <see cref=\"{typeNameForDoc}\"/> <paramref name=\"instance\"/>, beginning at <paramref name=\"start\"/>.", "The <see cref=\"global::System.Span{T}\"/> as specified.", [("start", "The index to start the span at."), ("length", "The length of the span.")]));
+                writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"public static System.Span<{useFieldTypeName}> AsSpan{typeParams}(this {typeName} instance, int start, int length)");
                 using (writer.Scope)
                 {
