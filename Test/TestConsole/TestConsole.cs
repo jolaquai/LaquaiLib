@@ -1,8 +1,4 @@
-﻿using System.IO;
-
-using LaquaiLib.Analyzers.Shared.Attributes;
-
-namespace TestConsole;
+﻿namespace TestConsole;
 
 /// <summary>
 /// [Entry point] Represents a test console application for <see cref="LaquaiLib"/>.
@@ -26,6 +22,15 @@ public static partial class TestConsole
         => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
+        for (var i = 0; i < 10; i++)
+        {
+            Console.WriteLine($"Hello World {i}");
+        }
+        for (var i = 0; i < 10; i++)
+        {
+            Console.WriteLine($"Hello World {i}");
+            await Task.Delay(1000);
+        }
     }
 }
 

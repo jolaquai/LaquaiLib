@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LaquaiLib.Analyzers": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "E:\\PROGRAMMING\\Projects\\C#\\LaquaiLib\\Test\\TestConsole\\TestConsole.csproj"
+    }
+  }
+}

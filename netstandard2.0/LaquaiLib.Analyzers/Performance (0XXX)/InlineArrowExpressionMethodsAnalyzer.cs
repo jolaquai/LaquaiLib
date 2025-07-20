@@ -1,5 +1,4 @@
-﻿
-namespace LaquaiLib.Analyzers.Performance__0XXX_;
+﻿namespace LaquaiLib.Analyzers.Performance__0XXX_;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
