@@ -26,7 +26,7 @@ public static partial class IEnumerableExtensions
                 span = ros;
                 return true;
             }
-            if (source is ReadOnlySpanProvider<T> rosProvider)
+            if (source is IReadOnlySpanProvider<T> rosProvider)
             {
                 span = rosProvider.ReadOnlySpan;
                 return true;
@@ -68,7 +68,7 @@ public static partial class IEnumerableExtensions
         /// </summary>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
         /// <returns>A <see cref="ValueTuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
-        public static (IEnumerable<T> True, IEnumerable<T> False) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        public (IEnumerable<T> True, IEnumerable<T> False) Split(Func<T, bool> predicate)
         {
             var lookup = source.ToLookup(predicate);
             return (lookup[true], lookup[false]);

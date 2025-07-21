@@ -1,5 +1,5 @@
-﻿using LaquaiLib.Analyzers.Fixes.Refactorings;
-using LaquaiLib.Analyzers.Refactorings__4XXX_;
+﻿using LaquaiLib.Analyzers.Fixes.Performance;
+using LaquaiLib.Analyzers.Performance__0XXX_;
 
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
@@ -12,104 +12,57 @@ internal static class Program
 {
     public static async Task Main(string[] args)
     {
-        for (var i = 0; i < 10; i++)
-        {
-        }
-
-        IEnumerable<int> ts = [2, 3, 4, 5, 6];
-        foreach (var t in ts)
-        {
-        }
-
-        for (var i = 0; i < 10; i++)
-        {
-            await Task.Delay(100);
-        }
-
-        foreach (var t in ts)
-        {
-            await Task.Delay(100);
-        }
     }
 }
+
+public class TestClass2;
 
 public class TestClass
 {
     [Fact]
-    public async Task TestMethod()
+    public async Task TestAnalyzer()
     {
-        var fixTest = new CSharpCodeFixTest<ParallelizeLoopAnalyzer, ParallelizeLoopAnalyzerFix, DefaultVerifier>
+        var analyzerTest = new CSharpAnalyzerTest<SealClassAnalyzer, DefaultVerifier>
         {
             ExpectedDiagnostics =
             {
-                new DiagnosticResult(ParallelizeLoopAnalyzer.Descriptor)
-                    .WithArguments("Parallel.For")
-                    .WithLocation(7, 9),
-                new DiagnosticResult(ParallelizeLoopAnalyzer.Descriptor)
-                    .WithArguments("Parallel.ForEach")
-                    .WithLocation(12, 9),
-                new DiagnosticResult(ParallelizeLoopAnalyzer.Descriptor)
-                    .WithArguments("Parallel.ForAsync")
-                    .WithLocation(16, 9),
-                new DiagnosticResult(ParallelizeLoopAnalyzer.Descriptor)
-                    .WithArguments("Parallel.ForEachAsync")
-                    .WithLocation(21, 9),
+                new DiagnosticResult(SealClassAnalyzer.Descriptor)
+                    .WithLocation(3, 8),
+                new DiagnosticResult(SealClassAnalyzer.Descriptor)
+                    .WithLocation(4, 8),
             },
             TestCode = """
-            using System.Threading.Tasks;
-
-            public static class TestClass
+            public class A;
+            public class B : A;
+            public class C : B;
+            public class D;
+            """,
+        };
+        await analyzerTest.RunAsync(TestContext.Current.CancellationToken);
+    }
+    [Fact]
+    public async Task TestFix()
+    {
+        var fixTest = new CSharpCodeFixTest<SealClassAnalyzer, SealClassAnalyzerFix, DefaultVerifier>
+        {
+            ExpectedDiagnostics =
             {
-                public static async Task TestMethod()
-                {
-                    for (var i = 0; i < 10; i++)
-                    {
-                    }
-
-                    int[] ts = [2, 3, 4, 5, 6];
-                    foreach (var t in ts)
-                    {
-                    }
-
-                    for (var i = 0; i < 10; i++)
-                    {
-                        await Task.Delay(100);
-                    }
-
-                    foreach (var t in ts)
-                    {
-                        await Task.Delay(100);
-                    }
-                }
-            }
+                new DiagnosticResult(SealClassAnalyzer.Descriptor)
+                    .WithLocation(3, 8),
+                new DiagnosticResult(SealClassAnalyzer.Descriptor)
+                    .WithLocation(4, 8),
+            },
+            TestCode = """
+            public class A;
+            public class B : A;
+            public class C : B;
+            public class D;
             """,
             FixedCode = """
-            using System.Threading.Tasks;
-
-            public static class TestClass
-            {
-                public static async Task TestMethod()
-                {
-                    Parallel.For(0, 10, i =>
-                    {
-                    });
-
-                    int[] ts = [2, 3, 4, 5, 6];
-                    Parallel.ForEach(ts, t =>
-                    {
-                    });
-
-                    await Parallel.ForAsync(0, 10, async i =>
-                    {
-                        await Task.Delay(100);
-                    });
-
-                    await Parallel.ForEachAsync(ts, async t =>
-                    {
-                        await Task.Delay(100);
-                    });
-                }
-            }
+            public class A;
+            public class B : A;
+            public sealed class C : B;
+            public sealed class D;
             """,
         };
         await fixTest.RunAsync(TestContext.Current.CancellationToken);

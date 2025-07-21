@@ -4,8 +4,7 @@ internal static class Helpers
 {
     extension<T>(T expressionSyntax) where T : SyntaxNode
     {
-        public T Formatted => expressionSyntax.WithoutTrivia()
-            .WithAdditionalAnnotations(Simplifier.Annotation, Simplifier.AddImportsAnnotation, Formatter.Annotation);
+        public T Formatted => expressionSyntax.WithAdditionalAnnotations(Simplifier.Annotation, Simplifier.AddImportsAnnotation, Formatter.Annotation);
     }
     extension(CompilationUnitSyntax compilationUnitSyntax)
     {

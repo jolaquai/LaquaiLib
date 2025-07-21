@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 
-using LaquaiLib.Analyzers.Shared;
-
 namespace LaquaiLib.Generators;
 
 #pragma warning disable IDE0058 // Expression value is never used
@@ -23,7 +21,7 @@ internal static class SourceEmitHelper
     public const string MethodImpl_AggressiveInlining = "[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]";
 
     public static string GeneratedCodeAttribute(Type type) => $"""
-        [global::System.CodeDom.Compiler.GeneratedCode("{type.GetFriendlyName()}", "{_ownAsmName.Version}")]
+        [global::System.CodeDom.Compiler.GeneratedCode("{type.FullName}", "{_ownAsmName.Version}")]
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         """;
     public static string Summary(string summary, string returnDesc = null, ReadOnlySpan<(string, string)> parameters = default, ReadOnlySpan<(string, string)> typeParameters = default, ReadOnlySpan<(string, string)> exceptions = default, ReadOnlySpan<string> remarksParas = default)
