@@ -26,6 +26,12 @@ public static partial class IEnumerableExtensions
                 span = ros;
                 return true;
             }
+            if (source is ReadOnlySpanProvider<T> rosProvider)
+            {
+                span = rosProvider.ReadOnlySpan;
+                return true;
+            }
+
             span = default;
             return false;
         }
