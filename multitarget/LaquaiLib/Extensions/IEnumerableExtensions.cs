@@ -68,18 +68,10 @@ public static partial class IEnumerableExtensions
         /// </summary>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
         /// <returns>A <see cref="ValueTuple{T1, T2}"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
-        public (List<T> True, List<T> False) Split(Func<T, bool> predicate)
+        public static (IEnumerable<T> True, IEnumerable<T> False) Split<T>(this IEnumerable<T> source, Func<T, bool> predicate)
         {
-            ArgumentNullException.ThrowIfNull(source);
-            ArgumentNullException.ThrowIfNull(predicate);
-
-            var prealloc = source.TryGetNonEnumeratedCount(out var count) ? count : 2;
-
-            var trueList = new List<T>(prealloc);
-            var falseList = new List<T>(prealloc);
-            trueList.AddRange(source.Where(predicate));
-            falseList.AddRange(source.Where(i => !predicate(i)));
-            return (trueList, falseList);
+            var lookup = source.ToLookup(predicate);
+            return (lookup[true], lookup[false]);
         }
         /// <summary>
         /// Halves the input sequence.
