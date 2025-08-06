@@ -7,23 +7,13 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static partial class ProcessExtensions
 {
-    private static partial class Interop
-    {
-        [LibraryImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static partial bool SetProcessAffinityMask(nint hProcess, nint dwProcessAffinityMask);
-        [LibraryImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static partial bool GetProcessAffinityMask(nint hProcess, out nint lpProcessAffinityMask, out nint lpSystemAffinityMask);
-    }
-
     extension(Process process)
     {
         // lotsa funny bit shifting in this one
 
         public ulong GetAffinity()
         {
-            if (!Interop.GetProcessAffinityMask(process.Handle, out var processMask, out _))
+            if (!Interop.Kernel32.GetProcessAffinityMask(process.Handle, out var processMask, out _))
             {
                 var lastError = Marshal.GetLastWin32Error();
                 throw new InvalidOperationException("Could not retrieve the process affinity mask.", new System.ComponentModel.Win32Exception(lastError));
@@ -56,7 +46,7 @@ public static partial class ProcessExtensions
             {
                 throw new InvalidOperationException("The specified process has exited.");
             }
-            return Interop.SetProcessAffinityMask(process.Handle, (nint)mask);
+            return Interop.Kernel32.SetProcessAffinityMask(process.Handle, (nint)mask);
         }
         /// <summary>
         /// Sets the processor affinity mask for the specified <see cref="Process"/>, excluding the specified processors.

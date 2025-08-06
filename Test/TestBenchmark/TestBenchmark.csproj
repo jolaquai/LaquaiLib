@@ -9,6 +9,7 @@
         <Optimize>True</Optimize>
 
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <EnforceExtendedAnalyzerRules>False</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
 
     <ItemGroup>

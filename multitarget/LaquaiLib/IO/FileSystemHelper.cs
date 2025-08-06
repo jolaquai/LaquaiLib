@@ -671,27 +671,6 @@ public static partial class FileSystemHelper
 
     private static partial class LockedFileInterop
     {
-        [LibraryImport("kernel32.dll", SetLastError = true)]
-        private static partial nint CreateFile([MarshalAs(UnmanagedType.LPStr)] string lpFileName, uint dwDesiredAccess, uint dwShareMode,
-        nint lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, nint hTemplateFile);
-
-        [LibraryImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool BackupRead(nint hFile, Span<byte> lpBuffer, uint nNumberOfBytesToRead, ref uint lpNumberOfBytesRead, [MarshalAs(UnmanagedType.Bool)] bool bAbort, [MarshalAs(UnmanagedType.Bool)] bool bProcessSecurity, ref nint lpContext);
-
-        [LibraryImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool CloseHandle(nint hObject);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct WIN32_STREAM_ID
-        {
-            public uint dwStreamId;
-            public uint dwStreamAttributes;
-            public long Size;
-            public uint dwStreamNameSize;
-        }
-
         public static bool CopyLockedFile(string sourceFile, string destFile)
         {
             const uint GENERIC_READ = 0x80000000;
@@ -702,7 +681,7 @@ public static partial class FileSystemHelper
             const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
             const uint BACKUP_DATA = 1;
 
-            var handle = CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
+            var handle = Interop.Kernel32.CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
 
             if (handle == new nint(-1))
             {
@@ -720,7 +699,7 @@ public static partial class FileSystemHelper
                 var inDataStream = false;
                 long remainingDataSize = 0;
 
-                while (BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
+                while (Interop.Kernel32.BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
                 {
                     if (bytesRead == 0)
                     {
@@ -800,12 +779,12 @@ public static partial class FileSystemHelper
                 }
 
                 // Final read with bAbort = true
-                _ = BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
+                _ = Interop.Kernel32.BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
                 return true;
             }
             finally
             {
-                _ = CloseHandle(handle);
+                _ = Interop.Kernel32.CloseHandle(handle);
             }
         }
     }

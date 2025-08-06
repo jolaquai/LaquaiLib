@@ -1,54 +1,10 @@
 ﻿#warning TODO: Documentation is currently largely inheritdoc'd from System.Linq.Enumerable - Rewrite that
 
-namespace LaquaiLib.Extensions.MemoryExtensions;
+namespace LaquaiLib.Extensions.Memory;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-internal static class MemoryHelpers
-{
-    /*
-    [Average methods]
-
-    /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource})" />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TSource Max()
-    {
-        for (var i = 0; i < source.Length; i++)
-        {
-        }
-    }
-
-    /// <inheritdoc cref="Enumerable.Max{TSource}(IEnumerable{TSource}, IComparer{TSource})" />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TSource Max(IComparer<TSource> comparer)
-    {
-        for (var i = 0; i < source.Length; i++)
-        {
-        }
-    }
-
-
-    /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource})" />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TSource Min()
-    {
-        for (var i = 0; i < source.Length; i++)
-        {
-        }
-    }
-
-    /// <inheritdoc cref="Enumerable.Min{TSource}(IEnumerable{TSource}, IComparer{TSource})" />
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public TSource Min(IComparer<TSource> comparer)
-    {
-        for (var i = 0; i < source.Length; i++)
-        {
-        }
-    }
-    */
-}
-
-internal class SpanLookup<TKey, TElement>(int capacity, IEqualityComparer<TKey> equalityComparer) : ILookup<TKey, TElement>
+internal sealed class SpanLookup<TKey, TElement>(int capacity, IEqualityComparer<TKey> equalityComparer) : ILookup<TKey, TElement>
 {
     internal readonly Dictionary<TKey, List<TElement>> _lookup = new Dictionary<TKey, List<TElement>>(capacity, equalityComparer);
     public IEnumerator<IGrouping<TKey, TElement>> GetEnumerator()
@@ -76,7 +32,7 @@ internal class SpanLookup<TKey, TElement>(int capacity, IEqualityComparer<TKey> 
 
 // I'd have loved to make this useless thing a ref struct, but since we're only going to be handed around as IGrouping<TKey, TElement>, I can't
 // And not even a normal struct makes sense since the interface cast will box us anyway
-internal class Grouping<TKey, TElement>(TKey key, List<TElement> elements) : IGrouping<TKey, TElement>
+internal sealed class Grouping<TKey, TElement>(TKey key, List<TElement> elements) : IGrouping<TKey, TElement>
 {
     public TKey Key
     {

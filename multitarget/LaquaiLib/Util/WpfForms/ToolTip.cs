@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace LaquaiLib.Util.WpfForms;
+﻿namespace LaquaiLib.Util.WpfForms;
 
 /// <summary>
 /// Provides tooltip functionality to non-WinForms or WPF applications through P/Invoke, even without a window to host it.
@@ -14,17 +12,12 @@ public static partial class ToolTip
 
         private static int? screenDpi;
         internal static int ScreenDpi { get; } = screenDpi ??= GetScreenDpi();
-        [LibraryImport("user32.dll")]
-        private static partial nint GetDC(nint hWnd);
-        [LibraryImport("gdi32.dll")]
-        private static partial int GetDeviceCaps(nint hdc, int nIndex);
-        [LibraryImport("user32.dll")]
-        private static partial int ReleaseDC(nint hWnd, nint hDC);
+
         private static int GetScreenDpi()
         {
-            var hdc = GetDC(nint.Zero);
-            var dpi = GetDeviceCaps(hdc, 88);
-            _ = ReleaseDC(nint.Zero, hdc);
+            var hdc = User32.GetDC(nint.Zero);
+            var dpi = Gdi32.GetDeviceCaps(hdc, 88);
+            _ = User32.ReleaseDC(nint.Zero, hdc);
             return dpi;
         }
 
@@ -37,70 +30,18 @@ public static partial class ToolTip
         internal const uint TTM_TRACKACTIVATE = WM_USER + 17;
         internal const uint TTM_UPDATETIPTEXT = WM_USER + 57; // TTM_UPDATETIPTEXTW
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct TOOLINFO
-        {
-            public int cbSize;
-            public int uFlags;
-            public nint hwnd;
-            public nint hinst;
-            public nint lpszText;
-            public RECT rect;
-            public nint lParam;
-            public nint lpReserved;
-        }
-        [StructLayout(LayoutKind.Sequential)]
-        public struct POINT
-        {
-            public int x, y;
-        }
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
-        {
-            public int left, top, right, bottom;
-            public readonly bool Contains(POINT point) => point.x >= left && point.x <= right && point.y >= top && point.y <= bottom;
-        }
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        internal struct MONITORINFO
-        {
-            public int cbSize;
-            public RECT rcMonitor;
-            public RECT rcWork;
-            public uint dwFlags;
-        }
-
-        [LibraryImport("user32.dll")]
-        [return: MaybeNull]
-        internal static partial nint GetForegroundWindow();
-        [LibraryImport("user32.dll")]
-        private static partial nint MonitorFromPoint(POINT pt, uint dwFlags);
-
-        [LibraryImport("user32.dll", EntryPoint = "GetMonitorInfoW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool GetMonitorInfo(nint hMonitor, ref MONITORINFO lpmi);
-
-        [LibraryImport("user32.dll", EntryPoint = "CreateWindowExA", StringMarshalling = StringMarshalling.Utf8)]
-        internal static partial nint CreateWindowEx(int exstyle, string classname, string windowname, uint style, int x, int y, int width, int height, nint hwndParent, nint hMenu, nint hInstance, nint lpParam);
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static partial bool DestroyWindow(nint hWnd);
-        [LibraryImport("user32.dll", EntryPoint = "SendMessageA")]
-        internal static partial nint SendMessage(nint hWnd, uint Msg, nint wParam, nint lParam);
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static partial bool GetCursorPos(out POINT lpPoint);
         internal static MONITORINFO GetMonitorInfoFromCursor()
         {
-            _ = GetCursorPos(out var cursorPos);
+            _ = User32.GetCursorPos(out var cursorPos);
 
-            var hMonitor = MonitorFromPoint(cursorPos, 2);
+            var hMonitor = User32.MonitorFromPoint(cursorPos, 2);
 
             var monitorInfo = default(MONITORINFO) with
             {
                 cbSize = Unsafe.SizeOf<MONITORINFO>()
             };
 
-            if (GetMonitorInfo(hMonitor, ref monitorInfo))
+            if (User32.GetMonitorInfo(hMonitor, ref monitorInfo))
             {
                 return monitorInfo;
             }
@@ -110,32 +51,8 @@ public static partial class ToolTip
             }
         }
 
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static partial bool GetWindowRect(nint hWnd, out RECT lpRect);
-
         internal static readonly Version _win8 = new Version(6, 2);
         internal static readonly bool _win8OrGreater = Environment.OSVersion.Version >= _win8;
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MSG
-        {
-            public nint hwnd;
-            public uint message;
-            public nint wParam;
-            public nint lParam;
-            public uint time;
-            public POINT pt;
-            public uint lPrivate;
-        }
-        [LibraryImport("user32.dll", EntryPoint = "GetMessageW")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool GetMessage(out MSG lpMsg, nint hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
-        [LibraryImport("user32.dll")]
-        private static partial nint DispatchMessage(ref MSG lpmsg);
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool TranslateMessage(ref MSG lpMsg);
 
         private static volatile bool _runningMessageLoop;
         internal static void RunMessageLoop(nint hWnd)
@@ -146,11 +63,11 @@ public static partial class ToolTip
             }
             _runningMessageLoop = true;
             {
-                var msg = default(MSG);
-                while (GetMessage(out msg, hWnd, 0, 0))
+                var msg = default(TOOLTIPMSG);
+                while (User32.GetMessage(out msg, hWnd, 0, 0))
                 {
-                    _ = TranslateMessage(ref msg);
-                    _ = DispatchMessage(ref msg);
+                    _ = User32.TranslateMessage(ref msg);
+                    _ = User32.DispatchMessage(ref msg);
                 }
             }
             _runningMessageLoop = false;
@@ -219,7 +136,7 @@ public static partial class ToolTip
         }
 
         var monitorinfo = Interop.GetMonitorInfoFromCursor();
-        _ = Interop.GetCursorPos(out var cursorPos);
+        _ = User32.GetCursorPos(out var cursorPos);
         var textRect = Interop._win8OrGreater ? monitorinfo.rcWork : monitorinfo.rcMonitor;
 
         int xActual;
@@ -227,12 +144,12 @@ public static partial class ToolTip
         switch (displayMode)
         {
             case ToolTipDisplay.Cursor:
-                xActual = cursorPos.x;
-                yActual = cursorPos.y;
+                xActual = cursorPos.X;
+                yActual = cursorPos.Y;
                 break;
             case ToolTipDisplay.Center:
-                var width = textRect.right - textRect.left;
-                var height = textRect.bottom - textRect.top;
+                var width = textRect.Right - textRect.Left;
+                var height = textRect.Bottom - textRect.Top;
 
                 xActual = width / 2;
                 yActual = height / 2;
@@ -251,7 +168,7 @@ public static partial class ToolTip
             yActual += y.Value;
         }
 
-        var tooltipHwnd = Interop.CreateWindowEx(0x8, "tooltips_class32", null, 0x3, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, nint.Zero, nint.Zero, nint.Zero, nint.Zero);
+        var tooltipHwnd = User32.CreateWindowEx(0x8, "tooltips_class32", null, 0x3, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, nint.Zero, nint.Zero, nint.Zero, nint.Zero);
         if (tooltipHwnd == nint.Zero)
         {
             throw new Exception("Unable to create tooltip window.", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
@@ -261,7 +178,7 @@ public static partial class ToolTip
 
         unsafe
         {
-            var ti = default(Interop.TOOLINFO) with
+            var ti = default(TOOLINFO) with
             {
                 cbSize = 64,
                 uFlags = 0,
@@ -278,38 +195,38 @@ public static partial class ToolTip
             var block = (nint)(&ti);
 
             // Technically, because of pointer bullshit and P/Invoke source generation, this could still be somewhat fast xd
-            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_ADJUSTRECT, 0, (nint)(&textRect));
-            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_SETMAXTIPWIDTH, 0, (textRect.right - textRect.left) * 96 / Interop.ScreenDpi);
+            _ = User32.SendMessage(tooltipHwnd, Interop.TTM_ADJUSTRECT, 0, (nint)(&textRect));
+            _ = User32.SendMessage(tooltipHwnd, Interop.TTM_SETMAXTIPWIDTH, 0, (textRect.Right - textRect.Left) * 96 / Interop.ScreenDpi);
 
-            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
-            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
+            _ = User32.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
+            _ = User32.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
 
-            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_UPDATETIPTEXT, 0, block);
+            _ = User32.SendMessage(tooltipHwnd, Interop.TTM_UPDATETIPTEXT, 0, block);
 
-            _ = Interop.GetWindowRect(tooltipHwnd, out var ttw);
-            var height = ttw.bottom - ttw.top;
-            var width = ttw.right - ttw.left;
-            if (xActual + width > textRect.right)
+            _ = User32.GetWindowRect(tooltipHwnd, out var ttw);
+            var height = ttw.Bottom - ttw.Top;
+            var width = ttw.Right - ttw.Left;
+            if (xActual + width > textRect.Right)
             {
-                xActual = textRect.right - width - 1;
+                xActual = textRect.Right - width - 1;
             }
-            if (yActual + height > textRect.bottom)
+            if (yActual + height > textRect.Bottom)
             {
-                yActual = textRect.bottom - height - 1;
+                yActual = textRect.Bottom - height - 1;
             }
-            ttw.left = xActual;
-            ttw.top = yActual;
-            ttw.right = xActual + width;
-            ttw.bottom = yActual + height;
+            ttw.Left = xActual;
+            ttw.Top = yActual;
+            ttw.Right = xActual + width;
+            ttw.Bottom = yActual + height;
             // This should never matter because of the implicit shift, UNLESS they're set to 0 explicitly
             if ((x is 0 || y is 0) && ttw.Contains(cursorPos))
             {
-                xActual = cursorPos.x - width - 5;
-                yActual = cursorPos.y - height - 5;
+                xActual = cursorPos.X - width - 5;
+                yActual = cursorPos.Y - height - 5;
             }
 
-            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
-            _ = Interop.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
+            _ = User32.SendMessage(tooltipHwnd, Interop.TTM_TRACKPOSITION, 0, (nint)MakeLong(xActual, yActual));
+            _ = User32.SendMessage(tooltipHwnd, Interop.TTM_TRACKACTIVATE, 1, block);
 
             return new ToolTipHandle(tooltipHwnd, ti.lpszText, displayTime.Value);
         }
@@ -376,7 +293,7 @@ public struct ToolTipHandle
         if (!handle.IsDisposed)
         {
             Marshal.FreeHGlobal(handle._lpszText);
-            _ = ToolTip.Interop.DestroyWindow(handle._tooltipHwnd);
+            _ = User32.DestroyWindow(handle._tooltipHwnd);
             handle.DisplayTask.Dispose();
             handle.IsDisposed = true;
         }

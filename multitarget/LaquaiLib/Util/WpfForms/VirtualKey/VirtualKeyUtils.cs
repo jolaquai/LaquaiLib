@@ -25,14 +25,6 @@ public static partial class VirtualKeyUtils
         internal const byte lsb = 1;
         internal const byte msgByte = 0x80;
         internal const ushort msbShort = 0x8000;
-
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static partial bool GetKeyboardState(Span<byte> lpKeyState);
-        [LibraryImport("user32.dll")]
-        internal static partial int ToUnicodeEx(uint wVirtKey, uint wScanCode, ReadOnlySpan<byte> lpKeyState, [MarshalAs(UnmanagedType.LPWStr)] string pwszBuff, int cchBuff, uint wFlags, [Optional] int dwhkl);
-        [LibraryImport("user32.dll")]
-        internal static partial short GetKeyState(uint wVirtKey);
     }
 
     #region Properties
@@ -113,11 +105,11 @@ public static partial class VirtualKeyUtils
         cultureInfo ??= CultureInfo.CurrentCulture;
 
         Span<byte> kbStateBuffer = stackalloc byte[256];
-        _ = Interop.GetKeyboardState(kbStateBuffer);
+        _ = User32.GetKeyboardState(kbStateBuffer);
 
         var keyboardLayout = cultureInfo.KeyboardLayoutId;
         var receiver = new string('\0', 2);
-        var result = Interop.ToUnicodeEx((uint)vk, 0, kbStateBuffer, receiver, 2, 0, keyboardLayout);
+        var result = User32.ToUnicodeEx((uint)vk, 0, kbStateBuffer, receiver, 2, 0, keyboardLayout);
         return result > 0 ? receiver.Trim('\0') : null;
     }
     /// <summary>
@@ -128,7 +120,7 @@ public static partial class VirtualKeyUtils
     public static VirtualKey[] GetPressedKeys()
     {
         var keys = Enum.GetValues<VirtualKey>();
-        return Array.FindAll(keys, static vk => (Interop.GetKeyState((uint)vk) & Interop.msgByte) != 0);
+        return Array.FindAll(keys, static vk => (User32.GetKeyState((uint)vk) & Interop.msgByte) != 0);
     }
     /// <summary>
     /// Gets the state of the specified virtual key.
@@ -136,7 +128,7 @@ public static partial class VirtualKeyUtils
     /// </summary>
     /// <param name="vk">The virtual key to get the state of.</param>
     /// <returns><see langword="true"/> if the key is pressed, otherwise <see langword="false"/>.</returns>
-    public static bool GetKeyState(VirtualKey vk) => (Interop.GetKeyState((uint)vk) & Interop.msbShort) != 0;
+    public static bool GetKeyState(VirtualKey vk) => (User32.GetKeyState((uint)vk) & Interop.msbShort) != 0;
     /// <summary>
     /// Gets the toggle state of the specified virtual key.
     /// </summary>
@@ -163,7 +155,7 @@ public static partial class VirtualKeyUtils
             throw new ArgumentException("The specified virtual key is not a toggle key.", nameof(vk));
         }
 
-        return (Interop.GetKeyState((uint)vk) & Interop.lsb) != 0;
+        return (User32.GetKeyState((uint)vk) & Interop.lsb) != 0;
     }
 
     /// <summary>

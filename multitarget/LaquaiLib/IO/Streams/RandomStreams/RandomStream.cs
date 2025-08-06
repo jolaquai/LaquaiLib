@@ -1,4 +1,4 @@
-namespace LaquaiLib.Streams.RandomStreams;
+namespace LaquaiLib.IO.Streams.RandomStreams;
 
 /// <summary>
 /// Represents a <see cref="Stream"/> that generates random bytes upon reading from it.

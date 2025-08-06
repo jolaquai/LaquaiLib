@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace LaquaiLib.Streams.RandomStreams;
+namespace LaquaiLib.IO.Streams.RandomStreams;
 
 /// <summary>
 /// Implements <see cref="RandomStream"/> with a cryptographic random number generator.

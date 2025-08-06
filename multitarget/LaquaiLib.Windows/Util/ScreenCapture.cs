@@ -11,45 +11,25 @@ public partial class ScreenCapture
 {
     private partial class Interop
     {
-        [LibraryImport("shcore.dll")]
-        private static partial nint GetScaleFactorForMonitor(nint hmonitor, out nint deviceScaleFactor);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Rect
-        {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-        }
-
-        private delegate bool MonitorEnumProc(nint hDesktop, nint hdc, ref Rect pRect, int dwData);
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool EnumDisplayMonitors(nint hdc, nint lpRect, MonitorEnumProc callback, int dwData);
         public static double[] EnumerateScales()
         {
             List<double> scales = [];
-            bool Callback(nint hDesktop, nint hdc, ref Rect pRect, int dwData)
+            bool Callback(nint hDesktop, nint hdc, ref RECT pRect, int dwData)
             {
-                _ = GetScaleFactorForMonitor(hDesktop, out var scale);
+                _ = Shcore.GetScaleFactorForMonitor(hDesktop, out var scale);
                 scales.Add(Math.Round(scale / 100d / 0.25) * 0.25);
                 // scales.Add(scale / 100d);
 
                 return true;
             }
 
-            _ = EnumDisplayMonitors(nint.Zero, nint.Zero, Callback, 0);
+            _ = User32.EnumDisplayMonitors(nint.Zero, nint.Zero, Callback, 0);
             return [.. scales];
         }
 
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool GetWindowRect(nint hWnd, ref Rect lpRect);
-        public static Rect GetWindowBounds(nint hWnd)
+        public static RECT GetWindowBounds(nint hWnd)
         {
-            var rect = new Rect();
-            _ = GetWindowRect(hWnd, ref rect);
+            _ = User32.GetWindowRect(hWnd, out var rect);
             return rect;
         }
     }

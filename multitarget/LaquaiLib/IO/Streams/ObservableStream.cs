@@ -1,6 +1,6 @@
 using System.Buffers;
 
-namespace LaquaiLib.Streams;
+namespace LaquaiLib.IO.Streams;
 
 /// <summary>
 /// Implements a <see cref="Stream"/> that provides  by wrapping another.

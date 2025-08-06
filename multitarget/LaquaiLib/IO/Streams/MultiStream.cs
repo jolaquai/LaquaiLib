@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using LaquaiLib.Extensions;
 
-namespace LaquaiLib.Streams;
+namespace LaquaiLib.IO.Streams;
 
 /// <summary>
 /// Represents a wrapper for multiple <see cref="Stream"/> instances to be written to as one.

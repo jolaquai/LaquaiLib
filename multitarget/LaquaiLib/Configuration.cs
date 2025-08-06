@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Core;
+﻿namespace LaquaiLib;
 
 /// <summary>
 /// Contains configuration values used across all of <see cref="LaquaiLib"/>.
@@ -12,5 +12,5 @@ public static class Configuration
     /// <remarks>
     /// Most systems should be able to easily handle dozens of <see langword="stackalloc"/>s of this size.
     /// </remarks>
-    public const int MaxStackallocSize = 1024;
+    public const int MaxStackallocSize = 8192;
 }

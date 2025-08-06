@@ -71,15 +71,4 @@ public sealed partial class MessageBoxFactory
     /// <param name="modality">The <see cref="Modality"/> value to use.</param>
     /// <param name="otherOptions">The <see cref="OtherOptions"/> value to use.</param>
     public MessageBoxFactory(nint ownerHwnd = 0, string text = "", string caption = nameof(MessageBox), uint button = 0, uint defaultButton = 0, uint icon = 0, uint modality = 0, uint otherOptions = 0) => Configuration = new MessageBoxConfiguration(ownerHwnd, text, caption, button, defaultButton, icon, modality, otherOptions);
-
-    private static partial class Interop
-    {
-        [LibraryImport("user32.dll", EntryPoint = "MessageBoxW")]
-        internal static partial uint PInvokeMessageBox(nint hWnd, [MarshalAs(UnmanagedType.LPWStr)] string lpText, [MarshalAs(UnmanagedType.LPWStr)] string lpCaption, uint uType);
-        [LibraryImport("user32.dll", EntryPoint = "CreateWindowExW")]
-        internal static partial nint CreateWindowExW(uint dwExStyle, [MarshalAs(UnmanagedType.LPWStr)] string lpClassName, [MarshalAs(UnmanagedType.LPWStr)] string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, nint hWndParent, nint hMenu, nint hInstance, nint lpParam);
-        [LibraryImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        internal static partial bool DestroyWindow(nint hwnd);
-    }
 }

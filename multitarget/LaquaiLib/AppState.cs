@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Core;
+﻿namespace LaquaiLib;
 
 internal static class AppState
 {

@@ -63,6 +63,30 @@ public static unsafe class MemoryManager
     /// <returns>A <typeparamref name="T"/>-typed managed pointer to the first instance in the allocated memory region.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ref T CAlloc<T>(int count, bool pressure = false) where T : unmanaged => ref Unsafe.AsRef<T>(UnsafeCAlloc<T>(count, pressure));
+    /// <summary>
+    /// Gets a <see cref="Span{T}"/> from a managed pointer to an instance of <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to create a span for.</typeparam>
+    /// <param name="ptr">The managed pointer to the first instance of type <typeparamref name="T"/>.</param>
+    /// <param name="count">The number of instances to include in the span.</param>
+    /// <returns>The created <see cref="Span{T}"/>.</returns>
+    public static Span<T> AsSpan<T>(ref this T ptr, int count) where T : unmanaged => new Span<T>(Unsafe.AsPointer(ref ptr), count);
+    /// <summary>
+    /// Gets a <see cref="Span{T}"/> from a pointer to an instance of <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to create a span for.</typeparam>
+    /// <param name="ptr">The pointer to the first instance of type <typeparamref name="T"/>.</param>
+    /// <param name="count">The number of instances to include in the span.</param>
+    /// <returns>The created <see cref="Span{T}"/>.</returns>
+    public static Span<T> AsSpan<T>(ref T* ptr, int count) where T : unmanaged => new Span<T>(ptr, count);
+    /// <summary>
+    /// Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see cref="Span{T}"/> around it.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
+    /// <param name="count">The number of instances to allocate memory for.</param>
+    /// <param name="pressure">Whether to inform the GC about the allocated memory using <see cref="GC.AddMemoryPressure(long)"/>.</param>
+    /// <returns>The created <see cref="Span{T}"/>.</returns>
+    public static Span<T> Allocate<T>(int count, bool pressure = false) where T : unmanaged => AsSpan(ref CAlloc<T>(count, pressure), count);
 
     /// <summary>
     /// Resizes a previously allocated region of memory to the specified number of bytes and returns a <see langword="void"/> pointer to the first byte.
@@ -152,6 +176,28 @@ public static unsafe class MemoryManager
         }
         Marshal.FreeHGlobal((nint)ptr);
     }
+    /// <summary>
+    /// Frees a previously allocated region of memory.
+    /// </summary>
+    /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances that were allocated in the memory.</typeparam>
+    /// <param name="ptr">A pointer to the first instance of type <typeparamref name="T"/> in the previously allocated memory.</param>
+    /// <param name="pressure">The length of the block of memory that is being freed (that is, the number of instance of <typeparamref name="T"/>). If <c>&gt; 0</c>, <see cref="GC.RemoveMemoryPressure(long)"/> is called with this value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free<T>(T* ptr, long pressure = -1) where T : unmanaged => Free((void*)ptr, pressure * sizeof(T));
+    /// <summary>
+    /// Frees a previously allocated region of memory.
+    /// </summary>
+    /// <param name="ptr">A managed pointer to the first byte of the previously allocated memory.</param>
+    /// <param name="pressure">The length of the block of memory that is being freed. If <c>&gt; 0</c>, <see cref="GC.RemoveMemoryPressure(long)"/> is called with this value.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free<T>(ref T ptr, long pressure = -1) => Free(Unsafe.AsPointer(ref ptr), pressure);
+    /// <summary>
+    /// Frees a previously allocated region of memory.
+    /// </summary>
+    /// <param name="span">A <see cref="ReadOnlySpan{T}"/> around a block of memory that was previously allocated.</param>
+    /// <param name="pressure">Whether to call <see cref="GC.RemoveMemoryPressure(long)"/> with the total byte count of the block of memory that is being freed.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Free<T>(ReadOnlySpan<T> span, bool pressure = false) where T : unmanaged => Free(ref MemoryMarshal.GetReference(span), pressure ? span.Length : -1);
 
     /// <summary>
     /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>. That value may be negative.

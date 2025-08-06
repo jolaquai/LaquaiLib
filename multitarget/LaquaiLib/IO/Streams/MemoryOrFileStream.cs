@@ -1,4 +1,4 @@
-namespace LaquaiLib.Streams;
+namespace LaquaiLib.IO.Streams;
 
 /// <summary>
 /// Contains factory methods that produce either <see cref="MemoryStream"/> or <see cref="FileStream"/> instances, depending on the size of the data expected to be written to it.

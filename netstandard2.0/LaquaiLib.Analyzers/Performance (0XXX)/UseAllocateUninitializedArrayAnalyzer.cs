@@ -4,7 +4,7 @@
 public class UseAllocateUninitializedArrayAnalyzer : DiagnosticAnalyzer
 {
     public static DiagnosticDescriptor Descriptor { get; } = new(
-        id: "LAQ0005",
+        id: "LAQ0006",
         title: "Use GC.AllocateUnitializedArray if all indices are definitely assigned",
         messageFormat: "If all indices in this array are definitely assigned, use GC.AllocateUnitializedArray to improve performance",
         description: "Arrays need not be zeroed before being used if all slots are being assigned after creation.",

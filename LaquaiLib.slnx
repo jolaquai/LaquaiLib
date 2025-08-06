@@ -31,7 +31,6 @@
     <Folder Name="/multitarget/">
         <File Path="multitarget\Directory.Build.props" />
         <File Path="multitarget\Directory.Build.targets" />
-        <Project Path="multitarget\LaquaiLib.Core\LaquaiLib.Core.csproj" />
         <Project Path="multitarget\LaquaiLib.EF\LaquaiLib.EF.csproj" />
         <Project Path="multitarget\LaquaiLib.Oxml\LaquaiLib.Oxml.csproj" />
         <Project Path="multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />

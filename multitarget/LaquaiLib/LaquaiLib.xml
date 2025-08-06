@@ -2020,6 +2020,20 @@
             </summary>
             <returns>An enumerator that can be used to iterate through the reverse collection.</returns>
         </member>
+        <member name="T:LaquaiLib.Configuration">
+            <summary>
+            Contains configuration values used across all of <see cref="N:LaquaiLib"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Configuration.MaxStackallocSize">
+            <summary>
+            The maximum boundary for a single <see langword="stackalloc"/> in <see langword="byte"/>s.
+            Set rather conservatively since there may be multiple threads or multiple <see langword="stackalloc"/>s per call chain.
+            </summary>
+            <remarks>
+            Most systems should be able to easily handle dozens of <see langword="stackalloc"/>s of this size.
+            </remarks>
+        </member>
         <member name="T:LaquaiLib.Dynamic.FullAccessDynamic`1">
             <summary>
             Represents a dynamic object that allows access to all properties and methods of the wrapped object as if they were <see langword="public"/>, regardless of their actual access level.
@@ -3507,48 +3521,7 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThrowIfAllCancelled(System.Collections.Generic.IEnumerable{System.Threading.CancellationToken})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__2.ThrowIfAllCancelled"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.ExceptBy``1(System.Collections.Generic.IEnumerable{`0},System.Func{`0,``0})">
-            <summary>
-            Produces the set difference of two sequences according to a specified key selector function.
-            </summary>
-            <typeparam name="TSource">The type of the elements of the input sequences.</typeparam>
-            <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
-            <param name="source">The first sequence to compare.</param>
-            <param name="other">The second sequence to compare.</param>
-            <param name="keySelector">The <see cref="T:System.Func`2"/> that is passed each element of the source sequence and returns the key to use for comparison.</param>
-            <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
-            <remarks>Basically just another <see cref="M:System.Linq.Enumerable.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1})"/> overload that... actually makes sense.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle">
-            <summary>
-            Shuffles the elements in the input sequence using <see cref="P:System.Random.Shared"/>.
-            </summary>
-            <remarks>
-            If the calling code already has an instance of <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/>, it should use the <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)"/> overload.
-            </remarks>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <returns>A shuffled sequence of the elements in the input sequence.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle(System.Random)">
-            <summary>
-            Shuffles the elements in the input sequence, using a specified <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/> instance.
-            </summary>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <param name="random">The <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/> instance to use for shuffling.</param>
-            <returns>A shuffled sequence of the elements in the input sequence.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.ExceptBy``1(System.Collections.Generic.IEnumerable{`0},System.Func{`0,``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Shuffle(System.Random)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThan(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThan(System.Int32)">
             <summary>
             Determines if a sequence contains less than the specified number of elements.
             </summary>
@@ -3557,7 +3530,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains less than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThanOr(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThanOr(System.Int32)">
             <summary>
             Determines if a sequence contains less than or exactly the specified number of elements.
             </summary>
@@ -3566,7 +3539,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains less than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasExactly(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasExactly(System.Int32)">
             <summary>
             Determines if a sequence contains exactly the specified number of elements.
             An attempt is made to avoid enumerating the input sequence, but if this fails, it is done regardless.
@@ -3576,7 +3549,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns>The result of the check.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThanOr(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThanOr(System.Int32)">
             <summary>
             Determines if a sequence contains more than or exactly the specified number of elements.
             </summary>
@@ -3585,7 +3558,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains more than or exactly <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThan(System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThan(System.Int32)">
             <summary>
             Determines if a sequence contains more than the specified number of elements.
             </summary>
@@ -3594,7 +3567,7 @@
             <param name="n">The number of elements to check for.</param>
             <returns><see langword="true"/> if the input sequence contains more than <paramref name="n"/> elements, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Counts(System.Collections.Generic.IEqualityComparer{`0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Counts(System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/>, mapping the item to the number of times it appears in the input sequence.
             </summary>
@@ -3603,7 +3576,7 @@
             <param name="comparer">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing items.</param>
             <returns>The resulting <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})">
             <summary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/>, mapping the item to the number of times it appears as counted using a <paramref name="selector"/> function in the input sequence.
             </summary>
@@ -3614,41 +3587,91 @@
             <returns>The resulting <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasLessThan``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThan(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThan(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasLessThanOr``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasLessThanOr(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasLessThanOr(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasExactly``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasExactly(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasExactly(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasMoreThanOr``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThanOr(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThanOr(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasMoreThan``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.HasMoreThan(System.Int32)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.HasMoreThan(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Counts``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Counts(System.Collections.Generic.IEqualityComparer{`0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.Counts(System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CountsBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__3`1.CountsBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.TryGetReadOnlySpan(System.ReadOnlySpan{`0}@)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.TryGetReadOnlySpan(System.ReadOnlySpan{`0}@)">
             <summary>
             Attempts to retrieve a <see cref="T:System.ReadOnlySpan`1"/> over the specified source collection.
             </summary>
             <param name="span">An <see langword="out"/> variable that receives the <see cref="T:System.ReadOnlySpan`1"/> if the operation is successful.</param>
             <returns><see langword="true"/> if a <see cref="T:System.ReadOnlySpan`1"/> could be created, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.TryGetSpan(System.Span{`0}@)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.TryGetSpan(System.Span{`0}@)">
             <summary>
             Attempts to retrieve a <see cref="T:System.ReadOnlySpan`1"/> over the specified source collection.
             </summary>
             <param name="span">An <see langword="out"/> variable that receives the <see cref="T:System.ReadOnlySpan`1"/> if the operation is successful.</param>
             <returns><see langword="true"/> if a <see cref="T:System.ReadOnlySpan`1"/> could be created, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Split(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Split(System.Func{`0,System.Boolean})">
+            <summary>
+            Splits a sequence of values into two sequences based on a predicate.
+            </summary>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines which sequence the element should be yielded to.</param>
+            <returns>A <see cref="T:System.ValueTuple`2"/> containing the two sequences. The first collection contains all elements that satisfy the predicate, the second collection contains all remaining elements.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Halve">
+            <summary>
+            Halves the input sequence.
+            </summary>
+            <returns>A <see cref="T:System.ValueTuple`2"/> that contains the two halves of the input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Random">
+            <summary>
+            Selects a random element from the input sequence using <see cref="P:System.Random.Shared"/>.
+            </summary>
+            <returns>A random element from source.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Random(System.Random)">
+            <summary>
+            Selects a random element from the input sequence using the specified <paramref name="random"/> instance.
+            </summary>
+            <param name="random">The <see cref="T:System.Random"/> instance to use for random number generation.</param>
+            <returns>The random element from source.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEach(System.Action{`0})">
+            <summary>
+            Executes the specified <paramref name="action"/> on each element of the source collection.
+            </summary>
+            <param name="action">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEach(System.Action{`0,System.Int32})">
+            <summary>
+            Executes the specified <paramref name="action"/> on each element of the source collection, incorporating each element's index in the <see cref="T:System.Action`2"/>.
+            </summary>
+            <param name="action">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEachAsync(System.Func{`0,System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously executes the specified <paramref name="func"/> on each element of the source collection.
+            </summary>
+            <param name="func">The action to perform on each element of the source collection. It is passed each element in the source collection.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.ForEachAsync(System.Func{`0,System.Int32,System.Threading.Tasks.Task})">
+            <summary>
+            Asynchronously executes the specified <paramref name="func"/> on each element of the source collection, incorporating each element's index in the <see cref="T:System.Func`3"/>.
+            </summary>
+            <param name="func">The action to perform on each element of the source collection. It is passed each element and its index in the source collection.</param>
+        </member>
+        <memberxtensions.IEnumerableExtensions.<>E__5`1.Split(System.Func{`0,System.Boolean})">
             <summary>
             Splits a sequence of values into two sequences based on a predicate.
             </summary>
@@ -3702,51 +3725,55 @@
             <summary>
             Enumerates over the elements in the input sequence in the specified <paramref name="range"/>.
             If sourc eis not indexable, the entire sequence is enumerated.
-            </summary>
-            <param name="range">A <see cref="T:System.Range"/> instance that indicates where the items to be extracted are located in the source.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.AllEqual">
-            <summary>
-            Checks whether the items in a sequence are all equal to each other. If any of the passed objects are <see langword="null"/>, all others must also be <see langword="null"/>.
-            </summary>
-            <returns><see langword="true"/> if all objects in the passed source collection are equal, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Mode(System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Determines the mode of a sequence of values (that is, the value that appears most frequently). If multiple items share the highest frequency, the first one encountered is returned.
-            </summary>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use when comparing values, or null to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
-            <returns>The mode of source.</returns>
-            <exception cref="T:System.ArgumentNullException">Thrown if sourc eis empty.</exception>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Sample(System.Int32)">
-            <summary>
-            Samples a specified number of elements from the input sequence.
-            </summary>
-            <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
-            <returns>The sampled elements.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OrderedSample(System.Int32)">
-            <summary>
-            Samples a specified number of elements from the input sequence, ensuring that the sampled elements remain in the same order as they were in the input sequence.
-            </summary>
-            <param name="itemCount">The number of elements to sample from the input sequence. If not specified, 1% of the input sequence's length is used.</param>
-            <returns>The sampled elements.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectWhere(System.Func{`0,System.Boolean},System.Func{`0,`0})">
-            <summary>
-            Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/> and returning all other items unchanged.
-            </summary>
-            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be transformed.</param>
-            <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
-            <returns>The transformed elements.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.SelectWhere(System.Func{`0,System.Int32,System.Boolean},System.Func{`0,System.Int32,`0})">
-            <summary>
-            Conditionally projects elements from a sequence into a new form, transforming only items that satisfy a specified <paramref name="predicate"/>.
+        te"/>.
             </summary>
             <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and its index in the source collection and determines whether the element should be transformed.</param>
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the source collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
+            <returns>The transformed elements.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.IfWhere(System.Boolean,System.Func{`0,System.Boolean})">
+            <summary>
+            Filters a sequence of values based on a predicate if <paramref name="expr"/> is <see langword="true"/>, otherwise returns exactly the input sequence.
+            </summary>
+            <param name="expr">A value that determines whether the input sequence should be filtered.</param>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
+            <returns>The filtered input sequence if <paramref name="expr"/> is <see langword="true"/>, otherwise the input sequence as is.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.WhereNot(System.Func{`0,System.Boolean})">
+            <summary>
+            Filters a sequence of values based on a predicate. The predicate's result is inverted.
+            </summary>
+            <param name="predicate">The <see cref="T:System.Predicate`1"/> that is passed each element of the input sequence and determines whether the element should be yielded.</param>
+            <returns>The elements in the input sequence that do not satisfy the predicate.</returns>
+            <remarks>
+            This has essentially no purpose but to avoid the need to create a lambda that inverts the result of the predicate.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Indexed">
+            <summary>
+            Indexes the elements in the input sequence; that is, each element is paired with its number of occurrences in the sequence.
+            </summary>
+            <returns>A sequence of key-value pairs where the key is an element from the input sequence and the value is the number of occurrences of that element in the input sequence.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.None">
+            <summary>
+            Determines if a sequence is empty.
+            </summary>
+            <returns><see langword="true"/> if the input sequence is empty, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.None(System.Func{`0,System.Boolean})">
+            <summary>
+            Determines if a sequence contains no elements that satisfy a condition.
+            </summary>
+            <param name="predicate">The condition to check for.</param>
+            <returns><see langword="true"/> if the input sequence contains no elements that satisfy the condition, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.OnlyOrDefault(`0)">
+            <summary>
+            Determines whether a sequence contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
+            This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},``0)"/> without throwing exceptions.
+            </summary>
+            <param name="defaultValue">The value to return if the input sequence csee cref="T:System.Func`2"/> that is passed each element of the input sequence and its index in the source collection, if it passes the condition encapsulated by <paramref name="predicate"/>, and produces a new value. Its type must be the same as the input sequence's.</param>
             <returns>The transformed elements.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IfWhere(System.Boolean,System.Func{`0,System.Boolean})">
@@ -3794,48 +3821,37 @@
             <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
             <returns>The single element in the input sequence, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)">
-            <summary>
-            Determines whether a sequence contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
-            This behaves exactly like <see cref="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean},``0)"/> without throwing exceptions.
-            </summary>
-            <param name="predicate">The condition to check for.</param>
-            <param name="defaultValue">The value to return if the input sequence contains no elements or more than one element.</param>
-            <returns>The single element in the input sequence that satisfies the <paramref name="predicate"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element that satisfies the <paramref name="predicate"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.ElementAtOrDefault(System.Int32,`0)">
-            <summary>
-            Attempts to retrieve the element at the specified index from the input sequence if that index is valid for the sequence, otherwise a default value is returned.
-            </summary>
-            <param name="i">The index of the element to retrieve.</param>
-            <param name="defaultValue">The value to return if the index is invalid. Defaults to the <see langword="default"/> value of <typeparamref name="T"/>.</param>
-            <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Finds the first index of the specified <paramref name="item"/> in the input sequence.
-            </summary>
-            <param name="item">The item to find the index of.</param>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
-            <returns>The index of the first occurrence of the specified <paramref name="item"/> in the input sequence, or -1 if the item is not found.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.IndexOf(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Finds the first starting index of the specified <paramref name="sequence"/> in the input sequence.
-            </summary>
-            <param name="sequence">The sequence to find the index of.</param>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use when comparing values, or <see langword="null"/> to use the default <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for the type of the values.</param>
-            <returns>The index of the first occurrence of the specified <paramref name="sequence"/> in the input sequence, or -1 if the sequence is not found.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.Majority(System.Func{`0,System.Boolean})">
-            <summary>
-            Determines whether the majority of a sequence's elements satisfy a condition.
-            </summary>
-            <param name="predicate">The condition to check for.</param>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensioam>
             <returns><see langword="true"/> if the majority of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__5`1.BuildDictionaryLinear">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionaryLinear">
             <summary>
+            Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The first half of the elements are used as keys, the second half as values.
+            </summary>
+            <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.BuildDictionaryZipped">
+            <summary>
+            Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The elements are considered to be repeating key-value pairs.
+            </summary>
+            <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</returns>
+            <exception cref="T:System.ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.AsAsynchronous">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> wrapper around the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>. This is fundamentally different from <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
+            <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})"/> or similar). Instead, call <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/>, then use a method such as <see cref="M:System.Linq.AsyncEnumerable.ToListAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Threading.CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="T:System.Linq.AsyncEnumerable"/> is recommended (which are optimized for their purpose).
+            </summary>
+            <returns>The sourc eas an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.<>E__4`1.Interlace(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerable`1"/> that enumerates the elements of the input sequences is turn; that is, the first element of the first sequence, the first element of the second sequence, the second element of the first sequence, the second element of the second sequence, and so on.
+            If the sequences are of unequal length, the remaining elements of the longer sequence will end up at the end of the resulting sequence.
+            </summary>
+            <param name="second">The second sequence.</param>
+            <returns>A single sequence that contains the elements of both input sequences, interlaceummary>
             Builds a <see cref="T:System.Collections.Generic.Dictionary`2"/> where both type arguments are <typeparamref name="T"/> from the input sequence. It must contain a positive and even number of elements. The first half of the elements are used as keys, the second half as values.
             </summary>
             <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</returns>
@@ -9422,6 +9438,136 @@
             Gets the <see cref="T:System.ReadOnlyMemory`1"/> provided by the implementing type.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Interop">
+            <summary>
+            Contains all P/Invoke <see cref="T:System.Runtime.InteropServices.LibraryImportAttribute"/> declarations for the <see cref="N:LaquaiLib"/> library.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Interop.User32">
+            <summary>
+            Contains P/Invoke <see cref="T:System.Runtime.InteropServices.LibraryImportAttribute"/> declarations for <c>user32.dll</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Interop.Kernel32">
+            <summary>
+            Contains P/Invoke <see cref="T:System.Runtime.InteropServices.LibraryImportAttribute"/> declarations for <c>kernel32.dll</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Interop.Gdi32">
+            <summary>
+            Contains P/Invoke <see cref="T:System.Runtime.InteropServices.LibraryImportAttribute"/> declarations for <c>gdi32.dll</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Interop.Shcore">
+            <summary>
+            Contains P/Invoke <see cref="T:System.Runtime.InteropServices.LibraryImportAttribute"/> declarations for <c>shcore.dll</c>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.Delete">
+            <summary>
+            Required to delete the object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ReadControl">
+            <summary>
+            Required to read information in the security descriptor for the object, not including the information in the SACL.
+            To read or write the SACL, you must request the <b>ACCESS_SYSTEM_SECURITY</b> access right.
+            For more information, see <see href="https://learn.microsoft.com/en-us/windows/win32/secauthz/sacl-access-right">SACL Access Right</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.Synchronize">
+            <summary>
+            The right to use the object for synchronization.
+            This enables a thread to wait until the object is in the signaled state.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.WriteDac">
+            <summary>
+            Required to modify the DACL in the security descriptor for the object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.WriteOwner">
+            <summary>
+            Required to change the owner in the security descriptor for the object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.StandardRightsAll">
+            <summary>
+            Combines <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.Delete"/>, <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.ReadControl"/>, <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.WriteDac"/>, <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.WriteOwner"/>, and <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.Synchronize"/> access.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.StandardRightsRequired">
+            <summary>
+            Combines <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.Delete"/>, <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.ReadControl"/>, <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.WriteDac"/> and <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.WriteOwner"/> access.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessAllAccess">
+            <summary>
+            All possible access rights for a process object.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessCreateProcess">
+            <summary>
+            Required to use this process as the parent process with <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute">PROC_THREAD_ATTRIBUTE_PARENT_PROCESS</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessCreateThread">
+            <summary>
+            Required to create a thread in the process.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessDupHandle">
+            <summary>
+            Required to duplicate a handle using <see href="https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle">DuplicateHandle</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessQueryInformation">
+            <summary>
+            Required to retrieve certain information about a process, such as its token, exit code, and priority class (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocesstoken">OpenProcessToken</see>).
+            A handle that has this access right is implicitly also granted the <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessQueryInformation"/> access right.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessQueryLimitedInformation">
+            <summary>
+            Required to retrieve certain information about a process (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess">GetExitCodeProcess</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getpriorityclass">GetPriorityClass</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/jobapi/nf-jobapi-isprocessinjob">IsProcessInJob</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamea">QueryFullProcessImageName</see>).
+            A handle that has the <see cref="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessQueryInformation"/> access right is implicitly also granted this access right.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessSetInformation">
+            <summary>
+            Required to set certain information about a process, such as its priority class (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setpriorityclass">SetPriorityClass</see>).
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessSetQuota">
+            <summary>
+            Required to set memory limits using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-setprocessworkingsetsize">SetProcessWorkingSetSize</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessSuspendResume">
+            <summary>
+            Required to suspend or resume a process.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessTerminate">
+            <summary>
+            Required to terminate a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess">TerminateProcess</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessVMOperation">
+            <summary>
+            Required to perform an operation on the address space of a process (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualprotectex">VirtualProtectEx</see> and <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>).
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessVMRead">
+            <summary>
+            Required to read memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory">ReadProcessMemory</see>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Interop.ProcessOpenAccess.ProcessVMWrite">
+            <summary>
+            Required to write to memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.IO.FileSizePartitioner">
             <summary>
             Implements a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> that partitions files by their size.
@@ -9728,6 +9874,12 @@
             <exception cref="T:System.ArgumentException">Thrown when either path is null or whitespace, or the paths resolve to the same location.</exception>
             <exception cref="T:System.IO.IOException">Thrown when <paramref name="overwrite"/> is <see langword="false"/> and the destination file already exists.</exception>
         </member>
+        <member name="M:LaquaiLib.IO.FileSystemHelper.RageCopyAsync(System.String,System.String,System.Boolean)">
+            <summary>
+            Using whatever strategy is determined to be fastest, copies the specified file at <paramref name="source"/> to <paramref name="destination"/>.
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.</returns>
+        </member>
         <member name="T:LaquaiLib.IO.ResumableDirectoryIO">
             <summary>
             Implements resumable operations for copying and moving directories.
@@ -9886,6 +10038,533 @@
             Cancels any ongoing operation. If no operation is running, this method is a no-op and will complete immediately.
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the cancellation request. When it completes, the operation has been canceled.</returns>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.MemoryOrFileStream">
+            <summary>
+            Contains factory methods that produce either <see cref="T:System.IO.MemoryStream"/> or <see cref="T:System.IO.FileStream"/> instances, depending on the size of the data expected to be written to it.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff">
+            <summary>
+            The number of bytes at which the stream will switch from a <see cref="T:System.IO.MemoryStream"/> to a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <remarks>
+            You may freely change this value at runtime. Its initial value is 64 MB.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.ResetCutoff">
+            <summary>
+            Resets the <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/> to the initial value.
+            </summary>
+            <returns>The new value of <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.Create(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:System.IO.Stream"/> with the given expected payload size.
+            </summary>
+            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="T:System.IO.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
+            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.Create(System.IO.Stream,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="other"/> <see cref="T:System.IO.Stream"/>.
+            Its data from its current position to the end will be copied to the new <see cref="T:System.IO.Stream"/>. Both streams' positions will be advanced by the number of bytes copied.
+            </summary>
+            <param name="other">The <see cref="T:System.IO.Stream"/> to copy the data from.</param>
+            <param name="fromBeginning">Whether to seek <paramref name="other"/> to its beginning before copying the data.</param>
+            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.Create(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="buffer"/>.
+            Its data is copied to the new <see cref="T:System.IO.Stream"/> and its position advanced by the number of bytes copied.
+            </summary>
+            <param name="buffer">The buffer to copy the data from.</param>
+            <param name="offset">The index in <paramref name="buffer"/> at which to start copying.</param>
+            <param name="length">The number of bytes to copy from <paramref name="buffer"/>.</param>
+            <param name="canResize">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it can resize itself if the data exceeds its initial capacity.</param>
+            <param name="canWrite">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it is created as writable.</param>
+            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
+            <remarks>
+            <para/><paramref name="canResize"/> and <paramref name="canWrite"/> are ignored if the number of bytes that would be copied exceeds <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>.
+            <para/>Calling this constructor with just <paramref name="buffer"/> matches the behavior of <see cref="M:System.IO.MemoryStream.#ctor(System.Byte[])"/>, except if its length exceeds <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>, in which case a <see cref="T:System.IO.FileStream"/> is created.
+            </remarks>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.MultiStream">
+            <summary>
+            Represents a wrapper for multiple <see cref="T:System.IO.Stream"/> instances to be written to as one.
+            Writes are not guaranteed to be performed on each passed <see cref="T:System.IO.Stream"/> in the order they were passed, however, no two writes on two <see cref="T:System.IO.Stream"/> will ever occur concurrently.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.#ctor(System.ReadOnlySpan{System.IO.Stream})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
+            </summary>
+            <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.#ctor(System.Collections.Generic.IEnumerable{System.IO.Stream})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
+            </summary>
+            <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.MultiStream.CanRead">
+            <summary>
+            Unconditionally returns <see langword="false"/>; <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> does not support reading.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.MultiStream.CanSeek">
+            <summary>
+            Unconditionally returns <see langword="false"/>; <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> does not support seeking.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.MultiStream.CanWrite">
+            <summary>
+            Unconditionally returns <see langword="true"/>; <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> broadcasts writes directly to the wrapped instances.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.MultiStream.Length">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.MultiStream.Position">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.Flush">
+            <summary>
+            Flushes all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>. <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> does not support seeking.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes a sequence of bytes to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> instance and advances the current position within the <see cref="T:System.IO.Stream"/>s by the number of <see cref="T:System.Byte"/>s written.
+            </summary>
+            <param name="buffer">The buffer containing the data to write.</param>
+            <param name="offset">The offset in the buffer at which to begin writing.</param>
+            <param name="count">The number of <see cref="T:System.Byte"/>s to write.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.Write(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Writes a sequence of bytes to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> instance and advances the current position within the <see cref="T:System.IO.Stream"/>s by the number of <see cref="T:System.Byte"/>s written.
+            </summary>
+            <param name="buffer">A region of memory to copy to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> instance.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MultiStream.SetLength(System.Int64)">
+            <summary>
+            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>. <see cref="T:LaquaiLib.IO.Streams.MultiStream"/> does not support operations affecting the underlying streams directly (beyond broadcasted writes).
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.NullStream">
+            <summary>
+            Implements <see cref="T:System.IO.Stream"/> without a backing store. All operations are allowed and are no-ops.
+            This can be useful when authoring <see cref="T:System.IO.Stream"/> types that only support particular operations.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.Instance">
+            <summary>
+            Returns a singleton instance of <see cref="T:LaquaiLib.IO.Streams.NullStream"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.CanRead">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.CanSeek">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.CanWrite">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.Length">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.Position">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.CanTimeout">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.ReadTimeout">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.NullStream.WriteTimeout">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.NullStream.Flush">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.NullStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.NullStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.NullStream.SetLength(System.Int64)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.NullStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.ExceptStream">
+            <summary>
+            Implements <see cref="T:System.IO.Stream"/> without a backing store. Except for zero reads and writes, all operations throw <see cref="T:System.NotSupportedException"/>.
+            This can be useful when authoring <see cref="T:System.IO.Stream"/> types that only support particular operations.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.CanRead">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.CanSeek">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.CanWrite">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.Length">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.Position">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.CanTimeout">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.ReadTimeout">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ExceptStream.WriteTimeout">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ExceptStream.Flush">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ExceptStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ExceptStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ExceptStream.SetLength(System.Int64)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ExceptStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.ObservableStream`1">
+            <summary>
+            Implements a <see cref="T:System.IO.Stream"/> that provides  by wrapping another.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ObservableStream`1.CanRead">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ObservableStream`1.CanSeek">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ObservableStream`1.CanWrite">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ObservableStream`1.Length">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ObservableStream`1.Position">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.Flush">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.Read(System.Span{System.Byte})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.ReadByte">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.SetLength(System.Int64)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.Write(System.ReadOnlySpan{System.Byte})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.WriteByte(System.Byte)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.CopyTo(System.IO.Stream,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="E:LaquaiLib.IO.Streams.ObservableStream`1.Flushed">
+            <summary>
+            Occurs when the stream is flushed.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.IO.Streams.ObservableStream`1.DataRead">
+            <summary>
+            Occurs when data is read from the stream.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.IO.Streams.ObservableStream`1.Seeked">
+            <summary>
+            Occurs when the stream is seeked, irrespective of whether this was part of a write or read operation, a call to <see cref="M:LaquaiLib.IO.Streams.ObservableStream`1.Seek(System.Int64,System.IO.SeekOrigin)"/> or a direct change of the <see cref="P:LaquaiLib.IO.Streams.ObservableStream`1.Position"/> property.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.IO.Streams.ObservableStream`1.DataWritten">
+            <summary>
+            Occurs when data is written to the stream.
+            </summary>
+        </member>
+        <member name="E:LaquaiLib.IO.Streams.ObservableStream`1.Resized">
+            <summary>
+            Occurs when the stream is resized, that is, an operation causes <see cref="P:LaquaiLib.IO.Streams.ObservableStream`1.Length"/> to change.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.#ctor(`0)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/> instance by wrapping an existing <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to wrap.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.Dispose(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStream`1.DisposeAsync">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.ObservableStreamFactory">
+            <summary>
+            Provides factory methods for <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStreamFactory.Create``1">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/> by creating a new instance of <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of <see cref="T:System.IO.Stream"/> to create. Must have a public parameterless constructor.</typeparam>
+            <returns>The created <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStreamFactory.Create``1(``0)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/> from an existing <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <typeparam name="T">The type of the <see cref="T:System.IO.Stream"/> to wrap.</typeparam>
+            <param name="stream">The <see cref="T:System.IO.Stream"/> to wrap.</param>
+            <returns>The created <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStreamFactory.Create(System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/> from a portion of a <see cref="T:System.Byte"/> array.
+            </summary>
+            <param name="data">The <see cref="T:System.Byte"/> array to create the <see cref="T:System.IO.MemoryStream"/> from.</param>
+            <param name="offset">The offset in the <see cref="T:System.Byte"/> array to start reading from.</param>
+            <param name="length">The number of bytes to read from the <see cref="T:System.Byte"/> array.</param>
+            <param name="canResize">Whether the underlying <see cref="T:System.IO.MemoryStream"/> should be made resizable.</param>
+            <returns>The created <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStreamFactory.Create(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/> that wraps a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <param name="path">The path to the file to open.</param>
+            <param name="fileMode">A <see cref="T:System.IO.FileMode"/> enum value that specifies how the operating system should open the file.</param>
+            <param name="fileAccess">A <see cref="T:System.IO.FileAccess"/> enum value that specifies the access level.</param>
+            <param name="fileShare">A <see cref="T:System.IO.FileShare"/> enum value that specifies the sharing mode of the file.</param>
+            <returns>The created <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ObservableStreamFactory.Create(System.String,System.IO.FileStreamOptions)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/> that wraps a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <param name="path">The path to the file to open.</param>
+            <param name="fileStreamOptions">A <see cref="T:System.IO.FileStreamOptions"/> instance that specifies how the <see cref="T:System.IO.FileStream"/> is opened.</param>
+            <returns>The created <see cref="T:LaquaiLib.IO.Streams.ObservableStream`1"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.WrittenEventArgs">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.DataWritten"/> event.
+            </summary>
+            <param name="Data">A readonly view of the data that was written.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.WrittenEventArgs.#ctor(System.ReadOnlyMemory{System.Byte})">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.DataWritten"/> event.
+            </summary>
+            <param name="Data">A readonly view of the data that was written.</param>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.WrittenEventArgs.Data">
+            <summary>A readonly view of the data that was written.</summary>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.SeekedEventArgs">
+            <summary>
+            Provides data about the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.Seeked"/> event.
+            </summary>
+            <param name="OldPosition">The old position of the stream before the seek operation.</param>
+            <param name="NewPosition">The new position of the stream after the seek operation.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.SeekedEventArgs.#ctor(System.Int64,System.Int64)">
+            <summary>
+            Provides data about the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.Seeked"/> event.
+            </summary>
+            <param name="OldPosition">The old position of the stream before the seek operation.</param>
+            <param name="NewPosition">The new position of the stream after the seek operation.</param>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.SeekedEventArgs.OldPosition">
+            <summary>The old position of the stream before the seek operation.</summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.SeekedEventArgs.NewPosition">
+            <summary>The new position of the stream after the seek operation.</summary>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.ResizedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.Resized"/> event.
+            </summary>
+            <param name="OldLength">The old length of the stream before the resize operation.</param>
+            <param name="NewLength">The new length of the stream after the resize operation.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ResizedEventArgs.#ctor(System.Int64,System.Int64)">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.Resized"/> event.
+            </summary>
+            <param name="OldLength">The old length of the stream before the resize operation.</param>
+            <param name="NewLength">The new length of the stream after the resize operation.</param>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ResizedEventArgs.OldLength">
+            <summary>The old length of the stream before the resize operation.</summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ResizedEventArgs.NewLength">
+            <summary>The new length of the stream after the resize operation.</summary>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.ReadEventArgs">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.DataRead"/> event.
+            </summary>
+            <param name="Data">A readonly view of the data that was read.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ReadEventArgs.#ctor(System.ReadOnlyMemory{System.Byte})">
+            <summary>
+            Provides data for the <see cref="E:LaquaiLib.IO.Streams.ObservableStream`1.DataRead"/> event.
+            </summary>
+            <param name="Data">A readonly view of the data that was read.</param>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ReadEventArgs.Data">
+            <summary>A readonly view of the data that was read.</summary>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.RandomStreams.CryptographicRandomStream">
+            <summary>
+            Implements <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/> with a cryptographic random number generator.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.CryptographicRandomStream.#ctor">
+            <summary>
+            Implements <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/> with a cryptographic random number generator.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.CryptographicRandomStream.Read(System.Span{System.Byte})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.CryptographicRandomStream.ReadByte">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.CryptographicRandomStream.Dispose(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream">
+            <summary>
+            Represents a <see cref="T:System.IO.Stream"/> that generates random bytes upon reading from it.
+            It comes in two variants: <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/> for applications that do not require cryptographic security and <see cref="T:LaquaiLib.IO.Streams.RandomStreams.CryptographicRandomStream"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.RandomStreams.RandomStream.CanRead">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.RandomStreams.RandomStream.Random">
+            <summary>
+            Exposes a <see cref="T:System.Random"/> instance derived types may use.
+            If unused, should be set to <see langword="null"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.RandomStream.#ctor">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.RandomStream.#ctor(System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/> with the specified seed.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.RandomStream.#ctor(System.Random)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/> with the specified <see cref="T:System.Random"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.RandomStreams.RandomStream.Length">
+            <summary>
+            The length of the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/>. Its length will never change.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.RandomStreams.RandomStream.Position">
+            <summary>
+            The position in the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.IO.Streams.RandomStreams.RandomStream"/>. Its position will never change.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.RandomStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <param name="offset">The offset in the buffer at which to start writing.</param>
+            <param name="count">The number of bytes to write.</param>
+            <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.RandomStream.Read(System.Span{System.Byte})">
+            <summary>
+            Fills the specified buffer with random bytes.
+            </summary>
+            <param name="buffer">The buffer to fill with random bytes.</param>
+            <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.RandomStreams.RandomStream.ReadByte">
+            <summary>
+            Returns a random <see langword="byte"/> value.
+            </summary>
+            <returns>The random <see langword="byte"/> value.</returns>
         </member>
         <member name="T:LaquaiLib.Numerics.Fibonacci">
             <summary>
@@ -10215,82 +10894,57 @@
         <member name="M:LaquaiLib.Numerics.Matrix`1.Equals(System.ReadOnlySpan{LaquaiLib.Numerics.Matrix{`0}})">
             <summary>
             Checks if all passed <see cref="T:LaquaiLib.Numerics.Matrix`1"/>s are equal to this matrix (and as such, each other).
+          ates a new <see cref="T:LaquaiLib.Numerics.Vector`1"/> with all values set to zero (a zero vector) of the specified dimension.
             </summary>
-            <param name="others">The <see cref="T:LaquaiLib.Numerics.Matrix`1"/>s to check for equality.</param>
-            <returns><see langword="true"/> if all <see cref="T:LaquaiLib.Numerics.Matrix`1"/> are equal to this matrix, otherwise <see langword="false"/>.</returns>
+            <param name="dimensions">The number of dimensions the new <see cref="T:LaquaiLib.Numerics.Vector`1"/> should have.</param>
+            <returns>A new <see cref="T:LaquaiLib.Numerics.Vector`1"/> with all values set to zero.</returns>
         </member>
-        <member name="M:LaquaiLib.Numerics.Matrix`1.Equals(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Matrix`1.GetHashCode">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Matrix`1.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Matrix`1.Clone">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Numerics.Vector`1">
+        <member name="M:LaquaiLib.Numerics.Vector`1.CrossProduct(LaquaiLib.Numerics.Vector{`0})">
             <summary>
-            Represents the concept of a geometric vector of arbitrary dimensions.
-            <typeparamref name="T"/> must implement <see cref="T:System.Numerics.ISignedNumber`1"/>.
+            Calculates the cross product (vector product) of this <see cref="T:LaquaiLib.Numerics.Vector`1"/> and another.
             </summary>
+            <param name="other">The <see cref="T:LaquaiLib.Numerics.Vector`1"/> to calculate the cross product with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Numerics.Vector`1"/> that is the result of the cross product.</returns>
         </member>
-        <member name="P:LaquaiLib.Numerics.Vector`1.Item(System.Int32)">
+        <member name="M:LaquaiLib.Numerics.Vector`1.DotProduct(LaquaiLib.Numerics.Vector{`0})">
             <summary>
-            Gets the coordinate at the specified <paramref name="index"/>.
+            Calculates the dot product (scalar product) of this <see cref="T:LaquaiLib.Numerics.Vector`1"/> and another.
             </summary>
-            <param name="index">The index of the coordinate to get.</param>
-            <returns>The coordinate at the specified <paramref name="index"/>.</returns>
+            <param name="other">The <see cref="T:LaquaiLib.Numerics.Vector`1"/> to calculate the dot product with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Numerics.Vector`1"/> that is the result of the dot product.</returns>
         </member>
-        <member name="P:LaquaiLib.Numerics.Vector`1.Dimension">
+        <member name="M:LaquaiLib.Numerics.Vector`1.DotProductUnequal(LaquaiLib.Numerics.Vector{`0})">
             <summary>
-            Gets the dimensionality of the <see cref="T:LaquaiLib.Numerics.Vector`1"/>.
+            Calculates the dot product (scalar product) of this <see cref="T:LaquaiLib.Numerics.Vector`1"/> and another, allowing for <see cref="T:LaquaiLib.Numerics.Vector`1"/>s of different dimensions.
+            The missing values are filled with <see cref="P:System.Numerics.INumberBase`1.Zero"/> of <typeparamref name="T"/>.
             </summary>
+            <param name="other">The <see cref="T:LaquaiLib.Numerics.Vector`1"/> to calculate the dot product with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Numerics.Vector`1"/> that is the result of the dot product.</returns>
         </member>
-        <member name="P:LaquaiLib.Numerics.Vector`1.IsZero">
+        <member name="M:LaquaiLib.Numerics.Vector`1.TripleProduct(LaquaiLib.Numerics.Vector{`0},LaquaiLib.Numerics.Vector{`0})">
             <summary>
-            Gets whether this <see cref="T:LaquaiLib.Numerics.Vector`1"/> is equivalent to a null vector (that is, all values are zero).
+            Calculates the triple product of this <see cref="T:LaquaiLib.Numerics.Vector`1"/> and two others.
             </summary>
+            <param name="a">The first <see cref="T:LaquaiLib.Numerics.Vector`1"/> to calculate the triple product with.</param>
+            <param name="b">The second <see cref="T:LaquaiLib.Numerics.Vector`1"/> to calculate the triple product with.</param>
+            <returns>A new <see cref="T:LaquaiLib.Numerics.Vector`1"/> that is the result of the triple product.</returns>
         </member>
-        <member name="M:LaquaiLib.Numerics.Vector`1.#ctor(`0[])">
+        <member name="M:LaquaiLib.Numerics.Vector`1.IsLinearlyDependent(LaquaiLib.Numerics.Vector{`0})">
             <summary>
-            Creates a new <see cref="T:LaquaiLib.Numerics.Vector`1"/> using the specified values.
+            Determines if this and the passed <see cref="T:LaquaiLib.Numerics.Vector`1"/> are linearly dependent.
             </summary>
-            <param name="values">The coordinates of the vector.</param>
+            <param name="comp">The first <see cref="T:LaquaiLib.Numerics.Vector`1"/>.</param>
+            <returns><see langword="true"/> if the vectors are linearly dependent, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Numerics.Vector`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+        <member name="M:LaquaiLib.Numerics.Vector`1.IsLinearlyDependent(LaquaiLib.Numerics.Vector{`0},LaquaiLib.Numerics.Vector{`0})">
             <summary>
-            Creates a new <see cref="T:LaquaiLib.Numerics.Vector`1"/> using the specified values.
+            Determines if this and the two passed <see cref="T:LaquaiLib.Numerics.Vector`1"/> are linearly dependent.
             </summary>
-            <param name="values">The coordinates of the vector.</param>
+            <param name="first">The first <see cref="T:LaquaiLib.Numerics.Vector`1"/>.</param>
+            <param name="second">The second <see cref="T:LaquaiLib.Numerics.Vector`1"/>.</param>
+            <returns><see langword="true"/> if the vectors are linearly dependent, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Numerics.Vector`1.#ctor(System.ReadOnlySpan{`0})">
-            <summary>
-            Creates a new <see cref="T:LaquaiLib.Numerics.Vector`1"/> using the specified values.
-            </summary>
-            <param name="values">The coordinates of the vector.</param>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Vector`1.ToArray">
-            <summary>
-            Creates a copy of the <see cref="T:LaquaiLib.Numerics.Vector`1"/>'s coordinates and returns them as an array.
-            </summary>
-            <returns>A copy of the <see cref="T:LaquaiLib.Numerics.Vector`1"/>'s coordinates as an array.</returns>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Vector`1.op_Addition(LaquaiLib.Numerics.Vector{`0},LaquaiLib.Numerics.Vector{`0})">
-            <summary>
-            Adds two <see cref="T:LaquaiLib.Numerics.Vector`1"/>s.
-            </summary>
-            <param name="left">The first vector to add.</param>
-            <param name="right">The second vector to add.</param>
-            <returns>A new <see cref="T:LaquaiLib.Numerics.Vector`1"/> that is the result of the addition.</returns>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Vector`1.op_Subtraction(LaquaiLib.Numerics.Vector{`0},LaquaiLib.Numerics.Vector{`0})">
-            <summary>
-            Subtracts a <see cref="T:LaquaiLib.Numerics.Vector`1"/> from another.
-            </summary>
-            <param name="left">The vector to subtract from.</param>
+        <member nvector to subtract from.</param>
             <param name="right">The vector to subtract.</param>
             <returns>A new <see cref="T:LaquaiLib.Numerics.Vector`1"/> that is the result of the subtraction.</returns>
         </member>
@@ -10591,533 +11245,6 @@
             <param name="radius">The radius of the circle.</param>
             <param name="resolution">How many degrees / points constitute a full rotation around the circle.</param>
             <returns>A <see cref="T:System.ValueTuple`2"/> with the <c>Sin</c> and <c>Cos</c> functions that, together, trace an circle with the specified <paramref name="radius"/> and <paramref name="resolution"/> around the point <c>(<paramref name="x"/>, <paramref name="y"/>)</c>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Streams.MemoryOrFileStream">
-            <summary>
-            Contains factory methods that produce either <see cref="T:System.IO.MemoryStream"/> or <see cref="T:System.IO.FileStream"/> instances, depending on the size of the data expected to be written to it.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff">
-            <summary>
-            The number of bytes at which the stream will switch from a <see cref="T:System.IO.MemoryStream"/> to a <see cref="T:System.IO.FileStream"/>.
-            </summary>
-            <remarks>
-            You may freely change this value at runtime. Its initial value is 64 MB.
-            </remarks>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.ResetCutoff">
-            <summary>
-            Resets the <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/> to the initial value.
-            </summary>
-            <returns>The new value of <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Create(System.Int32)">
-            <summary>
-            Creates a new <see cref="T:System.IO.Stream"/> with the given expected payload size.
-            </summary>
-            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="T:System.IO.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
-            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Create(System.IO.Stream,System.Boolean)">
-            <summary>
-            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="other"/> <see cref="T:System.IO.Stream"/>.
-            Its data from its current position to the end will be copied to the new <see cref="T:System.IO.Stream"/>. Both streams' positions will be advanced by the number of bytes copied.
-            </summary>
-            <param name="other">The <see cref="T:System.IO.Stream"/> to copy the data from.</param>
-            <param name="fromBeginning">Whether to seek <paramref name="other"/> to its beginning before copying the data.</param>
-            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.MemoryOrFileStream.Create(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
-            <summary>
-            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="buffer"/>.
-            Its data is copied to the new <see cref="T:System.IO.Stream"/> and its position advanced by the number of bytes copied.
-            </summary>
-            <param name="buffer">The buffer to copy the data from.</param>
-            <param name="offset">The index in <paramref name="buffer"/> at which to start copying.</param>
-            <param name="length">The number of bytes to copy from <paramref name="buffer"/>.</param>
-            <param name="canResize">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it can resize itself if the data exceeds its initial capacity.</param>
-            <param name="canWrite">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it is created as writable.</param>
-            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
-            <remarks>
-            <para/><paramref name="canResize"/> and <paramref name="canWrite"/> are ignored if the number of bytes that would be copied exceeds <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>.
-            <para/>Calling this constructor with just <paramref name="buffer"/> matches the behavior of <see cref="M:System.IO.MemoryStream.#ctor(System.Byte[])"/>, except if its length exceeds <see cref="P:LaquaiLib.Streams.MemoryOrFileStream.Cutoff"/>, in which case a <see cref="T:System.IO.FileStream"/> is created.
-            </remarks>
-        </member>
-        <member name="T:LaquaiLib.Streams.MultiStream">
-            <summary>
-            Represents a wrapper for multiple <see cref="T:System.IO.Stream"/> instances to be written to as one.
-            Writes are not guaranteed to be performed on each passed <see cref="T:System.IO.Stream"/> in the order they were passed, however, no two writes on two <see cref="T:System.IO.Stream"/> will ever occur concurrently.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.#ctor(System.ReadOnlySpan{System.IO.Stream})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
-            </summary>
-            <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.#ctor(System.Collections.Generic.IEnumerable{System.IO.Stream})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.MultiStream"/> with the given <see cref="T:System.IO.Stream"/>s.
-            </summary>
-            <param name="streams">A collection of <see cref="T:System.IO.Stream"/> instances that are to be written to simultaneously.</param>
-        </member>
-        <member name="P:LaquaiLib.Streams.MultiStream.CanRead">
-            <summary>
-            Unconditionally returns <see langword="false"/>; <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support reading.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.MultiStream.CanSeek">
-            <summary>
-            Unconditionally returns <see langword="false"/>; <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support seeking.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.MultiStream.CanWrite">
-            <summary>
-            Unconditionally returns <see langword="true"/>; <see cref="T:LaquaiLib.Streams.MultiStream"/> broadcasts writes directly to the wrapped instances.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.MultiStream.Length">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.MultiStream.Position">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Flush">
-            <summary>
-            Flushes all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Seek(System.Int64,System.IO.SeekOrigin)">
-            <summary>
-            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>. <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support seeking.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Write(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Writes a sequence of bytes to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance and advances the current position within the <see cref="T:System.IO.Stream"/>s by the number of <see cref="T:System.Byte"/>s written.
-            </summary>
-            <param name="buffer">The buffer containing the data to write.</param>
-            <param name="offset">The offset in the buffer at which to begin writing.</param>
-            <param name="count">The number of <see cref="T:System.Byte"/>s to write.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Write(System.ReadOnlySpan{System.Byte})">
-            <summary>
-            Writes a sequence of bytes to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance and advances the current position within the <see cref="T:System.IO.Stream"/>s by the number of <see cref="T:System.Byte"/>s written.
-            </summary>
-            <param name="buffer">A region of memory to copy to all <see cref="T:System.IO.Stream"/>s wrapped by this <see cref="T:LaquaiLib.Streams.MultiStream"/> instance.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.MultiStream.SetLength(System.Int64)">
-            <summary>
-            Unconditionally throws an <see cref="T:System.InvalidOperationException"/>. <see cref="T:LaquaiLib.Streams.MultiStream"/> does not support operations affecting the underlying streams directly (beyond broadcasted writes).
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Streams.NullStream">
-            <summary>
-            Implements <see cref="T:System.IO.Stream"/> without a backing store. All operations are allowed and are no-ops.
-            This can be useful when authoring <see cref="T:System.IO.Stream"/> types that only support particular operations.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.Instance">
-            <summary>
-            Returns a singleton instance of <see cref="T:LaquaiLib.Streams.NullStream"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.CanRead">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.CanSeek">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.CanWrite">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.Length">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.Position">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.CanTimeout">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.ReadTimeout">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.NullStream.WriteTimeout">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.NullStream.Flush">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.NullStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.NullStream.Seek(System.Int64,System.IO.SeekOrigin)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.NullStream.SetLength(System.Int64)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.NullStream.Write(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Streams.ExceptStream">
-            <summary>
-            Implements <see cref="T:System.IO.Stream"/> without a backing store. Except for zero reads and writes, all operations throw <see cref="T:System.NotSupportedException"/>.
-            This can be useful when authoring <see cref="T:System.IO.Stream"/> types that only support particular operations.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.CanRead">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.CanSeek">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.CanWrite">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.Length">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.Position">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.CanTimeout">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.ReadTimeout">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ExceptStream.WriteTimeout">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ExceptStream.Flush">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ExceptStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ExceptStream.Seek(System.Int64,System.IO.SeekOrigin)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ExceptStream.SetLength(System.Int64)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ExceptStream.Write(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Streams.ObservableStream`1">
-            <summary>
-            Implements a <see cref="T:System.IO.Stream"/> that provides  by wrapping another.
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="P:LaquaiLib.Streams.ObservableStream`1.CanRead">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ObservableStream`1.CanSeek">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ObservableStream`1.CanWrite">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ObservableStream`1.Length">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.ObservableStream`1.Position">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.Flush">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.FlushAsync(System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.Read(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.Read(System.Span{System.Byte})">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.ReadByte">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.Seek(System.Int64,System.IO.SeekOrigin)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.SetLength(System.Int64)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.Write(System.Byte[],System.Int32,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.Write(System.ReadOnlySpan{System.Byte})">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.WriteByte(System.Byte)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.CopyTo(System.IO.Stream,System.Int32)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.ToString">
-            <inheritdoc/>
-        </member>
-        <member name="E:LaquaiLib.Streams.ObservableStream`1.Flushed">
-            <summary>
-            Occurs when the stream is flushed.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Streams.ObservableStream`1.DataRead">
-            <summary>
-            Occurs when data is read from the stream.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Streams.ObservableStream`1.Seeked">
-            <summary>
-            Occurs when the stream is seeked, irrespective of whether this was part of a write or read operation, a call to <see cref="M:LaquaiLib.Streams.ObservableStream`1.Seek(System.Int64,System.IO.SeekOrigin)"/> or a direct change of the <see cref="P:LaquaiLib.Streams.ObservableStream`1.Position"/> property.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Streams.ObservableStream`1.DataWritten">
-            <summary>
-            Occurs when data is written to the stream.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Streams.ObservableStream`1.Resized">
-            <summary>
-            Occurs when the stream is resized, that is, an operation causes <see cref="P:LaquaiLib.Streams.ObservableStream`1.Length"/> to change.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.#ctor(`0)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> instance by wrapping an existing <see cref="T:System.IO.Stream"/>.
-            </summary>
-            <param name="stream">The <see cref="T:System.IO.Stream"/> to wrap.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.Dispose(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStream`1.DisposeAsync">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Streams.ObservableStreamFactory">
-            <summary>
-            Provides factory methods for <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create``1">
-            <summary>
-            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> by creating a new instance of <typeparamref name="T"/>.
-            </summary>
-            <typeparam name="T">The type of <see cref="T:System.IO.Stream"/> to create. Must have a public parameterless constructor.</typeparam>
-            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create``1(``0)">
-            <summary>
-            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> from an existing <see cref="T:System.IO.Stream"/>.
-            </summary>
-            <typeparam name="T">The type of the <see cref="T:System.IO.Stream"/> to wrap.</typeparam>
-            <param name="stream">The <see cref="T:System.IO.Stream"/> to wrap.</param>
-            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create(System.Byte[],System.Int32,System.Int32,System.Boolean)">
-            <summary>
-            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> from a portion of a <see cref="T:System.Byte"/> array.
-            </summary>
-            <param name="data">The <see cref="T:System.Byte"/> array to create the <see cref="T:System.IO.MemoryStream"/> from.</param>
-            <param name="offset">The offset in the <see cref="T:System.Byte"/> array to start reading from.</param>
-            <param name="length">The number of bytes to read from the <see cref="T:System.Byte"/> array.</param>
-            <param name="canResize">Whether the underlying <see cref="T:System.IO.MemoryStream"/> should be made resizable.</param>
-            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
-            <summary>
-            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> that wraps a <see cref="T:System.IO.FileStream"/>.
-            </summary>
-            <param name="path">The path to the file to open.</param>
-            <param name="fileMode">A <see cref="T:System.IO.FileMode"/> enum value that specifies how the operating system should open the file.</param>
-            <param name="fileAccess">A <see cref="T:System.IO.FileAccess"/> enum value that specifies the access level.</param>
-            <param name="fileShare">A <see cref="T:System.IO.FileShare"/> enum value that specifies the sharing mode of the file.</param>
-            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.ObservableStreamFactory.Create(System.String,System.IO.FileStreamOptions)">
-            <summary>
-            Creates an <see cref="T:LaquaiLib.Streams.ObservableStream`1"/> that wraps a <see cref="T:System.IO.FileStream"/>.
-            </summary>
-            <param name="path">The path to the file to open.</param>
-            <param name="fileStreamOptions">A <see cref="T:System.IO.FileStreamOptions"/> instance that specifies how the <see cref="T:System.IO.FileStream"/> is opened.</param>
-            <returns>The created <see cref="T:LaquaiLib.Streams.ObservableStream`1"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Streams.WrittenEventArgs">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataWritten"/> event.
-            </summary>
-            <param name="Data">A readonly view of the data that was written.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.WrittenEventArgs.#ctor(System.ReadOnlyMemory{System.Byte})">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataWritten"/> event.
-            </summary>
-            <param name="Data">A readonly view of the data that was written.</param>
-        </member>
-        <member name="P:LaquaiLib.Streams.WrittenEventArgs.Data">
-            <summary>A readonly view of the data that was written.</summary>
-        </member>
-        <member name="T:LaquaiLib.Streams.SeekedEventArgs">
-            <summary>
-            Provides data about the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Seeked"/> event.
-            </summary>
-            <param name="OldPosition">The old position of the stream before the seek operation.</param>
-            <param name="NewPosition">The new position of the stream after the seek operation.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.SeekedEventArgs.#ctor(System.Int64,System.Int64)">
-            <summary>
-            Provides data about the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Seeked"/> event.
-            </summary>
-            <param name="OldPosition">The old position of the stream before the seek operation.</param>
-            <param name="NewPosition">The new position of the stream after the seek operation.</param>
-        </member>
-        <member name="P:LaquaiLib.Streams.SeekedEventArgs.OldPosition">
-            <summary>The old position of the stream before the seek operation.</summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.SeekedEventArgs.NewPosition">
-            <summary>The new position of the stream after the seek operation.</summary>
-        </member>
-        <member name="T:LaquaiLib.Streams.ResizedEventArgs">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Resized"/> event.
-            </summary>
-            <param name="OldLength">The old length of the stream before the resize operation.</param>
-            <param name="NewLength">The new length of the stream after the resize operation.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.ResizedEventArgs.#ctor(System.Int64,System.Int64)">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.Resized"/> event.
-            </summary>
-            <param name="OldLength">The old length of the stream before the resize operation.</param>
-            <param name="NewLength">The new length of the stream after the resize operation.</param>
-        </member>
-        <member name="P:LaquaiLib.Streams.ResizedEventArgs.OldLength">
-            <summary>The old length of the stream before the resize operation.</summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.ResizedEventArgs.NewLength">
-            <summary>The new length of the stream after the resize operation.</summary>
-        </member>
-        <member name="T:LaquaiLib.Streams.ReadEventArgs">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataRead"/> event.
-            </summary>
-            <param name="Data">A readonly view of the data that was read.</param>
-        </member>
-        <member name="M:LaquaiLib.Streams.ReadEventArgs.#ctor(System.ReadOnlyMemory{System.Byte})">
-            <summary>
-            Provides data for the <see cref="E:LaquaiLib.Streams.ObservableStream`1.DataRead"/> event.
-            </summary>
-            <param name="Data">A readonly view of the data that was read.</param>
-        </member>
-        <member name="P:LaquaiLib.Streams.ReadEventArgs.Data">
-            <summary>A readonly view of the data that was read.</summary>
-        </member>
-        <member name="T:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream">
-            <summary>
-            Implements <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> with a cryptographic random number generator.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.#ctor">
-            <summary>
-            Implements <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> with a cryptographic random number generator.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.Read(System.Span{System.Byte})">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.ReadByte">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream.Dispose(System.Boolean)">
-            <inheritdoc/>
-        </member>
-        <member name="T:LaquaiLib.Streams.RandomStreams.RandomStream">
-            <summary>
-            Represents a <see cref="T:System.IO.Stream"/> that generates random bytes upon reading from it.
-            It comes in two variants: <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> for applications that do not require cryptographic security and <see cref="T:LaquaiLib.Streams.RandomStreams.CryptographicRandomStream"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.CanRead">
-            <inheritdoc/>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.Random">
-            <summary>
-            Exposes a <see cref="T:System.Random"/> instance derived types may use.
-            If unused, should be set to <see langword="null"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.#ctor">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.#ctor(System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> with the specified seed.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.#ctor(System.Random)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/> with the specified <see cref="T:System.Random"/> instance.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.Length">
-            <summary>
-            The length of the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>. Its length will never change.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Streams.RandomStreams.RandomStream.Position">
-            <summary>
-            The position in the <see cref="T:System.IO.Stream"/>. This is irrelevant for <see cref="T:LaquaiLib.Streams.RandomStreams.RandomStream"/>. Its position will never change.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.Read(System.Byte[],System.Int32,System.Int32)">
-            <summary>
-            Fills the specified buffer with random bytes.
-            </summary>
-            <param name="buffer">The buffer to fill with random bytes.</param>
-            <param name="offset">The offset in the buffer at which to start writing.</param>
-            <param name="count">The number of bytes to write.</param>
-            <returns>The number of bytes written, which is always equal to <paramref name="count"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.Read(System.Span{System.Byte})">
-            <summary>
-            Fills the specified buffer with random bytes.
-            </summary>
-            <param name="buffer">The buffer to fill with random bytes.</param>
-            <returns>The number of bytes written, which is always equal to the length of the buffer.</returns>
-        </member>
-        <member name="M:LaquaiLib.Streams.RandomStreams.RandomStream.ReadByte">
-            <summary>
-            Returns a random <see langword="byte"/> value.
-            </summary>
-            <returns>The random <see langword="byte"/> value.</returns>
         </member>
         <!-- Badly formed XML comment ignored for member "T:LaquaiLib.Text.BufferTextWriter" -->
         <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Text.BufferTextWriter.#ctor(System.Int32,System.Text.Encoding)" -->
@@ -11931,62 +12058,48 @@
             <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
         </member>
         <member name="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1">
-            <summary>
-            The exception that is thrown when an assertion fails.
+  ory"/>.
             </summary>
-            <remarks>
-            Initializes a new <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> with the value that failed an assertion and a message.
-            </remarks>
-            <param name="value">The value that caused an assertion to fail.</param>
-            <param name="innerException">The exception that is the cause of the current exception.</param>
-            <param name="message">A message that described the assertion failure.</param>
+            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
+            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
+            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1.#ctor(`0,System.Exception,System.String)">
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.ReadOnlySpan{System.Func{``0}})">
             <summary>
-            The exception that is thrown when an assertion fails.
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates its return value if it succeeds, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by the <paramref name="methods"/>.
             </summary>
-            <remarks>
-            Initializes a new <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> with the value that failed an assertion and a message.
-            </remarks>
-            <param name="value">The value that caused an assertion to fail.</param>
-            <param name="innerException">The exception that is the cause of the current exception.</param>
-            <param name="message">A message that described the assertion failure.</param>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="methods">The methods to try.</param>
+            <returns>The value of the first method that doesn't throw an exception.</returns>
+            <exception cref="T:System.AggregateException">Thrown if all methods throw an exception.</exception>
         </member>
-        <member name="P:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1.Value">
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Action{``0},System.ReadOnlySpan{``0})">
             <summary>
-            The value that caused an assertion to fail.
+            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by <paramref name="test"/>.
             </summary>
+            <typeparam name="T">The Type of the items to test.</typeparam>
+            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
+            <param name="items">The items to test.</param>
+            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for.</returns>
         </member>
-        <member name="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException">
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.ReadOnlySpan{System.Func{``0}})">
             <summary>
-            The exception that is thrown when an unhandled exception is wrapped or otherwise handled in a <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> method.
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first succeeds, otherwise returning <paramref name="defaultValue"/>.
             </summary>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="defaultValue">The default value to return if all methods throw an exception.</param>
+            <param name="methods">The methods to try.</param>
+            <returns>The first value returned by a method that doesn't throw an exception, or the default value if all methods throw an exception.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceException.#ctor(System.String,System.Exception)">
+        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.ReadOnlySpan{System.Func{``0}})">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException"/>.
+            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first one that succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
             </summary>
-            <param name="message">A message that describes the error.</param>
-            <param name="innerException">The exception that is the cause of the current exception.</param>
-        </member>
-        <member name="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers">
-            <summary>
-            Exposes <see cref="T:System.EventHandler`1"/> instances registerable for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.RegisterAll">
-            <summary>
-            Registers all <see cref="T:System.EventHandler`1"/> instances in the <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> class for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.WrapEntryPointNotFoundException(System.Object,System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs)">
-            <summary>
-            Wraps <see cref="T:System.EntryPointNotFoundException"/>s in a <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException"/> with additional information about the DLL and entry point.
-            <para/>Rethrows the original exception if no additional information could be gathered.
-            </summary>
-            <param name="sender">Ignored.</param>
-            <param name="e">The <see cref="T:System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs"/> instance containing the event data.</param>
-            <exception cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException">Thrown when an <see cref="T:System.EntryPointNotFoundException"/> is caught. Contains additional information about the DLL and entry point.</exception>
+            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
+            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="methods"/> throw an exception. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
+            <param name="methods">The methods to try.</param>
+            <returns>The first value returned by a method that doesn't throw an exception, otherwise the value produced by <paramref name="defaution about the DLL and entry point.</exception>
         </member>
         <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.EntryPointNotFoundExceptionDataRegex">
             <remarks>
@@ -12330,128 +12443,7 @@
             Attempts to find a tool in Visual Studio installations that are located in default installation directories, constrained by the specified parameters.
             </summary>
             <param name="tool">The tool that should be searched for.</param>
-            <param name="versions">The version(s) of Visual Studio that should be included in the search.</param>
-            <param name="edition">The edition(s) of Visual Studio that should be included in the search.</param>
-            <param name="architecture">The architecture(s) of an app or tool that should be included in the search.</param>
-            <returns>The paths of the tool that matched.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Meta.MetaHelpers.FindTool(System.String,LaquaiLib.Util.Meta.VSVersion,LaquaiLib.Util.Meta.VSEdition,LaquaiLib.Util.Meta.Architecture)">
-            <summary>
-            Attempts to find a file in Visual Studio installations that are located in default installation directories, constrained by the specified parameters.
-            </summary>
-            <param name="fileName">The name of the file that should be searched for.</param>
-            <param name="versions">The version(s) of Visual Studio that should be included in the search.</param>
-            <param name="edition">The edition(s) of Visual Studio that should be included in the search.</param>
-            <param name="architecture">The architecture(s) of an app or tool that should be included in the search.</param>
-            <returns>The paths of the file that matched.</returns>
-        </member>
-        <member name="T:LaquaiLib.Util.Meta.MetaTool">
-            <summary>
-            Specifies the tool that should be searched for.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.MetaTool.MSBuild">
-            <summary>
-            Indicates that <c>msbuild.exe</c> should be searched for.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.MetaTool.Dumpbin">
-            <summary>
-            Indicates that <c>dumpbin.exe</c> should be searched for.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.MetaTool.Csc">
-            <summary>
-            Indicates that <c>csc.exe</c> should be searched for.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.Meta.VSEdition">
-            <summary>
-            Specifies the edition(s) of Visual Studio that should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSEdition.Community">
-            <summary>
-            Indicates that Community editions of Visual Studio should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSEdition.Professional">
-            <summary>
-            Indicates that Professional editions of Visual Studio should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSEdition.Enterprise">
-            <summary>
-            Indicates that Enterprise editions of Visual Studio should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSEdition.Preview">
-            <summary>
-            Indicates that Preview editions of Visual Studio should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSEdition.Any">
-            <summary>
-            Indicates that any edition of Visual Studio is included in the search.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.Meta.VSVersion">
-            <summary>
-            Specifies the version(s) of Visual Studio that should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSVersion.VS2017">
-            <summary>
-            Indicates that Visual Studio 2017 installations should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSVersion.VS2019">
-            <summary>
-            Indicates that Visual Studio 2019 installations should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSVersion.VS2022">
-            <summary>
-            Indicates that Visual Studio 2022 installations should be included in the search.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Meta.VSVersion.Any">
-            <summary>
-            Indicates that any version of Visual Studio is included in the search.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.Miscellaneous">
-            <summary>
-            Contains miscellaneous functionality.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Miscellaneous.Range``1(``0,``0)">
-            <summary>
-            Compiles an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>s from <c>0</c> to <paramref name="stop"/> with a step width of <paramref name="step"/>.
-            </summary>
-            <typeparam name="T">The type of the items in the created sequence.</typeparam>
-            <param name="stop">The end of the range.</param>
-            <param name="step">The step width of the range.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> as described.</returns>
-            <exception cref="T:System.ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
-        </member>
-        <member name="M:LaquaiLib.Util.Miscellaneous.Range``1(``0)">
-            <summary>
-            Compiles an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>s from <c>0</c> to <paramref name="stop"/> - 1 with a step width of <c>1</c>.
-            </summary>
-            <typeparam name="T">The type of the items in the created sequence.</typeparam>
-            <param name="stop">The end of the range.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> as described.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Miscellaneous.Range``1(``0,``0,``0)">
-            <summary>
-            Compiles an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/>s from <paramref name="start"/> to <paramref name="stop"/> with a step width of <paramref name="step"/>.
-            </summary>
-            <typeparam name="T">The type of the items in the created sequence.</typeparam>
-            <param name="start">The inclusive start of the range.</param>
-            <param name="stop">The exclusive end of the range.</param>
-            <param name="step">The step width of the range.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> as described.</returns>
+            <param /> as described.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
         </member>
         <member name="T:LaquaiLib.Util.Misc.AsyncEnumerableWrapper`1">
@@ -12494,6 +12486,94 @@
             Every <see cref="M:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.MoveNextAsync"/> call is awaited in a new <see cref="T:System.Threading.Tasks.Task" />.
             May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream or when every enumerator step is expensive.
             <para/><b>Warning!</b> Do NOT use this <see langword="struct"/> right before an aggregating operation. Instead, use the corresponding aggregation methods from <see cref="!:Extensions.ALinq.IEnumerableExtensions"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming; every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed. To reduce overhead, usage of the asynchronous methods in <see cref="!:Extensions.ALinq.IEnumerableExtensions"/> is recommended (which batch the entire enumeration and potential allocation of the aggregation result into a single <see cref="T:System.Threading.Tasks.Task"/>).
+            </summary>
+            <typeparam name="T">The Type of elements the <see cref="T:System.Collections.Generic.IEnumerator`1"/> yields.</typeparam>
+            <param name="from">The <see cref="T:System.Collections.Generic.IEnumerator`1"/> to wrap.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.#ctor(System.Collections.Generic.IEnumerator{`0},System.Threading.CancellationToken)">
+            <summary>
+            Wraps an <see cref="T:System.Collections.Generic.IEnumerator`1"/> as an <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> to allow asynchronous consumption.
+            Every <see cref="M:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.MoveNextAsync"/> call is awaited in a new <see cref="T:System.Threading.Tasks.Task" />.
+            May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream or when every enumerator step is expensive.
+            <para/><b>Warning!</b> Do NOT use this <see langword="struct"/> right before an aggregating operation. Instead, use the corresponding aggregation methods from <see cref="!:Extensions.ALinq.IEnumerableExtensions"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming; every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed. To reduce overhead, usage of the asynchronous methods in <see cref="!:Extensions.ALinq.IEnumerableExtensions"/> is recommended (which batch the entire enumeration and potential allocation of the aggregation result into a single <see cref="T:System.Threading.Tasks.Task"/>).
+            </summary>
+            <typeparam name="T">The Type of elements the <see cref="T:System.Collections.Generic.IEnumerator`1"/> yields.</typeparam>
+            <param name="from">The <see cref="T:System.Collections.Generic.IEnumerator`1"/> to wrap.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.Empty">
+            <summary>
+            Gets an empty <see cref="T:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1"/> (that is, an instance that yields no elements).
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Threading.CancellationToken)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1"/> <see langword="struct"/> using an <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+            <param name="from">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to wrap.</param>
+            <remarks>
+            <see cref="T:System.Linq.ParallelQuery`1"/> is supported.
+            </remarks>
+        </member>
+        <member name="P:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.DisposeAsync">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.Misc.AsyncEnumeratorWrapper`1.MoveNextAsync">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.Misc.DelegateProgress">
+            <summary>
+            Contains static factory methods for creating <see cref="T:LaquaiLib.Util.Misc.DelegateProgress`1"/> instances.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.Misc.DelegateProgress.Create``1(System.Action{``0})">
+            <summary>
+            Creates a new instance of <see cref="T:LaquaiLib.Util.Misc.DelegateProgress`1"/> using the specified delegate.
+            </summary>
+            <typeparam name="T">The type of progress value.</typeparam>
+            <param name="action">The delegate to proxy <see cref="M:System.IProgress`1.Report(`0)"/> invocations to.</param>
+            <returns>The created <see cref="T:LaquaiLib.Util.Misc.DelegateProgress`1"/> instance.</returns>
+        </member>
+        <member name="T:LaquaiLib.Util.Misc.DelegateProgress`1">
+            <summary>
+            Implements <see cref="T:System.IProgress`1"/> using a delegate.
+            </summary>
+            <typeparam name="T">The type of progress value.</typeparam>
+            <param name="action">The delegate to proxy <see cref="M:LaquaiLib.Util.Misc.DelegateProgress`1.Report(`0)"/> invocations to.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Misc.DelegateProgress`1.#ctor(System.Action{`0})">
+            <summary>
+            Implements <see cref="T:System.IProgress`1"/> using a delegate.
+            </summary>
+            <typeparam name="T">The type of progress value.</typeparam>
+            <param name="action">The delegate to proxy <see cref="M:LaquaiLib.Util.Misc.DelegateProgress`1.Report(`0)"/> invocations to.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.Misc.DelegateProgress`1.Report(`0)">
+            <summary>
+            Reports the specified <paramref name="progress"/> value.
+            </summary>
+            <param name="progress">The value to report.</param>
+        </member>
+        <member name="T:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult">
+            <summary>
+            Encapsulates a command dispatch result; that is, a command sent to a <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation and the output produced by the script that received the command in response to it.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Input">
+            <summary>
+            The input sent to the <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation that produced this output.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Output">
+            <summary>
+            The output produced by the script that received the <see cref="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Input"/>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.ShellInterfaces.CommandInterface">
+            <summary>
+            Implements <see cref="T:LaquaiLib.Util.ShellInterfaces.I-consuming; every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed. To reduce overhead, usage of the asynchronous methods in <see cref="!:Extensions.ALinq.IEnumerableExtensions"/> is recommended (which batch the entire enumeration and potential allocation of the aggregation result into a single <see cref="T:System.Threading.Tasks.Task"/>).
             </summary>
             <typeparam name="T">The Type of elements the <see cref="T:System.Collections.Generic.IEnumerator`1"/> yields.</typeparam>
             <param name="from">The <see cref="T:System.Collections.Generic.IEnumerator`1"/> to wrap.</param>
@@ -13006,71 +13086,7 @@
             <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
             <returns>The result of the message box.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/> and <paramref name="caption"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/> and <paramref name="button"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/> and <paramref name="defaultButton"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/> and <paramref name="icon"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/> and <paramref name="modality"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
-            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
-            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
-            <returns>The result of the message box.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/>, <paramref name="modality"/> and <paramref name="otherOptions"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
-            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String)">se.</param>
             <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
             <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
             <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
@@ -13106,19 +13122,75 @@
         </member>
         <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String)">
             <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/> and <paramref name="caption"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
-            </summary>
-            <param name="text">The text to display.</param>
-            <param name="caption">The caption to display.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+            Asynchronously shows a message box with the specified <paramref name="text"/> and <paramref name="caption"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Ue cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <returns>The result of the message box.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32)">
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
             <summary>
-            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/> and <paramref name="button"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/> and <paramref name="modality"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
             </summary>
             <param name="text">The text to display.</param>
             <param name="caption">The caption to display.</param>
             <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/>, <paramref name="modality"/> and <paramref name="otherOptions"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Show(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
+            <summary>
+            Shows a message box using the specified <paramref name="configuration"/>.
+            </summary>
+            <param name="configuration">The <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> to use.</param>
+            <returns>The result of the message box.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.Nullable{System.IntPtr},System.String,System.String,System.Nullable{System.UInt32},System.Nullable{System.UInt32},System.Null user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/> and <paramref name="modality"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Asynchronously shows a message box with the specified <paramref name="text"/>, <paramref name="caption"/>, <paramref name="button"/>, <paramref name="defaultButton"/>, <paramref name="icon"/>, <paramref name="modality"/> and <paramref name="otherOptions"/>. All other properties will use the defaults configured in this <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory"/>'s <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Configuration"/> instance.
+            </summary>
+            <param name="text">The text to display.</param>
+            <param name="caption">The caption to display.</param>
+            <param name="button">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
+            <param name="defaultButton">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.DefaultButton"/> value to use.</param>
+            <param name="icon">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Icon"/> value to use.</param>
+            <param name="modality">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.Modality"/> value to use.</param>
+            <param name="otherOptions">The <see cref="P:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.OtherOptions"/> value to use.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration)">
+            <summary>
+            Asynchronously shows a message box using the specified <paramref name="configuration"/>.
+            </summary>
+            <param name="configuration">The <see cref="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxConfiguration"/> to use.</param>
+            <returns>A <see cref="T:System.Threadins.MessageBox.MessageBoxFactory.Button"/> value to use.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the user's interaction with the message box. It's <see cref="P:System.Threading.Tasks.Task`1.Result"/> is the result of that interaction.</returns>
         </member>
         <member name="M:LaquaiLib.Util.WpfForms.MessageBox.MessageBoxFactory.ShowAsync(System.String,System.String,System.UInt32,System.UInt32)">
@@ -15633,116 +15705,7 @@
         </member>
         <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_DWMWINDOWMAXIMIZEDCHANGE">
             <summary>
-            WM_DWMWINDOWMAXIMIZEDCHANGE will let you know when a DWM composed window is maximized. You also have to register for this message as well. You'd have other window go opaque when this message is sent.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_GETTITLEBARINFOEX">
-            <summary>
-            Sent to request extended title bar information. A window receives this message through its WindowProc function.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_HANDHELDFIRST">
-            <inheritdoc/>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_HANDHELDLAST">
-            <inheritdoc/>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_AFXFIRST">
-            <inheritdoc/>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_AFXLAST">
-            <inheritdoc/>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_PENWINFIRST">
-            <inheritdoc/>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_PENWINLAST">
-            <inheritdoc/>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_USER">
-            <summary>
-            The WM_USER constant is used by applications to help define private messages for use by private window classes, usually of the form WM_USER+X, where X is an integer value.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_CPL_LAUNCH">
-            <summary>
-            An application sends the WM_CPL_LAUNCH message to Windows Control Panel to request that a Control Panel application be started.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_CPL_LAUNCHED">
-            <summary>
-            The WM_CPL_LAUNCHED message is sent when a Control Panel application, started by the WM_CPL_LAUNCH message, has closed. The WM_CPL_LAUNCHED message is sent to the window identified by the wParam parameter of the WM_CPL_LAUNCH message that started the application.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_APP">
-            <summary>
-            The WM_APP constant is used by applications to help define private messages, usually of the form WM_APP+X, where X is an integer value.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Threading.AsyncTimer">
-            <summary>
-            Implements a timer that periodically invokes one or more callbacks asynchronously.
-            Callbacks that take longer to return that the configured period will cause ticks to be combined.
-            </summary>
-            <remarks>
-            This implementation uses <see cref="T:System.Threading.PeriodicTimer"/> for signaling and a <see cref="T:System.Threading.Tasks.Task"/> for efficient ticking. It is important the instance be disposed when no longer needed to prevent resource leaks.
-            </remarks>
-        </member>
-        <member name="P:LaquaiLib.Threading.AsyncTimer.Period">
-            <summary>
-            Gets or sets the interval between invocations of the callback.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Threading.AsyncTimer.State">
-            <summary>
-            Gets or sets the state object passed to the callback on each invocation.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Threading.AsyncTimer.Callback">
-            <summary>
-            Allows registering or unregistering a callback that is invoked periodically.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.#ctor(System.TimeSpan)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.#ctor(System.TimeSpan,System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and state.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="callback">The state object passed to the callback on each invocation.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.#ctor(System.TimeSpan,System.Object,System.ReadOnlySpan{System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task}})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and state and registers the specified callbacks for invocation.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="state">The state object passed to the callback on each invocation.</param>
-            <param name="callbacks">The callbacks to invoke periodically.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.Start(System.TimeSpan)">
-            <summary>
-            Creates and starts a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.Start(System.TimeSpan,System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
-            <summary>
-            Creates and starts a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and callback.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="callback">The state object passed to the callback on each invocation.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.Start(System.TimeSpan,System.Object,System.ReadOnlySpan{System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task}})">
-            <summary>
-            Creates and starts a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and state and registers the specified callbacks for invocation.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="state">The state object passed to the callback on each invocation.</param>
+            WM_DWMWINDOWe state object passed to the callback on each invocation.</param>
             <param name="callbacks">The callbacks to invoke periodically.</param>
         </member>
         <member name="M:LaquaiLib.Threading.AsyncTimer.DisposeAsync">
@@ -16585,6 +16548,81 @@
             <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EntryPointNotFoundExceptionDataRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(System.Int32[],System.Int32@,System.Int32@,System.Int32@)">
+            <summary>Pops 2 values from the backtracking stack.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32)">
+            <summary>Pushes 1 value onto the backtracking stack.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
+            <summary>Pushes 2 values onto the backtracking stack.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
+            <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
+        </member>
+    </members>
+</doc>
+ex_1.RunnerFactory.CreateInstance">
             <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner">

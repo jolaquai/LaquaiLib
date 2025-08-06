@@ -15,7 +15,6 @@
         <DebugSymbols>True</DebugSymbols>
         <IncludeSymbols>True</IncludeSymbols>
         <IncludeSource>True</IncludeSource>
-        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <AnalysisLevel>preview-all</AnalysisLevel>
         <AnalysisMode>all</AnalysisMode>
 

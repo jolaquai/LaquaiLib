@@ -15,4 +15,8 @@
     <Using Include="Microsoft.CodeAnalysis.Formatting" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Refactorings\" />
+  </ItemGroup>
+
 </Project>

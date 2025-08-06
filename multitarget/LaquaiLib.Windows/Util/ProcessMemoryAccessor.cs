@@ -348,7 +348,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     [DoesNotReturn]
     private static void ThrowForLastError(string outerMsg)
     {
-        var exit = HResultFromWin32Error(Interop.GetLastError());
+        var exit = HResultFromWin32Error(Kernel32.GetLastError());
         var ex = Marshal.GetExceptionForHR(exit);
         var msg = ex?.Message ?? Marshal.GetLastPInvokeErrorMessage();
 
@@ -372,7 +372,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private bool TryAcquireHandle()
     {
-        _handle = Interop.OpenProcess(ProcessOpenAccess.ProcessVMOperation | ProcessOpenAccess.ProcessVMRead | ProcessOpenAccess.ProcessVMWrite | ProcessOpenAccess.ProcessQueryInformation | ProcessOpenAccess.StandardRightsRequired, false, _pid);
+        _handle = Kernel32.OpenProcess(ProcessOpenAccess.ProcessVMOperation | ProcessOpenAccess.ProcessVMRead | ProcessOpenAccess.ProcessVMWrite | ProcessOpenAccess.ProcessQueryInformation | ProcessOpenAccess.StandardRightsRequired, false, _pid);
         return _handle != nint.Zero;
     }
 
@@ -426,7 +426,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
         if (_handle != nint.Zero)
         {
-            _ = Interop.CloseHandle(_handle);
+            _ = Kernel32.CloseHandle(_handle);
             _handle = nint.Zero;
         }
     }
@@ -436,137 +436,10 @@ internal partial class ProcessMemoryAccessor : IDisposable
     #region private static partial class Interop
     private static partial class Interop
     {
-        [LibraryImport("kernel32.dll")]
-        public static partial int GetLastError();
-        [LibraryImport("kernel32.dll")]
-        public static partial nint OpenProcess(ProcessOpenAccess access, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, int processId);
-        [LibraryImport("kernel32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool CloseHandle(nint handle);
-        [LibraryImport("kernel32.dll")]
-        public static partial nint GetCurrentProcess();
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void VirtualQueryEx(nint hProcess, out MEMORY_BASIC_INFORMATION lpBuffer) => VirtualQueryExImpl(hProcess, nint.Zero, out lpBuffer, Unsafe.SizeOf<MEMORY_BASIC_INFORMATION>());
-        [LibraryImport("kernel32.dll", EntryPoint = nameof(VirtualQueryEx))]
-        public static partial nint VirtualQueryExImpl(nint hProcess, nint lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, nint sizeT);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MEMORY_BASIC_INFORMATION
-        {
-            public nint BaseAddress;
-            public nint AllocationBase;
-            public int AllocationProtect;
-            public short PartitionId;
-            public nint RegionSize;
-            public int State;
-            public int Protect;
-            public int Type;
-        }
-
-        public static bool ReadProcessMemory(nint hProcess, nint lpBaseAddress, Span<byte> lpBuffer, out int lpNumberOfBytesRead) => ReadProcessMemory(hProcess, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesRead);
-        [LibraryImport("kernel32.dll", EntryPoint = nameof(ReadProcessMemory))]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static partial bool ReadProcessMemory(nint hProcess, nint lpBaseAddress, Span<byte> lpBuffer, int dwSize, out int lpNumberOfBytesRead);
-
-        public static bool WriteProcessMemory(nint hProcess, nint lpBaseAddress, ReadOnlySpan<byte> lpBuffer, out nint lpNumberOfBytesWritten) => WriteProcessMemory(hProcess, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
-        [LibraryImport("kernel32.dll", EntryPoint = nameof(WriteProcessMemory))]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static partial bool WriteProcessMemory(nint hProcess, nint lpBaseAddress, ReadOnlySpan<byte> lpBuffer, int nSize, out nint lpNumberOfBytesWritten);
+        public static void VirtualQueryEx(nint hProcess, out MEMORY_BASIC_INFORMATION lpBuffer) => Kernel32.VirtualQueryEx(hProcess, nint.Zero, out lpBuffer, Unsafe.SizeOf<MEMORY_BASIC_INFORMATION>());
+        public static bool ReadProcessMemory(nint hProcess, nint lpBaseAddress, Span<byte> lpBuffer, out int lpNumberOfBytesRead) => Kernel32.ReadProcessMemory(hProcess, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesRead);
+        public static bool WriteProcessMemory(nint hProcess, nint lpBaseAddress, ReadOnlySpan<byte> lpBuffer, out nint lpNumberOfBytesWritten) => Kernel32.WriteProcessMemory(hProcess, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
     }
     #endregion
-}
-
-[Flags]
-internal enum ProcessOpenAccess : uint
-{
-    /// <summary>
-    /// Required to delete the object.
-    /// </summary>
-    Delete = 0x10000,
-    /// <summary>
-    /// Required to read information in the security descriptor for the object, not including the information in the SACL.
-    /// To read or write the SACL, you must request the <b>ACCESS_SYSTEM_SECURITY</b> access right.
-    /// For more information, see <see href="https://learn.microsoft.com/en-us/windows/win32/secauthz/sacl-access-right">SACL Access Right</see>.
-    /// </summary>
-    ReadControl = 0x20000,
-    /// <summary>
-    /// The right to use the object for synchronization.
-    /// This enables a thread to wait until the object is in the signaled state.
-    /// </summary>
-    Synchronize = 0x100000,
-    /// <summary>
-    /// Required to modify the DACL in the security descriptor for the object.
-    /// </summary>
-    WriteDac = 0x40000,
-    /// <summary>
-    /// Required to change the owner in the security descriptor for the object.
-    /// </summary>
-    WriteOwner = 0x80000,
-
-    /// <summary>
-    /// Combines <see cref="Delete"/>, <see cref="ReadControl"/>, <see cref="WriteDac"/>, <see cref="WriteOwner"/>, and <see cref="Synchronize"/> access.
-    /// </summary>
-    StandardRightsAll = Delete | ReadControl | WriteDac | WriteOwner | Synchronize,
-    /// <summary>
-    /// Combines <see cref="Delete"/>, <see cref="ReadControl"/>, <see cref="WriteDac"/> and <see cref="WriteOwner"/> access.
-    /// </summary>
-    StandardRightsRequired = Delete | ReadControl | WriteDac | WriteOwner,
-
-    /// <summary>
-    /// All possible access rights for a process object.
-    /// </summary>
-    ProcessAllAccess = StandardRightsRequired | Synchronize,
-    /// <summary>
-    /// Required to use this process as the parent process with <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute">PROC_THREAD_ATTRIBUTE_PARENT_PROCESS</see>.
-    /// </summary>
-    ProcessCreateProcess = 0x80,
-    /// <summary>
-    /// Required to create a thread in the process.
-    /// </summary>
-    ProcessCreateThread = 0x2,
-    /// <summary>
-    /// Required to duplicate a handle using <see href="https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-duplicatehandle">DuplicateHandle</see>.
-    /// </summary>
-    ProcessDupHandle = 0x40,
-    /// <summary>
-    /// Required to retrieve certain information about a process, such as its token, exit code, and priority class (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-openprocesstoken">OpenProcessToken</see>).
-    /// A handle that has this access right is implicitly also granted the <see cref="ProcessQueryInformation"/> access right.
-    /// </summary>
-    ProcessQueryInformation = 0x400,
-    /// <summary>
-    /// Required to retrieve certain information about a process (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess">GetExitCodeProcess</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getpriorityclass">GetPriorityClass</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/jobapi/nf-jobapi-isprocessinjob">IsProcessInJob</see>, <see href="https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-queryfullprocessimagenamea">QueryFullProcessImageName</see>).
-    /// A handle that has the <see cref="ProcessQueryInformation"/> access right is implicitly also granted this access right.
-    /// </summary>
-    ProcessQueryLimitedInformation = 0x1000,
-    /// <summary>
-    /// Required to set certain information about a process, such as its priority class (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-setpriorityclass">SetPriorityClass</see>).
-    /// </summary>
-    ProcessSetInformation = 0x200,
-    /// <summary>
-    /// Required to set memory limits using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-setprocessworkingsetsize">SetProcessWorkingSetSize</see>.
-    /// </summary>
-    ProcessSetQuota = 0x100,
-    /// <summary>
-    /// Required to suspend or resume a process.
-    /// </summary>
-    ProcessSuspendResume = 0x800,
-    /// <summary>
-    /// Required to terminate a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess">TerminateProcess</see>.
-    /// </summary>
-    ProcessTerminate = 0x1,
-    /// <summary>
-    /// Required to perform an operation on the address space of a process (see <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualprotectex">VirtualProtectEx</see> and <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>).
-    /// </summary>
-    ProcessVMOperation = 0x8,
-    /// <summary>
-    /// Required to read memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-readprocessmemory">ReadProcessMemory</see>.
-    /// </summary>
-    ProcessVMRead = 0x10,
-    /// <summary>
-    /// Required to write to memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>.
-    /// </summary>
-    ProcessVMWrite = 0x20
 }

@@ -1,4 +1,4 @@
-﻿namespace LaquaiLib.Streams;
+﻿namespace LaquaiLib.IO.Streams;
 
 /// <summary>
 /// Implements <see cref="Stream"/> without a backing store. All operations are allowed and are no-ops.
