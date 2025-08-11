@@ -148,7 +148,7 @@ public static partial class FileSystemHelper
         }
         if (fileSize <= memoryConstraint
             && fileSize >= 1024 * 1024
-            && fileSize % sectorSize == 0 // Unbuffered copy required sector alignment
+            && fileSize % sectorSize == 0 // Unbuffered copy requires sector alignment
             && await Task.Run(() => TryUnbufferedCopy(source, destination)).ConfigureAwait(false)
         )
         {
