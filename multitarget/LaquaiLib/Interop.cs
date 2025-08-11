@@ -77,7 +77,7 @@ internal static partial class Interop
     {
         [LibraryImport("kernel32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static partial bool CopyFileEx(string lpExistingFileName, string lpNewFileName, nint lpProgressRoutine, nint lpData, ref bool pbCancel, uint dwCopyFlags);
+        public static partial bool CopyFileEx(string lpExistingFileName, string lpNewFileName, nint lpProgressRoutine, nint lpData, [MarshalAs(UnmanagedType.Bool)] ref bool pbCancel, uint dwCopyFlags);
         [LibraryImport("kernel32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool GetDiskFreeSpace(string lpRootPathName, out uint lpSectorsPerCluster, out uint lpBytesPerSector, out uint lpNumberOfFreeClusters, out uint lpTotalNumberOfClusters);
