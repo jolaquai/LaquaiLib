@@ -7,7 +7,7 @@ namespace LaquaiLib.UnitTests.Extensions;
 public class ICollectionExtensionTests
 {
     #region KeepOnly
-    private class CustomCollection<T> : ICollection<T>
+    private sealed class CustomCollection<T> : ICollection<T>
     {
         private readonly List<T> _items = [];
 

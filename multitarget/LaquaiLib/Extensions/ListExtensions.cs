@@ -15,8 +15,10 @@ public static class ListExtensions
         public void RemoveAt(Index index) => list.RemoveAt(index.GetOffset(list.Count));
     }
 
-    [UnsafeAccessor(UnsafeAccessorKind.Field)]
-    private static extern T[] _items<T>(this List<T> list);
+    private static class Accessors<T>
+    {
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(List<T> list);
+    }
 
     extension<T>(List<T> list)
     {
@@ -38,7 +40,7 @@ public static class ListExtensions
         public void KeepOnly(Func<T, bool> predicate) => list.RemoveAll(item => !predicate(item));
 
         /// <summary>
-        /// Retrieves a <see cref="Memory{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>.
+        /// Retrieves a <see cref="Memory{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>. By default, only the portion considered valid (as indicated through <see cref="List{T}.Count"/>) is returned.
         /// </summary>
         /// <param name="start">The starting index of the <see cref="Memory{T}"/> to be retrieved.</param>
         /// <param name="length">The length of the <see cref="Memory{T}"/> to be retrieved.</param>
@@ -48,7 +50,7 @@ public static class ListExtensions
         /// </remarks>
         public Memory<T> AsMemory(Index start = default, int length = -1)
         {
-            Memory<T> memory = list._items();
+            Memory<T> memory = Accessors<T>._items(list);
             var offset = start.GetOffset(memory.Length);
             return length == -1 ? memory[offset..] : memory[offset..(offset + length)];
         }
@@ -66,9 +68,8 @@ public static class ListExtensions
             return list.AsMemory()[offset..(offset + length)];
         }
         /// <summary>
-        /// Retrieves a <see cref="Span{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>.
+        /// Retrieves a <see cref="Span{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>. By default, only the portion considered valid (as indicated through <see cref="List{T}.Count"/>) is returned.
         /// </summary>
-        /// <param name="list">The <see cref="List{T}"/> to retrieve the backing array from.</param>
         /// <param name="start">The starting index of the <see cref="Span{T}"/> to be retrieved.</param>
         /// <param name="length">The length of the <see cref="Span{T}"/> to be retrieved.</param>
         /// <returns>A <see cref="Span{T}"/> over the backing array of the specified <see cref="List{T}"/>.</returns>
@@ -77,7 +78,7 @@ public static class ListExtensions
         /// </remarks>
         public Span<T> AsSpan(Index start = default, int length = -1)
         {
-            var span = CollectionsMarshal.AsSpan(list);
+            Span<T> span = Accessors<T>._items(list);
             var offset = start.GetOffset(span.Length);
             return length == -1 ? span[offset..] : span[offset..(offset + length)];
         }
@@ -125,5 +126,6 @@ public static class ListExtensions
             }
             return list.AsSpan(startAt, count);
         }
+
     }
 }

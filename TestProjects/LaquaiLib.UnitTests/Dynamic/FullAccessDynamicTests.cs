@@ -8,12 +8,12 @@ public class FullAccessDynamicTests
 {
     #region Test Fixture Classes
 
-    public class DummyClass
+    public sealed class DummyClass
     {
         public string PublicProperty { get; set; } = "DummyClass's PublicValue";
     }
 
-    private class TestClass
+    private sealed class TestClass
     {
         public string PublicProperty { get; set; } = "PublicValue";
         private string PrivateProperty { get; set; } = "PrivateValue";
@@ -49,7 +49,7 @@ public class FullAccessDynamicTests
         public override string ToString() => "TestClassToString";
     }
 
-    private class IndexerTestClass
+    private sealed class IndexerTestClass
     {
         private readonly Dictionary<string, string> dictionary = [];
 
@@ -66,7 +66,7 @@ public class FullAccessDynamicTests
         }
     }
 
-    private class DelegateTestClass
+    private sealed class DelegateTestClass
     {
         public Func<string, string> PublicDelegate { get; set; }
         private Func<string, string> PrivateDelegate { get; set; }
@@ -89,7 +89,7 @@ public class FullAccessDynamicTests
         private string BasePrivateMethod() => "BasePrivateMethodResult";
     }
 
-    private class DerivedClass : BaseClass
+    private sealed class DerivedClass : BaseClass
     {
         public string DerivedPublicProperty { get; set; } = "DerivedPublicValue";
         private string DerivedPrivateMethod() => "DerivedPrivateMethodResult";

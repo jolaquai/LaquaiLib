@@ -201,7 +201,7 @@ public class IAsyncEnumerableExtensionsTests
         Assert.False(second.WasEnumerated);
     }
 
-    private class TrackingAsyncEnumerable<T>(IAsyncEnumerable<T> inner) : IAsyncEnumerable<T>
+    private sealed class TrackingAsyncEnumerable<T>(IAsyncEnumerable<T> inner) : IAsyncEnumerable<T>
     {
         private readonly IAsyncEnumerable<T> _inner = inner;
         public bool WasEnumerated { get; private set; }
@@ -213,14 +213,14 @@ public class IAsyncEnumerableExtensionsTests
         }
     }
 
-    private class DisposeTrackingAsyncEnumerable<T>(IAsyncEnumerable<T> inner) : IAsyncEnumerable<T>
+    private sealed class DisposeTrackingAsyncEnumerable<T>(IAsyncEnumerable<T> inner) : IAsyncEnumerable<T>
     {
         private readonly IAsyncEnumerable<T> _inner = inner;
         public bool IsDisposed { get; private set; }
 
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new DisposeTrackingEnumerator(this, _inner.GetAsyncEnumerator(cancellationToken));
 
-        private class DisposeTrackingEnumerator(DisposeTrackingAsyncEnumerable<T> parent, IAsyncEnumerator<T> innerEnumerator) : IAsyncEnumerator<T>
+        private sealed class DisposeTrackingEnumerator(DisposeTrackingAsyncEnumerable<T> parent, IAsyncEnumerator<T> innerEnumerator) : IAsyncEnumerator<T>
         {
             private readonly DisposeTrackingAsyncEnumerable<T> _parent = parent;
             private readonly IAsyncEnumerator<T> _innerEnumerator = innerEnumerator;

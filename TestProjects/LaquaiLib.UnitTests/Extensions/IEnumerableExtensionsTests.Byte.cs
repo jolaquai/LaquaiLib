@@ -85,7 +85,7 @@ public class IEnumerableExtensionsByteTests
         }
     }
 
-    private class CustomByteCollection(byte[] bytes) : IEnumerable<byte>
+    private sealed class CustomByteCollection(byte[] bytes) : IEnumerable<byte>
     {
         private readonly byte[] _bytes = bytes;
 

@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Refactorings %284XXX%29\" />
     <Folder Include="Reliability %282XXX%29\" />
-    <Folder Include="Validity %289XXX%29\" />
   </ItemGroup>
 
 </Project>

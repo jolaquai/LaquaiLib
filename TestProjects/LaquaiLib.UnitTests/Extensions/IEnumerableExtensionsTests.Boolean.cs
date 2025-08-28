@@ -35,7 +35,7 @@ public class IEnumerableExtensionsBoolTests
         Assert.False(customCollectionWithFalse.All());
     }
 
-    private class CustomBoolCollection(bool[] values) : IEnumerable<bool>
+    private sealed class CustomBoolCollection(bool[] values) : IEnumerable<bool>
     {
         private readonly bool[] _values = values;
 

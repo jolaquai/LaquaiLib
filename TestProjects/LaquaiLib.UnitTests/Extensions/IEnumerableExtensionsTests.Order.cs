@@ -4,7 +4,7 @@ namespace LaquaiLib.UnitTests.Extensions;
 
 public class IEnumerableExtensionsOrderTests
 {
-    private class Person
+    private sealed class Person
     {
         public string Name { get; set; }
         public int Age { get; set; }
@@ -12,7 +12,7 @@ public class IEnumerableExtensionsOrderTests
         public override string ToString() => $"{Name} ({Age})";
     }
 
-    private class ReverseComparer<T> : IComparer<T> where T : IComparable<T>
+    private sealed class ReverseComparer<T> : IComparer<T> where T : IComparable<T>
     {
         public int Compare(T x, T y) => y.CompareTo(x);
     }

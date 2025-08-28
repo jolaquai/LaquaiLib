@@ -623,12 +623,12 @@ public class BufferTextWriterTests
         Assert.Equal("FirstSecondThird", writer.ToString());
     }
 
-    private class TestObject
+    private sealed class TestObject
     {
         public override string ToString() => "TestObject";
     }
 
-    private class LargeSpanFormattable(int size) : ISpanFormattable
+    private sealed class LargeSpanFormattable(int size) : ISpanFormattable
     {
         private readonly int _size = size;
 
@@ -818,7 +818,7 @@ public class BufferTextWriterTests
         Assert.Equal(expected, stream.ToArray());
     }
 
-    private class SlowWriteStream(Action onWrite) : Stream
+    private sealed class SlowWriteStream(Action onWrite) : Stream
     {
         private readonly Action _onWrite = onWrite;
         private readonly MemoryStream _inner = new MemoryStream();

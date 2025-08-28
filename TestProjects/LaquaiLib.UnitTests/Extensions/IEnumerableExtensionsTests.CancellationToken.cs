@@ -288,7 +288,7 @@ public class IEnumerableExtensionsCancellationTokenTests
         Assert.Throws<OperationCanceledException>(tokens.ThrowIfAnyCancelled);
     }
 
-    private class CustomTokenCollection(CancellationToken[] tokens) : IEnumerable<CancellationToken>
+    private sealed class CustomTokenCollection(CancellationToken[] tokens) : IEnumerable<CancellationToken>
     {
         private readonly CancellationToken[] _tokens = tokens;
 

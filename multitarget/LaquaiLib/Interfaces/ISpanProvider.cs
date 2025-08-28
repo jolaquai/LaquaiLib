@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Interfaces;
+﻿using System.Buffers;
+
+namespace LaquaiLib.Interfaces;
 
 /// <summary>
 /// Defines a contract for types that provide a <see cref="Span{T}"/> over an arbitrary data structure.
@@ -34,13 +36,8 @@ public interface IReadOnlySpanProvider<T> : IDisposable
 /// Defines a contract for types that provide a <see cref="Memory{T}"/> over an arbitrary data structure.
 /// </summary>
 /// <typeparam name="T">The type of elements in the memory.</typeparam>
-public interface IMemoryProvider<T> : ISpanProvider<T>, IReadOnlyMemoryProvider<T>
+public interface IMemoryProvider<T> : ISpanProvider<T>, IReadOnlyMemoryProvider<T>, IMemoryOwner<T>
 {
-    /// <summary>
-    /// Gets the <see cref="Memory{T}"/> provided by the implementing type.
-    /// </summary>
-    public Memory<T> Memory { get; }
-
     ReadOnlyMemory<T> IReadOnlyMemoryProvider<T>.ReadOnlyMemory
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

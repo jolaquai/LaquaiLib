@@ -93,13 +93,13 @@ public class IEnumerableCountsMethodTests
         Assert.Equal(1, counts["z"]);
     }
 
-    private class CustomItem(int id, string name)
+    private sealed class CustomItem(int id, string name)
     {
         public int Id { get; } = id;
         public string Name { get; } = name;
     }
 
-    private class CustomItemComparer : IEqualityComparer<CustomItem>
+    private sealed class CustomItemComparer : IEqualityComparer<CustomItem>
     {
         public bool Equals(CustomItem x, CustomItem y)
         {
@@ -119,7 +119,7 @@ public class IEnumerableCountsMethodTests
         public int GetHashCode(CustomItem obj) => obj.Id.GetHashCode();
     }
 
-    private class CustomEnumerable<T>(T[] items) : IEnumerable<T>
+    private sealed class CustomEnumerable<T>(T[] items) : IEnumerable<T>
     {
         private readonly T[] _items = items;
 

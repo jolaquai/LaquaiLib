@@ -219,7 +219,7 @@ public class IAsyncEnumeratorExtensionsTests
 
     private static IAsyncEnumerator<int> CreateEnumerator(int start, int count) => new TestAsyncEnumerator<int>(Enumerable.Range(start, count));
 
-    private class TestAsyncEnumerator<T>(IEnumerable<T> source) : IAsyncEnumerator<T>
+    private sealed class TestAsyncEnumerator<T>(IEnumerable<T> source) : IAsyncEnumerator<T>
     {
         private readonly IEnumerator<T> _enumerator = source.GetEnumerator();
 
@@ -234,7 +234,7 @@ public class IAsyncEnumeratorExtensionsTests
         public ValueTask<bool> MoveNextAsync() => new ValueTask<bool>(_enumerator.MoveNext());
     }
 
-    private class DisposeTrackingEnumerator<T>(IAsyncEnumerator<T> inner) : IAsyncEnumerator<T>
+    private sealed class DisposeTrackingEnumerator<T>(IAsyncEnumerator<T> inner) : IAsyncEnumerator<T>
     {
         private readonly IAsyncEnumerator<T> _inner = inner;
         public bool IsDisposed { get; private set; }
@@ -250,7 +250,7 @@ public class IAsyncEnumeratorExtensionsTests
         public ValueTask<bool> MoveNextAsync() => _inner.MoveNextAsync();
     }
 
-    private class ThrowOnDisposeEnumerator<T>(IAsyncEnumerator<T> inner) : IAsyncEnumerator<T>
+    private sealed class ThrowOnDisposeEnumerator<T>(IAsyncEnumerator<T> inner) : IAsyncEnumerator<T>
     {
         private readonly IAsyncEnumerator<T> _inner = inner;
 

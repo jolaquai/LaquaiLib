@@ -94,21 +94,21 @@ public class IEnumerableIDisposableExtensionsTests
         Assert.False(disposableCollection.IsCollectionDisposed);
     }
 
-    private class MockDisposable : IDisposable
+    private sealed class MockDisposable : IDisposable
     {
         public bool IsDisposed { get; private set; }
 
         public void Dispose() => IsDisposed = true;
     }
 
-    private class ThrowingDisposable(string message) : IDisposable
+    private sealed class ThrowingDisposable(string message) : IDisposable
     {
         private readonly string _message = message;
 
         public void Dispose() => throw new InvalidOperationException(_message);
     }
 
-    private class CustomDisposableCollection(IDisposable[] disposables) : IEnumerable<IDisposable>, IDisposable
+    private sealed class CustomDisposableCollection(IDisposable[] disposables) : IEnumerable<IDisposable>, IDisposable
     {
         private readonly IDisposable[] _disposables = disposables;
 
@@ -121,7 +121,7 @@ public class IEnumerableIDisposableExtensionsTests
         public void Dispose() => IsDisposed = true;
     }
 
-    private class DisposableList<T> : List<T>, IDisposable
+    private sealed class DisposableList<T> : List<T>, IDisposable
     {
         public bool IsCollectionDisposed { get; private set; }
 

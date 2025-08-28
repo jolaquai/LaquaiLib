@@ -1,5 +1,4 @@
-﻿using LaquaiLib.Analyzers.Fixes.Performance;
-using LaquaiLib.Analyzers.Performance__0XXX_;
+﻿using LaquaiLib.Analyzers.Validity__9XXX_;
 
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
@@ -15,27 +14,35 @@ internal static class Program
     }
 }
 
-public class TestClass2;
-
 public class TestClass
 {
     [Fact]
     public async Task TestAnalyzer()
     {
-        var analyzerTest = new CSharpAnalyzerTest<SealClassAnalyzer, DefaultVerifier>
+        var analyzerTest = new CSharpAnalyzerTest<UnsafeAccessorValidators, DefaultVerifier>
         {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             ExpectedDiagnostics =
             {
-                new DiagnosticResult(SealClassAnalyzer.Descriptor)
-                    .WithLocation(3, 8),
-                new DiagnosticResult(SealClassAnalyzer.Descriptor)
-                    .WithLocation(4, 8),
+                new DiagnosticResult(UnsafeAccessorValidators.ContainingTypeTypeParameterMismatchDescriptor)
+                    .WithLocation(8, 32)
+                    .WithArguments("<T>", "none")
             },
             TestCode = """
-            public class A;
-            public class B : A;
-            public class C : B;
-            public class D;
+            using System.Runtime.CompilerServices;
+
+            namespace Test;
+
+            public static class AAccessors<T>
+            {
+                [UnsafeAccessor(UnsafeAccessorKind.Method)]
+                public static extern ref U GetValue<U>(A obj);
+            }
+
+            public class A
+            {
+                private T GetValue<T>() => default;
+            }
             """,
         };
         await analyzerTest.RunAsync(TestContext.Current.CancellationToken);
@@ -43,28 +50,28 @@ public class TestClass
     [Fact]
     public async Task TestFix()
     {
-        var fixTest = new CSharpCodeFixTest<SealClassAnalyzer, SealClassAnalyzerFix, DefaultVerifier>
-        {
-            ExpectedDiagnostics =
-            {
-                new DiagnosticResult(SealClassAnalyzer.Descriptor)
-                    .WithLocation(3, 8),
-                new DiagnosticResult(SealClassAnalyzer.Descriptor)
-                    .WithLocation(4, 8),
-            },
-            TestCode = """
-            public class A;
-            public class B : A;
-            public class C : B;
-            public class D;
-            """,
-            FixedCode = """
-            public class A;
-            public class B : A;
-            public sealed class C : B;
-            public sealed class D;
-            """,
-        };
-        await fixTest.RunAsync(TestContext.Current.CancellationToken);
+        //var fixTest = new CSharpCodeFixTest<SealClassAnalyzer, SealClassAnalyzerFix, DefaultVerifier>
+        //{
+        //    ExpectedDiagnostics =
+        //    {
+        //        new DiagnosticResult(SealClassAnalyzer.Descriptor)
+        //            .WithLocation(3, 8),
+        //        new DiagnosticResult(SealClassAnalyzer.Descriptor)
+        //            .WithLocation(4, 8),
+        //    },
+        //    TestCode = """
+        //    public class A;
+        //    public class B : A;
+        //    public class C : B;
+        //    public class D;
+        //    """,
+        //    FixedCode = """
+        //    public class A;
+        //    public class B : A;
+        //    public sealed class C : B;
+        //    public sealed class D;
+        //    """,
+        //};
+        //await fixTest.RunAsync(TestContext.Current.CancellationToken);
     }
 }

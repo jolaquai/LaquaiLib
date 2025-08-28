@@ -866,9 +866,9 @@ public class IEnumerableExtensionsTests
     }
 
     private class Animal { }
-    private class Cat : Animal { }
-    private class Dog : Animal { }
-    private class Fish : Animal { }
+    private sealed class Cat : Animal { }
+    private sealed class Dog : Animal { }
+    private sealed class Fish : Animal { }
     #endregion
 
     #region Indexed Tests
