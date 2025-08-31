@@ -24,24 +24,19 @@ public class TestClass
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             ExpectedDiagnostics =
             {
-                new DiagnosticResult(UnsafeAccessorValidators.ContainingTypeTypeParameterMismatchDescriptor)
-                    .WithLocation(8, 32)
-                    .WithArguments("<T>", "none")
+                //new DiagnosticResult(UnsafeAccessorValidators.ContainingTypeTypeParameterMismatchDescriptor)
+                //    .WithLocation(8, 32)
+                //    .WithArguments("<T>", "none")
             },
             TestCode = """
             using System.Runtime.CompilerServices;
+            using System.IO;
 
             namespace Test;
 
-            public static class AAccessors<T>
-            {
-                [UnsafeAccessor(UnsafeAccessorKind.Method)]
-                public static extern ref U GetValue<U>(A obj);
-            }
-
             public class A
             {
-                private T GetValue<T>() => default;
+                [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref byte[] _buffer(this MemoryStream _);
             }
             """,
         };

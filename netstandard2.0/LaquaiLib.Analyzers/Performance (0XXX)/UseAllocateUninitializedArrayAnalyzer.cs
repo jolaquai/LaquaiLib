@@ -29,12 +29,37 @@ public class UseAllocateUninitializedArrayAnalyzer : DiagnosticAnalyzer
         var semanticModel = context.SemanticModel;
         var typeInfo = semanticModel.GetTypeInfo(arrayCreationExpressionSyntax.Type.ElementType);
 
-        // GC.AllocateUninitializedArray is only applicable for value types, since a IsReferenceOrContainsReferences check is done inside the method
-        if (typeInfo.Type.IsValueType)
+        if (arrayCreationExpressionSyntax.Type.RankSpecifiers.Count != 1)
         {
-            // Report the diagnostic
-            var diagnostic = Diagnostic.Create(Descriptor, arrayCreationExpressionSyntax.NewKeyword.GetLocation());
-            context.ReportDiagnostic(diagnostic);
+            return; // Can't GC.AUA multi-dimensional arrays
         }
+
+        // GC.AllocateUninitializedArray is only applicable for value types, since a IsReferenceOrContainsReferences check is done inside the method
+        if (!typeInfo.Type.IsValueType)
+        {
+            return;
+        }
+
+        var sizeOf = typeInfo.Type.SizeOf();
+        if (sizeOf is <= 0)
+        {
+            return;
+        }
+
+        var arraySizeValue = arrayCreationExpressionSyntax.GetArraySize(semanticModel);
+        if (arraySizeValue is null or <= 0)
+        {
+            return; // Array size is not a constant positive integer
+        }
+
+        var finalSizeInBytes = sizeOf * arraySizeValue.Value;
+        if (finalSizeInBytes < 2048)
+        {
+            return; // GC.AUA will just 'new T[]' for sizes below 2048 bytes
+        }
+
+        // Report the diagnostic
+        var diagnostic = Diagnostic.Create(Descriptor, arrayCreationExpressionSyntax.NewKeyword.GetLocation());
+        context.ReportDiagnostic(diagnostic);
     }
 }

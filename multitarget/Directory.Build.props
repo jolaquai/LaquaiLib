@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
 
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'"></GeneratePackageOnBuild>
 
         <LangVersion>preview</LangVersion>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>

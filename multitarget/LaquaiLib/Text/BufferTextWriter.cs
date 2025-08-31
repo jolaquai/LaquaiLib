@@ -11,7 +11,7 @@ namespace LaquaiLib.Text;
 /// Implements a <see cref="TextWriter"/> that uses an <see cref="ArrayBufferWriter{T}"/> to buffer the written characters.
 /// </summary>
 /// <param name="capacity">A starting capacity for the internal buffer.</param>
-/// <param name="encoding">The <see cref="System.Text.Encoding"/> to use when encoding the <see langword="char"/>s written to this <see cref="TextWriter"/> to <see langword="byte"/>s.
+/// <param name="encoding">The <see cref="System.Text.Encoding"/> to use when encoding the <see langword="char"/>s written to this <see cref="TextWriter"/> to <see langword="byte"/>s.</param>
 public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : TextWriter
 {
     private const string ArgumentNullException_AttemptedNullStringNullWrite = "Cannot write a null value when NullString is itself null.";

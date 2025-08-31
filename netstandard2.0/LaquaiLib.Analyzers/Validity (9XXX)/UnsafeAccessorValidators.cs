@@ -215,51 +215,56 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         var signatureString = string.Join(", ", restParams.Select(p => p.Type.ToDisplayString()));
 
         // On constructors, the target type is actually the return type
-        if (unsafeAccessorKind is UnsafeAccessorKind.Constructor)
+        if (unsafeAccessorKind is not UnsafeAccessorKind.Constructor)
         {
-            targetType = methodSymbol.ReturnType;
-            restParams = parameters;
-            signatureString = string.Join(", ", restParams.Select(p => p.Type.ToDisplayString()));
-
-            if (methodSymbol.ReturnsVoid)
+            if ((!methodSymbol.ReturnsVoid && !methodSymbol.ReturnsByRef) || !methodSymbol.IsStatic || !methodSymbol.IsExtern)
             {
-                if (thisParam is null)
-                {
-                    var diag = Diagnostic.Create(MissingTargetTypeForCtorDescriptor, methodDeclarationLocation);
-                    context.ReportDiagnostic(diag);
-                }
-                else
-                {
-                    var diag = Diagnostic.Create(IncorrectReturnTypeDescriptor, methodDeclarationLocation, "constructor", thisParam.Type.ToDisplayString());
-                    context.ReportDiagnostic(diag);
-                }
-                return;
-            }
-
-            // Check for existence of the member
-            var constructors = (targetType as INamedTypeSymbol)?.Constructors;
-            if (constructors is null)
-            {
-                var diag = Diagnostic.Create(MissingCtorDescriptor, methodDeclarationLocation, targetType.ToDisplayString(), signatureString);
+                var diag = Diagnostic.Create(InvalidDeclarationDescriptor, methodDeclarationLocation, description);
                 context.ReportDiagnostic(diag);
-                return;
-            }
-
-            if (!constructors.Value.Any(ctor => ctor.Parameters.Select(p => p.Type).SequenceEqual(restParams.Select(p => p.Type), SymbolEqualityComparer.Default)))
-            {
-                var diag = Diagnostic.Create(MissingCtorDescriptor, methodDeclarationLocation, targetType.ToDisplayString(), signatureString);
-                context.ReportDiagnostic(diag);
-                return;
             }
 
             return;
         }
+
         // else, enfore 'static extern ref'
-        else if ((!methodSymbol.ReturnsVoid && !methodSymbol.ReturnsByRef) || !methodSymbol.IsStatic || !methodSymbol.IsExtern)
+        targetType = methodSymbol.ReturnType;
+        restParams = parameters;
+        signatureString = string.Join(", ", restParams.Select(p => p.Type.ToDisplayString()));
+
+        if (methodSymbol.ReturnsVoid)
         {
-            var diag = Diagnostic.Create(InvalidDeclarationDescriptor, methodDeclarationLocation, description);
+            if (thisParam is null)
+            {
+                var diag = Diagnostic.Create(MissingTargetTypeForCtorDescriptor, methodDeclarationLocation);
+                context.ReportDiagnostic(diag);
+            }
+            else
+            {
+                var diag = Diagnostic.Create(IncorrectReturnTypeDescriptor, methodDeclarationLocation, "constructor", thisParam.Type.ToDisplayString());
+                context.ReportDiagnostic(diag);
+            }
+            return;
+        }
+
+        // Check for existence of the member
+        var constructors = (targetType as INamedTypeSymbol)?.Constructors;
+        if (constructors is null)
+        {
+            var diag = Diagnostic.Create(MissingCtorDescriptor, methodDeclarationLocation, targetType.ToDisplayString(), signatureString);
             context.ReportDiagnostic(diag);
             return;
+        }
+
+        if (!constructors.Value.Any(ctor => ctor.Parameters.Select(p => p.Type).SequenceEqual(restParams.Select(p => p.Type), SymbolEqualityComparer.Default)))
+        {
+            var diag = Diagnostic.Create(MissingCtorDescriptor, methodDeclarationLocation, targetType.ToDisplayString(), signatureString);
+            context.ReportDiagnostic(diag);
+            return;
+        }
+
+        if (!SymbolEqualityComparer.Default.Equals(compilation.Assembly, targetType.ContainingAssembly))
+        {
+            return; // Can't analyze types that aren't in Compilation's assembly
         }
 
         if (parameters.Length == 0)
@@ -274,15 +279,15 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             case UnsafeAccessorKind.Method when memberName == ".ctor":
             {
                 // Check for existence of the member
-                var constructors = (targetType as INamedTypeSymbol)?.Constructors;
-                if (constructors is null)
+                var ctors = (targetType as INamedTypeSymbol)?.Constructors;
+                if (ctors is null)
                 {
                     var diag = Diagnostic.Create(MissingCtorDescriptor, methodDeclarationLocation, targetType.ToDisplayString(), signatureString);
                     context.ReportDiagnostic(diag);
                     return;
                 }
 
-                if (!constructors.Value.Any(ctor => ctor.Parameters.Select(p => p.Type).SequenceEqual(restParams.Select(p => p.Type), SymbolEqualityComparer.Default)))
+                if (!ctors.Value.Any(ctor => ctor.Parameters.Select(p => p.Type).SequenceEqual(restParams.Select(p => p.Type), SymbolEqualityComparer.Default)))
                 {
                     var diag = Diagnostic.Create(MissingCtorDescriptor, methodDeclarationLocation, targetType.ToDisplayString(), signatureString);
                     context.ReportDiagnostic(diag);

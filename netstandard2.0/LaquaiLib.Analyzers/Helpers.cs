@@ -17,6 +17,51 @@ internal static class Helpers
             return 0;
         }
 
+        var forSpecialType = typeSymbol.SpecialType switch
+        {
+            SpecialType.System_Boolean => 1,
+            SpecialType.System_SByte => 1,
+            SpecialType.System_Byte => 1,
+            SpecialType.System_Char => 2,
+            SpecialType.System_Int16 => 2,
+            SpecialType.System_UInt16 => 2,
+            SpecialType.System_Int32 => 4,
+            SpecialType.System_UInt32 => 4,
+            SpecialType.System_Single => 4,
+            SpecialType.System_Int64 => 8,
+            SpecialType.System_UInt64 => 8,
+            SpecialType.System_Double => 8,
+            SpecialType.System_Decimal => 16,
+            SpecialType.System_IntPtr => IntPtr.Size, // Analyzer host pointer size
+            SpecialType.System_UIntPtr => UIntPtr.Size,
+            SpecialType.System_Enum => -1, // Variable size, depends on the underlying type, which we can just stick into ourselves
+            _ => -1
+        };
+
+        if (forSpecialType != -1)
+        {
+            return forSpecialType;
+        }
+
+        if ((typeSymbol as INamedTypeSymbol).EnumUnderlyingType is { } enumUnderlyingType)
+        {
+            return SizeOf(enumUnderlyingType);
+        }
+
+        forSpecialType = typeSymbol.ToDisplayString() switch
+        {
+            "System.Half" => 2,
+            "System.Numerics.Vector2" => 8,
+            "System.Numerics.Vector3" => 12,
+            "System.Numerics.Vector4" => 16,
+            _ => -1
+        };
+
+        if (forSpecialType != -1)
+        {
+            return forSpecialType;
+        }
+
         try
         {
             var type = Type.GetType(typeSymbol.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
@@ -25,8 +70,44 @@ internal static class Helpers
         }
         catch
         {
-            return 0;
+            return -1;
         }
+    }
+    public static int? GetArraySize(this ArrayCreationExpressionSyntax arrayCreation, SemanticModel semanticModel)
+    {
+        var rankSpecifier = arrayCreation.Type.RankSpecifiers.FirstOrDefault();
+        var sizeExpression = rankSpecifier?.Sizes.FirstOrDefault();
+
+        if (sizeExpression == null)
+        {
+            return null;
+        }
+
+        var constantValue = semanticModel.GetConstantValue(sizeExpression);
+        return constantValue.HasValue && constantValue.Value is int size ? size : null;
+    }
+    public static int[] GetArraySizes(this ArrayCreationExpressionSyntax arrayCreation, SemanticModel semanticModel)
+    {
+        var rankSpecifier = arrayCreation.Type.RankSpecifiers.FirstOrDefault();
+        if (rankSpecifier == null)
+        {
+            return null;
+        }
+
+        var sizes = new int[rankSpecifier.Sizes.Count];
+
+        for (int i = 0; i < rankSpecifier.Sizes.Count; i++)
+        {
+            var constantValue = semanticModel.GetConstantValue(rankSpecifier.Sizes[i]);
+            if (!constantValue.HasValue || constantValue.Value is not int size)
+            {
+                return null;
+            }
+
+            sizes[i] = size;
+        }
+
+        return sizes;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -6,6 +6,8 @@
     <UseWPF>True</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
 
+    <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
+
     <Title>LaquaiLib.Windows</Title>
     <PackageDescription>Contains functionality specifically for Windows. Adds references to WinForms, WPF and several other assemblies that are Windows-specific.</PackageDescription>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>

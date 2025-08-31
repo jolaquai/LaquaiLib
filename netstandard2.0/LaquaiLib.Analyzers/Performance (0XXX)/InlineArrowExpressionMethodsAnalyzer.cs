@@ -146,6 +146,6 @@ public class InlineArrowExpressionMethodsAnalyzer : DiagnosticAnalyzer
     private static bool IsMethodImpl(ITypeSymbol typeSymbol)
     {
         var containingNs = typeSymbol.ContainingNamespace.ToString();
-        return typeSymbol.Name == "MethodImplAttribute" && (containingNs == "System.Runtime.CompilerServices" || containingNs.EndsWith(".System.Runtime.CompilerServices"));
+        return typeSymbol.Name == "MethodImplAttribute" && (containingNs == "System.Runtime.CompilerServices" || containingNs.EndsWith(".System.Runtime.CompilerServices", StringComparison.OrdinalIgnoreCase));
     }
 }

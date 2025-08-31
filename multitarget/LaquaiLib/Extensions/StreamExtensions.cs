@@ -68,33 +68,5 @@ public static partial class StreamExtensions
             }
             await ms.ReadExactlyAsync(memory, cancellationToken).ConfigureAwait(false);
         }
-        /// <summary>
-        /// Reads as many <see langword="byte"/>s from the specified <paramref name="stream"/> as will fit into <paramref name="span"/>, or less than that if the <paramref name="stream"/> has fewer bytes left before the end.
-        /// </summary>
-        /// <param name="span">The <see cref="Span{T}"/> to read into.</param>
-        public void ReadFill(Span<byte> span)
-        {
-            var bytesLeft = Math.Min(span.Length, ms.Length - ms.Position);
-            if (bytesLeft < span.Length)
-            {
-                span = span[..(int)bytesLeft];
-            }
-            ms.ReadExactly(span);
-        }
-        /// <summary>
-        /// Asynchronously reads data from a stream into a specified memory buffer.
-        /// </summary>
-        /// <param name="memory">The buffer that receives the read bytes from the stream.</param>
-        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
-        /// <returns>A <see cref="Task"/> that represents the asynchronous read operation.</returns>
-        public async Task ReadFillAsync(Memory<byte> memory, CancellationToken cancellationToken = default)
-        {
-            var bytesLeft = Math.Min(memory.Length, ms.Length - ms.Position);
-            if (bytesLeft < memory.Length)
-            {
-                memory = memory[..(int)bytesLeft];
-            }
-            await ms.ReadExactlyAsync(memory, cancellationToken).ConfigureAwait(false);
-        }
     }
 }

@@ -5,6 +5,8 @@
     <PackageDescription>Contains functionality for working with EFCore.</PackageDescription>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+
+    <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />

@@ -5,6 +5,8 @@
     <PackageDescription>Personal library. General purpose.</PackageDescription>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+
+    <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
