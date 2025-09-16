@@ -2,13 +2,14 @@
 
 namespace LaquaiLib.UnitTests.Text;
 
+#if !NET10_0_OR_GREATER
 public class NaturalStringComparerTests
 {
     #region Default
     [Fact]
     public void CompareRegularStrings()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.Equal(0, comparer.Compare("abc", "abc"));
         Assert.True(comparer.Compare("abc", "def") < 0);
@@ -19,7 +20,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareArabicNumerals()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.Equal(0, comparer.Compare("123", "123"));
         Assert.True(comparer.Compare("123", "456") < 0);
@@ -31,7 +32,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareStringsWithNumbers()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.Equal(0, comparer.Compare("file123", "file123"));
         Assert.True(comparer.Compare("file5", "file10") < 0);
@@ -42,7 +43,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareLargeNumbers()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("file999999999", "file1000000000") < 0);
         Assert.True(comparer.Compare("file1000000000", "file999999999") > 0);
@@ -54,7 +55,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareRomanNumerals()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.Equal(0, comparer.Compare("III", "III"));
         Assert.True(comparer.Compare("II", "III") < 0);
@@ -66,7 +67,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareStringsWithRomanNumerals()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.Equal(0, comparer.Compare("Chapter V", "Chapter V"));
         Assert.True(comparer.Compare("Chapter I", "Chapter II") < 0);
@@ -77,7 +78,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareValidRomanNumerals()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("I", "II") < 0);
         Assert.True(comparer.Compare("IV", "V") < 0);
@@ -87,7 +88,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareInvalidRomanNumerals()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("IIII", "III") > 0);
         Assert.True(comparer.Compare("IXL", "XL") < 0);
@@ -97,7 +98,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareCaseInsensitiveRomanNumerals()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("chapter i", "chapter ii") < 0);
         Assert.True(comparer.Compare("chapter I", "chapter ii") < 0);
@@ -108,7 +109,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareMixedContent()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("a1", "a2") < 0);
         Assert.True(comparer.Compare("a10", "a2") > 0);
@@ -120,7 +121,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareMixedContentsWithinStrings()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("File1Page2", "File1Page10") < 0);
         Assert.True(comparer.Compare("ChapterISection1", "ChapterISection2") < 0);
@@ -132,7 +133,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareComplexMixedContent()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
         var unsorted = new List<string>
             {
                 "file10.txt",
@@ -163,7 +164,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void CompareEdgeCases()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.Equal(0, comparer.Compare("", ""));
         Assert.True(comparer.Compare(null, "abc") < 0);
@@ -176,7 +177,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void SortLargeDataset()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
         var unsorted = new List<string>
             {
                 "z1.txt",
@@ -211,7 +212,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void SortPracticalExamples()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
         var unsorted = new List<string>
             {
                 "Image 1.jpg",
@@ -259,7 +260,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void GetNumberExtractionShouldWork()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("file123abc", "file123def") < 0);
         Assert.True(comparer.Compare("file9999999999", "file10000000000") < 0);
@@ -268,7 +269,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void RomanNumeralIdentificationShouldWork()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("ChapterI", "ChapterII") < 0);
         Assert.True(comparer.Compare("SectionIV", "SectionV") < 0);
@@ -277,7 +278,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void MalformedRomanNumeralsAreComparedAsStrings()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("ChapterXXXXX", "ChapterMMMMM") > 0);
         Assert.True(comparer.Compare("ChapterIIII", "ChapterIV") < 0);
@@ -286,7 +287,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void RomanToIntConversionShouldWork()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("I", "II") < 0);
         Assert.True(comparer.Compare("IV", "VI") < 0);
@@ -298,7 +299,7 @@ public class NaturalStringComparerTests
     [Fact]
     public void SpecialRomanNumeralCasesShouldWork()
     {
-        var comparer = new NaturalStringComparer();
+        var comparer = NaturalStringComparer.Default;
 
         Assert.True(comparer.Compare("Chapter III", "Chapter IV") < 0);
         Assert.True(comparer.Compare("Chapter IX", "Chapter X") < 0);
@@ -310,7 +311,7 @@ public class NaturalStringComparerTests
     #endregion
 
     #region LenientEquality
-    private readonly NaturalStringComparer lenientComparer = NaturalStringComparer.LenientEquality;
+    private readonly StringComparer lenientComparer = NaturalStringComparer.LenientEquality;
 
     [Fact]
     public void CompareLenientWithDigitsSortsNaturally()
@@ -395,23 +396,6 @@ public class NaturalStringComparerTests
         Assert.Equal(expected, unsorted);
     }
 
-    [Fact]
-    public void CompareLenientWorksWithReadOnlySpan()
-    {
-        var a = "file-1".AsSpan();
-        var b = "file_2".AsSpan();
-
-        Assert.True(lenientComparer.Compare(a, b) < 0);
-    }
-
-    [Fact]
-    public void EqualsLenientWorksWithReadOnlySpan()
-    {
-        var a = "test-file".AsSpan();
-        var b = "test_file".AsSpan();
-
-        Assert.True(lenientComparer.Equals(a, b));
-    }
-
     #endregion
 }
+#endif

@@ -12,7 +12,7 @@ namespace LaquaiLib.Dynamic;
 /// <para/><b>Warning!</b> Nothing prevents the underlying object instance of <typeparamref name="T"/> from being <see langword="null"/>. As such, <see cref="Unwrap"/> may return <see langword="null"/>.
 /// </summary>
 /// <typeparam name="T">The type of the object to wrap.</typeparam>
-[Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute<>)}.")]
+[Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute)}.")]
 public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<T>>, IEquatable<T>
 {
     private static readonly ConcurrentDictionary<string, MemberInfo> _memberCache = [];

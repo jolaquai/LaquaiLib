@@ -3,8 +3,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 
 using LaquaiLib.Collections.Enumeration;
-using LaquaiLib.Core;
 using LaquaiLib.Extensions;
+using LaquaiLib.Text;
 
 using static System.MemoryExtensions;
 
@@ -18,18 +18,20 @@ public static partial class StringExtensions
     extension(string)
     {
         /// <summary>
-        /// Allocates a new <see langword="string"/> with the specified length, then invokes the specified <see cref="SpanAction{T}"/> to fill it.
+        /// Allocates a new <see langword="string"/> with the specified length, then invokes the specified <see cref="Action{T}"/> to fill it.
         /// </summary>
         /// <param name="length">The length of the <see cref="string"/> to create.</param>
-        /// <param name="spanAction">A <see cref="SpanAction{T}"/> that takes a <see cref="Span{T}"/> of <see cref="char"/>.</param>
+        /// <param name="spanAction">An <see cref="Action{T}"/> that takes a <see cref="Span{T}"/> of <see cref="char"/>.</param>
         /// <returns>The created <see cref="string"/>.</returns>
         /// <remarks>
         /// <paramref name="spanAction"/> MUST fill the entire <see cref="Span{T}"/> with valid <see cref="char"/> values, otherwise uninitialized memory will be exposed through the <see cref="string"/>.
         /// </remarks>
-        public static string CreateString(int length, SpanAction<char> spanAction)
+        public static string CreateString(int length, Action<Span<char>> spanAction)
         {
-            var str = StringUtility.AllocString(length);
-            var mut = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(str.AsSpan()), str.Length);
+            ArgumentNullException.ThrowIfNull(spanAction);
+
+            var str = StringHelpers.AllocString(length);
+            var mut = StringHelpers.GetSpan(str);
             spanAction(mut);
             return str;
         }
@@ -40,7 +42,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Constructs a new string from this string repeated <paramref name="count"/> times.
         /// </summary>
-        /// <param name="source">The string to repeat.</param>
         /// <param name="count">The number of times to repeat <paramref name="source"/>.</param>
         /// <returns>A string consisting of <paramref name="source"/> repeated <paramref name="count"/> times.</returns>
         public string Repeat(int count)
@@ -69,11 +70,10 @@ public static partial class StringExtensions
         /// <summary>
         /// Converts the specified input string to sentence case (that is, the first character is capitalized and all other characters are lower case).
         /// </summary>
-        /// <param name="source">The <see cref="string"/> to convert.</param>
-        /// <returns><paramref name="source"/> in sentence case.</returns>
+        /// <returns>The input <see langword="string"/> in sentence case.</returns>
         public string ToSentence()
         {
-            var lower = source.ToLowerInvariant();
+            var lower = source.ToLower();
             return char.ToUpperInvariant(lower[0]) + lower[1..];
         }
         /// <summary>
@@ -86,34 +86,33 @@ public static partial class StringExtensions
         /// <summary>
         /// Converts the specified input string to title case according to the rules of the invariant culture.
         /// </summary>
-        /// <param name="source">The <see cref="string"/> to convert.</param>
-        /// <returns><paramref name="source"/> in title case according to the invariant culture.</returns>
+        /// <returns>The input <see langword="string"/> in title case according to the invariant culture.</returns>
         public string ToTitleInvariant() => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(source);
 
         /// <summary>
         /// "Transparently" splits a <see langword="string"/> at each match of the specified <see cref="Regex"/>; that is, the return value details both the <see langword="string"/>s that were split out of the original and the separators that were used to split them.
         /// </summary>
-        /// <param name="source">The <see langword="string"/> to split.</param>
         /// <param name="splitBy">A <see cref="Regex"/> instance that specifies the pattern to split by.</param>
         /// <param name="options"><see cref="StringSplitOptions"/> to apply to the split operation.</param>
         /// <returns>An array of tuples, each containing a split <see langword="string"/> and the separator that was used to split it.</returns>
         public (string Value, string Separator)[] TransparentSplit(Regex splitBy, StringSplitOptions options = StringSplitOptions.None)
         {
-            var lastIndex = 0;
-            var matches = Unsafe.As<IEnumerable<Match>>(splitBy.Matches(source)).ToArray();
-            var result = new List<(string Value, string Separator)>(matches.Length);
+            ArgumentNullException.ThrowIfNull(splitBy);
 
-            for (var i = 0; i < matches.Length; i++)
+            var lastIndex = 0;
+            var result = new List<(string Value, string Separator)>();
+
+            var span = source.AsSpan();
+            foreach (var vm in splitBy.EnumerateMatches(span))
             {
-                var match = matches[i];
-                var separator = match.Value;
-                var value = source[lastIndex..match.Index];
+                var separator = span.Slice(vm);
+                var value = span[lastIndex..vm.Index];
                 if (options.HasFlag(StringSplitOptions.TrimEntries))
                 {
                     value = value.Trim();
                 }
-                result.Add((value, separator));
-                lastIndex = match.Index + separator.Length;
+                result.Add((value.ToString(), separator.ToString()));
+                lastIndex = vm.Index + vm.Length;
             }
 
             var lastValue = source[lastIndex..];

@@ -1,5 +1,7 @@
 using LaquaiLib.Interfaces;
+using LaquaiLib.Numerics;
 using LaquaiLib.Util.Misc;
+using LaquaiLib.Wrappers;
 
 namespace LaquaiLib.Extensions;
 
@@ -8,6 +10,22 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static partial class IEnumerableExtensions
 {
+    extension(IEnumerable source)
+    {
+        /// <summary>
+        /// Returns the items of the source collection cast to the specified reference type <typeparamref name="T"/> using <see cref="Unsafe.As{T}(object?)"/>, bypassing type checks.
+        /// </summary>
+        /// <typeparam name="T">The reference type to cast the items to.</typeparam>
+        /// <returns>An <see cref="IEnumerable{T}"/> that iterates over the source items cast to the specified reference type <typeparamref name="T"/>.</returns>
+        public IEnumerable<T> ReinterpretCast<T>() where T : class
+        {
+            foreach (var item in source)
+            {
+                yield return Unsafe.As<T>(item);
+            }
+        }
+    }
+
     extension<T>(IEnumerable<T> source)
     {
         /// <summary>

@@ -20,7 +20,7 @@ public static class RandomMath
     /// <returns>The sum of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
     public static T Sum<T>(T x, T n, Func<T, T> fn)
         where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>, IModulusOperators<T, T, T>
-        => Miscellaneous.Range(x, n, T.One).Select(fn).Aggregate(T.Zero, static (seed, res) => seed += res);
+        => Sequence.Create(x, n, T.One).Select(fn).Aggregate(T.Zero, static (seed, res) => seed += res);
     /// <summary>
     /// Calculates the product of a series of output values of a function.
     /// </summary>
@@ -31,7 +31,7 @@ public static class RandomMath
     /// <returns>The product of the values returned by <paramref name="fn"/> for each input value between <paramref name="x"/> and <paramref name="n"/>.</returns>
     public static T Product<T>(T x, T n, Func<T, T> fn)
         where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>, IModulusOperators<T, T, T>
-        => Miscellaneous.Range(x, n, T.One).Select(fn).Aggregate(T.One, static (seed, res) => seed *= res);
+        => Sequence.Create(x, n, T.One).Select(fn).Aggregate(T.One, static (seed, res) => seed *= res);
     /// <summary>
     /// Calculates the sum of a series of output values of a function.
     /// </summary>
@@ -44,7 +44,7 @@ public static class RandomMath
     public static TResult Sum<TArgument, TResult>(TArgument x, TArgument n, Func<TArgument, TResult> fn)
         where TArgument : ISignedNumber<TArgument>, IComparisonOperators<TArgument, TArgument, bool>, IModulusOperators<TArgument, TArgument, TArgument>
         where TResult : ISignedNumber<TResult>, IComparisonOperators<TResult, TResult, bool>, IModulusOperators<TResult, TResult, TResult>
-        => Miscellaneous.Range(x, n, TArgument.One).Select(fn).Aggregate(TResult.Zero, static (seed, res) => seed += res);
+        => Sequence.Create(x, n, TArgument.One).Select(fn).Aggregate(TResult.Zero, static (seed, res) => seed += res);
     /// <summary>
     /// Calculates the product of a series of output values of a function.
     /// </summary>
@@ -57,7 +57,7 @@ public static class RandomMath
     public static TResult Product<TArgument, TResult>(TArgument x, TArgument n, Func<TArgument, TResult> fn)
         where TArgument : ISignedNumber<TArgument>, IComparisonOperators<TArgument, TArgument, bool>, IModulusOperators<TArgument, TArgument, TArgument>
         where TResult : ISignedNumber<TResult>, IComparisonOperators<TResult, TResult, bool>, IModulusOperators<TResult, TResult, TResult>
-        => Miscellaneous.Range(x, n, TArgument.One).Select(fn).Aggregate(TResult.One, static (seed, res) => seed *= res);
+        => Sequence.Create(x, n, TArgument.One).Select(fn).Aggregate(TResult.One, static (seed, res) => seed *= res);
 
     /// <summary>
     /// Determines the greatest common divisor of a series of numbers.
@@ -77,7 +77,7 @@ public static class RandomMath
             return T.One;
         }
 
-        foreach (var g in Miscellaneous.Range(enumerated.Max(), T.Zero, -T.One)
+        foreach (var g in Util.Sequence.Create(enumerated.Max(), T.Zero, -T.One)
             .Where(g => enumerated.All(n => n % g == T.Zero)))
         {
             return g;

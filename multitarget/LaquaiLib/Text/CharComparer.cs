@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace LaquaiLib.Util;
+namespace LaquaiLib.Text;
 
 /// <summary>
 /// Implements a <see cref="StringComparer"/> equivalent for <see cref="char"/>.

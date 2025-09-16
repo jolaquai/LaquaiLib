@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
 
-using LaquaiLib.Core;
 using LaquaiLib.Text;
 
 namespace LaquaiLib.UnitTests.Text;
@@ -554,11 +553,11 @@ public class BufferTextWriterTests
     {
         var writer = new BufferTextWriter(10);
         // Insanely unreasonable, but under most circumstances, most smaller SpanFormattables will end up not throwing due to convenient buffer allocations or by FAR enough scratch space
-        var largeSpanFormattable = new LargeSpanFormattable(Configuration.MaxStackallocSize + 1);
+        var largeSpanFormattable = new LargeSpanFormattable(Config.MaxStackallocSize + 1);
 
         writer.Write("Value: {0}", largeSpanFormattable);
 
-        Assert.Equal("Value: " + new string('X', Configuration.MaxStackallocSize + 1), writer.Span);
+        Assert.Equal("Value: " + new string('X', Config.MaxStackallocSize + 1), writer.Span);
     }
 
     [Fact]

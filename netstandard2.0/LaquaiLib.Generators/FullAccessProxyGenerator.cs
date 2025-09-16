@@ -12,7 +12,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var classDeclarationSyntaxProvider = context.SyntaxProvider
-            .ForAttributeWithMetadataNameOn<ClassDeclarationSyntax>("LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute`1");
+            .ForAttributeWithMetadataNameOn<ClassDeclarationSyntax>("LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute");
 
         var withCompilation = context.CompilationProvider.Combine(classDeclarationSyntaxProvider.Collect());
 
@@ -40,10 +40,19 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                     return;
                 }
 
+                INamedTypeSymbol proxiedType = null;
                 // Get the type argument from the attribute (e.g., MemoryStream)
-                var attrClass = attribute.AttributeClass;
-                var proxiedType = (INamedTypeSymbol)attrClass.TypeArguments[0];
-                var targetTypeString = proxiedType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                var type = attribute.ConstructorArguments[0];
+                if (type.Kind == TypedConstantKind.Primitive && type.Value is string fqTypeName)
+                {
+                    // Chances are high that the type won't be accessible, but we can try
+                    proxiedType = compilation.GetTypeByMetadataName(fqTypeName);
+                }
+                else if (type.Kind == TypedConstantKind.Type && type.Value is Type typeToProxy)
+                {
+                    proxiedType = compilation.GetTypeByMetadataName(typeToProxy.FullName ?? typeToProxy.Name);
+                }
+                Debug.Assert(proxiedType is not null);
 
                 // Generate the proxied members into the class
                 var proxyClassSource = GenerateProxyForClass(namespaceName, proxyClassSymbol.Name, proxiedType, compilation);

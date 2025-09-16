@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-using LaquaiLib.Core;
 using LaquaiLib.Extensions;
 
 namespace LaquaiLib.Text;
@@ -168,7 +167,7 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
         var segments = FormatSegments(comp);
 
         // Prepare some scratch space
-        var temp = stackalloc char[Configuration.MaxStackallocSize];
+        var temp = stackalloc char[Config.MaxStackallocSize];
 
         for (var i = 0; i < segments.Length; i++)
         {
@@ -240,7 +239,7 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
                 {
                     if (formattable is ISpanFormattable spanFormattable)
                     {
-                        var tempSpan = new Span<char>(temp, Configuration.MaxStackallocSize);
+                        var tempSpan = new Span<char>(temp, Config.MaxStackallocSize);
                         // To facilitate semi-efficient alignment, we'll try to write into the buffer first
                         // Ideally, we'd have enough space to write the entire thing twice + the alignment, but we can't guarantee that, so we'll have to try and hope
                         if (spanFormattable.TryFormat(tempSpan, out toWrite, ArgFormat, FormatProvider))
@@ -432,8 +431,8 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
         var charLength = chars.Length;
 
         // Ignore bufferSize if it's smaller than what we can afford to stackalloc, otherwise obey the user
-        var bufferActual = bufferSize <= Configuration.MaxStackallocSize ? Configuration.MaxStackallocSize : Math.Clamp(bufferSize, Configuration.MaxStackallocSize, bufferSize);
-        Span<byte> scratch = bufferActual == Configuration.MaxStackallocSize ? stackalloc byte[bufferActual] : new byte[bufferActual];
+        var bufferActual = bufferSize <= Config.MaxStackallocSize ? Config.MaxStackallocSize : Math.Clamp(bufferSize, Config.MaxStackallocSize, bufferSize);
+        Span<byte> scratch = bufferActual == Config.MaxStackallocSize ? stackalloc byte[bufferActual] : new byte[bufferActual];
         bool completed;
         var flush = false;
         do

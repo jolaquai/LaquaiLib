@@ -148,7 +148,7 @@ public class ListExtensionsTests
 
         var span = list.AsSpan();
 
-        Assert.Equal(5, span.Length);
+        Assert.Equal(list.Count, span.Length);
         Assert.Equal(1, span[0]);
         Assert.Equal(5, span[4]);
     }
@@ -284,67 +284,5 @@ public class ListExtensionsTests
         list.SetCount(0);
 
         Assert.Empty(list);
-    }
-
-    [Fact]
-    public void ExpandByIncreasesListCount()
-    {
-        var list = new List<int> { 1, 2, 3 };
-
-        var span = list.ExpandBy(2);
-
-        Assert.Equal(5, list.Count);
-        Assert.Equal(2, span.Length);
-    }
-
-    [Fact]
-    public void ExpandByWithCustomStartAtAllowsControllingSpanLocation()
-    {
-        var list = new List<int> { 1, 2, 3 };
-
-        var span = list.ExpandBy(2, 1);
-
-        Assert.Equal(3, list.Count);
-        Assert.Equal(2, span.Length);
-    }
-
-    [Fact]
-    public void ExpandByAllowsModifyingReturnedSpan()
-    {
-        var list = new List<int> { 1, 2, 3 };
-
-        var span = list.ExpandBy(2);
-        span[0] = 4;
-        span[1] = 5;
-
-        Assert.Equal(5, list.Count);
-        Assert.Equal(1, list[0]);
-        Assert.Equal(2, list[1]);
-        Assert.Equal(3, list[2]);
-        Assert.Equal(4, list[3]);
-        Assert.Equal(5, list[4]);
-    }
-
-    [Fact]
-    public void ExpandByWithZeroCount()
-    {
-        var list = new List<int> { 1, 2, 3 };
-        var originalCount = list.Count;
-
-        var span = list.ExpandBy(0);
-
-        Assert.Equal(originalCount, list.Count);
-        Assert.Equal(0, span.Length);
-    }
-
-    [Fact]
-    public void ExpandByOnEmptyList()
-    {
-        var list = new List<int>();
-
-        var span = list.ExpandBy(3);
-
-        Assert.Equal(3, list.Count);
-        Assert.Equal(3, span.Length);
     }
 }

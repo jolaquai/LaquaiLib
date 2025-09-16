@@ -9,50 +9,68 @@
             Provides Extension Methods for the <see cref="T:System.Drawing.Color"/> Type.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Windows.Extensions.ColorExtensions.&lt;&gt;E__0.Html">
+        <member name="M:LaquaiLib.Windows.Extensions.ColorExtensions.get_Html(System.Drawing.Color)">
+            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.ColorExtensions.&lt;G&gt;$B73B7345C6FAC66E9EBD3203731F9C85.Html"/>
+        </member>
+        <member name="P:LaquaiLib.Windows.Extensions.ColorExtensions.&lt;G&gt;$B73B7345C6FAC66E9EBD3203731F9C85.Html">
             <summary>
             Formats the <see cref="T:System.Drawing.Color"/> as a HTML color string.
             </summary>
             <param name="color">The <see cref="T:System.Drawing.Color"/> to format.</param>
             <returns>The HTML color string.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.ColorExtensions.get_Html(System.Drawing.Color)">
-            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.ColorExtensions.&lt;&gt;E__0.Html"/>
-        </member>
         <member name="T:LaquaiLib.Windows.Extensions.DependencyObjectExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Windows.DependencyObject"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;&gt;E__0.UpdateBindings">
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.UpdateBindings(System.Windows.DependencyObject)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;G&gt;$6EAFBC35C22166C127103F005F90F4B9.UpdateBindings"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.UpdateBindingsRecurse(System.Windows.DependencyObject)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;G&gt;$6EAFBC35C22166C127103F005F90F4B9.UpdateBindingsRecurse"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;G&gt;$6EAFBC35C22166C127103F005F90F4B9.UpdateBindings">
             <summary>
             Enumerates all binding expressions in the specified <see cref="T:System.Windows.DependencyObject"/> and forces them to fetch new values.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;&gt;E__0.UpdateBindingsRecurse">
+        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;G&gt;$6EAFBC35C22166C127103F005F90F4B9.UpdateBindingsRecurse">
             <summary>
             Enumerates all binding expressions in the specified <see cref="T:System.Windows.DependencyObject"/> and its child hierarchy and forces them to fetch new values.
             </summary>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.UpdateBindings(System.Windows.DependencyObject)">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;&gt;E__0.UpdateBindings"/>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.UpdateBindingsRecurse(System.Windows.DependencyObject)">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.&lt;&gt;E__0.UpdateBindingsRecurse"/>
         </member>
         <member name="T:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Windows.Threading.DispatcherObject"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.Dispatch(System.Action)">
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Action)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.Dispatch(System.Action)"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Delegate,System.ReadOnlySpan{System.Object})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.Dispatch(System.Delegate,System.ReadOnlySpan{System.Object})"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch``1(System.Windows.Threading.DispatcherObject,System.Func{``0})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.Dispatch``1(System.Func{``0})"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Action)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.DispatchAsync(System.Action)"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.DispatchAsync(System.Func{System.Threading.Tasks.Task})"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync``1(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task{``0}})">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.DispatchAsync``1(System.Func{System.Threading.Tasks.Task{``0}})"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.Dispatch(System.Action)">
             <summary>
             Invokes the specified <paramref name="action"/> on the thread the <paramref name="dispatcherObject"/> was created on.
             </summary>
             <param name="dispatcherObject">The <see cref="T:System.Windows.Threading.DispatcherObject"/> of which the <see cref="T:System.Windows.Threading.Dispatcher"/> is used to invoke the <paramref name="action"/>.</param>
             <param name="action">The <see cref="T:System.Action"/> to invoke.</param>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.Dispatch(System.Delegate,System.ReadOnlySpan{System.Object})">
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.Dispatch(System.Delegate,System.ReadOnlySpan{System.Object})">
             <summary>
             Invokes the specified <paramref name="method"/> with the given <paramref name="arguments"/> on the thread the <paramref name="dispatcherObject"/> was created on.
             </summary>
@@ -60,7 +78,7 @@
             <param name="method">The <see cref="T:System.Delegate"/> to invoke.</param>
             <param name="arguments">The arguments to pass to the <paramref name="method"/>.</param>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.Dispatch``1(System.Func{``0})">
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.Dispatch``1(System.Func{``0})">
             <summary>
             Invokes the specified <paramref name="func"/> on the thread the <paramref name="dispatcherObject"/> was created on.
             </summary>
@@ -69,7 +87,7 @@
             <param name="func">The <see cref="T:System.Func`1"/> to invoke.</param>
             <returns>The result returned by the <paramref name="func"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.DispatchAsync(System.Action)">
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.DispatchAsync(System.Action)">
             <summary>
             Asynchronously invokes the specified <paramref name="action"/> on the thread the <paramref name="dispatcherObject"/> was created on.
             </summary>
@@ -77,7 +95,7 @@
             <param name="action">The <see cref="T:System.Action"/> to invoke.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.DispatchAsync(System.Func{System.Threading.Tasks.Task})">
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.DispatchAsync(System.Func{System.Threading.Tasks.Task})">
             <summary>
             Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
             </summary>
@@ -85,7 +103,7 @@
             <param name="asyncDelegate">The <see cref="T:System.Func`1"/> to invoke.</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> returned by the <paramref name="asyncDelegate"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.DispatchAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
+        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.DispatchAsync``1(System.Func{System.Threading.Tasks.Task{``0}})">
             <summary>
             Asynchronously invokes the specified <paramref name="asyncDelegate"/> on the thread the <paramref name="dispatcherObject"/> was created on.
             </summary>
@@ -94,45 +112,33 @@
             <param name="asyncDelegate">The <see cref="T:System.Func`1"/> to invoke.</param>
             <returns>The <see cref="T:System.Threading.Tasks.Task`1"/> returned by the <paramref name="asyncDelegate"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Action)">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.Dispatch(System.Action)"/>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Delegate,System.ReadOnlySpan{System.Object})">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.Dispatch(System.Delegate,System.ReadOnlySpan{System.Object})"/>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch``1(System.Windows.Threading.DispatcherObject,System.Func{``0})">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.Dispatch``1(System.Func{``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Action)">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.DispatchAsync(System.Action)"/>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task})">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.DispatchAsync(System.Func{System.Threading.Tasks.Task})"/>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.DispatchAsync``1(System.Windows.Threading.DispatcherObject,System.Func{System.Threading.Tasks.Task{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.&lt;&gt;E__0.DispatchAsync``1(System.Func{System.Threading.Tasks.Task{``0}})"/>
-        </member>
         <member name="T:LaquaiLib.Windows.Extensions.IconExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Drawing.Icon"/> Type.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Windows.Extensions.IconExtensions.&lt;&gt;E__0.ImageSource">
+        <member name="M:LaquaiLib.Windows.Extensions.IconExtensions.get_ImageSource(System.Drawing.Icon)">
+            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.IconExtensions.&lt;G&gt;$6649471F6EFBC4EF785B53B68A893FD4.ImageSource"/>
+        </member>
+        <member name="P:LaquaiLib.Windows.Extensions.IconExtensions.&lt;G&gt;$6649471F6EFBC4EF785B53B68A893FD4.ImageSource">
             <summary>
             Converts this <see cref="T:System.Drawing.Icon"/> instance to an <see cref="T:System.Windows.Media.ImageSource"/>.
             </summary>
             <param name="icon">The <see cref="T:System.Drawing.Icon"/> instance to convert.</param>
             <returns>The created <see cref="T:System.Windows.Media.ImageSource"/> instance.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.IconExtensions.get_ImageSource(System.Drawing.Icon)">
-            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.IconExtensions.&lt;&gt;E__0.ImageSource"/>
-        </member>
         <member name="T:LaquaiLib.Windows.Extensions.IDataObjectExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Windows.Forms.IDataObject"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;&gt;E__0.TryGetData(System.String,System.Object@)">
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.TryGetData(System.Windows.Forms.IDataObject,System.String,System.Object@)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;G&gt;$3A25FAB69E56627BCF1C4868010672B6.TryGetData(System.String,System.Object@)"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.TryGetData``1(System.Windows.Forms.IDataObject,System.String,``0@)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;G&gt;$3A25FAB69E56627BCF1C4868010672B6.TryGetData``1(System.String,``0@)"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;G&gt;$3A25FAB69E56627BCF1C4868010672B6.TryGetData(System.String,System.Object@)">
             <summary>
             Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="T:System.Windows.Forms.IDataObject"/>.
             </summary>
@@ -141,7 +147,7 @@
             <param name="data">A <c>ref <see cref="T:System.Object"/>?</c> variable that receives the data if the retrieval was successful.</param>
             <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;&gt;E__0.TryGetData``1(System.String,``0@)">
+        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;G&gt;$3A25FAB69E56627BCF1C4868010672B6.TryGetData``1(System.String,``0@)">
             <summary>
             Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="T:System.Windows.Forms.IDataObject"/>.
             </summary>
@@ -151,27 +157,21 @@
             <param name="data">A <c>ref <typeparamref name="T"/>?</c> variable that receives the data if the retrieval was successful.</param>
             <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.TryGetData(System.Windows.Forms.IDataObject,System.String,System.Object@)">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;&gt;E__0.TryGetData(System.String,System.Object@)"/>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.TryGetData``1(System.Windows.Forms.IDataObject,System.String,``0@)">
-            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.&lt;&gt;E__0.TryGetData``1(System.String,``0@)"/>
-        </member>
         <member name="T:LaquaiLib.Windows.Extensions.ProcessExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Diagnostics.Process"/> Type.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Windows.Extensions.ProcessExtensions.&lt;&gt;E__0.CommandLine">
+        <member name="M:LaquaiLib.Windows.Extensions.ProcessExtensions.get_CommandLine(System.Diagnostics.Process)">
+            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.CommandLine"/>
+        </member>
+        <member name="P:LaquaiLib.Windows.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.CommandLine">
             <summary>
             Retrieves the command line of the specified <see cref="T:System.Diagnostics.Process"/>.
             This is done either by using the <see cref="T:System.Diagnostics.ProcessStartInfo"/> property of the <see cref="T:System.Diagnostics.Process"/> instance or, if that is <see langword="null"/>, by using WMI.
             </summary>
             <param name="process">A <see cref="T:System.Diagnostics.Process"/> instance.</param>
             <returns>The command line of the specified <see cref="T:System.Diagnostics.Process"/> or <see langword="null"/> if it could not be retrieved.</returns>
-        </member>
-        <member name="M:LaquaiLib.Windows.Extensions.ProcessExtensions.get_CommandLine(System.Diagnostics.Process)">
-            <inheritdoc cref="P:LaquaiLib.Windows.Extensions.ProcessExtensions.&lt;&gt;E__0.CommandLine"/>
         </member>
         <member name="T:LaquaiLib.Windows.LowLevelWindow">
             <summary>

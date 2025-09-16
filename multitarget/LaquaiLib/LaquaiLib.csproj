@@ -8,7 +8,11 @@
 
     <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="UnicodeInformation" Version="2.7.1" />
+
+    <Compile Remove="Numerics\Scalar.cs" />
+    <None Include="Numerics\Scalar.cs" />
   </ItemGroup>
 </Project>

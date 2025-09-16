@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Management;
 
+using LaquaiLib.Extensions;
+
 namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
@@ -33,7 +35,7 @@ public static partial class ProcessExtensions
 
                 using var searcher = new ManagementObjectSearcher("SELECT CommandLine FROM Win32_Process WHERE ProcessId = " + process.Id);
                 using var objects = searcher.Get();
-                using var obj = objects.Cast<ManagementBaseObject>().Single();
+                using var obj = objects.ReinterpretCast<ManagementBaseObject>().Single();
 
                 return obj["CommandLine"]?.ToString();
             }

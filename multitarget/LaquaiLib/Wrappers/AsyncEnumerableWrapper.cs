@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Util.Misc;
+﻿using LaquaiLib.Util.Misc;
+
+namespace LaquaiLib.Wrappers;
 
 /// <summary>
 /// Wraps an <see cref="IEnumerable{T}"/> as an <see cref="IAsyncEnumerable{T}"/> to allow asynchronous consumption.

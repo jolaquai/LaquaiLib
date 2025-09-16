@@ -1,5 +1,3 @@
-using LaquaiLib.Core;
-
 namespace LaquaiLib.Extensions;
 
 public static partial class IEnumerableExtensions
@@ -23,7 +21,7 @@ public static partial class IEnumerableExtensions
                 default:
                 {
                     var size = Unsafe.SizeOf<T>();
-                    Span<byte> bytes = size <= Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
+                    Span<byte> bytes = size <= Config.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
                     _ = enumerable.Into(bytes);
                     return MemoryMarshal.Read<T>(bytes);
                 }

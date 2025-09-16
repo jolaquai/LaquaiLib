@@ -1,6 +1,6 @@
 using LaquaiLib.Collections.Enumeration;
 
-namespace LaquaiLib.Extensions.Memory;
+namespace LaquaiLib.Extensions;
 
 #pragma warning disable CS8500 // This takes the address of, gets the size of, or declares a pointer to a managed type
 

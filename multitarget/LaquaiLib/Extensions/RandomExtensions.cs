@@ -1,6 +1,6 @@
-﻿using LaquaiLib.Core;
+﻿namespace LaquaiLib.Extensions;
 
-namespace LaquaiLib.Extensions;
+#pragma warning disable CA5394 // Do not use insecure randomness
 
 /// <summary>
 /// Provides extension methods for the <see cref="Random"/> type.
@@ -45,7 +45,7 @@ public static class RandomExtensions
             }
 
             // Otherwise we have little choice but to read into a buffer and write it to the stream
-            Span<byte> buffer = count <= Configuration.MaxStackallocSize ? stackalloc byte[count] : new byte[count];
+            var buffer = count <= Config.MaxStackallocSize ? stackalloc byte[count] : new byte[count];
             random.NextBytes(buffer);
             destination.Write(buffer);
         }

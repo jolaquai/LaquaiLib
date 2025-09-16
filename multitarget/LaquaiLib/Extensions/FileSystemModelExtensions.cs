@@ -94,5 +94,15 @@ public static partial class FileSystemModelExtensions
             ArgumentNullException.ThrowIfNull(comp);
             return FileSystemHelper.IsBaseOf(di.FullName, comp);
         }
+
+        /// <summary>
+        /// Constructs a <see cref="DirectoryMap"/> for this directory and its immediate children.
+        /// </summary>
+        /// <param name="deep">Whether to map the entire directory structure recursively. This may take a significant amount of time and memory for large directory structures. The default is <see langword="false"/>.</param>
+        /// <returns>A <see cref="DirectoryMap"/> instance that can be used to access child file system objects with no further I/O operations.</returns>
+        /// <remarks>
+        /// When <paramref name="deep"/> is <see langword="true"/>, FSOs in subdirectories can be accessed using the current OS's default syntax for relative paths.
+        /// </remarks>
+        public DirectoryMap Map(bool deep = false) => FileSystemHelper.MapDirectory(di, deep);
     }
 }

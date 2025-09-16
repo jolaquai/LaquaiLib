@@ -3,7 +3,7 @@
 /// <summary>
 /// Contains configuration values used across all of <see cref="LaquaiLib"/>.
 /// </summary>
-public static class Configuration
+internal static class Config
 {
     /// <summary>
     /// The maximum boundary for a single <see langword="stackalloc"/> in <see langword="byte"/>s.

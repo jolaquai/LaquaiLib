@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-using LaquaiLib.Core;
 using LaquaiLib.Extensions;
 using LaquaiLib.IO;
 using LaquaiLib.Util;
@@ -10,6 +9,7 @@ using LaquaiLib.Util;
 namespace LaquaiLib.UnsafeUtils;
 
 #pragma warning disable CA1069 // Enums values should not be duplicated
+#pragma warning disable CA2201 // Do not raise reserved exception types
 
 /// <summary>
 /// Allows reading and writing arbitrary memory of the current or another process.
@@ -101,7 +101,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
         var size = Unsafe.SizeOf<T>();
-        Span<byte> buffer = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
+        Span<byte> buffer = size < Config.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
         {
@@ -135,7 +135,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
             ?? throw new AccessViolationException("The specified address is not within the memory space of any module in the target process.");
         var baseAddress = module.BaseAddress;
         var size = Unsafe.SizeOf<T>();
-        Span<byte> buffer = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
+        Span<byte> buffer = size < Config.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
         var succeeded = Interop.ReadProcessMemory(_handle, baseAddress, buffer, out _);
         if (!succeeded)
         {
@@ -215,7 +215,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
 
         // This will conditionally stackalloc, and fortunately, the size doesn't depend on the contents of the loop, so we can do this once and keep reusing it
         var size = chunkSize + overlap;
-        Span<byte> span = size < Configuration.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
+        Span<byte> span = size < Config.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
 
         for (var i = 0; i < _modules.Length; i++)
         {
@@ -298,7 +298,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
         // If reversal is requested, reverse the byte sequence
         if (reverseLittleEndian && BitConverter.IsLittleEndian)
         {
-            Span<byte> temp = data.Length < Configuration.MaxStackallocSize ? stackalloc byte[data.Length] : new byte[data.Length];
+            Span<byte> temp = data.Length < Config.MaxStackallocSize ? stackalloc byte[data.Length] : new byte[data.Length];
             data.CopyTo(temp);
             temp.Reverse();
 
@@ -400,7 +400,7 @@ internal partial class ProcessMemoryAccessor : IDisposable
     {
         var main = Path.GetDirectoryName(_process.MainModule.FileName);
 
-        _modules = [.. _process.Modules.Cast<ProcessModule>()
+        _modules = [.. _process.Modules.ReinterpretCast<ProcessModule>()
             .IfWhere(!AllowSystemModules, m => !FileSystemHelper.IsBaseOf("C:\\Windows", m.FileName))
             .IfWhere(!AllowForeignModules, m => FileSystemHelper.IsBaseOf(main, m.FileName))];
 
@@ -423,6 +423,8 @@ internal partial class ProcessMemoryAccessor : IDisposable
         {
             Process.LeaveDebugMode();
         }
+
+        _process?.Dispose();
 
         if (_handle != nint.Zero)
         {

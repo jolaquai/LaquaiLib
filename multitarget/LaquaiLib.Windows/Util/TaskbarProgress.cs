@@ -65,7 +65,7 @@ public partial class TaskbarProgress
 
         static double RoundToMultiple(double value, double multiple) => Math.Round(value / multiple) * multiple;
 
-        var values = Miscellaneous.Range(from, to, (to - from) / steps)
+        var values = Sequence.Create(from, to, (to - from) / steps)
                      .Select(d => RoundToMultiple(d, 0.05))
                      .ToArray();
         // Consolidate the values

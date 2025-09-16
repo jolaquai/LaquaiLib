@@ -6,7 +6,7 @@ namespace LaquaiLib.Dynamic;
 /// <summary>
 /// Provides static factory methods for <see cref="FullAccessDynamic{T}"/> instances.
 /// </summary>
-[Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute<>)}.")]
+[Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute)}.")]
 public static class FullAccessDynamicFactory
 {
     /// <summary>

@@ -27,7 +27,7 @@ public static partial class IEnumerableExtensions
             {
                 case List<T> other:
                 {
-                    var src = other.AsSpan();
+                    var src = other.AsSpan(0, other.Count);
                     var length = src.Length;
                     if (startIndex + length > target.Length)
                     {
@@ -119,7 +119,7 @@ public static partial class IEnumerableExtensions
             {
                 case List<T> other:
                 {
-                    var src = other.AsSpan();
+                    var src = other.AsSpan(0, other.Count);
                     var length = src.Length;
                     if (startIndex + length > target.Count)
                     {
@@ -205,7 +205,7 @@ public static partial class IEnumerableExtensions
             {
                 case List<T> other:
                 {
-                    var src = other.AsSpan();
+                    var src = other.AsSpan(0, other.Count);
                     var length = src.Length;
                     if (length > target.Length)
                     {

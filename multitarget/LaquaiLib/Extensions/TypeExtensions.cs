@@ -795,9 +795,47 @@ public static partial class TypeExtensions
                 && t.GetConstructors(BindingFlags.Instance | BindingFlags.Public).Length > 0 // cannot be static if it has constructors
         )];
         }
+
+        /// <summary>
+        /// Gets the managed size of the type represented by this instance in bytes, or <c>-1</c> if the type does not have a predefined size.
+        /// </summary>
+        public int SizeOf
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                if (_sizeofMap.TryGetValue(type, out var size))
+                {
+                    return size;
+                }
+
+                // No references means we can sizeof it
+                return _sizeofMap[type] = (int)typeof(Unsafe).GetMethod(nameof(Unsafe.SizeOf)).MakeGenericMethod(type).Invoke(null, null);
+            }
+        }
     }
 
     #region Mappings
+    private static readonly ConcurrentDictionary<Type, int> _sizeofMap = ConcurrentDictionary<Type, int>.Create([
+        KeyValuePair.Create(typeof(bool), sizeof(bool)),
+        KeyValuePair.Create(typeof(char), sizeof(char)),
+        KeyValuePair.Create(typeof(sbyte), sizeof(sbyte)),
+        KeyValuePair.Create(typeof(byte), sizeof(byte)),
+        KeyValuePair.Create(typeof(short), sizeof(short)),
+        KeyValuePair.Create(typeof(ushort), sizeof(ushort)),
+        KeyValuePair.Create(typeof(int), sizeof(int)),
+        KeyValuePair.Create(typeof(uint), sizeof(uint)),
+        KeyValuePair.Create(typeof(nint), nint.Size),
+        KeyValuePair.Create(typeof(nuint), nuint.Size),
+        KeyValuePair.Create(typeof(long), sizeof(long)),
+        KeyValuePair.Create(typeof(ulong), sizeof(ulong)),
+        KeyValuePair.Create(typeof(Int128), 16),
+        KeyValuePair.Create(typeof(UInt128), 16),
+        KeyValuePair.Create(typeof(float), sizeof(float)),
+        KeyValuePair.Create(typeof(double), sizeof(double)),
+        KeyValuePair.Create(typeof(decimal), sizeof(decimal)),
+    ]);
+
     private static readonly FrozenDictionary<TypeCode, TypeCode[]> _narrowingConversions = new Dictionary<TypeCode, TypeCode[]>()
     {
         [TypeCode.Byte] = [TypeCode.SByte],
@@ -846,8 +884,8 @@ public static partial class TypeExtensions
         { "System.UInt16", "ushort" },
         { "System.Int32", "int" },
         { "System.UInt32", "uint" },
-        { "System.nint", "nint" },
-        { "System.Unint", "nuint" },
+        { "System.IntPtr", "nint" },
+        { "System.UIntPtr", "nuint" },
         { "System.Int64", "long" },
         { "System.UInt64", "ulong" },
         { "System.Single", "float" },
@@ -864,8 +902,8 @@ public static partial class TypeExtensions
         { "UInt16", "ushort" },
         { "Int32", "int" },
         { "UInt32", "uint" },
-        { "nint", "nint" },
-        { "Unint", "nuint" },
+        { "IntPtr", "nint" },
+        { "UIntPtr", "nuint" },
         { "Int64", "long" },
         { "UInt64", "ulong" },
         { "Single", "float" },
@@ -874,7 +912,7 @@ public static partial class TypeExtensions
         { "String", "string" },
         { "Object", "object" },
         { "Void", "void" },
-    }.ToFrozenDictionary();
+    }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
     #endregion
 
     /// <summary>

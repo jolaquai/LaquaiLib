@@ -42,20 +42,35 @@ public static class ListExtensions
         /// <summary>
         /// Retrieves a <see cref="Memory{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>. By default, only the portion considered valid (as indicated through <see cref="List{T}.Count"/>) is returned.
         /// </summary>
-        /// <param name="start">The starting index of the <see cref="Memory{T}"/> to be retrieved.</param>
-        /// <param name="length">The length of the <see cref="Memory{T}"/> to be retrieved.</param>
+        /// <param name="start">The starting index of the <see cref="Memory{T}"/> to be retrieved. Must resolve to a position within the valid portion of the <see cref="List{T}"/> (as indicated through <see cref="List{T}.Count"/>).</param>
+        /// <param name="length">The length of the <see cref="Memory{T}"/> to be retrieved. Together with <paramref name="start"/>, this must resolve to a range that lies entirely within the valid portion of the <see cref="List{T}"/> (as indicated through <see cref="List{T}.Count"/>). Defaults to -1, which is equivalent to retrieving all elements from <paramref name="start"/> to the end of the valid portion of the <see cref="List{T}"/>.</param>
         /// <returns>A <see cref="Memory{T}"/> over the backing array of the specified <see cref="List{T}"/>.</returns>
         /// <remarks>
         /// When the <see cref="List{T}"/> undergoes a resize through any means, the <see cref="Memory{T}"/> returned by this method becomes invalid, just like with <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
         /// </remarks>
         public Memory<T> AsMemory(Index start = default, int length = -1)
         {
+            if (length == 0)
+            {
+                return Memory<T>.Empty;
+            }
+
+            var offset = start.GetOffset(list.Count);
+            if (offset < 0 || offset > list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(start), "The specified start index is out of range.");
+            }
+            if (length < -1 || length > list.Count - offset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), "The specified length is out of range.");
+            }
+
             Memory<T> memory = Accessors<T>._items(list);
-            var offset = start.GetOffset(memory.Length);
-            return length == -1 ? memory[offset..] : memory[offset..(offset + length)];
+            var endIndex = length == -1 ? list.Count : offset + length;
+            return memory[offset..endIndex];
         }
         /// <summary>
-        /// Retrieves a <see cref="Memory{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>.
+        /// Retrieves a <see cref="Memory{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>. <paramref name="range"/> must lie entirely within the valid portion of the <see cref="List{T}"/> (as indicated through <see cref="List{T}.Count"/>).
         /// </summary>
         /// <param name="range">The <see cref="Range"/> that indicates the portion of the backing array to be retrieved.</param>
         /// <returns>A <see cref="Memory{T}"/> over the backing array of the specified <see cref="List{T}"/>.</returns>
@@ -65,7 +80,7 @@ public static class ListExtensions
         public Memory<T> AsMemory(Range range)
         {
             var (offset, length) = range.GetOffsetAndLength(list.Count);
-            return list.AsMemory()[offset..(offset + length)];
+            return AsMemory(list, offset, length);
         }
         /// <summary>
         /// Retrieves a <see cref="Span{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>. By default, only the portion considered valid (as indicated through <see cref="List{T}.Count"/>) is returned.
@@ -78,9 +93,24 @@ public static class ListExtensions
         /// </remarks>
         public Span<T> AsSpan(Index start = default, int length = -1)
         {
+            if (length == 0)
+            {
+                return [];
+            }
+
+            var offset = start.GetOffset(list.Count);
+            if (offset < 0 || offset > list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(start), "The specified start index is out of range.");
+            }
+            if (length < -1 || length > list.Count - offset)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length), "The specified length is out of range.");
+            }
+
             Span<T> span = Accessors<T>._items(list);
-            var offset = start.GetOffset(span.Length);
-            return length == -1 ? span[offset..] : span[offset..(offset + length)];
+            var endIndex = length == -1 ? list.Count : offset + length;
+            return span[offset..endIndex];
         }
         /// <summary>
         /// Retrieves a <see cref="Span{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>.
@@ -102,30 +132,12 @@ public static class ListExtensions
         /// This is done through <see cref="CollectionsMarshal.SetCount{T}(List{T}, int)"/> and should be used as cautiously as that method.
         /// </summary>
         /// <param name="count">The new <see cref="List{T}.Count"/> of the specified <see cref="List{T}"/>.</param>
+        /// <returns>A <see cref="Span{T}"/> over the valid portion of the specified <see cref="List{T}"/> after setting its <see cref="List{T}.Count"/> to <paramref name="count"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetCount(int count) => CollectionsMarshal.SetCount(list, count);
-        /// <summary>
-        /// Increases the capacity of the <see cref="List{T}"/> so it can hold at least <paramref name="count"/> elements in addition to its current <see cref="List{T}.Count"/>.
-        /// </summary>
-        /// <param name="count">The number of elements to reserve additional space for.</param>
-        /// <param name="startAt">The index to consider the start of empty space in the <see cref="List{T}"/>. Defaults to its current <see cref="List{T}.Count"/>.</param>
-        /// <returns>A <see cref="Span{T}"/> over the requested space in <see cref="List{T}"/>.</returns>
-        public Span<T> ExpandBy(int count, int startAt = -1)
+        public Memory<T> SetCount(int count)
         {
-            if (count == 0)
-            {
-                return default;
-            }
-            if (startAt == -1)
-            {
-                startAt = list.Count;
-            }
-            if (startAt + count > list.Count)
-            {
-                CollectionsMarshal.SetCount(list, startAt + count);
-            }
-            return list.AsSpan(startAt, count);
+            CollectionsMarshal.SetCount(list, count);
+            return AsMemory(list);
         }
-
     }
 }

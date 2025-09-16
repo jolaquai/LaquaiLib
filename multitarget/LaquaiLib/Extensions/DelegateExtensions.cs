@@ -47,7 +47,7 @@ public static class DelegateExtensions
         public bool IsClosure
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => del.Target?.GetType().Name.Contains("DisplayClass") is true;
+            get => del.Target?.GetType().Name.Contains("DisplayClass", StringComparison.OrdinalIgnoreCase) is true;
         }
     }
 }

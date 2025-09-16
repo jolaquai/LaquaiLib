@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using LaquaiLib.Core;
 using LaquaiLib.Extensions;
 
 namespace LaquaiLib.IO;

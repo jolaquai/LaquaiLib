@@ -1,4 +1,6 @@
-﻿using LaquaiLib.Analyzers.Validity__9XXX_;
+﻿using System;
+
+using LaquaiLib.Analyzers.Validity__9XXX_;
 
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
@@ -24,19 +26,22 @@ public class TestClass
             ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
             ExpectedDiagnostics =
             {
-                //new DiagnosticResult(UnsafeAccessorValidators.ContainingTypeTypeParameterMismatchDescriptor)
-                //    .WithLocation(8, 32)
-                //    .WithArguments("<T>", "none")
+                new DiagnosticResult(UnsafeAccessorValidators.MissingMemberDescriptor)
+                    .WithLocation(11, 26)
+                    .WithArguments(["System.IO.MemoryStream", "field", "byte[]", "_buffer"])
             },
             TestCode = """
+            using System.Text.RegularExpressions;
             using System.Runtime.CompilerServices;
             using System.IO;
+            using System;
 
             namespace Test;
 
             public class A
             {
-                [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref byte[] _buffer(this MemoryStream _);
+                [UnsafeAccessor(UnsafeAccessorKind.Field)]
+                private static extern ref byte[] _buffer(MemoryStream _);
             }
             """,
         };

@@ -1,37 +1,41 @@
 using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
-using LaquaiLib.Core;
+using LaquaiLib.Text;
 
 namespace LaquaiLib.Util;
 
 /// <summary>
-/// Implements an <see cref="IComparer{T}"/> that compares <see langword="string"/>s and <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> using a natural sort order, that is, like Windows Explorer sorts file names.
+/// Implements a <see cref="StringComparer"/> that compares <see langword="string"/>s and <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> using a natural sort order, that is, like Windows Explorer sorts file names.
 /// </summary>
-public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOnlySpan<char>>, IEqualityComparer<string>, IEqualityComparer<ReadOnlySpan<char>>
+#if NET10_0_OR_GREATER
+[Obsolete($".NET 10 introduces {nameof(CompareOptions)}.{nameof(CompareOptions.NumericOrdering)}. Use {nameof(StringComparer)}.{nameof(StringComparer.Create)} for better performance.", true)]
+#endif
+public partial class NaturalStringComparer : StringComparer, IComparer<string>, IComparer<ReadOnlySpan<char>>, IEqualityComparer<string>, IEqualityComparer<ReadOnlySpan<char>>
 {
     /// <summary>
     /// Gets the default instance of <see cref="NaturalStringComparer"/>. Character comparisons are done using case-insensitive ordinal rules.
     /// </summary>
-    public static NaturalStringComparer Default { get; } = new NaturalStringComparer();
+    public static StringComparer Default { get; } = new NaturalStringComparer();
     /// <summary>
     /// Gets an instance of <see cref="NaturalStringComparer"/> that compares all non-digit, non-letter and non-Roman numeral characters as equal.
     /// </summary>
-    public static NaturalStringComparer LenientEquality { get; } = new NaturalStringComparer(true);
+    public static StringComparer LenientEquality { get; } = new NaturalStringComparer(true);
 
     private readonly bool _lenient;
 
     /// <summary>
     /// Initializes a new <see cref="NaturalStringComparer"/>.
     /// </summary>
-    public NaturalStringComparer() { }
+    private NaturalStringComparer() { }
     /// <summary>
     /// Initializes a new <see cref="NaturalStringComparer"/> with the specified <paramref name="lenientEquality"/> mode. See <see cref="LenientEquality"/>.
     /// </summary>
     /// <param name="lenientEquality">Whether to treat all non-digit, non-letter and non-Roman numeral characters as equal.</param>
-    public NaturalStringComparer(bool lenientEquality) => _lenient = lenientEquality;
+    private NaturalStringComparer(bool lenientEquality) => _lenient = lenientEquality;
 
     /// <summary>
     /// Compares two <see langword="string"/>s and returns a value indicating whether one is less than, equal to, or greater than the other.
@@ -42,7 +46,7 @@ public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOn
     /// <returns>A signed integer that indicates the result of the comparison. A negative value indicates that <paramref name="x"/> is less than <paramref name="y"/>, zero indicates that they are equal, and a positive value indicates that <paramref name="x"/> is greater than <paramref name="y"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public int Compare(string x, string y) => Compare(x.AsSpan(), y.AsSpan());
+    public override int Compare(string x, string y) => Compare(x.AsSpan(), y.AsSpan());
     /// <summary>
     /// Compares two <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> and returns a value indicating whether one is less than, equal to, or greater than the other.
     /// Empty spans are sorted to the bottom.
@@ -66,7 +70,7 @@ public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOn
         }
 
         var len = x.Length + y.Length;
-        Span<char> chars = len <= Configuration.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : new char[len];
+        Span<char> chars = len <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : new char[len];
         var left = chars[..x.Length];
         var right = chars[x.Length..];
         _ = x.ToUpperInvariant(left);
@@ -279,7 +283,7 @@ public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOn
         }
 
         // Process from right to left
-        Span<char> upper = roman.Length <= Configuration.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : new char[roman.Length];
+        Span<char> upper = roman.Length <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : new char[roman.Length];
         _ = roman.ToUpperInvariant(upper);
         for (var i = roman.Length - 1; i >= 0; i--)
         {
@@ -318,12 +322,12 @@ public partial class NaturalStringComparer : IComparer<string>, IComparer<ReadOn
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public bool Equals(string x, string y) => Equals(x.AsSpan(), y.AsSpan());
+    public override bool Equals(string x, string y) => Equals(x.AsSpan(), y.AsSpan());
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(ReadOnlySpan<char> x, ReadOnlySpan<char> y) => Compare(x, y) == 0;
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
-    public int GetHashCode([DisallowNull] string obj) => GetHashCode(obj.AsSpan());
+    public override int GetHashCode([DisallowNull] string obj) => GetHashCode(obj.AsSpan());
     public int GetHashCode([DisallowNull] ReadOnlySpan<char> span)
     {
         HashCode hashCode = default;

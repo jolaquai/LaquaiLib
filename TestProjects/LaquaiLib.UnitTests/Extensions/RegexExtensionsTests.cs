@@ -50,32 +50,32 @@ public class RegexExtensionsTests
     }
 
     [Fact]
-    public void GetOriginalTextReturnsCorrectText()
+    public void TextReturnsCorrectText()
     {
         var original = "abc123def";
         var regex = new Regex(@"\d+");
         var match = regex.Match(original);
 
-        var result = match.GetOriginalText();
+        var result = match.Text;
 
         Assert.Equal(original, result);
     }
 
     [Fact]
-    public void GetOriginalTextWorksWithGroups()
+    public void TextWorksWithGroups()
     {
         var original = "abc123def456";
         var regex = new Regex(@"(\d+)def(\d+)");
         var match = regex.Match(original);
         var group = match.Groups[1];
 
-        var result = group.GetOriginalText();
+        var result = group.Text;
 
         Assert.Equal(original, result);
     }
 
     [Fact]
-    public void GetOriginalTextWorksWithCaptures()
+    public void TextWorksWithCaptures()
     {
         var original = "abc123def123ghi";
         var regex = new Regex(@"(\d+)");
@@ -83,28 +83,28 @@ public class RegexExtensionsTests
         var group = match.Groups[1];
         var capture = group.Captures[0];
 
-        var result = capture.GetOriginalText();
+        var result = capture.Text;
 
         Assert.Equal(original, result);
     }
 
     [Fact]
-    public void GetOriginalTextThrowsForNullCapture()
+    public void TextThrowsForNullCapture()
     {
         Capture capture = null;
 
-        Assert.Throws<ArgumentNullException>(capture.GetOriginalText);
+        Assert.Throws<ArgumentNullException>(() => capture.Text);
     }
 
     [Fact]
-    public void GetOriginalTextReturnsSameStringForAllMatchesOnSameInput()
+    public void TextReturnsSameStringForAllMatchesOnSameInput()
     {
         var original = "abc123def456ghi";
         var regex = new Regex(@"\d+");
         var matches = regex.Matches(original);
 
-        var result1 = matches[0].GetOriginalText();
-        var result2 = matches[1].GetOriginalText();
+        var result1 = matches[0].Text;
+        var result2 = matches[1].Text;
 
         Assert.Same(result1, result2);
         Assert.Equal(original, result1);

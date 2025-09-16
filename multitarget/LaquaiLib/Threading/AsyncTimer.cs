@@ -178,13 +178,20 @@ public class AsyncTimer : IAsyncDisposable
     public async ValueTask StopAsync(CancellationToken cancellationToken = default)
     {
         // Cancel current callbacks
-        cts?.Cancel();
+        if (cts is not null)
+        {
+            await cts.CancelAsync().ConfigureAwait(false);
+        }
         // Stop invoking
-        _ = (_tcs?.TrySetCanceled(cancellationToken));
+        _ = _tcs?.TrySetCanceled(cancellationToken);
         _tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         if (run is not null)
         {
-            await run.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await run.WaitAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) { }
         }
     }
 }

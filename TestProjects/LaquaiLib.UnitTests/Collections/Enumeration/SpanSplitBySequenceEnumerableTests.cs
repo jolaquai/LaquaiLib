@@ -1,6 +1,6 @@
 ﻿using LaquaiLib.Collections.Enumeration;
 using LaquaiLib.Extensions;
-using LaquaiLib.Util;
+using LaquaiLib.Text;
 
 namespace LaquaiLib.UnitTests.Collections.Enumeration;
 

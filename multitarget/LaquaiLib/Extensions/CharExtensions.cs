@@ -14,13 +14,21 @@ public static class CharExtensions
         /// </summary>
         /// <param name="character">The <see cref="char"/> to check.</param>
         /// <returns><see langword="true"/> if <paramref name="character"/> is a vowel, otherwise, <see langword="false"/>.</returns>
-        public bool IsVowel() => char.IsLetter(character) && Vowels.Contains(character);
+        public bool IsVowel
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => char.IsLetter(character) && Vowels.Contains(character);
+        }
 
         /// <summary>
         /// Determines if a specified <see cref="char"/> is a consonant.
         /// </summary>
         /// <param name="character">The <see cref="char"/> to check.</param>
         /// <returns><see langword="true"/> if <paramref name="character"/> is a consonant, otherwise, <see langword="false"/>.</returns>
-        public bool IsConsonant() => char.IsLetter(character) && !character.IsVowel();
+        public bool IsConsonant
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => char.IsLetter(character) && !character.IsVowel;
+        }
     }
 }
