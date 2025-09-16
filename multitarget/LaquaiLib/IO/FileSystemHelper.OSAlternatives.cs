@@ -195,12 +195,13 @@ public static partial class FileSystemHelper
 
             // Common failure cases where we should fallback, in that order:
             // 1: Invalid function, 87: Invalid parameter, 112: Insufficient disk space, 32: Sharing violation, 5: Access denied
-            if (error is 1 or 87 or 112 or 32 or 5)
+            switch (error)
             {
-                return false; // Trigger fallback
+                case 1 or 87 or 112 or 32 or 5:
+                    return false; // Trigger fallback
+                default:
+                    throw new Win32Exception(error);
             }
-
-            throw new Win32Exception(error);
         }
 
         return true;

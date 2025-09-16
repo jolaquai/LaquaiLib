@@ -425,28 +425,31 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                         }
                     }
 
-                    if (firstNonZero < 0)
+                    switch (firstNonZero)
                     {
-                        // This row is all zero; the rest must also be zero if it's REF
-                        return IsAllZerosFrom(ros, r + 1);
-                    }
-                    else
-                    {
-                        // Condition: pivot must be strictly to the right compared to previous row's pivot
-                        if (firstNonZero <= pivotCol)
+                        case < 0:
+                            // This row is all zero; the rest must also be zero if it's REF
+                            return IsAllZerosFrom(ros, r + 1);
+                        default:
                         {
-                            return false;
-                        }
-
-                        pivotCol = firstNonZero;
-
-                        // Ensure all entries below this pivot in the same column are zero
-                        for (var rr = r + 1; rr < Rows; rr++)
-                        {
-                            if (_data[rr, pivotCol] != T.Zero)
+                            // Condition: pivot must be strictly to the right compared to previous row's pivot
+                            if (firstNonZero <= pivotCol)
                             {
                                 return false;
                             }
+
+                            pivotCol = firstNonZero;
+
+                            // Ensure all entries below this pivot in the same column are zero
+                            for (var rr = r + 1; rr < Rows; rr++)
+                            {
+                                if (_data[rr, pivotCol] != T.Zero)
+                                {
+                                    return false;
+                                }
+                            }
+
+                            break;
                         }
                     }
                 }
@@ -1105,19 +1108,22 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     bool IStructuralEquatable.Equals(object other, IEqualityComparer comparer)
     {
         ArgumentNullException.ThrowIfNull(comparer);
-        if (other is Matrix<T> matrix && matrix._data.Length == _data.Length)
+        switch (other)
         {
-            if (comparer is IEqualityComparer<T> typedComparer)
+            case Matrix<T> matrix when matrix._data.Length == _data.Length:
             {
-                return _data.SequenceEqual(matrix._data, typedComparer);
+                switch (comparer)
+                {
+                    case IEqualityComparer<T> typedComparer:
+                        return _data.SequenceEqual(matrix._data, typedComparer);
+                    default:
+                        throw new ArgumentException("The comparer must be of type IEqualityComparer<T>.", nameof(comparer));
+                }
             }
-            else
-            {
-                throw new ArgumentException("The comparer must be of type IEqualityComparer<T>.", nameof(comparer));
-            }
-        }
 
-        return false;
+            default:
+                return false;
+        }
     }
     int IStructuralEquatable.GetHashCode(IEqualityComparer comparer)
     {
@@ -1125,46 +1131,54 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         var typedComparer = comparer as IEqualityComparer<T>;
 
         var hc = default(HashCode);
-        if (typedComparer is not null)
+        switch (typedComparer)
         {
-            // Adapt the approach slightly and use a span over the last 8 elements
-            IReadOnlySpanProvider<T> spanProvider = null;
-            try
+            case not null:
             {
-                _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
-                if (ros.Length >= 8)
+                // Adapt the approach slightly and use a span over the last 8 elements
+                IReadOnlySpanProvider<T> spanProvider = null;
+                try
                 {
-                    ros = ros[^8..];
+                    _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
+                    if (ros.Length >= 8)
+                    {
+                        ros = ros[^8..];
+                    }
+                    for (var i = 0; i < ros.Length; i++)
+                    {
+                        hc.Add(typedComparer.GetHashCode(ros[i]));
+                    }
                 }
-                for (var i = 0; i < ros.Length; i++)
+                finally
                 {
-                    hc.Add(typedComparer.GetHashCode(ros[i]));
+                    spanProvider?.Dispose();
                 }
+
+                break;
             }
-            finally
+
+            default:
             {
-                spanProvider?.Dispose();
-            }
-        }
-        else
-        {
-            // Adapt the approach slightly and use a span over the last 8 elements
-            IReadOnlySpanProvider<T> spanProvider = null;
-            try
-            {
-                _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
-                if (ros.Length >= 8)
+                // Adapt the approach slightly and use a span over the last 8 elements
+                IReadOnlySpanProvider<T> spanProvider = null;
+                try
                 {
-                    ros = ros[^8..];
+                    _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
+                    if (ros.Length >= 8)
+                    {
+                        ros = ros[^8..];
+                    }
+                    for (var i = 0; i < ros.Length; i++)
+                    {
+                        hc.Add(comparer.GetHashCode(ros[i]));
+                    }
                 }
-                for (var i = 0; i < ros.Length; i++)
+                finally
                 {
-                    hc.Add(comparer.GetHashCode(ros[i]));
+                    spanProvider?.Dispose();
                 }
-            }
-            finally
-            {
-                spanProvider?.Dispose();
+
+                break;
             }
         }
 

@@ -203,23 +203,25 @@ public static partial class ArrayExtensions
                 Span<T> destSpan = default;
 
                 // Avoid allocating the span provider (which will invariable get boxed because of the interface cast) if possible
-                if (source is T[] linearSource)
+                switch (source)
                 {
-                    srcSpan = linearSource.AsSpan();
+                    case T[] linearSource:
+                        srcSpan = linearSource.AsSpan();
+                        break;
+                    default:
+                        sourceSpanProv = source.GetSpanProvider<T>();
+                        srcSpan = sourceSpanProv.Span;
+                        break;
                 }
-                else
+                switch (destination)
                 {
-                    sourceSpanProv = source.GetSpanProvider<T>();
-                    srcSpan = sourceSpanProv.Span;
-                }
-                if (destination is T[] linearDest)
-                {
-                    destSpan = linearDest;
-                }
-                else
-                {
-                    destSpanProv = destination.GetSpanProvider<T>();
-                    destSpan = destSpanProv.Span;
+                    case T[] linearDest:
+                        destSpan = linearDest;
+                        break;
+                    default:
+                        destSpanProv = destination.GetSpanProvider<T>();
+                        destSpan = destSpanProv.Span;
+                        break;
                 }
 
                 if (sourceIndex < 0)

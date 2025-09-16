@@ -77,7 +77,7 @@ public static class RandomMath
             return T.One;
         }
 
-        foreach (var g in Util.Sequence.Create(enumerated.Max(), T.Zero, -T.One)
+        foreach (var g in Sequence.Create(enumerated.Max(), T.Zero, -T.One)
             .Where(g => enumerated.All(n => n % g == T.Zero)))
         {
             return g;

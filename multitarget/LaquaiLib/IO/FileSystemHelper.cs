@@ -93,13 +93,14 @@ public static partial class FileSystemHelper
                     {
                         const int baseCutoff = 1 << 18;
                         int buffer;
-                        if (sourceFs.Length < baseCutoff)
+                        switch (sourceFs.Length)
                         {
-                            buffer = (int)sourceFs.Length;
-                        }
-                        else
-                        {
-                            buffer = bufferSize > 0 ? bufferSize : baseCutoff;
+                            case < baseCutoff:
+                                buffer = (int)sourceFs.Length;
+                                break;
+                            default:
+                                buffer = bufferSize > 0 ? bufferSize : baseCutoff;
+                                break;
                         }
 
                         await sourceFs.CopyToAsync(destFs, buffer, cancellationToken).ConfigureAwait(false);
@@ -680,7 +681,7 @@ public static partial class FileSystemHelper
             const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
             const uint BACKUP_DATA = 1;
 
-            var handle = Interop.Kernel32.CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
+            var handle = Kernel32.CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
 
             if (handle == new nint(-1))
             {
@@ -698,7 +699,7 @@ public static partial class FileSystemHelper
                 var inDataStream = false;
                 long remainingDataSize = 0;
 
-                while (Interop.Kernel32.BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
+                while (Kernel32.BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
                 {
                     if (bytesRead == 0)
                     {
@@ -778,12 +779,12 @@ public static partial class FileSystemHelper
                 }
 
                 // Final read with bAbort = true
-                _ = Interop.Kernel32.BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
+                _ = Kernel32.BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
                 return true;
             }
             finally
             {
-                _ = Interop.Kernel32.CloseHandle(handle);
+                _ = Kernel32.CloseHandle(handle);
             }
         }
     }

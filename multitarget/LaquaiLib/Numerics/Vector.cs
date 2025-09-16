@@ -320,33 +320,41 @@ public readonly struct Vector<T> : IEnumerable<T>,
     bool IStructuralEquatable.Equals(object other, IEqualityComparer comparer)
     {
         ArgumentNullException.ThrowIfNull(comparer);
-        if (other is Vector<T> vector && vector._coordinates.Length == _coordinates.Length)
+        switch (other)
         {
-            if (comparer is IEqualityComparer<T> typedComparer)
+            case Vector<T> vector when vector._coordinates.Length == _coordinates.Length:
             {
-                for (var i = 0; i < _coordinates.Length; i++)
+                switch (comparer)
                 {
-                    if (!typedComparer.Equals(_coordinates[i], vector._coordinates[i]))
+                    case IEqualityComparer<T> typedComparer:
                     {
-                        return false;
+                        for (var i = 0; i < _coordinates.Length; i++)
+                        {
+                            if (!typedComparer.Equals(_coordinates[i], vector._coordinates[i]))
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
                     }
-                }
-                return true;
-            }
-            else
-            {
-                for (var i = 0; i < _coordinates.Length; i++)
-                {
-                    if (!comparer.Equals(_coordinates[i], vector._coordinates[i]))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
 
-        return false;
+                    default:
+                    {
+                        for (var i = 0; i < _coordinates.Length; i++)
+                        {
+                            if (!comparer.Equals(_coordinates[i], vector._coordinates[i]))
+                            {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
+
+            default:
+                return false;
+        }
     }
     int IStructuralEquatable.GetHashCode(IEqualityComparer comparer)
     {
@@ -354,20 +362,28 @@ public readonly struct Vector<T> : IEnumerable<T>,
         var typedComparer = comparer as IEqualityComparer<T>;
 
         var hc = default(HashCode);
-        if (typedComparer is not null)
+        switch (typedComparer)
         {
-            // Stolen straight from Array.IStructuralEquatable.GetHashCode
-            for (var i = _coordinates.Length >= 8 ? _coordinates.Length - 8 : 0; i < _coordinates.Length; i++)
+            case not null:
             {
-                hc.Add(typedComparer.GetHashCode(_coordinates[i]));
+                // Stolen straight from Array.IStructuralEquatable.GetHashCode
+                for (var i = _coordinates.Length >= 8 ? _coordinates.Length - 8 : 0; i < _coordinates.Length; i++)
+                {
+                    hc.Add(typedComparer.GetHashCode(_coordinates[i]));
+                }
+
+                break;
             }
-        }
-        else
-        {
-            // Stolen straight from Array.IStructuralEquatable.GetHashCode
-            for (var i = _coordinates.Length >= 8 ? _coordinates.Length - 8 : 0; i < _coordinates.Length; i++)
+
+            default:
             {
-                hc.Add(comparer.GetHashCode(_coordinates[i]));
+                // Stolen straight from Array.IStructuralEquatable.GetHashCode
+                for (var i = _coordinates.Length >= 8 ? _coordinates.Length - 8 : 0; i < _coordinates.Length; i++)
+                {
+                    hc.Add(comparer.GetHashCode(_coordinates[i]));
+                }
+
+                break;
             }
         }
 

@@ -10,20 +10,22 @@ public class FlexibleUnmanagedTypeConverter<T> : JsonConverter<T> where T : IPar
 {
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType == JsonTokenType.String)
+        switch (reader.TokenType)
         {
-            var stringValue = reader.GetString();
-            if (T.TryParse(stringValue, null, out var result))
+            case JsonTokenType.String:
             {
-                return result;
+                var stringValue = reader.GetString();
+                if (T.TryParse(stringValue, null, out var result))
+                {
+                    return result;
+                }
+
+                // Handle empty strings or other special cases
+                return default;
             }
 
-            // Handle empty strings or other special cases
-            return default;
-        }
-        else if (reader.TokenType == JsonTokenType.Number)
-        {
-            return (T)Convert.ChangeType(reader.GetDouble(), typeof(T));
+            case JsonTokenType.Number:
+                return (T)Convert.ChangeType(reader.GetDouble(), typeof(T));
         }
 
         // Return default or throw custom exception

@@ -104,13 +104,14 @@ public class UsingWrapper<T> : IDisposable, IAsyncDisposable
         }
         GC.SuppressFinalize(this);
 
-        if (_disposeAsync is not null)
+        switch (_disposeAsync)
         {
-            await _disposeAsync(Instance).ConfigureAwait(false);
-        }
-        else
-        {
-            _dispose(Instance);
+            case not null:
+                await _disposeAsync(Instance).ConfigureAwait(false);
+                break;
+            default:
+                _dispose(Instance);
+                break;
         }
         disposed = true;
     }

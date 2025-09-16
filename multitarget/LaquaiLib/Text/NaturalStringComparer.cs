@@ -12,7 +12,7 @@ namespace LaquaiLib.Util;
 /// Implements a <see cref="StringComparer"/> that compares <see langword="string"/>s and <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> using a natural sort order, that is, like Windows Explorer sorts file names.
 /// </summary>
 #if NET10_0_OR_GREATER
-[Obsolete($".NET 10 introduces {nameof(CompareOptions)}.{nameof(CompareOptions.NumericOrdering)}. Use {nameof(StringComparer)}.{nameof(StringComparer.Create)} for better performance.", true)]
+[Obsolete($".NET 10 introduces {nameof(CompareOptions)}.{nameof(CompareOptions.NumericOrdering)}. Use {nameof(StringComparer)}.{nameof(Create)} for better performance.", true)]
 #endif
 public partial class NaturalStringComparer : StringComparer, IComparer<string>, IComparer<ReadOnlySpan<char>>, IEqualityComparer<string>, IEqualityComparer<ReadOnlySpan<char>>
 {
@@ -308,12 +308,13 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     /// </summary>
     private static bool IsValidRomanNumeral(ReadOnlySpan<char> roman)
     {
-        if (roman.Length == 0)
+        switch (roman.Length)
         {
-            return false;
+            case 0:
+                return false;
+            default:
+                return _romanNumeralRegex.IsMatch(roman);
         }
-
-        return _romanNumeralRegex.IsMatch(roman);
     }
 
     private static readonly Regex _romanNumeralRegex = RomanNumeralRegex();

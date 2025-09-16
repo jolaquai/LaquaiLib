@@ -70,15 +70,16 @@ public sealed class CommandInterface : IShellInterface
         // Before returning, the working directory MUST be set to the current directory
         // Unfortunately, PS doesn't care about passing ProcessStartInfo.WorkingDirectory it seems
         var cwd = Environment.CurrentDirectory;
-        if (cwd[..2] == @"\\")
+        switch (cwd[..2])
         {
-            // Let's not throw and just default to what actual cmd.exe does
-            // throw new InvalidOperationException($"cmd.exe cannot operate in UNC paths.");
-            _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"").ConfigureAwait(false);
-        }
-        else
-        {
-            _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"").ConfigureAwait(false);
+            case @"\\":
+                // Let's not throw and just default to what actual cmd.exe does
+                // throw new InvalidOperationException($"cmd.exe cannot operate in UNC paths.");
+                _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"%USERPROFILE%\"").ConfigureAwait(false);
+                break;
+            default:
+                _ = await instance.DispatchAsync($"{cwd[..2]} & cd \"{cwd}\"").ConfigureAwait(false);
+                break;
         }
         return instance;
     }
@@ -153,13 +154,14 @@ public sealed class CommandInterface : IShellInterface
                     {
                         // Have to use async methods to make the operation cancellable
                         var line = await StdOut.ReadLineAsync(cts.Token).ConfigureAwait(false);
-                        if (line is not null)
+                        switch (line)
                         {
-                            lines.Add(line);
-                        }
-                        else
-                        {
-                            cts.Cancel();
+                            case not null:
+                                lines.Add(line);
+                                break;
+                            default:
+                                cts.Cancel();
+                                break;
                         }
                     }
                     finally

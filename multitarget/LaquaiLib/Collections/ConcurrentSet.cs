@@ -1,216 +1,237 @@
 ﻿#pragma warning disable IDE0058 // Expression value is never used
 
+using System.Numerics;
+
 namespace LaquaiLib.Collections;
+
+/// <summary>
+/// Contains factory methods for <see cref="ConcurrentSet{T}"/>.
+/// </summary>
+public static class ConcurrentSet
+{
+    /// <summary>
+    /// Creates a new <see cref="ConcurrentSet{T}"/> containing the specified values, using the default equality comparer for <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the set.</typeparam>
+    /// <param name="values">The values to include in the set.</param>
+    /// <returns>The created set.</returns>
+    public static ConcurrentSet<T> Create<T>(params ReadOnlySpan<T> values) where T : notnull => Create(values, EqualityComparer<T>.Default);
+    /// <summary>
+    /// Creates a new <see cref="ConcurrentSet{T}"/> containing the specified values, using the specified equality comparer.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the set.</typeparam>
+    /// <param name="values">The values to include in the set.</param>
+    /// <param name="equalityComparer">The equality comparer to use, or <c>null</c> to use the default equality comparer for <typeparamref name="T"/>.</param>
+    /// <returns>The created set.</returns>
+    public static ConcurrentSet<T> Create<T>(ReadOnlySpan<T> values, IEqualityComparer<T> equalityComparer) where T : notnull
+    {
+        var set = new ConcurrentSet<T>(equalityComparer);
+        for (var i = 0; i < values.Length; i++)
+        {
+            var stripe = set.GetStripe(values[i]);
+            stripe.Set.Add(values[i]);
+        }
+        Interlocked.Exchange(ref set._count, values.Length);
+        return set;
+    }
+}
 
 /// <summary>
 /// Implements a thread-safe <see cref="ISet{T}"/>.
 /// </summary>
+[CollectionBuilder(typeof(ConcurrentSet), nameof(ConcurrentSet.Create))]
 public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
 {
-    private const int DefaultCapacity = 16;
-
-    private struct Bucket
-    {
-        public T Item;
-        public volatile int State; // 0=empty, 1=occupied, -1=deleted
-        public int Hash;
-    }
-
-    private volatile Bucket[] _buckets;
-    private volatile int _count;
-    private volatile int _version;
+    private const int DefaultStripes = 16;
+    private readonly Stripe[] _stripes;
     private readonly IEqualityComparer<T> _comparer;
+    internal int _count; // approximate; maintained exactly via locks below
 
-    /// <summary>
-    /// Initializes a new <see cref="ConcurrentSet{T}"/> with the default initial capacity and comparer.
-    /// </summary>
-    public ConcurrentSet() : this(DefaultCapacity, EqualityComparer<T>.Default) { }
-    /// <summary>
-    /// Initializes a new <see cref="ConcurrentSet{T}"/> with the specified initial capacity and the default comparer.
-    /// </summary>
-    /// <param name="capacity">The initial capacity of the set.</param>
-    public ConcurrentSet(int capacity) : this(capacity, EqualityComparer<T>.Default) { }
-    /// <summary>
-    /// Initializes a new <see cref="ConcurrentSet{T}"/> with the specified comparer and the default initial capacity.
-    /// </summary>
-    /// <param name="comparer">The equality comparer to use for the set.</param>
-    public ConcurrentSet(IEqualityComparer<T> comparer) : this(DefaultCapacity, comparer) { }
-    /// <summary>
-    /// Initializes a new <see cref="ConcurrentSet{T}"/> with the specified initial capacity and comparer.
-    /// </summary>
-    /// <param name="capacity">The initial capacity of the set.</param>
-    /// <param name="comparer">The equality comparer to use for the set.</param>
-    public ConcurrentSet(int capacity, IEqualityComparer<T> comparer)
+    internal sealed class Stripe(IEqualityComparer<T> comparer)
     {
-        var size = GetNextPowerOfTwo(Math.Max(capacity, DefaultCapacity));
-        _buckets = new Bucket[size];
-        _comparer = comparer ?? EqualityComparer<T>.Default;
+        public readonly Lock Lock = new();
+        public readonly HashSet<T> Set = new HashSet<T>(comparer);
     }
 
     /// <summary>
-    /// Gets the number of elements in the set.
+    /// Initializes a new <see cref="ConcurrentSet{T}"/> using the default equality comparer for <typeparamref name="T"/>.
     /// </summary>
-    public int Count => _count;
+    public ConcurrentSet() : this(EqualityComparer<T>.Default) { }
     /// <summary>
-    /// Gets whether the set is read-only.
+    /// Initializes a new <see cref="ConcurrentSet{T}"/> using the specified equality comparer.
     /// </summary>
+    /// <param name="comparer">The equality comparer to use, or <c>null</c> to use the default equality comparer for <typeparamref name="T"/>.</param>
+    public ConcurrentSet(IEqualityComparer<T> comparer)
+    {
+        var s = (int)BitOperations.RoundUpToPowerOf2(DefaultStripes);
+
+        _stripes = new Stripe[s];
+        _comparer = comparer ?? EqualityComparer<T>.Default;
+        for (var i = 0; i < _stripes.Length; i++)
+        {
+            _stripes[i] = new Stripe(_comparer);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal Stripe GetStripe(T item)
+    {
+        var h = _comparer.GetHashCode(item);
+        var idx = (uint)h & (uint)(_stripes.Length - 1);
+        return _stripes[(int)idx];
+    }
+
+    /// <inheritdoc/>
+    public int Count
+    {
+        get
+        {
+            var total = 0;
+            // lock each stripe briefly and sum
+            for (var i = 0; i < _stripes.Length; i++)
+            {
+                var stripe = _stripes[i];
+                lock (stripe.Lock)
+                {
+                    total += stripe.Set.Count;
+                }
+            }
+            return total;
+        }
+    }
+    /// <inheritdoc/>
     public bool IsReadOnly => false;
 
     /// <inheritdoc/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Add(T item)
     {
-        var hash = _comparer.GetHashCode(item);
-        var buckets = _buckets;
-        var mask = buckets.Length - 1;
-        var index = hash & mask;
-
-        while (true)
+        var stripe = GetStripe(item);
+        lock (stripe.Lock)
         {
-            ref var bucket = ref buckets[index];
-            var state = bucket.State;
-
-            if (state is 0 or (-1))
+            if (stripe.Set.Add(item))
             {
-                if (Interlocked.CompareExchange(ref bucket.State, 1, state) == state)
-                {
-                    bucket.Item = item;
-                    bucket.Hash = hash;
-                    Interlocked.Increment(ref _count);
-                    Interlocked.Increment(ref _version);
-                    return true;
-                }
-            }
-            else if (bucket.Hash == hash && _comparer.Equals(bucket.Item, item))
-            {
-                return false;
-            }
-
-            index = (index + 1) & mask;
-        }
-    }
-
-    /// <inheritdoc/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Contains(T item)
-    {
-        var hash = _comparer.GetHashCode(item);
-        var buckets = _buckets;
-        var mask = buckets.Length - 1;
-        var index = hash & mask;
-
-        while (true)
-        {
-            ref var bucket = ref buckets[index];
-            var state = bucket.State;
-
-            if (state == 0)
-            {
-                return false;
-            }
-
-            if (state == 1 && bucket.Hash == hash && _comparer.Equals(bucket.Item, item))
-            {
+                // keep _count as redundant; not used for correctness but cheap to maintain
+                Interlocked.Increment(ref _count);
                 return true;
             }
-
-            index = (index + 1) & mask;
+            return false;
         }
     }
-
     /// <inheritdoc/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Contains(T item)
+    {
+        var stripe = GetStripe(item);
+        lock (stripe.Lock)
+        {
+            return stripe.Set.Contains(item);
+        }
+    }
+    /// <inheritdoc/>
     public bool Remove(T item)
     {
-        var hash = _comparer.GetHashCode(item);
-        var buckets = _buckets;
-        var mask = buckets.Length - 1;
-        var index = hash & mask;
-
-        while (true)
+        var stripe = GetStripe(item);
+        lock (stripe.Lock)
         {
-            ref var bucket = ref buckets[index];
-            var state = bucket.State;
-
-            if (state == 0)
+            if (stripe.Set.Remove(item))
             {
-                return false;
+                Interlocked.Decrement(ref _count);
+                return true;
             }
-
-            if (state == 1 && bucket.Hash == hash && _comparer.Equals(bucket.Item, item))
-            {
-                if (Interlocked.CompareExchange(ref bucket.State, -1, 1) == 1)
-                {
-                    bucket.Item = default!;
-                    Interlocked.Decrement(ref _count);
-                    Interlocked.Increment(ref _version);
-                    return true;
-                }
-            }
-
-            index = (index + 1) & mask;
+            return false;
         }
     }
-
     /// <inheritdoc/>
     public void Clear()
     {
-        _buckets = new Bucket[_buckets.Length];
-        _count = 0;
-        Interlocked.Increment(ref _version);
-    }
-
-    /// <inheritdoc/>
-    public void CopyTo(T[] array, int arrayIndex)
-    {
-        var buckets = _buckets;
-        var copied = 0;
-
-        for (var i = 0; i < buckets.Length && copied < _count; i++)
+        // lock stripes in order to avoid deadlocks
+        foreach (var stripe in _stripes)
         {
-            if (buckets[i].State == 1)
+            stripe.Lock.Enter();
+        }
+
+        try
+        {
+            foreach (var stripe in _stripes)
             {
-                array[arrayIndex + copied++] = buckets[i].Item;
+                stripe.Set.Clear();
+            }
+
+            Interlocked.Exchange(ref _count, 0);
+        }
+        finally
+        {
+            for (var i = _stripes.Length - 1; i >= 0; i--)
+            {
+                _stripes[i].Lock.Exit();
             }
         }
     }
+    /// <inheritdoc/>
+    public void CopyTo(T[] array, int arrayIndex)
+    {
+        ArgumentNullException.ThrowIfNull(array);
+        ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
 
+        var items = new T[Count];
+        var lastIndex = 0;
+        foreach (var stripe in _stripes)
+        {
+            lock (stripe.Lock)
+            {
+                stripe.Set.CopyTo(items, lastIndex);
+                lastIndex += stripe.Set.Count;
+            }
+
+            if (arrayIndex + items.Length > array.Length)
+            {
+                throw new ArgumentException("Destination array is too small.");
+            }
+        }
+
+        items.CopyTo(array, arrayIndex);
+    }
     /// <inheritdoc/>
     public void ExceptWith(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
         {
             Remove(item);
         }
     }
-
     /// <inheritdoc/>
     public void IntersectWith(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         var otherSet = new HashSet<T>(other, _comparer);
-        var buckets = _buckets;
-
-        for (var i = 0; i < buckets.Length; i++)
+        foreach (var stripe in _stripes)
         {
-            if (buckets[i].State == 1 && !otherSet.Contains(buckets[i].Item))
+            lock (stripe.Lock)
             {
-                Remove(buckets[i].Item);
+                var toRemove = stripe.Set.Where(x => !otherSet.Contains(x)).ToList();
+                foreach (var r in toRemove)
+                {
+                    if (stripe.Set.Remove(r))
+                    {
+                        Interlocked.Decrement(ref _count);
+                    }
+                }
             }
         }
     }
-
     /// <inheritdoc/>
     public void UnionWith(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
         {
             Add(item);
         }
     }
-
     /// <inheritdoc/>
     public void SymmetricExceptWith(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
         {
             if (!Remove(item))
@@ -219,26 +240,30 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
             }
         }
     }
-
     /// <inheritdoc/>
     public bool IsSubsetOf(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         var otherSet = new HashSet<T>(other, _comparer);
-        var buckets = _buckets;
-
-        for (var i = 0; i < buckets.Length; i++)
+        foreach (var stripe in _stripes)
         {
-            if (buckets[i].State == 1 && !otherSet.Contains(buckets[i].Item))
+            lock (stripe.Lock)
             {
-                return false;
+                foreach (var item in stripe.Set)
+                {
+                    if (!otherSet.Contains(item))
+                    {
+                        return false;
+                    }
+                }
             }
         }
         return true;
     }
-
     /// <inheritdoc/>
     public bool IsSupersetOf(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
         {
             if (!Contains(item))
@@ -248,24 +273,26 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
         }
         return true;
     }
-
     /// <inheritdoc/>
     public bool IsProperSubsetOf(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         var otherSet = new HashSet<T>(other, _comparer);
-        return Count < otherSet.Count && IsSubsetOf(otherSet);
+        var c = Count;
+        return c < otherSet.Count && IsSubsetOf(otherSet);
     }
-
     /// <inheritdoc/>
     public bool IsProperSupersetOf(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         var otherSet = new HashSet<T>(other, _comparer);
-        return Count > otherSet.Count && IsSupersetOf(otherSet);
+        var c = Count;
+        return c > otherSet.Count && IsSupersetOf(otherSet);
     }
-
     /// <inheritdoc/>
     public bool Overlaps(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
         {
             if (Contains(item))
@@ -273,48 +300,31 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
                 return true;
             }
         }
+
         return false;
     }
-
     /// <inheritdoc/>
     public bool SetEquals(IEnumerable<T> other)
     {
+        ArgumentNullException.ThrowIfNull(other);
         var otherSet = new HashSet<T>(other, _comparer);
-        return Count == otherSet.Count && IsSubsetOf(otherSet);
-    }
+        var c = Count;
+        if (c != otherSet.Count)
+        {
+            return false;
+        }
 
+        return IsSubsetOf(otherSet);
+    }
     /// <inheritdoc/>
     public IEnumerator<T> GetEnumerator()
     {
-        var buckets = _buckets;
-        var version = _version;
-
-        for (var i = 0; i < buckets.Length; i++)
-        {
-            if (_version != version)
-            {
-                throw new InvalidOperationException("Collection was modified during enumeration.");
-            }
-
-            if (buckets[i].State == 1)
-            {
-                yield return buckets[i].Item;
-            }
-        }
+        // snapshot all items to avoid holding locks during enumeration
+        var items = new T[Count];
+        CopyTo(items, 0);
+        return ((IEnumerable<T>)items).GetEnumerator();
     }
-
+    /// <inheritdoc/>
     void ICollection<T>.Add(T item) => Add(item);
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int GetNextPowerOfTwo(int value)
-    {
-        value--;
-        value |= value >> 1;
-        value |= value >> 2;
-        value |= value >> 4;
-        value |= value >> 8;
-        value |= value >> 16;
-        return value + 1;
-    }
 }

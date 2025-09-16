@@ -292,36 +292,44 @@ public static partial class IEnumerableExtensions
         public int Into<TValue>(IDictionary<T, TValue> target, Func<T, TValue> valueFactory, bool overwrite = false)
         {
             var i = 0;
-            if (target is Dictionary<T, TValue> concreteDict)
+            switch (target)
             {
-                foreach (var key in source)
+                case Dictionary<T, TValue> concreteDict:
                 {
-                    ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
-                    if (overwrite || !exists)
+                    foreach (var key in source)
                     {
-                        i++;
-                        dest = valueFactory(key);
+                        ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            dest = valueFactory(key);
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
-                    }
+
+                    break;
                 }
-            }
-            else
-            {
-                foreach (var key in source)
+
+                default:
                 {
-                    var exists = target.ContainsKey(key);
-                    if (overwrite || !exists)
+                    foreach (var key in source)
                     {
-                        i++;
-                        target[key] = valueFactory(key);
+                        var exists = target.ContainsKey(key);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            target[key] = valueFactory(key);
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
-                    }
+
+                    break;
                 }
             }
             return i;
@@ -336,38 +344,46 @@ public static partial class IEnumerableExtensions
         public int Into<TKey>(IDictionary<TKey, T> target, Func<T, TKey> keyFactory, bool overwrite = false)
         {
             var i = 0;
-            if (target is Dictionary<TKey, T> concreteDict)
+            switch (target)
             {
-                foreach (var value in source)
+                case Dictionary<TKey, T> concreteDict:
                 {
-                    var key = keyFactory(value);
-                    ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
-                    if (overwrite || !exists)
+                    foreach (var value in source)
                     {
-                        i++;
-                        dest = value;
+                        var key = keyFactory(value);
+                        ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            dest = value;
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
-                    }
+
+                    break;
                 }
-            }
-            else
-            {
-                foreach (var value in source)
+
+                default:
                 {
-                    var key = keyFactory(value);
-                    var exists = target.ContainsKey(key);
-                    if (overwrite || !exists)
+                    foreach (var value in source)
                     {
-                        i++;
-                        target[key] = value;
+                        var key = keyFactory(value);
+                        var exists = target.ContainsKey(key);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            target[key] = value;
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
-                    }
+
+                    break;
                 }
             }
             return i;
@@ -505,38 +521,46 @@ public static partial class IEnumerableExtensions
         public int CopyTo<TValue>(IDictionary<T, TValue> target, Func<T, TValue> valueFactory, bool overwrite = false)
         {
             var i = 0;
-            if (target is Dictionary<T, TValue> concreteDict)
+            switch (target)
             {
-                for (; i < source.Length; i++)
+                case Dictionary<T, TValue> concreteDict:
                 {
-                    var key = source[i];
-                    ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
-                    if (overwrite || !exists)
+                    for (; i < source.Length; i++)
                     {
-                        i++;
-                        dest = valueFactory(key);
+                        var key = source[i];
+                        ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            dest = valueFactory(key);
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
-                    }
+
+                    break;
                 }
-            }
-            else
-            {
-                for (; i < source.Length; i++)
+
+                default:
                 {
-                    var key = source[i];
-                    var exists = target.ContainsKey(key);
-                    if (overwrite || !exists)
+                    for (; i < source.Length; i++)
                     {
-                        i++;
-                        target[key] = valueFactory(key);
+                        var key = source[i];
+                        var exists = target.ContainsKey(key);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            target[key] = valueFactory(key);
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
-                    }
+
+                    break;
                 }
             }
             return i;
@@ -551,40 +575,48 @@ public static partial class IEnumerableExtensions
         public int CopyTo<TKey>(IDictionary<TKey, T> target, Func<T, TKey> keyFactory, bool overwrite = false)
         {
             var i = 0;
-            if (target is Dictionary<TKey, T> concreteDict)
+            switch (target)
             {
-                for (; i < source.Length; i++)
+                case Dictionary<TKey, T> concreteDict:
                 {
-                    var value = source[i];
-                    var key = keyFactory(value);
-                    ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
-                    if (overwrite || !exists)
+                    for (; i < source.Length; i++)
                     {
-                        i++;
-                        dest = value;
+                        var value = source[i];
+                        var key = keyFactory(value);
+                        ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            dest = value;
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
-                    }
+
+                    break;
                 }
-            }
-            else
-            {
-                for (; i < source.Length; i++)
+
+                default:
                 {
-                    var value = source[i];
-                    var key = keyFactory(value);
-                    var exists = target.ContainsKey(key);
-                    if (overwrite || !exists)
+                    for (; i < source.Length; i++)
                     {
-                        i++;
-                        target[key] = value;
+                        var value = source[i];
+                        var key = keyFactory(value);
+                        var exists = target.ContainsKey(key);
+                        if (overwrite || !exists)
+                        {
+                            i++;
+                            target[key] = value;
+                        }
+                        else if (exists)
+                        {
+                            throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
+                        }
                     }
-                    else if (exists)
-                    {
-                        throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
-                    }
+
+                    break;
                 }
             }
             return i;

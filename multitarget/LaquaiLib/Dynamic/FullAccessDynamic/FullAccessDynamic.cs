@@ -12,7 +12,7 @@ namespace LaquaiLib.Dynamic;
 /// <para/><b>Warning!</b> Nothing prevents the underlying object instance of <typeparamref name="T"/> from being <see langword="null"/>. As such, <see cref="Unwrap"/> may return <see langword="null"/>.
 /// </summary>
 /// <typeparam name="T">The type of the object to wrap.</typeparam>
-[Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute)}.")]
+[Obsolete($"{nameof(FullAccessDynamic<>)} has been obsoleted in favor of the source generator using {nameof(Analyzers.Shared.Attributes.FullAccessProxyAttribute)}.")]
 public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<T>>, IEquatable<T>
 {
     private static readonly ConcurrentDictionary<string, MemberInfo> _memberCache = [];
@@ -282,13 +282,14 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         }
 
         var itemProp = FindIndexer(indexes);
-        if (itemProp is not null)
+        switch (itemProp)
         {
-            itemProp.SetValue(_instance, value, indexes);
-            return true;
+            case not null:
+                itemProp.SetValue(_instance, value, indexes);
+                return true;
+            default:
+                return false;
         }
-
-        return false;
     }
     /// <inheritdoc/>
     public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
@@ -337,11 +338,14 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
     public FullAccessDynamic<TCast> Cast<TCast>()
     {
         // If we have a value, we can check for the cast the easy way
-        if (_instance is TCast || (_instance is null && _instanceType.IsAssignableTo(typeof(TCast))))
+        switch (_instance)
         {
-            return FullAccessDynamicFactory.Create(typeof(TCast), _instance);
+            case TCast:
+            case null when _instanceType.IsAssignableTo(typeof(TCast)):
+                return FullAccessDynamicFactory.Create(typeof(TCast), _instance);
+            default:
+                throw new InvalidCastException($"Cannot cast object of type '{_instanceType.FullName}' to '{typeof(TCast).FullName}'.");
         }
-        throw new InvalidCastException($"Cannot cast object of type '{_instanceType.FullName}' to '{typeof(TCast).FullName}'.");
     }
 
     /// <summary>

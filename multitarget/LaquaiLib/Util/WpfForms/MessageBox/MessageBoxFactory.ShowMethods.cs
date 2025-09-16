@@ -31,10 +31,10 @@ public partial class MessageBoxFactory
 
         if (ownerHwnd == 0 && button.Value.HasFlag(MessageBoxButton.HelpButton))
         {
-            ownerHwnd = Interop.User32.CreateWindowExW(0, "STATIC", "DummyWindow", 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            ownerHwnd = User32.CreateWindowExW(0, "STATIC", "DummyWindow", 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
 
-        return Interop.User32.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | otherOptions.Value);
+        return User32.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | otherOptions.Value);
     }
     /// <summary>
     /// Shows a message box with the specified <paramref name="text"/>. All other properties will use the defaults configured in this <see cref="MessageBoxFactory"/>'s <see cref="Configuration"/> instance.
@@ -134,7 +134,7 @@ public partial class MessageBoxFactory
         return Task.Run(() =>
         {
             Thread.CurrentThread.Name = nameof(MessageBoxFactory) + '.' + nameof(ShowAsync);
-            return Interop.User32.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | MessageBoxModality.Application | otherOptions.Value);
+            return User32.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | MessageBoxModality.Application | otherOptions.Value);
         });
     }
     /// <summary>

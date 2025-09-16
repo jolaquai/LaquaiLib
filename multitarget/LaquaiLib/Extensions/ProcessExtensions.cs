@@ -13,7 +13,7 @@ public static partial class ProcessExtensions
 
         public ulong GetAffinity()
         {
-            if (!Interop.Kernel32.GetProcessAffinityMask(process.Handle, out var processMask, out _))
+            if (!Kernel32.GetProcessAffinityMask(process.Handle, out var processMask, out _))
             {
                 var lastError = Marshal.GetLastWin32Error();
                 throw new InvalidOperationException("Could not retrieve the process affinity mask.", new System.ComponentModel.Win32Exception(lastError));
@@ -46,7 +46,7 @@ public static partial class ProcessExtensions
             {
                 throw new InvalidOperationException("The specified process has exited.");
             }
-            return Interop.Kernel32.SetProcessAffinityMask(process.Handle, (nint)mask);
+            return Kernel32.SetProcessAffinityMask(process.Handle, (nint)mask);
         }
         /// <summary>
         /// Sets the processor affinity mask for the specified <see cref="Process"/>, excluding the specified processors.

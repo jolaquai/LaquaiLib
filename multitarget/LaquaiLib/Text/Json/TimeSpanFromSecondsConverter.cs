@@ -10,12 +10,17 @@ public class TimeSpanFromSecondsConverter : JsonConverter<TimeSpan>
 {
     public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType == JsonTokenType.Number)
+        switch (reader.TokenType)
         {
-            var seconds = reader.GetDouble();
-            return TimeSpan.FromSeconds(seconds);
+            case JsonTokenType.Number:
+            {
+                var seconds = reader.GetDouble();
+                return TimeSpan.FromSeconds(seconds);
+            }
+
+            default:
+                throw new JsonException();
         }
-        throw new JsonException();
     }
     public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options)
     {

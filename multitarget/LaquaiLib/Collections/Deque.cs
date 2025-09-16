@@ -255,21 +255,22 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
             throw new InvalidOperationException("The specified node already belongs to a deque.");
         }
 
-        if (Head == null)
+        switch (Head)
         {
-            // If this is the first node, it is also the last node.
-            Head = node;
-            Head.Next = Head;
-            Head.Previous = Head;
-        }
-        else
-        {
-            // Otherwise make this node the new Head
-            Head.Previous.Next = node;
-            node.Previous = Head.Previous;
-            Head.Previous = node;
-            node.Next = Head;
-            Head = node;
+            case null:
+                // If this is the first node, it is also the last node.
+                Head = node;
+                Head.Next = Head;
+                Head.Previous = Head;
+                break;
+            default:
+                // Otherwise make this node the new Head
+                Head.Previous.Next = node;
+                node.Previous = Head.Previous;
+                Head.Previous = node;
+                node.Next = Head;
+                Head = node;
+                break;
         }
 
         node.Deque = this;
@@ -299,17 +300,18 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
             throw new InvalidOperationException("The specified node already belongs to a deque.");
         }
 
-        if (Head == null)
+        switch (Head)
         {
-            // If this is the first node, it is also the last node.
-            Head = node;
-            Head.Next = Head;
-            Head.Previous = Head;
-        }
-        else
-        {
-            // Otherwise, make this node the new tail
-            _ = AddAfter(Tail!, node);
+            case null:
+                // If this is the first node, it is also the last node.
+                Head = node;
+                Head.Next = Head;
+                Head.Previous = Head;
+                break;
+            default:
+                // Otherwise, make this node the new tail
+                _ = AddAfter(Tail!, node);
+                break;
         }
 
         node.Deque = this;

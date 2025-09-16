@@ -40,20 +40,25 @@ public static class MemoryDiff
             right = right[startIndex..];
         }
 
-        if (left.Length == 0)
+        switch (left.Length)
         {
-            if (right.Length == 0)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        else if (right.Length == 0)
-        {
-            return 0;
+            case 0:
+                if (right.Length == 0)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            default:
+                if (right.Length == 0)
+                {
+                    return 0;
+                }
+
+                break;
         }
 
         return startIndex + DiffImpl(left, right, equalityComparer);

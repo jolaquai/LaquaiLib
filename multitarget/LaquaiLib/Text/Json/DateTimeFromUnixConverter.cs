@@ -9,12 +9,17 @@ public class DateTimeFromUnixConverter : JsonConverter<DateTime>
 {
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        if (reader.TokenType == JsonTokenType.Number)
+        switch (reader.TokenType)
         {
-            var unixTime = reader.GetInt64();
-            return DateTimeOffset.FromUnixTimeSeconds(unixTime).DateTime;
+            case JsonTokenType.Number:
+            {
+                var unixTime = reader.GetInt64();
+                return DateTimeOffset.FromUnixTimeSeconds(unixTime).DateTime;
+            }
+
+            default:
+                throw new JsonException();
         }
-        throw new JsonException();
     }
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {

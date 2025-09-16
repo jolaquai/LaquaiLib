@@ -679,12 +679,13 @@ public static partial class StringExtensions
 
             stringComparer ??= StringComparer.OrdinalIgnoreCase;
 
-            if (stringComparer.Compare(source, second) == 0)
+            switch (stringComparer.Compare(source, second))
             {
-                return 1;
+                case 0:
+                    return 1;
+                default:
+                    return (double)source.Select(static c => c.ToString()).Intersect(second.Select(static c => c.ToString()), stringComparer).Count() / new List<string>() { source, second }.Max(static str => str.Length);
             }
-
-            return (double)source.Select(static c => c.ToString()).Intersect(second.Select(static c => c.ToString()), stringComparer).Count() / new List<string>() { source, second }.Max(static str => str.Length);
         }
         #endregion
     }

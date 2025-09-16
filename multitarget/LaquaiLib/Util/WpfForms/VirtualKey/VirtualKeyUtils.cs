@@ -150,12 +150,13 @@ public static partial class VirtualKeyUtils
 #elif NET10_0_OR_GREATER
         var index = ToggleKeys.IndexOf(vk);
 #endif
-        if (index == -1)
+        switch (index)
         {
-            throw new ArgumentException("The specified virtual key is not a toggle key.", nameof(vk));
+            case -1:
+                throw new ArgumentException("The specified virtual key is not a toggle key.", nameof(vk));
+            default:
+                return (User32.GetKeyState((uint)vk) & Interop.lsb) != 0;
         }
-
-        return (User32.GetKeyState((uint)vk) & Interop.lsb) != 0;
     }
 
     /// <summary>

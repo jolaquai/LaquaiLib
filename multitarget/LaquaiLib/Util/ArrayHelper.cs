@@ -108,18 +108,23 @@ public static class ArrayHelper
         var originalIndices = new int[keysLength];
         indices.CopyTo(originalIndices);
 
-        if (comparer is not null)
+        switch (comparer)
         {
-            Array.Sort(keys, indices, comparer);
-        }
-        else if (keys is TKey[] typedKeys)
-        {
-            Array.Sort(typedKeys, indices, genericComparer);
-        }
-        else
-        {
-            Debug.Fail("Keys array is not of the same type as the comparer. We should not be here.");
-            throw new InvalidOperationException("The keys array must be of the same type as the comparer.");
+            case not null:
+                Array.Sort(keys, indices, comparer);
+                break;
+            default:
+                if (keys is TKey[] typedKeys)
+                {
+                    Array.Sort(typedKeys, indices, genericComparer);
+                }
+                else
+                {
+                    Debug.Fail("Keys array is not of the same type as the comparer. We should not be here.");
+                    throw new InvalidOperationException("The keys array must be of the same type as the comparer.");
+                }
+
+                break;
         }
 
         // If the indices array didn't change (it's SequenceEquals to the original ascending ints), then leave early

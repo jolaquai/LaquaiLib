@@ -123,53 +123,57 @@ public static partial class IEnumerableExtensions
             random ??= System.Random.Shared;
 
             // Try to optimize for collections that expose Count/Length
-            if (source is IReadOnlyCollection<T> collection)
+            switch (source)
             {
-                var count = collection.Count;
-                if (count == 0)
+                case IReadOnlyCollection<T> collection:
                 {
-                    throw new InvalidOperationException("Sequence contains no elements");
-                }
-
-                var index = random.Next(count);
-
-                // Further optimize for indexed access
-                if (source is IReadOnlyList<T> list)
-                {
-                    return list[index];
-                }
-
-                // Fall back to enumeration for collections without indexed access
-                using var enumerator = source.GetEnumerator();
-                for (var i = 0; i <= index; i++)
-                {
-                    _ = enumerator.MoveNext();
-                }
-                return enumerator.Current;
-            }
-            else
-            {
-
-                // Reservoir sampling for unknown-length sequences
-                using var e = source.GetEnumerator();
-                if (!e.MoveNext())
-                {
-                    throw new InvalidOperationException("Sequence contains no elements");
-                }
-
-                var result = e.Current;
-                var count = 1;
-
-                while (e.MoveNext())
-                {
-                    count++;
-                    if (random.Next(count) == 0) // 1/count probability
+                    var count = collection.Count;
+                    if (count == 0)
                     {
-                        result = e.Current;
+                        throw new InvalidOperationException("Sequence contains no elements");
                     }
+
+                    var index = random.Next(count);
+
+                    // Further optimize for indexed access
+                    if (source is IReadOnlyList<T> list)
+                    {
+                        return list[index];
+                    }
+
+                    // Fall back to enumeration for collections without indexed access
+                    using var enumerator = source.GetEnumerator();
+                    for (var i = 0; i <= index; i++)
+                    {
+                        _ = enumerator.MoveNext();
+                    }
+                    return enumerator.Current;
                 }
 
-                return result;
+                default:
+                {
+
+                    // Reservoir sampling for unknown-length sequences
+                    using var e = source.GetEnumerator();
+                    if (!e.MoveNext())
+                    {
+                        throw new InvalidOperationException("Sequence contains no elements");
+                    }
+
+                    var result = e.Current;
+                    var count = 1;
+
+                    while (e.MoveNext())
+                    {
+                        count++;
+                        if (random.Next(count) == 0) // 1/count probability
+                        {
+                            result = e.Current;
+                        }
+                    }
+
+                    return result;
+                }
             }
         }
 
@@ -497,27 +501,31 @@ public static partial class IEnumerableExtensions
                 return defaultValue;
             }
 
-            if (source is IReadOnlyList<T> list)
+            switch (source)
             {
-                switch (list.Count)
+                case IReadOnlyList<T> list:
+                    switch (list.Count)
+                    {
+                        case 0:
+                            return defaultValue;
+                        case 1:
+                            return list[0];
+                    }
+                    break;
+                default:
                 {
-                    case 0:
+                    using var enumerator = source.GetEnumerator();
+                    if (!enumerator.MoveNext())
+                    {
                         return defaultValue;
-                    case 1:
-                        return list[0];
-                }
-            }
-            else
-            {
-                using var enumerator = source.GetEnumerator();
-                if (!enumerator.MoveNext())
-                {
-                    return defaultValue;
-                }
-                var current = enumerator.Current;
-                if (!enumerator.MoveNext())
-                {
-                    return current;
+                    }
+                    var current = enumerator.Current;
+                    if (!enumerator.MoveNext())
+                    {
+                        return current;
+                    }
+
+                    break;
                 }
             }
             return defaultValue;
@@ -621,28 +629,40 @@ public static partial class IEnumerableExtensions
             return span.IndexOf(item, equalityComparer);
 #endif
             }
-            else if (source is IReadOnlyList<T> list)
-            {
-                for (var i = 0; i < list.Count; i++)
-                {
-                    if (equalityComparer.Equals(list[i], item))
-                    {
-                        return i;
-                    }
-                }
-            }
             else
             {
-                var i = 0;
-                foreach (var element in source)
+                switch (source)
                 {
-                    if (equalityComparer.Equals(element, item))
+                    case IReadOnlyList<T> list:
                     {
-                        return i;
+                        for (var i = 0; i < list.Count; i++)
+                        {
+                            if (equalityComparer.Equals(list[i], item))
+                            {
+                                return i;
+                            }
+                        }
+
+                        break;
                     }
-                    i++;
+
+                    default:
+                    {
+                        var i = 0;
+                        foreach (var element in source)
+                        {
+                            if (equalityComparer.Equals(element, item))
+                            {
+                                return i;
+                            }
+                            i++;
+                        }
+
+                        break;
+                    }
                 }
             }
+
             return -1;
         }
         /// <summary>
@@ -695,88 +715,100 @@ public static partial class IEnumerableExtensions
             return span.IndexOf(enumerated, equalityComparer);
 #endif
             }
-            else if (source is IReadOnlyList<T> list)
-            {
-                for (var i = 0; i < list.Count; i++)
-                {
-                    if (list.Count - i < enumerated.Length)
-                    {
-                        return -1;
-                    }
-                    var found = true;
-                    for (var j = 0; j < enumerated.Length; j++)
-                    {
-                        if (!equalityComparer.Equals(list[i + j], enumerated[j]))
-                        {
-                            found = false;
-                            break;
-                        }
-                    }
-                    if (found)
-                    {
-                        return i;
-                    }
-                }
-            }
             else
             {
-                // Handle general IEnumerable<T> case with enumerators
-                if (enumerated.Length == 0)
+                switch (source)
                 {
-                    return 0;
-                }
-
-                var position = 0;
-                using var sourceEnumerator = source.GetEnumerator();
-
-                // Continue until we run out of elements
-                while (sourceEnumerator.MoveNext())
-                {
-                    // For each position, check if the sequence matches
-                    var currentPosition = position;
-                    var matchPossible = true;
-
-                    // Check first element
-                    if (!equalityComparer.Equals(sourceEnumerator.Current, enumerated[0]))
+                    case IReadOnlyList<T> list:
                     {
-                        position++;
-                        continue;
-                    }
-
-                    // If sequence is just one element, we found a match
-                    if (enumerated.Length == 1)
-                    {
-                        return currentPosition;
-                    }
-
-                    // Check remaining elements in the sequence
-                    var sequenceIndex = 1;
-                    var tempEnumerator = source.Skip(currentPosition + 1).GetEnumerator();
-
-                    while (sequenceIndex < enumerated.Length && tempEnumerator.MoveNext())
-                    {
-                        if (!equalityComparer.Equals(tempEnumerator.Current, enumerated[sequenceIndex]))
+                        for (var i = 0; i < list.Count; i++)
                         {
-                            matchPossible = false;
-                            break;
+                            if (list.Count - i < enumerated.Length)
+                            {
+                                return -1;
+                            }
+                            var found = true;
+                            for (var j = 0; j < enumerated.Length; j++)
+                            {
+                                if (!equalityComparer.Equals(list[i + j], enumerated[j]))
+                                {
+                                    found = false;
+                                    break;
+                                }
+                            }
+                            if (found)
+                            {
+                                return i;
+                            }
                         }
-                        sequenceIndex++;
+
+                        break;
                     }
 
-                    // Check if we ran out of elements before completing the sequence check
-                    if (sequenceIndex < enumerated.Length)
+                    default:
                     {
-                        matchPossible = false;
-                    }
+                        // Handle general IEnumerable<T> case with enumerators
+                        if (enumerated.Length == 0)
+                        {
+                            return 0;
+                        }
 
-                    if (matchPossible)
-                    {
-                        return currentPosition;
-                    }
+                        var position = 0;
+                        using var sourceEnumerator = source.GetEnumerator();
 
-                    position++;
+                        // Continue until we run out of elements
+                        while (sourceEnumerator.MoveNext())
+                        {
+                            // For each position, check if the sequence matches
+                            var currentPosition = position;
+                            var matchPossible = true;
+
+                            // Check first element
+                            if (!equalityComparer.Equals(sourceEnumerator.Current, enumerated[0]))
+                            {
+                                position++;
+                                continue;
+                            }
+
+                            // If sequence is just one element, we found a match
+                            if (enumerated.Length == 1)
+                            {
+                                return currentPosition;
+                            }
+
+                            // Check remaining elements in the sequence
+                            var sequenceIndex = 1;
+                            var tempEnumerator = source.Skip(currentPosition + 1).GetEnumerator();
+
+                            while (sequenceIndex < enumerated.Length && tempEnumerator.MoveNext())
+                            {
+                                if (!equalityComparer.Equals(tempEnumerator.Current, enumerated[sequenceIndex]))
+                                {
+                                    matchPossible = false;
+                                    break;
+                                }
+                                sequenceIndex++;
+                            }
+
+                            // Check if we ran out of elements before completing the sequence check
+                            if (sequenceIndex < enumerated.Length)
+                            {
+                                matchPossible = false;
+                            }
+
+                            if (matchPossible)
+                            {
+                                return currentPosition;
+                            }
+
+                            position++;
+                        }
+
+                        break;
+                    }
                 }
             }
+
             return -1;
         }
 

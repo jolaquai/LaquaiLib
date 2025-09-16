@@ -4,6 +4,28 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
+        <member name="T:LaquaiLib.Collections.ConcurrentSet">
+            <summary>
+            Contains factory methods for <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.ConcurrentSet.Create``1(System.ReadOnlySpan{``0})">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> containing the specified values, using the default equality comparer for <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of elements in the set.</typeparam>
+            <param name="values">The values to include in the set.</param>
+            <returns>The created set.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.ConcurrentSet.Create``1(System.ReadOnlySpan{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Creates a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> containing the specified values, using the specified equality comparer.
+            </summary>
+            <typeparam name="T">The type of elements in the set.</typeparam>
+            <param name="values">The values to include in the set.</param>
+            <param name="equalityComparer">The equality comparer to use, or <c>null</c> to use the default equality comparer for <typeparamref name="T"/>.</param>
+            <returns>The created set.</returns>
+        </member>
         <member name="T:LaquaiLib.Collections.ConcurrentSet`1">
             <summary>
             Implements a thread-safe <see cref="T:System.Collections.Generic.ISet`1"/>.
@@ -11,37 +33,20 @@
         </member>
         <member name="M:LaquaiLib.Collections.ConcurrentSet`1.#ctor">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> with the default initial capacity and comparer.
+            Initializes a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> using the default equality comparer for <typeparamref name="T"/>.
             </summary>
-        </member>
-        <member name="M:LaquaiLib.Collections.ConcurrentSet`1.#ctor(System.Int32)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> with the specified initial capacity and the default comparer.
-            </summary>
-            <param name="capacity">The initial capacity of the set.</param>
         </member>
         <member name="M:LaquaiLib.Collections.ConcurrentSet`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> with the specified comparer and the default initial capacity.
+            Initializes a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> using the specified equality comparer.
             </summary>
-            <param name="comparer">The equality comparer to use for the set.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.ConcurrentSet`1.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/> with the specified initial capacity and comparer.
-            </summary>
-            <param name="capacity">The initial capacity of the set.</param>
-            <param name="comparer">The equality comparer to use for the set.</param>
+            <param name="comparer">The equality comparer to use, or <c>null</c> to use the default equality comparer for <typeparamref name="T"/>.</param>
         </member>
         <member name="P:LaquaiLib.Collections.ConcurrentSet`1.Count">
-            <summary>
-            Gets the number of elements in the set.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="P:LaquaiLib.Collections.ConcurrentSet`1.IsReadOnly">
-            <summary>
-            Gets whether the set is read-only.
-            </summary>
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Collections.ConcurrentSet`1.Add(`0)">
             <inheritdoc/>
@@ -89,6 +94,9 @@
             <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Collections.ConcurrentSet`1.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.ConcurrentSet`1.System#Collections#Generic#ICollection{T}#Add(`0)">
             <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Collections.ConcurrentTwoWayLookup`2">
@@ -7687,85 +7695,7 @@
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.PartitionerExtensions.ToList``1(System.Collections.Concurrent.Partitioner{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.PartitionerExtensions.&lt;G&gt;$46A241F27179859275F6ACE2B29DC6FB.ToList(System.Int32)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.PartitionerExtensions.AsEnumerable``1(System.Collections.Concurrent.Partitioner{``0},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.PartitionerExtensions.&lt;G&gt;$46A241F27179859275F6ACE2B29DC6FB.AsEnumerable(System.Int32)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.PartitionerExtensions.Flatten``1(System.Collections.Concurrent.Partitioner{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.PartitionerExtensions.&lt;G&gt;$46A241F27179859275F6ACE2B29DC6FB.Flatten"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.PartitionerExtensions.&lt;G&gt;$46A241F27179859275F6ACE2B29DC6FB.ToList(System.Int32)">
-            <summary>
-            Enumerates each partition of the <paramref name="partitioner"/> and returns a <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Collections.Generic.List`1"/>s containing the elements of each partition.
-            </summary>
-            <typeparam name="T">The type of the elements in the <paramref name="partitioner"/>.</typeparam>
-            <param name="partitioner">The <see cref="T:System.Collections.Concurrent.Partitioner`1"/> to enumerate.</param>
-            <param name="partitions">The number of partitions to request.</param>
-            <returns>The <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Collections.Generic.List`1"/>s containing the elements of each partition.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.PartitionerExtensions.&lt;G&gt;$46A241F27179859275F6ACE2B29DC6FB.AsEnumerable(System.Int32)">
-            <summary>
-            Transforms each partition of the <paramref name="partitioner"/> into an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/>s containing the elements of each partition.
-            </summary>
-            <typeparam name="T">The type of the elements in the <paramref name="partitioner"/>.</typeparam>
-            <param name="partitioner">The <see cref="T:System.Collections.Concurrent.Partitioner`1"/> to transform.</param>
-            <param name="partitions">The number of partitions to request.</param>
-            <returns>The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Collections.Generic.IEnumerable`1"/>s enumerating the elements of each partition.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.PartitionerExtensions.&lt;G&gt;$46A241F27179859275F6ACE2B29DC6FB.Flatten">
-            <summary>
-            Flattens a <see cref="T:System.Collections.Concurrent.Partitioner`1"/> back into a single <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
-            </summary>
-            <returns>The flattened <see cref="T:System.Collections.Generic.IEnumerable`1"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Extensions.ProcessExtensions">
-            <summary>
-            Provides extension methods for the <see cref="T:System.Diagnostics.Process"/> Type.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ProcessExtensions.SetAffinity(System.Diagnostics.Process,System.UInt64,System.Boolean)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.SetAffinity(System.UInt64,System.Boolean)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ProcessExtensions.SetNegativeAffinity(System.Diagnostics.Process,System.UInt64)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.SetNegativeAffinity(System.UInt64)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ProcessExtensions.SetGamingAffinity(System.Diagnostics.Process)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.SetGamingAffinity"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.SetAffinity(System.UInt64,System.Boolean)">
-            <summary>
-            Sets the processor affinity mask for the specified <see cref="T:System.Diagnostics.Process"/>, including the specified processors.
-            </summary>
-            <param name="process">The <see cref="T:System.Diagnostics.Process"/> instance.</param>
-            <param name="mask">A bit mask that specifies the set of processors on which the threads of the process can run. A value equivalent to <c>0</c> re-allows all processors.</param>
-            <param name="discard">Whether to discard the bits higher than the number of logical processors available to the system. Prevents <see cref="T:System.ArgumentOutOfRangeException"/>, but may cause invalid inputs to be accepted, still <see langword="true"/> by default, however.</param>
-            <returns><see langword="true"/> if the new affinity mask could be set, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.SetNegativeAffinity(System.UInt64)">
-            <summary>
-            Sets the processor affinity mask for the specified <see cref="T:System.Diagnostics.Process"/>, excluding the specified processors.
-            Only the lower bits within <see cref="P:System.Environment.ProcessorCount"/> are considered.
-            </summary>
-            <param name="process">The <see cref="T:System.Diagnostics.Process"/> instance.</param>
-            <param name="mask">A bit mask that specifies the set of processors on which the threads of the process may not run.</param>
-            <returns><see langword="true"/> if the new affinity mask could be set, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ProcessExtensions.&lt;G&gt;$CF0CE17D7A3EA2BB5895271206595CBD.SetGamingAffinity">
-            <summary>
-            Sets a processor affinity mask for the specified <see cref="T:System.Diagnostics.Process"/> that disallows use of the first quarter of logical processors.
-            This is sometimes practical when there are enough logical processors available. The system usually assigns many background processes to the first few logical processes, so this may help increase responsiveness of CPU-heavy applications.
-            </summary>
-            <param name="process">The <see cref="T:System.Diagnostics.Process"/> instance.</param>
-            <returns><see langword="true"/> if the new affinity mask could be set, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Extensions.PropertyInfoExtensions">
-            <summary>
-            Provides extension methods for the <see cref="T:System.Reflection.PropertyInfo"/> Type.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.PropertyInfoExtensions.GetValue``1(System.Reflection.PropertyInfo,System.Object)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.PropertyInfoExtensions.&lt;G&gt;$A68E0825C8469CCB2F38F50C7F6F03AB.GetValue``1(System.Object)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.PartitionerExensions.PropertyInfoExtensions.&lt;G&gt;$A68E0825C8469CCB2F38F50C7F6F03AB.GetValue``1(System.Object)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.PropertyInfoExtensions.GetValueOrDefault``1(System.Reflection.PropertyInfo,System.Object)">
             <inheritdoc cref="M:LaquaiLib.Extensions.PropertyInfoExtensions.&lt;G&gt;$A68E0825C8469CCB2F38F50C7F6F03AB.GetValueOrDefault``1(System.Object)"/>
@@ -8954,16 +8884,11 @@
             ○ Match '&lt;'.<br/>
             ○ Match a character other than '\n' lazily any number of times.<br/>
             ○ Match '&gt;'.<br/>
-            ○ Match a character in the set [\p{Ll}].<br/>
+            ○ Match a Unicode lowercase letter.<br/>
             ○ Match the string "__".<br/>
             ○ Match a character in the set [_|\p{L}\d] lazily at least once.<br/>
             ○ Match '_'.<br/>
-            ○ Match a Unicode digit lazily at least once.<br/>
-            ○ Optional (greedy).<br/>
-                ○ Zero-width positive lookahead.<br/>
-                    ○ Match '('.<br/>
-                    ○ Match a character other than '\n' lazily any number of times.<br/>
-                    ○ Match ')'.<br/>
+            ○ Match a Unicode digit exactly 1 times.<br/>
             </code>
             </remarks>
         </member>
@@ -16805,6 +16730,88 @@
         </member>
         <member name="M:System.Text.RegularExpressions.Generated.UnspeakableMemberNameRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
             <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the RomanNumeralRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EntryPointNotFoundExceptionDataRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
+            <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
+        </member>
+    </members>
+</doc>
+mref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>

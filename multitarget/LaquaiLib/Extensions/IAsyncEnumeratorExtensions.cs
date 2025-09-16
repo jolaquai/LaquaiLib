@@ -37,12 +37,14 @@ public static class IAsyncEnumeratorExtensions
                 ArgumentNullException.ThrowIfNull(with[i]);
             }
 
-            if (source is AsyncEnumeratorCombiner<T> combiner)
+            switch (source)
             {
-                combiner.AddIterators(with);
-                return combiner;
+                case AsyncEnumeratorCombiner<T> combiner:
+                    combiner.AddIterators(with);
+                    return combiner;
+                default:
+                    return new AsyncEnumeratorCombiner<T>([source, .. with]);
             }
-            return new AsyncEnumeratorCombiner<T>([source, .. with]);
         }
     }
 }

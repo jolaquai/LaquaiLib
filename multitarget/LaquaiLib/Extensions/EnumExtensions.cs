@@ -58,7 +58,7 @@ public static class EnumExtensions
         /// <returns>A value indicating whether <paramref name="source"/> has a non-zero value.</returns>
         public bool HasValue()
         {
-            switch (Marshal.SizeOf(source))
+            switch (typeof(T).SizeOf)
             {
                 case 1:
                     return Unsafe.As<T, byte>(ref source) != 0;

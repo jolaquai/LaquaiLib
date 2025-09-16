@@ -685,12 +685,14 @@ public static partial class TypeExtensions
                 returnType = type;
             }
 
-            if (returnType is not null)
+            switch (returnType)
             {
-                returnType = returnType.GetGenericArguments()[^1];
-                return true;
+                case not null:
+                    returnType = returnType.GetGenericArguments()[^1];
+                    return true;
+                default:
+                    return false;
             }
-            return false;
         }
         /// <summary>
         /// Determines whether the specified <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload.
@@ -1002,46 +1004,45 @@ public static partial class TypeExtensions
     internal static string GetAccessibility(this MemberInfo member)
     {
         ArgumentNullException.ThrowIfNull(member);
-        if (member is PropertyInfo propertyInfo)
+        switch (member)
         {
-            if (propertyInfo.CanRead && propertyInfo.GetGetMethod(true) is MethodBase getMethod)
+            case PropertyInfo propertyInfo:
             {
-                return GetAccessibility(getMethod);
+                if (propertyInfo.CanRead && propertyInfo.GetGetMethod(true) is MethodBase getMethod)
+                {
+                    return GetAccessibility(getMethod);
+                }
+                else if (propertyInfo.CanWrite && propertyInfo.GetSetMethod(true) is MethodBase setMethod)
+                {
+                    return GetAccessibility(setMethod);
+                }
+                return "private";
             }
-            else if (propertyInfo.CanWrite && propertyInfo.GetSetMethod(true) is MethodBase setMethod)
+
+            case FieldInfo fieldInfo:
+                return GetAccessibility(fieldInfo);
+            case MethodBase methodBase:
+                return GetAccessibility(methodBase);
+            case EventInfo eventInfo:
             {
-                return GetAccessibility(setMethod);
+                var accessors = new List<string>();
+                if (eventInfo.GetAddMethod(true) is MethodBase addMethod)
+                {
+                    accessors.Add(GetAccessibility(addMethod));
+                }
+                if (eventInfo.GetRemoveMethod(true) is MethodBase removeMethod)
+                {
+                    accessors.Add(GetAccessibility(removeMethod));
+                }
+                if (eventInfo.GetRaiseMethod(true) is MethodBase raiseMethod)
+                {
+                    accessors.Add(GetAccessibility(raiseMethod));
+                }
+                return GetLeastAccessibleModifier(accessors);
             }
-            return "private";
-        }
-        else if (member is FieldInfo fieldInfo)
-        {
-            return GetAccessibility(fieldInfo);
-        }
-        else if (member is MethodBase methodBase)
-        {
-            return GetAccessibility(methodBase);
-        }
-        else if (member is EventInfo eventInfo)
-        {
-            var accessors = new List<string>();
-            if (eventInfo.GetAddMethod(true) is MethodBase addMethod)
-            {
-                accessors.Add(GetAccessibility(addMethod));
-            }
-            if (eventInfo.GetRemoveMethod(true) is MethodBase removeMethod)
-            {
-                accessors.Add(GetAccessibility(removeMethod));
-            }
-            if (eventInfo.GetRaiseMethod(true) is MethodBase raiseMethod)
-            {
-                accessors.Add(GetAccessibility(raiseMethod));
-            }
-            return GetLeastAccessibleModifier(accessors);
-        }
-        else if (member is Type type)
-        {
-            return GetAccessibility(type);
+
+            case Type type:
+                return GetAccessibility(type);
         }
         return "private";
     }
@@ -1055,12 +1056,13 @@ public static partial class TypeExtensions
         {
             throw new ArgumentException("Type must be a numeric primitive type.", nameof(type));
         }
-        if (ret.Item2 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
+        switch (ret.Item2)
         {
-            throw new ArgumentException("Type must be a numeric primitive type.", nameof(other));
+            case not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String):
+                throw new ArgumentException("Type must be a numeric primitive type.", nameof(other));
+            default:
+                return ret;
         }
-
-        return ret;
     }
 
     /*

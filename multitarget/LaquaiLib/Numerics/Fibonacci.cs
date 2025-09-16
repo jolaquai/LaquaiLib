@@ -15,12 +15,13 @@ public static class Fibonacci
     /// <returns>The <paramref name="n"/>th Fibonacci number.</returns>
     public static BigInteger GetNth(ulong n)
     {
-        if (n <= 1)
+        switch (n)
         {
-            return n;
+            case <= 1:
+                return n;
+            default:
+                return MatrixPower(n - 1)[0, 0];
         }
-
-        return MatrixPower(n - 1)[0, 0];
     }
 
     /// <summary>
@@ -93,16 +94,14 @@ public static class Fibonacci
         // Generate all values from start to end
         for (var i = start; i <= end; i++)
         {
-            if (i == 0)
+            switch (i)
             {
-                yield return 0;
-                continue;
-            }
-
-            if (i == 1)
-            {
-                yield return 1;
-                continue;
+                case 0:
+                    yield return 0;
+                    continue;
+                case 1:
+                    yield return 1;
+                    continue;
             }
 
             var c = a + b;

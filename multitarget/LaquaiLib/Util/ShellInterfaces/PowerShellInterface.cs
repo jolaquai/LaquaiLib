@@ -161,13 +161,14 @@ public sealed class PowerShellInterface : IShellInterface
                     {
                         // Have to use async methods to make the operation cancellable
                         var line = await StdOut.ReadLineAsync(cts.Token).ConfigureAwait(false);
-                        if (line is not null)
+                        switch (line)
                         {
-                            lines.Add(line);
-                        }
-                        else
-                        {
-                            cts.Cancel();
+                            case not null:
+                                lines.Add(line);
+                                break;
+                            default:
+                                cts.Cancel();
+                                break;
                         }
                     }
                     finally

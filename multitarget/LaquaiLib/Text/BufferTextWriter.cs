@@ -105,25 +105,27 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
     /// <inheritdoc/>
     public override void Write(object value)
     {
-        if (value is null)
+        switch (value)
         {
-            var nullString = NullString ?? throw new ArgumentNullException(nameof(value), ArgumentNullException_AttemptedNullStringNullWrite);
-            nullString.CopyTo(_buffer.GetSpan(nullString.Length));
-            _buffer.Advance(nullString.Length);
-        }
-        else if (value is string str)
-        {
-            Write(str);
-        }
-        else if (value is ReadOnlyMemory<char> rom)
-        {
-            Write(rom);
-        }
-        else
-        {
-            str = value.ToString();
-            str.CopyTo(_buffer.GetSpan(str.Length));
-            _buffer.Advance(str.Length);
+            case null:
+            {
+                var nullString = NullString ?? throw new ArgumentNullException(nameof(value), ArgumentNullException_AttemptedNullStringNullWrite);
+                nullString.CopyTo(_buffer.GetSpan(nullString.Length));
+                _buffer.Advance(nullString.Length);
+                break;
+            }
+
+            case string str:
+                Write(str);
+                break;
+            case ReadOnlyMemory<char> rom:
+                Write(rom);
+                break;
+            default:
+                var s = value.ToString();
+                s.CopyTo(_buffer.GetSpan(s.Length));
+                _buffer.Advance(s.Length);
+                break;
         }
     }
     /// <inheritdoc/>
@@ -173,108 +175,126 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
         {
             var (Literal, ArgIndex, Alignment, ArgFormat) = segments[i];
 
-            if (Literal is not null)
+            switch (Literal)
             {
-                if (Literal.Length > 0)
-                {
-                    Literal.CopyTo(_buffer.GetSpan(Literal.Length));
-                    _buffer.Advance(Literal.Length);
-                }
-            }
-            else if (Alignment <= 0) // This branch lets us skip intermediate allocations
-            {
-                var advanced = 0;
-
-                var argument = arg[ArgIndex];
-                if (argument is IFormattable formattable)
-                {
-                    if (formattable is ISpanFormattable spanFormattable)
+                case not null:
+                    if (Literal.Length > 0)
                     {
-                        // Try the ISpanFormattable first, since it's the most efficient
-
-                        // The performance of this branch largely depends on the state of _buffer
-                        // If we were preceded by stupid writes that requested large buffers, but then actually wrote small sequences, the request for the final 2048 might result in a much larger span than that, which means TryFormat will succeed
-                        // For example, if the buffer has a FreeCapacity of 2047 and we request 2048, the backing store resizes to 4095 and we're given that entire buffer to write into
-                        if (spanFormattable.TryFormat(_buffer.GetSpan(_buffer.FreeCapacity), out advanced, ArgFormat, FormatProvider))
-                        {
-                            _buffer.Advance(advanced);
-                        }
-                        else
-                        {
-                            advanced = -1;
-                        }
+                        Literal.CopyTo(_buffer.GetSpan(Literal.Length));
+                        _buffer.Advance(Literal.Length);
                     }
-
-                    if (advanced == -1)
+                    break;
+                default:
+                    if (Alignment <= 0) // This branch lets us skip intermediate allocations
                     {
-                        var formatted = formattable.ToString(ArgFormat, FormatProvider);
-                        formatted.CopyTo(_buffer.GetSpan(formatted.Length));
-                        _buffer.Advance(formatted.Length);
-                    }
-                }
-                else
-                {
-                    var str = argument?.ToString() ?? NullString ?? throw new ArgumentNullException($"arg[{ArgIndex}]", ArgumentNullException_AttemptedNullStringNullWrite);
-                    str.CopyTo(_buffer.GetSpan(str.Length));
-                    _buffer.Advance(str.Length);
-                }
+                        var advanced = 0;
 
-                // Negative alignment means left-align
-                if (Alignment < 0 && (Alignment += advanced) > 0)
-                {
-                    // Writing nothing means we just stick that many spaces into the buffer
-                    Alignment = Math.Abs(Alignment);
-                    // Explicit slice since the argument is only a size hint
-                    _buffer.GetSpan(Alignment)[..Alignment].Fill(' ');
-                    _buffer.Advance(Alignment);
-                }
-            }
-            else // Alignment > 0
-            {
-                var toWrite = 0;
-
-                ReadOnlySpan<char> buffer = default;
-                var argument = arg[ArgIndex];
-                if (argument is IFormattable formattable)
-                {
-                    if (formattable is ISpanFormattable spanFormattable)
-                    {
-                        var tempSpan = new Span<char>(temp, Config.MaxStackallocSize);
-                        // To facilitate semi-efficient alignment, we'll try to write into the buffer first
-                        // Ideally, we'd have enough space to write the entire thing twice + the alignment, but we can't guarantee that, so we'll have to try and hope
-                        if (spanFormattable.TryFormat(tempSpan, out toWrite, ArgFormat, FormatProvider))
+                        var argument = arg[ArgIndex];
+                        switch (argument)
                         {
-                            buffer = new Span<char>(temp, toWrite);
+                            case IFormattable formattable:
+                            {
+                                if (formattable is ISpanFormattable spanFormattable)
+                                {
+                                    // Try the ISpanFormattable first, since it's the most efficient
+
+                                    // The performance of this branch largely depends on the state of _buffer
+                                    // If we were preceded by stupid writes that requested large buffers, but then actually wrote small sequences, the request for the final 2048 might result in a much larger span than that, which means TryFormat will succeed
+                                    // For example, if the buffer has a FreeCapacity of 2047 and we request 2048, the backing store resizes to 4095 and we're given that entire buffer to write into
+                                    if (spanFormattable.TryFormat(_buffer.GetSpan(_buffer.FreeCapacity), out advanced, ArgFormat, FormatProvider))
+                                    {
+                                        _buffer.Advance(advanced);
+                                    }
+                                    else
+                                    {
+                                        advanced = -1;
+                                    }
+                                }
+
+                                if (advanced == -1)
+                                {
+                                    var formatted = formattable.ToString(ArgFormat, FormatProvider);
+                                    formatted.CopyTo(_buffer.GetSpan(formatted.Length));
+                                    _buffer.Advance(formatted.Length);
+                                }
+
+                                break;
+                            }
+
+                            default:
+                            {
+                                var str = argument?.ToString() ?? NullString ?? throw new ArgumentNullException($"arg[{ArgIndex}]", ArgumentNullException_AttemptedNullStringNullWrite);
+                                str.CopyTo(_buffer.GetSpan(str.Length));
+                                _buffer.Advance(str.Length);
+                                break;
+                            }
                         }
-                        else
+
+                        // Negative alignment means left-align
+                        if (Alignment < 0 && (Alignment += advanced) > 0)
                         {
-                            toWrite = -1;
+                            // Writing nothing means we just stick that many spaces into the buffer
+                            Alignment = Math.Abs(Alignment);
+                            // Explicit slice since the argument is only a size hint
+                            _buffer.GetSpan(Alignment)[..Alignment].Fill(' ');
+                            _buffer.Advance(Alignment);
                         }
                     }
-
-                    // If we wrote nothing, use the IFormattable approach instead
-                    if (toWrite == -1)
+                    else // Alignment > 0
                     {
-                        buffer = formattable.ToString(ArgFormat, FormatProvider);
-                    }
-                }
-                else
-                {
-                    buffer = argument?.ToString() ?? NullString ?? throw new ArgumentNullException($"arg[{ArgIndex}]", ArgumentNullException_AttemptedNullStringNullWrite);
-                }
+                        var toWrite = 0;
 
-                var total = int.Max(buffer.Length, Alignment);
-                var destination = _buffer.GetSpan(total);
-                if (Alignment - buffer.Length is var sep and > 0)
-                {
-                    destination[..sep].Fill(' ');
-                    buffer.CopyTo(destination[sep..]);
-                }
-                else
-                {
-                    buffer.CopyTo(destination);
-                }
-                _buffer.Advance(total);
+                        ReadOnlySpan<char> buffer = default;
+                        var argument = arg[ArgIndex];
+                        switch (argument)
+                        {
+                            case IFormattable formattable:
+                            {
+                                if (formattable is ISpanFormattable spanFormattable)
+                                {
+                                    var tempSpan = new Span<char>(temp, Config.MaxStackallocSize);
+                                    // To facilitate semi-efficient alignment, we'll try to write into the buffer first
+                                    // Ideally, we'd have enough space to write the entire thing twice + the alignment, but we can't guarantee that, so we'll have to try and hope
+                                    if (spanFormattable.TryFormat(tempSpan, out toWrite, ArgFormat, FormatProvider))
+                                    {
+                                        buffer = new Span<char>(temp, toWrite);
+                                    }
+                                    else
+                                    {
+                                        toWrite = -1;
+                                    }
+                                }
+
+                                // If we wrote nothing, use the IFormattable approach instead
+                                if (toWrite == -1)
+                                {
+                                    buffer = formattable.ToString(ArgFormat, FormatProvider);
+                                }
+
+                                break;
+                            }
+
+                            default:
+                                buffer = argument?.ToString() ?? NullString ?? throw new ArgumentNullException($"arg[{ArgIndex}]", ArgumentNullException_AttemptedNullStringNullWrite);
+                                break;
+                        }
+
+                        var total = int.Max(buffer.Length, Alignment);
+                        var destination = _buffer.GetSpan(total);
+                        switch (Alignment - buffer.Length)
+                        {
+                            case var sep and > 0:
+                                destination[..sep].Fill(' ');
+                                buffer.CopyTo(destination[sep..]);
+                                break;
+                            default:
+                                buffer.CopyTo(destination);
+                                break;
+                        }
+                        _buffer.Advance(total);
+                    }
+
+                    break;
             }
         }
     }
@@ -443,16 +463,15 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
             }
 
             encoder.Convert(chars[charsConsumed..], scratch, flush, out var charsConsumedLocal, out var bytesWrittenLocal, out completed);
-            if (bytesWrittenLocal == 0 && !flush)
+            switch (bytesWrittenLocal)
             {
-                // No more characters to write
-                flush = true;
-                continue;
-            }
-
-            if (bytesWrittenLocal > 0)
-            {
-                stream.Write(scratch[..bytesWrittenLocal]);
+                case 0 when !flush:
+                    // No more characters to write
+                    flush = true;
+                    continue;
+                case > 0:
+                    stream.Write(scratch[..bytesWrittenLocal]);
+                    break;
             }
             bytesWritten += bytesWrittenLocal;
             charsConsumed += charsConsumedLocal;

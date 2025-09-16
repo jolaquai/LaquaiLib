@@ -181,17 +181,22 @@ public static class MethodInfoExtensions
                 modifiers.Add("virtual");
             }
 
-            if (modifiersTransform is not null)
+            switch (modifiersTransform)
             {
-                modifiersTransform(modifiers);
-                if (modifiers.Contains("abstract") && bodyGenerator is not null)
-                {
-                    throw new InvalidOperationException("Cannot generate body for an abstract method.");
-                }
-            }
-            else if (methodInfo.IsAbstract && bodyGenerator is not null)
-            {
-                throw new InvalidOperationException("Cannot generate body for an abstract method.");
+                case not null:
+                    modifiersTransform(modifiers);
+                    if (modifiers.Contains("abstract") && bodyGenerator is not null)
+                    {
+                        throw new InvalidOperationException("Cannot generate body for an abstract method.");
+                    }
+                    break;
+                default:
+                    if (methodInfo.IsAbstract && bodyGenerator is not null)
+                    {
+                        throw new InvalidOperationException("Cannot generate body for an abstract method.");
+                    }
+
+                    break;
             }
 
             sb.Append(accessibility);
@@ -258,16 +263,20 @@ public static class MethodInfoExtensions
             }
             sb.Append(')');
 
-            if (bodyGenerator is not null)
+            switch (bodyGenerator)
             {
-                using var writer = new StringWriter(sb);
-                using var itw = new IndentedTextWriter(writer, "    ");
-                bodyGenerator(itw, accessibility, modifiers, returnType, methodName, genericParameters, parameters);
-                sb.AppendLine();
-            }
-            else
-            {
-                sb.Append(';');
+                case not null:
+                {
+                    using var writer = new StringWriter(sb);
+                    using var itw = new IndentedTextWriter(writer, "    ");
+                    bodyGenerator(itw, accessibility, modifiers, returnType, methodName, genericParameters, parameters);
+                    sb.AppendLine();
+                    break;
+                }
+
+                default:
+                    sb.Append(';');
+                    break;
             }
 #pragma warning restore IDE0058 // Expression value is never used
 

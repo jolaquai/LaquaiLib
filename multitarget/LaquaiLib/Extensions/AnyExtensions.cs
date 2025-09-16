@@ -35,13 +35,17 @@ public static class AnyExtensions
             for (var i = 0; i < other.Length; i++)
             {
                 var elem = other[i];
-                if (source is null && elem is not null)
+                switch (source)
                 {
-                    return false;
-                }
-                else if (!equalityComparer.Equals(source, elem))
-                {
-                    return false;
+                    case null when elem is not null:
+                        return false;
+                    default:
+                        if (!equalityComparer.Equals(source, elem))
+                        {
+                            return false;
+                        }
+
+                        break;
                 }
             }
             return true;
@@ -69,13 +73,17 @@ public static class AnyExtensions
             // Carry the extra bool around to check for an empty enumerable
             foreach (var elem in enumerable)
             {
-                if (source is null && elem is not null)
+                switch (source)
                 {
-                    return false;
-                }
-                else if (!equalityComparer.Equals(source, elem))
-                {
-                    return false;
+                    case null when elem is not null:
+                        return false;
+                    default:
+                        if (!equalityComparer.Equals(source, elem))
+                        {
+                            return false;
+                        }
+
+                        break;
                 }
             }
             return true;
@@ -138,13 +146,17 @@ public static class AnyExtensions
             foreach (var elem in enumerable)
             {
                 var elemTransformed = transform(elem);
-                if (sourceTransformed is null && elemTransformed is not null)
+                switch (sourceTransformed)
                 {
-                    return false;
-                }
-                else if (!equalityComparer.Equals(sourceTransformed, elemTransformed))
-                {
-                    return false;
+                    case null when elemTransformed is not null:
+                        return false;
+                    default:
+                        if (!equalityComparer.Equals(sourceTransformed, elemTransformed))
+                        {
+                            return false;
+                        }
+
+                        break;
                 }
             }
             return true;
@@ -198,14 +210,12 @@ public static class AnyExtensions
                 throw new ArgumentOutOfRangeException(nameof(depth), "Reached maximum recursion depth.");
             }
 
-            if (source is null)
+            switch (source)
             {
-                return (T)(object)null;
-            }
-
-            if (source is ICloneable cloneable)
-            {
-                return (T)cloneable.Clone();
+                case null:
+                    return (T)(object)null;
+                case ICloneable cloneable:
+                    return (T)cloneable.Clone();
             }
 
             var typeofT = typeof(T);
