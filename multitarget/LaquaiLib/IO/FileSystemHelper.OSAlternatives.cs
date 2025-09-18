@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 
-using LaquaiLib.Extensions.Memory;
+using LaquaiLib.Extensions;
 using LaquaiLib.UnsafeUtils;
 
 namespace LaquaiLib.IO;

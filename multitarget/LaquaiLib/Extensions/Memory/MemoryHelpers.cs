@@ -1,6 +1,6 @@
 ﻿#warning TODO: Documentation is currently largely inheritdoc'd from System.Linq.Enumerable - Rewrite that
 
-namespace LaquaiLib.Extensions.Memory;
+namespace LaquaiLib.Extensions;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 

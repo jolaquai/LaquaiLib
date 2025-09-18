@@ -1,4 +1,4 @@
-namespace LaquaiLib.Extensions.Memory.Linq;
+namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {

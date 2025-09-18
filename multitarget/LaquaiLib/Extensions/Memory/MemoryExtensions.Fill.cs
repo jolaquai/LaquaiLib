@@ -1,6 +1,6 @@
 ﻿using LaquaiLib.Collections.Enumeration;
 
-namespace LaquaiLib.Extensions.Memory;
+namespace LaquaiLib.Extensions;
 
 public static partial class MemoryExtensions
 {

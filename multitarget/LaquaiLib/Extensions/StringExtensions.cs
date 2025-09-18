@@ -15,28 +15,6 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static partial class StringExtensions
 {
-    extension(string)
-    {
-        /// <summary>
-        /// Allocates a new <see langword="string"/> with the specified length, then invokes the specified <see cref="Action{T}"/> to fill it.
-        /// </summary>
-        /// <param name="length">The length of the <see cref="string"/> to create.</param>
-        /// <param name="spanAction">An <see cref="Action{T}"/> that takes a <see cref="Span{T}"/> of <see cref="char"/>.</param>
-        /// <returns>The created <see cref="string"/>.</returns>
-        /// <remarks>
-        /// <paramref name="spanAction"/> MUST fill the entire <see cref="Span{T}"/> with valid <see cref="char"/> values, otherwise uninitialized memory will be exposed through the <see cref="string"/>.
-        /// </remarks>
-        public static string CreateString(int length, Action<Span<char>> spanAction)
-        {
-            ArgumentNullException.ThrowIfNull(spanAction);
-
-            var str = StringHelpers.AllocString(length);
-            var mut = StringHelpers.GetSpan(str);
-            spanAction(mut);
-            return str;
-        }
-    }
-
     extension(string source)
     {
         /// <summary>
