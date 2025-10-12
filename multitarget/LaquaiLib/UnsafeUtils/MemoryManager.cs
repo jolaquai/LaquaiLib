@@ -38,7 +38,7 @@ public static unsafe class MemoryManager
         return (void*)Marshal.AllocHGlobal(bytes);
     }
     /// <summary>
-    /// Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
+    /// Allocates a region of unmanaged memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
     /// </summary>
     /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
     /// <param name="count">The number of instances to allocate memory for.</param>
@@ -55,7 +55,7 @@ public static unsafe class MemoryManager
         return (T*)Marshal.AllocHGlobal(bytes);
     }
     /// <summary>
-    /// Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
+    /// Allocates a region of unmanaged memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
     /// </summary>
     /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
     /// <param name="count">The number of instances to allocate memory for.</param>
@@ -80,7 +80,7 @@ public static unsafe class MemoryManager
     /// <returns>The created <see cref="Span{T}"/>.</returns>
     public static Span<T> AsSpan<T>(ref T* ptr, int count) where T : unmanaged => new Span<T>(ptr, count);
     /// <summary>
-    /// Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see cref="Span{T}"/> around it.
+    /// Allocates a region of unmanaged memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see cref="Span{T}"/> around it.
     /// </summary>
     /// <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
     /// <param name="count">The number of instances to allocate memory for.</param>

@@ -21,56 +21,27 @@ public static class MemoryOrFileStream
     /// <summary>
     /// Creates a new <see cref="Stream"/> with the given expected payload size.
     /// </summary>
-    /// <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="Cutoff"/>, the internal <see cref="Stream"/> is created as a <see cref="FileStream"/>.</param>
+    /// <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds <see cref="Cutoff"/>, a <see cref="FileStream"/> wrapping a temporary file is created (which is deleted on call of <see cref="Stream.Dispose()"/>. Otherwise, a <see cref="MemoryStream"/> is created.</param>
     /// <returns>The created <see cref="Stream"/>.</returns>
-    public static Stream Create(int payloadSize) => payloadSize >= Cutoff
-            ? new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.Asynchronous)
-            : new MemoryStream(payloadSize);
-    /// <summary>
-    /// Creates a new <see cref="Stream"/> from the specified <paramref name="other"/> <see cref="Stream"/>.
-    /// Its data from its current position to the end will be copied to the new <see cref="Stream"/>. Both streams' positions will be advanced by the number of bytes copied.
-    /// </summary>
-    /// <param name="other">The <see cref="Stream"/> to copy the data from.</param>
-    /// <param name="fromBeginning">Whether to seek <paramref name="other"/> to its beginning before copying the data.</param>
-    /// <returns>The created <see cref="Stream"/>.</returns>
-    public static Stream Create(Stream other, bool fromBeginning = false)
+    public static Stream Create(int payloadSize)
     {
-        if (fromBeginning)
-        {
-            other.Position = 0;
-        }
-        var stream = Create((int)other.Length);
-        other.CopyTo(stream);
-        return stream;
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(payloadSize);
+        return Create(payloadSize, Cutoff);
     }
-    /// <summary>
-    /// Creates a new <see cref="Stream"/> from the specified <paramref name="buffer"/>.
-    /// Its data is copied to the new <see cref="Stream"/> and its position advanced by the number of bytes copied.
-    /// </summary>
-    /// <param name="buffer">The buffer to copy the data from.</param>
-    /// <param name="offset">The index in <paramref name="buffer"/> at which to start copying.</param>
-    /// <param name="length">The number of bytes to copy from <paramref name="buffer"/>.</param>
-    /// <param name="canResize">If the created <see cref="Stream"/> is a <see cref="MemoryStream"/>, whether it can resize itself if the data exceeds its initial capacity.</param>
-    /// <param name="canWrite">If the created <see cref="Stream"/> is a <see cref="MemoryStream"/>, whether it is created as writable.</param>
-    /// <returns>The created <see cref="Stream"/>.</returns>
-    /// <remarks>
-    /// <para/><paramref name="canResize"/> and <paramref name="canWrite"/> are ignored if the number of bytes that would be copied exceeds <see cref="Cutoff"/>.
-    /// <para/>Calling this constructor with just <paramref name="buffer"/> matches the behavior of <see cref="MemoryStream(byte[])"/>, except if its length exceeds <see cref="Cutoff"/>, in which case a <see cref="FileStream"/> is created.
-    /// </remarks>
-    public static Stream Create(byte[] buffer, int offset = 0, int length = -1, bool canResize = false, bool canWrite = true)
-    {
-        if (length == -1)
-        {
-            length = buffer.Length;
-        }
-        var realLength = length - offset;
-        if (realLength < Cutoff && !canResize)
-        {
-            return new MemoryStream(buffer, offset, length, canWrite, true);
-        }
 
-        var stream = Create(realLength);
-        stream.Write(buffer, offset, length);
-        return stream;
+    /// <summary>
+    /// Creates a new <see cref="Stream"/> with the given expected payload size and cutoff. <see cref="Cutoff"/> is ignored.
+    /// </summary>
+    /// <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds <paramref name="cutoff"/>, a <see cref="FileStream"/> wrapping a temporary file is created (which is deleted on call of <see cref="Stream.Dispose()"/>. Otherwise, a <see cref="MemoryStream"/> is created.</param>
+    /// <returns>The created <see cref="Stream"/>.</returns>
+    /// <param name="cutoff">The cutoff at which to switch from <see cref="MemoryStream"/> to <see cref="FileStream"/>.</param>
+    public static Stream Create(int payloadSize, int cutoff)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(payloadSize);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cutoff);
+
+        return payloadSize >= cutoff
+            ? new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.Asynchronous | FileOptions.DeleteOnClose)
+            : new MemoryStream(payloadSize);
     }
 }

@@ -540,27 +540,27 @@ public static partial class TypeExtensions
         /// <returns>A more easily readable name for the specified <see cref="Type"/>.</returns>
         public string GetFriendlyName(bool includeNamespace = true)
         {
-            string operateOn;
+            var operateOn = type.Name;
+
+            var target = type;
+            while (target is { IsNested: true })
+            {
+                target = target.DeclaringType;
+                operateOn = $"{target.Name}+{operateOn}";
+            }
+
             if (includeNamespace)
             {
-                operateOn = type.FullName ?? type.Namespace + '.' + type.Name;
-            }
-            else
-            {
-                operateOn = type.Name;
+                operateOn = $"{type.Namespace}.{operateOn}";
             }
 
             if (type.IsGenericParameter)
             {
-                return type.Name;
+                return operateOn;
             }
             else if (type.IsArray && type.GetElementType() is Type elementType)
             {
                 return elementType.GetFriendlyName() + "[]";
-            }
-            if (operateOn.Contains('+', StringComparison.OrdinalIgnoreCase))
-            {
-                operateOn = type.Namespace + '.' + type.Name;
             }
             if (operateOn.EndsWith('&'))
             {
@@ -1052,17 +1052,15 @@ public static partial class TypeExtensions
     {
         var ret = (Type.GetTypeCode(type), Type.GetTypeCode(other));
 
-        if (ret.Item1 is not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String))
+        if (ret.Item1 is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String)
         {
             throw new ArgumentException("Type must be a numeric primitive type.", nameof(type));
         }
-        switch (ret.Item2)
+        if (ret.Item2 is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String)
         {
-            case not (TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String):
-                throw new ArgumentException("Type must be a numeric primitive type.", nameof(other));
-            default:
-                return ret;
+            throw new ArgumentException("Type must be a numeric primitive type.", nameof(other));
         }
+        return ret;
     }
 
     /*

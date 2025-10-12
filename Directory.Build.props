@@ -18,8 +18,6 @@
         <AnalysisLevel>preview-all</AnalysisLevel>
         <AnalysisMode>all</AnalysisMode>
 
-        <NoWarn>$(NoWarn);CS8714;IDE0010;IDE0045;IDE0046;IDE0079;IDE0072;IDE0058;IDE0060;CA1034</NoWarn>
-
         <Title>$([System.IO.Path]::GetFileNameWithoutExtension('$(MSBuildProjectFullPath)'))</Title>
         <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
         <CoreAuthors>Joshua Laquai</CoreAuthors>

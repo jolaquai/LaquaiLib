@@ -7590,6 +7590,121 @@
             </summary>
             <returns>The flattened <see cref="T:System.Collections.Generic.IEnumerable`1"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.EnsureQuoted(System.String,System.Char)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.EnsureQuoted(System.String,System.Char)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.EnsureEndingDirectorySeparator(System.String)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.EnsureEndingDirectorySeparator(System.String)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.TrimQuotes(System.String,System.Char)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.TrimQuotes(System.String,System.Char)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.TrimQuotes(System.ReadOnlySpan{System.Char},System.Char)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.TrimQuotes(System.ReadOnlySpan{System.Char},System.Char)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.IsQuoted(System.String,System.Char)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsQuoted(System.String,System.Char)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.IsQuoted(System.ReadOnlySpan{System.Char},System.Char)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsQuoted(System.ReadOnlySpan{System.Char},System.Char)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.IsUncPath(System.String)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsUncPath(System.String)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.IsUncPath(System.ReadOnlySpan{System.Char})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsUncPath(System.ReadOnlySpan{System.Char})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.ResolveMappedDrive(System.String)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.ResolveMappedDrive(System.String)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.GetParts(System.String,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.GetParts(System.String,System.String@,System.String@,System.String@,System.String@,System.String@)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.GetParts(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.GetParts(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.EnsureQuoted(System.String,System.Char)">
+            <summary>
+            If required, surrounds the specified <see langword="string"/> with the specified <paramref name="quoteChar"/>.
+            </summary>
+            <param name="value">The <see langword="string"/> to quote.</param>
+            <param name="quoteChar">The character to use for quoting. Default is <c>"</c>.</param>
+            <returns>The quoted <see langword="string"/>, or the original <see langword="string"/> if it was already quoted.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.EnsureEndingDirectorySeparator(System.String)">
+            <summary>
+            Ensures that the specified path ends with a directory separator character.
+            </summary>
+            <param name="path">The path to check.</param>
+            <returns>The original path if it already ends with a directory separator character, otherwise the path with a directory separator character appended.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.TrimQuotes(System.String,System.Char)">
+            <summary>
+            Trims the specified <paramref name="quoteChar"/> from the start and end of the specified <see langword="string"/>.
+            </summary>
+            <param name="value">The <see langword="string"/> to trim.</param>
+            <param name="quoteChar">The character to trim. Default is <c>"</c>.</param>
+            <returns>The trimmed <see langword="string"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.TrimQuotes(System.ReadOnlySpan{System.Char},System.Char)">
+            <summary>
+            Trims the specified <paramref name="quoteChar"/> from the start and end of the specified <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/> to trim.</param>
+            <param name="quoteChar">The character to trim. Default is <c>"</c>.</param>
+            <returns>The trimmed <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsQuoted(System.String,System.Char)">
+            <summary>
+            Gets whether the specified <see langword="string"/> is surrounded by the specified <paramref name="quoteChar"/>.
+            </summary>
+            <param name="value">The <see langword="string"/> to check.</param>
+            <param name="quoteChar">The character to check for. Default is <c>"</c>.</param>
+            <returns><see langword="true"/> if the <see langword="string"/> is surrounded by the specified <paramref name="quoteChar"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsQuoted(System.ReadOnlySpan{System.Char},System.Char)">
+            <summary>
+            Gets whether the specified <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/> is surrounded by the specified <paramref name="quoteChar"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/> to check.</param>
+            <param name="quoteChar">The character to check for. Default is <c>"</c>.</param>
+            <returns>True if the <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/> is surrounded by the specified <paramref name="quoteChar"/>, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsUncPath(System.String)">
+            <summary>
+            Determines whether the specified path is a Universal Naming Convention (UNC) path.
+            </summary>
+            <param name="path">The file or directory path to evaluate.</param>
+            <returns><see langword="true"/> if the specified path is a UNC path, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.IsUncPath(System.ReadOnlySpan{System.Char})">
+            <summary>
+            Determines whether the specified path is a Universal Naming Convention (UNC) path.
+            </summary>
+            <param name="path">The file or directory path to evaluate.</param>
+            /// <returns><see langword="true"/> if the specified path is a UNC path, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.ResolveMappedDrive(System.String)">
+            <summary>
+            Attempts to resolve a mapped drive letter to its corresponding UNC path.
+            </summary>
+            <param name="path">The path that may contain a mapped drive letter.</param>
+            <returns>A path <see langword="string"/> with a mapped drive letter replaced with its corresponding UNC path, if the drive letter is mapped, otherwise the original <paramref name="path"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.GetParts(System.String,System.String@,System.String@,System.String@,System.String@,System.String@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.PathExtensions.GetParts(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.PathExtensions.&lt;G&gt;$009965FC9BE91ED9D11C3C63624A1761.GetParts(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char}@)">
+            <summary>
+            Splits the specified <paramref name="path"/> into its components.
+            </summary>
+            <param name="path">The path to split.</param>
+            <param name="drive">A reference to the variable that receives the drive component of the path, including the trailing backslash, if any. For UNC paths, this is the server name with leading and trailing backslashes, but without the root share name.</param>
+            <param name="directory">A reference to the variable that receives the directory component of the path, including the trailing directory separator character, if any.</param>
+            <param name="fileName">A reference to the variable that receives the file name component of the path, including the extension, if any.</param>
+            <param name="fileNameWithoutExtension">A reference to the variable that receives the file name component of the path, without the extension.</param>
+            <param name="extension">A reference to the variable that receives the extension component of the path, including the leading dot.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.ProcessExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.Diagnostics.Process"/> Type.
@@ -9820,33 +9935,16 @@
             <summary>
             Creates a new <see cref="T:System.IO.Stream"/> with the given expected payload size.
             </summary>
-            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds a set <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>, the internal <see cref="T:System.IO.Stream"/> is created as a <see cref="T:System.IO.FileStream"/>.</param>
+            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>, a <see cref="T:System.IO.FileStream"/> wrapping a temporary file is created (which is deleted on call of <see cref="M:System.IO.Stream.Dispose"/>. Otherwise, a <see cref="T:System.IO.MemoryStream"/> is created.</param>
             <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.Create(System.IO.Stream,System.Boolean)">
+        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.Create(System.Int32,System.Int32)">
             <summary>
-            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="other"/> <see cref="T:System.IO.Stream"/>.
-            Its data from its current position to the end will be copied to the new <see cref="T:System.IO.Stream"/>. Both streams' positions will be advanced by the number of bytes copied.
+            Creates a new <see cref="T:System.IO.Stream"/> with the given expected payload size and cutoff. <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/> is ignored.
             </summary>
-            <param name="other">The <see cref="T:System.IO.Stream"/> to copy the data from.</param>
-            <param name="fromBeginning">Whether to seek <paramref name="other"/> to its beginning before copying the data.</param>
+            <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds <paramref name="cutoff"/>, a <see cref="T:System.IO.FileStream"/> wrapping a temporary file is created (which is deleted on call of <see cref="M:System.IO.Stream.Dispose"/>. Otherwise, a <see cref="T:System.IO.MemoryStream"/> is created.</param>
             <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.Create(System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
-            <summary>
-            Creates a new <see cref="T:System.IO.Stream"/> from the specified <paramref name="buffer"/>.
-            Its data is copied to the new <see cref="T:System.IO.Stream"/> and its position advanced by the number of bytes copied.
-            </summary>
-            <param name="buffer">The buffer to copy the data from.</param>
-            <param name="offset">The index in <paramref name="buffer"/> at which to start copying.</param>
-            <param name="length">The number of bytes to copy from <paramref name="buffer"/>.</param>
-            <param name="canResize">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it can resize itself if the data exceeds its initial capacity.</param>
-            <param name="canWrite">If the created <see cref="T:System.IO.Stream"/> is a <see cref="T:System.IO.MemoryStream"/>, whether it is created as writable.</param>
-            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
-            <remarks>
-            <para/><paramref name="canResize"/> and <paramref name="canWrite"/> are ignored if the number of bytes that would be copied exceeds <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>.
-            <para/>Calling this constructor with just <paramref name="buffer"/> matches the behavior of <see cref="M:System.IO.MemoryStream.#ctor(System.Byte[])"/>, except if its length exceeds <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>, in which case a <see cref="T:System.IO.FileStream"/> is created.
-            </remarks>
+            <param name="cutoff">The cutoff at which to switch from <see cref="T:System.IO.MemoryStream"/> to <see cref="T:System.IO.FileStream"/>.</param>
         </member>
         <member name="T:LaquaiLib.IO.Streams.MultiStream">
             <summary>
@@ -16219,7 +16317,7 @@
         </member>
         <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.UnsafeCAlloc``1(System.Int32,System.Boolean)">
             <summary>
-            Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
+            Allocates a region of unmanaged memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a pointer to the first byte.
             </summary>
             <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
             <param name="count">The number of instances to allocate memory for.</param>
@@ -16228,7 +16326,7 @@
         </member>
         <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.CAlloc``1(System.Int32,System.Boolean)">
             <summary>
-            Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
+            Allocates a region of unmanaged memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see langword="ref"/> to the first instance.
             </summary>
             <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
             <param name="count">The number of instances to allocate memory for.</param>
@@ -16255,7 +16353,7 @@
         </member>
         <member name="M:LaquaiLib.UnsafeUtils.MemoryManager.Allocate``1(System.Int32,System.Boolean)">
             <summary>
-            Allocates a region of memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see cref="T:System.Span`1"/> around it.
+            Allocates a region of unmanaged memory large enough to accommodate <paramref name="count"/> instances of type <typeparamref name="T"/> and returns a <see cref="T:System.Span`1"/> around it.
             </summary>
             <typeparam name="T">The <see langword="unmanaged"/> type of the instances to allocate memory for.</typeparam>
             <param name="count">The number of instances to allocate memory for.</param>
@@ -16704,6 +16802,97 @@
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
             <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
+            <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
+        </member>
+    </members>
+</doc>
+extpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the RomanNumeralRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.RomanNumeralRegex_1.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EntryPointNotFoundExceptionDataRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(System.Int32[],System.Int32@,System.Int32@,System.Int32@)">
+            <summary>Pops 2 values from the backtracking stack.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32)">
+            <summary>Pushes 1 value onto the backtracking stack.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
+            <summary>Pushes 2 values onto the backtracking stack.</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
             <summary>Supports searching for the string "Unable to find an entry point named '".</summary>

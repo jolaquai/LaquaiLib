@@ -118,6 +118,9 @@ internal static partial class Interop
         [LibraryImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool WriteProcessMemory(nint hProcess, nint lpBaseAddress, ReadOnlySpan<byte> lpBuffer, int nSize, out nint lpNumberOfBytesWritten);
+
+        [LibraryImport("kernel32.dll", EntryPoint = "QueryDosDeviceW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+        public static partial uint QueryDosDevice(string lpDeviceName, [Out] char[] lpTargetPath, int ucchMax);
     }
     #endregion
 
@@ -140,6 +143,18 @@ internal static partial class Interop
     {
         [LibraryImport("shcore.dll")]
         public static partial nint GetScaleFactorForMonitor(nint hmonitor, out nint deviceScaleFactor);
+    }
+    #endregion
+
+    #region public static partial class Mpr
+    public static partial class Mpr
+    {
+        public const int UNIVERSAL_NAME_INFO_LEVEL = 0x00000001;
+        public const int ERROR_MORE_DATA = 234;
+        public const int ERROR_NOT_CONNECTED = 2250;
+
+        [LibraryImport("mpr.dll", EntryPoint = "WNetGetUniversalNameW", StringMarshalling = StringMarshalling.Utf16)]
+        public static partial int WNetGetUniversalName(string lpLocalPath, int dwInfoLevel, [Out] byte[] lpBuffer, ref int lpBufferSize);
     }
     #endregion
 
