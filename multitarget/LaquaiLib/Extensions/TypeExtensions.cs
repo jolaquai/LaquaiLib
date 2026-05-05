@@ -915,7 +915,48 @@ public static partial class TypeExtensions
         { "Object", "object" },
         { "Void", "void" },
     }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+
+    private static readonly FrozenSet<Type> _integralTypes =
+    [
+        typeof(char),
+        typeof(sbyte),
+        typeof(byte),
+        typeof(short),
+        typeof(ushort),
+        typeof(int),
+        typeof(uint),
+        typeof(nint),
+        typeof(nuint),
+        typeof(long),
+        typeof(ulong),
+        typeof(Int128),
+        typeof(UInt128),
+    ];
+    private static readonly FrozenSet<Type> _floatingPointTypes = [typeof(float), typeof(double)];
     #endregion
+
+    /// <summary>
+    /// Determines whether the specified type is an integral type.
+    /// This includes <see langword="char"/>.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns><see langword="true"/> if the type is an integral type, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsIntegralType(this Type type) => _integralTypes.Contains(type);
+    /// <summary>
+    /// Determines whether the specified type is a floating-point type.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns><see langword="true"/> if the type is a floating-point type, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsFloatingPointType(this Type type) => _floatingPointTypes.Contains(type);
+    /// <summary>
+    /// Determines whether the specified type is a decimal numeric type.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns>><see langword="true"/> if the type is a decimal numeric type, otherwise <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsDecimalNumericType(this Type type) => type == typeof(decimal) || _floatingPointTypes.Contains(type) || _integralTypes.Contains(type);
 
     /// <summary>
     /// Converts a type name to its C# keyword, if it exists.

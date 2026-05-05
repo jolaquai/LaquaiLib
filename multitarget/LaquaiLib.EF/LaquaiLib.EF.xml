@@ -55,12 +55,12 @@
             </summary>
         </member>
         <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.GetOrAdd``1(Microsoft.EntityFrameworkCore.DbSet{``0},System.Func{``0,System.Boolean},System.Func{System.Threading.Tasks.Task{``0}})">
-            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495.GetOrAdd(System.Func{`0,System.Boolean},System.Func{System.Threading.Tasks.Task{`0}})"/>
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495`1.GetOrAdd(System.Func{`0,System.Boolean},System.Func{System.Threading.Tasks.Task{`0}})"/>
         </member>
         <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.AddOrUpdate``1(Microsoft.EntityFrameworkCore.DbSet{``0},``0,System.Object[])">
-            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495.AddOrUpdate(`0,System.Object[])"/>
+            <inheritdoc cref="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495`1.AddOrUpdate(`0,System.Object[])"/>
         </member>
-        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495.GetOrAdd(System.Func{`0,System.Boolean},System.Func{System.Threading.Tasks.Task{`0}})">
+        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495`1.GetOrAdd(System.Func{`0,System.Boolean},System.Func{System.Threading.Tasks.Task{`0}})">
             <summary>
             Gets an entity of type <typeparamref name="TEntity"/> if the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> contains one that fulfills the conditions of the <paramref name="selector"/>. If no entity is found, a new entity is created and added to the set using the <paramref name="factory"/>.
             </summary>
@@ -73,7 +73,7 @@
             This method does not persist changes to the database.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495.AddOrUpdate(`0,System.Object[])">
+        <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.&lt;G&gt;$3E61CBBF83F50C3350B9E19A6341A495`1.AddOrUpdate(`0,System.Object[])">
             <summary>
             Adds the specified <paramref name="entity"/> object to the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> if no entity with the specified <paramref name="keys"/> is found.
             Otherwise, it updates the existing entity found by the specified <paramref name="keys"/> with the specified <paramref name="entity"/> object.

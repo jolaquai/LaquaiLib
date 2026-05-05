@@ -56,7 +56,7 @@ public static class RandomExtensions
         /// <param name="destination">The <see cref="Stream"/> to write to.</param>
         /// <param name="count">The number of <see langword="byte"/>s to write.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public Task NextBytesAsync(Stream destination, int count)
+        public async ValueTask NextBytesAsync(Stream destination, int count)
         {
             if (!destination.CanWrite)
             {
@@ -67,25 +67,25 @@ public static class RandomExtensions
             if (destination is MemoryStream ms)
             {
                 var newSize = ms.Length + count;
+                if (newSize > Array.MaxLength)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(count), "The resulting size of the MemoryStream exceeds the maximum allowed size.");
+                }
+
                 if (newSize > ms.Capacity)
                 {
-                    var newCapacity = ms.Capacity;
-                    while (newCapacity < newSize)
-                    {
-                        newCapacity <<= 1;
-                    }
-                    ms.Capacity = newCapacity;
+                    ms.Capacity = (int)newSize;
                 }
                 ms.SetLength(newSize);
                 var span = ms.AsSpan((int)ms.Position, count);
                 random.NextBytes(span);
                 ms.Position += count;
-                return Task.CompletedTask;
+                return;
             }
 
             var buffer = new byte[count];
             random.NextBytes(buffer);
-            return destination.WriteAsync(buffer).AsTask();
+            await destination.WriteAsync(buffer).ConfigureAwait(false);
         }
     }
 }

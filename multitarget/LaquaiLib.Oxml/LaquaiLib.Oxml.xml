@@ -34,16 +34,16 @@
             <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$44059454A3A4DB63096571F42FBD4084.CloneAll"/>
         </member>
         <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.IsOnlyChildOfType``1(``0)">
-            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8.IsOnlyChildOfType"/>
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8`1.IsOnlyChildOfType"/>
         </member>
         <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.ReplaceWith``2(``0,``1)">
-            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8.ReplaceWith``1(``0)"/>
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8`1.ReplaceWith``1(``0)"/>
         </member>
         <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.ReplaceWith``1(``0,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
-            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8.ReplaceWith(System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})"/>
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8`1.ReplaceWith(System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})"/>
         </member>
         <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.InsertAt``1(``0,System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
-            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$ED39855EB620FCA298F218E5FFA775A9.InsertAt(System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})"/>
+            <inheritdoc cref="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$ED39855EB620FCA298F218E5FFA775A9`1.InsertAt(System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})"/>
         </member>
         <member name="P:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$9AA959A9A466DFBE2F0D929ED768F0EB.IsOnlyChild">
             <summary>
@@ -115,7 +115,7 @@
             <param name="elements">The elements to clone.</param>
             <returns>The created clones.</returns>
         </member>
-        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8.IsOnlyChildOfType">
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8`1.IsOnlyChildOfType">
             <summary>
             Determines if this element is the only child of its parent of type <typeparamref name="T"/>.
             </summary>
@@ -123,7 +123,7 @@
             <param name="element">The element to check.</param>
             <returns>The result of the check.</returns>
         </member>
-        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8.ReplaceWith``1(``0)">
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8`1.ReplaceWith``1(``0)">
             <summary>
             Replaces the specified element with new content. The new element must not have parents.
             </summary>
@@ -133,7 +133,7 @@
             <param name="newElement">The new element to replace the specified element with.</param>
             <returns>A reference to the new element. Its parent is the same as the parent of the removed element.</returns>
         </member>
-        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8.ReplaceWith(System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$A0C78F78068C5CAA93C413244F9966B8`1.ReplaceWith(System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
             <summary>
             Replaces the specified element with new content. The new elements must not have parents.
             </summary>
@@ -145,7 +145,7 @@
             Because this overload may insert multiple elements, the returned reference is to the removed element and not to one of the inserted elements.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$ED39855EB620FCA298F218E5FFA775A9.InsertAt(System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
+        <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.&lt;G&gt;$ED39855EB620FCA298F218E5FFA775A9`1.InsertAt(System.Index,System.ReadOnlySpan{DocumentFormat.OpenXml.OpenXmlElement})">
             <summary>
             Inserts the specified new elements at the specified index into the child list of the specified element. The order of <paramref name="newElements"/> is preserved.
             Resolving the specified <paramref name="index"/> unfortunately requires fully enumerating the child elements of <paramref name="element"/>.

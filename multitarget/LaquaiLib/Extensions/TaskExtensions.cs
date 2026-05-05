@@ -18,11 +18,11 @@ public static class TaskExtensions
             {
                 // Need some more work in this case
                 var timeout = Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
-                _ = await Task.WhenAny(task, timeout).ConfigureAwait(false);
+                await ((Task)Task.WhenAny(task, timeout)).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             }
             else
             {
-                _ = await Task.WhenAny(task).ConfigureAwait(false);
+                await ((Task)Task.WhenAny(task)).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             }
         }
     }

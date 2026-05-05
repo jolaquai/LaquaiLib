@@ -173,6 +173,24 @@
             <param name="process">A <see cref="T:System.Diagnostics.Process"/> instance.</param>
             <returns>The command line of the specified <see cref="T:System.Diagnostics.Process"/> or <see langword="null"/> if it could not be retrieved.</returns>
         </member>
+        <member name="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.SwitchTo(System.Windows.Threading.Dispatcher)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.&lt;G&gt;$F0DF1BEE62EB3104FCFBC02FE07DD85E.SwitchTo"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.SwitchTo(System.Windows.Threading.DispatcherObject)">
+            <inheritdoc cref="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.SwitchTo"/>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.&lt;G&gt;$F0DF1BEE62EB3104FCFBC02FE07DD85E.SwitchTo">
+            <summary>
+            Gets an awaitable that causes continuations on <see langword="await"/>s on it to be invoked on the <see cref="T:System.Threading.Thread"/> associated with the specified <paramref name="dispatcher"/>.
+            </summary>
+            <returns>The awaitable object bound to the specified <paramref name="dispatcher"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.&lt;G&gt;$8D4BD5F53CDCFC62B5D9A06DAF47FF0F.SwitchTo">
+            <summary>
+            Gets an awaitable that causes continuations on <see langword="await"/>s on it to be invoked on the <see cref="T:System.Threading.Thread"/> associated with the <see cref="T:System.Windows.Threading.Dispatcher"/> that owns this <paramref name="dispatcherObject"/>.
+            </summary>
+            <returns>The awaitable object bound to the <see cref="T:System.Windows.Threading.Dispatcher"/> that owns the specified <paramref name="dispatcherObject"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Windows.LowLevelWindow">
             <summary>
             Proxies low-level <see cref="T:System.Windows.Window"/> functionality out of <see cref="P:LaquaiLib.Windows.LowLevelWindow.HwndSource"/> to inheriting classes.
@@ -369,6 +387,49 @@
             <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
             <param name="culture">Which culture to use when converting / formatting the value.</param>
             <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Threading.DispatcherAwaitable">
+            <summary>
+            Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <paramref name="dispatcher"/> using the specified <paramref name="dispatcherPriority"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.DispatcherAwaitable.#ctor(System.Windows.Threading.Dispatcher,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <paramref name="dispatcher"/> using the specified <paramref name="dispatcherPriority"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.DispatcherAwaitable.GetAwaiter">
+            <summary>
+            Gets a <see cref="T:LaquaiLib.Threading.DispatcherAwaiter"/> instance that resumes the <see langword="await"/>'s continuation on the specified <paramref name="dispatcher"/> with the specified <paramref name="dispatcherPriority"/>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Threading.DispatcherAwaiter">
+            <summary>
+            Implements the awaiter side for <see cref="T:LaquaiLib.Threading.DispatcherAwaitable"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.DispatcherAwaiter.#ctor(System.Windows.Threading.Dispatcher,System.Windows.Threading.DispatcherPriority)">
+            <summary>
+            Implements the awaiter side for <see cref="T:LaquaiLib.Threading.DispatcherAwaitable"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.DispatcherAwaiter.IsCompleted">
+            <summary>
+            Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <paramref name="dispatcher"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.DispatcherAwaiter.OnCompleted(System.Action)">
+            <inheritdoc cref="M:LaquaiLib.Threading.DispatcherAwaiter.UnsafeOnCompleted(System.Action)"/>
+        </member>
+        <member name="M:LaquaiLib.Threading.DispatcherAwaiter.UnsafeOnCompleted(System.Action)">
+            <summary>
+            Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <paramref name="dispatcher"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.DispatcherAwaiter.GetResult">
+            <summary>
+            Ends the await on this awaiter.
+            </summary>
         </member>
         <member name="T:LaquaiLib.UnsafeUtils.ProcessMemoryAccessor">
             <summary>
