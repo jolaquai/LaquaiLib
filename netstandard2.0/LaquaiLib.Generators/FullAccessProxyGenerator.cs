@@ -9,6 +9,16 @@ namespace LaquaiLib.Generators;
 [Generator(LanguageNames.CSharp)]
 public class FullAccessProxyGenerator : IIncrementalGenerator
 {
+    public static readonly DiagnosticDescriptor TypeByNameNotFound = new DiagnosticDescriptor(
+        id: "FAP001",
+        title: "Type not found",
+        messageFormat: "The type '{0}' could not be resolved. The source generator will not generate a proxy for this type.",
+        description: "The type specified in the [FullAccessProxy] attribute could not be found during compilation. If you've not specified an assembly-qualified name, try that.",
+        category: "FullAccessProxyGenerator",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true
+    );
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var classDeclarationSyntaxProvider = context.SyntaxProvider
@@ -46,17 +56,26 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 if (type.Kind == TypedConstantKind.Primitive && type.Value is string fqTypeName)
                 {
                     // Chances are high that the type won't be accessible, but we can try
-                    proxiedType = compilation.GetTypeByMetadataName(fqTypeName);
+                    proxiedType = compilation.GetTypeByMetadataName(NormalizeMetadataName(fqTypeName));
                 }
                 else if (type.Kind == TypedConstantKind.Type && type.Value is Type typeToProxy)
                 {
-                    proxiedType = compilation.GetTypeByMetadataName(typeToProxy.FullName ?? typeToProxy.Name);
+                    proxiedType = compilation.GetTypeByMetadataName(NormalizeMetadataName(typeToProxy.FullName ?? typeToProxy.Name));
                 }
-                Debug.Assert(proxiedType is not null);
 
-                // Generate the proxied members into the class
-                var proxyClassSource = GenerateProxyForClass(namespaceName, proxyClassSymbol.Name, proxiedType, compilation);
-                spc.AddSource($"{proxyClassSymbol.Name}_{proxiedType.Name}.g.cs", SourceText.From(proxyClassSource, Encoding.UTF8));
+                if (proxiedType is not null)
+                {
+                    // Generate the proxied members into the class
+                    var proxyClassSource = GenerateProxyForClass(namespaceName, proxyClassSymbol.Name, proxiedType, compilation);
+                    spc.AddSource($"{proxyClassSymbol.Name}_{proxiedType.Name}.g.cs", SourceText.From(proxyClassSource, Encoding.UTF8));
+                }
+                else
+                {
+                    var location = gasc.Attributes.FirstOrDefault()?.ApplicationSyntaxReference?.GetSyntax().GetLocation();
+                    location ??= decl.Identifier.GetLocation();
+                    var diagnostic = Diagnostic.Create(TypeByNameNotFound, location, attribute.ConstructorArguments[0].Value);
+                    spc.ReportDiagnostic(diagnostic);
+                }
             }
         });
     }
@@ -383,6 +402,87 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 writer.WriteLine($"set => Accessors.{field.Name}(_instance) = value;");
             }
         }
+    }
+
+    /// <summary>
+    /// Converts C#-style open-generic type names (e.g. <c>Namespace.Type&lt;&gt;</c>, <c>Outer&lt;,&gt;.Inner&lt;&gt;</c>)
+    /// into CLR metadata names with backtick arities (e.g. <c>Namespace.Type`1</c>, <c>Outer`2+Inner`1</c>).
+    /// Inputs that don't contain <c>&lt;</c> are returned as-is. Nested types may be separated by <c>.</c> or <c>+</c>;
+    /// <c>.</c> separators between generic segments are rewritten to <c>+</c> for CLR consumption.
+    /// </summary>
+    private static string NormalizeMetadataName(string name)
+    {
+        if (string.IsNullOrEmpty(name) || name.IndexOf('<') < 0)
+        {
+            return name;
+        }
+
+        var sb = new StringBuilder(name.Length);
+        var lastGenericEnd = -1;
+        for (var i = 0; i < name.Length; i++)
+        {
+            var c = name[i];
+            if (c == '<')
+            {
+                // Find matching '>' accounting for nesting
+                var depth = 1;
+                var j = i + 1;
+                while (j < name.Length && depth > 0)
+                {
+                    if (name[j] == '<') depth++;
+                    else if (name[j] == '>') depth--;
+                    if (depth == 0) break;
+                    j++;
+                }
+                if (j >= name.Length)
+                {
+                    // Unbalanced - bail out, return original
+                    return name;
+                }
+
+                // Count arity from commas at depth 1
+                var inner = name.Substring(i + 1, j - i - 1);
+                var arity = 1;
+                var d = 0;
+                for (var k = 0; k < inner.Length; k++)
+                {
+                    var ic = inner[k];
+                    if (ic == '<') d++;
+                    else if (ic == '>') d--;
+                    else if (ic == ',' && d == 0) arity++;
+                }
+                // Only treat as open generic if inner is empty or only commas/whitespace
+                var isOpen = true;
+                for (var k = 0; k < inner.Length; k++)
+                {
+                    var ic = inner[k];
+                    if (ic != ',' && !char.IsWhiteSpace(ic))
+                    {
+                        isOpen = false;
+                        break;
+                    }
+                }
+                if (!isOpen)
+                {
+                    // Closed/constructed generic - GetTypeByMetadataName can't handle these anyway, return original
+                    return name;
+                }
+
+                sb.Append('`').Append(arity);
+                lastGenericEnd = sb.Length;
+                i = j; // skip past '>'
+            }
+            else if (c == '.' && lastGenericEnd == sb.Length)
+            {
+                // '.' immediately after a generic arity indicates a nested type in CLR metadata
+                sb.Append('+');
+            }
+            else
+            {
+                sb.Append(c);
+            }
+        }
+        return sb.ToString();
     }
 
     private static void WriteMethodProxyExplicit(IndentedTextWriter writer, IMethodSymbol implementedMethodSymbol, IMethodSymbol implementationMethodSymbol, INamedTypeSymbol fromInterface)

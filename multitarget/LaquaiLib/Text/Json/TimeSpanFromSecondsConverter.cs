@@ -3,7 +3,7 @@
 namespace LaquaiLib.Text.Json;
 
 /// <summary>
-/// Implements a <see cref="JsonConverter{T}"/> that is able to read and write <see cref="TimeSpan"/> values as seconds.
+/// Implements a <see cref="JsonConverter{T}"/> that is able to serialize and deserialize <see cref="TimeSpan"/> values as seconds.
 /// Values are subject to the (im)precision of <see cref="double"/> (accurate to the nearest millisecond).
 /// </summary>
 public class TimeSpanFromSecondsConverter : JsonConverter<TimeSpan>

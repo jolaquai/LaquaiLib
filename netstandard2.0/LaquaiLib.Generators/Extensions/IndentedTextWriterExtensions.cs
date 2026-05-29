@@ -16,10 +16,7 @@ internal static class IndentedTextWriterExtensions
         {
             var span = s.AsSpan();
             var ptr = 0;
-#pragma warning disable RS1035 // Do not use APIs banned for analyzers
-            var newLine = Environment.NewLine;
-            var newLineLength = newLine.Length;
-#pragma warning restore RS1035 // Do not use APIs banned for analyzers
+            const char newLine = '\n';
             while (ptr < span.Length)
             {
                 var nextNewLine = span.Slice(ptr).IndexOf(newLine);
@@ -41,7 +38,7 @@ internal static class IndentedTextWriterExtensions
                         itw.Write(slice[i]);
                     }
                     itw.WriteLine();
-                    ptr += nextNewLine + newLineLength;
+                    ptr += nextNewLine + 1;
                 }
             }
         }
@@ -50,7 +47,7 @@ internal static class IndentedTextWriterExtensions
         public IDisposable Region(string name) => new RegionDisposable(itw, name);
     }
 
-    private readonly struct ScopeDisposable : IDisposable
+    private class ScopeDisposable : IDisposable
     {
         private readonly IndentedTextWriter _itw;
         public ScopeDisposable(IndentedTextWriter itw)
@@ -59,13 +56,13 @@ internal static class IndentedTextWriterExtensions
             _itw.WriteLine('{');
             _itw.Indent++;
         }
-        public readonly void Dispose()
+        public void Dispose()
         {
             _itw.Indent--;
             _itw.WriteLine('}');
         }
     }
-    private readonly struct RegionDisposable : IDisposable
+    private class RegionDisposable : IDisposable
     {
         private readonly IndentedTextWriter _itw;
         private readonly string _regionName;
@@ -77,7 +74,7 @@ internal static class IndentedTextWriterExtensions
 
             _itw.WriteLine($"#region {regionName}");
         }
-        public readonly void Dispose()
+        public void Dispose()
         {
             _itw.WriteLine($"#endregion {_regionName}");
         }

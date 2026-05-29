@@ -12,5 +12,5 @@ internal static class Config
     /// <remarks>
     /// Most systems should be able to easily handle dozens of <see langword="stackalloc"/>s of this size.
     /// </remarks>
-    public const int MaxStackallocSize = 8192;
+    public const int MaxStackallocSize = 1024;
 }

@@ -41,7 +41,7 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
     /// <inheritdoc/>
     public override string NewLine { get; set; } = Environment.NewLine;
     /// <summary>
-    /// Gets or sets the <see langword="string"/> that is written to the buffer when a <see cref="null"/> value is written.
+    /// Gets or sets the <see langword="string"/> that is written to the buffer when a <see langword="null"/> value is written.
     /// Defaults to <c>"null"</c>. If explicitly set to <see langword="null"/>, an exception is thrown when attempting to write a <see langword="null"/> value.
     /// </summary>
     public string NullString { get; set; } = "null";

@@ -3,7 +3,7 @@
 namespace LaquaiLib.Text.Json;
 
 /// <summary>
-/// Implements a <see cref="JsonConverter{T}"/> that is able to read and write most numeric or otherwise <see cref="IParsable{TSelf}"/> and <see cref="IConvertible"/> values.
+/// Implements a <see cref="JsonConverter{T}"/> that is able to serialize and deserialize most numeric or otherwise <see cref="IParsable{TSelf}"/> and <see cref="IConvertible"/> values.
 /// </summary>
 /// <typeparam name="T">The type of the value to convert.</typeparam>
 public class FlexibleUnmanagedTypeConverter<T> : JsonConverter<T> where T : IParsable<T>, IConvertible

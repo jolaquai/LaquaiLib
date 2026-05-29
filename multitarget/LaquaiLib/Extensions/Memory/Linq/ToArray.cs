@@ -52,42 +52,17 @@ public static partial class LinqMemoryExtensions
             ArgumentNullException.ThrowIfNull(where);
             ArgumentNullException.ThrowIfNull(select);
 
-            if (where.IsStatic && select.IsStatic)
-            {
-                return UWSToArray(source, where, select);
-            }
-            else
-            {
-                var ret = GC.AllocateUninitializedArray<TResult>(source.Length);
-                var k = 0;
-                for (var i = 0; i < source.Length; i++)
-                {
-                    if (where(source[i]))
-                    {
-                        ret[k++] = select(source[i]);
-                    }
-                }
-                Array.Resize(ref ret, k);
-                return ret;
-            }
-        }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe TResult[] UWSToArray<TResult>(Func<TSource, bool> where, Func<TSource, TResult> select)
-        {
-            // Optimize for static methods by using function pointers
-            var wherePtr = (delegate*<TSource, bool>)where.Method.MethodHandle.GetFunctionPointer();
-            var selectPtr = (delegate*<TSource, TResult>)select.Method.MethodHandle.GetFunctionPointer();
-
             var ret = GC.AllocateUninitializedArray<TResult>(source.Length);
             var k = 0;
             for (var i = 0; i < source.Length; i++)
             {
-                if (wherePtr(source[i]))
+                if (where(source[i]))
                 {
-                    ret[k++] = selectPtr(source[i]);
+                    ret[k++] = select(source[i]);
                 }
             }
-            Array.Resize(ref ret, k);
+            if (k != source.Length)
+                Array.Resize(ref ret, k);
             return ret;
         }
     }

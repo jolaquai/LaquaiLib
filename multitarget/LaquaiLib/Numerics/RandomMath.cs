@@ -143,7 +143,7 @@ public static class RandomMath
     /// <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
     /// <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of <paramref name="smoothFunc"/> that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
     /// <exception cref="ArgumentException"><paramref name="xStart"/> was greater than <paramref name="xEnd"/>.</exception>
-    public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, Func<double, double> smoothFunc, double xStart = 0, double xEnd = 1) => xEnd < xStart
+    public static Func<double, double> Interpolate(Func<double, double> f, Func<double, double> g, Func<double, double> smoothFunc, double xStart = 0, double xEnd = 1) => xEnd < xStart
             ? throw new ArgumentException("Smoothing end value must be greater than start value.", nameof(xEnd))
             : (p => (smoothFunc(p) * f(p)) + (smoothFunc(xEnd - p) + g(p)));
     /// <summary>
@@ -155,7 +155,7 @@ public static class RandomMath
     /// <param name="xEnd">The end of the interval over which to smooth <paramref name="f"/> into <paramref name="g"/>.</param>
     /// <returns>A function that returns the result of <paramref name="f"/> when the input parameter is less than <paramref name="xStart"/>, the result of <paramref name="g"/> when the input parameter is greater than <paramref name="xEnd"/> and the result of a smoothing function that combines the results of <paramref name="f"/> and <paramref name="g"/> otherwise.</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => InterpolateLinear(f, g, x => x > xEnd ? 1 : (x < xStart ? 0 : Math.Pow(x - xStart, 2) / (Math.Pow(x - xStart, 2) + Math.Pow(xEnd - x, 2))), xStart, xEnd);
+    public static Func<double, double> InterpolateLinear(Func<double, double> f, Func<double, double> g, double xStart = 0, double xEnd = 1) => Interpolate(f, g, x => x > xEnd ? 1 : (x < xStart ? 0 : Math.Pow(x - xStart, 2) / (Math.Pow(x - xStart, 2) + Math.Pow(xEnd - x, 2))), xStart, xEnd);
 
     /// <summary>
     /// Contains methods that use trigonometric functions.

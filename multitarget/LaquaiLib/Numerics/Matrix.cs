@@ -23,41 +23,6 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     private readonly T[,] _data;
 
     /// <summary>
-    /// Initializes a new <see cref="Matrix{T}"/> using the specified <see cref="Vector{T}"/>s.
-    /// The number of vectors dictates the width of the matrix and the length of the longest vector dictates the height. All missing values are filled with the default value of <typeparamref name="T"/>.
-    /// </summary>
-    /// <param name="vectors">The vectors to use for the matrix.</param>
-    public Matrix(params ReadOnlySpan<Vector<T>> vectors)
-    {
-        if (vectors.Length == 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(vectors), "At least one vector must be provided.");
-        }
-
-        var max = 0;
-        for (var i = 0; i < vectors.Length; i++)
-        {
-            if (vectors[i].Dimension > max)
-            {
-                max = vectors[i].Dimension;
-            }
-        }
-        _data = new T[vectors.Length, max];
-
-        for (var i = 0; i < vectors.Length; i++)
-        {
-            for (var j = 0; j < vectors[i].Dimension; j++)
-            {
-                _data[i, j] = vectors[i][j];
-            }
-        }
-
-        Rows = _data.GetLength(0);
-        Columns = _data.GetLength(1);
-        IsSquare = Rows == Columns;
-        _toString = $"Matrix<{TypeExtensions.AsKeyword(typeof(T).FullName)}>[{Rows}x{Columns}]";
-    }
-    /// <summary>
     /// Initializes a new <see cref="Matrix{T}"/> using the specified arrays of <typeparamref name="T"/>.
     /// The number of arrays dictates the height of the matrix and the length of the longest array dictates the width. All missing values are filled with the default value of <typeparamref name="T"/>.
     /// </summary>
@@ -207,20 +172,6 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         return result;
     }
     /// <summary>
-    /// Extracts a column from the matrix and wraps it in a <see cref="Vector{T}"/>.
-    /// </summary>
-    /// <param name="column">The column to extract.</param>
-    /// <returns>The column as a <see cref="Vector{T}"/>.</returns>
-    public Vector<T> GetColumnAsVector(int column)
-    {
-        var result = new T[Rows];
-        for (var i = 0; i < Rows; i++)
-        {
-            result[i] = _data[i, column];
-        }
-        return new Vector<T>(result);
-    }
-    /// <summary>
     /// Gets all rows in the matrix as arrays.
     /// </summary>
     /// <returns>All rows in the matrix as arrays.</returns>
@@ -254,19 +205,6 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         for (var i = 0; i < Columns; i++)
         {
             result[i] = GetColumn(i);
-        }
-        return result;
-    }
-    /// <summary>
-    /// Gets all columns in the matrix as <see cref="Vector{T}"/>s.
-    /// </summary>
-    /// <returns></returns>
-    public Vector<T>[] GetColumnsAsVectors()
-    {
-        var result = new Vector<T>[Columns];
-        for (var i = 0; i < Columns; i++)
-        {
-            result[i] = GetColumnAsVector(i);
         }
         return result;
     }
