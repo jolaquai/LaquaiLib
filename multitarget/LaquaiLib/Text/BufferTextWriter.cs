@@ -121,6 +121,20 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
             case ReadOnlyMemory<char> rom:
                 Write(rom);
                 break;
+            case ISpanFormattable spanFormattable:
+            {
+                if (spanFormattable.TryFormat(_buffer.GetSpan(Config.MaxStackallocSize), out var written, format: null, FormatProvider))
+                {
+                    _buffer.Advance(written);
+                }
+                else
+                {
+                    var formatted = spanFormattable.ToString(null, FormatProvider);
+                    formatted.CopyTo(_buffer.GetSpan(formatted.Length));
+                    _buffer.Advance(formatted.Length);
+                }
+                break;
+            }
             default:
                 var s = value.ToString();
                 s.CopyTo(_buffer.GetSpan(s.Length));
@@ -153,24 +167,21 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
         _buffer.Advance(value.Length);
     }
     /// <inheritdoc/>
-    public override void Write([StringSyntax("CompositeFormat")] string format, object arg0) => Write(format, [arg0]);
+    public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object arg0) => Write(format, [arg0]);
     /// <inheritdoc/>
-    public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1) => Write(format, [arg0, arg1]);
+    public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object arg0, object arg1) => Write(format, [arg0, arg1]);
     /// <inheritdoc/>
-    public override void Write([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2) => Write(format, [arg0, arg1, arg2]);
+    public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object arg0, object arg1, object arg2) => Write(format, [arg0, arg1, arg2]);
     /// <inheritdoc/>
-    public override void Write([StringSyntax("CompositeFormat")] string format, params object[] arg) => Write(format, (ReadOnlySpan<object>)arg);
-    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_segments")]
-    private static extern ref (string Literal, int ArgIndex, int Alignment, string Format)[] FormatSegments(CompositeFormat comp);
+    public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object[] arg) => Write(format, (ReadOnlySpan<object>)arg);
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_segments")] private static extern ref (string Literal, int ArgIndex, int Alignment, string Format)[] FormatSegments(CompositeFormat comp);
     /// <inheritdoc/>
-    public override unsafe void Write([StringSyntax("CompositeFormat")] string format, params scoped ReadOnlySpan<object> arg)
+    public override unsafe void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params scoped ReadOnlySpan<object> arg)
     {
         var comp = CompositeFormat.Parse(format);
         var segments = FormatSegments(comp);
 
-        // Prepare some scratch space
-        var temp = stackalloc char[Config.MaxStackallocSize];
-
+        scoped Span<char> temp = stackalloc char[Config.MaxStackallocSize / 2];
         for (var i = 0; i < segments.Length; i++)
         {
             var (Literal, ArgIndex, Alignment, ArgFormat) = segments[i];
@@ -244,7 +255,7 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
                     {
                         var toWrite = 0;
 
-                        ReadOnlySpan<char> buffer = default;
+                        scoped ReadOnlySpan<char> buffer = default;
                         var argument = arg[ArgIndex];
                         switch (argument)
                         {
@@ -252,12 +263,11 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
                             {
                                 if (formattable is ISpanFormattable spanFormattable)
                                 {
-                                    var tempSpan = new Span<char>(temp, Config.MaxStackallocSize);
                                     // To facilitate semi-efficient alignment, we'll try to write into the buffer first
                                     // Ideally, we'd have enough space to write the entire thing twice + the alignment, but we can't guarantee that, so we'll have to try and hope
-                                    if (spanFormattable.TryFormat(tempSpan, out toWrite, ArgFormat, FormatProvider))
+                                    if (spanFormattable.TryFormat(temp, out toWrite, ArgFormat, FormatProvider))
                                     {
-                                        buffer = new Span<char>(temp, toWrite);
+                                        buffer = temp[..toWrite];
                                     }
                                     else
                                     {
@@ -399,15 +409,15 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
         WriteLine();
     }
     /// <inheritdoc/>
-    public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0) => WriteLine(format, [arg0]);
+    public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object arg0) => WriteLine(format, [arg0]);
     /// <inheritdoc/>
-    public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1) => WriteLine(format, [arg0, arg1]);
+    public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object arg0, object arg1) => WriteLine(format, [arg0, arg1]);
     /// <inheritdoc/>
-    public override void WriteLine([StringSyntax("CompositeFormat")] string format, object arg0, object arg1, object arg2) => WriteLine(format, [arg0, arg1, arg2]);
+    public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object arg0, object arg1, object arg2) => WriteLine(format, [arg0, arg1, arg2]);
     /// <inheritdoc/>
-    public override void WriteLine([StringSyntax("CompositeFormat")] string format, params object[] arg) => WriteLine(format, (ReadOnlySpan<object>)arg);
+    public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object[] arg) => WriteLine(format, (ReadOnlySpan<object>)arg);
     /// <inheritdoc/>
-    public override void WriteLine([StringSyntax("CompositeFormat")] string format, params scoped ReadOnlySpan<object> arg)
+    public override void WriteLine([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params scoped ReadOnlySpan<object> arg)
     {
         Write(format, arg);
         WriteLine();

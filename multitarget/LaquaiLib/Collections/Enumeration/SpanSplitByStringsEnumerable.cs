@@ -23,7 +23,7 @@ public ref struct SpanSplitByStringsEnumerable
         _stringSplitOptions = stringSplitOptions;
 
         _comparer = StringComparer.FromComparison(_stringComparison);
-        _searchValues = new HashSet<string>(StringComparer.FromComparison(_stringComparison));
+        _searchValues = [with(StringComparer.FromComparison(_stringComparison))];
         for (var i = 0; i < strings.Length; i++)
         {
             _ = _searchValues.Add(strings[i]);

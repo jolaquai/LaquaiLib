@@ -18,6 +18,19 @@ public interface ISpanProvider<T> : IReadOnlySpanProvider<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => Span;
     }
+
+    /// <summary>
+    /// Gets a pinnable reference to the first element of the <see cref="ReadOnlySpan{T}"/> provided by the implementing type.
+    /// If the span is empty, this method returns a <see langword="null"/> reference. Such a reference may be used for pinning, but must never be dereferenced.
+    /// </summary>
+    /// <returns>The pinnable reference.</returns>
+    public new ref T GetPinnableReference()
+    {
+        var span = Span;
+        return ref span.GetPinnableReference();
+    }
+
+    ref readonly T IReadOnlySpanProvider<T>.GetPinnableReference() => ref GetPinnableReference();
 }
 
 /// <summary>
@@ -30,6 +43,16 @@ public interface IReadOnlySpanProvider<T> : IDisposable
     /// Gets the <see cref="ReadOnlySpan{T}"/> provided by the implementing type.
     /// </summary>
     public ReadOnlySpan<T> ReadOnlySpan { get; }
+    /// <summary>
+    /// Gets a pinnable reference to the first element of the <see cref="ReadOnlySpan{T}"/> provided by the implementing type.
+    /// If the span is empty, this method returns a <see langword="null"/> reference. Such a reference may be used for pinning, but must never be dereferenced.
+    /// </summary>
+    /// <returns>The pinnable reference.</returns>
+    public ref readonly T GetPinnableReference()
+    {
+        var span = ReadOnlySpan;
+        return ref span.GetPinnableReference();
+    }
 }
 
 /// <summary>

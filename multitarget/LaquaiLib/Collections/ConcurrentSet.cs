@@ -50,7 +50,7 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
     internal sealed class Stripe(IEqualityComparer<T> comparer)
     {
         public readonly Lock Lock = new();
-        public readonly HashSet<T> Set = new HashSet<T>(comparer);
+        public readonly HashSet<T> Set = [with(comparer)];
     }
 
     /// <summary>

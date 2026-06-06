@@ -17,6 +17,8 @@
 
         <AnalysisLevel>preview-recommended</AnalysisLevel>
         <AnalysisModePerformance>all</AnalysisModePerformance>
+
+        <UseRuntimeAsync>True</UseRuntimeAsync>
     </PropertyGroup>
 
     <PropertyGroup>

@@ -9,10 +9,8 @@ public static class RegexExtensions
 {
     private static class Accessors
     {
-        [UnsafeAccessor(UnsafeAccessorKind.Field)]
-        public static extern ref Regex _regex(Match _);
-        [UnsafeAccessor(UnsafeAccessorKind.Method)]
-        public static extern string get_Text(Capture _);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref Regex _regex(Match _);
+        [UnsafeAccessor(UnsafeAccessorKind.Method)] public static extern string get_Text(Capture _);
     }
 
     extension(Match match)

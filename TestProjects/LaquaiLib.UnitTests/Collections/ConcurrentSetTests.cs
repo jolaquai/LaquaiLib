@@ -108,7 +108,7 @@ public sealed class ConcurrentSetTests
         set.CopyTo(array, 2);
 
         var copied = new HashSet<int>(array.Skip(2).Take(5));
-        Assert.Equal(new HashSet<int>(values), copied);
+        Assert.Equal([with(values)], copied);
     }
 
     [Fact]

@@ -132,28 +132,28 @@ public class MultiKeyDictionary<TValue>
         switch (keyCount)
         {
             case 1 when _one is null:
-                _one = new(capacity);
+                _one = [with(capacity)];
                 break;
             case 2 when _two is null:
-                _two = new(capacity);
+                _two = [with(capacity)];
                 break;
             case 3 when _three is null:
-                _three = new(capacity);
+                _three = [with(capacity)];
                 break;
             case 4 when _four is null:
-                _four = new(capacity);
+                _four = [with(capacity)];
                 break;
             case 5 when _five is null:
-                _five = new(capacity);
+                _five = [with(capacity)];
                 break;
             case 6 when _six is null:
-                _six = new(capacity);
+                _six = [with(capacity)];
                 break;
             case 7 when _seven is null:
-                _seven = new(capacity);
+                _seven = [with(capacity)];
                 break;
             case 8 when _eight is null:
-                _eight = new(capacity);
+                _eight = [with(capacity)];
                 break;
             case > 8 when _many is null:
                 // Need a custom comparer for this unfortunately

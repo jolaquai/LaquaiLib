@@ -32,22 +32,5 @@ public static class DelegateExtensions
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TDelegate[] GetInvocationList<TDelegate>() where TDelegate : Delegate => Unsafe.As<TDelegate[]>(del?.GetInvocationList());
-
-        /// <summary>
-        /// Gets whether the specified <see cref="Delegate"/> is static.
-        /// </summary>
-        public bool IsStatic
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => del.Target is null && del.Method.IsStatic;
-        }
-        /// <summary>
-        /// Gets whether the specified <see cref="Delegate"/> is a closure (that is, a delegate that captures state from its surrounding scope where it was defined).
-        /// </summary>
-        public bool IsClosure
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => del.Target?.GetType().Name.Contains("DisplayClass", StringComparison.OrdinalIgnoreCase) is true;
-        }
     }
 }

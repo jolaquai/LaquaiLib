@@ -4,11 +4,11 @@ public static partial class IEnumerableExtensions
 {
     extension(IEnumerable<Task> tasks)
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         /// <summary>
         /// Gets a <see cref="TaskAwaiter"/> that can be used to await the completion of all tasks in the specified collection.
         /// </summary>
         /// <returns>A <see cref="TaskAwaiter"/> that can be used to await the completion of all tasks in the specified collection.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TaskAwaiter GetAwaiter() => Task.WhenAll(tasks).GetAwaiter();
         /// <summary>
         /// Starts all tasks in the specified collection.

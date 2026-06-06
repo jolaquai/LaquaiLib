@@ -9,10 +9,8 @@ namespace LaquaiLib.Collections.LimitedCollections;
 /// <typeparam name="T">The Type of the items in the collection.</typeparam>
 public sealed class LimitedQueue<T> : ICollection<T>
 {
-    [UnsafeAccessor(UnsafeAccessorKind.Field)]
-    internal static extern ref T[] _array(Queue<T> queue);
-    [UnsafeAccessor(UnsafeAccessorKind.Field)]
-    internal static extern ref int _size(Queue<T> queue);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] internal static extern ref T[] _array(Queue<T> queue);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] internal static extern ref int _size(Queue<T> queue);
 
     private static ArgumentException NeedCapacityGreaterThanInitialItemsException => new ArgumentException($"The passed initial capacity may not be smaller than the number of items passed to create the {nameof(LimitedQueue<>)} with.");
     private static ArgumentOutOfRangeException InitializationLengthMustNotBeZero => new ArgumentOutOfRangeException("The passed collection must not be empty.");

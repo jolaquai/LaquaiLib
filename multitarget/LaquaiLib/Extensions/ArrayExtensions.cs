@@ -395,5 +395,72 @@ public static partial class ArrayExtensions
             }
             return defaultValue;
         }
+
+        /// <summary>
+        /// Gets a <see cref="List{T}"/> that directly wraps the <paramref name="array"/>.
+        /// Note that if the returned <see cref="List{T}"/> is expanded beyond the length of <paramref name="array"/>, it is dropped and will no longer reflect changes to the <see cref="List{T}"/>.
+        /// </summary>
+        /// <param name="count">The value to set the <see cref="List{T}.Count"/> of the returned list to. The first <paramref name="count"/> slots of the array are considered used.</param>
+        public List<T> WrapAsList(int count = 0)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(count, array.Length);
+
+            var list = new List<T>();
+            scoped ref var items = ref Accessors<T>._items(list);
+            items = array;
+            CollectionsMarshal.SetCount(list, count);
+            return list;
+        }
+        /// <summary>
+        /// Gets a <see cref="Queue{T}"/> that directly wraps the <paramref name="array"/>.
+        /// Note that if the returned <see cref="Queue{T}"/> is expanded beyond the length of <paramref name="array"/>, it is dropped and will no longer reflect changes to the <see cref="Queue{T}"/>.
+        /// </summary>
+        /// <param name="head">The index at which to begin the "populated" range of the <see cref="Queue{T}"/>. The item at this index will be the first item returned by methods such as <see cref="Queue{T}.Dequeue"/> or <see cref="Queue{T}.Peek"/>.</param>
+        /// <param name="tail">The index at which to end the "populated" range of the <see cref="Queue{T}"/>. The item at this index will be the last item returned by methods such as <see cref="Queue{T}.Dequeue"/> or <see cref="Queue{T}.Peek"/>.</param>
+        /// <returns></returns>
+        public Queue<T> WrapAsQueue(int head = 0, int tail = 0)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(head);
+            ArgumentOutOfRangeException.ThrowIfNegative(tail);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(head, array.Length);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(tail, array.Length);
+
+            var queue = new Queue<T>();
+            scoped ref var items = ref Accessors<T>._array(queue);
+            items = array;
+            Accessors<T>._head(queue) = head;
+            Accessors<T>._tail(queue) = tail;
+            Accessors<T>._size(queue) = tail > head ? tail - head : array.Length - head + tail;
+            return queue;
+        }
+        /// <summary>
+        /// Gets a <see cref="Stack{T}"/> that directly wraps the <paramref name="array"/>.
+        /// Note that if the returned <see cref="Stack{T}"/> is expanded beyond the length of <paramref name="array"/>, it is dropped and will no longer reflect changes to the <see cref="Stack{T}"/>.
+        /// </summary>
+        /// <param name="count">The value to set the <see cref="Stack{T}.Count"/> of the returned <see cref="Stack{T}"/> to. The first <paramref name="count"/> items will be returned by methods such as <see cref="Stack{T}.Pop"/> or <see cref="Stack{T}.Peek"/> in reverse.</param>
+        /// <returns>The created <see cref="Stack{T}"/>.</returns>
+        public Stack<T> WrapAsStack(int count = 0)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(count);
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(count, array.Length);
+
+            var stack = new Stack<T>();
+            scoped ref var items = ref Accessors<T>._items(stack);
+            items = array;
+            Accessors<T>._size(stack) = count;
+            return stack;
+        }
+    }
+
+    private static class Accessors<T>
+    {
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(List<T> _);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _array(Queue<T> _);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(Stack<T> _);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _head(Queue<T> _);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _tail(Queue<T> _);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _size(Queue<T> _);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _size(Stack<T> _);
     }
 }

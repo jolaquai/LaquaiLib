@@ -7,14 +7,13 @@ namespace LaquaiLib.Text;
 /// </summary>
 internal static class StringHelpers
 {
-    internal static unsafe string AllocString(int length)
-    {
-        var ptr = MemoryManager.UnsafeCAlloc<char>(length + 1);
-        ptr[length] = '\0';
-        return new string(ptr, 0, length);
-    }
+    /// <summary>
+    /// Allocates a <see langword="string"/> that is safe to be mutated by the caller.
+    /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static ref char GetCharRef(string str) => ref MemoryMarshal.GetReference(str.AsSpan());
+    internal static string AllocString(int length) => new string('\0', length);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static ref char GetCharRef(string str) => ref Unsafe.AsRef(in str.GetPinnableReference());
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static Span<char> GetSpan(string str) => MemoryMarshal.CreateSpan(ref GetCharRef(str), str.Length);
 }

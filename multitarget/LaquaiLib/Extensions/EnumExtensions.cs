@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace LaquaiLib.Extensions;
@@ -48,6 +49,9 @@ public static class EnumExtensions
         }
     }
 
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowTypeUnsupported(Type type) => throw new NotSupportedException($"The underlying type of the enum '{type.FullName}' ('{type.GetEnumUnderlyingType().FullName}') is not supported.");
+
     extension<T>(T source) where T : struct, Enum
     {
         /// <summary>
@@ -56,9 +60,10 @@ public static class EnumExtensions
         /// <typeparam name="T">The type of the enum.</typeparam>
         /// <param name="source">The enum value to test.</param>
         /// <returns>A value indicating whether <paramref name="source"/> has a non-zero value.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasValue()
         {
-            switch (typeof(T).SizeOf)
+            switch (Unsafe.SizeOf<T>())
             {
                 case 1:
                     return Unsafe.As<T, byte>(ref source) != 0;
@@ -68,8 +73,10 @@ public static class EnumExtensions
                     return Unsafe.As<T, uint>(ref source) != 0;
                 case 8:
                     return Unsafe.As<T, ulong>(ref source) != 0;
+                default:
+                    ThrowTypeUnsupported(typeof(T));
+                    return false;
             }
-            throw new NotSupportedException($"The underlying type of the enum '{typeof(T).FullName}' ('{typeof(T).GetEnumUnderlyingType().FullName}') is not supported.");
         }
 
         /// <summary>

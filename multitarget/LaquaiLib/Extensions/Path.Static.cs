@@ -30,19 +30,30 @@ public static class PathExtensions
                 return value;
             }
 
-            var sb = new StringBuilder(value.Length + 2);
+            var len = value.Length;
+            var startsWith = value.StartsWith(quoteChar);
+            var endsWith = value.EndsWith(quoteChar);
+            if (!startsWith)
+                len++;
+            if (!endsWith)
+                len++;
 
-            if (!value.StartsWith(quoteChar))
+            return string.Create(len, (value, quoteChar), (span, state) =>
             {
-                sb.Append(quoteChar);
-            }
-            sb.Append(value);
-            if (!value.EndsWith(quoteChar))
-            {
-                sb.Append(quoteChar);
-            }
-
-            return sb.ToString();
+                var (val, qc) = state;
+                var idx = 0;
+                if (!startsWith)
+                {
+                    span[0] = qc;
+                    idx++;
+                }
+                val.AsSpan().CopyTo(span[idx..]);
+                idx += val.Length;
+                if (!endsWith)
+                {
+                    span[^1] = qc;
+                }
+            });
         }
 
         /// <summary>

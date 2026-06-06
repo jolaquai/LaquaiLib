@@ -5,8 +5,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.Wasm;
 using System.Runtime.Intrinsics.X86;
 
-using LaquaiLib.Analyzers.Shared.Attributes;
-using LaquaiLib.Numerics;
+using LaquaiLib.Extensions;
 
 namespace TestConsole;
 
@@ -17,7 +16,7 @@ public static partial class TestConsole
 {
     [STAThread]
     private static void Main()
-    { 
+    {
         // FirstChanceExceptionHandlers.RegisterAll();
 
         Thread.CurrentThread.Name = "[MAIN]";
@@ -26,11 +25,28 @@ public static partial class TestConsole
         // Debugger.Break();
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static void PrintExpr(this object obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine($"{expr}: {obj}");
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static void cw(this object obj) => Console.WriteLine(obj);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static void cw<T>(this IEnumerable<T> enumerable) => Console.WriteLine($"<{typeof(T).Namespace + '.' + typeof(T).Name}>[{string.Join(", ", enumerable)}]");
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatExpr(object obj, string expr) => $"{expr}: {FormatSingleObj(obj)}";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatSingleObj<T>(T obj) => $"({typeof(T).GetFriendlyName(false)}){obj}";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatSingleObj<T>(IEnumerable<T> obj) => $"({typeof(T).GetFriendlyName(false)}){FormatEnumerable(obj)}";
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static string FormatEnumerable<T>(this IEnumerable<T> enumerable)
+    {
+        var typeofParameter = enumerable.GetType();
+        return $"({typeofParameter.GetFriendlyName(false)})[{string.Join(", ", enumerable)}]";
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void PrintExpr(this object obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine(FormatExpr(obj, expr));
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static void cw<T>(this T obj) => Console.WriteLine(FormatSingleObj(obj));
+
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
+        int[] arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        var wrapper = arr.WrapAsQueue(5, 2);
+        wrapper.Dequeue().cw();
+        wrapper.Dequeue().cw();
+        wrapper.Dequeue().cw();
+        cw(wrapper);
     }
 
     private static void PrintCpuVectorCapabilities()
