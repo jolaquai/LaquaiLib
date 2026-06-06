@@ -4,31 +4,6 @@
         <name>LaquaiLib</name>
     </assembly>
     <members>
-        <member name="P:LaquaiLib.Collections.ArrayBuilder`1.CanMoveToArray">
-            <summary>
-            Gets whether <see cref="M:LaquaiLib.Collections.ArrayBuilder`1.MoveToArray(System.Boolean)"/> can be called without throwing an exception (that is, whether the list is currently at full capacity so that the internal array can be stolen without copying).
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Collections.ArrayBuilder`1.DrainToArray(System.Boolean)">
-            <summary>
-            Drains the builder into an array. If at full capacity, the internal array will be stolen without copying; otherwise, a new array will be allocated and filled with the contents of the builder.
-            </summary>
-            <param name="reseed">Whether to reseed the builder with a new array of the expected capacity after draining. If <see langword="false"/>, the builder becomes unusable after draining.</param>
-            <returns>The array containing the drained contents of the builder.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.ArrayBuilder`1.MoveToArray(System.Boolean)">
-            <summary>
-            Returns the internal array of the builder, stealing it from the builder without copying. Throws <see cref="T:System.InvalidOperationException"/> if the list is not currently at full capacity.
-            </summary>
-            <param name="reseed">Whether to reseed the builder with a new array of the expected capacity after draining. If <see langword="false"/>, the builder becomes unusable after draining (it does not, however, if the move couldn't be completed).</param>
-            <returns>The array containing the contents of the builder.</returns>
-        </member>
-        <member name="M:LaquaiLib.Collections.ArrayBuilder`1.ToArray">
-            <summary>
-            Copies the contents of the builder into a new array.
-            </summary>
-            <returns>The array containing the contents of the builder.</returns>
-        </member>
         <member name="T:LaquaiLib.Collections.ConcurrentSet">
             <summary>
             Contains factory methods for <see cref="T:LaquaiLib.Collections.ConcurrentSet`1"/>.
@@ -3517,10 +3492,10 @@
             Provides extension methods for the <see cref="T:System.Collections.Generic.ICollection`1"/> Type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.ICollectionExtensions.KeepOnly``1(``0,System.Func{``0,System.Boolean})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.ICollectionExtensions.&lt;G&gt;$C42D72674AC653A3D4F1A1BAD3B9F61C`1.KeepOnly(System.Func{`0,System.Boolean})"/>
+        <member name="M:LaquaiLib.Extensions.ICollectionExtensions.KeepOnly``1(System.Collections.Generic.ICollection{``0},System.Func{``0,System.Boolean})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ICollectionExtensions.&lt;G&gt;$847CB318C385471B1F4E7BD0A197DBCA`1.KeepOnly(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.ICollectionExtensions.&lt;G&gt;$C42D72674AC653A3D4F1A1BAD3B9F61C`1.KeepOnly(System.Func{`0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.ICollectionExtensions.&lt;G&gt;$847CB318C385471B1F4E7BD0A197DBCA`1.KeepOnly(System.Func{`0,System.Boolean})">
             <summary>
             Replaces the contents of this <see cref="T:System.Collections.Generic.ICollection`1"/> with only the elements that match the given <paramref name="predicate"/>.
             </summary>
@@ -3550,15 +3525,6 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThrowIfAllCancelled(System.Collections.Generic.IEnumerable{System.Threading.CancellationToken})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$50CC5CF47EF391419B20D900C510BF02.ThrowIfAllCancelled"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.ExceptBy``1(System.Collections.Generic.IEnumerable{`0},System.Func{`0,``0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Shuffle"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Shuffle(System.Random)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.HasLessThan``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.HasLessThan(System.Int32)"/>
@@ -3788,6 +3754,9 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$A20FF0E9ACFF6842FC3CF61C95A3098C`1.ThenByDescending``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetAwaiter(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$D3487C9F8681FFF351C42922B9F445FB.GetAwaiter"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Start(System.Collections.Generic.IEnumerable{System.Threading.Tasks.Task})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$D3487C9F8681FFF351C42922B9F445FB.Start"/>
         </member>
@@ -3922,38 +3891,6 @@
             </summary>
             <param name="tokens">The source sequence of <see cref="T:System.Threading.CancellationToken"/>s.</param>
             <exception cref="T:System.OperationCanceledException">Thrown when all of the source sequence's <see cref="T:System.Threading.CancellationToken"/>s are cancelled.</exception>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.ExceptBy``1(System.Collections.Generic.IEnumerable{`0},System.Func{`0,``0})">
-            <summary>
-            Produces the set difference of two sequences according to a specified key selector function.
-            </summary>
-            <typeparam name="TSource">The type of the elements of the input sequences.</typeparam>
-            <typeparam name="TKey">The type of the key returned by <paramref name="keySelector"/>.</typeparam>
-            <param name="source">The first sequence to compare.</param>
-            <param name="other">The second sequence to compare.</param>
-            <param name="keySelector">The <see cref="T:System.Func`2"/> that is passed each element of the source sequence and returns the key to use for comparison.</param>
-            <returns>A sequence that contains the set difference of the elements of two sequences.</returns>
-            <remarks>Basically just another <see cref="M:System.Linq.Enumerable.ExceptBy``2(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1})"/> overload that... actually makes sense.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Shuffle">
-            <summary>
-            Shuffles the elements in the input sequence using <see cref="P:System.Random.Shared"/>.
-            </summary>
-            <remarks>
-            If the calling code already has an instance of <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/>, it should use the <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Shuffle``1(System.Collections.Generic.IEnumerable{``0},System.Random)"/> overload.
-            </remarks>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <returns>A shuffled sequence of the elements in the input sequence.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Shuffle(System.Random)">
-            <summary>
-            Shuffles the elements in the input sequence, using a specified <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/> instance.
-            </summary>
-            <typeparam name="T">The Type of the elements in the input sequence.</typeparam>
-            <param name="source">The input sequence.</param>
-            <param name="random">The <see cref="M:LaquaiLib.Extensions.IEnumerableExtensions.Random``1(System.Collections.Generic.IEnumerable{``0})"/> instance to use for shuffling.</param>
-            <returns>A shuffled sequence of the elements in the input sequence.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.HasLessThan(System.Int32)">
             <summary>
@@ -4236,8 +4173,8 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.AsAsynchronous">
             <summary>
-            Returns an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> wrapper around the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>. This is fundamentally different from <see cref="!:AsyncEnumerable.ToAsyncEnumerable&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
-            <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})"/> or similar). Instead, call <see cref="!:AsyncEnumerable.ToAsyncEnumerable&lt;TSource&gt;(IEnumerable&lt;TSource&gt;)"/>, then use a method such as <see cref="!:AsyncEnumerable.ToListAsync&lt;TSource&gt;(IAsyncEnumerable&lt;TSource&gt;, CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="!:AsyncEnumerable"/> is recommended (which are optimized for their purpose).
+            Returns an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> wrapper around the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>. This is fundamentally different from <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
+            <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})"/> or similar). Instead, call <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/>, then use a method such as <see cref="M:System.Linq.AsyncEnumerable.ToListAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Threading.CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="T:System.Linq.AsyncEnumerable"/> is recommended (which are optimized for their purpose).
             </summary>
             <returns>The sourc eas an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/>.</returns>
         </member>
@@ -4743,6 +4680,12 @@
             <param name="comparer">An <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use for comparing the keys.</param>
             <returns>The sorted input sequence.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$D3487C9F8681FFF351C42922B9F445FB.GetAwaiter">
+            <summary>
+            Gets a <see cref="T:System.Runtime.CompilerServices.TaskAwaiter"/> that can be used to await the completion of all tasks in the specified collection.
+            </summary>
+            <returns>A <see cref="T:System.Runtime.CompilerServices.TaskAwaiter"/> that can be used to await the completion of all tasks in the specified collection.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$D3487C9F8681FFF351C42922B9F445FB.Start">
             <summary>
             Starts all tasks in the specified collection.
@@ -5105,6 +5048,20 @@
         <member name="M:LaquaiLib.Extensions.ListExtensions.SetCount``1(System.Collections.Generic.List{``0},System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.SetCount(System.Int32)"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.get_CanMoveToArray``1(System.Collections.Generic.List{``0})">
+            <inheritdoc cref="P:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.CanMoveToArray"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.DrainToArray``1(System.Collections.Generic.List{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.DrainToArray"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.MoveToArray``1(System.Collections.Generic.List{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.MoveToArray"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.EvictImpl``1(System.Collections.Generic.List{``0},System.Boolean)">
+            <summary>
+            Evicts the contents of the specified <see cref="T:System.Collections.Generic.List`1"/> into an array and resets the list to a clean, empty state so it never co-owns the evicted array.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.RemoveAt(System.Index)">
             <summary>
             Removes the element at the specified <paramref name="index"/> from this <see cref="T:System.Collections.Generic.List`1"/>.
@@ -5173,6 +5130,23 @@
             </summary>
             <param name="count">The new <see cref="P:System.Collections.Generic.List`1.Count"/> of the specified <see cref="T:System.Collections.Generic.List`1"/>.</param>
             <returns>A <see cref="T:System.Span`1"/> over the valid portion of the specified <see cref="T:System.Collections.Generic.List`1"/> after setting its <see cref="P:System.Collections.Generic.List`1.Count"/> to <paramref name="count"/>.</returns>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.CanMoveToArray">
+            <summary>
+            Gets whether <see cref="M:LaquaiLib.Extensions.ListExtensions.MoveToArray``1(System.Collections.Generic.List{``0})"/> can be called without throwing an exception (that is, whether the list is currently at full capacity so that its backing array can be stolen without copying).
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.DrainToArray">
+            <summary>
+            Drains the <see cref="T:System.Collections.Generic.List`1"/> into an array, leaving the list empty afterwards. If the list is at full capacity, its backing array is stolen without copying; otherwise, a new array is allocated and filled with the contents of the list.
+            </summary>
+            <returns>The array containing the drained contents of the list.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.MoveToArray">
+            <summary>
+            Steals the backing array of the <see cref="T:System.Collections.Generic.List`1"/> without copying, leaving the list empty afterwards. Throws <see cref="T:System.InvalidOperationException"/> if the list is not currently at full capacity.
+            </summary>
+            <returns>The backing array of the list.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Aggregate``1(System.ReadOnlySpan{``0},System.Func{``0,``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Aggregate(System.Func{`0,`0,`0})"/>
@@ -5254,9 +5228,6 @@
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Chunk``1(System.ReadOnlySpan{``0},System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Chunk(System.Int32)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Contains``1(System.ReadOnlySpan{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Contains(`0,System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Count``1(System.ReadOnlySpan{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Count"/>
@@ -5959,9 +5930,6 @@
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Chunk(System.Int32)">
             <inheritdoc cref="M:System.Linq.Enumerable.Chunk``1(System.Collections.Generic.IEnumerable{``0},System.Int32)" />
-        </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Contains(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <inheritdoc cref="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})" />
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Count">
             <inheritdoc cref="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})" />
@@ -7131,9 +7099,6 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.ReadOnlySpan{``0},System.Action{``0,System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.IndexOf``1(System.ReadOnlySpan{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})"/>
-        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Split``1(System.ReadOnlySpan{``0},System.Span{``0},System.Span{``0},System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Split(System.Span{`0},System.Span{`0},System.Func{`0,System.Boolean})"/>
         </member>
@@ -7160,9 +7125,6 @@
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplitsBySequence``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplitsBySequence(System.ReadOnlySpan{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.IndexOf``1(System.Span{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.Span{``0},System.Action{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0})"/>
@@ -7243,14 +7205,6 @@
             </summary>
             <param name="action">The <see cref="T:System.Action`2"/> to invoke for each element.</param>
             <returns>The original <see cref="T:System.ReadOnlySpan`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Finds the index of the first occurrence of a specified value in the <see cref="T:System.ReadOnlySpan`1"/> using an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>.
-            </summary>
-            <param name="value">The value to locate in the <see cref="T:System.ReadOnlySpan`1"/>.</param>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use for comparison. If <see langword="null"/>, the default equality comparer for <typeparamref name="T"/> is used.</param>
-            <returns>The zero-based index of the first occurrence of <paramref name="value"/> within the <see cref="T:System.ReadOnlySpan`1"/>, if found; otherwise, -1.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Split(System.Span{`0},System.Span{`0},System.Func{`0,System.Boolean})">
             <summary>
@@ -7371,14 +7325,6 @@
             <param name="sequence">The sequence of <typeparamref name="T"/>s to use as a delimiter.</param>
             <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.SpanSplitEnumerable`1"/>.</returns>
             <remarks><typeparamref name="T"/> must implement <see cref="T:System.IEquatable`1"/>.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.IndexOf(`0,System.Collections.Generic.IEqualityComparer{`0})">
-            <summary>
-            Finds the index of the first occurrence of a specified value in the <see cref="T:System.ReadOnlySpan`1"/> using an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/>.
-            </summary>
-            <param name="value">The value to locate in the <see cref="T:System.ReadOnlySpan`1"/>.</param>
-            <param name="equalityComparer">An <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use for comparison. If <see langword="null"/>, the default equality comparer for <typeparamref name="T"/> is used.</param>
-            <returns>The zero-based index of the first occurrence of <paramref name="value"/> within the <see cref="T:System.ReadOnlySpan`1"/>, if found; otherwise, -1.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0})">
             <summary>
@@ -9053,7 +8999,7 @@
         <member name="M:LaquaiLib.Extensions.TypeExtensions.UnspeakableMemberNameRegex">
             <remarks>
             Pattern:<br/>
-            <code>&lt;.*?&gt;\\p{Ll}__(\\p{L}|\\p{Nd}|\\||_)+?_\\p{Nd}+?(?=\\(.*?\\))?</code><br/>
+            <code>&lt;.*?&gt;\p{Ll}__(\p{L}|\p{Nd}|\||_)+?_\p{Nd}+?(?=\(.*?\))?</code><br/>
             Options:<br/>
             <code>RegexOptions.ExplicitCapture</code><br/>
             Explanation:<br/>
@@ -9061,16 +9007,11 @@
             ○ Match '&lt;'.<br/>
             ○ Match a character other than '\n' lazily any number of times.<br/>
             ○ Match '&gt;'.<br/>
-            ○ Match a character in the set [\p{Ll}].<br/>
+            ○ Match a Unicode lowercase letter.<br/>
             ○ Match the string "__".<br/>
             ○ Match a character in the set [_|\p{L}\d] lazily at least once.<br/>
             ○ Match '_'.<br/>
-            ○ Match a Unicode digit lazily at least once.<br/>
-            ○ Optional (greedy).<br/>
-                ○ Zero-width positive lookahead.<br/>
-                    ○ Match '('.<br/>
-                    ○ Match a character other than '\n' lazily any number of times.<br/>
-                    ○ Match ')'.<br/>
+            ○ Match a Unicode digit exactly 1 times.<br/>
             </code>
             </remarks>
         </member>
@@ -9370,6 +9311,13 @@
             Gets the <see cref="T:System.Span`1"/> provided by the implementing type.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Interfaces.ISpanProvider`1.GetPinnableReference">
+            <summary>
+            Gets a pinnable reference to the first element of the <see cref="T:System.ReadOnlySpan`1"/> provided by the implementing type.
+            If the span is empty, this method returns a <see langword="null"/> reference. Such a reference may be used for pinning, but must never be dereferenced.
+            </summary>
+            <returns>The pinnable reference.</returns>
+        </member>
         <member name="T:LaquaiLib.Interfaces.IReadOnlySpanProvider`1">
             <summary>
             Defines a contract for types that provide a <see cref="T:System.ReadOnlySpan`1"/> over an arbitrary data structure.
@@ -9380,6 +9328,13 @@
             <summary>
             Gets the <see cref="T:System.ReadOnlySpan`1"/> provided by the implementing type.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Interfaces.IReadOnlySpanProvider`1.GetPinnableReference">
+            <summary>
+            Gets a pinnable reference to the first element of the <see cref="T:System.ReadOnlySpan`1"/> provided by the implementing type.
+            If the span is empty, this method returns a <see langword="null"/> reference. Such a reference may be used for pinning, but must never be dereferenced.
+            </summary>
+            <returns>The pinnable reference.</returns>
         </member>
         <member name="T:LaquaiLib.Interfaces.IMemoryProvider`1">
             <summary>
@@ -11501,6 +11456,11 @@
             Contains utility methods for the <see cref="T:System.String"/> type.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Text.StringHelpers.AllocString(System.Int32)">
+            <summary>
+            Allocates a <see langword="string"/> that is safe to be mutated by the caller.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Util.NaturalStringComparer">
             <summary>
             Implements a <see cref="T:System.StringComparer"/> that compares <see langword="string"/>s and <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/> using a natural sort order, that is, like Windows Explorer sorts file names.
@@ -12102,7 +12062,7 @@
         <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.EntryPointNotFoundExceptionDataRegex">
             <remarks>
             Pattern:<br/>
-            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\\.</code><br/>
+            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\.</code><br/>
             Options:<br/>
             <code>RegexOptions.ExplicitCapture</code><br/>
             Explanation:<br/>
@@ -15815,86 +15775,6 @@
             Gets whether the event is in the signaled state.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Threading.AsyncTimer">
-            <summary>
-            Implements a timer that periodically invokes one or more callbacks asynchronously.
-            Callbacks that take longer to return that the configured period will cause ticks to be combined.
-            </summary>
-            <remarks>
-            This implementation uses <see cref="T:System.Threading.PeriodicTimer"/> for signaling and a <see cref="T:System.Threading.Tasks.Task"/> for efficient ticking. It is important the instance be disposed when no longer needed to prevent resource leaks.
-            </remarks>
-        </member>
-        <member name="P:LaquaiLib.Threading.AsyncTimer.Period">
-            <summary>
-            Gets or sets the interval between invocations of the callback.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Threading.AsyncTimer.State">
-            <summary>
-            Gets or sets the state object passed to the callback on each invocation.
-            </summary>
-        </member>
-        <member name="E:LaquaiLib.Threading.AsyncTimer.Callback">
-            <summary>
-            Allows registering or unregistering a callback that is invoked periodically.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.#ctor(System.TimeSpan)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.#ctor(System.TimeSpan,System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and state.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="callback">The state object passed to the callback on each invocation.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.#ctor(System.TimeSpan,System.Object,System.ReadOnlySpan{System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task}})">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and state and registers the specified callbacks for invocation.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="state">The state object passed to the callback on each invocation.</param>
-            <param name="callbacks">The callbacks to invoke periodically.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.Start(System.TimeSpan)">
-            <summary>
-            Creates and starts a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.Start(System.TimeSpan,System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task})">
-            <summary>
-            Creates and starts a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and callback.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="callback">The state object passed to the callback on each invocation.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.Start(System.TimeSpan,System.Object,System.ReadOnlySpan{System.Func{System.Object,System.Threading.CancellationToken,System.Threading.Tasks.Task}})">
-            <summary>
-            Creates and starts a new <see cref="T:LaquaiLib.Threading.AsyncTimer"/> with the specified interval and state and registers the specified callbacks for invocation.
-            </summary>
-            <param name="interval">The interval between invocations of the callback.</param>
-            <param name="state">The state object passed to the callback on each invocation.</param>
-            <param name="callbacks">The callbacks to invoke periodically.</param>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.DisposeAsync">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.StartAsync">
-            <summary>
-            Starts invoking the callback(s) periodically.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Threading.AsyncTimer.StopAsync(System.Threading.CancellationToken)">
-            <summary>
-            Stops invoking the callback(s) periodically and signals cancellation to any callbacks that are still running.
-            The method blocks asynchronously until all callbacks complete or respond to cancellation, or <paramref name="cancellationToken"/> is canceled.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Threading.ExtendedDebugTaskExtensions">
             <summary>
             Provides factory methods for creating <see cref="T:LaquaiLib.Threading.ExtendedDebugTask"/> instances.
@@ -16977,17 +16857,9 @@
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
             <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
         </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPop(System.Int32[],System.Int32@,System.Int32@,System.Int32@)">
-            <summary>Pops 2 values from the backtracking stack.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32)">
-            <summary>Pushes 1 value onto the backtracking stack.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.Utilities.StackPush(System.Int32[]@,System.Int32@,System.Int32,System.Int32)">
-            <summary>Pushes 2 values onto the backtracking stack.</summary>
-        </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
             <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
         </member>
     </members>
+</doc>
 </doc>

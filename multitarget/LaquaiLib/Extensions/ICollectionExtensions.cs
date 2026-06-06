@@ -5,7 +5,7 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class ICollectionExtensions
 {
-    extension<T>(T collection) where T : ICollection<T>
+    extension<T>(ICollection<T> collection)
     {
         /// <summary>
         /// Replaces the contents of this <see cref="ICollection{T}"/> with only the elements that match the given <paramref name="predicate"/>.

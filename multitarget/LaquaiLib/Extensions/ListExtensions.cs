@@ -18,6 +18,8 @@ public static class ListExtensions
     private static class Accessors<T>
     {
         [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(List<T> list);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _size(List<T> list);
+        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _version(List<T> list);
     }
 
     extension<T>(List<T> list)
@@ -139,5 +141,54 @@ public static class ListExtensions
             CollectionsMarshal.SetCount(list, count);
             return AsMemory(list);
         }
+
+        /// <summary>
+        /// Gets whether <see cref="MoveToArray{T}(List{T})"/> can be called without throwing an exception (that is, whether the list is currently at full capacity so that its backing array can be stolen without copying).
+        /// </summary>
+        public bool CanMoveToArray => list.Count == list.Capacity;
+        /// <summary>
+        /// Drains the <see cref="List{T}"/> into an array, leaving the list empty afterwards. If the list is at full capacity, its backing array is stolen without copying; otherwise, a new array is allocated and filled with the contents of the list.
+        /// </summary>
+        /// <returns>The array containing the drained contents of the list.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] DrainToArray() => EvictImpl(list, false);
+        /// <summary>
+        /// Steals the backing array of the <see cref="List{T}"/> without copying, leaving the list empty afterwards. Throws <see cref="InvalidOperationException"/> if the list is not currently at full capacity.
+        /// </summary>
+        /// <returns>The backing array of the list.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] MoveToArray() => EvictImpl(list, true);
+    }
+
+    /// <summary>
+    /// Evicts the contents of the specified <see cref="List{T}"/> into an array and resets the list to a clean, empty state so it never co-owns the evicted array.
+    /// </summary>
+    private static T[] EvictImpl<T>(List<T> list, bool throwIfCopyNeeded)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+
+        ref var items = ref Accessors<T>._items(list);
+        ref var size = ref Accessors<T>._size(list);
+        var count = size;
+
+        T[] ret;
+        if (count == 0)
+            ret = [];
+        else if (count == items.Length)
+            // At full capacity: steal the backing array outright, zero-copy.
+            ret = items;
+        else if (throwIfCopyNeeded)
+            throw new InvalidOperationException($"Cannot move to array when the list is not at full capacity (length: {count}, capacity: {items.Length}).");
+        else
+        {
+            ret = new T[count];
+            Array.Copy(items, ret, count);
+        }
+
+        // Detach: reset to the same state as a freshly-constructed empty list, then invalidate any live enumerators.
+        items = [];
+        size = 0;
+        Accessors<T>._version(list)++;
+        return ret;
     }
 }
