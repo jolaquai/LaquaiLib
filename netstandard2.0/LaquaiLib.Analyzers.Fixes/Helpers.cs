@@ -1,7 +1,25 @@
-﻿namespace LaquaiLib.Analyzers.Fixes;
+﻿using System.Text.RegularExpressions;
+
+namespace LaquaiLib.Analyzers.Fixes;
 
 internal static class Helpers
 {
+    internal static readonly Regex KeyNormalizationRegex = new Regex(@"[^A-Za-z]", RegexOptions.Compiled);
+
+    internal static string NormalizeKey(string title) => KeyNormalizationRegex.Replace(title.ToTitleCase(), "");
+
+    internal static async ValueTask<Document> ApplyPostFixesAsync(Document document, ImmutableArray<PostFixAction> postFixActions, CancellationToken cancellationToken)
+    {
+        if (!postFixActions.IsDefaultOrEmpty)
+        {
+            for (var i = 0; i < postFixActions.Length; i++)
+            {
+                document = await postFixActions[i](document, cancellationToken).ConfigureAwait(false);
+            }
+        }
+        return document;
+    }
+
     extension<T>(T expressionSyntax) where T : SyntaxNode
     {
         public T Formatted => expressionSyntax.WithAdditionalAnnotations(Simplifier.Annotation, Simplifier.AddImportsAnnotation, Formatter.Annotation);
@@ -26,11 +44,6 @@ internal static class Helpers
         public async Task<CompilationUnitSyntax> GetRootAsync(CancellationToken cancellationToken = default)
             => (CompilationUnitSyntax)await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
     }
-    extension<T>(T del) where T : Delegate
-    {
-        public T[] InvocationList => Unsafe.As<T[]>(del.GetInvocationList());
-    }
-
     private static readonly ValueTask _completedTask = new ValueTask(Task.CompletedTask);
     extension(ValueTask)
     {

@@ -862,7 +862,7 @@
         </member>
         <member name="T:LaquaiLib.Collections.Enumeration.SpanSplitByStringsEnumerable">
             <summary>
-            Implements the enumerator pattern to enumerate the segments in a source <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>s that are separated by any of the <see langword="string"/>s specified by <paramref name="strings"/>.
+            Implements the enumerator pattern to enumerate the segments in a source <see cref="T:System.ReadOnlySpan`1"/> of <see langword="char"/>s that are separated by any of the specified <see langword="string"/>s.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.SpanSplitByStringsEnumerable.#ctor(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison,System.StringSplitOptions)">
@@ -8046,14 +8046,11 @@
         <member name="M:LaquaiLib.Extensions.StreamExtensions.AsMemory(System.IO.MemoryStream,System.Int32,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsMemory(System.Int32,System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.StreamExtensions.Duplicate(System.IO.MemoryStream)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.Duplicate"/>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.Duplicate(System.IO.MemoryStream,System.Boolean,System.Boolean)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.Duplicate(System.Boolean,System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.CopyBlock(System.IO.MemoryStream,System.Int32,System.Int32,System.Span{System.Byte})">
             <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.CopyBlock(System.Int32,System.Int32,System.Span{System.Byte})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StreamExtensions.CopyBlock(System.IO.MemoryStream,System.Int32,System.Int32,System.Span{System.Byte},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.CopyBlock(System.Int32,System.Int32,System.Span{System.Byte},System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$50F26341F4F164F9281EDEBBEB746904.ReadToEnd">
             <summary>
@@ -8063,8 +8060,8 @@
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$50F26341F4F164F9281EDEBBEB746904.ToArray">
             <summary>
-            Reads the entire contents of the <paramref name="stream"/> into a <see langword="byte"/> array, regardless of current position.
-            The <paramref name="stream"/> remains sought to its end.
+            Reads the entire contents of the <see cref="T:System.IO.Stream"/> into a <see langword="byte"/> array, regardless of current position.
+            The <see cref="T:System.IO.Stream"/> remains sought to its end.
             </summary>
             <returns>The created <see langword="byte"/> array.</returns>
         </member>
@@ -8199,13 +8196,13 @@
             Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Memory`1"/> is in use.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.Duplicate">
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.Duplicate(System.Boolean,System.Boolean)">
             <summary>
             Creates and returns an exact copy of this <see cref="T:System.IO.MemoryStream"/>; its backing store references the same byte array as the original stream.
             It is, of course, capable of maintaining its own position and length within that array.
             Concurrent reads on the two streams are safe, but writing should be synchronized if it cannot be guaranteed that the segments being written do not overlap.
             Using a <see cref="T:System.Threading.ReaderWriterLockSlim"/> to manage this is recommended if writing is necessary.
-            <para/>Note that the two streams will lose synchronization if write operations cause the backing array to be resized.
+            <para/>Note that the two streams will lose synchronization if write operations cause the backing array to be resized. Specify <paramref name="writable"/> as <see langword="false"/> to prevent this.
             </summary>
             <returns>A new <see cref="T:System.IO.MemoryStream"/> as described.</returns>
         </member>
@@ -8217,17 +8214,6 @@
             <param name="length">The number of bytes to read.</param>
             <param name="destination">The <see cref="T:System.Span`1"/> to write the data to.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="position"/> is less than zero or <paramref name="position"/> + <paramref name="length"/> is greater than the length of the stream.</exception>
-        </member>
-        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.CopyBlock(System.Int32,System.Int32,System.Span{System.Byte},System.Int32)">
-            <summary>
-            Reads a block of bytes from the current stream and writes the data to a given span.
-            </summary>
-            <param name="position">The byte offset in the stream at which to begin reading.</param>
-            <param name="length">The number of bytes to read.</param>
-            <param name="destination">The <see cref="T:System.Span`1"/> to write the data to.</param>
-            <param name="destPosition">The byte offset in the destination span at which to begin writing.</param>
-            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="position"/> is less than zero or <paramref name="position"/> + <paramref name="length"/> is greater than the length of the stream.</exception>
-            <exception cref="T:System.ArgumentException">Thrown if the destination span is too short to contain the requested number of bytes.</exception>
         </member>
         <member name="T:LaquaiLib.Extensions.StringExtensions">
             <summary>
@@ -9862,6 +9848,16 @@
             </summary>
         </member>
         <member name="P:LaquaiLib.IO.ResumableDirectoryIO.ResumableDirectoryCopySerializerContext.String">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.ResumableDirectoryIO.ResumableDirectoryCopySerializerContext.UInt64">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.ResumableDirectoryIO.ResumableDirectoryCopySerializerContext.NullableUInt64">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -11710,7 +11706,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ArrayHelper.SortDescending(System.Array,System.Func{System.Object,System.Object},System.Array[])">
             <summary>
-            According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the default comparer for <typeparamref name="TCompare"/> in ascending order.
+            According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of arrays using the default comparer for the key type in descending order.
             </summary>
             <param name="keys">The array of keys to sort by.</param>
             <param name="selector">The function to produce the keys to sort by.</param>
@@ -11718,7 +11714,7 @@
         </member>
         <member name="M:LaquaiLib.Util.ArrayHelper.SortDescending(System.Array,System.Func{System.Object,System.Object},System.Collections.IComparer,System.Array[])">
             <summary>
-            According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/> in ascending order.
+            According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of arrays using the specified <paramref name="comparer"/> in descending order.
             </summary>
             <param name="keys">The array of keys to sort by.</param>
             <param name="selector">The function to produce the keys to sort by.</param>
@@ -16374,17 +16370,17 @@
         </member>
         <member name="T:LaquaiLib.Threading.SynchronizationContextAwaitable">
             <summary>
-            Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <paramref name="synchronizationContext"/>.
+            Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <see cref="T:System.Threading.SynchronizationContext"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.SynchronizationContextAwaitable.#ctor(System.Threading.SynchronizationContext)">
             <summary>
-            Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <paramref name="synchronizationContext"/>.
+            Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <see cref="T:System.Threading.SynchronizationContext"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.SynchronizationContextAwaitable.GetAwaiter">
             <summary>
-            Gets a <see cref="T:LaquaiLib.Threading.SynchronizationContextAwaiter"/> instance that resumes the <see langword="await"/>'s continuation on the specified <paramref name="synchronizationContext"/>.
+            Gets a <see cref="T:LaquaiLib.Threading.SynchronizationContextAwaiter"/> instance that resumes the <see langword="await"/>'s continuation on the specified <see cref="T:System.Threading.SynchronizationContext"/>.
             </summary>
         </member>
         <member name="T:LaquaiLib.Threading.SynchronizationContextAwaiter">
@@ -16399,7 +16395,7 @@
         </member>
         <member name="P:LaquaiLib.Threading.SynchronizationContextAwaiter.IsCompleted">
             <summary>
-            Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <paramref name="synchronizationContext"/>.
+            Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <see cref="T:System.Threading.SynchronizationContext"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.SynchronizationContextAwaiter.OnCompleted(System.Action)">
@@ -16407,7 +16403,7 @@
         </member>
         <member name="M:LaquaiLib.Threading.SynchronizationContextAwaiter.UnsafeOnCompleted(System.Action)">
             <summary>
-            Posts the specified <paramref name="continuation"/> to the specified <paramref name="synchronizationContext"/>.
+            Posts the specified <paramref name="continuation"/> to the specified <see cref="T:System.Threading.SynchronizationContext"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.SynchronizationContextAwaiter.GetResult">
@@ -16417,17 +16413,17 @@
         </member>
         <member name="T:LaquaiLib.Threading.TaskSchedulerAwaitable">
             <summary>
-            Implements an awaitable object that causes <see langword="await"/> continuations to be started as <see cref="T:System.Threading.Tasks.Task"/>s scheduled using the specified <paramref name="taskScheduler"/>.
+            Implements an awaitable object that causes <see langword="await"/> continuations to be started as <see cref="T:System.Threading.Tasks.Task"/>s scheduled using the specified <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.TaskSchedulerAwaitable.#ctor(System.Threading.Tasks.TaskScheduler)">
             <summary>
-            Implements an awaitable object that causes <see langword="await"/> continuations to be started as <see cref="T:System.Threading.Tasks.Task"/>s scheduled using the specified <paramref name="taskScheduler"/>.
+            Implements an awaitable object that causes <see langword="await"/> continuations to be started as <see cref="T:System.Threading.Tasks.Task"/>s scheduled using the specified <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.TaskSchedulerAwaitable.GetAwaiter">
             <summary>
-            Gets a <see cref="T:LaquaiLib.Threading.TaskSchedulerAwaiter"/> instance that schedule's the <see langword="await"/>'s continuation using the specified <paramref name="taskScheduler"/>.
+            Gets a <see cref="T:LaquaiLib.Threading.TaskSchedulerAwaiter"/> instance that schedule's the <see langword="await"/>'s continuation using the specified <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
             </summary>
         </member>
         <member name="T:LaquaiLib.Threading.TaskSchedulerAwaiter">
@@ -16442,7 +16438,7 @@
         </member>
         <member name="P:LaquaiLib.Threading.TaskSchedulerAwaiter.IsCompleted">
             <summary>
-            Gets whether the <see cref="T:System.Threading.Tasks.TaskScheduler"/> that scheduled the <see cref="T:System.Threading.Tasks.Task"/> <see langword="await"/>ing this instance is the same as the specified <paramref name="taskScheduler"/>.
+            Gets whether the <see cref="T:System.Threading.Tasks.TaskScheduler"/> that scheduled the <see cref="T:System.Threading.Tasks.Task"/> <see langword="await"/>ing this instance is the same as the specified <see cref="T:System.Threading.Tasks.TaskScheduler"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.TaskSchedulerAwaiter.OnCompleted(System.Action)">
@@ -16450,7 +16446,7 @@
         </member>
         <member name="M:LaquaiLib.Threading.TaskSchedulerAwaiter.UnsafeOnCompleted(System.Action)">
             <summary>
-            Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <paramref name="synchronizationContext"/>.
+            Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <see cref="T:System.Threading.SynchronizationContext"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.TaskSchedulerAwaiter.GetResult">

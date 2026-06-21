@@ -5,20 +5,30 @@ namespace LaquaiLib.Analyzers.Fixes.Performance;
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(AvoidCastAfterCloneAnalyzerFix)), Shared]
 public class AvoidCastAfterCloneAnalyzerFix() : LaquaiLibNodeFixer("LAQ0002")
 {
-    public override FixInfo GetFixInfo(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, Diagnostic diagnostic)
+    public override ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, Diagnostic diagnostic)
+    {
+        var (flowControl, value) = AddForSyntaxNode(compilationUnitSyntax, syntaxNode);
+        if (!flowControl)
+            return [value];
+
+        return [];
+    }
+
+    internal static (bool flowControl, CodeActionInfo value) AddForSyntaxNode(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode)
     {
         if (syntaxNode is CastExpressionSyntax castExpression)
         {
-            return new FixInfo("Use Unsafe.As", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "UseUnsafeAs_CastExpressionSyntax");
+            return (flowControl: false, value: new CodeActionInfo("Use Unsafe.As", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "UseUnsafeAs_CastExpressionSyntax", WellKnownPostFixActions.AddUsings("System.Runtime.CompilerServices")));
         }
         else if (syntaxNode is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression))
         {
-            return new FixInfo("Use Unsafe.As", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "UseUnsafeAs_AsExpression");
+            return (flowControl: false, value: new CodeActionInfo("Use Unsafe.As", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "UseUnsafeAs_AsExpression", WellKnownPostFixActions.AddUsings("System.Runtime.CompilerServices")));
         }
 
-        return FixInfo.Empty;
+        return (flowControl: true, value: default);
     }
-    private ValueTask ReplaceWithUnsafeAsAsync(CompilationUnitSyntax compilationUnitSyntax, DocumentEditor documentEditor, SyntaxNode expression)
+
+    internal static ValueTask ReplaceWithUnsafeAsAsync(CompilationUnitSyntax compilationUnitSyntax, DocumentEditor documentEditor, SyntaxNode expression)
     {
         ExpressionSyntax replaceTarget = null;
         TypeSyntax targetType = null;
@@ -37,15 +47,13 @@ public class AvoidCastAfterCloneAnalyzerFix() : LaquaiLibNodeFixer("LAQ0002")
         if (replaceTarget is not null && targetType is not null)
         {
             var genericNameSyntax = SyntaxFactory.GenericName(SyntaxFactory.Identifier("As"), SyntaxFactory.TypeArgumentList(SyntaxFactory.SingletonSeparatedList(targetType)));
-            var unsafeType = SyntaxFactory.ParseName("System.Runtime.CompilerServices.Unsafe").WithAdditionalAnnotations(Simplifier.Annotation);
+            var unsafeType = SyntaxFactory.ParseName("Unsafe").WithAdditionalAnnotations(Simplifier.Annotation);
             var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, unsafeType, genericNameSyntax);
             var argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Argument(replaceTarget)));
             var newExpression = SyntaxFactory.InvocationExpression(memberAccess, argumentList).WithAdditionalAnnotations(Formatter.Annotation);
 
             documentEditor.ReplaceNode(expression, newExpression.WithAdditionalAnnotations(Formatter.Annotation, Simplifier.Annotation));
         }
-
-        PostFixAction += d => WellKnownPostFixActions.AddUsingsIfNotExist(d, "System.Runtime.CompilerServices");
 
         return ValueTask.CompletedTask;
     }

@@ -6,21 +6,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.3.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.0.0" PrivateAssets="all" />
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <ProjectReference Include="..\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" />
 
     <Using Include="System.Composition" />
     <Using Include="Microsoft.CodeAnalysis.CodeActions" />
     <Using Include="Microsoft.CodeAnalysis.CodeFixes" />
     <Using Include="Microsoft.CodeAnalysis.Simplification" />
     <Using Include="Microsoft.CodeAnalysis.Formatting" />
-  </ItemGroup>
+    <Using Include="Microsoft.CodeAnalysis.CodeRefactorings" />
+    <Using Include="Microsoft.CodeAnalysis.Operations" />
 
-  <ItemGroup>
-    <Folder Include="Refactorings\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
+    <Using Include="LaquaiLib.Analyzers.Shared" />
   </ItemGroup>
 
 </Project>

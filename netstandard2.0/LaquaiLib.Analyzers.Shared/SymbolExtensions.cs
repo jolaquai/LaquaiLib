@@ -1,7 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Operations;
-
-namespace LaquaiLib.Analyzers.Shared;
+﻿namespace LaquaiLib.Analyzers.Shared;
 
 public static class SymbolExtensions
 {
@@ -51,6 +48,25 @@ public static class SymbolExtensions
 
                 return type;
             }
+        }
+
+        public bool IsAssignableTo(ITypeSymbol other)
+        {
+            if (other is null)
+                return false;
+            if (SymbolEqualityComparer.Default.Equals(typeSymbol, other))
+                return true;
+            foreach (var iface in typeSymbol.Interfaces)
+                if (iface.IsAssignableTo(other))
+                    return true;
+            var baseTypeSymbol = other.BaseType;
+            while (baseTypeSymbol is not null)
+            {
+                if (SymbolEqualityComparer.Default.Equals(typeSymbol, baseTypeSymbol))
+                    return true;
+                baseTypeSymbol = baseTypeSymbol.BaseType;
+            }
+            return false;
         }
     }
     extension(IParameterSymbol parameterSymbol)

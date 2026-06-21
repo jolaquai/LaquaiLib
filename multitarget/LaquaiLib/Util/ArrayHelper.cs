@@ -29,7 +29,7 @@ public static class ArrayHelper
         return true;
     }
 
-    private static void SortGenericImpl<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, TValue[][] itemsArrays, delegate*<int[], TKey[], bool> inBetween)
+    private static unsafe void SortGenericImpl<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, TValue[][] itemsArrays, delegate*<int[], TKey[], bool> inBetween)
     {
         comparer ??= Comparer<TKey>.Default;
 
@@ -61,7 +61,7 @@ public static class ArrayHelper
             }
         }
     }
-    private static void SortNonGenericImpl(Array keys, IComparer comparer, Array[] itemsArrays, delegate*<int[], Array, bool> inBetween)
+    private static unsafe void SortNonGenericImpl(Array keys, IComparer comparer, Array[] itemsArrays, delegate*<int[], Array, bool> inBetween)
     {
         comparer ??= Comparer.Default;
 
@@ -145,6 +145,7 @@ public static class ArrayHelper
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Sort<TKey, TValue>(TKey[] keys, params TValue[][] itemsArrays) => Sort<TKey, TValue>(keys, null, itemsArrays);
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/> in ascending order.
@@ -152,7 +153,15 @@ public static class ArrayHelper
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="comparer">The comparer to use for sorting the keys.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
-    public static void Sort<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays) => SortGenericImpl(keys, comparer, itemsArrays, null);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Sort<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays)
+    {
+        unsafe
+        {
+            SortGenericImpl(keys, comparer, itemsArrays, null);
+        }
+    }
+
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the default comparer for <typeparamref name="TCompare"/> in ascending order.
     /// </summary>
@@ -162,6 +171,7 @@ public static class ArrayHelper
     /// <param name="items">The array of keys to sort by.</param>
     /// <param name="selector">The function to produce the keys to sort by.</param>
     /// <param name="itemsArray">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Sort<TKey, TCompare, TValue>(TKey[] items, Func<TKey, TCompare> selector, params TValue[][] itemsArray) => Sort<TKey, TCompare, TValue>(items, selector, null, itemsArray);
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/> in ascending order.
@@ -190,6 +200,7 @@ public static class ArrayHelper
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SortDescending<TKey, TValue>(TKey[] keys, params TValue[][] itemsArrays) => SortDescending<TKey, TValue>(keys, null, itemsArrays);
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/> in descending order.
@@ -197,7 +208,13 @@ public static class ArrayHelper
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="comparer">The comparer to use for sorting the keys.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
-    public static void SortDescending<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays) => SortGenericImpl(keys, comparer, itemsArrays, &Reverse);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SortDescending<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays)
+    {
+        unsafe
+        { SortGenericImpl(keys, comparer, itemsArrays, &Reverse); }
+    }
+
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the default comparer for <typeparamref name="TCompare"/> in descending order.
     /// </summary>
@@ -207,6 +224,7 @@ public static class ArrayHelper
     /// <param name="items">The array of keys to sort by.</param>
     /// <param name="selector">The function to produce the keys to sort by.</param>
     /// <param name="itemsArray">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SortDescending<TKey, TCompare, TValue>(TKey[] items, Func<TKey, TCompare> selector, params TValue[][] itemsArray) => SortDescending<TKey, TCompare, TValue>(items, selector, null, itemsArray);
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/> in descending order.
@@ -237,6 +255,7 @@ public static class ArrayHelper
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Sort(Array keys, params Array[] itemsArrays) => Sort(keys, (IComparer)null, itemsArrays);
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of items arrays with unspecified types using the specified <paramref name="comparer"/>.
@@ -244,13 +263,19 @@ public static class ArrayHelper
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="comparer">The comparer to use for sorting the keys.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
-    public static void Sort(Array keys, IComparer comparer, params Array[] itemsArrays) => SortNonGenericImpl(keys, comparer, itemsArrays, null);
+    public static void Sort(Array keys, IComparer comparer, params Array[] itemsArrays)
+    {
+        unsafe
+        { SortNonGenericImpl(keys, comparer, itemsArrays, null); }
+    }
+
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the default comparer for <typeparamref name="TCompare"/> in ascending order.
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="selector">The function to produce the keys to sort by.</param>
     /// <param name="itemsArray">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Sort(Array keys, Func<object, object> selector, params Array[] itemsArray) => Sort(keys, selector, null, itemsArray);
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/> in ascending order.
@@ -278,6 +303,7 @@ public static class ArrayHelper
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SortDescending(Array keys, params Array[] itemsArrays) => SortDescending(keys, (IComparer)null, itemsArrays);
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of items arrays with unspecified types using the specified <paramref name="comparer"/>.
@@ -285,13 +311,19 @@ public static class ArrayHelper
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="comparer">The comparer to use for sorting the keys.</param>
     /// <param name="itemsArrays">The arrays of items to sort.</param>
-    public static void SortDescending(Array keys, IComparer comparer, params Array[] itemsArrays) => SortNonGenericImpl(keys, comparer, itemsArrays, &Reverse);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void SortDescending(Array keys, IComparer comparer, params Array[] itemsArrays)
+    {
+        unsafe { SortNonGenericImpl(keys, comparer, itemsArrays, &Reverse); }
+    }
+
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of arrays using the default comparer for the key type in descending order.
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="selector">The function to produce the keys to sort by.</param>
     /// <param name="itemsArray">The arrays of items to sort.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SortDescending(Array keys, Func<object, object> selector, params Array[] itemsArray) => SortDescending(keys, selector, null, itemsArray);
     /// <summary>
     /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of arrays using the specified <paramref name="comparer"/> in descending order.

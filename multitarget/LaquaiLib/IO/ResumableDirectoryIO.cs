@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.IO.Hashing;
+using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 
 using LaquaiLib.Extensions;
@@ -25,13 +26,14 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
         public string RelativePath { get; set; }
         public long BytesCopied { get; set; }
         public long TotalBytes { get; set; }
-        public string FileHash { get; set; }
+        public ulong? FileHash { get; set; }
     }
     [JsonSerializable(typeof(FileCopyState))]
     [JsonSerializable(typeof(DirectoryCopyState))]
     private partial class ResumableDirectoryCopySerializerContext : JsonSerializerContext;
 
     private const int BufferSize = 1 << 17;
+    private const int StackallocByteBufferSize = 2048;
     private readonly string _stateFilePath = stateFilePath ?? AppState.AppData.File(nameof(ResumableDirectoryIO), Guid.NewGuid().ToString()).FullName;
     private volatile int running;
     private CancellationTokenSource cts;
@@ -304,10 +306,10 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             }
 
             // Verify file hash if requested
-            if (verifyFiles && !string.IsNullOrEmpty(fileState.FileHash))
+            if (verifyFiles && fileState.FileHash.HasValue)
             {
                 var hash = await ComputeFileHashAsync(destFilePath, cancellationToken).ConfigureAwait(false);
-                if (hash != fileState.FileHash)
+                if (hash != fileState.FileHash.Value)
                 {
                     throw new IOException($"File verification failed: Hash mismatch for '{destFilePath}'.");
                 }
@@ -370,11 +372,19 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             copyState.PendingFiles.Add(fileState);
         }
     }
-    private static async Task<string> ComputeFileHashAsync(string filePath, CancellationToken cancellationToken)
+
+    private static XxHash3 _hashCache = new XxHash3();
+    private static async Task<ulong> ComputeFileHashAsync(string filePath, CancellationToken cancellationToken)
     {
+        var hasher = Interlocked.Exchange(ref _hashCache, null);
+        hasher ??= new XxHash3();
+
         using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize, true);
-        var hashBytes = await SHA256.HashDataAsync(stream, cancellationToken).ConfigureAwait(false);
-        return Convert.ToHexStringLower(hashBytes);
+        await hasher.AppendAsync(stream, cancellationToken).ConfigureAwait(false);
+        var hash = hasher.GetCurrentHashAsUInt64();
+        hasher.Reset();
+        Interlocked.Exchange(ref _hashCache, hasher);
+        return hash;
     }
     private static DirectoryCopyState CreateNewCopyState(string sourcePath, string destinationPath) => new DirectoryCopyState
     {

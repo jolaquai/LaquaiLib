@@ -24,25 +24,20 @@ public static partial class StringExtensions
         /// <returns>A string consisting of <paramref name="source"/> repeated <paramref name="count"/> times.</returns>
         public string Repeat(int count)
         {
-            var srcSpan = source.AsSpan();
-            var length = srcSpan.Length * count;
-
-            if (count < 3000)
+            return string.Create(count * source.Length, source, static (span, src) =>
             {
-                // Benchmarking showed that Enumerable-based repetition is actually faster when the count is "relatively" low
-                return string.Concat(Enumerable.Repeat(source, count));
-            }
-
-            // However, Span-based repetition scales a LOT better for larger counts
-            var arr = ArrayPool<char>.Shared.Rent(length);
-            var newStr = arr.AsSpan(0, length);
-            for (var i = 0; i < count; i++)
-            {
-                srcSpan.CopyTo(newStr[(i * srcSpan.Length)..]);
-            }
-            var str = newStr.ToString();
-            ArrayPool<char>.Shared.Return(arr);
-            return str;
+                src.AsSpan().CopyTo(span);
+                var filled = src.Length;
+                // Every iteration here is a full doubling - no Math.Min needed
+                while (filled <= span.Length >> 1)
+                {
+                    span[..filled].CopyTo(span[filled..]);
+                    filled <<= 1;
+                }
+                // Single remainder copy, no conditional in the hot path
+                if (filled < span.Length)
+                    span[..(span.Length - filled)].CopyTo(span[filled..]);
+            });
         }
 
         /// <summary>

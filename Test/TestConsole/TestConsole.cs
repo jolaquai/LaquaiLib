@@ -26,6 +26,7 @@ public static partial class TestConsole
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatExpr(object obj, string expr) => $"{expr}: {FormatSingleObj(obj)}";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatExpr<T>(IEnumerable<T> obj, string expr) => $"{expr}: {FormatEnumerable(obj)}";
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatSingleObj<T>(T obj) => $"({typeof(T).GetFriendlyName(false)}){obj}";
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatSingleObj<T>(IEnumerable<T> obj) => $"({typeof(T).GetFriendlyName(false)}){FormatEnumerable(obj)}";
 
@@ -36,17 +37,11 @@ public static partial class TestConsole
         return $"({typeofParameter.GetFriendlyName(false)})[{string.Join(", ", enumerable)}]";
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void PrintExpr(this object obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine(FormatExpr(obj, expr));
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static void cw<T>(this T obj) => Console.WriteLine(FormatSingleObj(obj));
+    private static void cw(this object obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine(FormatExpr(obj, expr));
+    private static void cw<T>(this IEnumerable<T> obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine(FormatExpr(obj, expr));
 
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
-        int[] arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        var wrapper = arr.WrapAsQueue(5, 2);
-        wrapper.Dequeue().cw();
-        wrapper.Dequeue().cw();
-        wrapper.Dequeue().cw();
-        cw(wrapper);
     }
 
     private static void PrintCpuVectorCapabilities()

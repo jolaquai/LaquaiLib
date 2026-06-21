@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
+using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 
@@ -18,29 +17,27 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
         var compilationUnitSyntax = await document.GetRootAsync(context.CancellationToken).ConfigureAwait(false);
 
         var diagnostics = context.Diagnostics;
-        for (var i = 0; i < context.Diagnostics.Length; i++)
+        for (var i = 0; i < diagnostics.Length; i++)
         {
             var diagnostic = diagnostics[i];
-            var fixInfo = GetFixInfo(compilationUnitSyntax, diagnostic);
-            if (!fixInfo.HasFix)
+            var infos = await GetCodeActionInfosAsync(document, compilationUnitSyntax, diagnostic, context.CancellationToken).ConfigureAwait(false);
+            for (var j = 0; j < infos.Length; j++)
             {
-                continue;
+                var (title, key, action) = infos[j];
+                var postFixActions = infos[j].PostFixActions;
+
+                context.RegisterCodeFix(CodeAction.Create(
+                    title: title,
+                    createChangedDocument: async c =>
+                    {
+                        var editor = await DocumentEditor.CreateAsync(document, c).ConfigureAwait(false);
+                        await action(editor).ConfigureAwait(false);
+                        var changed = editor.GetChangedDocument();
+                        return await Helpers.ApplyPostFixesAsync(changed, postFixActions, c).ConfigureAwait(false);
+                    },
+                    equivalenceKey: $"{Prefix}_{key}"
+                ), diagnostic);
             }
-
-            var (title, key, fixAction) = fixInfo;
-
-            context.RegisterCodeFix(CodeAction.Create(
-                title: title,
-                createChangedDocument: async c =>
-                {
-                    var editor = await DocumentEditor.CreateAsync(document, c).ConfigureAwait(false);
-                    await fixAction(editor).ConfigureAwait(false);
-                    var changed = editor.GetChangedDocument();
-                    changed = await ExecutePostFixes(changed).ConfigureAwait(false);
-                    return changed;
-                },
-                equivalenceKey: $"{Prefix}_{key}"
-            ), diagnostic);
         }
     }
 
@@ -58,70 +55,93 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
         var root = await document.GetRootAsync(fixAllContext.CancellationToken).ConfigureAwait(false);
         var editor = await DocumentEditor.CreateAsync(document, fixAllContext.CancellationToken).ConfigureAwait(false);
 
+        List<PostFixAction> postFixes = null;
         for (var i = 0; i < diagnostics.Length; i++)
         {
             var diagnostic = diagnostics[i];
-            var fixInfo = GetFixInfo(root, diagnostic);
-            if (!fixInfo.HasFix)
+            var infos = await GetCodeActionInfosAsync(document, root, diagnostic, fixAllContext.CancellationToken).ConfigureAwait(false);
+            for (var j = 0; j < infos.Length; j++)
             {
-                continue;
+                var info = infos[j];
+                // A diagnostic may offer several alternative actions; apply only the one the user invoked the fix-all from.
+                if ($"{Prefix}_{info.EquivalenceKey}" != fixAllContext.CodeActionEquivalenceKey)
+                {
+                    continue;
+                }
+                await info.Action(editor).ConfigureAwait(false);
+                if (!info.PostFixActions.IsDefaultOrEmpty)
+                {
+                    (postFixes ??= []).AddRange(info.PostFixActions);
+                }
             }
-            var (title, key, fixAction) = fixInfo;
-            await fixAction(editor).ConfigureAwait(false);
         }
 
         var changed = editor.GetChangedDocument();
-        changed = await ExecutePostFixes(changed).ConfigureAwait(false);
-
-        return changed;
-    }
-
-    private async Task<Document> ExecutePostFixes(Document changed)
-    {
-        if (PostFixAction?.InvocationList is var postFixes and not null)
+        if (postFixes is not null)
         {
-            for (var i = 0; i < postFixes.Length; i++)
+            for (var i = 0; i < postFixes.Count; i++)
             {
-                var func = postFixes[i];
-                changed = await func(changed).ConfigureAwait(false);
-                PostFixAction -= func;
+                changed = await postFixes[i](changed, fixAllContext.CancellationToken).ConfigureAwait(false);
             }
         }
-        PostFixAction = null;
 
         return changed;
     }
 
     /// <summary>
-    /// When overridden in a derived class, provides the fix information for a specific <see cref="Diagnostic"/>.
-    /// When using a more derived base class than <see cref="LaquaiLibFixer"/> itself, override that class's <c>GetFixInfo</c> instead.
-    /// Returned <see cref="FixInfo.FixAction"/> must not replace the root node of the <see cref="DocumentEditor"/> they are passed (which is the <paramref name="compilationUnitSyntax"/> passed here). If that is required, use <see cref="PostFixAction"/> instead.
+    /// When overridden in a derived class, provides zero or more fixes for a specific <see cref="Diagnostic"/>.
+    /// Most fixers should derive from <see cref="LaquaiLibTokenFixer"/>, <see cref="LaquaiLibNodeFixer"/> or <see cref="LaquaiLibOperationFixer"/> and override that class's <c>GetCodeActionInfos</c> instead of this method directly.
+    /// Returned <see cref="CodeActionInfo.Action"/>s must not replace the root node of the <see cref="DocumentEditor"/> they are passed (which edits the <paramref name="compilationUnitSyntax"/> passed here). If that is required, declare the operation as a <see cref="CodeActionInfo.PostFixActions"/> instead.
     /// </summary>
+    /// <param name="document">The <see cref="Document"/> being fixed.</param>
     /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
     /// <param name="diagnostic">The <see cref="Diagnostic"/> to fix.</param>
-    /// <returns>A <see cref="FixInfo"/> containing the fix information.</returns>
-    public abstract FixInfo GetFixInfo(CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic);
-    /// <summary>
-    /// Encapsulates methods to call after the fix has been applied (or all fixes if called from the context of the fix-all provider).
-    /// Can be used to perform additional actions on the <see cref="Document"/>, for example, if they are incompatible with the <see cref="DocumentEditor"/>.
-    /// They are invoked in order of registration and awaited individually. Their changes are introduced sequentially, each invocation <see langword="await"/>ed and passed the result of the previous invocation (if there are multiple).
-    /// </summary>
-    public event Func<Document, ValueTask<Document>> PostFixAction;
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe.</param>
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances. Return an empty array to offer no fix.</returns>
+    public abstract ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic, CancellationToken cancellationToken);
+}
 
-    /// <summary>
-    /// Contains cached delegates for common actions intended to be wrapped for use in <see cref="PostFixAction"/>.
-    /// </summary>
-    public static class WellKnownPostFixActions
+public abstract class LaquaiLibRefactoring : CodeRefactoringProvider
+{
+    #region override
+    public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
     {
-        public static async ValueTask<Document> AddUsingsIfNotExist(Document document, params string[] usings)
+        var document = context.Document;
+        var compilationUnitSyntax = await document.GetRootAsync(context.CancellationToken).ConfigureAwait(false);
+
+        var infos = await GetCodeActionInfosAsync(document, compilationUnitSyntax, context.Span, context.CancellationToken).ConfigureAwait(false);
+        for (var i = 0; i < infos.Length; i++)
         {
-            var compilationUnitSyntax = await document.Root.ConfigureAwait(false);
-            var newUsings = new HashSet<string>(usings);
-            newUsings.ExceptWith(compilationUnitSyntax.Usings.Select(static u => u.Name.ToString()));
-            var filtered = newUsings.Select(u => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(u))).ToArray();
-            return document.WithSyntaxRoot(filtered.Length == 0 ? compilationUnitSyntax : compilationUnitSyntax.AddUsings(filtered));
+            var (title, key, action) = infos[i];
+            var postFixActions = infos[i].PostFixActions;
+            context.RegisterRefactoring(CodeAction.Create(
+                title: title,
+                createChangedDocument: async c =>
+                {
+                    var editor = await DocumentEditor.CreateAsync(document, c).ConfigureAwait(false);
+                    await action(editor).ConfigureAwait(false);
+                    var changed = editor.GetChangedDocument();
+                    return await Helpers.ApplyPostFixesAsync(changed, postFixActions, c).ConfigureAwait(false);
+                },
+                equivalenceKey: $"{Prefix}_{key}"
+            ));
         }
     }
+    #endregion
+
+    private string Prefix => field ??= GetType().FullName;
+
+    /// <summary>
+    /// When overridden in a derived class, provides zero or more refactorings for the current selection span.
+    /// Most refactorings should derive from <see cref="LaquaiLibTokenRefactoring"/>, <see cref="LaquaiLibNodeRefactoring"/> or <see cref="LaquaiLibOperationRefactoring"/> and override that class's <c>GetCodeActionInfos</c> instead of this method directly.
+    /// Returned <see cref="CodeActionInfo.Action"/>s must not replace the root node of the <see cref="DocumentEditor"/>. If that is required, declare the operation as a <see cref="CodeActionInfo.PostFixActions"/> instead.
+    /// </summary>
+    /// <param name="document">The <see cref="Document"/> being refactored.</param>
+    /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
+    /// <param name="span">The <see cref="TextSpan"/> of the current selection.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe.</param>
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances. Return an empty array to offer no refactoring.</returns>
+    public abstract ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken);
 }
 
 /// <summary>
@@ -131,18 +151,18 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
 public abstract class LaquaiLibTokenFixer(params ImmutableArray<string> fixableDiagnosticIds) : LaquaiLibFixer(fixableDiagnosticIds)
 {
     /// <summary>
-    /// When overridden in a derived class, provides the fix information for a specific <see cref="Diagnostic"/>.
+    /// When overridden in a derived class, provides zero or more fixes for a specific <see cref="Diagnostic"/>.
     /// </summary>
     /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
     /// <param name="syntaxToken">The <see cref="SyntaxToken"/> on which <paramref name="diagnostic"/> was reported.</param>
     /// <param name="diagnostic">The <see cref="Diagnostic"/> to fix.</param>
-    /// <returns>A <see cref="FixInfo"/> containing the fix information.</returns>
-    public abstract FixInfo GetFixInfo(CompilationUnitSyntax compilationUnitSyntax, SyntaxToken syntaxToken, Diagnostic diagnostic);
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances.</returns>
+    public abstract ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxToken syntaxToken, Diagnostic diagnostic);
     /// <summary>
-    /// Do not use. Override <see cref="GetFixInfo(CompilationUnitSyntax, SyntaxToken, Diagnostic)"/> instead.
+    /// Do not use. Override <see cref="GetCodeActionInfos(CompilationUnitSyntax, SyntaxToken, Diagnostic)"/> instead.
     /// </summary>
-    public sealed override FixInfo GetFixInfo(CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic)
-        => GetFixInfo(compilationUnitSyntax, compilationUnitSyntax.FindToken(diagnostic.Location.SourceSpan.Start), diagnostic);
+    public sealed override ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic, CancellationToken cancellationToken)
+        => new(GetCodeActionInfos(compilationUnitSyntax, compilationUnitSyntax.FindToken(diagnostic.Location.SourceSpan.Start), diagnostic));
 }
 /// <summary>
 /// Provides a base class for code fix providers for analyzers that report diagnostics on <see cref="SyntaxNode"/>s.
@@ -151,53 +171,125 @@ public abstract class LaquaiLibTokenFixer(params ImmutableArray<string> fixableD
 public abstract class LaquaiLibNodeFixer(params ImmutableArray<string> fixableDiagnosticIds) : LaquaiLibFixer(fixableDiagnosticIds)
 {
     /// <summary>
-    /// When overridden in a derived class, provides the fix information for a specific <see cref="Diagnostic"/>.
+    /// When overridden in a derived class, provides zero or more fixes for a specific <see cref="Diagnostic"/>.
     /// </summary>
     /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
     /// <param name="syntaxNode">The <see cref="SyntaxNode"/> on which <paramref name="diagnostic"/> was reported.</param>
     /// <param name="diagnostic">The <see cref="Diagnostic"/> to fix.</param>
-    /// <returns>A <see cref="FixInfo"/> containing the fix information.</returns>
-    public abstract FixInfo GetFixInfo(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, Diagnostic diagnostic);
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances.</returns>
+    public abstract ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, Diagnostic diagnostic);
     /// <summary>
-    /// Do not use. Override <see cref="GetFixInfo(CompilationUnitSyntax, SyntaxToken, Diagnostic)"/> instead.
+    /// Do not use. Override <see cref="GetCodeActionInfos(CompilationUnitSyntax, SyntaxNode, Diagnostic)"/> instead.
     /// </summary>
-    public sealed override FixInfo GetFixInfo(CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic)
-        => GetFixInfo(compilationUnitSyntax, compilationUnitSyntax.FindNode(diagnostic.Location.SourceSpan), diagnostic);
+    public sealed override ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic, CancellationToken cancellationToken)
+        => new(GetCodeActionInfos(compilationUnitSyntax, compilationUnitSyntax.FindNode(diagnostic.Location.SourceSpan), diagnostic));
+}
+/// <summary>
+/// Provides a base class for code fix providers for analyzers that report diagnostics on nodes that map to an <see cref="IOperation"/>.
+/// </summary>
+/// <param name="fixableDiagnosticIds">An <see cref="ImmutableArray{T}"/> of fixable diagnostic IDs.</param>
+public abstract class LaquaiLibOperationFixer(params ImmutableArray<string> fixableDiagnosticIds) : LaquaiLibFixer(fixableDiagnosticIds)
+{
+    /// <summary>
+    /// When overridden in a derived class, provides zero or more fixes for a specific <see cref="Diagnostic"/>.
+    /// </summary>
+    /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
+    /// <param name="operation">The <see cref="IOperation"/> the diagnostic was reported on, or <see langword="null"/> if the node at the diagnostic location does not map to an operation.</param>
+    /// <param name="diagnostic">The <see cref="Diagnostic"/> to fix.</param>
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances.</returns>
+    public abstract ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, IOperation operation, Diagnostic diagnostic);
+    /// <summary>
+    /// Do not use. Override <see cref="GetCodeActionInfos(CompilationUnitSyntax, IOperation, Diagnostic)"/> instead.
+    /// </summary>
+    public sealed override async ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic, CancellationToken cancellationToken)
+    {
+        var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+        var operation = semanticModel.GetOperation(compilationUnitSyntax.FindNode(diagnostic.Location.SourceSpan), cancellationToken);
+        return GetCodeActionInfos(compilationUnitSyntax, operation, diagnostic);
+    }
 }
 
 /// <summary>
-/// Encapsulates the information required to construct a <see cref="CodeAction"/>.
+/// Provides a base class for refactoring providers that operate on the <see cref="SyntaxToken"/> at the start of the selection span.
 /// </summary>
-public readonly partial struct FixInfo
+public abstract class LaquaiLibTokenRefactoring : LaquaiLibRefactoring
 {
-    private static readonly Regex _keyNormalizationRegex = new Regex(@"[^A-Za-z]", RegexOptions.Compiled);
-
     /// <summary>
-    /// Gets a <see cref="FixInfo"/> with no fix information. Executing it does nothing.
+    /// When overridden in a derived class, provides zero or more refactorings for the <see cref="SyntaxToken"/> at the start of the selection.
     /// </summary>
-    public static FixInfo Empty { get; } = new FixInfo();
+    /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
+    /// <param name="syntaxToken">The <see cref="SyntaxToken"/> at the start of <paramref name="span"/>.</param>
+    /// <param name="span">The <see cref="TextSpan"/> of the current selection.</param>
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances.</returns>
+    public abstract ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxToken syntaxToken, TextSpan span);
+    /// <summary>
+    /// Do not use. Override <see cref="GetCodeActionInfos(CompilationUnitSyntax, SyntaxToken, TextSpan)"/> instead.
+    /// </summary>
+    public sealed override ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken)
+        => new(GetCodeActionInfos(compilationUnitSyntax, compilationUnitSyntax.FindToken(span.Start), span));
+}
+/// <summary>
+/// Provides a base class for refactoring providers that operate on the <see cref="SyntaxNode"/> encompassing the selection span.
+/// </summary>
+public abstract class LaquaiLibNodeRefactoring : LaquaiLibRefactoring
+{
+    /// <summary>
+    /// When overridden in a derived class, provides zero or more refactorings for the <see cref="SyntaxNode"/> encompassing the selection.
+    /// </summary>
+    /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
+    /// <param name="syntaxNode">The <see cref="SyntaxNode"/> encompassing <paramref name="span"/>.</param>
+    /// <param name="span">The <see cref="TextSpan"/> of the current selection.</param>
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances.</returns>
+    public abstract ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, TextSpan span);
+    /// <summary>
+    /// Do not use. Override <see cref="GetCodeActionInfos(CompilationUnitSyntax, SyntaxNode, TextSpan)"/> instead.
+    /// </summary>
+    public sealed override ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken)
+        => new(GetCodeActionInfos(compilationUnitSyntax, compilationUnitSyntax.FindNode(span), span));
+}
+/// <summary>
+/// Provides a base class for refactoring providers that operate on the <see cref="IOperation"/> encompassing the selection span.
+/// </summary>
+public abstract class LaquaiLibOperationRefactoring : LaquaiLibRefactoring
+{
+    /// <summary>
+    /// When overridden in a derived class, provides zero or more refactorings for the <see cref="IOperation"/> encompassing the selection.
+    /// </summary>
+    /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
+    /// <param name="operation">The <see cref="IOperation"/> encompassing <paramref name="span"/>, or <see langword="null"/> if the node encompassing the selection does not map to an operation.</param>
+    /// <param name="span">The <see cref="TextSpan"/> of the current selection.</param>
+    /// <returns>An <see cref="ImmutableArray{T}"/> of <see cref="CodeActionInfo"/> instances.</returns>
+    public abstract ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, IOperation operation, TextSpan span);
+    /// <summary>
+    /// Do not use. Override <see cref="GetCodeActionInfos(CompilationUnitSyntax, IOperation, TextSpan)"/> instead.
+    /// </summary>
+    public sealed override async ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken)
+    {
+        var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+        var operation = semanticModel.GetOperation(compilationUnitSyntax.FindNode(span), cancellationToken);
+        return GetCodeActionInfos(compilationUnitSyntax, operation, span);
+    }
+}
 
-    public FixInfo() : this("", _ => ValueTask.CompletedTask, null, false) { }
-    public FixInfo(string title, Func<DocumentEditor, ValueTask> fixAction, string equivalenceKey = null) : this(title, fixAction, equivalenceKey, true) { }
-    private FixInfo(string title, Func<DocumentEditor, ValueTask> fixAction, string equivalenceKey, bool hasFix)
+/// <summary>
+/// Encapsulates the information required to construct a <see cref="CodeAction"/> for a code fix or refactoring.
+/// </summary>
+public readonly partial struct CodeActionInfo
+{
+    public CodeActionInfo(string title, Func<DocumentEditor, ValueTask> action, string equivalenceKey = null, params ImmutableArray<PostFixAction> postFixActions)
     {
         Title = title;
-        EquivalenceKey = !string.IsNullOrWhiteSpace(equivalenceKey) ? equivalenceKey : _keyNormalizationRegex.Replace(title.ToTitleCase(), "");
-        FixAction = fixAction;
-
-        HasFix = hasFix;
+        EquivalenceKey = !string.IsNullOrWhiteSpace(equivalenceKey) ? equivalenceKey : Helpers.NormalizeKey(title);
+        Action = action;
+        PostFixActions = postFixActions;
     }
 
-    public void Deconstruct(out string title, out string equivalenceKey, out Func<DocumentEditor, ValueTask> fixAction)
+    public void Deconstruct(out string title, out string equivalenceKey, out Func<DocumentEditor, ValueTask> action)
     {
         title = Title;
         equivalenceKey = EquivalenceKey;
-        fixAction = FixAction;
+        action = Action;
     }
-    /// <summary>
-    /// Gets whether this <see cref="FixInfo"/> is not equivalent to <see cref="Empty"/> (that is, whether executing it has any effect on the document).
-    /// </summary>
-    public readonly bool HasFix { get; }
     /// <summary>
     /// The title of the code action.
     /// </summary>
@@ -207,7 +299,34 @@ public readonly partial struct FixInfo
     /// </summary>
     public string EquivalenceKey { get; }
     /// <summary>
-    /// A <see langword="delegate"/> that uses a <see cref="DocumentEditor"/> to produce a new <see cref="Document"/> that contains the fix.
+    /// A <see langword="delegate"/> that uses a <see cref="DocumentEditor"/> to produce a new <see cref="Document"/> that contains the fix or refactoring.
     /// </summary>
-    public Func<DocumentEditor, ValueTask> FixAction { get; }
+    public Func<DocumentEditor, ValueTask> Action { get; }
+    /// <summary>
+    /// A collection of <see cref="PostFixAction"/>s to run, in order, after <see cref="Action"/> has been applied. Use these for changes incompatible with the <see cref="DocumentEditor"/>, for example replacing the document's root node. Each is <see langword="await"/>ed and passed the result of the previous one.
+    /// </summary>
+    public ImmutableArray<PostFixAction> PostFixActions { get; }
+}
+
+public delegate ValueTask<Document> PostFixAction(Document document, CancellationToken cancellationToken);
+/// <summary>
+/// Contains factory methods that produce <see cref="PostFixAction"/>s for common operations.
+/// </summary>
+public static class WellKnownPostFixActions
+{
+    /// <summary>
+    /// Creates a <see cref="PostFixAction"/> that adds the specified <paramref name="usings"/> to the document, skipping any that are already present.
+    /// </summary>
+    public static PostFixAction AddUsings(params string[] usings) => async (document, cancellationToken) =>
+    {
+        var compilationUnitSyntax = await document.GetRootAsync(cancellationToken).ConfigureAwait(false);
+        var newUsings = new HashSet<string>(usings);
+        newUsings.ExceptWith(compilationUnitSyntax.Usings.Select(static u => u.Name.ToString()));
+        if (newUsings.Count == 0)
+        {
+            return document;
+        }
+        var directives = newUsings.Select(static u => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(u))).ToArray();
+        return document.WithSyntaxRoot(compilationUnitSyntax.AddUsings(directives));
+    };
 }
