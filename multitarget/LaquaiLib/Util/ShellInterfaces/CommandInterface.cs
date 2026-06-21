@@ -192,9 +192,5 @@ public sealed class CommandInterface : IShellInterface
         await (Process.WaitForExitAsync() ?? Task.CompletedTask).ConfigureAwait(false);
         Process.Dispose();
     }
-
-    Task<CommandDispatchResult> IShellInterface.DispatchAsync(string input) => throw new NotImplementedException();
-    Task IShellInterface.Close() => throw new NotImplementedException();
-    ValueTask IAsyncDisposable.DisposeAsync() => throw new NotImplementedException();
     #endregion
 }

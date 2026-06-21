@@ -14,7 +14,8 @@ public static partial class LinqMemoryExtensions
                 var value = source[i];
                 var key = keySelector(value);
 
-                var list = spanLookup._lookup[key] ??= [];
+                ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(spanLookup._lookup, key, out _);
+                list ??= [];
                 list.Add(value);
             }
             return spanLookup;
@@ -29,7 +30,8 @@ public static partial class LinqMemoryExtensions
             {
                 var value = source[i];
                 var key = keySelector(value);
-                var list = spanLookup._lookup[key] ??= [];
+                ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(spanLookup._lookup, key, out _);
+                list ??= [];
                 list.Add(value);
             }
             return spanLookup;
@@ -45,7 +47,8 @@ public static partial class LinqMemoryExtensions
                 var value = source[i];
                 var key = keySelector(value);
                 var element = elementSelector(value);
-                var list = spanLookup._lookup[key] ??= [];
+                ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(spanLookup._lookup, key, out _);
+                list ??= [];
                 list.Add(element);
             }
             return spanLookup;
@@ -61,7 +64,8 @@ public static partial class LinqMemoryExtensions
                 var value = source[i];
                 var key = keySelector(value);
                 var element = elementSelector(value);
-                var list = spanLookup._lookup[key] ??= [];
+                ref var list = ref CollectionsMarshal.GetValueRefOrAddDefault(spanLookup._lookup, key, out _);
+                list ??= [];
                 list.Add(element);
             }
             return spanLookup;

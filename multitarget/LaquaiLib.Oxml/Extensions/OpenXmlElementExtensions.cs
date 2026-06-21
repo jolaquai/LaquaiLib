@@ -72,7 +72,7 @@ public static class OpenXmlElementExtensions
                 .Where(static c => !c.GetType().Name.EndsWith("Properties", StringComparison.Ordinal))
             .ToArray();
 
-            return element.Parent.ChildElements.Count == 1;
+            return children.Length == 1;
         }
 
         /// <summary>

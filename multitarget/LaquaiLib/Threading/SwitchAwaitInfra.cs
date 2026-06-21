@@ -3,14 +3,14 @@
 namespace LaquaiLib.Threading;
 
 /// <summary>
-/// Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <paramref name="synchronizationContext"/>.
+/// Implements an awaitable object that causes <see langword="await"/> continuations to be posted to the specified <see cref="SynchronizationContext"/>.
 /// </summary>
 public readonly struct SynchronizationContextAwaitable(SynchronizationContext synchronizationContext) : IAwaitable<SynchronizationContextAwaitable, SynchronizationContextAwaiter>
 {
     private readonly SynchronizationContext _synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
 
     /// <summary>
-    /// Gets a <see cref="SynchronizationContextAwaiter"/> instance that resumes the <see langword="await"/>'s continuation on the specified <paramref name="synchronizationContext"/>.
+    /// Gets a <see cref="SynchronizationContextAwaiter"/> instance that resumes the <see langword="await"/>'s continuation on the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly SynchronizationContextAwaiter GetAwaiter() => new SynchronizationContextAwaiter(_synchronizationContext);
 }
@@ -22,7 +22,7 @@ public readonly struct SynchronizationContextAwaiter(SynchronizationContext sync
     private readonly SynchronizationContext _synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
 
     /// <summary>
-    /// Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <paramref name="synchronizationContext"/>.
+    /// Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     public readonly bool IsCompleted
     {
@@ -32,7 +32,7 @@ public readonly struct SynchronizationContextAwaiter(SynchronizationContext sync
     /// <inheritdoc cref="UnsafeOnCompleted"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly void OnCompleted(Action continuation) => UnsafeOnCompleted(continuation);
     /// <summary>
-    /// Posts the specified <paramref name="continuation"/> to the specified <paramref name="synchronizationContext"/>.
+    /// Posts the specified <paramref name="continuation"/> to the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly void UnsafeOnCompleted(Action continuation) => _synchronizationContext.Post(static x => Unsafe.As<Action>(x)(), continuation);
     /// <summary>
@@ -42,14 +42,14 @@ public readonly struct SynchronizationContextAwaiter(SynchronizationContext sync
 }
 
 /// <summary>
-/// Implements an awaitable object that causes <see langword="await"/> continuations to be started as <see cref="Task"/>s scheduled using the specified <paramref name="taskScheduler"/>.
+/// Implements an awaitable object that causes <see langword="await"/> continuations to be started as <see cref="Task"/>s scheduled using the specified <see cref="TaskScheduler"/>.
 /// </summary>
 public readonly struct TaskSchedulerAwaitable(TaskScheduler taskScheduler) : IAwaitable<TaskSchedulerAwaitable, TaskSchedulerAwaiter>
 {
     private readonly TaskScheduler _taskScheduler = taskScheduler ?? throw new ArgumentNullException(nameof(taskScheduler));
 
     /// <summary>
-    /// Gets a <see cref="TaskSchedulerAwaiter"/> instance that schedule's the <see langword="await"/>'s continuation using the specified <paramref name="taskScheduler"/>.
+    /// Gets a <see cref="TaskSchedulerAwaiter"/> instance that schedule's the <see langword="await"/>'s continuation using the specified <see cref="TaskScheduler"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly TaskSchedulerAwaiter GetAwaiter() => new TaskSchedulerAwaiter(_taskScheduler);
 }
@@ -61,7 +61,7 @@ public readonly struct TaskSchedulerAwaiter(TaskScheduler taskScheduler) : IAwai
     private readonly TaskScheduler _taskScheduler = taskScheduler ?? throw new ArgumentNullException(nameof(taskScheduler));
 
     /// <summary>
-    /// Gets whether the <see cref="TaskScheduler"/> that scheduled the <see cref="Task"/> <see langword="await"/>ing this instance is the same as the specified <paramref name="taskScheduler"/>.
+    /// Gets whether the <see cref="TaskScheduler"/> that scheduled the <see cref="Task"/> <see langword="await"/>ing this instance is the same as the specified <see cref="TaskScheduler"/>.
     /// </summary>
     public readonly bool IsCompleted
     {
@@ -71,7 +71,7 @@ public readonly struct TaskSchedulerAwaiter(TaskScheduler taskScheduler) : IAwai
     /// <inheritdoc cref="UnsafeOnCompleted"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly void OnCompleted(Action continuation) => UnsafeOnCompleted(continuation);
     /// <summary>
-    /// Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <paramref name="synchronizationContext"/>.
+    /// Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <see cref="SynchronizationContext"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly void UnsafeOnCompleted(Action continuation) => Task.Factory.StartNew(continuation, default, TaskCreationOptions.None, _taskScheduler);
     /// <summary>

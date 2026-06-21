@@ -17,7 +17,8 @@ public static class AsyncLogger
     /// </summary>
     public static bool IsBackground { get; set; } = true;
 
-    private static bool initialized;
+    private static volatile bool initialized;
+    private static readonly Lock _initLock = new();
 
     private static readonly Thread _messageQueueHandler = new Thread(MessageQueueHandlerProc);
     private static readonly ConcurrentQueue<LoggerMessage> _messages = [];
@@ -165,8 +166,15 @@ public static class AsyncLogger
     {
         if (!initialized)
         {
-            Initialize();
-            initialized = true;
+            // Double-checked locking: the background thread must be started exactly once, even if several
+            // threads log for the first time concurrently (Thread.Start throws if called twice).
+            lock (_initLock)
+            {
+                if (!initialized)
+                {
+                    Initialize();
+                }
+            }
         }
 
         _messages.Enqueue(message);

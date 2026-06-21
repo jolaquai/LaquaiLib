@@ -366,7 +366,7 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// </summary>
     /// <returns>An enumerator that can be used to iterate through the reverse collection.</returns>
     public IEnumerator<KeyValuePair<T2, T1>> GetReverseEnumerator() => new ReadLockedEnumerator<T2, T1>(_lock, _reverse);
-    IEnumerator IEnumerable.GetEnumerator() => new ReadLockedEnumerator<object, object>(_lock, (IEnumerable<KeyValuePair<object, object>>)_forward);
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
     /// Implements an <see cref="IEnumerator{T}"/> that holds a reader lock for the entire duration it is alive.

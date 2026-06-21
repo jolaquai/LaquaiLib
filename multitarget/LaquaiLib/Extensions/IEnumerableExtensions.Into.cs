@@ -265,8 +265,9 @@ public static partial class IEnumerableExtensions
                     }
                     else
                     {
+                        // target has already been sliced by startIndex above, so copy from its start.
                         var enumerated = source.ToArray();
-                        return Into(enumerated, target, startIndex);
+                        return Into(enumerated, target, 0);
                     }
                     return i;
                 }
@@ -520,18 +521,18 @@ public static partial class IEnumerableExtensions
         /// <returns>The number of elements written to the target collection.</returns>
         public int CopyTo<TValue>(IDictionary<T, TValue> target, Func<T, TValue> valueFactory, bool overwrite = false)
         {
-            var i = 0;
+            var written = 0;
             switch (target)
             {
                 case Dictionary<T, TValue> concreteDict:
                 {
-                    for (; i < source.Length; i++)
+                    for (var i = 0; i < source.Length; i++)
                     {
                         var key = source[i];
                         ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
                         if (overwrite || !exists)
                         {
-                            i++;
+                            written++;
                             dest = valueFactory(key);
                         }
                         else if (exists)
@@ -545,13 +546,13 @@ public static partial class IEnumerableExtensions
 
                 default:
                 {
-                    for (; i < source.Length; i++)
+                    for (var i = 0; i < source.Length; i++)
                     {
                         var key = source[i];
                         var exists = target.ContainsKey(key);
                         if (overwrite || !exists)
                         {
-                            i++;
+                            written++;
                             target[key] = valueFactory(key);
                         }
                         else if (exists)
@@ -563,7 +564,7 @@ public static partial class IEnumerableExtensions
                     break;
                 }
             }
-            return i;
+            return written;
         }
         /// <summary>
         /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified <see cref="Dictionary{TKey, TValue}"/> using the specified <paramref name="keyFactory"/> to generate keys for each value.
@@ -574,19 +575,19 @@ public static partial class IEnumerableExtensions
         /// <returns>The number of elements written to the target collection.</returns>
         public int CopyTo<TKey>(IDictionary<TKey, T> target, Func<T, TKey> keyFactory, bool overwrite = false)
         {
-            var i = 0;
+            var written = 0;
             switch (target)
             {
                 case Dictionary<TKey, T> concreteDict:
                 {
-                    for (; i < source.Length; i++)
+                    for (var i = 0; i < source.Length; i++)
                     {
                         var value = source[i];
                         var key = keyFactory(value);
                         ref var dest = ref CollectionsMarshal.GetValueRefOrAddDefault(concreteDict, key, out var exists);
                         if (overwrite || !exists)
                         {
-                            i++;
+                            written++;
                             dest = value;
                         }
                         else if (exists)
@@ -600,14 +601,14 @@ public static partial class IEnumerableExtensions
 
                 default:
                 {
-                    for (; i < source.Length; i++)
+                    for (var i = 0; i < source.Length; i++)
                     {
                         var value = source[i];
                         var key = keyFactory(value);
                         var exists = target.ContainsKey(key);
                         if (overwrite || !exists)
                         {
-                            i++;
+                            written++;
                             target[key] = value;
                         }
                         else if (exists)
@@ -619,7 +620,7 @@ public static partial class IEnumerableExtensions
                     break;
                 }
             }
-            return i;
+            return written;
         }
         /// <summary>
         /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the specified <see cref="ICollection{T}"/>.

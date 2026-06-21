@@ -82,7 +82,7 @@ public static partial class StringExtensions
         public bool TryReplace(string search, string replacement, [NotNullWhen(true)] out string replaced, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             replaced = source.Replace(search, replacement, stringComparison);
-            return replaced.Equals(source, stringComparison);
+            return !replaced.Equals(source, stringComparison);
         }
     }
 }

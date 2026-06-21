@@ -29,7 +29,9 @@ public static class RandomExtensions
                 var newSize = ms.Length + count;
                 if (newSize > ms.Capacity)
                 {
-                    var newCapacity = ms.Capacity;
+                    // Start at a minimum of 1: a default MemoryStream has Capacity 0, and 0 << 1 == 0
+                    // would loop forever.
+                    var newCapacity = Math.Max(ms.Capacity, 1);
                     while (newCapacity < newSize)
                     {
                         newCapacity <<= 1;

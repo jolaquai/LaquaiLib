@@ -36,9 +36,9 @@ public static partial class StringExtensions
             // However, Span-based repetition scales a LOT better for larger counts
             var arr = ArrayPool<char>.Shared.Rent(length);
             var newStr = arr.AsSpan(0, length);
-            for (var i = 0; i < count; i += srcSpan.Length)
+            for (var i = 0; i < count; i++)
             {
-                srcSpan.CopyTo(newStr[i..(i + srcSpan.Length)]);
+                srcSpan.CopyTo(newStr[(i * srcSpan.Length)..]);
             }
             var str = newStr.ToString();
             ArrayPool<char>.Shared.Return(arr);
@@ -133,7 +133,7 @@ public static partial class StringExtensions
         /// <param name="startIndex">The zero-based index at which to begin removing <see cref="char"/>s.</param>
         /// <param name="remove">The <see cref="char"/>s to remove.</param>
         /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
-        public string Remove(int startIndex, params ReadOnlySpan<char> remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
+        public string Remove(int startIndex, params ReadOnlySpan<char> remove) => source[..startIndex] + source[startIndex..].Remove(remove);
 
         /// <summary>
         /// Removes all occurrences of the specified <see cref="string"/>s from this <see cref="string"/>.
@@ -157,7 +157,7 @@ public static partial class StringExtensions
         /// <param name="startIndex">The zero-based index at which to begin removing <see cref="string"/>s.</param>
         /// <param name="remove">The <see cref="string"/>s to remove.</param>
         /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
-        public string Remove(int startIndex, params ReadOnlySpan<string> remove) => source[..(startIndex - 1)] + source[startIndex..].Remove(remove);
+        public string Remove(int startIndex, params ReadOnlySpan<string> remove) => source[..startIndex] + source[startIndex..].Remove(remove);
         #endregion
 
         #region IndexOf... methods
@@ -186,7 +186,7 @@ public static partial class StringExtensions
                 return Array.Empty<int>();
             }
 
-            ret.Add(find);
+            ret.Add(find + startIndex);
 
             while (true)
             {

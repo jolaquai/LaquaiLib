@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System.Buffers;
+
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 
 internal sealed class Program
@@ -11,53 +13,82 @@ internal sealed class Program
 
 public class Bench
 {
-    public static int DistinctWithIndexOf<TSource>(ReadOnlySpan<TSource> source, Span<TSource> destination, IEqualityComparer<TSource> comparer = null)
+    public static string RepeatFromPooledArray(string source, int count)
     {
-        var destIndex = 0;
-        // This handles usage of IEquatable<>
-        comparer = EqualityComparer<TSource>.Default;
-        for (var i = 0; i < source.Length; i++)
+        var srcSpan = source.AsSpan();
+        var length = srcSpan.Length * count;
+
+        var arr = ArrayPool<char>.Shared.Rent(length);
+        var newStr = arr.AsSpan(0, length);
+        for (var i = 0; i < count; i++)
         {
-            if (destIndex == 0 || destination[..destIndex].IndexOf(source[i], comparer) == -1)
+            srcSpan.CopyTo(newStr[(i * srcSpan.Length)..]);
+        }
+        var str = newStr.ToString();
+        ArrayPool<char>.Shared.Return(arr);
+        return str;
+    }
+    public static string RepeatFromConcat(string source, int count)
+    {
+        var srcSpan = source.AsSpan();
+        var length = srcSpan.Length * count;
+
+        return string.Concat(Enumerable.Repeat(source, count));
+    }
+    public static string RepeatFromStringCreate(string source, int count)
+    {
+        var len = source.Length * count;
+        return string.Create(len, (len, source), static (span, state) =>
+        {
+            var (len, src) = state;
+            var srcSpan = src.AsSpan();
+            for (var i = 0; i < state.len; i += srcSpan.Length)
+                srcSpan.CopyTo(span[i..]);
+        });
+    }
+    public string RepeatFromZeroStringNoBoundsCheck(string source, int count)
+    {
+        var srcLen = source.Length;
+        var len = source.Length * count;
+        var str = new string('\0', len);
+        unsafe
+        {
+            fixed (void* srcPtr = source)
+            fixed (void* destPtr = str)
             {
-                destination[destIndex++] = source[i];
+                var endPtr = (void*)((nint)destPtr + (len * sizeof(char)));
+                for (var ptr = destPtr; ptr < endPtr; ptr = (void*)((nint)ptr + (srcLen * sizeof(char))))
+                    Buffer.MemoryCopy(srcPtr, ptr, srcLen * sizeof(char), srcLen * sizeof(char));
             }
         }
-        return destIndex;
+        return str;
     }
-    public static int DistinctWithHashSet<TSource>(ReadOnlySpan<TSource> source, Span<TSource> destination, IEqualityComparer<TSource> comparer = null)
+    public string RepeatFromStringCreateNoBoundsCheck(string source, int count)
     {
-        var hs = new HashSet<TSource>(source.Length);
-        for (var i = 0; i < source.Length; i++)
+        var len = source.Length * count;
+        return string.Create(len, (len, source), static (span, state) =>
         {
-            if (hs.Add(source[i]))
+            var (len, src) = state;
+            var srcSpan = src.AsSpan();
+            var srcLen = srcSpan.Length;
+            unsafe
             {
-                destination[hs.Count - 1] = source[i];
+                fixed (void* srcPtr = srcSpan)
+                fixed (void* destPtr = span)
+                {
+                    var endPtr = (void*)((nint)destPtr + (len * sizeof(char)));
+                    for (var ptr = destPtr; ptr < endPtr; ptr = (void*)((nint)ptr + (srcLen * sizeof(char))))
+                        Buffer.MemoryCopy(srcPtr, ptr, srcLen * sizeof(char), srcLen * sizeof(char));
+                }
             }
-        }
-        return hs.Count;
+        });
     }
 
-    [Params(1_000_000, 10_000_000, 100_000_000)]
-    public static int ArrLen { get; set; }
+    [Params(100, 1000, 10000, 100000, 1000000)]
+    public static int Count { get; set; }
+    public static string Source { get; set; }
 
-    public static byte[] bytes;
     static Bench()
     {
-        bytes = new byte[ArrLen];
-        Random.Shared.NextBytes(bytes);
-    }
-
-    [Benchmark]
-    public void DistinctWithIndexOfBenchmark()
-    {
-        var destination = new Span<byte>(new byte[ArrLen]);
-        var count = DistinctWithIndexOf(bytes, destination);
-    }
-    [Benchmark]
-    public void DistinctWithHashSetBenchmark()
-    {
-        var destination = new Span<byte>(new byte[ArrLen]);
-        var count = DistinctWithHashSet(bytes, destination);
     }
 }

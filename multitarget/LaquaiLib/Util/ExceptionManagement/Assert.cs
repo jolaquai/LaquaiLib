@@ -111,17 +111,17 @@ public static class Assert
     /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
     public static T IsEqualTo<T>(T value, T other, string message = "") where T : IComparable<T> => value.CompareTo(other) == 0 ? value : Throw(value, message);
     /// <summary>
-    /// Asserts that a specified value is in a specified range.
+    /// Asserts that a specified value is not equal to another value.
     /// If it is not, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
     /// </summary>
     /// <typeparam name="T">The type of the values to operate on.</typeparam>
-    /// <param name="value">The value to assert to be greater than or equal to <paramref name="other"/>.</param>
+    /// <param name="value">The value to assert to be not equal to <paramref name="other"/>.</param>
     /// <param name="other">The value to compare <paramref name="value"/> to.</param>
     /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
     /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
     public static T IsNotEqualTo<T>(T value, T other, string message = "") where T : IComparable<T> => value.CompareTo(other) != 0 ? value : Throw(value, message);
     /// <summary>
-    /// Asserts that a specified value is not equal to another value.
+    /// Asserts that a specified value is in a specified range.
     /// If it is not, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
     /// </summary>
     /// <typeparam name="T">The type of the values to operate on.</typeparam>
@@ -186,7 +186,7 @@ public static class Assert
     /// <param name="value">The value to assert to be positive.</param>
     /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
     /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-    public static T IsDefault<T>(T value, string message = "") => value.Equals(default) ? value : Throw(value, message);
+    public static T IsDefault<T>(T value, string message = "") => EqualityComparer<T>.Default.Equals(value, default) ? value : Throw(value, message);
     /// <summary>
     /// Asserts that a specified value is not the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(TSelf)</c>.
     /// If it is, an <see cref="AssertionFailureException{T}"/> is thrown with the specified message.
@@ -195,5 +195,5 @@ public static class Assert
     /// <param name="value">The value to assert to be positive.</param>
     /// <param name="message">The message to include in the <see cref="AssertionFailureException{T}"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
     /// <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-    public static T IsNotDefault<T>(T value, string message = "") => !value.Equals(default) ? value : Throw(value, message);
+    public static T IsNotDefault<T>(T value, string message = "") => !EqualityComparer<T>.Default.Equals(value, default) ? value : Throw(value, message);
 }

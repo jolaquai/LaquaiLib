@@ -685,10 +685,6 @@ public static partial class IEnumerableExtensions
                         {
                             return source.IndexOf(asSpan[0], equalityComparer);
                         }
-                        else if (source is IReadOnlyList<T> list)
-                        {
-                            return list.IndexOf(list[0], equalityComparer);
-                        }
                         return source.IndexOf(sequence.First(), equalityComparer);
                     }
                 }

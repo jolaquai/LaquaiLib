@@ -386,7 +386,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <summary>
     /// Removes the item at the specified <paramref name="index"/>
     /// </summary>
-    /// <param name="index">The index of the item to remove.</param
+    /// <param name="index">The index of the item to remove.</param>
     /// <returns>The item that was removed.</returns>
     public T RemoveAt(int index)
     {
@@ -448,14 +448,21 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         {
             return -1;
         }
-        var i = startIndex == -1 ? items.Count : startIndex;
-        foreach (var t in ((IEnumerable<T>)(Filter is not null ? this : items)).Reverse().Skip(startIndex))
+        comparer ??= EqualityComparer<T>.Default;
+        // When a Filter is set, the meaningful indices are positions in the filtered view, so materialize it;
+        // otherwise the backing list can be indexed directly.
+        IReadOnlyList<T> list = Filter is not null ? [.. (IEnumerable<T>)this] : items;
+        var start = startIndex == -1 ? list.Count - 1 : startIndex;
+        if (start >= list.Count)
         {
-            if (comparer is not null ? comparer.Equals(t, item) : t.Equals(item))
+            start = list.Count - 1;
+        }
+        for (var i = start; i >= 0; i--)
+        {
+            if (comparer.Equals(list[i], item))
             {
                 return i;
             }
-            i--;
         }
         return -1;
     }

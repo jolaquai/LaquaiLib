@@ -144,12 +144,14 @@ public class DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandle
     /// Consumers should never guard <see cref="Send(HttpRequestMessage, CancellationToken)"/> calls using this method, since that method would then reevaluate the wait unnecessarily.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Wait()
+    public void Wait(CancellationToken cancellationToken = default)
     {
         var now = DateTime.Now.Ticks;
         if (now < nextCallAllowed)
         {
-            Thread.Sleep(TimeSpan.FromTicks(nextCallAllowed - now));
+            var timeout = TimeSpan.FromTicks(nextCallAllowed - now);
+            if (cancellationToken.WaitHandle.WaitOne(timeout))
+                cancellationToken.ThrowIfCancellationRequested();
         }
     }
     /// <summary>

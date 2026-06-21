@@ -121,7 +121,7 @@ public static class RandomMath
         {
             return T.Zero;
         }
-        return x / y * targetX;
+        return y / x * targetX;
     }
 
     /// <summary>
@@ -145,7 +145,7 @@ public static class RandomMath
     /// <exception cref="ArgumentException"><paramref name="xStart"/> was greater than <paramref name="xEnd"/>.</exception>
     public static Func<double, double> Interpolate(Func<double, double> f, Func<double, double> g, Func<double, double> smoothFunc, double xStart = 0, double xEnd = 1) => xEnd < xStart
             ? throw new ArgumentException("Smoothing end value must be greater than start value.", nameof(xEnd))
-            : (p => (smoothFunc(p) * f(p)) + (smoothFunc(xEnd - p) + g(p)));
+            : (p => (smoothFunc(p) * f(p)) + (smoothFunc(xEnd - p) * g(p)));
     /// <summary>
     /// Smooths two functions over a given interval by returning a new function that is a linear combination of the two functions within a that interval.
     /// </summary>

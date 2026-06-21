@@ -113,7 +113,7 @@ public static partial class LinqMemoryExtensions
                 throw new InvalidOperationException("Span is empty.");
             }
             var max = selector(source[0]);
-            for (var i = 0; i < source.Length; i++)
+            for (var i = 1; i < source.Length; i++)
             {
                 var value = selector(source[i]);
                 if (value.HasValue && (!max.HasValue || value.Value > max.Value))

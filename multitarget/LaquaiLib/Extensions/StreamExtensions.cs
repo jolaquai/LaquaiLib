@@ -18,8 +18,8 @@ public static partial class StreamExtensions
             return buffer;
         }
         /// <summary>
-        /// Reads the entire contents of the <paramref name="stream"/> into a <see langword="byte"/> array, regardless of current position.
-        /// The <paramref name="stream"/> remains sought to its end.
+        /// Reads the entire contents of the <see cref="Stream"/> into a <see langword="byte"/> array, regardless of current position.
+        /// The <see cref="Stream"/> remains sought to its end.
         /// </summary>
         /// <returns>The created <see langword="byte"/> array.</returns>
         public byte[] ToArray()

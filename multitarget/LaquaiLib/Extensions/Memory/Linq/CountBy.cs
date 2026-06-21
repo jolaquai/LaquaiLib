@@ -12,7 +12,8 @@ public static partial class LinqMemoryExtensions
             for (var i = 0; i < source.Length; i++)
             {
                 var key = keySelector(source[i]);
-                dict.AddOrUpdate(key, 1, (k, v) => v + 1);
+                // AddOrUpdate's two-arg factory is (existingValue, addValue); increment the existing count.
+                dict.AddOrUpdate(key, 1, (existing, _) => existing + 1);
             }
             return dict;
         }

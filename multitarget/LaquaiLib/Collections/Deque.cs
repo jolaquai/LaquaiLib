@@ -359,25 +359,28 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         ArgumentNullException.ThrowIfNull(array);
 
-        var len = array.Length - index;
         var nodeCount = Count;
-        if (index < 0 || index >= len)
+        if (index < 0 || index > array.Length)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), index, $"The specified index is out of range. It must be between 0 and {len - 1}.");
+            throw new ArgumentOutOfRangeException(nameof(index), index, $"The specified index is out of range. It must be between 0 and {array.Length}.");
         }
-        if (index + nodeCount > len)
+        if (index + nodeCount > array.Length)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), index, $"The specified index is out of range. It must be between 0 and {len - nodeCount}.");
+            throw new ArgumentException($"The destination array (length {array.Length}) is not large enough to hold {nodeCount} elements starting at index {index}.", nameof(array));
         }
 
         var current = Head;
+        if (current is null)
+        {
+            return;
+        }
         var i = index;
         do
         {
             array[i] = current.Value;
             current = current.Next;
             i++;
-        } while (i < len && !ReferenceEquals(current, Head));
+        } while (!ReferenceEquals(current, Head));
     }
     /// <summary>
     /// Enumerates the <see cref="Deque{T}"/> and ensures that all contained nodes have references to neighboring nodes and to this <see cref="Deque{T}"/>.
@@ -644,15 +647,10 @@ public class DequeNode<T>(T value) : IEquatable<DequeNode<T>>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override bool Equals(object obj) => Equals(obj as DequeNode<T>);
     /// <inheritdoc/>
-    public override int GetHashCode()
-    {
-        var hash = new HashCode();
-        hash.Add(Deque);
-        hash.Add(Next);
-        hash.Add(Previous);
-        hash.Add(Value);
-        return hash.ToHashCode();
-    }
+    // Equality is value-based (see Equals), so the hash code must be derived from Value alone.
+    // Hashing Next/Previous would recurse infinitely around the circular deque and break the
+    // equal-objects-have-equal-hashes contract.
+    public override int GetHashCode() => Value?.GetHashCode() ?? 0;
 
     /// <summary>
     /// Returns the string representation of the <see cref="Value"/> this node contains.

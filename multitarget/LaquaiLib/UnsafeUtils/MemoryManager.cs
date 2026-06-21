@@ -197,7 +197,7 @@ public static unsafe class MemoryManager
     /// <param name="span">A <see cref="ReadOnlySpan{T}"/> around a block of memory that was previously allocated.</param>
     /// <param name="pressure">Whether to call <see cref="GC.RemoveMemoryPressure(long)"/> with the total byte count of the block of memory that is being freed.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Free<T>(ReadOnlySpan<T> span, bool pressure = false) where T : unmanaged => Free(ref MemoryMarshal.GetReference(span), pressure ? span.Length : -1);
+    public static void Free<T>(ReadOnlySpan<T> span, bool pressure = false) where T : unmanaged => Free(ref MemoryMarshal.GetReference(span), pressure ? (long)span.Length * sizeof(T) : -1);
 
     /// <summary>
     /// Returns a new <see langword="void"/> pointer that is offset from the specified pointer by the specified byte <paramref name="count"/>. That value may be negative.

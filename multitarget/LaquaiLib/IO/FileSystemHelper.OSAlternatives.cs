@@ -106,9 +106,8 @@ public static partial class FileSystemHelper
         {
             File.Delete(source);
         }
-        finally
+        catch
         {
-            File.Delete(destination);
         }
     }
 
@@ -130,7 +129,7 @@ public static partial class FileSystemHelper
         {
             throw new FileNotFoundException("Source file not found", source);
         }
-        if (!overwrite && Kernel32.GetFileAttributesEx(source, 0, out _))
+        if (!overwrite && Kernel32.GetFileAttributesEx(destination, 0, out _))
         {
             throw new IOException("Destination file already exists.");
         }

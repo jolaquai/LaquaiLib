@@ -800,8 +800,20 @@
             Frees the <see cref="T:System.Runtime.InteropServices.GCHandle"/> used to pin the target array.
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:LaquaiLib.Collections.Enumeration.SpanChunkEnumerable`1" -->
-        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Collections.Enumeration.SpanChunkEnumerable`1.#ctor(System.ReadOnlySpan{`0},System.Int32)" -->
+        <member name="T:LaquaiLib.Collections.Enumeration.SpanChunkEnumerable`1">
+            <summary>
+            Implements the enumerator pattern to enumerate slices of a <see cref="T:System.ReadOnlySpan`1"/> in chunks of a specified size.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="chunkSize">The maximum size of each chunk to enumerate. The final chunk may be smaller if the source length is not an exact multiple of this value.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.SpanChunkEnumerable`1.#ctor(System.ReadOnlySpan{`0},System.Int32)">
+            <summary>
+            Implements the enumerator pattern to enumerate slices of a <see cref="T:System.ReadOnlySpan`1"/> in chunks of a specified size.
+            </summary>
+            <param name="source">The <see cref="T:System.ReadOnlySpan`1"/> to enumerate the segments of.</param>
+            <param name="chunkSize">The maximum size of each chunk to enumerate. The final chunk may be smaller if the source length is not an exact multiple of this value.</param>
+        </member>
         <member name="P:LaquaiLib.Collections.Enumeration.SpanChunkEnumerable`1.Current">
             <summary>
             Retrieves the current segment at which the enumerator is positioned.
@@ -1705,7 +1717,13 @@
             </summary>
             <param name="selector">A <see cref="T:System.Func`2"/> that determines whether an element should be removed.</param>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RemoveAt(System.Int32)" -->
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RemoveAt(System.Int32)">
+            <summary>
+            Removes the item at the specified <paramref name="index"/>
+            </summary>
+            <param name="index">The index of the item to remove.</param>
+            <returns>The item that was removed.</returns>
+        </member>
         <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.RemoveAtSilent(System.Int32)">
             <summary>
             Silently removes the item at the specified <paramref name="index"/>.
@@ -8999,7 +9017,7 @@
         <member name="M:LaquaiLib.Extensions.TypeExtensions.UnspeakableMemberNameRegex">
             <remarks>
             Pattern:<br/>
-            <code>&lt;.*?&gt;\p{Ll}__(\p{L}|\p{Nd}|\||_)+?_\p{Nd}+?(?=\(.*?\))?</code><br/>
+            <code>&lt;.*?&gt;\\p{Ll}__(\\p{L}|\\p{Nd}|\\||_)+?_\\p{Nd}+?(?=\\(.*?\\))?</code><br/>
             Options:<br/>
             <code>RegexOptions.ExplicitCapture</code><br/>
             Explanation:<br/>
@@ -11782,7 +11800,7 @@
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe for cancellation requests.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that resolves to the response to the request.</returns>
         </member>
-        <member name="M:LaquaiLib.Util.DelayingHttpMessageHandler.Wait">
+        <member name="M:LaquaiLib.Util.DelayingHttpMessageHandler.Wait(System.Threading.CancellationToken)">
             <summary>
             Sleeps the current thread until the minimum time since the last request has passed.
             Consumers should never guard <see cref="M:LaquaiLib.Util.DelayingHttpMessageHandler.Send(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)"/> calls using this method, since that method would then reevaluate the wait unnecessarily.
@@ -11908,18 +11926,18 @@
         </member>
         <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotEqualTo``1(``0,``0,System.String)">
             <summary>
-            Asserts that a specified value is in a specified range.
+            Asserts that a specified value is not equal to another value.
             If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
             </summary>
             <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be greater than or equal to <paramref name="other"/>.</param>
+            <param name="value">The value to assert to be not equal to <paramref name="other"/>.</param>
             <param name="other">The value to compare <paramref name="value"/> to.</param>
             <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
             <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
         </member>
         <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsInRange``1(``0,``0,``0,System.String)">
             <summary>
-            Asserts that a specified value is not equal to another value.
+            Asserts that a specified value is in a specified range.
             If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
             </summary>
             <typeparam name="T">The type of the values to operate on.</typeparam>
@@ -12062,7 +12080,7 @@
         <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.EntryPointNotFoundExceptionDataRegex">
             <remarks>
             Pattern:<br/>
-            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\.</code><br/>
+            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\\.</code><br/>
             Options:<br/>
             <code>RegexOptions.ExplicitCapture</code><br/>
             Explanation:<br/>
@@ -12372,7 +12390,7 @@
             Finds the index at which the specified <see cref="T:System.Span`1"/>s of <typeparamref name="T"/> differ (that is, where two elements at the same index do not compare equal).
             </summary>
             <typeparam name="T">The type of the elements in the spans.</typeparam>
-            <param name="left">The first span to compare.</param>
+            <param name="left">The first span to compare.</param>4
             <param name="right">The second span to compare.</param>
             <param name="startIndex">The index at which to start the comparison. Must be a valid index in both spans.</param>
             <param name="equalityComparer">An optional <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing elements. If <c>null</c>, the default equality comparer for <typeparamref name="T"/> is used.</param>
@@ -12750,6 +12768,89 @@
             <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Util.ShellInterfaces.PowerShellInterface.DisposeAsync">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Util.SlidingWindowHttpMessageHandler">
+            <summary>
+            Implements a <see cref="T:System.Net.Http.DelegatingHandler"/> that enforces a sliding window rate limit on requests.
+            </summary>
+            <remarks>
+            At most <c>maximumRequestCount</c> requests are dispatched within any rolling <c>window</c>-length time span.
+            When the limit is reached, sending is delayed until the oldest request within the current window expires, at which point the new request proceeds.
+            The delay is applied immediately before <i>sending</i> the request, so the contacted server may still enforce its own rate limits. Plan for this by setting window parameters conservatively.
+            </remarks>
+            <param name="innerHandler">The inner handler to delegate sending requests to.</param>
+            <param name="window">The duration of the sliding window.</param>
+            <param name="maximumRequestCount">The maximum number of requests allowed within <paramref name="window"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.#ctor(System.Net.Http.HttpMessageHandler,System.TimeSpan,System.Int32)">
+            <summary>
+            Implements a <see cref="T:System.Net.Http.DelegatingHandler"/> that enforces a sliding window rate limit on requests.
+            </summary>
+            <remarks>
+            At most <c>maximumRequestCount</c> requests are dispatched within any rolling <c>window</c>-length time span.
+            When the limit is reached, sending is delayed until the oldest request within the current window expires, at which point the new request proceeds.
+            The delay is applied immediately before <i>sending</i> the request, so the contacted server may still enforce its own rate limits. Plan for this by setting window parameters conservatively.
+            </remarks>
+            <param name="innerHandler">The inner handler to delegate sending requests to.</param>
+            <param name="window">The duration of the sliding window.</param>
+            <param name="maximumRequestCount">The maximum number of requests allowed within <paramref name="window"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.Util.SlidingWindowHttpMessageHandler.IsReadOnly">
+            <summary>
+            Gets a value indicating whether this instance has been made read-only via <see cref="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.MakeReadOnly"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.MakeReadOnly">
+            <summary>
+            Permanently locks the current <see cref="P:LaquaiLib.Util.SlidingWindowHttpMessageHandler.Window"/> and <see cref="P:LaquaiLib.Util.SlidingWindowHttpMessageHandler.MaximumRequestCount"/> settings for this instance.
+            Subsequent attempts to set either property throw <see cref="T:System.InvalidOperationException"/>.
+            This operation is irreversible.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.SlidingWindowHttpMessageHandler.Window">
+            <summary>
+            Gets or sets the duration of the sliding window.
+            </summary>
+            <remarks>
+            Changes take effect on the next loop iteration of a waiting caller.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">Thrown if <see cref="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.MakeReadOnly"/> has been called on this instance.</exception>
+        </member>
+        <member name="P:LaquaiLib.Util.SlidingWindowHttpMessageHandler.MaximumRequestCount">
+            <summary>
+            Gets or sets the maximum number of requests allowed within <see cref="P:LaquaiLib.Util.SlidingWindowHttpMessageHandler.Window"/>.
+            </summary>
+            <remarks>
+            If lowered below the current number of in-window requests, existing entries are allowed to expire naturally. No requests are drained from the history, so the server-side rate limit invariant is preserved.
+            Changes take effect on the next loop iteration of a waiting caller.
+            </remarks>
+            <exception cref="T:System.InvalidOperationException">Thrown if <see cref="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.MakeReadOnly"/> has been called on this instance.</exception>
+        </member>
+        <member name="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.#ctor(System.TimeSpan,System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Util.SlidingWindowHttpMessageHandler"/> with the specified window and maximum request count that uses a default <see cref="T:System.Net.Http.HttpClientHandler"/> to delegate requests to.
+            </summary>
+            <param name="window">The duration of the sliding window.</param>
+            <param name="maximumRequestCount">The maximum number of requests allowed within <paramref name="window"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.Send(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>
+            Waits until a request slot is available within the sliding window, then sends the request.
+            </summary>
+            <param name="request">The request to send.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe for cancellation requests.</param>
+            <returns>The response to the request.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously waits until a request slot is available within the sliding window, then sends the request.
+            </summary>
+            <param name="request">The request to send.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe for cancellation requests.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> that resolves to the response to the request.</returns>
+        </member>
+        <member name="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.Dispose(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBox">
@@ -15743,12 +15844,18 @@
         <member name="T:LaquaiLib.Threading.AsyncManualResetEvent">
             <summary>
             Custom implementation of <see cref="T:System.Threading.ManualResetEventSlim"/> that supports asynchronous waiting.
+            <para/>
+            Any number of waiters may concurrently await the <see cref="T:System.Threading.Tasks.Task"/> returned by <see cref="M:LaquaiLib.Threading.AsyncManualResetEvent.WaitAsync"/>, and that <see cref="T:System.Threading.Tasks.Task"/> may be awaited any number of times.
+            For a single-waiter, allocation-free alternative, see <see cref="T:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent"/>.
             </summary>
             <param name="signaled">Specifies whether the event is initially in the signaled state.</param>
         </member>
         <member name="M:LaquaiLib.Threading.AsyncManualResetEvent.#ctor(System.Boolean)">
             <summary>
             Custom implementation of <see cref="T:System.Threading.ManualResetEventSlim"/> that supports asynchronous waiting.
+            <para/>
+            Any number of waiters may concurrently await the <see cref="T:System.Threading.Tasks.Task"/> returned by <see cref="M:LaquaiLib.Threading.AsyncManualResetEvent.WaitAsync"/>, and that <see cref="T:System.Threading.Tasks.Task"/> may be awaited any number of times.
+            For a single-waiter, allocation-free alternative, see <see cref="T:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent"/>.
             </summary>
             <param name="signaled">Specifies whether the event is initially in the signaled state.</param>
         </member>
@@ -15757,6 +15864,13 @@
             Gets a <see cref="T:System.Threading.Tasks.Task"/> that represents the completion of the operation.
             </summary>
             <returns>The <see cref="T:System.Threading.Tasks.Task"/> that completes when the event is set.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncManualResetEvent.WaitAsync(System.Threading.CancellationToken)">
+            <summary>
+            Gets a <see cref="T:System.Threading.Tasks.Task"/> that completes when the event is set or the specified <paramref name="cancellationToken"/> is cancelled.
+            </summary>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that, when cancelled, causes the returned <see cref="T:System.Threading.Tasks.Task"/> to transition to the canceled state.</param>
+            <returns>The <see cref="T:System.Threading.Tasks.Task"/> that completes when the event is set, or that is cancelled when <paramref name="cancellationToken"/> is.</returns>
         </member>
         <member name="M:LaquaiLib.Threading.AsyncManualResetEvent.Set">
             <summary>
@@ -16208,6 +16322,54 @@
         <member name="P:LaquaiLib.Threading.ExtendedDebugTaskException`1.Task">
             <summary>
             Gets the <see cref="T:LaquaiLib.Threading.ExtendedDebugTask`1"/> that threw the exception.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent">
+            <summary>
+            An allocation-free variant of <see cref="T:LaquaiLib.Threading.AsyncManualResetEvent"/> backed by <see cref="T:System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1"/>.
+            <para/>
+            Unlike <see cref="T:LaquaiLib.Threading.AsyncManualResetEvent"/>, this type reuses a single backing source across <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Set"/>/<see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Reset"/> cycles instead of
+            allocating a fresh <see cref="T:System.Threading.Tasks.TaskCompletionSource"/> and <see cref="T:System.Threading.Tasks.Task"/> each time, which eliminates per-cycle allocations on hot paths.
+            <para/>
+            In exchange, it imposes a strict <b>single-waiter</b> contract that the caller is responsible for honoring:
+            <list type="bullet">
+            <item>The <see cref="T:System.Threading.Tasks.ValueTask"/> returned by <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.WaitAsync"/> must be awaited (or otherwise consumed) <b>exactly once</b>.</item>
+            <item>At most one waiter may be outstanding at a time; registering a second continuation against the same wait throws.</item>
+            <item>A <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.WaitAsync"/> result must be consumed before the next <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Reset"/>; a <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Reset"/> invalidates any outstanding token.</item>
+            <item><see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Set"/> and <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Reset"/> are not safe to invoke concurrently with each other. The intended pattern is a single
+            controller toggling the event for a single waiter.</item>
+            </list>
+            If you need multiple or repeated waiters, or cannot guarantee single-consumption, use <see cref="T:LaquaiLib.Threading.AsyncManualResetEvent"/> instead.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent"/>.
+            </summary>
+            <param name="signaled">Specifies whether the event is initially in the signaled state.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.WaitAsync">
+            <summary>
+            Gets a <see cref="T:System.Threading.Tasks.ValueTask"/> that completes when the event is set.
+            The returned <see cref="T:System.Threading.Tasks.ValueTask"/> must be awaited exactly once and before the next <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Reset"/>; see the type-level remarks.
+            </summary>
+            <returns>The <see cref="T:System.Threading.Tasks.ValueTask"/> that completes when the event is set.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Set">
+            <summary>
+            Signals the event.
+            Calls when the event is already set have no effect.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.Reset">
+            <summary>
+            Resets the event to the unsignaled state and invalidates any token previously handed out by <see cref="M:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.WaitAsync"/>.
+            Calls when the event is not signaled have no effect.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent.IsSet">
+            <summary>
+            Gets whether the event is in the signaled state.
             </summary>
         </member>
         <member name="T:LaquaiLib.Threading.SynchronizationContextAwaitable">
@@ -16861,5 +17023,4 @@
             <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
         </member>
     </members>
-</doc>
 </doc>

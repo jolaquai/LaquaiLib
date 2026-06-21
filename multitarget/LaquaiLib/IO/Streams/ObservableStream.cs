@@ -112,9 +112,14 @@ public class ObservableStream<T> : Stream
     /// <inheritdoc/>
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
-        _ = await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
-        DataRead?.Invoke(this, new ReadEventArgs(buffer));
-        return buffer.Length;
+        var oldPosition = Position;
+        var read = await _underlying.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+        if (read > 0)
+        {
+            DataRead?.Invoke(this, new ReadEventArgs(buffer[..read]));
+            Seeked?.Invoke(this, new SeekedEventArgs(oldPosition, Position));
+        }
+        return read;
     }
     /// <inheritdoc/>
     public override int ReadByte()
@@ -370,12 +375,14 @@ public static class ObservableStreamFactory
         MemoryStream ms;
         if (canResize)
         {
-            ms = new MemoryStream(data, offset, length);
+            // The byte[]-backed MemoryStream constructors are all non-resizable; to get a resizable
+            // stream seeded with the data, start empty and copy the data in.
+            ms = new MemoryStream();
+            ms.Write(data.AsSpan(offset, length));
         }
         else
         {
-            ms = new MemoryStream();
-            ms.Write(data.AsSpan(offset, length));
+            ms = new MemoryStream(data, offset, length);
         }
         return new ObservableStream<MemoryStream>(ms);
     }

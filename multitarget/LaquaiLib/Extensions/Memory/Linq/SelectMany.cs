@@ -83,11 +83,11 @@ public static partial class LinqMemoryExtensions
                 var collection = collectionSelector(source[i]);
                 foreach (var item in collection)
                 {
-                    if (destination.Length <= i)
+                    if (destIndex >= destination.Length)
                     {
                         return destIndex;
                     }
-                    destination[i] = resultSelector(source[i], item);
+                    destination[destIndex++] = resultSelector(source[i], item);
                 }
             }
             return destIndex;
@@ -114,11 +114,11 @@ public static partial class LinqMemoryExtensions
                 var collection = collectionSelector(source[i], i);
                 foreach (var item in collection)
                 {
-                    if (destination.Length <= i)
+                    if (destIndex >= destination.Length)
                     {
                         return destIndex;
                     }
-                    destination[i] = resultSelector(source[i], item);
+                    destination[destIndex++] = resultSelector(source[i], item);
                 }
             }
             return destIndex;

@@ -9,6 +9,8 @@ public static partial class StreamExtensions
     [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _capacity(this MemoryStream _);
     [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _length(this MemoryStream _);
     [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _position(this MemoryStream _);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref bool _expandable(this MemoryStream _);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref bool _writable(this MemoryStream _);
 
     extension(MemoryStream stream)
     {
@@ -128,16 +130,20 @@ public static partial class StreamExtensions
         /// It is, of course, capable of maintaining its own position and length within that array.
         /// Concurrent reads on the two streams are safe, but writing should be synchronized if it cannot be guaranteed that the segments being written do not overlap.
         /// Using a <see cref="ReaderWriterLockSlim"/> to manage this is recommended if writing is necessary.
-        /// <para/>Note that the two streams will lose synchronization if write operations cause the backing array to be resized.
+        /// <para/>Note that the two streams will lose synchronization if write operations cause the backing array to be resized. Specify <paramref name="writable"/> as <see langword="false"/> to prevent this.
         /// </summary>
         /// <returns>A new <see cref="MemoryStream"/> as described.</returns>
-        private MemoryStream Duplicate()
+        private MemoryStream Duplicate(bool writable, bool expandable)
         {
             var newMs = new MemoryStream();
             newMs._buffer() = stream._buffer();
             newMs._capacity() = stream._capacity();
             newMs._length() = stream._length();
             newMs._position() = stream._position();
+
+            newMs._writable() = writable;
+            newMs._expandable() = expandable;
+
             return newMs;
         }
         /// <summary>
@@ -154,31 +160,6 @@ public static partial class StreamExtensions
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
             stream.AsSpan().Slice(position, length).CopyTo(destination);
-        }
-        /// <summary>
-        /// Reads a block of bytes from the current stream and writes the data to a given span.
-        /// </summary>
-        /// <param name="position">The byte offset in the stream at which to begin reading.</param>
-        /// <param name="length">The number of bytes to read.</param>
-        /// <param name="destination">The <see cref="Span{T}"/> to write the data to.</param>
-        /// <param name="destPosition">The byte offset in the destination span at which to begin writing.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="position"/> is less than zero or <paramref name="position"/> + <paramref name="length"/> is greater than the length of the stream.</exception>
-        /// <exception cref="ArgumentException">Thrown if the destination span is too short to contain the requested number of bytes.</exception>
-        public void CopyBlock(int position, int length, Span<byte> destination, int destPosition)
-        {
-            if (position < 0 || position + length > stream.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(position));
-            }
-            if (destPosition < 0 || destPosition + length > destination.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(destPosition));
-            }
-            if (destination[destPosition..].Length < length)
-            {
-                throw new ArgumentException("The destination span is too short to contain the requested number of bytes.", nameof(destination));
-            }
-            stream.AsSpan().Slice(position, length).CopyTo(destination[destPosition..]);
         }
     }
 }

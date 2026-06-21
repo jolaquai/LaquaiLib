@@ -1124,7 +1124,15 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     }
 
     /// <inheritdoc/>
-    public IEnumerator<T> GetEnumerator() => (IEnumerator<T>)_data.GetEnumerator();
+    public IEnumerator<T> GetEnumerator()
+    {
+        // T[,].GetEnumerator() returns a non-generic IEnumerator that does not implement
+        // IEnumerator<T>, so it cannot be cast directly. Iterate the backing store instead.
+        foreach (var item in _data)
+        {
+            yield return item;
+        }
+    }
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     /// <inheritdoc/>
     public Matrix<T> Clone() => new Matrix<T>(_data);

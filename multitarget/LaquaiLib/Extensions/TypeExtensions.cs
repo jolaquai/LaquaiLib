@@ -708,6 +708,13 @@ public static partial class TypeExtensions
                 return true;
             }
 
+            // GetGenericTypeDefinition throws on non-generic types, so a non-generic type that isn't Action
+            // is simply not an Action delegate.
+            if (!type.IsGenericType)
+            {
+                return false;
+            }
+
             takesParameters = true;
             var gtd = type.GetGenericTypeDefinition();
             if (gtd == typeof(Action<>))

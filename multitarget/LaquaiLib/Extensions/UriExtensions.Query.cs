@@ -90,7 +90,17 @@ internal readonly struct QueryBuilder
             foreach (var range in span.Split('&'))
             {
                 var pair = span[range];
+                if (pair.IsEmpty)
+                {
+                    continue;
+                }
                 var equalsIndex = pair.IndexOf('=');
+                if (equalsIndex < 0)
+                {
+                    // Valueless parameter (e.g. "?flag"); record it with an empty value.
+                    _components[pair.ToString()] = "";
+                    continue;
+                }
                 var name = pair[..equalsIndex];
                 var value = pair[(equalsIndex + 1)..];
                 _components[name.ToString()] = value.ToString();

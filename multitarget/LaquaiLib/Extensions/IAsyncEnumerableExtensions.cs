@@ -55,10 +55,11 @@ file class AsyncEnumerableCombiner<T>(params ReadOnlySpan<IAsyncEnumerable<T>> i
 {
     private IAsyncEnumerable<T>[] _iterators = [.. iterators];
 
-    private int i;
     public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
     {
-        for (; i < _iterators.Length; i++)
+        // Use a local index (not an instance field) so each call produces an independent enumeration;
+        // _iterators.Length is re-read each iteration so iterators appended via AddIterators are still picked up.
+        for (var i = 0; i < _iterators.Length; i++)
         {
             var iterator = _iterators[i];
             await foreach (var item in iterator.WithCancellation(cancellationToken).ConfigureAwait(false))

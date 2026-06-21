@@ -15,6 +15,15 @@ public static class HttpListenerRequestExtensions
         /// </summary>
         /// <param name="request">The <see cref="HttpListenerRequest"/> to get the route from.</param>
         /// <returns>The route that the request was made to.</returns>
-        public string Route => request.RawUrl[..request.RawUrl.IndexOf('?')];
+        public string Route
+        {
+            get
+            {
+                var rawUrl = request.RawUrl;
+                var queryIndex = rawUrl.IndexOf('?');
+                // No query string means the whole RawUrl is the route.
+                return queryIndex < 0 ? rawUrl : rawUrl[..queryIndex];
+            }
+        }
     }
 }

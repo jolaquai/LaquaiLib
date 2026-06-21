@@ -19,7 +19,7 @@ public static class MemoryDiff
     /// Finds the index at which the specified <see cref="Span{T}"/>s of <typeparamref name="T"/> differ (that is, where two elements at the same index do not compare equal).
     /// </summary>
     /// <typeparam name="T">The type of the elements in the spans.</typeparam>
-    /// <param name="left">The first span to compare.</param>
+    /// <param name="left">The first span to compare.</param>4
     /// <param name="right">The second span to compare.</param>
     /// <param name="startIndex">The index at which to start the comparison. Must be a valid index in both spans.</param>
     /// <param name="equalityComparer">An optional <see cref="IEqualityComparer{T}"/> implementation to use when comparing elements. If <c>null</c>, the default equality comparer for <typeparamref name="T"/> is used.</param>

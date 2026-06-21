@@ -645,9 +645,11 @@ public static partial class FileSystemHelper
         }
         if (allowEmptyDirectories)
         {
-            return directoryInfo.EnumerateFiles("*", SearchOption.AllDirectories).Any();
+            // Only files count: the directory is "empty" when there are no files anywhere beneath it.
+            return !directoryInfo.EnumerateFiles("*", SearchOption.AllDirectories).Any();
         }
-        return directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories).Any();
+        // Any entry at all (including empty subdirectories) means it is not empty.
+        return !directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories).Any();
     }
     /// <summary>
     /// Deletes the directory at the specified <paramref name="directoryPath"/> if it is empty.
@@ -655,7 +657,7 @@ public static partial class FileSystemHelper
     /// <param name="directoryPath">The path to the directory.</param>
     /// <param name="allowEmptyDirectories">Whether to delete the directory if it contains only empty directories (that is, only files are considered for the check).</param>
     public static void DeleteIfEmpty(string directoryPath, bool allowEmptyDirectories = false)
-        => IsEmpty(new DirectoryInfo(directoryPath), allowEmptyDirectories);
+        => DeleteIfEmpty(new DirectoryInfo(directoryPath), allowEmptyDirectories);
     /// <summary>
     /// Deletes the directory identified by the specified <paramref name="directoryInfo"/> if it is empty.
     /// </summary>

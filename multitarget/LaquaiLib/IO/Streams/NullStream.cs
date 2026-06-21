@@ -92,13 +92,10 @@ public class ExceptStream : Stream
     /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count)
     {
-        switch (count)
-        {
-            case 0:
-                return 0;
-            default:
-                throw new NotSupportedException();
-        }
+        if (count == 0)
+            return 0;
+
+        throw new NotSupportedException();
     }
     /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
@@ -107,12 +104,9 @@ public class ExceptStream : Stream
     /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
     {
-        switch (count)
-        {
-            case 0:
-                return;
-            default:
-                throw new NotSupportedException();
-        }
+        if (count == 0)
+            return;
+
+        throw new NotSupportedException();
     }
 }

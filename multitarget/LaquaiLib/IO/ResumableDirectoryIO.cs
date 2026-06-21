@@ -77,7 +77,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
         IProgress<(int FilesCompleted, int TotalFiles, long BytesCopied, long TotalBytes, string CurrentFile)> progressSink = null,
         CancellationToken cancellationToken = default
     )
-        => MigrateDirectoryAsync(sourcePath, destinationPath, true, overwrite, preserveTimestamps, verifyFiles, progressSink, cancellationToken);
+        => MigrateDirectoryAsync(sourcePath, destinationPath, false, overwrite, preserveTimestamps, verifyFiles, progressSink, cancellationToken);
 
     private async Task<bool> MigrateDirectoryAsync(
         string sourcePath,

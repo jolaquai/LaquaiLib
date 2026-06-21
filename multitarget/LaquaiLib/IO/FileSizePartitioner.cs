@@ -39,6 +39,7 @@ public class FileSizePartitioner : Partitioner<string>
     public FileSizePartitioner(IEnumerable<FileInfo> fileInfos)
     {
         _files = fileInfos.ToFrozenDictionary(static fi => fi.FullName);
+        TotalSize = _files.Aggregate(0ul, static (acc, pair) => acc + (ulong)pair.Value.Length);
         TotalCount = _files.Count;
     }
     /// <summary>
@@ -69,32 +70,41 @@ public class FileSizePartitioner : Partitioner<string>
     /// <returns>An <see cref="IList{T}"/> of <see cref="IEnumerator{T}"/> instances that represent the partitions.</returns>
     public override IList<IEnumerator<string>> GetPartitions(int partitionCount)
     {
-        var ordered = _files.OrderByDescending(static pair => pair.Value.Length);
-        var partitions = new List<IEnumerator<string>>(partitionCount);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(partitionCount);
 
-        var partitionSize = Math.Ceiling((double)TotalSize / partitionCount);
-        var currentPartition = new List<string>();
-        var currentSize = 0L;
+        var ordered = _files.OrderByDescending(static pair => pair.Value.Length);
+
+        // Largest-processing-time greedy bin packing: walk the files largest-first and place each into the
+        // bucket that currently holds the least data. This yields exactly partitionCount buckets (some may be
+        // empty when there are fewer files than partitions) with approximately equal total sizes.
+        var buckets = new List<string>[partitionCount];
+        var sizes = new long[partitionCount];
+        for (var i = 0; i < partitionCount; i++)
+        {
+            buckets[i] = [];
+        }
 
         foreach (var (k, v) in ordered)
         {
-            var fileSize = v.Length;
-            if (currentPartition.Count == 0 || currentSize + fileSize <= partitionSize)
+            var minIndex = 0;
+            for (var i = 1; i < partitionCount; i++)
             {
-                currentPartition.Add(k);
-                currentSize += fileSize;
+                if (sizes[i] < sizes[minIndex])
+                {
+                    minIndex = i;
+                }
             }
-            else
-            {
-                partitions.Add(currentPartition.GetEnumerator());
-                currentPartition = [k];
-                currentSize = fileSize;
-            }
+            buckets[minIndex].Add(k);
+            sizes[minIndex] += v.Length;
         }
 
-        Debug.Assert(partitions.Count <= partitionCount);
+        var partitions = new List<IEnumerator<string>>(partitionCount);
+        foreach (var bucket in buckets)
+        {
+            partitions.Add(bucket.GetEnumerator());
+        }
 
-        partitions.Add(currentPartition.GetEnumerator());
+        Debug.Assert(partitions.Count == partitionCount);
 
         return partitions;
     }

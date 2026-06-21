@@ -7,7 +7,7 @@ namespace LaquaiLib.IO.Streams.RandomStreams;
 public class RandomStream : ExceptStream
 {
     /// <inheritdoc/>
-    public override bool CanRead => base.CanRead;
+    public override bool CanRead => true;
 
     /// <summary>
     /// Exposes a <see cref="System.Random"/> instance derived types may use.

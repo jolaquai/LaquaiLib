@@ -6,7 +6,7 @@ namespace LaquaiLib.Collections.Enumeration;
 /// Implements the enumerator pattern to enumerate slices of a <see cref="ReadOnlySpan{T}"/> in chunks of a specified size.
 /// </summary>
 /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
-/// <param name="chunkSize">The maximum size of each chunk to enumerate. If 
+/// <param name="chunkSize">The maximum size of each chunk to enumerate. The final chunk may be smaller if the source length is not an exact multiple of this value.</param>
 public ref struct SpanChunkEnumerable<T>(ReadOnlySpan<T> source, int chunkSize)
 {
     private readonly ReadOnlySpan<T> _source = source;

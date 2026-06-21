@@ -33,14 +33,17 @@ public static partial class ProcessExtensions
             {
                 mask = ~0ul;
             }
+            // (1ul << 64) is undefined (the shift count is masked to 6 bits), so a 64-processor system would
+            // otherwise produce a 0 mask here. Treat >= 64 as "all 64 bits valid".
+            var processorCount = Environment.ProcessorCount;
+            var fullMask = processorCount >= 64 ? ~0ul : (1ul << processorCount) - 1;
             if (discard)
             {
-                // shifting left, then subtracting 1 is basically a ~0 mask up to bit shifted left to
-                mask &= (1ul << Environment.ProcessorCount) - 1;
+                mask &= fullMask;
             }
-            if (1ul << Environment.ProcessorCount <= mask)
+            if (mask > fullMask)
             {
-                throw new ArgumentOutOfRangeException(nameof(mask), $"The bit mask '0b{mask.AsBinary()}' specifies more than the {Environment.ProcessorCount} logical processors available to the system.");
+                throw new ArgumentOutOfRangeException(nameof(mask), $"The bit mask '0b{mask.AsBinary()}' specifies more than the {processorCount} logical processors available to the system.");
             }
             if (process.HasExited)
             {

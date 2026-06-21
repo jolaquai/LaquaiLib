@@ -120,7 +120,9 @@ public static partial class VirtualKeyUtils
     public static VirtualKey[] GetPressedKeys()
     {
         var keys = Enum.GetValues<VirtualKey>();
-        return Array.FindAll(keys, static vk => (User32.GetKeyState((uint)vk) & Interop.msgByte) != 0);
+        // GetKeyState returns a short whose high-order bit (0x8000) indicates the key is down; reuse the
+        // correct single-key check rather than masking the wrong (byte-level 0x80) bit.
+        return Array.FindAll(keys, GetKeyState);
     }
     /// <summary>
     /// Gets the state of the specified virtual key.

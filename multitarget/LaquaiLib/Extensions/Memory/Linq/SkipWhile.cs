@@ -8,7 +8,7 @@ public static partial class LinqMemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<TSource> SkipWhile(Func<TSource, bool> predicate)
         {
-            var newStart = 0;
+            var newStart = source.Length;
             for (var i = 0; i < source.Length; i++)
             {
                 if (!predicate(source[i]))
@@ -24,7 +24,7 @@ public static partial class LinqMemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<TSource> SkipWhile(Func<TSource, int, bool> predicate)
         {
-            var newStart = 0;
+            var newStart = source.Length;
             for (var i = 0; i < source.Length; i++)
             {
                 if (!predicate(source[i], i))
@@ -43,7 +43,7 @@ public static partial class LinqMemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<TSource> SkipWhile(Func<TSource, bool> predicate)
         {
-            var newStart = 0;
+            var newStart = source.Length;
             for (var i = 0; i < source.Length; i++)
             {
                 if (!predicate(source[i]))
@@ -59,7 +59,7 @@ public static partial class LinqMemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<TSource> SkipWhile(Func<TSource, int, bool> predicate)
         {
-            var newStart = 0;
+            var newStart = source.Length;
             for (var i = 0; i < source.Length; i++)
             {
                 if (!predicate(source[i], i))

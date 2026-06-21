@@ -65,43 +65,95 @@ public static partial class LinqMemoryExtensions
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
+        // Matches Enumerable.Average: null entries are ignored and the divisor is the count of
+        // non-null elements (returning null when there are none), not source.Length.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double? Average(Func<TSource, int?> selector)
         {
-            double? sum = Sum(source, selector);
-            return sum.HasValue ? sum.Value / source.Length : null;
+            long sum = 0;
+            var count = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    sum += value.Value;
+                    count++;
+                }
+            }
+            return count == 0 ? null : (double)sum / count;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double? Average(Func<TSource, long?> selector)
         {
-            double? sum = Sum(source, selector);
-            return sum.HasValue ? sum.Value / source.Length : null;
+            long sum = 0;
+            var count = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    sum += value.Value;
+                    count++;
+                }
+            }
+            return count == 0 ? null : (double)sum / count;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float? Average(Func<TSource, float?> selector)
         {
-            var sum = Sum(source, selector);
-            return sum.HasValue ? sum.Value / source.Length : null;
+            double sum = 0;
+            var count = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    sum += value.Value;
+                    count++;
+                }
+            }
+            return count == 0 ? null : (float)(sum / count);
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double? Average(Func<TSource, double?> selector)
         {
-            var sum = Sum(source, selector);
-            return sum.HasValue ? sum.Value / source.Length : null;
+            double sum = 0;
+            var count = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    sum += value.Value;
+                    count++;
+                }
+            }
+            return count == 0 ? null : sum / count;
         }
 
         /// <inheritdoc cref="Enumerable.Average{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})" />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal? Average(Func<TSource, decimal?> selector)
         {
-            var sum = Sum(source, selector);
-            return sum.HasValue ? sum.Value / source.Length : null;
+            decimal sum = 0;
+            var count = 0;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = selector(source[i]);
+                if (value.HasValue)
+                {
+                    sum += value.Value;
+                    count++;
+                }
+            }
+            return count == 0 ? null : sum / count;
         }
     }
 }

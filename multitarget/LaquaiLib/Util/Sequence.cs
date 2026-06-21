@@ -36,11 +36,32 @@ public static class Sequence
     /// <exception cref="ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
     public static IEnumerable<T> Create<T>(T start, T stop, T step) where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>
     {
-        var current = start;
-        yield return current;
-        while (current + step is var next && next <= stop)
+        if (step == T.Zero)
         {
-            yield return current = next;
+            throw new ArgumentException("The step width must not be zero.", nameof(step));
+        }
+        return Iterator(start, stop, step);
+
+        static IEnumerable<T> Iterator(T start, T stop, T step)
+        {
+            var current = start;
+            yield return current;
+            // The termination condition depends on the direction of iteration: ascending steps stop once
+            // the next value passes above stop, descending steps once it passes below.
+            if (step > T.Zero)
+            {
+                while (current + step is var next && next <= stop)
+                {
+                    yield return current = next;
+                }
+            }
+            else
+            {
+                while (current + step is var next && next >= stop)
+                {
+                    yield return current = next;
+                }
+            }
         }
     }
 }

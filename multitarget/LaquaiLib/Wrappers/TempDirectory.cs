@@ -46,17 +46,17 @@ public class TempDirectory : IDisposable
 
     private void Dispose(bool disposing)
     {
-        if (disposing)
+        // Delete the directory regardless of `disposing`: the cleanup only touches the _path string, so it is
+        // safe to run from the finalizer too. Gating it behind `disposing` would leak the directory on disk
+        // whenever the wrapper is finalized without an explicit Dispose.
+        if (!string.IsNullOrWhiteSpace(_path))
         {
-            if (!string.IsNullOrWhiteSpace(_path))
+            try
             {
-                try
-                {
-                    Directory.Delete(_path, true);
-                }
-                catch { }
-                _path = null;
+                Directory.Delete(_path, true);
             }
+            catch { }
+            _path = null;
         }
     }
 

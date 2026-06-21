@@ -118,6 +118,16 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// <returns>A reference to <paramref name="value"/>.</returns>
     public T2 SetForward(T1 key, T2 value)
     {
+        // Remove any previous pairings involving either side so the one-to-one invariant is preserved
+        // and no stale entries are left behind in the opposite dictionary.
+        if (_forward.Remove(key, out var oldValue))
+        {
+            _ = _reverse.Remove(oldValue);
+        }
+        if (_reverse.Remove(value, out var oldKey))
+        {
+            _ = _forward.Remove(oldKey);
+        }
         _forward[key] = value;
         _reverse[value] = key;
         return value;
@@ -130,6 +140,16 @@ public class TwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
     /// <returns>A reference to <paramref name="value"/>.</returns>
     public T1 SetReverse(T2 key, T1 value)
     {
+        // Remove any previous pairings involving either side so the one-to-one invariant is preserved
+        // and no stale entries are left behind in the opposite dictionary.
+        if (_reverse.Remove(key, out var oldKey))
+        {
+            _ = _forward.Remove(oldKey);
+        }
+        if (_forward.Remove(value, out var oldValue))
+        {
+            _ = _reverse.Remove(oldValue);
+        }
         _forward[value] = key;
         _reverse[key] = value;
         return value;
