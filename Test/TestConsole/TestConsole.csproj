@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFrameworks>net10.0-windows;net11.0-windows</TargetFrameworks>
+        <TargetFrameworks>net11.0-windows;net11.0-windows</TargetFrameworks>
         <UseWindowsForms>true</UseWindowsForms>
         <UseWPF>true</UseWPF>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>

@@ -9003,7 +9003,7 @@
         <member name="M:LaquaiLib.Extensions.TypeExtensions.UnspeakableMemberNameRegex">
             <remarks>
             Pattern:<br/>
-            <code>&lt;.*?&gt;\\p{Ll}__(\\p{L}|\\p{Nd}|\\||_)+?_\\p{Nd}+?(?=\\(.*?\\))?</code><br/>
+            <code>&lt;.*?&gt;\p{Ll}__(\p{L}|\p{Nd}|\||_)+?_\p{Nd}+?(?=\(.*?\))?</code><br/>
             Options:<br/>
             <code>RegexOptions.ExplicitCapture</code><br/>
             Explanation:<br/>
@@ -12076,7 +12076,7 @@
         <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.EntryPointNotFoundExceptionDataRegex">
             <remarks>
             Pattern:<br/>
-            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\\.</code><br/>
+            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\.</code><br/>
             Options:<br/>
             <code>RegexOptions.ExplicitCapture</code><br/>
             Explanation:<br/>

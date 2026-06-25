@@ -6,6 +6,7 @@ namespace LaquaiLib.Wrappers;
 /// <summary>
 /// Represents an instant in time captured on the current machine via a high-resolution timer.
 /// The value is not wall-clock time and is only meaningful within the same process lifetime.
+/// Uses <see cref="Stopwatch"/> internally.
 /// </summary>
 public readonly struct TimeStamp() : IEquatable<TimeStamp>, IComparable<TimeStamp>,
     ISubtractionOperators<TimeStamp, TimeStamp, TimeSpan>
