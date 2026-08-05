@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net11.0-windows;net11.0-windows</TargetFrameworks>
+    <TargetFramework>net11.0-windows</TargetFramework>
 
     <UseWPF>True</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
@@ -15,8 +15,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CoreAudio" Version="1.40.0" />
-    <PackageReference Include="System.Management" Version="9.0.9" />
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.9" />
+    <PackageReference Include="System.Management" Version="10.0.10" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.10" />
 
     <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib\LaquaiLib.csproj" />
   </ItemGroup>

@@ -475,9 +475,10 @@ public static partial class IEnumerableExtensions
         public int CopyTo(List<T> target, int startIndex = 0)
         {
             var length = source.Length;
-            if (startIndex + length > target.Count)
+            var finalLen = startIndex + length;
+            if (finalLen > target.Count)
             {
-                CollectionsMarshal.SetCount(target, startIndex + length);
+                CollectionsMarshal.SetCount(target, finalLen);
             }
             var dest = target.AsSpan(startIndex, length);
             source.CopyTo(dest);

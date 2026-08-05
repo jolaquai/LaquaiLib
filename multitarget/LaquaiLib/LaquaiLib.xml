@@ -2317,6 +2317,11 @@
             <param name="instance">The instance to wrap.</param>
             <returns>The created <see cref="T:LaquaiLib.Dynamic.FullAccessDynamic`1"/> instance.</returns>
         </member>
+        <member name="T:LaquaiLib.Empty">
+            <summary>
+            Implements an empty <see langword="struct"/>. Used in union definitions as a distinction for "no value" as opposed to <see langword="null"/> acting as a sentinel.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Extensions.AnyExtensions">
             <summary>
             Provides Extension Methods for all Types.
@@ -3504,6 +3509,11 @@
             <param name="source">The <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> to start with.</param>
             <param name="with">The <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> instances to chain together.</param>
             <returns>An <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> implementation that iterates over each <paramref name="source"/> and <paramref name="with"/> in turn.</returns>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IBufferWriterExtensions">
+            <summary>
+            Provides extension methods for the <see cref="T:System.Buffers.IBufferWriter`1"/> Type.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.ICollectionExtensions">
             <summary>
@@ -7153,6 +7163,9 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Write``1(System.Span{System.Byte},``0,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$BFA23C8808B2873C0738C2637169E9F3.Write``1(``0,System.Int32)"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Span{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill"/>
         </member>
@@ -7168,6 +7181,9 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0},System.Func{System.Int32,``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{System.Int32,`0,`0})"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.ZeroMemory"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill"/>
         </member>
@@ -7182,6 +7198,9 @@
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{System.Int32,`0,`0})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Memory{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.ZeroMemory"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Memory{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill"/>
@@ -7358,6 +7377,11 @@
             <param name="action">The <see cref="T:System.Action`2"/> to invoke for each element.</param>
             <returns>The original <see cref="T:System.Span`1"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory">
+            <summary>
+            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Span`1"/>s of <typeparamref name="T"/>.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill">
             <summary>
             Fills the specified <see cref="T:System.Span`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
@@ -7401,6 +7425,11 @@
             </returns>
             <exception cref="T:System.ArgumentException">Thrown if the target <paramref name="span"/> cannot accomodate the specified <paramref name="data"/> instance.</exception>
         </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.ZeroMemory">
+            <summary>
+            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill">
             <summary>
             Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
@@ -7429,6 +7458,11 @@
             Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.ZeroMemory">
+            <summary>
+            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Memory`1"/>s of <typeparamref name="T"/>.
+            </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill">
             <summary>
@@ -8971,6 +9005,9 @@
         <member name="M:LaquaiLib.Extensions.TypeExtensions.get_SizeOf(System.Type)">
             <inheritdoc cref="P:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.SizeOf"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.MakeGenericTypeWith(System.Type,System.ReadOnlySpan{System.Object})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.MakeGenericTypeWith(System.ReadOnlySpan{System.Object})"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.IsIntegralType(System.Type)">
             <summary>
             Determines whether the specified type is an integral type.
@@ -9137,6 +9174,13 @@
             <summary>
             Gets the managed size of the type represented by this instance in bytes, or <c>-1</c> if the type does not have a predefined size.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.MakeGenericTypeWith(System.ReadOnlySpan{System.Object})">
+            <summary>
+            Creates a <see cref="T:System.Type"/> that represents the constructed type obtained by substituting the the types of the specified <see langword="object"/>s for the type parameters of the current unbound generic type definition.
+            </summary>
+            <param name="fromTypeArguments">The <see langword="object"/>s whose types are used to substitute the type parameters of the current unbound generic type definition.</param>
+            <returns>The created <see cref="T:System.Type"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ReflectionOptions">
             <summary>
@@ -9486,6 +9530,207 @@
             <summary>
             Required to write to memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>.
             </summary>
+        </member>
+        <member name="T:LaquaiLib.IO.SegmentOffset`1">
+            <summary>
+            Represents a position in a segmented chain of buffers.
+            </summary>
+            <typeparam name="T">The type of elements in the buffer.</typeparam>
+            <param name="SegmentIndex">The index of the segment in the chain.</param>
+            <param name="Segment">A <see cref="T:System.Memory`1"/> representing the segment.</param>
+            <param name="Offset">The offset within the segment.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.SegmentOffset`1.#ctor(System.Int32,System.Memory{`0},System.Int32)">
+            <summary>
+            Represents a position in a segmented chain of buffers.
+            </summary>
+            <typeparam name="T">The type of elements in the buffer.</typeparam>
+            <param name="SegmentIndex">The index of the segment in the chain.</param>
+            <param name="Segment">A <see cref="T:System.Memory`1"/> representing the segment.</param>
+            <param name="Offset">The offset within the segment.</param>
+        </member>
+        <member name="P:LaquaiLib.IO.SegmentOffset`1.SegmentIndex">
+            <summary>The index of the segment in the chain.</summary>
+        </member>
+        <member name="P:LaquaiLib.IO.SegmentOffset`1.Segment">
+            <summary>A <see cref="T:System.Memory`1"/> representing the segment.</summary>
+        </member>
+        <member name="P:LaquaiLib.IO.SegmentOffset`1.Offset">
+            <summary>The offset within the segment.</summary>
+        </member>
+        <member name="T:LaquaiLib.IO.BufferWriterBase`1">
+            <summary>
+            Implements a base class for expandable <see cref="T:System.Buffers.IBufferWriter`1"/> implementations.
+            </summary>
+            <typeparam name="T">The type of elements written to the buffer.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferWriterBase`1.Advance(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferWriterBase`1.GetMemory(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferWriterBase`1.GetSpan(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferWriterBase`1.Next(System.Int32)">
+            <summary>
+            Returns either the current segment of the buffer if it is not full, or the next segment of the buffer.
+            </summary>
+            <param name="sizeHint">The desired size of the next segment.</param>
+            <returns>The segment to write into next.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferWriterBase`1.SetLength(System.Int64)">
+            <summary>
+            Truncates the contents of the buffer to the specified length.
+            </summary>
+            <param name="length">The new length of the buffer.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferWriterBase`1.Clear(System.Boolean)">
+            <summary>
+            Clears the contents of the buffer, optionally zeroing out the memory.
+            </summary>
+            <param name="zero">Whether to zero out the memory of the buffer.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferWriterBase`1.Dispose">
+            <summary>
+            Disposes of the buffer writer and releases any resources associated with it.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.IO.SegmentedBufferWriterBase`1">
+            <summary>
+            Implements an <see cref="T:System.Buffers.IBufferWriter`1"/> that writes to caller supplied buffers with support for segmented backing storage.
+            </summary>
+            <typeparam name="T">The type of elements written to the buffer.</typeparam>
+        </member>
+        <member name="F:LaquaiLib.IO.SegmentedBufferWriterBase`1.segment">
+            <summary>
+            The index of <see cref="F:LaquaiLib.IO.SegmentedBufferWriterBase`1.currentSegment"/> in the segmented buffer.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.IO.SegmentedBufferWriterBase`1.index">
+            <summary>
+            The offset of the next write in <see cref="F:LaquaiLib.IO.SegmentedBufferWriterBase`1.currentSegment"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.IO.SegmentedBufferWriterBase`1.currentSegment">
+            <summary>
+            The current segment of the segmented buffer.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.SegmentedBufferWriterBase`1.Position">
+            <summary>
+            Gets a <see cref="T:LaquaiLib.IO.SegmentOffset`1"/> that represents the position in the segmented buffer where the next write will occur.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.SegmentedBufferWriterBase`1.AbsoluteLength">
+            <summary>
+            Gets a <see langword="long"/> that represents the absolute position from the start of the segment chain.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.SegmentedBufferWriterBase`1.Advance(System.Int32)">
+            <summary>
+            Notifies the writer that <paramref name="count"/> elements have been written to the buffer.
+            </summary>
+            <param name="count">The number of elements written to the buffer.</param>
+        </member>
+        <member name="T:LaquaiLib.IO.ContiguousBufferWriterBase`1">
+            <summary>
+            Implements an <see cref="T:System.Buffers.IBufferWriter`1"/> that writes to a contiguous buffer with support for segmented backing storage.
+            </summary>
+            <typeparam name="T">The type of elements written to the buffer.</typeparam>
+        </member>
+        <member name="F:LaquaiLib.IO.ContiguousBufferWriterBase`1.buffer">
+            <summary>
+            The contiguous underlying buffer of the writer.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.ContiguousBufferWriterBase`1.Length">
+            <summary>
+            Gets the position in the buffer where the next write will occur.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.ContiguousBufferWriterBase`1.Advance(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.ContiguousBufferWriterBase`1.GetMemory(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.ContiguousBufferWriterBase`1.Clear(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.IO.PooledBufferWriter`1">
+            <summary>
+            Implements <see cref="T:LaquaiLib.IO.BufferWriterBase`1"/> that grows by renting segments from an <see cref="T:System.Buffers.ArrayPool`1"/>.
+            </summary>
+            <typeparam name="T">The type of elements written to the buffer.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.#ctor(System.Buffers.ArrayPool{`0},System.Boolean)">
+            <summary>
+            Implements <see cref="T:LaquaiLib.IO.BufferWriterBase`1"/> that grows by renting segments from an <see cref="T:System.Buffers.ArrayPool`1"/>.
+            </summary>
+            <typeparam name="T">The type of elements written to the buffer.</typeparam>
+        </member>
+        <member name="T:LaquaiLib.IO.PooledBufferWriter`1.SegmentEnumerator">
+            <summary>
+            Enumerates the segments of the <see cref="T:LaquaiLib.IO.PooledBufferWriter`1"/> as <see cref="T:System.Memory`1"/> instances.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.PooledBufferWriter`1.SegmentEnumerator.Current">
+            <summary>
+            Gets the current segment of the buffer as a <see cref="T:System.Memory`1"/> instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.SegmentEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next segment of the buffer.
+            </summary>
+            <returns><see langword="true"/> if the enumerator was successfully advanced to the next segment; <see langword="false"/> if the enumerator has passed the end of the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.SegmentEnumerator.Reset">
+            <summary>
+            Resets the enumerator to its initial position, which is before the first segment of the buffer.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.SegmentEnumerator.Dispose">
+            <summary>
+            Disposes the enumerator and releases any resources associated with it.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.IO.PooledBufferWriter`1._maxElems">
+            <summary>
+            The maximum number of elements that can be stored in a single segment, calculated based on the size of the element type <typeparamref name="T"/> and a fixed segment size of <see cref="F:LaquaiLib.IO.PooledBufferWriter`1.DefaultSegmentSize"/> bytes.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.PooledBufferWriter`1.AbsoluteLength">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.GetMemory(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.Next(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.SetLength(System.Int64)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.Clear(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.GetSegments">
+            <summary>
+            Gets an enumerator that iterates through the segments of the buffer as <see cref="T:System.Memory`1"/> instances.
+            </summary>
+            <returns>The enumerator for the segments of the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.ToArray">
+            <summary>
+            Copies the data written so far to a new array and returns it.
+            </summary>
+            <returns>The created array.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.PooledBufferWriter`1.Dispose">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.IO.FileSizePartitioner">
             <summary>
@@ -9972,10 +10217,97 @@
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the cancellation request. When it completes, the operation has been canceled.</returns>
         </member>
+        <member name="T:LaquaiLib.IO.Streams.ArrayPoolMemoryStream">
+            <summary>
+            Implements a <see cref="T:System.IO.Stream"/> whose backing memory is source from an <see cref="T:System.Buffers.ArrayPool`1"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CanRead">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CanSeek">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CanWrite">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Capacity">
+            <summary>
+            Gets the maximum <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> this instance can reach without having to rent more memory.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Read(System.Span{System.Byte})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ReadByte">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Write(System.ReadOnlySpan{System.Byte})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.WriteByte(System.Byte)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyTo(System.IO.Stream,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.SetLength(System.Int64)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Flush">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
         <member name="T:LaquaiLib.IO.Streams.MemoryOrFileStream">
             <summary>
             Contains factory methods that produce either <see cref="T:System.IO.MemoryStream"/> or <see cref="T:System.IO.FileStream"/> instances, depending on the size of the data expected to be written to it.
             </summary>
+        </member>
+        <member name="T:LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion">
+            <summary>
+            Holds either a <see cref="T:System.IO.MemoryStream"/> or a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion.op_Implicit(LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion)~System.IO.Stream">
+            <summary>
+            Implicitly converts a <see cref="T:LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion"/> to a <see cref="T:System.IO.Stream"/>, no matter the underlying type.
+            </summary>
+            <param name="streamUnion">The <see cref="T:LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion"/> to convert.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion.Dispose">
+            <inheritdoc/>
         </member>
         <member name="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff">
             <summary>
@@ -9996,15 +10328,15 @@
             Creates a new <see cref="T:System.IO.Stream"/> with the given expected payload size.
             </summary>
             <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/>, a <see cref="T:System.IO.FileStream"/> wrapping a temporary file is created (which is deleted on call of <see cref="M:System.IO.Stream.Dispose"/>. Otherwise, a <see cref="T:System.IO.MemoryStream"/> is created.</param>
-            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
+            <returns>A <see cref="T:LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion"/> that wraps the created <see cref="T:System.IO.Stream"/>.</returns>
         </member>
         <member name="M:LaquaiLib.IO.Streams.MemoryOrFileStream.Create(System.Int32,System.Int32)">
             <summary>
             Creates a new <see cref="T:System.IO.Stream"/> with the given expected payload size and cutoff. <see cref="P:LaquaiLib.IO.Streams.MemoryOrFileStream.Cutoff"/> is ignored.
             </summary>
             <param name="payloadSize">The expected size of the payload to be written to this stream. If it exceeds <paramref name="cutoff"/>, a <see cref="T:System.IO.FileStream"/> wrapping a temporary file is created (which is deleted on call of <see cref="M:System.IO.Stream.Dispose"/>. Otherwise, a <see cref="T:System.IO.MemoryStream"/> is created.</param>
-            <returns>The created <see cref="T:System.IO.Stream"/>.</returns>
             <param name="cutoff">The cutoff at which to switch from <see cref="T:System.IO.MemoryStream"/> to <see cref="T:System.IO.FileStream"/>.</param>
+            <returns>A <see cref="T:LaquaiLib.IO.Streams.MemoryOrFileStream.StreamUnion"/> that wraps the created <see cref="T:System.IO.Stream"/>.</returns>
         </member>
         <member name="T:LaquaiLib.IO.Streams.MultiStream">
             <summary>
@@ -11418,36 +11750,6 @@
             Gets a <see cref="T:LaquaiLib.Text.CharComparer"/> that performs a case-insensitive ordinal comparison.
             </summary>
         </member>
-        <member name="P:LaquaiLib.Text.CharComparer.CurrentCultureCharComparer.Instance">
-            <summary>
-            Gets the singleton instance of the <see cref="T:LaquaiLib.Text.CharComparer.CurrentCultureCharComparer"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Text.CharComparer.CurrentCultureIgnoreCaseCharComparer.Instance">
-            <summary>
-            Gets the singleton instance of the <see cref="T:LaquaiLib.Text.CharComparer.CurrentCultureIgnoreCaseCharComparer"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Text.CharComparer.InvariantCultureCharComparer.Instance">
-            <summary>
-            Gets the singleton instance of the <see cref="T:LaquaiLib.Text.CharComparer.InvariantCultureCharComparer"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Text.CharComparer.InvariantCultureIgnoreCaseCharComparer.Instance">
-            <summary>
-            Gets the singleton instance of the <see cref="T:LaquaiLib.Text.CharComparer.InvariantCultureIgnoreCaseCharComparer"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Text.CharComparer.OrdinalCharComparer.Instance">
-            <summary>
-            Gets the singleton instance of the <see cref="T:LaquaiLib.Text.CharComparer.OrdinalCharComparer"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Text.CharComparer.OrdinalIgnoreCaseCharComparer.Instance">
-            <summary>
-            Gets the singleton instance of the <see cref="T:LaquaiLib.Text.CharComparer.OrdinalIgnoreCaseCharComparer"/>.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Text.Json.DateTimeFromUnixConverter">
             <summary>
             Implements a <see cref="T:System.Text.Json.Serialization.JsonConverter`1"/> that is able to serialize and deserialize <see cref="T:System.DateTime"/> values as Unix timestamps.
@@ -11810,565 +12112,10 @@
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to observe for cancellation requests.</param>
             <returns>The created <see cref="T:System.Threading.Tasks.Task"/> or <see cref="P:System.Threading.Tasks.Task.CompletedTask"/> if the delay has already passed.</returns>
         </member>
-        <member name="T:LaquaiLib.Util.ExceptionManagement.Assert">
-            <summary>
-            Contains methods to assert conditions which throw an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the condition is not met.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.That(System.Func{System.Boolean})">
-            <summary>
-            Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.
-            </summary>
-            <param name="condition">The condition to assert to be <see langword="true"/>.</param>
-            <returns>The result of the invocation of <paramref name="condition"/> if it is <see langword="true"/>, otherwise an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.That(System.Func{System.Boolean},System.String)">
-            <summary>
-            Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <param name="condition">The condition to assert to be <see langword="true"/>.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails.</param>
-            <returns>The result of the invocation of <paramref name="condition"/> if it is <see langword="true"/>, otherwise an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.That(System.Boolean)">
-            <summary>
-            Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.
-            </summary>
-            <param name="condition">The condition to assert to be <see langword="true"/>.</param>
-            <returns>The result of the invocation of <paramref name="condition"/> if it is <see langword="true"/>, otherwise an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.That(System.Boolean,System.String)">
-            <summary>
-            Asserts that a specified condition is <see langword="true"/>. If not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <param name="condition">The condition to assert to be <see langword="true"/>.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails.</param>
-            <returns><see langword="true"/> if <paramref name="condition"/> is <see langword="true"/>, otherwise an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNull``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is <see langword="null"/>.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be not <see langword="null"/>.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotNull``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is not <see langword="null"/>.
-            If it is, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be not <see langword="null"/>.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsGreaterThan``1(``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is greater than another value.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be greater than <paramref name="other"/>.</param>
-            <param name="other">The value to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-            <exception cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1">Thrown if <paramref name="value" /> is not greater than <paramref name="other"/>.</exception>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsGreaterThanOrEqualTo``1(``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is greater than or equal to another value.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be greater than or equal to <paramref name="other"/>.</param>
-            <param name="other">The value to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsLessThan``1(``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is less than another value.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be less than <paramref name="other"/>.</param>
-            <param name="other">The value to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsLessThanOrEqualTo``1(``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is less than or equal to another value.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be less than or equal to <paramref name="other"/>.</param>
-            <param name="other">The value to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsEqualTo``1(``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is equal to another value.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be equal to <paramref name="other"/>.</param>
-            <param name="other">The value to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotEqualTo``1(``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is not equal to another value.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be not equal to <paramref name="other"/>.</param>
-            <param name="other">The value to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsInRange``1(``0,``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is in a specified range.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be within the range of <paramref name="min"/> and <paramref name="max"/>.</param>
-            <param name="min">The inclusive lower bound of the range to compare <paramref name="value"/> to.</param>
-            <param name="max">The inclusive upper bound of the range to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotInRange``1(``0,``0,``0,System.String)">
-            <summary>
-            Asserts that a specified value is not in a specified range.
-            If it is, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the values to operate on.</typeparam>
-            <param name="value">The value to assert to be outside the range of <paramref name="min"/> and <paramref name="max"/>.</param>
-            <param name="min">The inclusive lower bound of the range to compare <paramref name="value"/> to.</param>
-            <param name="max">The inclusive upper bound of the range to compare <paramref name="value"/> to.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsPositive``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is positive.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be positive.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNegative``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is negative.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be negative.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsZero``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is zero.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be zero.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNonZero``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is not zero.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be not equal to zero.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsDefault``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(TSelf)</c>.
-            If it is not, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be positive.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Assert.IsNotDefault``1(``0,System.String)">
-            <summary>
-            Asserts that a specified value is not the <see langword="default"/> for its type, i.e. precisely the result of the expression <c><see langword="default"/>(TSelf)</c>.
-            If it is, an <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> is thrown with the specified message.
-            </summary>
-            <typeparam name="T">The type of the value to operate on.</typeparam>
-            <param name="value">The value to assert to be positive.</param>
-            <param name="message">The message to include in the <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> if the assertion fails. May be <see langword="null"/> or empty to use the default message.</param>
-            <returns><paramref name="value"/> if the assertion succeeds, otherwise the method will not return.</returns>
-        </member>
-        <member name="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1">
-            <summary>
-            The exception that is thrown when an assertion fails.
-            </summary>
-            <remarks>
-            Initializes a new <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> with the value that failed an assertion and a message.
-            </remarks>
-            <param name="value">The value that caused an assertion to fail.</param>
-            <param name="innerException">The exception that is the cause of the current exception.</param>
-            <param name="message">A message that described the assertion failure.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1.#ctor(`0,System.Exception,System.String)">
-            <summary>
-            The exception that is thrown when an assertion fails.
-            </summary>
-            <remarks>
-            Initializes a new <see cref="T:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1"/> with the value that failed an assertion and a message.
-            </remarks>
-            <param name="value">The value that caused an assertion to fail.</param>
-            <param name="innerException">The exception that is the cause of the current exception.</param>
-            <param name="message">A message that described the assertion failure.</param>
-        </member>
-        <member name="P:LaquaiLib.Util.ExceptionManagement.AssertionFailureException`1.Value">
-            <summary>
-            The value that caused an assertion to fail.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException">
-            <summary>
-            The exception that is thrown when an unhandled exception is wrapped or otherwise handled in a <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> method.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceException.#ctor(System.String,System.Exception)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException"/>.
-            </summary>
-            <param name="message">A message that describes the error.</param>
-            <param name="innerException">The exception that is the cause of the current exception.</param>
-        </member>
-        <member name="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers">
-            <summary>
-            Exposes <see cref="T:System.EventHandler`1"/> instances registerable for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.RegisterAll">
-            <summary>
-            Registers all <see cref="T:System.EventHandler`1"/> instances in the <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers"/> class for the <see cref="E:System.AppDomain.FirstChanceException"/> event.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.WrapEntryPointNotFoundException(System.Object,System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs)">
-            <summary>
-            Wraps <see cref="T:System.EntryPointNotFoundException"/>s in a <see cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException"/> with additional information about the DLL and entry point.
-            <para/>Rethrows the original exception if no additional information could be gathered.
-            </summary>
-            <param name="sender">Ignored.</param>
-            <param name="e">The <see cref="T:System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs"/> instance containing the event data.</param>
-            <exception cref="T:LaquaiLib.Util.ExceptionManagement.FirstChanceException">Thrown when an <see cref="T:System.EntryPointNotFoundException"/> is caught. Contains additional information about the DLL and entry point.</exception>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.FirstChanceExceptionHandlers.EntryPointNotFoundExceptionDataRegex">
-            <remarks>
-            Pattern:<br/>
-            <code>Unable to find an entry point named '(?&lt;entryPoint&gt;[^']+)' in DLL '(?&lt;dllName&gt;[^']+)'\.</code><br/>
-            Options:<br/>
-            <code>RegexOptions.ExplicitCapture</code><br/>
-            Explanation:<br/>
-            <code>
-            ○ Match the string "Unable to find an entry point named '".<br/>
-            ○ "entryPoint" capture group.<br/>
-                ○ Match a character other than '\'' atomically at least once.<br/>
-            ○ Match the string "' in DLL '".<br/>
-            ○ "dllName" capture group.<br/>
-                ○ Match a character other than '\'' atomically at least once.<br/>
-            ○ Match the string "'.".<br/>
-            </code>
-            </remarks>
-        </member>
         <member name="T:LaquaiLib.Util.ExceptionManagement.HResults">
             <summary>
             Defines constants for some common HResults.
             Stolen straight from the .NET runtime source (see <see href="https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/HResults.cs"/>.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.ExceptionManagement.Try">
-            <summary>
-            Provides static methods that wrap <c>try-catch</c> blocks.
-            </summary>
-            <remarks>All methods in this class explicitly allow <see langword="null"/> returns.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.ExecuteOrDefault``1(``0,System.Func{``0})">
-            <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning <paramref name="defaultValue"/>.
-            </summary>
-            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-            <param name="defaultValue">The value to return if <paramref name="method"/> fails.</param>
-            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
-            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise <typeparamref name="T"/>'s <c>default</c> value.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.ExecuteOrDefault``1(System.Func{``0},System.Func{``0})">
-            <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/> and propagates its return value if it succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
-            </summary>
-            <typeparam name="T">The Type of the value returned by <paramref name="method"/>.</typeparam>
-            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if <paramref name="method"/> throws an exception.</param>
-            <param name="method">The <see cref="T:System.Func`1"/> to execute.</param>
-            <returns>The value returned by <paramref name="method"/> if it succeeds, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.ReadOnlySpan{System.Func{``0}})">
-            <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates its return value if it succeeds, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by the <paramref name="methods"/>.
-            </summary>
-            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
-            <param name="methods">The methods to try.</param>
-            <returns>The value of the first method that doesn't throw an exception.</returns>
-            <exception cref="T:System.AggregateException">Thrown if all methods throw an exception.</exception>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.First``1(System.Action{``0},System.ReadOnlySpan{``0})">
-            <summary>
-            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise throwing an <see cref="T:System.AggregateException"/> composed of all exceptions thrown by <paramref name="test"/>.
-            </summary>
-            <typeparam name="T">The Type of the items to test.</typeparam>
-            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
-            <param name="items">The items to test.</param>
-            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.ReadOnlySpan{System.Func{``0}})">
-            <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first succeeds, otherwise returning <paramref name="defaultValue"/>.
-            </summary>
-            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
-            <param name="defaultValue">The default value to return if all methods throw an exception.</param>
-            <param name="methods">The methods to try.</param>
-            <returns>The first value returned by a method that doesn't throw an exception, or the default value if all methods throw an exception.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.ReadOnlySpan{System.Func{``0}})">
-            <summary>
-            Attempts to execute the given parameterless <see cref="T:System.Func`1"/>s and propagates the return value of the first one that succeeds, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
-            </summary>
-            <typeparam name="T">The Type of the value that is ultimately returned.</typeparam>
-            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="methods"/> throw an exception. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
-            <param name="methods">The methods to try.</param>
-            <returns>The first value returned by a method that doesn't throw an exception, otherwise the value produced by <paramref name="defaultValueFactory"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(``0,System.Action{``0},System.ReadOnlySpan{``0})">
-            <summary>
-            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning <paramref name="defaultValue"/>.
-            </summary>
-            <typeparam name="T">The Type of the items to test.</typeparam>
-            <param name="defaultValue">The default value to return if all items throw an exception.</param>
-            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
-            <param name="items">The items to test.</param>
-            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise <paramref name="defaultValue"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.ExceptionManagement.Try.FirstOrDefault``1(System.Func{``0},System.Action{``0},System.ReadOnlySpan{``0})">
-            <summary>
-            Tests each item in <paramref name="items"/> using <paramref name="test"/> and returns the first item which <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.
-            </summary>
-            <typeparam name="T">The Type of the items to test.</typeparam>
-            <param name="defaultValueFactory">The <see cref="T:System.Func`1"/> that returns the default value to propagate if all <paramref name="items"/> cause an exception in <paramref name="test"/>. This is executed outside of the <c>try-catch</c> block and so is expected to always succeed.</param>
-            <param name="test">The <see cref="T:System.Action`1"/> to test each item with.</param>
-            <param name="items">The items to test.</param>
-            <returns>The first item in <paramref name="items"/> that <paramref name="test"/> does not throw an exception for, otherwise returning the value produced by <paramref name="defaultValueFactory"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Util.Logging.AsyncLogger">
-            <summary>
-            Represents a logger that writes messages to the <see cref="T:System.Console"/> in a separate thread to avoid blocking operations on the main thread. This type self-initializes when it is first used, that is, when the first message is queued. Before that, the background thread is not running.
-            </summary>
-            <remarks>
-            This type is thread-safe.
-            </remarks>
-        </member>
-        <member name="P:LaquaiLib.Util.Logging.AsyncLogger.IsBackground">
-            <summary>
-            Gets or sets a value indicating whether the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> should run in the background.
-            If <see langword="true"/>, the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> will exit when the parent thread exits.
-            By default, this is <see langword="true"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Logging.AsyncLogger.Target">
-            <summary>
-            The target <see cref="T:System.IO.TextWriter"/> to write messages to.
-            Changing this while messages are being processed is not recommended.
-            If this is <see cref="P:System.Console.Out"/>, output colorization is supported automatically through <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Type"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Logging.AsyncLogger.Processing">
-            <summary>
-            Gets a value indicating whether the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> is currently processing messages, that is, the message queue is not empty.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.Initialize">
-            <summary>
-            Initializes the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/>.
-            It exits when the parent thread (the thread calling this method) exits.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.Initialize(System.Threading.Thread)">
-            <summary>
-            Initializes the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> using the given <paramref name="thread"/> as its parent.
-            </summary>
-            <param name="thread">The thread to use as the parent thread. May be <see langword="null"/> to explicitly leave the <see cref="T:LaquaiLib.Util.Logging.AsyncLogger"/> running, even after all other threads have exited.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.Object,LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>. Its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
-            </summary>
-            <param name="message">The object to convert to a string and use as the text of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.Object,System.DateTime,LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
-            </summary>
-            <param name="message">The object to convert to a string and use as the text of the message.</param>
-            <param name="timestamp">The timestamp of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.String,LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>. Its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
-            </summary>
-            <param name="message">The text of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.String,System.DateTime,LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Creates and queues a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
-            </summary>
-            <param name="message">The text of the message.</param>
-            <param name="timestamp">The timestamp of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.ReadOnlySpan{System.String},LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Creates and queues a new multi-line <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="lines"/> and <paramref name="type"/>.
-            </summary>
-            <param name="lines">The lines of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(System.ReadOnlySpan{System.String},System.DateTime,LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Creates and queues a new multi-line <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="lines"/>, <paramref name="timestamp"/> and <paramref name="type"/>.
-            </summary>
-            <param name="lines">The lines of the message.</param>
-            <param name="timestamp">The timestamp of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.QueueMessage(LaquaiLib.Util.Logging.LoggerMessage)">
-            <summary>
-            Queues the given <paramref name="message"/>.
-            </summary>
-            <param name="message">The <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> to queue.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.FlushAsync">
-            <summary>
-            Creates a <see cref="T:System.Threading.Tasks.Task"/> that completes when the message queue is empty.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.AsyncLogger.Flush">
-            <summary>
-            Blocks the calling thread until the message queue is empty.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.Logging.LoggerMessage">
-            <summary>
-            Represents an immutable message that can be queued for logging.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Logging.LoggerMessage.Message">
-            <summary>
-            The text of the message.
-            If explicitly <see langword="null"/>, an empty line is written (i.e. without the default formatting including a timestamp).
-            If this contains multiple lines, each line is written separately. For each but the first, padding is added to align the text with the first line, after the timestamp.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp">
-            <summary>
-            The timestamp of the message.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Util.Logging.LoggerMessage.Type">
-            <summary>
-            The type of the message.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/>.
-            The default <see cref="T:LaquaiLib.Util.Logging.MessageType"/> is <see cref="F:LaquaiLib.Util.Logging.MessageType.Info"/> and its <see cref="P:LaquaiLib.Util.Logging.LoggerMessage.Timestamp"/> is set to <see cref="P:System.DateTime.Now"/>.
-            </summary>
-            <param name="message">The text of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given <paramref name="message"/> and <paramref name="type"/>.
-            </summary>
-            <param name="message">The text of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.#ctor(System.String,System.DateTime,LaquaiLib.Util.Logging.MessageType)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> with the given data.
-            </summary>
-            <param name="message">The text of the message.</param>
-            <param name="timestamp">The timestamp of the message.</param>
-            <param name="type">The type of the message.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.Equals(LaquaiLib.Util.Logging.LoggerMessage)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.Equals(System.Object)">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.GetHashCode">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.op_Equality(LaquaiLib.Util.Logging.LoggerMessage,LaquaiLib.Util.Logging.LoggerMessage)">
-            <summary>
-            Indicates whether two <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>s are equal.
-            </summary>
-            <param name="left">The first <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.</param>
-            <param name="right">The second <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.</param>
-            <returns><see langword="true"/> if the two <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>s are equal, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Util.Logging.LoggerMessage.op_Inequality(LaquaiLib.Util.Logging.LoggerMessage,LaquaiLib.Util.Logging.LoggerMessage)">
-            <summary>
-            Indicates whether two <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>s are not equal.
-            </summary>
-            <param name="left">The first <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.</param>
-            <param name="right">The second <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.</param>
-            <returns><see langword="true"/> if the two <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>s are not equal, otherwise <see langword="false"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Util.Logging.MessageType">
-            <summary>
-            Identifies the type of a <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/>.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Logging.MessageType.Info">
-            <summary>
-            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is informational.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Logging.MessageType.Warning">
-            <summary>
-            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is a warning.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Logging.MessageType.Error">
-            <summary>
-            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is an error.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Util.Logging.MessageType.Success">
-            <summary>
-            Indicates that the <see cref="T:LaquaiLib.Util.Logging.LoggerMessage"/> is a success message.
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.MemoryDiff">
@@ -12614,16 +12361,21 @@
             <summary>
             Encapsulates a command dispatch result; that is, a command sent to a <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation and the output produced by the script that received the command in response to it.
             </summary>
+            <param name="Input">The input sent to the <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation that produced this output.</param>
+            <param name="Output">The output produced by the script that received the <paramref name="Input"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.#ctor(System.String,System.String)">
+            <summary>
+            Encapsulates a command dispatch result; that is, a command sent to a <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation and the output produced by the script that received the command in response to it.
+            </summary>
+            <param name="Input">The input sent to the <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation that produced this output.</param>
+            <param name="Output">The output produced by the script that received the <paramref name="Input"/>.</param>
         </member>
         <member name="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Input">
-            <summary>
-            The input sent to the <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation that produced this output.
-            </summary>
+            <summary>The input sent to the <see cref="T:LaquaiLib.Util.ShellInterfaces.IShellInterface"/> implementation that produced this output.</summary>
         </member>
         <member name="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Output">
-            <summary>
-            The output produced by the script that received the <see cref="P:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult.Input"/>.
-            </summary>
+            <summary>The output produced by the script that received the <paramref name="Input"/>.</summary>
         </member>
         <member name="T:LaquaiLib.Util.ShellInterfaces.CommandInterface">
             <summary>
@@ -12748,10 +12500,11 @@
         <member name="P:LaquaiLib.Util.ShellInterfaces.PowerShellInterface.SupportsMultilineCommands">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Util.ShellInterfaces.PowerShellInterface.CreateInstanceAsync">
+        <member name="M:LaquaiLib.Util.ShellInterfaces.PowerShellInterface.CreateInstanceAsync(System.Boolean)">
             <summary>
             Asynchronously creates and configures a new instance of <see cref="T:LaquaiLib.Util.ShellInterfaces.PowerShellInterface"/>.
             </summary>
+            <param name="usePwsh">Whether to use <c>pwsh</c> (7+) instead of <c>powershell</c> (Windows PowerShell).</param>
             <returns>The configured instance of <see cref="T:LaquaiLib.Util.ShellInterfaces.PowerShellInterface"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Util.ShellInterfaces.PowerShellInterface.DispatchAsync(System.String)">
@@ -15823,7 +15576,7 @@
         <member name="M:LaquaiLib.Threading.AsyncCountdownEvent.Signal">
             <summary>
             Decreases the countdown by one and signals completion if the countdown reaches zero.
-            Calls after the countdown has already reached zero will throw an <see cref="T:System.InvalidOperationException"/>.
+            Calls after the countdown has already reached zero will throw an <see cref="T:System.InvalidOperationException"/> to prevent misuse.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.AsyncCountdownEvent.WaitAsync">
@@ -15835,6 +15588,11 @@
             <summary>
             Signals the countdown event and waits asynchronously until the countdown reaches zero.
             Calls after the countdown has already reached zero will throw an <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncCountdownEvent.Reset">
+            <summary>
+            Cancels pendings waits by faulting the underlying <see cref="T:System.Threading.Tasks.TaskCompletionSource"/> using an <see cref="T:System.OperationCanceledException"/>, then resets the state of the event to its initial count.
             </summary>
         </member>
         <member name="T:LaquaiLib.Threading.AsyncManualResetEvent">
@@ -16731,6 +16489,97 @@
         <member name="M:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.MoveNextAsync">
             <inheritdoc/>
         </member>
+        <member name="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1">
+            <summary>
+            Holds either no value, a single instance of <typeparamref name="T"/> or an <see cref="T:System.Collections.Generic.IEnumerable`1"/>. Allows enumeration of the contained value(s) without boxing.
+            </summary>
+            <typeparam name="T">The type of the value(s) to hold.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.#ctor">
+            <summary>
+            Creates an empty <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.#ctor(LaquaiLib.Empty)">
+            <summary>
+            Creates an empty <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/>.
+            </summary>
+            <param name="_"></param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.#ctor(`0)">
+            <summary>
+            Creates a <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/> that wraps the specified single instance of <typeparamref name="T"/>.
+            </summary>
+            <param name="item">The single instance of <typeparamref name="T"/> to wrap.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Creates a <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/> that wraps the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+            <param name="enumerable">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to wrap.</param>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.FlexEnumerableContainer`1.Value">
+            <summary>
+            Gets the (potentially boxed) wrapped value.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.FlexEnumerableContainer`1.HasValue">
+            <summary>
+            Gets whether the union contains a value.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.TryGetValue(LaquaiLib.Empty@)">
+            <summary>
+            Attempts to unwrap an empty <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/>. Only succeeds if it was created empty.
+            The <see cref="T:LaquaiLib.Empty"/> value itself is meaningless.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.TryGetValue(`0@)">
+            <summary>
+            Attempts to unwrap a single instance of <typeparamref name="T"/> from the <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/>.
+            </summary>
+            <param name="value">An output parameter that will contain the unwrapped value.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/> wraps a single instance of <typeparamref name="T"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.TryGetValue(System.Collections.Generic.IEnumerable{`0}@)">
+            <summary>
+            Attempts to unwrap an <see cref="T:System.Collections.Generic.IEnumerable`1"/> from the <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/>.
+            </summary>
+            <param name="value">An output parameter that will contain the unwrapped value.</param>
+            <returns><see langword="true"/> if the <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/> wraps an <see cref="T:System.Collections.Generic.IEnumerable`1"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.GetEnumerator">
+            <summary>
+            Gets an enumerator that iterates through the contained value(s).
+            </summary>
+            <returns>The enumerator that can be used to iterate through the contained value(s).</returns>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1.Enumerator">
+            <summary>
+            Implements a strongly-typed enumerator for <see cref="T:LaquaiLib.Wrappers.FlexEnumerableContainer`1"/> that can avoid boxing when enumerating.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.FlexEnumerableContainer`1.Enumerator.Current">
+            <summary>
+            Gets the element in the collection at the current position of the enumerator.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.Enumerator.Dispose">
+            <summary>
+            Disposes the enumerator.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.Enumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns><see langword="true"/> if the enumerator could be advanced; otherwise (that is, when enumeration has ended), <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.FlexEnumerableContainer`1.Enumerator.Reset">
+            <summary>
+            Resets the enumerator to its initial position, which is before the first element.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Wrappers.TempDirectory">
             <summary>
             Represents a temporary directory that is automatically deleted when its wrapper object is disposed.
@@ -16813,12 +16662,14 @@
             <summary>
             Represents an instant in time captured on the current machine via a high-resolution timer.
             The value is not wall-clock time and is only meaningful within the same process lifetime.
+            Uses <see cref="T:System.Diagnostics.Stopwatch"/> internally.
             </summary>
         </member>
         <member name="M:LaquaiLib.Wrappers.TimeStamp.#ctor">
             <summary>
             Represents an instant in time captured on the current machine via a high-resolution timer.
             The value is not wall-clock time and is only meaningful within the same process lifetime.
+            Uses <see cref="T:System.Diagnostics.Stopwatch"/> internally.
             </summary>
         </member>
         <member name="F:LaquaiLib.Wrappers.TimeStamp.Start">
@@ -16974,38 +16825,6 @@
             <param name="inputSpan">The text being scanned by the regular expression.</param>
             <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2">
-            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the EntryPointNotFoundExceptionDataRegex method.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.Instance">
-            <summary>Cached, thread-safe singleton instance.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.#ctor">
-            <summary>Initializes the instance.</summary>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory">
-            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.CreateInstance">
-            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
-        </member>
-        <member name="T:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner">
-            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
-            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if a possible match was found; false if no more matches are possible.</returns>
-        </member>
-        <member name="M:System.Text.RegularExpressions.Generated.EntryPointNotFoundExceptionDataRegex_2.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
-            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
-            <param name="inputSpan">The text being scanned by the regular expression.</param>
-            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
-        </member>
         <member name="T:System.Text.RegularExpressions.Generated.Utilities">
             <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
         </member>
@@ -17014,9 +16833,6 @@
         </member>
         <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
             <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_indexOfString_9AECF8F40FCAE66893A90E32FA07EAB795AF3C1A6B65AF92E89697BAED9D8C93">
-            <summary>Supports searching for the string "Unable to find an entry point named '".</summary>
         </member>
     </members>
 </doc>

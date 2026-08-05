@@ -104,11 +104,8 @@ public sealed class CommandInterface : IShellInterface
             await Process.StandardInput.FlushAsync().ConfigureAwait(false);
 
             var readLines = TryReadOutput().Split(Environment.NewLine);
-            return new CommandDispatchResult()
-            {
-                Input = input,
-                Output = string.Join(Environment.NewLine, readLines[0] == input ? readLines[1..] : readLines),
-            };
+            var output = string.Join(Environment.NewLine, readLines[0] == input ? readLines[1..] : readLines);
+            return new CommandDispatchResult(input, output);
         }
         finally
         {

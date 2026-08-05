@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace LaquaiLib.Text;
@@ -8,23 +8,9 @@ namespace LaquaiLib.Text;
 /// </summary>
 public abstract class CharComparer : IEqualityComparer<char>, IComparer<char>
 {
-    public int Compare(char x, char y)
-    {
-        // Ensure these are stackalloc'd
-        ReadOnlySpan<char> left = stackalloc char[1] { x };
-        ReadOnlySpan<char> right = stackalloc char[1] { y };
-        return CompareCore(x, y, left, right);
-    }
-    public bool Equals(char x, char y) => Compare(x, y) == 0;
-    public int GetHashCode([DisallowNull] char obj)
-    {
-        // Ensure this is stackalloc'd
-        ReadOnlySpan<char> value = stackalloc char[1] { obj };
-        return GetHashCodeCore(obj, value);
-    }
-    protected abstract int CompareCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right);
-    protected virtual bool EqualsCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => CompareCore(x, y, left, right) == 0;
-    protected abstract int GetHashCodeCore([DisallowNull] char obj, ReadOnlySpan<char> span);
+    public abstract int Compare(char x, char y);
+    public abstract bool Equals(char x, char y);
+    public abstract int GetHashCode([DisallowNull] char obj);
 
     /// <summary>
     /// Gets a <see cref="CharComparer"/> that compares according to the rules of the specified <see cref="StringComparison"/>.
@@ -46,103 +32,123 @@ public abstract class CharComparer : IEqualityComparer<char>, IComparer<char>
     /// <summary>
     /// Gets a <see cref="CharComparer"/> that compares according to the rules of the current culture.
     /// </summary>
-    public static CharComparer CurrentCulture => CurrentCultureCharComparer.Instance;
+    public static CharComparer CurrentCulture => ComparerImpl<CurrentCultureStrategy>.Instance;
     /// <summary>
     /// Gets a <see cref="CharComparer"/> that compares according to the rules of the current culture, ignoring case.
     /// </summary>
-    public static CharComparer CurrentCultureIgnoreCase => CurrentCultureIgnoreCaseCharComparer.Instance;
+    public static CharComparer CurrentCultureIgnoreCase => ComparerImpl<CurrentCultureIgnoreCaseStrategy>.Instance;
     /// <summary>
     /// Gets a <see cref="CharComparer"/> that compares according to the rules of the invariant culture.
     /// </summary>
-    public static CharComparer InvariantCulture => InvariantCultureCharComparer.Instance;
+    public static CharComparer InvariantCulture => ComparerImpl<InvariantCultureStrategy>.Instance;
     /// <summary>
     /// Gets a <see cref="CharComparer"/> that compares according to the rules of the invariant culture, ignoring case.
     /// </summary>
-    public static CharComparer InvariantCultureIgnoreCase => InvariantCultureIgnoreCaseCharComparer.Instance;
+    public static CharComparer InvariantCultureIgnoreCase => ComparerImpl<InvariantCultureIgnoreCaseStrategy>.Instance;
     /// <summary>
     /// Gets a <see cref="CharComparer"/> that performs a case-sensitive ordinal comparison.
     /// </summary>
-    public static CharComparer Ordinal => OrdinalCharComparer.Instance;
+    public static CharComparer Ordinal => ComparerImpl<OrdinalStrategy>.Instance;
     /// <summary>
     /// Gets a <see cref="CharComparer"/> that performs a case-insensitive ordinal comparison.
     /// </summary>
-    public static CharComparer OrdinalIgnoreCase => OrdinalIgnoreCaseCharComparer.Instance;
+    public static CharComparer OrdinalIgnoreCase => ComparerImpl<OrdinalIgnoreCaseStrategy>.Instance;
 
     #region Implementations
-    internal class CurrentCultureCharComparer : CharComparer
+    internal interface ICompareStrategy
     {
-        private CompareInfo _compareInfo = CultureInfo.CurrentCulture.CompareInfo;
-
-        private CurrentCultureCharComparer() { }
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="CurrentCultureCharComparer"/>.
-        /// </summary>
-        public static CharComparer Instance => field ??= new CurrentCultureCharComparer();
-
-        protected override int CompareCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => _compareInfo.Compare(left, right);
-        protected override int GetHashCodeCore([DisallowNull] char obj, ReadOnlySpan<char> span) => _compareInfo.GetHashCode(span, CompareOptions.None);
+        static abstract int Compare(char x, char y);
+        static abstract bool Equals(char x, char y);
+        static abstract int GetHashCode([DisallowNull] char obj);
     }
-    internal class CurrentCultureIgnoreCaseCharComparer : CharComparer
+    internal readonly struct CurrentCultureStrategy : ICompareStrategy
     {
-        private readonly CompareInfo _compareInfo = CultureInfo.CurrentCulture.CompareInfo;
-
-        private CurrentCultureIgnoreCaseCharComparer() { }
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="CurrentCultureIgnoreCaseCharComparer"/>.
-        /// </summary>
-        public static CharComparer Instance => field ??= new CurrentCultureIgnoreCaseCharComparer();
-
-        protected override int CompareCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => _compareInfo.Compare(left, right, CompareOptions.IgnoreCase);
-        protected override int GetHashCodeCore([DisallowNull] char obj, ReadOnlySpan<char> span) => _compareInfo.GetHashCode(span, CompareOptions.IgnoreCase);
+        private static readonly CompareInfo _compareInfo = CultureInfo.CurrentCulture.CompareInfo;
+        public static int Compare(char x, char y)
+        {
+            var left = new ReadOnlySpan<char>(in x);
+            var right = new ReadOnlySpan<char>(in y);
+            return _compareInfo.Compare(left, right);
+        }
+        public static bool Equals(char x, char y) => Compare(x, y) == 0;
+        public static int GetHashCode([DisallowNull] char obj)
+        {
+            var span = new ReadOnlySpan<char>(in obj);
+            return _compareInfo.GetHashCode(span, CompareOptions.None);
+        }
     }
-    internal class InvariantCultureCharComparer : CharComparer
+    internal readonly struct CurrentCultureIgnoreCaseStrategy : ICompareStrategy
     {
-        private CompareInfo _compareInfo = CultureInfo.InvariantCulture.CompareInfo;
-
-        private InvariantCultureCharComparer() { }
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="InvariantCultureCharComparer"/>.
-        /// </summary>
-        public static CharComparer Instance => field ??= new InvariantCultureCharComparer();
-
-        protected override int CompareCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => _compareInfo.Compare(left, right);
-        protected override int GetHashCodeCore([DisallowNull] char obj, ReadOnlySpan<char> span) => _compareInfo.GetHashCode(span, CompareOptions.None);
+        private static readonly CompareInfo _compareInfo = CultureInfo.CurrentCulture.CompareInfo;
+        public static int Compare(char x, char y)
+        {
+            var left = new ReadOnlySpan<char>(in x);
+            var right = new ReadOnlySpan<char>(in y);
+            return _compareInfo.Compare(left, right, CompareOptions.IgnoreCase);
+        }
+        public static bool Equals(char x, char y) => Compare(x, y) == 0;
+        public static int GetHashCode([DisallowNull] char obj)
+        {
+            var span = new ReadOnlySpan<char>(in obj);
+            return _compareInfo.GetHashCode(span, CompareOptions.IgnoreCase);
+        }
     }
-    internal class InvariantCultureIgnoreCaseCharComparer : CharComparer
+    internal readonly struct InvariantCultureStrategy : ICompareStrategy
     {
-        private readonly CompareInfo _compareInfo = CultureInfo.InvariantCulture.CompareInfo;
-
-        private InvariantCultureIgnoreCaseCharComparer() { }
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="InvariantCultureIgnoreCaseCharComparer"/>.
-        /// </summary>
-        public static CharComparer Instance => field ??= new InvariantCultureIgnoreCaseCharComparer();
-
-        protected override int CompareCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => _compareInfo.Compare(left, right, CompareOptions.IgnoreCase);
-        protected override int GetHashCodeCore([DisallowNull] char obj, ReadOnlySpan<char> span) => _compareInfo.GetHashCode(span, CompareOptions.IgnoreCase);
+        private static readonly CompareInfo _compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+        public static int Compare(char x, char y)
+        {
+            var left = new ReadOnlySpan<char>(in x);
+            var right = new ReadOnlySpan<char>(in y);
+            return _compareInfo.Compare(left, right);
+        }
+        public static bool Equals(char x, char y) => Compare(x, y) == 0;
+        public static int GetHashCode([DisallowNull] char obj)
+        {
+            var span = new ReadOnlySpan<char>(in obj);
+            return _compareInfo.GetHashCode(span, CompareOptions.None);
+        }
     }
-    internal class OrdinalCharComparer : CharComparer
+    internal readonly struct InvariantCultureIgnoreCaseStrategy : ICompareStrategy
     {
-        private OrdinalCharComparer() { }
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="OrdinalCharComparer"/>.
-        /// </summary>
-        public static CharComparer Instance => field ??= new OrdinalCharComparer();
-
-        protected override int CompareCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => x.CompareTo(y);
-        protected override bool EqualsCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => x == y;
-        protected override int GetHashCodeCore([DisallowNull] char obj, ReadOnlySpan<char> span) => obj.GetHashCode();
+        private static readonly CompareInfo _compareInfo = CultureInfo.InvariantCulture.CompareInfo;
+        public static int Compare(char x, char y)
+        {
+            var left = new ReadOnlySpan<char>(in x);
+            var right = new ReadOnlySpan<char>(in y);
+            return _compareInfo.Compare(left, right, CompareOptions.IgnoreCase);
+        }
+        public static bool Equals(char x, char y) => Compare(x, y) == 0;
+        public static int GetHashCode([DisallowNull] char obj)
+        {
+            var span = new ReadOnlySpan<char>(in obj);
+            return _compareInfo.GetHashCode(span, CompareOptions.IgnoreCase);
+        }
     }
-    internal class OrdinalIgnoreCaseCharComparer : CharComparer
+    internal readonly struct OrdinalStrategy : ICompareStrategy
     {
-        private OrdinalIgnoreCaseCharComparer() { }
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="OrdinalIgnoreCaseCharComparer"/>.
-        /// </summary>
-        public static CharComparer Instance => field ??= new OrdinalIgnoreCaseCharComparer();
-        protected override int CompareCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => char.ToUpperInvariant(x).CompareTo(char.ToUpperInvariant(y));
-        protected override bool EqualsCore(char x, char y, ReadOnlySpan<char> left, ReadOnlySpan<char> right) => char.ToUpperInvariant(x) == char.ToUpperInvariant(y);
-        protected override int GetHashCodeCore([DisallowNull] char obj, ReadOnlySpan<char> span) => char.ToUpperInvariant(obj).GetHashCode();
+        public static int Compare(char x, char y) => x.CompareTo(y);
+        public static bool Equals(char x, char y) => x == y;
+        public static int GetHashCode([DisallowNull] char obj) => obj.GetHashCode();
+    }
+    internal readonly struct OrdinalIgnoreCaseStrategy : ICompareStrategy
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static char Fold(char c) => (uint)((c | 0x20) - 'a') <= 'z' - 'a' ? (char)(c | 0x20) : c;
+        public static int Compare(char x, char y) => Fold(x).CompareTo(Fold(y));
+        public static bool Equals(char x, char y) => Fold(x) == Fold(y);
+        public static int GetHashCode([DisallowNull] char obj) => Fold(obj).GetHashCode();
+    }
+    internal sealed class ComparerImpl<T> : CharComparer where T : struct, ICompareStrategy
+    {
+        public static readonly ComparerImpl<T> Instance = new ComparerImpl<T>();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int Compare(char x, char y) => T.Compare(x, y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(char x, char y) => T.Equals(x, y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode([DisallowNull] char obj) => T.GetHashCode(obj);
     }
     #endregion
 }

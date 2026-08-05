@@ -3,14 +3,6 @@
 /// <summary>
 /// Encapsulates a command dispatch result; that is, a command sent to a <see cref="IShellInterface"/> implementation and the output produced by the script that received the command in response to it.
 /// </summary>
-public readonly record struct CommandDispatchResult
-{
-    /// <summary>
-    /// The input sent to the <see cref="IShellInterface"/> implementation that produced this output.
-    /// </summary>
-    public required string Input { get; init; }
-    /// <summary>
-    /// The output produced by the script that received the <see cref="Input"/>.
-    /// </summary>
-    public required string Output { get; init; }
-}
+/// <param name="Input">The input sent to the <see cref="IShellInterface"/> implementation that produced this output.</param>
+/// <param name="Output">The output produced by the script that received the <paramref name="Input"/>.</param>
+public readonly record struct CommandDispatchResult(string Input, string Output);

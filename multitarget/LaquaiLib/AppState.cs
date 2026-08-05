@@ -2,17 +2,15 @@
 
 internal static class AppState
 {
-    public static DirectoryInfo AppData
+    public static DirectoryInfo LocalAppData
     {
         get
         {
-            field ??= new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LaquaiLib"));
-            field.Refresh();
-            if (!field.Exists)
-            {
-                field.Create();
-            }
-            return field;
+            var di = field ??= new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LaquaiLib"));
+            di.Refresh();
+            if (!di.Exists)
+                di.Create();
+            return di;
         }
     }
 }

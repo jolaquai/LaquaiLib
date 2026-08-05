@@ -7,6 +7,12 @@ public static partial class MemoryExtensions
     extension<T>(Span<T> span)
     {
         /// <summary>
+        /// Generalizes <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(Span{byte})"/> to arbitrary <see cref="Span{T}"/>s of <typeparamref name="T"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public void ZeroMemory() => span.Clear();
+
+        /// <summary>
         /// Fills the specified <see cref="Span{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         public void Fill()
@@ -67,6 +73,12 @@ public static partial class MemoryExtensions
     extension<T>(MultiDimArrayEnumerable<T> multiDimArrayEnumerable)
     {
         /// <summary>
+        /// Generalizes <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(Span{byte})"/> to <see cref="MultiDimArrayEnumerable{T}"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public void ZeroMemory() => multiDimArrayEnumerable.Span.Clear();
+
+        /// <summary>
         /// Fills the specified <see cref="MultiDimArrayEnumerable{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -99,6 +111,12 @@ public static partial class MemoryExtensions
 
     extension<T>(Memory<T> memory)
     {
+        /// <summary>
+        /// Generalizes <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(Span{byte})"/> to arbitrary <see cref="Memory{T}"/>s of <typeparamref name="T"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public void ZeroMemory() => memory.Span.Clear();
+
         /// <summary>
         /// Fills the specified <see cref="Memory{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>

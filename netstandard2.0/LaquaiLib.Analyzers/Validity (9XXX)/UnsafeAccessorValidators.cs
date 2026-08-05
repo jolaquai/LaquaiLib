@@ -383,7 +383,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             {
                 moreLocs = [containingTypeDecl.Identifier.GetLocation()];
             }
-            var diag = Diagnostic.Create(ContainingTypeTypeParameterMismatchDescriptor, reportLocation, [], reqNames, actualNames);
+            var diag = Diagnostic.Create(ContainingTypeTypeParameterMismatchDescriptor, reportLocation, moreLocs, reqNames, actualNames);
             context.ReportDiagnostic(diag);
             return;
         }
@@ -613,7 +613,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             {
                 moreLocs = [containingTypeDecl.Identifier.GetLocation()];
             }
-            var diag = Diagnostic.Create(ContainingTypeTypeParameterMismatchDescriptor, reportLocation, [], reqNames, actualNames);
+            var diag = Diagnostic.Create(ContainingTypeTypeParameterMismatchDescriptor, reportLocation, moreLocs, reqNames, actualNames);
             context.ReportDiagnostic(diag);
             return;
         }

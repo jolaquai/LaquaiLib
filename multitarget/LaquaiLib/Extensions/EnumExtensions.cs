@@ -57,26 +57,30 @@ public static class EnumExtensions
         /// <summary>
         /// Determines if an enum value <paramref name="source"/> of <typeparamref name="T"/> has a non-zero value.
         /// </summary>
-        /// <typeparam name="T">The type of the enum.</typeparam>
-        /// <param name="source">The enum value to test.</param>
         /// <returns>A value indicating whether <paramref name="source"/> has a non-zero value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HasValue()
         {
-            switch (Unsafe.SizeOf<T>())
-            {
-                case 1:
-                    return Unsafe.As<T, byte>(ref source) != 0;
-                case 2:
-                    return Unsafe.As<T, ushort>(ref source) != 0;
-                case 4:
-                    return Unsafe.As<T, uint>(ref source) != 0;
-                case 8:
-                    return Unsafe.As<T, ulong>(ref source) != 0;
-                default:
-                    ThrowTypeUnsupported(typeof(T));
-                    return false;
-            }
+            var underlying = Enum.GetUnderlyingType(typeof(T));
+            if (underlying == typeof(byte))
+                return Unsafe.As<T, byte>(ref source) != 0;
+            if (underlying == typeof(sbyte))
+                return Unsafe.As<T, sbyte>(ref source) != 0;
+            if (underlying == typeof(ushort))
+                return Unsafe.As<T, ushort>(ref source) != 0;
+            if (underlying == typeof(short))
+                return Unsafe.As<T, short>(ref source) != 0;
+            if (underlying == typeof(uint))
+                return Unsafe.As<T, uint>(ref source) != 0;
+            if (underlying == typeof(int))
+                return Unsafe.As<T, int>(ref source) != 0;
+            if (underlying == typeof(long))
+                return Unsafe.As<T, long>(ref source) != 0;
+            if (underlying == typeof(ulong))
+                return Unsafe.As<T, ulong>(ref source) != 0;
+
+            ThrowTypeUnsupported(underlying);
+            return false;
         }
 
         /// <summary>

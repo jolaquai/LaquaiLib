@@ -20,7 +20,6 @@ namespace LaquaiLib.Threading;
 /// </summary>
 public sealed class SingleWaiterAsyncManualResetEvent : IValueTaskSource
 {
-    // Mutable struct; must never be readonly or copied. All access goes through the field directly.
     private ManualResetValueTaskSourceCore<bool> _core = new() { RunContinuationsAsynchronously = true };
     private volatile bool _set;
 

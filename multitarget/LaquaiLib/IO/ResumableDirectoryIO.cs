@@ -34,7 +34,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
 
     private const int BufferSize = 1 << 17;
     private const int StackallocByteBufferSize = 2048;
-    private readonly string _stateFilePath = stateFilePath ?? AppState.AppData.File(nameof(ResumableDirectoryIO), Guid.NewGuid().ToString()).FullName;
+    private readonly string _stateFilePath = stateFilePath ?? AppState.LocalAppData.File(nameof(ResumableDirectoryIO), Guid.NewGuid().ToString()).FullName;
     private volatile int running;
     private CancellationTokenSource cts;
 

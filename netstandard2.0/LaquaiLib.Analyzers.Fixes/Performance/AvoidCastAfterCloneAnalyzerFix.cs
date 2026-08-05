@@ -1,6 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Editing;
-
-namespace LaquaiLib.Analyzers.Fixes.Performance;
+﻿namespace LaquaiLib.Analyzers.Fixes.Performance;
 
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(AvoidCastAfterCloneAnalyzerFix)), Shared]
 public class AvoidCastAfterCloneAnalyzerFix() : LaquaiLibNodeFixer("LAQ0002")
@@ -18,11 +16,11 @@ public class AvoidCastAfterCloneAnalyzerFix() : LaquaiLibNodeFixer("LAQ0002")
     {
         if (syntaxNode is CastExpressionSyntax castExpression)
         {
-            return (flowControl: false, value: new CodeActionInfo("Use Unsafe.As", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "UseUnsafeAs_CastExpressionSyntax", WellKnownPostFixActions.AddUsings("System.Runtime.CompilerServices")));
+            return (flowControl: false, value: new CodeActionInfo("Change to Unsafe.As call", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "ChangeToUnsafeAsCall_CastExpressionSyntax", WellKnownPostFixActions.AddUsings("System.Runtime.CompilerServices")));
         }
         else if (syntaxNode is BinaryExpressionSyntax binaryExpr && binaryExpr.IsKind(SyntaxKind.AsExpression))
         {
-            return (flowControl: false, value: new CodeActionInfo("Use Unsafe.As", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "UseUnsafeAs_AsExpression", WellKnownPostFixActions.AddUsings("System.Runtime.CompilerServices")));
+            return (flowControl: false, value: new CodeActionInfo("Change to Unsafe.As call", editor => ReplaceWithUnsafeAsAsync(compilationUnitSyntax, editor, syntaxNode), "ChangeToUnsafeAsCall_AsExpression", WellKnownPostFixActions.AddUsings("System.Runtime.CompilerServices")));
         }
 
         return (flowControl: true, value: default);
@@ -49,6 +47,8 @@ public class AvoidCastAfterCloneAnalyzerFix() : LaquaiLibNodeFixer("LAQ0002")
             var genericNameSyntax = SyntaxFactory.GenericName(SyntaxFactory.Identifier("As"), SyntaxFactory.TypeArgumentList(SyntaxFactory.SingletonSeparatedList(targetType)));
             var unsafeType = SyntaxFactory.ParseName("Unsafe").WithAdditionalAnnotations(Simplifier.Annotation);
             var memberAccess = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, unsafeType, genericNameSyntax);
+            if (replaceTarget is ParenthesizedExpressionSyntax peSyntax)
+                replaceTarget = peSyntax.Expression;
             var argumentList = SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Argument(replaceTarget)));
             var newExpression = SyntaxFactory.InvocationExpression(memberAccess, argumentList).WithAdditionalAnnotations(Formatter.Annotation);
 

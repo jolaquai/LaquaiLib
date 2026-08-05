@@ -46,8 +46,9 @@ public sealed class PowerShellInterface : IShellInterface
     /// <summary>
     /// Asynchronously creates and configures a new instance of <see cref="PowerShellInterface"/>.
     /// </summary>
+    /// <param name="usePwsh">Whether to use <c>pwsh</c> (7+) instead of <c>powershell</c> (Windows PowerShell).</param>
     /// <returns>The configured instance of <see cref="PowerShellInterface"/>.</returns>
-    public static async Task<PowerShellInterface> CreateInstanceAsync()
+    public static async Task<PowerShellInterface> CreateInstanceAsync(bool usePwsh = true)
     {
         var instance = new PowerShellInterface()
         {
@@ -59,7 +60,7 @@ public sealed class PowerShellInterface : IShellInterface
                     RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
-                    FileName = "powershell",
+                    FileName = usePwsh ? "pwsh" : "powershell",
                     ArgumentList =
                     {
                         "-NoProfile",
@@ -111,11 +112,8 @@ public sealed class PowerShellInterface : IShellInterface
             await Process.StandardInput.FlushAsync().ConfigureAwait(false);
 
             var readLines = TryReadOutput().Split(Environment.NewLine);
-            return new CommandDispatchResult()
-            {
-                Input = input,
-                Output = string.Join(Environment.NewLine, readLines[0] == input ? readLines[1..] : readLines),
-            };
+            var output = string.Join(Environment.NewLine, readLines[0] == input ? readLines[1..] : readLines);
+            return new CommandDispatchResult(input, output);
         }
         finally
         {

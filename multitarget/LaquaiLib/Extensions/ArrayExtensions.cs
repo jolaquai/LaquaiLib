@@ -371,7 +371,7 @@ public static partial class ArrayExtensions
         /// <returns><see langword="true"/> if the index was valid and the element could be retrieved, otherwise <see langword="false"/>.</returns>
         public bool TryGetAt(int i, out T value)
         {
-            if (i < array.Length && i >= 0)
+            if ((uint)i < (uint)array.Length)
             {
                 value = array[i];
                 return true;
@@ -389,7 +389,7 @@ public static partial class ArrayExtensions
         /// <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
         public T GetAtOrDefault(int i, T defaultValue = default)
         {
-            if (array.GetLowerBound(0) <= i && i <= array.GetUpperBound(0))
+            if ((uint)i < (uint)array.Length)
             {
                 return array[i];
             }

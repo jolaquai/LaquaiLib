@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
 namespace LaquaiLib.Extensions;
@@ -40,4 +41,19 @@ public static class NumberExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string AsHex() => number.ToString("X", null);
     }
+
+    extension<T>(T number) where T : IBinaryInteger<T>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T AlignUp(T alignment)
+        {
+            if (!BitOperations.IsPow2(long.CreateSaturating(alignment)))
+                ThrowAlignmentNotPow2();
+
+            var a = alignment - T.One;
+            return (number + a) & ~a;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowAlignmentNotPow2() => throw new ArgumentException("Alignment must be a power of two.");
 }

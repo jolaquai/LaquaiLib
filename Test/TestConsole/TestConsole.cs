@@ -6,6 +6,8 @@ using System.Runtime.Intrinsics.Wasm;
 using System.Runtime.Intrinsics.X86;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.IO;
+using LaquaiLib.IO.Streams;
 
 namespace TestConsole;
 
@@ -42,6 +44,13 @@ public static partial class TestConsole
 
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
+    }
+    public static byte[] RevolverBytes(int length)
+    {
+        var arr = new byte[length];
+        for (var i = 0; i < length; i++)
+            arr[i] = (byte)(i % 256);
+        return arr;
     }
 
     private static void PrintCpuVectorCapabilities()

@@ -21,7 +21,7 @@ public static partial class IEnumerableExtensions
                 default:
                 {
                     var size = Unsafe.SizeOf<T>();
-                    Span<byte> bytes = size <= Config.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
+                    scoped var bytes = size <= Config.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
                     _ = enumerable.Into(bytes);
                     return MemoryMarshal.Read<T>(bytes);
                 }

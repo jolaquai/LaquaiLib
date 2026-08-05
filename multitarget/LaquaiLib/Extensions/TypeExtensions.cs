@@ -822,6 +822,21 @@ public static partial class TypeExtensions
                 return _sizeofMap[type] = (int)typeof(Unsafe).GetMethod(nameof(Unsafe.SizeOf)).MakeGenericMethod(type).Invoke(null, null);
             }
         }
+
+        /// <summary>
+        /// Creates a <see cref="Type"/> that represents the constructed type obtained by substituting the the types of the specified <see langword="object"/>s for the type parameters of the current unbound generic type definition.
+        /// </summary>
+        /// <param name="fromTypeArguments">The <see langword="object"/>s whose types are used to substitute the type parameters of the current unbound generic type definition.</param>
+        /// <returns>The created <see cref="Type"/>.</returns>
+        public Type MakeGenericTypeWith(params ReadOnlySpan<object> fromTypeArguments)
+        {
+            var typeArgs = new Type[fromTypeArguments.Length];
+            for (var i = 0; i < fromTypeArguments.Length; i++)
+            {
+                typeArgs[i] = fromTypeArguments[i].GetType();
+            }
+            return type.MakeGenericType(typeArgs);
+        }
     }
 
     #region Mappings
