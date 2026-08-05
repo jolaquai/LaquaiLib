@@ -2932,8 +2932,6 @@
             <summary>
             Determines if an enum value <paramref name="source"/> of <typeparamref name="T"/> has a non-zero value.
             </summary>
-            <typeparam name="T">The type of the enum.</typeparam>
-            <param name="source">The enum value to test.</param>
             <returns>A value indicating whether <paramref name="source"/> has a non-zero value.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.EnumExtensions.&lt;G&gt;$1AEBB925A470955AA56007A9C9196757`1.HasValue(`0)">
@@ -10288,6 +10286,9 @@
             <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.FlushAsync(System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Dispose(System.Boolean)">
             <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.IO.Streams.MemoryOrFileStream">

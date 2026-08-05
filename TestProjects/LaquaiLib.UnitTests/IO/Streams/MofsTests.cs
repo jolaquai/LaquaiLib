@@ -9,21 +9,21 @@ public class MofsTests
     {
         MemoryOrFileStream.Cutoff = 2;
         using var stream = MemoryOrFileStream.Create(1);
-        Assert.IsType<MemoryStream>(stream);
+        Assert.IsType<MemoryStream>((Stream)stream);
     }
     [Fact]
     public void AtCutoffReturnsFileStream()
     {
         MemoryOrFileStream.Cutoff = 2;
         using var stream = MemoryOrFileStream.Create(2);
-        Assert.IsType<FileStream>(stream);
+        Assert.IsType<FileStream>((Stream)stream);
     }
     [Fact]
     public void AboveCutoffReturnsFileStream()
     {
         MemoryOrFileStream.Cutoff = 2;
         using var stream = MemoryOrFileStream.Create(3);
-        Assert.IsType<FileStream>(stream);
+        Assert.IsType<FileStream>((Stream)stream);
     }
     [Fact]
     public void DisposeDeletesTempFile()
@@ -32,8 +32,8 @@ public class MofsTests
         string tempFile = null;
         using (var stream = MemoryOrFileStream.Create(3))
         {
-            Assert.IsType<FileStream>(stream);
-            tempFile = ((FileStream)stream).Name;
+            var fs = Assert.IsType<FileStream>((Stream)stream);
+            tempFile = fs.Name;
             Assert.True(File.Exists(tempFile));
         }
         Assert.False(File.Exists(tempFile));
@@ -53,12 +53,12 @@ public class MofsTests
         MemoryOrFileStream.Cutoff = 2;
         using (var stream = MemoryOrFileStream.Create(3))
         {
-            Assert.IsType<FileStream>(stream);
+            Assert.IsType<FileStream>((Stream)stream);
         }
         MemoryOrFileStream.Cutoff = 4;
         using (var stream = MemoryOrFileStream.Create(3))
         {
-            Assert.IsType<MemoryStream>(stream);
+            Assert.IsType<MemoryStream>((Stream)stream);
         }
     }
 
@@ -68,11 +68,11 @@ public class MofsTests
         MemoryOrFileStream.Cutoff = 2;
         using (var stream = MemoryOrFileStream.Create(3, 4))
         {
-            Assert.IsType<MemoryStream>(stream);
+            Assert.IsType<MemoryStream>((Stream)stream);
         }
         using (var stream = MemoryOrFileStream.Create(4, 2))
         {
-            Assert.IsType<FileStream>(stream);
+            Assert.IsType<FileStream>((Stream)stream);
         }
     }
 }

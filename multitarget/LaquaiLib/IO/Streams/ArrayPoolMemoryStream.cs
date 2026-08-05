@@ -1,4 +1,4 @@
-﻿using System.Buffers;
+using System.Buffers;
 
 namespace LaquaiLib.IO.Streams;
 
@@ -12,10 +12,9 @@ public sealed class ArrayPoolMemoryStream : Stream
     private readonly List<byte[]> _segments = [];
     private readonly int _smallSegmentSize, _largeSegmentSize;
 
-    private int segment = -1, index = -1;
-    private Memory<byte> currentSegment;
     private Task<int> _lastReadTask;
-    private long length;
+    private long position, length, capacity;
+    private bool _disposed;
 
     public ArrayPoolMemoryStream(int smallSegmentSize = 2048, int largeSegmentSize = 16384, long capacity = 0)
     {
@@ -26,177 +25,268 @@ public sealed class ArrayPoolMemoryStream : Stream
         _smallSegmentSize = smallSegmentSize;
         _largeSegmentSize = largeSegmentSize;
 
-        byte[] last = null;
-        while (capacity > 0)
-        {
-            if (capacity > largeSegmentSize)
-            {
-                var arr = last = _pool.Rent(largeSegmentSize);
-                _segments.Add(arr);
-                capacity -= largeSegmentSize;
-            }
-            else
-            {
-                var arr = last = _pool.Rent(smallSegmentSize);
-                _segments.Add(arr);
-                break;
-            }
-        }
-
-        segment = _segments.Count - 1;
-        if (last is not null)
-            currentSegment = last;
+        EnsureCapacity(capacity);
     }
 
     /// <inheritdoc/>
-    public override bool CanRead => true;
+    public override bool CanRead => !_disposed;
     /// <inheritdoc/>
-    public override bool CanSeek => true;
+    public override bool CanSeek => !_disposed;
     /// <inheritdoc/>
-    public override bool CanWrite => true;
+    public override bool CanWrite => !_disposed;
     /// <inheritdoc/>
     public override long Length => length;
     /// <summary>
     /// Gets the maximum <see cref="Length"/> this instance can reach without having to rent more memory.
     /// </summary>
-    public long Capacity { get; private set; }
+    public long Capacity => capacity;
     /// <inheritdoc/>
     public override long Position
     {
-        get => SegmentedBufferHelpers.RelativeToAbsolute(SegmentsSpan(), segment, index);
+        get => position;
         set
         {
+            ObjectDisposedException.ThrowIf(_disposed, this);
             ArgumentOutOfRangeException.ThrowIfNegative(value, nameof(value));
-            var (s, o) = SegmentedBufferHelpers.AbsoluteToRelative(SegmentsSpan(), value);
-            segment = s;
-            index = o;
+            position = value;
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private Span<byte[]> SegmentsSpan() => CollectionsMarshal.AsSpan(_segments);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private (int Segment, int Offset) Locate(long absolute) => SegmentedBufferHelpers.AbsoluteToRelative<byte>(SegmentsSpan(), absolute);
+
+    private void EnsureCapacity(long required)
+    {
+        while (capacity < required)
+        {
+            var arr = _pool.Rent(required - capacity > _largeSegmentSize ? _largeSegmentSize : _smallSegmentSize);
+            _segments.Add(arr);
+            capacity += arr.Length;
+        }
+    }
+    // seeking past the end leaves a gap that would otherwise expose whatever the pool handed us
+    private void ZeroRange(long start, long count)
+    {
+        var segments = SegmentsSpan();
+        var (seg, off) = Locate(start);
+        while (count > 0)
+        {
+            var current = segments[seg];
+            var take = (int)long.Min(current.Length - off, count);
+            current.AsSpan(off, take).Clear();
+            count -= take;
+            off += take;
+            if (off == current.Length)
+            {
+                seg++;
+                off = 0;
+            }
+        }
+    }
 
     /// <inheritdoc/>
-    public override int Read(byte[] buffer, int offset, int count) => Read(buffer.AsSpan(offset, count));
+    public override int Read(byte[] buffer, int offset, int count)
+    {
+        ValidateBufferArguments(buffer, offset, count);
+        return Read(buffer.AsSpan(offset, count));
+    }
     /// <inheritdoc/>
     public override int Read(Span<byte> buffer)
     {
-        var idx = index;
-        var startSeg = segment;
-        if (buffer.Length == 0 || startSeg == -1 || idx == -1 || currentSegment.IsEmpty)
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        var available = length - position;
+        if (available <= 0 || buffer.IsEmpty)
             return 0;
 
-        var count = buffer.Length;
+        var count = (int)long.Min(buffer.Length, available);
         var segments = SegmentsSpan();
-        var copied = 0;
-        for (var i = startSeg; i < segments.Length; i++)
-        {
-            ref readonly var segment = ref segments[i];
+        var (seg, off) = Locate(position);
 
-            var wantToCopy = segment.Length - idx;
-            var remaining = count - copied;
-            var toCopy = remaining < wantToCopy ? remaining : wantToCopy;
-            segment.AsSpan(idx, toCopy).CopyTo(buffer[copied..]);
-            copied += toCopy;
+        var copied = 0;
+        while (copied < count)
+        {
+            var current = segments[seg];
+            var take = int.Min(current.Length - off, count - copied);
+            current.AsSpan(off, take).CopyTo(buffer[copied..]);
+            copied += take;
+            off += take;
+            if (off == current.Length)
+            {
+                seg++;
+                off = 0;
+            }
         }
+
+        position += copied;
         return copied;
     }
     /// <inheritdoc/>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled<int>(cancellationToken);
+
         var read = Read(buffer.AsSpan(offset, count));
-        ref var lrt = ref _lastReadTask;
-        if (read == lrt?.Result)
-            return lrt;
-        return lrt = Task.FromResult(read);
+        var last = _lastReadTask;
+        return last is not null && last.Result == read ? last : (_lastReadTask = Task.FromResult(read));
     }
     /// <inheritdoc/>
-    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
-    {
-        var read = Read(buffer.Span);
-        ref var lrt = ref _lastReadTask;
-        if (read == lrt?.Result)
-            return new ValueTask<int>(lrt);
-        return new ValueTask<int>(lrt = Task.FromResult(read));
-    }
+    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) => cancellationToken.IsCancellationRequested
+        ? ValueTask.FromCanceled<int>(cancellationToken)
+        : new ValueTask<int>(Read(buffer.Span));
     /// <inheritdoc/>
     public override int ReadByte()
     {
-        var idx = index;
-        var curSeg = currentSegment;
-        if (segment == -1 || idx == -1 || curSeg.IsEmpty)
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        if (position >= length)
             return -1;
-        var value = curSeg.Span[idx++];
-        return value;
+
+        var (seg, off) = Locate(position);
+        position++;
+        return _segments[seg][off];
     }
 
     /// <inheritdoc/>
-    public override void Write(byte[] buffer, int offset, int count) => Write(buffer.AsSpan(offset, count));
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        ValidateBufferArguments(buffer, offset, count);
+        Write(buffer.AsSpan(offset, count));
+    }
     /// <inheritdoc/>
     public override void Write(ReadOnlySpan<byte> buffer)
     {
-        if (buffer.Length == 0)
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        if (buffer.IsEmpty)
             return;
 
-        var writeFrom = 0;
-        while (writeFrom < buffer.Length)
+        var end = position + buffer.Length;
+        EnsureCapacity(end);
+        if (position > length)
+            ZeroRange(length, position - length);
+
+        var segments = SegmentsSpan();
+        var (seg, off) = Locate(position);
+
+        var written = 0;
+        while (written < buffer.Length)
         {
-            var remaining = buffer.Length - writeFrom;
-            var dest = Next(remaining);
-            var canWrite = dest.Length - index;
-            var toWrite = remaining < canWrite ? remaining : canWrite;
-            buffer.Slice(writeFrom, toWrite).CopyTo(dest.Span[index..]);
-            writeFrom += toWrite;
-            index = toWrite;
-            length += toWrite;
+            var current = segments[seg];
+            var put = int.Min(current.Length - off, buffer.Length - written);
+            buffer.Slice(written, put).CopyTo(current.AsSpan(off));
+            written += put;
+            off += put;
+            if (off == current.Length)
+            {
+                seg++;
+                off = 0;
+            }
         }
+
+        position = end;
+        if (position > length)
+            length = position;
     }
     /// <inheritdoc/>
     public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled(cancellationToken);
+
         Write(buffer.AsSpan(offset, count));
         return Task.CompletedTask;
     }
     /// <inheritdoc/>
     public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
+        if (cancellationToken.IsCancellationRequested)
+            return ValueTask.FromCanceled(cancellationToken);
+
         Write(buffer.Span);
         return ValueTask.CompletedTask;
     }
     /// <inheritdoc/>
-    public override void WriteByte(byte value) => Next(1).Span[index] = value;
+    public override void WriteByte(byte value) => Write(new ReadOnlySpan<byte>(in value));
 
     /// <inheritdoc/>
     public override void CopyTo(Stream destination, int bufferSize)
     {
         ArgumentNullException.ThrowIfNull(destination);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var segments = SegmentsSpan();
-        for (var i = 0; i < segments.Length; i++)
-            destination.Write(segments[i]);
+        var remaining = length - position;
+        if (remaining <= 0)
+            return;
+
+        var (seg, off) = Locate(position);
+        while (remaining > 0)
+        {
+            var current = _segments[seg];
+            var take = (int)long.Min(current.Length - off, remaining);
+            destination.Write(current, off, take);
+            remaining -= take;
+            off += take;
+            if (off == current.Length)
+            {
+                seg++;
+                off = 0;
+            }
+        }
+        position = length;
     }
     /// <inheritdoc/>
-    public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+    public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(destination);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 
-        CopyTo(destination, bufferSize);
-        return Task.CompletedTask;
+        var remaining = length - position;
+        if (remaining <= 0)
+            return;
+
+        var (seg, off) = Locate(position);
+        while (remaining > 0)
+        {
+            var current = _segments[seg];
+            var take = (int)long.Min(current.Length - off, remaining);
+            await destination.WriteAsync(current.AsMemory(off, take), cancellationToken).ConfigureAwait(false);
+            remaining -= take;
+            off += take;
+            if (off == current.Length)
+            {
+                seg++;
+                off = 0;
+            }
+        }
+        position = length;
     }
 
     /// <inheritdoc/>
-    public override long Seek(long offset, SeekOrigin origin) => origin switch
+    public override long Seek(long offset, SeekOrigin origin)
     {
-        SeekOrigin.Begin => Position = offset,
-        SeekOrigin.Current => Position += offset,
-        SeekOrigin.End => Position = Length + offset,
-        _ => throw new ArgumentOutOfRangeException(nameof(origin), origin, "Invalid seek origin."),
-    };
+        Position = origin switch
+        {
+            SeekOrigin.Begin => offset,
+            SeekOrigin.Current => position + offset,
+            SeekOrigin.End => length + offset,
+            _ => throw new ArgumentOutOfRangeException(nameof(origin), origin, "Invalid seek origin."),
+        };
+        return position;
+    }
     /// <inheritdoc/>
     public override void SetLength(long value)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentOutOfRangeException.ThrowIfNegative(value);
+
         if (value > length)
             throw new NotSupportedException("Cannot set length beyond the current length of the stream.");
+
         length = value;
+        if (position > length)
+            position = length;
     }
 
     /// <inheritdoc/>
@@ -204,27 +294,19 @@ public sealed class ArrayPoolMemoryStream : Stream
     /// <inheritdoc/>
     public override Task FlushAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    private Memory<byte> Next(int sizeHint = 0)
+    /// <inheritdoc/>
+    protected override void Dispose(bool disposing)
     {
-        // currentSegment isn't full, so advancing would violate contiguity of the data we receive
-        if (!currentSegment.IsEmpty && index != currentSegment.Length)
-            return currentSegment;
-
-        index = 0;
-        segment++;
-
-        if (segment < _segments.Count)
+        if (!_disposed)
         {
-            // we already had a segment and got SetLength'd toward the front, so just reuse it
-            return currentSegment = _segments[segment];
-        }
+            foreach (var segment in _segments)
+                _pool.Return(segment);
+            _segments.Clear();
 
-        byte[] arr;
-        if (sizeHint > _largeSegmentSize)
-            arr = _pool.Rent(_largeSegmentSize);
-        else
-            arr = _pool.Rent(_smallSegmentSize);
-        _segments.Add(arr);
-        return currentSegment = arr;
+            _lastReadTask = null;
+            position = length = capacity = 0;
+            _disposed = true;
+        }
+        base.Dispose(disposing);
     }
 }

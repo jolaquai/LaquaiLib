@@ -1,9 +1,11 @@
-﻿namespace LaquaiLib.IO;
+namespace LaquaiLib.IO;
 
 internal static class SegmentedBufferHelpers
 {
     public static (int SegmentIndex, int OffsetInSegment) AbsoluteToRelative<T>(ReadOnlySpan<T[]> segments, long index)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+
         // Fast zero-seek path
         if (index == 0)
             return (0, 0);

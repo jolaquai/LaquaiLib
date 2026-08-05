@@ -1,4 +1,4 @@
-﻿using System.Buffers;
+using System.Buffers;
 
 using LaquaiLib.Extensions;
 
@@ -83,6 +83,7 @@ public abstract class SegmentedBufferWriterBase<T> : BufferWriterBase<T>
     /// <param name="count">The number of elements written to the buffer.</param>
     public override void Advance(int count)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
         if (segment == -1 || index == -1 || currentSegment.IsEmpty)
             throw new InvalidOperationException("BufferWriter is not initialized.");
         if (index + count > currentSegment.Length)
@@ -105,11 +106,12 @@ public abstract class ContiguousBufferWriterBase<T> : BufferWriterBase<T>
     /// <summary>
     /// Gets the position in the buffer where the next write will occur.
     /// </summary>
-    public int Length { get; private set; }
+    public int Length { get; protected set; }
 
     /// <inheritdoc/>
     public override void Advance(int count)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
         if (Length == -1 || buffer.IsEmpty)
             throw new InvalidOperationException("BufferWriter is not initialized.");
         if (Length + count > buffer.Length)
@@ -194,18 +196,26 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     private readonly ArrayPool<T> _pool = pool ?? ArrayPool<T>.Shared;
     private readonly bool _zeroOnDispose = zeroOnDispose;
     private readonly List<T[]> _segments = [];
+    private bool _disposed;
 
     /// <inheritdoc/>
-    public override long AbsoluteLength => SegmentedBufferHelpers.RelativeToAbsolute(CollectionsMarshal.AsSpan(_segments), segment, index);
+    public override long AbsoluteLength => segment < 0 ? 0 : SegmentedBufferHelpers.RelativeToAbsolute(CollectionsMarshal.AsSpan(_segments), segment, index);
 
     /// <inheritdoc/>
-    public override Memory<T> GetMemory(int sizeHint = 0) => Next()[index..];
+    public override Memory<T> GetMemory(int sizeHint = 0)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentOutOfRangeException.ThrowIfNegative(sizeHint);
+        return Next(sizeHint)[index..];
+    }
     /// <inheritdoc/>
     protected sealed override Memory<T> Next(int sizeHint = 0)
     {
+        var need = sizeHint > 0 ? sizeHint : 1;
+
         // currentSegment isn't full, so advancing would violate contiguity of the data we receive
         if (!currentSegment.IsEmpty && index != currentSegment.Length)
-            return currentSegment;
+            return currentSegment.Length - index >= need ? currentSegment : (currentSegment = Grow(checked(index + need)));
 
         index = 0;
         segment++;
@@ -213,26 +223,45 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
         if (segment < _segments.Count)
         {
             // we already had a segment and got SetLength'd toward the front, so just reuse it
-            return currentSegment = _segments[segment];
+            return currentSegment = _segments[segment].Length >= need ? _segments[segment] : Grow(need);
         }
 
-        var arr = _pool.Rent(sizeHint < _maxElems && sizeHint > 0 ? sizeHint : _maxElems);
+        var arr = _pool.Rent(int.Max(need, _maxElems));
         _segments.Add(arr);
         return currentSegment = arr;
+    }
+    // segments before the current one must stay completely full, so an oversized sizeHint replaces the current segment rather than skipping to a new one
+    private T[] Grow(int minimumLength)
+    {
+        var old = _segments[segment];
+        var arr = _pool.Rent(int.Max(minimumLength, _maxElems));
+        old.AsSpan(0, index).CopyTo(arr);
+        _segments[segment] = arr;
+        _pool.Return(old, _zeroOnDispose);
+        return arr;
     }
     /// <inheritdoc/>
     public override void SetLength(long length)
     {
-        if (length > AbsoluteLength)
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentOutOfRangeException.ThrowIfNegative(length);
+
+        var current = AbsoluteLength;
+        if (length > current)
             throw new ArgumentOutOfRangeException(nameof(length), $"Cannot set length beyond the current absolute length of the buffer. Use {nameof(Advance)}.");
+        if (length == current)
+            return;
 
         var (idx, off) = SegmentedBufferHelpers.AbsoluteToRelative(CollectionsMarshal.AsSpan(_segments), length);
         segment = idx;
         index = off;
+        // without this, subsequent writes would land in whatever segment happened to be current before the rewind
+        currentSegment = _segments[idx];
     }
     /// <inheritdoc/>
     public override void Clear(bool zero = false)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         if (zero)
             foreach (var segment in _segments)
                 segment.AsSpan().ZeroMemory();
@@ -243,13 +272,18 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     /// Gets an enumerator that iterates through the segments of the buffer as <see cref="Memory{T}"/> instances.
     /// </summary>
     /// <returns>The enumerator for the segments of the buffer.</returns>
-    public SegmentEnumerator GetSegments() => new(_segments);
+    public SegmentEnumerator GetSegments()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return new(_segments);
+    }
     /// <summary>
     /// Copies the data written so far to a new array and returns it.
     /// </summary>
     /// <returns>The created array.</returns>
     public T[] ToArray()
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         var ret = new T[AbsoluteLength];
         var offset = 0;
         for (var i = 0; i <= segment; i++)
@@ -265,9 +299,17 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     /// <inheritdoc/>
     public override void Dispose()
     {
+        if (_disposed)
+            return;
+
         var zod = _zeroOnDispose;
         foreach (var segment in _segments)
             _pool.Return(segment, zod);
         _segments.Clear();
+
+        currentSegment = default;
+        segment = -1;
+        index = -1;
+        _disposed = true;
     }
 }

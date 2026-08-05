@@ -14,6 +14,7 @@ public class ChangeToUnsafeAsRefactorTests
         => new CSharpCodeRefactoringTest<ChangeToUnsafeAsRefactor, DefaultVerifier>
         {
             TestCode = source,
+            FixedCode = source.Replace("[|", "").Replace("|]", ""),
             ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
         }.RunAsync();
 
@@ -128,7 +129,7 @@ public class ChangeToUnsafeAsRefactorTests
             class Derived : Base { }
             class C
             {
-                void M(Derived d) { var b = (Base)d; }
+                void M(Derived d) { var b = [|(Base)d|]; }
             }
             """
         );
@@ -141,7 +142,7 @@ public class ChangeToUnsafeAsRefactorTests
             class MyClass : IMyInterface { }
             class C
             {
-                void M(MyClass m) { var i = (IMyInterface)m; }
+                void M(MyClass m) { var i = [|(IMyInterface)m|]; }
             }
             """
         );
@@ -152,7 +153,7 @@ public class ChangeToUnsafeAsRefactorTests
             """
             class C
             {
-                void M(double d) { var i = (int)d; }
+                void M(double d) { var i = [|(int)d|]; }
             }
             """
         );

@@ -355,9 +355,9 @@ public class DequeTests
     {
         var deque = new Deque<int>([1, 2, 3]);
         var array = new int[3];
-        Assert.Throws<ArgumentException>(() => deque.CopyTo(array, -1));
-        Assert.Throws<ArgumentException>(() => deque.CopyTo(array, 3));
-        Assert.Throws<ArgumentException>(() => deque.CopyTo(array, 1)); // Not enough space
+        Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, -1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, 3));
+        Assert.Throws<ArgumentOutOfRangeException>(() => deque.CopyTo(array, 1)); // Not enough space
     }
 
     [Fact]

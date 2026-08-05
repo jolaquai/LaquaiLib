@@ -366,7 +366,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         }
         if (index + nodeCount > array.Length)
         {
-            throw new ArgumentException($"The destination array (length {array.Length}) is not large enough to hold {nodeCount} elements starting at index {index}.", nameof(array));
+            throw new ArgumentOutOfRangeException(nameof(array), $"The destination array (length {array.Length}) is not large enough to hold {nodeCount} elements starting at index {index}.");
         }
 
         var current = Head;
