@@ -15,13 +15,8 @@ public static partial class MemoryExtensions
         /// <summary>
         /// Fills the specified <see cref="Span{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
-        public void Fill()
-        {
-            for (var i = 0; i < span.Length; i++)
-            {
-                span[i] = default;
-            }
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Fill() => span.Clear();
         /// <summary>
         /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>.
         /// </summary>
@@ -34,7 +29,7 @@ public static partial class MemoryExtensions
             }
         }
         /// <summary>
-        /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+        /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         public void Fill(Func<T, T> factory)
@@ -49,7 +44,7 @@ public static partial class MemoryExtensions
         /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
-        public void Fill(Func<int, T> factory)
+        public void FillIndexed(Func<int, T> factory)
         {
             for (var i = 0; i < span.Length; i++)
             {
@@ -57,10 +52,10 @@ public static partial class MemoryExtensions
             }
         }
         /// <summary>
-        /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned and the previous iteration's value.
+        /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
-        public void Fill(Func<int, T, T> factory)
+        public void FillIndexed(Func<int, T, T> factory)
         {
             T last = default;
             for (var i = 0; i < span.Length; i++)
@@ -90,7 +85,7 @@ public static partial class MemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Fill(Func<T> factory) => multiDimArrayEnumerable.Span.Fill(factory);
         /// <summary>
-        /// Fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+        /// Fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -100,13 +95,13 @@ public static partial class MemoryExtensions
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Fill(Func<int, T> factory) => multiDimArrayEnumerable.Span.Fill(factory);
+        public void FillIndexed(Func<int, T> factory) => multiDimArrayEnumerable.Span.FillIndexed(factory);
         /// <summary>
-        /// Fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="MultiDimArrayEnumerable{T}"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value.
+        /// Fills the specified <see cref="MultiDimArrayEnumerable{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="MultiDimArrayEnumerable{T}"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Fill(Func<int, T, T> factory) => multiDimArrayEnumerable.Span.Fill(factory);
+        public void FillIndexed(Func<int, T, T> factory) => multiDimArrayEnumerable.Span.FillIndexed(factory);
     }
 
     extension<T>(Memory<T> memory)
@@ -129,7 +124,7 @@ public static partial class MemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Fill(Func<T> factory) => memory.Span.Fill(factory);
         /// <summary>
-        /// Fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+        /// Fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -139,13 +134,13 @@ public static partial class MemoryExtensions
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Fill(Func<int, T> factory) => memory.Span.Fill(factory);
+        public void FillIndexed(Func<int, T> factory) => memory.Span.FillIndexed(factory);
         /// <summary>
-        /// Fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value.
+        /// Fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Fill(Func<int, T, T> factory) => memory.Span.Fill(factory);
+        public void FillIndexed(Func<int, T, T> factory) => memory.Span.FillIndexed(factory);
 
         /// <summary>
         /// Asynchronously fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>.
@@ -161,7 +156,7 @@ public static partial class MemoryExtensions
             }
         }
         /// <summary>
-        /// Asynchronously fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+        /// Asynchronously fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -179,7 +174,7 @@ public static partial class MemoryExtensions
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task FillAsync(Func<int, ValueTask<T>> factory)
+        public async Task FillIndexedAsync(Func<int, ValueTask<T>> factory)
         {
             for (var i = 0; i < memory.Length; i++)
             {
@@ -188,11 +183,11 @@ public static partial class MemoryExtensions
             }
         }
         /// <summary>
-        /// Asynchronously fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value.
+        /// Asynchronously fills the specified <see cref="Memory{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         /// <param name="factory">The factory method that produces the values to fill the span with.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task FillAsync(Func<int, T, ValueTask<T>> factory)
+        public async Task FillIndexedAsync(Func<int, T, ValueTask<T>> factory)
         {
             T last = default;
             for (var i = 0; i < memory.Length; i++)

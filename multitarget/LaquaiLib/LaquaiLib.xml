@@ -756,15 +756,36 @@
         <member name="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1">
             <summary>
             Implements the enumerator pattern to enumerate the elements of a (potentially) multidimensional array sequentially.
-            Instances pin the target array for their entire lifetime; they must be disposed to release it.
+            Instances hold a tracked reference to the array instead of pinning it, so <see cref="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Dispose"/> releases nothing; it only marks the instance unusable.
             </summary>
-            <typeparam name="T">The type of the elements in the array. This must be exactly the same type as the array, otherwise users of this type will be faced with non-sensical exceptions.</typeparam>
+            <typeparam name="T">
+            The type to view the array's elements as. It must be the same size as the array's element type, which permits lateral reinterpretation such as viewing an enum array as its underlying type.
+            Use <see cref="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Reinterpret(System.Array)"/> to view an array as a differently sized <typeparamref name="T"/>, or <see cref="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.ReinterpretUnsafe(System.Array)"/> to additionally view a reference array as a different reference type.
+            </typeparam>
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.#ctor(System.Array)">
             <summary>
             Initializes a new <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> with the specified <paramref name="array"/>.
             </summary>
             <param name="array">The array to enumerate.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Reinterpret(System.Array)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> that views the memory of <paramref name="array"/> as <typeparamref name="T"/> even if the array's element type differs in size.
+            The element count becomes the array's total byte length divided by the size of <typeparamref name="T"/>; a trailing partial element is not observable.
+            Neither type may contain managed references.
+            </summary>
+            <param name="array">The array whose memory to reinterpret.</param>
+            <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.ReinterpretUnsafe(System.Array)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> that additionally views an array of one reference type as an array of another, bypassing the store checks that array covariance would normally perform.
+            Reading an element that is not actually a <typeparamref name="T"/>, or writing an element the underlying array cannot hold, is not detected here and will surface as a cast failure or corruption elsewhere.
+            Viewing GC-tracked slots as raw data or the reverse remains rejected.
+            </summary>
+            <param name="array">The array whose elements to view as <typeparamref name="T"/>.</param>
+            <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>.</returns>
         </member>
         <member name="P:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Span">
             <summary>
@@ -773,23 +794,19 @@
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.GetEnumerator">
             <summary>
-            Returns an <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/> over the elements of the pinned array.
+            Returns an <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/> over the elements of the array.
             </summary>
             <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Finalize">
-            <summary>
-            Finalizes the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>, releasing the pin on the target array if <see cref="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Dispose"/> was never called.
-            </summary>
-        </member>
         <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Dispose">
             <summary>
-            Frees the <see cref="T:System.Runtime.InteropServices.GCHandle"/> used to pin the target array.
+            Marks this <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> as disposed.
+            The target array is referenced rather than pinned, so nothing is released; subsequent access to <see cref="P:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Span"/> or to any <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/>'s <see cref="P:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator.Current"/> throws.
             </summary>
         </member>
         <member name="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator">
             <summary>
-            Enables enumeration of the items of the <see cref="T:System.Array"/> a <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> pins.
+            Enables enumeration of the items of the <see cref="T:System.Array"/> a <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> wraps.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator.MoveNext">
@@ -2442,7 +2459,7 @@
         <member name="M:LaquaiLib.Extensions.ArrayExtensions.&lt;G&gt;$5826E9994B69910B49B9282D8BFF5922.GetSpanProvider``1">
             <summary>
             Gets an <see cref="T:LaquaiLib.Interfaces.ISpanProvider`1"/> for the specified <paramref name="source"/>.
-            It must be disposed after use to release the array handle, otherwise this will result in a memory leak.
+            The array is referenced rather than pinned, so disposing the provider releases nothing; it only prevents further use of the provider.
             </summary>
             <typeparam name="T">The Type of the items in the array.</typeparam>
             <param name="source">The <see cref="T:System.Array"/> to get the <see cref="T:LaquaiLib.Interfaces.ISpanProvider`1"/> for.</param>
@@ -2451,7 +2468,7 @@
         <member name="M:LaquaiLib.Extensions.ArrayExtensions.&lt;G&gt;$5826E9994B69910B49B9282D8BFF5922.GetReadOnlySpanProvider``1">
             <summary>
             Gets an <see cref="T:LaquaiLib.Interfaces.ISpanProvider`1"/> for the specified <paramref name="source"/>.
-            It must be disposed after use to release the array handle, otherwise this will result in a memory leak.
+            The array is referenced rather than pinned, so disposing the provider releases nothing; it only prevents further use of the provider.
             </summary>
             <typeparam name="T">The Type of the items in the array.</typeparam>
             <param name="source">The <see cref="T:System.Array"/> to get the <see cref="T:LaquaiLib.Interfaces.ISpanProvider`1"/> for.</param>

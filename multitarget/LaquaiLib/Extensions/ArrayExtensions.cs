@@ -21,7 +21,7 @@ public static partial class ArrayExtensions
         public IEnumerable<T> AsEnumerable<T>() => new MultiDimArrayEnumerable<T>(source);
         /// <summary>
         /// Gets an <see cref="ISpanProvider{T}"/> for the specified <paramref name="source"/>.
-        /// It must be disposed after use to release the array handle, otherwise this will result in a memory leak.
+        /// The array is referenced rather than pinned, so disposing the provider releases nothing; it only prevents further use of the provider.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
         /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
@@ -30,7 +30,7 @@ public static partial class ArrayExtensions
         public ISpanProvider<T> GetSpanProvider<T>() => new MultiDimArrayEnumerable<T>(source);
         /// <summary>
         /// Gets an <see cref="ISpanProvider{T}"/> for the specified <paramref name="source"/>.
-        /// It must be disposed after use to release the array handle, otherwise this will result in a memory leak.
+        /// The array is referenced rather than pinned, so disposing the provider releases nothing; it only prevents further use of the provider.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
         /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
