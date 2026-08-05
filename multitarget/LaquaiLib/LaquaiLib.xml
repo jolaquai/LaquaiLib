@@ -684,7 +684,7 @@
             <remarks>
             Initializes a new <see cref="T:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1"/> that iterates over all items in the given collection.
             </remarks>
-            <param name="items">The type of the items to iterate over.</param>
+            <param name="items">The items to iterate over.</param>
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
             <summary>
@@ -695,17 +695,7 @@
             <remarks>
             Initializes a new <see cref="T:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1"/> that iterates over all items in the given collection.
             </remarks>
-            <param name="items">The type of the items to iterate over.</param>
-        </member>
-        <member name="P:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1.Current">
-            <summary>
-            Retrieves the current item at which the enumerator is positioned.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1.GetEnumerator">
-            <summary>
-            Returns the current instance. For use in <see langword="foreach"/> statements.
-            </summary>
+            <param name="items">The items to iterate over.</param>
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1.#ctor">
             <summary>
@@ -721,6 +711,11 @@
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Int32,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Func{`0,System.Boolean})"/>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1.GetEnumerator">
+            <summary>
+            Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> over the (filtered) items. For use in <see langword="foreach"/> statements.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Collections.Enumeration.MemoryEnumerable`1">
             <summary>
@@ -761,12 +756,35 @@
         <member name="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1">
             <summary>
             Implements the enumerator pattern to enumerate the elements of a (potentially) multidimensional array sequentially.
+            Instances pin the target array for their entire lifetime; they must be disposed to release it.
             </summary>
             <typeparam name="T">The type of the elements in the array. This must be exactly the same type as the array, otherwise users of this type will be faced with non-sensical exceptions.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.#ctor(System.Array)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> with the specified <paramref name="array"/>.
+            </summary>
+            <param name="array">The array to enumerate.</param>
         </member>
         <member name="P:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Span">
             <summary>
             Gets a <see cref="T:System.Span`1"/> over the entire array.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.GetEnumerator">
+            <summary>
+            Returns an <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/> over the elements of the pinned array.
+            </summary>
+            <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Finalize">
+            <summary>
+            Finalizes the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>, releasing the pin on the target array if <see cref="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Dispose"/> was never called.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Dispose">
+            <summary>
+            Frees the <see cref="T:System.Runtime.InteropServices.GCHandle"/> used to pin the target array.
             </summary>
         </member>
         <member name="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator">
@@ -785,20 +803,6 @@
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator.Dispose">
             <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.#ctor(System.Array)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> with the specified <paramref name="array"/>.
-            </summary>
-            <param name="array">The array to enumerate.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Dispose">
-            <summary>
-            Frees the <see cref="T:System.Runtime.InteropServices.GCHandle"/> used to pin the target array.
-            </summary>
         </member>
         <member name="T:LaquaiLib.Collections.Enumeration.SpanChunkEnumerable`1">
             <summary>
@@ -7173,11 +7177,11 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0},System.Func{``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0},System.Func{System.Int32,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{System.Int32,`0})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Span{``0},System.Func{System.Int32,``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0},System.Func{System.Int32,``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{System.Int32,`0,`0})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Span{``0},System.Func{System.Int32,``0,``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0,`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.ZeroMemory"/>
@@ -7191,11 +7195,11 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{System.Int32,`0})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{System.Int32,`0,`0})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0,``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0,`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Memory{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.ZeroMemory"/>
@@ -7209,11 +7213,11 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Memory{``0},System.Func{``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Memory{``0},System.Func{System.Int32,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{System.Int32,`0})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Memory{``0},System.Func{System.Int32,``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Memory{``0},System.Func{System.Int32,``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{System.Int32,`0,`0})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Memory{``0},System.Func{System.Int32,``0,``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0,`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillAsync``1(System.Memory{``0},System.Func{System.Threading.Tasks.ValueTask{``0}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Threading.Tasks.ValueTask{`0}})"/>
@@ -7221,11 +7225,11 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillAsync``1(System.Memory{``0},System.Func{``0,System.Threading.Tasks.ValueTask{``0}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillAsync``1(System.Memory{``0},System.Func{System.Int32,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexedAsync``1(System.Memory{``0},System.Func{System.Int32,System.Threading.Tasks.ValueTask{``0}})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillAsync``1(System.Memory{``0},System.Func{System.Int32,``0,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexedAsync``1(System.Memory{``0},System.Func{System.Int32,``0,System.Threading.Tasks.ValueTask{``0}})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0})">
             <summary>
@@ -7393,19 +7397,19 @@
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0,`0})">
             <summary>
-            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{System.Int32,`0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0})">
             <summary>
             Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{System.Int32,`0,`0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0,`0})">
             <summary>
-            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned and the previous iteration's value.
+            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
@@ -7441,19 +7445,19 @@
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0,`0})">
             <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{System.Int32,`0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0})">
             <summary>
             Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{System.Int32,`0,`0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0,`0})">
             <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value.
+            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
@@ -7475,19 +7479,19 @@
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0,`0})">
             <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{System.Int32,`0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0})">
             <summary>
             Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{System.Int32,`0,`0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0,`0})">
             <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value.
+            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
@@ -7500,21 +7504,21 @@
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})">
             <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value.
+            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})">
             <summary>
             Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})">
             <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value.
+            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
             </summary>
             <param name="factory">The factory method that produces the values to fill the span with.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>

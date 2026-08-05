@@ -19,7 +19,7 @@
         <AnalysisMode>all</AnalysisMode>
 
         <Title>$([System.IO.Path]::GetFileNameWithoutExtension('$(MSBuildProjectFullPath)'))</Title>
-        <PackageOutputPath>$(SolutionDir)Scripts\pack</PackageOutputPath>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)Scripts\pack</PackageOutputPath>
         <CoreAuthors>Joshua Laquai</CoreAuthors>
         <CoreDescription>Personal libary.</CoreDescription>
         <CoreUrl>https://github.com/jolaquai/LaquaiLib</CoreUrl>

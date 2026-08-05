@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib\LaquaiLib.csproj" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\LaquaiLib.csproj" />
   </ItemGroup>
 
 </Project>

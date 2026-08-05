@@ -14,13 +14,13 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
 
-        <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
-        <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\Test\TestCore\TestCore.csproj" />
 
-        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-        <ProjectReference Include="$(SolutionDir)netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
     </ItemGroup>
 
     <ItemGroup>

@@ -18,6 +18,6 @@
     <PackageReference Include="System.Management" Version="10.0.10" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.10" />
 
-    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib\LaquaiLib.csproj" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\LaquaiLib.csproj" />
   </ItemGroup>
 </Project>

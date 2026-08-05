@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
-    <ProjectReference Include="$(SolutionDir)Test\TestCore\TestCore.csproj" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\Test\TestCore\TestCore.csproj" />
 
     <Using Include="Xunit" />
     <Using Include="System.Runtime.CompilerServices" />
