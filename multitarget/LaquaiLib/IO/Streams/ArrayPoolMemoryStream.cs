@@ -96,10 +96,12 @@ public sealed class ArrayPoolMemoryStream : Stream
     public override int Read(byte[] buffer, int offset, int count)
     {
         ValidateBufferArguments(buffer, offset, count);
-        return Read(buffer.AsSpan(offset, count));
+        return ReadCore(buffer.AsSpan(offset, count));
     }
     /// <inheritdoc/>
-    public override int Read(Span<byte> buffer)
+    public override int Read(Span<byte> buffer) => ReadCore(buffer);
+    // public entry points validate their own arguments and hand off here, so no path validates twice
+    private int ReadCore(Span<byte> buffer)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -132,17 +134,19 @@ public sealed class ArrayPoolMemoryStream : Stream
     /// <inheritdoc/>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
+        ValidateBufferArguments(buffer, offset, count);
+
         if (cancellationToken.IsCancellationRequested)
             return Task.FromCanceled<int>(cancellationToken);
 
-        var read = Read(buffer.AsSpan(offset, count));
+        var read = ReadCore(buffer.AsSpan(offset, count));
         var last = _lastReadTask;
         return last is not null && last.Result == read ? last : (_lastReadTask = Task.FromResult(read));
     }
     /// <inheritdoc/>
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) => cancellationToken.IsCancellationRequested
         ? ValueTask.FromCanceled<int>(cancellationToken)
-        : new ValueTask<int>(Read(buffer.Span));
+        : new ValueTask<int>(ReadCore(buffer.Span));
     /// <inheritdoc/>
     public override int ReadByte()
     {
@@ -160,10 +164,12 @@ public sealed class ArrayPoolMemoryStream : Stream
     public override void Write(byte[] buffer, int offset, int count)
     {
         ValidateBufferArguments(buffer, offset, count);
-        Write(buffer.AsSpan(offset, count));
+        WriteCore(buffer.AsSpan(offset, count));
     }
     /// <inheritdoc/>
-    public override void Write(ReadOnlySpan<byte> buffer)
+    public override void Write(ReadOnlySpan<byte> buffer) => WriteCore(buffer);
+    // public entry points validate their own arguments and hand off here, so no path validates twice
+    private void WriteCore(ReadOnlySpan<byte> buffer)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -200,10 +206,12 @@ public sealed class ArrayPoolMemoryStream : Stream
     /// <inheritdoc/>
     public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
+        ValidateBufferArguments(buffer, offset, count);
+
         if (cancellationToken.IsCancellationRequested)
             return Task.FromCanceled(cancellationToken);
 
-        Write(buffer.AsSpan(offset, count));
+        WriteCore(buffer.AsSpan(offset, count));
         return Task.CompletedTask;
     }
     /// <inheritdoc/>
@@ -212,11 +220,11 @@ public sealed class ArrayPoolMemoryStream : Stream
         if (cancellationToken.IsCancellationRequested)
             return ValueTask.FromCanceled(cancellationToken);
 
-        Write(buffer.Span);
+        WriteCore(buffer.Span);
         return ValueTask.CompletedTask;
     }
     /// <inheritdoc/>
-    public override void WriteByte(byte value) => Write(new ReadOnlySpan<byte>(in value));
+    public override void WriteByte(byte value) => WriteCore(new ReadOnlySpan<byte>(in value));
 
     /// <inheritdoc/>
     public override void CopyTo(Stream destination, int bufferSize)
@@ -245,11 +253,15 @@ public sealed class ArrayPoolMemoryStream : Stream
         position = length;
     }
     /// <inheritdoc/>
-    public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+    public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(destination);
         ObjectDisposedException.ThrowIf(_disposed, this);
-
+        return CopyToAsyncCore(destination, cancellationToken);
+    }
+    // split so the argument checks above throw synchronously instead of surfacing as a faulted task
+    private async Task CopyToAsyncCore(Stream destination, CancellationToken cancellationToken)
+    {
         var remaining = length - position;
         if (remaining <= 0)
             return;
@@ -299,6 +311,29 @@ public sealed class ArrayPoolMemoryStream : Stream
         length = value;
         if (position > length)
             position = length;
+    }
+    /// <summary>
+    /// Returns every segment that lies entirely beyond <see cref="Length"/> to the pool.
+    /// </summary>
+    /// <remarks>
+    /// Only whole segments can be released, so the segment <see cref="Length"/> falls inside is kept and <see cref="Capacity"/> may remain above <see cref="Length"/>. <see cref="Position"/> is left alone; writing past the end afterwards simply rents again.
+    /// </remarks>
+    public void TrimExcess()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        long kept = 0;
+        var keep = 0;
+        while (keep < _segments.Count && kept < length)
+        {
+            kept += _segments[keep].Length;
+            keep++;
+        }
+
+        for (var i = keep; i < _segments.Count; i++)
+            _pool.Return(_segments[i]);
+        _segments.RemoveRange(keep, _segments.Count - keep);
+        capacity = kept;
     }
 
     /// <inheritdoc/>

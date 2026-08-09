@@ -571,6 +571,132 @@ public class ArrayPoolMemoryStreamTests
         Assert.Equal(new byte[] { 1, 2, 0xFF, 0xFF, 0xFF, 9 }, buffer);
     }
 
+    private static ArrayPoolMemoryStream ThreeSegmentStream(TrackingArrayPool pool, byte[] data)
+    {
+        var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        for (var offset = 0; offset < 48; offset += 16)
+            stream.Write(data, offset, 16);
+        return stream;
+    }
+
+    [Fact]
+    public void TrimExcessReleasesSegmentsBeyondLength()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = ThreeSegmentStream(pool, Sequence(48));
+        stream.SetLength(20);
+        stream.TrimExcess();
+
+        Assert.Single(pool.Returns);
+        Assert.Equal(32L, stream.Capacity);
+    }
+
+    [Fact]
+    public void TrimExcessKeepsTheSegmentContainingLength()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = ThreeSegmentStream(pool, Sequence(48));
+        stream.SetLength(17);
+        stream.TrimExcess();
+        Assert.True(stream.Capacity > stream.Length);
+    }
+
+    [Fact]
+    public void TrimExcessAtASegmentBoundaryLeavesNoSlack()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = ThreeSegmentStream(pool, Sequence(48));
+        stream.SetLength(32);
+        stream.TrimExcess();
+        Assert.Equal(32L, stream.Capacity);
+    }
+
+    [Fact]
+    public void TrimExcessAfterFullTruncationReleasesEverything()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = ThreeSegmentStream(pool, Sequence(48));
+        stream.SetLength(0);
+        stream.TrimExcess();
+
+        Assert.Equal(3, pool.Returns.Count);
+        Assert.Equal(0L, stream.Capacity);
+    }
+
+    [Fact]
+    public void TrimExcessWithNothingToReleaseIsANoOp()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = ThreeSegmentStream(pool, Sequence(48));
+        stream.TrimExcess();
+
+        Assert.Empty(pool.Returns);
+        Assert.Equal(48L, stream.Capacity);
+    }
+
+    [Fact]
+    public void TrimExcessPreservesReadableContent()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(48);
+        using var stream = ThreeSegmentStream(pool, data);
+        stream.SetLength(20);
+        stream.TrimExcess();
+
+        stream.Position = 0;
+        var buffer = new byte[20];
+        Assert.Equal(20, stream.Read(buffer, 0, 20));
+        Assert.Equal(data.AsSpan(0, 20).ToArray(), buffer);
+    }
+
+    [Fact]
+    public void WriteAfterTrimExcessRentsAgainAndStaysCorrect()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(48);
+        using var stream = ThreeSegmentStream(pool, data);
+        stream.SetLength(20);
+        stream.TrimExcess();
+
+        var tail = new byte[20];
+        Array.Fill(tail, (byte)7);
+        stream.Position = 20;
+        stream.Write(tail, 0, 20);
+        Assert.Equal(4, pool.Rented.Count);
+
+        var expected = new byte[40];
+        data.AsSpan(0, 20).CopyTo(expected);
+        tail.CopyTo(expected.AsSpan(20));
+
+        stream.Position = 0;
+        var buffer = new byte[40];
+        Assert.Equal(40, stream.Read(buffer, 0, 40));
+        Assert.Equal(expected, buffer);
+    }
+
+    [Fact]
+    public void DisposeAfterTrimExcessDoesNotReturnSegmentsTwice()
+    {
+        var pool = new TrackingArrayPool();
+        var stream = ThreeSegmentStream(pool, Sequence(48));
+        stream.SetLength(20);
+        stream.TrimExcess();
+        stream.Dispose();
+
+        Assert.Equal(pool.Rented.Count, pool.Returns.Count);
+        Assert.Equal(pool.Returns.Count, pool.Returns.Distinct().Count());
+        foreach (var rented in pool.Rented)
+            Assert.True(pool.Returns.Any(returned => ReferenceEquals(returned, rented)));
+    }
+
+    [Fact]
+    public void TrimExcessThrowsWhenDisposed()
+    {
+        var stream = StreamWith(1, 2, 3);
+        stream.Dispose();
+        Assert.Throws<ObjectDisposedException>(stream.TrimExcess);
+    }
+
     [Fact]
     public void CopyToWritesStreamContents()
     {
@@ -661,6 +787,45 @@ public class ArrayPoolMemoryStreamTests
         using var stream = StreamWith(1, 2, 3);
         Assert.Equal(2, await stream.ReadAsync(new byte[2].AsMemory()));
         Assert.Equal(2L, stream.Position);
+    }
+
+    [Fact]
+    public void ReadAsyncArrayOverloadRejectsNullBuffer()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        Assert.Throws<ArgumentNullException>(() => { _ = stream.ReadAsync(null, 0, 1, default); });
+    }
+
+    [Fact]
+    public void WriteAsyncArrayOverloadRejectsNullBuffer()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.Throws<ArgumentNullException>(() => { _ = stream.WriteAsync(null, 0, 1, default); });
+    }
+
+    [Fact]
+    public void ReadAsyncArrayOverloadValidatesBeforeObservingCancellation()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        Assert.ThrowsAny<ArgumentException>(() => { _ = stream.ReadAsync(new byte[4], 2, 5, cts.Token); });
+    }
+
+    [Fact]
+    public void WriteAsyncArrayOverloadValidatesBeforeObservingCancellation()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        Assert.ThrowsAny<ArgumentException>(() => { _ = stream.WriteAsync(new byte[4], 2, 5, cts.Token); });
+    }
+
+    [Fact]
+    public void CopyToAsyncRejectsNullDestinationSynchronously()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        Assert.Throws<ArgumentNullException>(() => { _ = stream.CopyToAsync(null, 4096, default); });
     }
 
     [Fact]
