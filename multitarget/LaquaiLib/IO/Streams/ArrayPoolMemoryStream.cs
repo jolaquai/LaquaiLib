@@ -7,23 +7,30 @@ namespace LaquaiLib.IO.Streams;
 /// </summary>
 public sealed class ArrayPoolMemoryStream : Stream
 {
-    private static readonly ArrayPool<byte> _pool = ArrayPool<byte>.Shared;
-
+    private readonly ArrayPool<byte> _pool;
     private readonly List<byte[]> _segments = [];
-    private readonly int _smallSegmentSize, _largeSegmentSize;
+    private readonly int _minimumSegmentSize;
+    private readonly bool _skipZeroing;
 
     private Task<int> _lastReadTask;
     private long position, length, capacity;
     private bool _disposed;
 
-    public ArrayPoolMemoryStream(int smallSegmentSize = 2048, int largeSegmentSize = 16384, long capacity = 0)
+    /// <summary>
+    /// Initializes a new <see cref="ArrayPoolMemoryStream"/>.
+    /// </summary>
+    /// <param name="minimumSegmentSize">Smallest size any single segment will be rented at.</param>
+    /// <param name="capacity">Initial capacity to rent up front.</param>
+    /// <param name="skipZeroing">If <see langword="true"/>, memory exposed by seeking or <see cref="SetLength(long)"/> past the current length is not zeroed and may contain arbitrary prior contents. Only set this if all such memory is overwritten before being read.</param>
+    /// <param name="pool">The <see cref="ArrayPool{T}"/> to rent segments from, or <see langword="null"/> to use <see cref="ArrayPool{T}.Shared"/>.</param>
+    public ArrayPoolMemoryStream(int minimumSegmentSize = 2048, long capacity = 0, bool skipZeroing = false, ArrayPool<byte> pool = null)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(smallSegmentSize);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(largeSegmentSize);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(minimumSegmentSize);
         ArgumentOutOfRangeException.ThrowIfNegative(capacity, nameof(capacity));
 
-        _smallSegmentSize = smallSegmentSize;
-        _largeSegmentSize = largeSegmentSize;
+        _minimumSegmentSize = minimumSegmentSize;
+        _skipZeroing = skipZeroing;
+        _pool = pool ?? ArrayPool<byte>.Shared;
 
         EnsureCapacity(capacity);
     }
@@ -55,16 +62,17 @@ public sealed class ArrayPoolMemoryStream : Stream
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private Span<byte[]> SegmentsSpan() => CollectionsMarshal.AsSpan(_segments);
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private (int Segment, int Offset) Locate(long absolute) => SegmentedBufferHelpers.AbsoluteToRelative<byte>(SegmentsSpan(), absolute);
 
+    // one rent covers the entire gap unless it exceeds what a single array can hold; the minimum keeps many tiny writes from degenerating into rent-per-write
     private void EnsureCapacity(long required)
     {
         while (capacity < required)
         {
-            var arr = _pool.Rent(required - capacity > _largeSegmentSize ? _largeSegmentSize : _smallSegmentSize);
+            var arr = _pool.Rent((int)long.Min(long.Max(required - capacity, _minimumSegmentSize), Array.MaxLength));
             _segments.Add(arr);
             capacity += arr.Length;
         }
     }
-    // seeking past the end leaves a gap that would otherwise expose whatever the pool handed us
+    // seeking or SetLength past the end leaves a gap that would otherwise expose whatever the pool handed us
     private void ZeroRange(long start, long count)
     {
         var segments = SegmentsSpan();
@@ -164,7 +172,7 @@ public sealed class ArrayPoolMemoryStream : Stream
 
         var end = position + buffer.Length;
         EnsureCapacity(end);
-        if (position > length)
+        if (position > length && !_skipZeroing)
             ZeroRange(length, position - length);
 
         var segments = SegmentsSpan();
@@ -282,7 +290,11 @@ public sealed class ArrayPoolMemoryStream : Stream
         ArgumentOutOfRangeException.ThrowIfNegative(value);
 
         if (value > length)
-            throw new NotSupportedException("Cannot set length beyond the current length of the stream.");
+        {
+            EnsureCapacity(value);
+            if (!_skipZeroing)
+                ZeroRange(length, value - length);
+        }
 
         length = value;
         if (position > length)

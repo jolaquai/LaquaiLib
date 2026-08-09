@@ -1,9 +1,34 @@
+using System.Buffers;
+
 using LaquaiLib.IO.Streams;
 
 namespace LaquaiLib.UnitTests.IO.Streams;
 
 public class ArrayPoolMemoryStreamTests
 {
+    // hands out exact-size arrays prefilled with a known byte, so segment layout and zeroing are observable without relying on any real pool's behaviour
+    private sealed class TrackingArrayPool(byte fill = 0) : ArrayPool<byte>
+    {
+        public List<int> RentRequests { get; } = [];
+        public List<byte[]> Rented { get; } = [];
+        public List<byte[]> Returns { get; } = [];
+
+        public override byte[] Rent(int minimumLength)
+        {
+            var array = new byte[minimumLength];
+            array.AsSpan().Fill(fill);
+            RentRequests.Add(minimumLength);
+            Rented.Add(array);
+            return array;
+        }
+        public override void Return(byte[] array, bool clearArray = false)
+        {
+            Returns.Add(array);
+            if (clearArray)
+                Array.Clear(array);
+        }
+    }
+
     private static byte[] Sequence(int length)
     {
         var data = new byte[length];
@@ -23,15 +48,10 @@ public class ArrayPoolMemoryStreamTests
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void ConstructorRejectsNonPositiveSmallSegmentSize(int size) => Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayPoolMemoryStream(size));
-
-    [Theory]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public void ConstructorRejectsNonPositiveLargeSegmentSize(int size) => Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayPoolMemoryStream(2048, size));
+    public void ConstructorRejectsNonPositiveMinimumSegmentSize(int size) => Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayPoolMemoryStream(size));
 
     [Fact]
-    public void ConstructorRejectsNegativeCapacity() => Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayPoolMemoryStream(2048, 16384, -1));
+    public void ConstructorRejectsNegativeCapacity() => Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayPoolMemoryStream(2048, -1));
 
     [Fact]
     public void NewStreamIsEmpty()
@@ -78,10 +98,27 @@ public class ArrayPoolMemoryStreamTests
     }
 
     [Fact]
-    public void CapacityCoversRequestAcrossMultipleSegments()
+    public void CapacityCoversLargePreallocationRequest()
     {
-        using var stream = new ArrayPoolMemoryStream(2048, 16384, 20000);
+        using var stream = new ArrayPoolMemoryStream(2048, 20000);
         Assert.True(stream.Capacity >= 20000);
+    }
+
+    [Fact]
+    public void PreallocationAboveMinimumRentsOneSegment()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, 20000, pool: pool);
+        Assert.Equal(new[] { 20000 }, pool.RentRequests);
+    }
+
+    [Fact]
+    public void StreamRentsFromSuppliedPool()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(pool: pool);
+        stream.WriteByte(1);
+        Assert.Single(pool.RentRequests);
     }
 
     [Fact]
@@ -270,11 +307,35 @@ public class ArrayPoolMemoryStreamTests
     }
 
     [Fact]
-    public void LargeWriteSpansMultipleSegments()
+    public void SingleWriteAboveMinimumRentsOneSegment()
     {
-        using var stream = new ArrayPoolMemoryStream(16, 32);
-        var data = Sequence(200);
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(10000);
         stream.Write(data, 0, data.Length);
+        Assert.Equal(new[] { 10000 }, pool.RentRequests);
+    }
+
+    [Fact]
+    public void WritesBelowMinimumRentAtTheMinimumSize()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        for (var i = 0; i < 4; i++)
+            stream.Write(Sequence(16), 0, 16);
+        Assert.Equal(new[] { 16, 16, 16, 16 }, pool.RentRequests);
+    }
+
+    [Fact]
+    public void SuccessiveWritesSpanMultipleSegments()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(200);
+        for (var offset = 0; offset < data.Length; offset += 8)
+            stream.Write(data, offset, 8);
+
+        Assert.True(pool.RentRequests.Count > 1);
         Assert.Equal(200L, stream.Length);
         stream.Position = 0;
         var buffer = new byte[200];
@@ -283,15 +344,40 @@ public class ArrayPoolMemoryStreamTests
     }
 
     [Fact]
-    public void ReadAcrossSegmentBoundaryFromOffsetIsContiguous()
+    public void ReadAcrossDifferentlySizedSegmentsFromOffsetIsContiguous()
     {
-        using var stream = new ArrayPoolMemoryStream(16, 16);
-        var data = Sequence(48);
-        stream.Write(data, 0, data.Length);
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(1048);
+        stream.Write(data, 0, 16);
+        stream.Write(data, 16, 32);
+        stream.Write(data, 48, 1000);
+        Assert.Equal(new[] { 16, 32, 1000 }, pool.RentRequests);
+
         stream.Position = 8;
-        var buffer = new byte[40];
-        Assert.Equal(40, stream.Read(buffer, 0, 40));
+        var buffer = new byte[1040];
+        Assert.Equal(1040, stream.Read(buffer, 0, 1040));
         Assert.Equal(data.AsSpan(8).ToArray(), buffer);
+    }
+
+    [Fact]
+    public void WriteAcrossDifferentlySizedSegmentsIsContiguous()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Write(Sequence(16), 0, 16);
+        stream.Write(Sequence(48), 0, 48);
+        Assert.Equal(new[] { 16, 48 }, pool.RentRequests);
+
+        var data = Sequence(64);
+        stream.Position = 0;
+        stream.Write(data, 0, 64);
+        Assert.Equal(new[] { 16, 48 }, pool.RentRequests);
+
+        stream.Position = 0;
+        var buffer = new byte[64];
+        Assert.Equal(64, stream.Read(buffer, 0, 64));
+        Assert.Equal(data, buffer);
     }
 
     [Fact]
@@ -355,10 +441,10 @@ public class ArrayPoolMemoryStreamTests
     }
 
     [Fact]
-    public void SetLengthCannotGrowTheStream()
+    public void SetLengthRejectsNegativeValues()
     {
         using var stream = StreamWith(1, 2, 3);
-        Assert.Throws<NotSupportedException>(() => stream.SetLength(100));
+        Assert.Throws<ArgumentOutOfRangeException>(() => stream.SetLength(-1));
     }
 
     [Fact]
@@ -369,6 +455,120 @@ public class ArrayPoolMemoryStreamTests
         stream.Position = 0;
         var buffer = new byte[5];
         Assert.Equal(2, stream.Read(buffer, 0, 5));
+    }
+
+    [Fact]
+    public void SetLengthTruncationClampsPosition()
+    {
+        using var stream = StreamWith(1, 2, 3, 4, 5);
+        stream.Position = 5;
+        stream.SetLength(2);
+        Assert.Equal(2L, stream.Position);
+    }
+
+    [Fact]
+    public void SetLengthGrowsTheStream()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.SetLength(10);
+        Assert.Equal(10L, stream.Length);
+    }
+
+    [Fact]
+    public void SetLengthGrowthLeavesPositionAlone()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 1;
+        stream.SetLength(10);
+        Assert.Equal(1L, stream.Position);
+    }
+
+    [Fact]
+    public void SetLengthGrowthBeyondCapacityRentsMoreMemory()
+    {
+        using var stream = new ArrayPoolMemoryStream(16);
+        stream.SetLength(5000);
+        Assert.Equal(5000L, stream.Length);
+        Assert.True(stream.Capacity >= 5000);
+    }
+
+    [Fact]
+    public void SetLengthGrowthExposesZeroedBytes()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.SetLength(6);
+        stream.Position = 0;
+        var buffer = new byte[6];
+        Assert.Equal(6, stream.Read(buffer, 0, 6));
+        Assert.Equal(new byte[] { 1, 2, 3, 0, 0, 0 }, buffer);
+    }
+
+    [Fact]
+    public void SetLengthGrowthZeroesBytesDiscardedByAnEarlierTruncation()
+    {
+        using var stream = StreamWith(1, 2, 3, 4, 5);
+        stream.SetLength(2);
+        stream.SetLength(5);
+        stream.Position = 0;
+        var buffer = new byte[5];
+        Assert.Equal(5, stream.Read(buffer, 0, 5));
+        Assert.Equal(new byte[] { 1, 2, 0, 0, 0 }, buffer);
+    }
+
+    [Fact]
+    public void SetLengthGrowthAcrossASegmentBoundaryZeroesEverythingExposed()
+    {
+        var pool = new TrackingArrayPool(0xFF);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Write(Sequence(16), 0, 16);
+        stream.SetLength(40);
+        Assert.Equal(new[] { 16, 24 }, pool.RentRequests);
+
+        stream.Position = 16;
+        var buffer = new byte[24];
+        Assert.Equal(24, stream.Read(buffer, 0, 24));
+        Assert.Equal(new byte[24], buffer);
+    }
+
+    [Fact]
+    public void SetLengthGrowthSkipsZeroingWhenAskedTo()
+    {
+        var pool = new TrackingArrayPool(0xFF);
+        using var stream = new ArrayPoolMemoryStream(64, skipZeroing: true, pool: pool);
+        stream.Write(new byte[] { 1, 2, 3 }, 0, 3);
+        stream.SetLength(8);
+        stream.Position = 0;
+        var buffer = new byte[8];
+        Assert.Equal(8, stream.Read(buffer, 0, 8));
+        Assert.Equal(new byte[] { 1, 2, 3, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }, buffer);
+    }
+
+    [Fact]
+    public void WriteAfterSeekingPastEndZeroesTheGap()
+    {
+        var pool = new TrackingArrayPool(0xFF);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(new byte[] { 1, 2 }, 0, 2);
+        stream.Position = 5;
+        stream.WriteByte(9);
+        stream.Position = 0;
+        var buffer = new byte[6];
+        Assert.Equal(6, stream.Read(buffer, 0, 6));
+        Assert.Equal(new byte[] { 1, 2, 0, 0, 0, 9 }, buffer);
+    }
+
+    [Fact]
+    public void WriteAfterSeekingPastEndSkipsZeroingWhenAskedTo()
+    {
+        var pool = new TrackingArrayPool(0xFF);
+        using var stream = new ArrayPoolMemoryStream(64, skipZeroing: true, pool: pool);
+        stream.Write(new byte[] { 1, 2 }, 0, 2);
+        stream.Position = 5;
+        stream.WriteByte(9);
+        stream.Position = 0;
+        var buffer = new byte[6];
+        Assert.Equal(6, stream.Read(buffer, 0, 6));
+        Assert.Equal(new byte[] { 1, 2, 0xFF, 0xFF, 0xFF, 9 }, buffer);
     }
 
     [Fact]
@@ -482,9 +682,10 @@ public class ArrayPoolMemoryStreamTests
     [Fact]
     public void ReadWriteRoundTripSurvivesInterleavedSeeks()
     {
-        using var stream = new ArrayPoolMemoryStream(32, 64);
+        using var stream = new ArrayPoolMemoryStream(32);
         var data = Sequence(150);
-        stream.Write(data, 0, data.Length);
+        for (var written = 0; written < data.Length; written += 25)
+            stream.Write(data, written, 25);
 
         for (var offset = 0; offset < data.Length; offset += 37)
         {
@@ -502,5 +703,22 @@ public class ArrayPoolMemoryStreamTests
         var stream = StreamWith(1, 2, 3);
         stream.Dispose();
         stream.Dispose();
+    }
+
+    [Fact]
+    public void DisposeReturnsEverySegmentExactlyOnce()
+    {
+        var pool = new TrackingArrayPool();
+        var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Write(Sequence(16), 0, 16);
+        stream.Write(Sequence(1000), 0, 1000);
+        Assert.Equal(2, pool.Rented.Count);
+
+        stream.Dispose();
+        stream.Dispose();
+
+        Assert.Equal(pool.Rented.Count, pool.Returns.Count);
+        for (var i = 0; i < pool.Rented.Count; i++)
+            Assert.Same(pool.Rented[i], pool.Returns[i]);
     }
 }
