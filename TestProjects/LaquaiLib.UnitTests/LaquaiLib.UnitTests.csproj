@@ -11,9 +11,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <!-- coverlet.collector is a VSTest data collector; global.json pins the runner to Microsoft.Testing.Platform, which needs this native extension instead.
-         Unlike the collector it must keep its compile assets: MTP generates SelfRegisteredExtensions.cs referencing Coverlet types into the test assembly. -->
-    <PackageReference Include="coverlet.MTP" Version="10.0.1" />
+    <!-- No in-project coverage extension: global.json pins the runner to Microsoft.Testing.Platform, coverlet.collector is a VSTest data collector,
+         and coverlet.MTP 10.0.1 (the newest) targets an MTP older than the 2.2.x xunit.v3 brings, so registering it crashes the test host.
+         The coverage CI job drives coverlet.console from outside the build instead. -->
+
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
     <PackageReference Include="xunit.v3" Version="3.2.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
