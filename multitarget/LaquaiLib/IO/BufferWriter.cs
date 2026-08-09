@@ -134,6 +134,9 @@ public abstract class ContiguousBufferWriterBase<T> : BufferWriterBase<T>
 /// Implements <see cref="BufferWriterBase{T}"/> that grows by renting segments from an <see cref="ArrayPool{T}"/>.
 /// </summary>
 /// <typeparam name="T">The type of elements written to the buffer.</typeparam>
+/// <remarks>
+/// A request the current segment cannot satisfy seals that segment where it stands and chains a new one behind it, so data that has already been written is never copied. A sealed segment may therefore retain an unused tail, which means the total rented capacity can exceed <see cref="SegmentedBufferWriterBase{T}.AbsoluteLength"/>.
+/// </remarks>
 public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnDispose = false) : SegmentedBufferWriterBase<T>
 {
     /// <summary>
@@ -142,18 +145,22 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     public struct SegmentEnumerator : IEnumerator<Memory<T>>
     {
         private readonly List<T[]> _segments;
-        private int _state;
-        private List<T[]>.Enumerator _inner;
+        private readonly List<int> _lengths;
+        private readonly int _count;
+        private int _i;
 
-        internal SegmentEnumerator(List<T[]> segments)
+        internal SegmentEnumerator(List<T[]> segments, List<int> lengths, int count)
         {
             _segments = segments;
+            _lengths = lengths;
+            _count = count;
+            _i = -1;
         }
 
         /// <summary>
-        /// Gets the current segment of the buffer as a <see cref="Memory{T}"/> instance.
+        /// Gets the current segment of the buffer as a <see cref="Memory{T}"/> instance. Only the written portion of the segment is exposed; the unused tail a sealed segment may carry is never visible.
         /// </summary>
-        public readonly Memory<T> Current => _inner.Current;
+        public readonly Memory<T> Current => _segments[_i].AsMemory(0, _lengths[_i]);
 
         /// <summary>
         /// Advances the enumerator to the next segment of the buffer.
@@ -161,31 +168,21 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
         /// <returns><see langword="true"/> if the enumerator was successfully advanced to the next segment; <see langword="false"/> if the enumerator has passed the end of the buffer.</returns>
         public bool MoveNext()
         {
-            if (_state == 2)
+            if (_i >= _count)
                 return false;
-            if (_state == 0)
-                Reset();
-            if (_inner.MoveNext())
-                return true;
-            _state = 2;
-            return false;
+            return ++_i < _count;
         }
         /// <summary>
         /// Resets the enumerator to its initial position, which is before the first segment of the buffer.
         /// </summary>
-        public void Reset()
-        {
-            _inner.Dispose();
-            _inner = _segments.GetEnumerator();
-            _state = 1;
-        }
+        public void Reset() => _i = -1;
 
         readonly object IEnumerator.Current => Current;
 
         /// <summary>
         /// Disposes the enumerator and releases any resources associated with it.
         /// </summary>
-        public readonly void Dispose() => _inner.Dispose();
+        public readonly void Dispose() { }
     }
 
     private const int DefaultSegmentSize = 2048;
@@ -196,10 +193,14 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     private readonly ArrayPool<T> _pool = pool ?? ArrayPool<T>.Shared;
     private readonly bool _zeroOnDispose = zeroOnDispose;
     private readonly List<T[]> _segments = [];
+    // the number of elements actually written to each segment, index-aligned with _segments; entries for segments before the current one are authoritative, the entry for the current segment is stale until it is sealed or explicitly flushed from index
+    private readonly List<int> _lengths = [];
+    // the sum of _lengths[0..segment-1]; maintained incrementally so AbsoluteLength stays O(1) instead of walking the chain
+    private long _priorLength;
     private bool _disposed;
 
     /// <inheritdoc/>
-    public override long AbsoluteLength => segment < 0 ? 0 : SegmentedBufferHelpers.RelativeToAbsolute(CollectionsMarshal.AsSpan(_segments), segment, index);
+    public override long AbsoluteLength => segment < 0 ? 0 : _priorLength + index;
 
     /// <inheritdoc/>
     public override Memory<T> GetMemory(int sizeHint = 0)
@@ -209,36 +210,45 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
         return Next(sizeHint)[index..];
     }
     /// <inheritdoc/>
+    // seal-and-chain, like the writer inside System.IO.Pipelines.Pipe: a segment that cannot satisfy the request is sealed where it stands and a new one is chained behind it, so committed data is never copied. The price is the unused tail a sealed segment keeps, which is far cheaper than an O(n) copy.
     protected sealed override Memory<T> Next(int sizeHint = 0)
     {
         var need = sizeHint > 0 ? sizeHint : 1;
 
-        // currentSegment isn't full, so advancing would violate contiguity of the data we receive
-        if (!currentSegment.IsEmpty && index != currentSegment.Length)
-            return currentSegment.Length - index >= need ? currentSegment : (currentSegment = Grow(checked(index + need)));
+        if (!currentSegment.IsEmpty && currentSegment.Length - index >= need)
+            return currentSegment;
+
+        if (segment >= 0)
+        {
+            // seal: index is the real written length, whatever capacity follows it is abandoned (but still owned, so Dispose returns it)
+            _lengths[segment] = index;
+            _priorLength += index;
+        }
 
         index = 0;
         segment++;
 
-        if (segment < _segments.Count)
+        if (segment < _segments.Count && _segments[segment].Length >= need)
         {
-            // we already had a segment and got SetLength'd toward the front, so just reuse it
-            return currentSegment = _segments[segment].Length >= need ? _segments[segment] : Grow(need);
+            // we got SetLength'd toward the front and walked back out to a segment we already own, so just reuse it
+            _lengths[segment] = 0;
+            return currentSegment = _segments[segment];
         }
 
         var arr = _pool.Rent(int.Max(need, _maxElems));
-        _segments.Add(arr);
+        if (segment < _segments.Count)
+        {
+            // the segment we own here is too small for the request; its contents are past the write position and therefore already discarded
+            _pool.Return(_segments[segment], _zeroOnDispose);
+            _segments[segment] = arr;
+            _lengths[segment] = 0;
+        }
+        else
+        {
+            _segments.Add(arr);
+            _lengths.Add(0);
+        }
         return currentSegment = arr;
-    }
-    // segments before the current one must stay completely full, so an oversized sizeHint replaces the current segment rather than skipping to a new one
-    private T[] Grow(int minimumLength)
-    {
-        var old = _segments[segment];
-        var arr = _pool.Rent(int.Max(minimumLength, _maxElems));
-        old.AsSpan(0, index).CopyTo(arr);
-        _segments[segment] = arr;
-        _pool.Return(old, _zeroOnDispose);
-        return arr;
     }
     /// <inheritdoc/>
     public override void SetLength(long length)
@@ -246,17 +256,29 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentOutOfRangeException.ThrowIfNegative(length);
 
+        if (segment >= 0)
+            _lengths[segment] = index;
+
         var current = AbsoluteLength;
         if (length > current)
             throw new ArgumentOutOfRangeException(nameof(length), $"Cannot set length beyond the current absolute length of the buffer. Use {nameof(Advance)}.");
         if (length == current)
             return;
 
-        var (idx, off) = SegmentedBufferHelpers.AbsoluteToRelative(CollectionsMarshal.AsSpan(_segments), length);
+        // segments are no longer guaranteed to be packed, so the walk has to consult the written lengths rather than the rented capacities. length < current bounds this to idx <= segment, so the indexing below is always in range.
+        var remaining = length;
+        var idx = 0;
+        while (idx < _lengths.Count && remaining > _lengths[idx])
+        {
+            remaining -= _lengths[idx];
+            idx++;
+        }
+
         segment = idx;
-        index = off;
+        index = (int)remaining;
         // without this, subsequent writes would land in whatever segment happened to be current before the rewind
         currentSegment = _segments[idx];
+        _priorLength = length - remaining;
     }
     /// <inheritdoc/>
     public override void Clear(bool zero = false)
@@ -272,10 +294,15 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     /// Gets an enumerator that iterates through the segments of the buffer as <see cref="Memory{T}"/> instances.
     /// </summary>
     /// <returns>The enumerator for the segments of the buffer.</returns>
+    /// <remarks>
+    /// Each segment is exposed trimmed to the number of elements written to it, and enumeration stops at the segment holding the write position. Segments that exist only because the buffer was previously longer are not enumerated.
+    /// </remarks>
     public SegmentEnumerator GetSegments()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        return new(_segments);
+        if (segment >= 0)
+            _lengths[segment] = index;
+        return new(_segments, _lengths, segment + 1);
     }
     /// <summary>
     /// Copies the data written so far to a new array and returns it.
@@ -284,13 +311,15 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     public T[] ToArray()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        if (segment >= 0)
+            _lengths[segment] = index;
+
         var ret = new T[AbsoluteLength];
         var offset = 0;
         for (var i = 0; i <= segment; i++)
         {
-            var seg = _segments[i];
-            var len = i == segment ? index : seg.Length;
-            seg.AsSpan(0, len).CopyTo(ret.AsSpan(offset));
+            var len = _lengths[i];
+            _segments[i].AsSpan(0, len).CopyTo(ret.AsSpan(offset));
             offset += len;
         }
         return ret;
@@ -306,10 +335,12 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
         foreach (var segment in _segments)
             _pool.Return(segment, zod);
         _segments.Clear();
+        _lengths.Clear();
 
         currentSegment = default;
         segment = -1;
         index = -1;
+        _priorLength = 0;
         _disposed = true;
     }
 }

@@ -323,21 +323,21 @@ public class PooledBufferWriterTests
     }
 
     [Fact]
-    public void GetSegmentsEnumeratesEveryRentedSegment()
+    public void GetSegmentsEnumeratesEverySegmentTrimmedToItsWrittenLength()
     {
         using var writer = new PooledBufferWriter<byte>();
-        writer.Advance(writer.GetSpan().Length);
-        writer.Advance(writer.GetSpan().Length);
+        var first = writer.GetSpan().Length;
+        writer.Advance(first);
+        var second = writer.GetSpan().Length;
+        writer.Advance(second);
         writer.GetSpan();
 
-        var count = 0;
+        var lengths = new List<int>();
         var enumerator = writer.GetSegments();
         while (enumerator.MoveNext())
-        {
-            Assert.False(enumerator.Current.IsEmpty);
-            count++;
-        }
-        Assert.Equal(3, count);
+            lengths.Add(enumerator.Current.Length);
+
+        Assert.Equal(new[] { first, second, 0 }, lengths);
     }
 
     [Fact]
@@ -519,5 +519,179 @@ public class PooledBufferWriterTests
         var span = writer.GetSpan(10000);
         Assert.True(span.Length >= 10000);
         Assert.Single(pool.RentRequests);
+    }
+
+    [Fact]
+    public void OversizedSizeHintChainsANewSegmentWithoutReturningTheOldOne()
+    {
+        var pool = new TrackingArrayPool<byte>();
+        using var writer = new PooledBufferWriter<byte>(pool);
+        var first = writer.GetSpan();
+        first[0] = 1;
+        first[1] = 2;
+        writer.Advance(2);
+
+        var wide = writer.GetSpan(8192);
+        Assert.True(wide.Length >= 8192);
+        Assert.Equal(2, pool.RentRequests.Count);
+        Assert.Empty(pool.Returns);
+
+        wide[0] = 3;
+        writer.Advance(1);
+        Assert.Equal(3L, writer.AbsoluteLength);
+        Assert.Equal(new byte[] { 1, 2, 3 }, writer.ToArray());
+    }
+
+    [Fact]
+    public void OversizedSizeHintMovesPositionToANewSegment()
+    {
+        using var writer = new PooledBufferWriter<byte>();
+        writer.GetSpan();
+        writer.Advance(1);
+        writer.GetSpan(8192);
+        var position = writer.Position;
+        Assert.Equal(1, position.SegmentIndex);
+        Assert.Equal(0, position.Offset);
+        Assert.Equal(1L, writer.AbsoluteLength);
+    }
+
+    [Fact]
+    public void WritesAcrossManySegmentsWithVaryingHintsRoundTrip()
+    {
+        using var writer = new PooledBufferWriter<byte>();
+        var expected = new List<byte>();
+        byte value = 0;
+        foreach (var hint in new[] { 1, 700, 2048, 3, 5000, 64, 1, 9000, 300 })
+        {
+            var span = writer.GetSpan(hint);
+            Assert.True(span.Length >= hint);
+            for (var i = 0; i < hint; i++)
+            {
+                span[i] = value;
+                expected.Add(value);
+                value++;
+            }
+            writer.Advance(hint);
+        }
+
+        Assert.Equal(expected.Count, writer.AbsoluteLength);
+        Assert.Equal(expected.ToArray(), writer.ToArray());
+    }
+
+    [Fact]
+    public void SetLengthRewindsIntoAPartiallyFilledSealedSegment()
+    {
+        using var writer = new PooledBufferWriter<byte>();
+        var first = writer.GetSpan();
+        first[0] = 1;
+        first[1] = 2;
+        first[2] = 3;
+        writer.Advance(3);
+
+        var wide = writer.GetSpan(8192);
+        wide[0] = 4;
+        wide[1] = 5;
+        writer.Advance(2);
+        Assert.Equal(5L, writer.AbsoluteLength);
+
+        writer.SetLength(2);
+        Assert.Equal(2L, writer.AbsoluteLength);
+        Assert.Equal(new byte[] { 1, 2 }, writer.ToArray());
+
+        var resumed = writer.GetSpan(4);
+        resumed[0] = 9;
+        resumed[1] = 8;
+        resumed[2] = 7;
+        resumed[3] = 6;
+        writer.Advance(4);
+        Assert.Equal(6L, writer.AbsoluteLength);
+        Assert.Equal(new byte[] { 1, 2, 9, 8, 7, 6 }, writer.ToArray());
+    }
+
+    [Fact]
+    public void GetSegmentsAfterRewindStopsAtTheWritePosition()
+    {
+        using var writer = new PooledBufferWriter<byte>();
+        writer.GetSpan().Fill(1);
+        writer.Advance(4);
+        writer.GetSpan(8192)[0] = 2;
+        writer.Advance(1);
+        writer.SetLength(2);
+
+        var count = 0;
+        var enumerator = writer.GetSegments();
+        while (enumerator.MoveNext())
+        {
+            Assert.Equal(2, enumerator.Current.Length);
+            count++;
+        }
+        Assert.Equal(1, count);
+    }
+
+    [Fact]
+    public void ClearAfterSealingResetsToTheFirstSegment()
+    {
+        using var writer = new PooledBufferWriter<byte>();
+        writer.GetSpan()[0] = 1;
+        writer.Advance(1);
+        writer.GetSpan(8192)[0] = 2;
+        writer.Advance(1);
+        writer.Clear();
+
+        Assert.Equal(0L, writer.AbsoluteLength);
+        Assert.Empty(writer.ToArray());
+
+        writer.GetSpan(3)[0] = 7;
+        writer.Advance(1);
+        Assert.Equal(new byte[] { 7 }, writer.ToArray());
+    }
+
+    [Fact]
+    public void ReusableSegmentLargeEnoughForTheRequestIsNotReRented()
+    {
+        var pool = new TrackingArrayPool<byte>();
+        using var writer = new PooledBufferWriter<byte>(pool);
+        writer.Advance(writer.GetSpan().Length);
+        writer.Advance(writer.GetSpan().Length);
+        writer.SetLength(1);
+        writer.Advance(writer.GetSpan().Length);
+        writer.GetSpan();
+
+        Assert.Equal(2, pool.RentRequests.Count);
+        Assert.Empty(pool.Returns);
+    }
+
+    [Fact]
+    public void ReusableSegmentTooSmallForTheRequestIsReturnedAndReplaced()
+    {
+        var pool = new TrackingArrayPool<byte>();
+        using var writer = new PooledBufferWriter<byte>(pool);
+        writer.Advance(writer.GetSpan().Length);
+        writer.GetSpan();
+        writer.Advance(2);
+        writer.SetLength(1);
+        Assert.Empty(pool.Returns);
+
+        var span = writer.GetSpan(9000);
+        Assert.True(span.Length >= 9000);
+        Assert.Equal(3, pool.RentRequests.Count);
+        Assert.Single(pool.Returns);
+    }
+
+    [Fact]
+    public void DisposeReturnsEverySegmentExactlyOnceAfterSealing()
+    {
+        var pool = new TrackingArrayPool<byte>();
+        var writer = new PooledBufferWriter<byte>(pool);
+        writer.GetSpan();
+        writer.Advance(1);
+        writer.GetSpan(4096);
+        writer.Advance(1);
+        writer.GetSpan(9000);
+        writer.Advance(1);
+        writer.Dispose();
+
+        Assert.Equal(3, pool.Returns.Count);
+        Assert.Equal(3, pool.Returns.Select(static entry => entry.Array).Distinct().Count());
     }
 }
