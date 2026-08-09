@@ -23,3 +23,23 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Coverage
+      continue-on-error: true
+      run: dotnet test --no-build --project TestProjects/LaquaiLib.UnitTests/LaquaiLib.UnitTests.csproj --coverlet --coverlet-output-format cobertura --coverlet-include "[LaquaiLib]*"
+    - name: Coverage summary
+      continue-on-error: true
+      shell: pwsh
+      run: |
+        $file = Get-ChildItem -Path . -Recurse -Filter "coverage*.xml" -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $file) { Write-Host "no cobertura report found"; exit 0 }
+        Write-Host "report: $($file.FullName)"
+        [xml]$doc = Get-Content -LiteralPath $file.FullName
+        Write-Host "overall line-rate=$($doc.coverage.'line-rate') branch-rate=$($doc.coverage.'branch-rate')"
+        foreach ($cls in $doc.SelectNodes("//class")) {
+          if ($cls.name -notlike "*ArrayPoolMemoryStream*") { continue }
+          Write-Host "$($cls.name): line-rate=$($cls.'line-rate') branch-rate=$($cls.'branch-rate')"
+          $miss = @($cls.SelectNodes(".//line") | Where-Object { [int]$_.hits -eq 0 } | ForEach-Object { $_.number })
+          if ($miss.Count -gt 0) { Write-Host "  uncovered lines: $($miss -join ', ')" } else { Write-Host "  all lines covered" }
+          $partial = @($cls.SelectNodes(".//line") | Where-Object { $_.branch -eq 'True' -and $_.'condition-coverage' -notlike '100%*' } | ForEach-Object { "$($_.number)[$($_.'condition-coverage')]" })
+          if ($partial.Count -gt 0) { Write-Host "  partial branches: $($partial -join ', ')" }
+        }

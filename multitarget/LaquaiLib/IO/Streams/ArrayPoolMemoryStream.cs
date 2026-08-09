@@ -226,10 +226,21 @@ public sealed class ArrayPoolMemoryStream : Stream
     /// <inheritdoc/>
     public override void WriteByte(byte value) => WriteCore(new ReadOnlySpan<byte>(in value));
 
+    // Stream.ValidateCopyToArguments minus its bufferSize check, which is meaningless here because neither copy path buffers
+    private static void ValidateDestination(Stream destination)
+    {
+        ArgumentNullException.ThrowIfNull(destination);
+        if (destination.CanWrite)
+            return;
+        // a destination that can do neither is closed, not merely read-only
+        if (!destination.CanRead)
+            throw new ObjectDisposedException(destination.GetType().Name, "Cannot access a closed stream.");
+        throw new NotSupportedException("The destination stream does not support writing.");
+    }
     /// <inheritdoc/>
     public override void CopyTo(Stream destination, int bufferSize)
     {
-        ArgumentNullException.ThrowIfNull(destination);
+        ValidateDestination(destination);
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         var remaining = length - position;
@@ -255,7 +266,7 @@ public sealed class ArrayPoolMemoryStream : Stream
     /// <inheritdoc/>
     public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(destination);
+        ValidateDestination(destination);
         ObjectDisposedException.ThrowIf(_disposed, this);
         return CopyToAsyncCore(destination, cancellationToken);
     }

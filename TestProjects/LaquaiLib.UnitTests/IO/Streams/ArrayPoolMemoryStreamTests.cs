@@ -886,4 +886,194 @@ public class ArrayPoolMemoryStreamTests
         for (var i = 0; i < pool.Rented.Count; i++)
             Assert.Same(pool.Rented[i], pool.Returns[i]);
     }
+
+    private static ArrayPoolMemoryStream DisposedStream()
+    {
+        var stream = StreamWith(1, 2, 3);
+        stream.Dispose();
+        return stream;
+    }
+
+    [Fact]
+    public void DisposedStreamReportsNoCapabilities()
+    {
+        var stream = DisposedStream();
+        Assert.False(stream.CanRead);
+        Assert.False(stream.CanSeek);
+        Assert.False(stream.CanWrite);
+    }
+
+    [Fact]
+    public void ReadThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Read(new byte[3], 0, 3));
+
+    [Fact]
+    public void ReadSpanThrowsWhenDisposed()
+    {
+        var stream = DisposedStream();
+        Assert.Throws<ObjectDisposedException>(() => stream.Read(new byte[3].AsSpan()));
+    }
+
+    [Fact]
+    public void ReadByteThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().ReadByte());
+
+    [Fact]
+    public void WriteThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Write(new byte[3], 0, 3));
+
+    [Fact]
+    public void WriteByteThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().WriteByte(1));
+
+    [Fact]
+    public void SetLengthThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().SetLength(1));
+
+    [Fact]
+    public void PositionSetterThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Position = 1);
+
+    [Fact]
+    public void SeekThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Seek(0, SeekOrigin.Begin));
+
+    [Fact]
+    public void CopyToThrowsWhenDisposed()
+    {
+        var stream = DisposedStream();
+        using var target = new MemoryStream();
+        Assert.Throws<ObjectDisposedException>(() => stream.CopyTo(target, 4096));
+    }
+
+    [Fact]
+    public void CopyToAsyncThrowsWhenDisposed()
+    {
+        var stream = DisposedStream();
+        using var target = new MemoryStream();
+        Assert.Throws<ObjectDisposedException>(() => { _ = stream.CopyToAsync(target, 4096, default); });
+    }
+
+    [Fact]
+    public void ReadRejectsNullBuffer()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        Assert.Throws<ArgumentNullException>(() => stream.Read(null, 0, 1));
+    }
+
+    [Fact]
+    public void ReadRejectsCountBeyondBuffer()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        Assert.ThrowsAny<ArgumentException>(() => stream.Read(new byte[4], 2, 5));
+    }
+
+    [Fact]
+    public void WriteRejectsNullBuffer()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.Throws<ArgumentNullException>(() => stream.Write(null, 0, 1));
+    }
+
+    [Fact]
+    public void WriteRejectsNegativeOffset()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.ThrowsAny<ArgumentException>(() => stream.Write(new byte[4], -1, 2));
+    }
+
+    [Fact]
+    public void CopyToRejectsUnwritableDestination()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        using var target = new MemoryStream(new byte[8], false);
+        Assert.Throws<NotSupportedException>(() => stream.CopyTo(target, 4096));
+    }
+
+    [Fact]
+    public void CopyToAsyncRejectsUnwritableDestinationSynchronously()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        using var target = new MemoryStream(new byte[8], false);
+        Assert.Throws<NotSupportedException>(() => { _ = stream.CopyToAsync(target, 4096, default); });
+    }
+
+    [Fact]
+    public void CopyToRejectsClosedDestination()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        var target = new MemoryStream();
+        target.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => stream.CopyTo(target, 4096));
+    }
+
+    [Fact]
+    public void CopyToAtEndOfStreamWritesNothing()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 3;
+        using var target = new MemoryStream();
+        stream.CopyTo(target);
+        Assert.Empty(target.ToArray());
+    }
+
+    [Fact]
+    public async Task CopyToAsyncAtEndOfStreamWritesNothing()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 3;
+        using var target = new MemoryStream();
+        await stream.CopyToAsync(target);
+        Assert.Empty(target.ToArray());
+    }
+
+    [Fact]
+    public async Task ReadAsyncArrayOverloadHonoursCancellation()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => stream.ReadAsync(new byte[3], 0, 3, cts.Token));
+    }
+
+    [Fact]
+    public async Task ReadAsyncMemoryOverloadHonoursCancellation()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await stream.ReadAsync(new byte[3].AsMemory(), cts.Token));
+    }
+
+    [Fact]
+    public async Task WriteAsyncArrayOverloadHonoursCancellation()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => stream.WriteAsync(new byte[3], 0, 3, cts.Token));
+    }
+
+    [Fact]
+    public async Task WriteAsyncMemoryOverloadHonoursCancellation()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await stream.WriteAsync(new byte[3].AsMemory(), cts.Token));
+    }
+
+    [Fact]
+    public async Task ReadAsyncReusesTheCompletedTaskForRepeatedCounts()
+    {
+        using var stream = StreamWith(1, 2, 3, 4);
+        var first = stream.ReadAsync(new byte[2], 0, 2, default);
+        var second = stream.ReadAsync(new byte[2], 0, 2, default);
+        Assert.Same(first, second);
+        Assert.Equal(2, await first);
+    }
+
+    [Fact]
+    public async Task ReadAsyncIssuesAFreshTaskWhenTheCountChanges()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        var first = stream.ReadAsync(new byte[2], 0, 2, default);
+        var second = stream.ReadAsync(new byte[2], 0, 2, default);
+        Assert.NotSame(first, second);
+        Assert.Equal(2, await first);
+        Assert.Equal(1, await second);
+    }
 }
