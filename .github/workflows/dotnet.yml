@@ -5,7 +5,6 @@ name: .NET
 
 on:
   push:
-  pull_request:
 
 jobs:
   build:
@@ -27,7 +26,6 @@ jobs:
   # Isolated from `build` on purpose: coverage tooling has broken the test host before,
   # and nothing here may ever turn the authoritative build red.
   coverage:
-    if: github.event_name == 'pull_request'
     runs-on: windows-latest
     continue-on-error: true
 
