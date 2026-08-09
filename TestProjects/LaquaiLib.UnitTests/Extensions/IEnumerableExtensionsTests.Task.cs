@@ -75,14 +75,16 @@ public class IEnumerableExtensionsTaskTests
     [Fact]
     public void WaitAnyReturnsFirstCompletedTask()
     {
-        var fastTask = Task.Run(static async () => await Task.Delay(50), TestContext.Current.CancellationToken);
-        var slowTask = Task.Run(static async () => await Task.Delay(500), TestContext.Current.CancellationToken);
+        // the loser never completes at all, so which task wins is settled rather than raced
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var pending = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        completed.SetResult();
 
-        var tasks = new[] { slowTask, fastTask };
+        var tasks = new[] { pending.Task, completed.Task };
         var completedTask = tasks.WaitAny(cancellationToken: TestContext.Current.CancellationToken);
 
-        Assert.Same(fastTask, completedTask);
-        Assert.True(fastTask.IsCompleted);
+        Assert.Same(completed.Task, completedTask);
+        Assert.True(completedTask.IsCompleted);
     }
 
     [Fact]
@@ -122,13 +124,15 @@ public class IEnumerableExtensionsTaskTests
     [Fact]
     public async Task WhenAnyReturnsFirstCompletedTask()
     {
-        var fastTask = Task.Run(static async () => await Task.Delay(50), TestContext.Current.CancellationToken);
-        var slowTask = Task.Run(static async () => await Task.Delay(500), TestContext.Current.CancellationToken);
+        // the loser never completes at all, so which task wins is settled rather than raced
+        var completed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var pending = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        completed.SetResult();
 
-        var tasks = new[] { slowTask, fastTask };
+        var tasks = new[] { pending.Task, completed.Task };
         var completedTask = await tasks.WhenAny();
 
-        Assert.Same(fastTask, completedTask);
+        Assert.Same(completed.Task, completedTask);
     }
 
     [Fact]
@@ -202,13 +206,15 @@ public class IEnumerableTaskTResultExtensionsTests
     [Fact]
     public async Task WaitAnyReturnsFirstCompletedTask()
     {
-        var fastTask = Task.Run(static async () => { await Task.Delay(50); return 1; });
-        var slowTask = Task.Run(static async () => { await Task.Delay(500); return 2; });
+        // the loser never completes at all, so which task wins is settled rather than raced
+        var completed = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var pending = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        completed.SetResult(1);
 
-        var tasks = new[] { slowTask, fastTask };
+        var tasks = new[] { pending.Task, completed.Task };
         var completedTask = tasks.WaitAny(cancellationToken: TestContext.Current.CancellationToken);
 
-        Assert.Same(fastTask, completedTask);
+        Assert.Same(completed.Task, completedTask);
         Assert.Equal(1, await completedTask);
     }
 
@@ -244,13 +250,15 @@ public class IEnumerableTaskTResultExtensionsTests
     [Fact]
     public async Task WhenAnyReturnsFirstCompletedTaskWithResult()
     {
-        var fastTask = Task.Run(static async () => { await Task.Delay(50); return 1; });
-        var slowTask = Task.Run(static async () => { await Task.Delay(500); return 2; });
+        // the loser never completes at all, so which task wins is settled rather than raced
+        var completed = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var pending = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        completed.SetResult(1);
 
-        var tasks = new[] { slowTask, fastTask };
+        var tasks = new[] { pending.Task, completed.Task };
         var completedTask = await tasks.WhenAny();
 
-        Assert.Same(fastTask, completedTask);
+        Assert.Same(completed.Task, completedTask);
         Assert.Equal(1, await completedTask);
     }
 
