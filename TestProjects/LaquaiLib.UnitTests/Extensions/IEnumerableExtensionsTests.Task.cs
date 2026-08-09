@@ -134,24 +134,36 @@ public class IEnumerableExtensionsTaskTests
     [Fact]
     public async Task WhenEachYieldsTasksAsTheyComplete()
     {
-        var tasks = new List<Task>
-        {
-            Task.Run(static async () => await Task.Delay(300), TestContext.Current.CancellationToken),
-            Task.Run(static async () => await Task.Delay(100), TestContext.Current.CancellationToken),
-            Task.Run(static async () => await Task.Delay(200), TestContext.Current.CancellationToken)
-        };
+        // completion is driven explicitly rather than by Task.Delay: delays only guarantee a lower
+        // bound, so under load the intended order is not the observed one
+        var first = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var second = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var third = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        // deliberately not in completion order, so source order cannot pass by accident
+        var tasks = new List<Task> { third.Task, first.Task, second.Task };
 
         var completionOrder = new List<Task>();
+        await using var enumerator = tasks.WhenEach().GetAsyncEnumerator(TestContext.Current.CancellationToken);
 
-        await foreach (var task in tasks.WhenEach())
-        {
-            completionOrder.Add(task);
-        }
+        // exactly one task is newly complete at each step, so only one task can be yielded
+        first.SetResult();
+        Assert.True(await enumerator.MoveNextAsync());
+        completionOrder.Add(enumerator.Current);
+
+        second.SetResult();
+        Assert.True(await enumerator.MoveNextAsync());
+        completionOrder.Add(enumerator.Current);
+
+        third.SetResult();
+        Assert.True(await enumerator.MoveNextAsync());
+        completionOrder.Add(enumerator.Current);
+
+        Assert.False(await enumerator.MoveNextAsync());
 
         Assert.Equal(3, completionOrder.Count);
-        Assert.Same(tasks[1], completionOrder[0]); // 100ms delay completes first
-        Assert.Same(tasks[2], completionOrder[1]); // 200ms delay completes second
-        Assert.Same(tasks[0], completionOrder[2]); // 300ms delay completes last
+        Assert.Same(first.Task, completionOrder[0]);
+        Assert.Same(second.Task, completionOrder[1]);
+        Assert.Same(third.Task, completionOrder[2]);
     }
 }
 
@@ -245,24 +257,34 @@ public class IEnumerableTaskTResultExtensionsTests
     [Fact]
     public async Task WhenEachYieldsTasksAsTheyCompleteWithResults()
     {
-        var tasks = new List<Task<int>>
-        {
-            Task.Run(static async () => { await Task.Delay(300); return 1; }),
-            Task.Run(static async () => { await Task.Delay(100); return 2; }),
-            Task.Run(static async () => { await Task.Delay(200); return 3; })
-        };
+        // completion is driven explicitly rather than by Task.Delay: delays only guarantee a lower
+        // bound, so under load the intended order is not the observed one
+        var first = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var second = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var third = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+        // deliberately not in completion order, so source order cannot pass by accident
+        var tasks = new List<Task<int>> { third.Task, first.Task, second.Task };
 
         var completionResults = new List<int>();
+        await using var enumerator = tasks.WhenEach().GetAsyncEnumerator(TestContext.Current.CancellationToken);
 
-        await foreach (var task in tasks.WhenEach())
-        {
-            completionResults.Add(await task);
-        }
+        // exactly one task is newly complete at each step, so only one task can be yielded
+        first.SetResult(2);
+        Assert.True(await enumerator.MoveNextAsync());
+        completionResults.Add(await enumerator.Current);
+
+        second.SetResult(3);
+        Assert.True(await enumerator.MoveNextAsync());
+        completionResults.Add(await enumerator.Current);
+
+        third.SetResult(1);
+        Assert.True(await enumerator.MoveNextAsync());
+        completionResults.Add(await enumerator.Current);
+
+        Assert.False(await enumerator.MoveNextAsync());
 
         Assert.Equal(3, completionResults.Count);
-        Assert.Equal(2, completionResults[0]); // 100ms delay completes first with result 2
-        Assert.Equal(3, completionResults[1]); // 200ms delay completes second with result 3
-        Assert.Equal(1, completionResults[2]); // 300ms delay completes last with result 1
+        Assert.Equal(new[] { 2, 3, 1 }, completionResults);
     }
 
     [Fact]
