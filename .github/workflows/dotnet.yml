@@ -41,13 +41,17 @@ jobs:
       run: dotnet build TestProjects/LaquaiLib.UnitTests/LaquaiLib.UnitTests.csproj
     - name: Install coverlet
       run: dotnet tool install --global coverlet.console
+    # coverlet propagates the test run's exit code, so a failing test would otherwise
+    # abort the job before the summary below ever runs
     - name: Collect coverage
+      continue-on-error: true
       shell: pwsh
       run: |
         $asm = Get-ChildItem -Path TestProjects/LaquaiLib.UnitTests/bin -Recurse -Filter LaquaiLib.UnitTests.dll | Select-Object -First 1
         if (-not $asm) { Write-Host "test assembly not found"; exit 0 }
         coverlet $asm.DirectoryName --target dotnet --targetargs "$($asm.FullName)" --format cobertura --output coverage.cobertura.xml --include "[LaquaiLib]*"
     - name: Coverage summary
+      if: always()
       shell: pwsh
       run: |
         $file = Get-ChildItem -Path . -Recurse -Filter "coverage*.xml" -ErrorAction SilentlyContinue | Select-Object -First 1
