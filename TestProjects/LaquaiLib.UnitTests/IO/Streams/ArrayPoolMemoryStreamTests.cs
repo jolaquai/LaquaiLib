@@ -1035,7 +1035,7 @@ public class ArrayPoolMemoryStreamTests
         using var stream = StreamWith(1, 2, 3);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await stream.ReadAsync(new byte[3].AsMemory(), cts.Token));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => stream.ReadAsync(new byte[3].AsMemory(), cts.Token).AsTask());
     }
 
     [Fact]
