@@ -1001,6 +1001,71 @@ public class ArrayPoolMemoryStreamTests
     }
 
     [Fact]
+    public void WriteSpanOverloadAppendsBytes()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        stream.Write(new byte[] { 1, 2, 3 }.AsSpan());
+        Assert.Equal(3L, stream.Length);
+
+        stream.Position = 0;
+        var buffer = new byte[3];
+        Assert.Equal(3, stream.Read(buffer, 0, 3));
+        Assert.Equal(new byte[] { 1, 2, 3 }, buffer);
+    }
+
+    private static ArrayPoolMemoryStream ThreeUnevenSegmentStream(TrackingArrayPool pool, byte[] data)
+    {
+        var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Write(data, 0, 16);
+        stream.Write(data, 16, 32);
+        stream.Write(data, 48, 1000);
+        return stream;
+    }
+
+    [Fact]
+    public void CopyToWalksEverySegment()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(1048);
+        using var stream = ThreeUnevenSegmentStream(pool, data);
+        Assert.Equal(new[] { 16, 32, 1000 }, pool.RentRequests);
+
+        stream.Position = 0;
+        using var target = new MemoryStream();
+        stream.CopyTo(target);
+        Assert.Equal(data, target.ToArray());
+        Assert.Equal(1048L, stream.Position);
+    }
+
+    [Fact]
+    public async Task CopyToAsyncWalksEverySegment()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(1048);
+        using var stream = ThreeUnevenSegmentStream(pool, data);
+        Assert.Equal(new[] { 16, 32, 1000 }, pool.RentRequests);
+
+        stream.Position = 0;
+        using var target = new MemoryStream();
+        await stream.CopyToAsync(target);
+        Assert.Equal(data, target.ToArray());
+        Assert.Equal(1048L, stream.Position);
+    }
+
+    [Fact]
+    public void CopyToFromMidSegmentWalksTheRemainder()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(1048);
+        using var stream = ThreeUnevenSegmentStream(pool, data);
+
+        stream.Position = 8;
+        using var target = new MemoryStream();
+        stream.CopyTo(target);
+        Assert.Equal(data.AsSpan(8).ToArray(), target.ToArray());
+    }
+
+    [Fact]
     public void CopyToAtEndOfStreamWritesNothing()
     {
         using var stream = StreamWith(1, 2, 3);
