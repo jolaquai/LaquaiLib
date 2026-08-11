@@ -4,61 +4,50 @@
 /// Holds either no value, a single instance of <typeparamref name="T"/> or an <see cref="IEnumerable{T}"/>. Allows enumeration of the contained value(s) without boxing.
 /// </summary>
 /// <typeparam name="T">The type of the value(s) to hold.</typeparam>
+/// <remarks>
+/// The empty case is identified by <see cref="Value"/> being <see langword="null"/>. Constructing an instance from a <see langword="null"/> item or a <see langword="null"/> sequence consequently yields an empty container.
+/// </remarks>
 [Union]
 public readonly struct FlexEnumerableContainer<T> : IEnumerable<T>
 {
     private readonly IEnumerable<T> _enumerable;
     private readonly T _item;
-    private readonly bool _hasItems;
+    private readonly bool _isSingle; // required discriminant; default(T) is not null for value types
 
     /// <summary>
     /// Creates an empty <see cref="FlexEnumerableContainer{T}"/>.
     /// </summary>
     public FlexEnumerableContainer() { }
     /// <summary>
-    /// Creates an empty <see cref="FlexEnumerableContainer{T}"/>.
-    /// </summary>
-    /// <param name="_"></param>
-    public FlexEnumerableContainer(Empty _) { }
-    /// <summary>
     /// Creates a <see cref="FlexEnumerableContainer{T}"/> that wraps the specified single instance of <typeparamref name="T"/>.
     /// </summary>
-    /// <param name="item">The single instance of <typeparamref name="T"/> to wrap.</param>
+    /// <param name="item">The single instance of <typeparamref name="T"/> to wrap. If it is <see langword="null"/>, the container is empty.</param>
     public FlexEnumerableContainer(T item)
     {
+        if (item is null)
+        {
+            return;
+        }
+
         _item = item;
-        _hasItems = true;
+        _isSingle = true;
     }
     /// <summary>
     /// Creates a <see cref="FlexEnumerableContainer{T}"/> that wraps the specified <see cref="IEnumerable{T}"/>.
     /// </summary>
-    /// <param name="enumerable">The <see cref="IEnumerable{T}"/> to wrap.</param>
-    public FlexEnumerableContainer(IEnumerable<T> enumerable)
-    {
-        _enumerable = enumerable;
-        _hasItems = true;
-    }
+    /// <param name="enumerable">The <see cref="IEnumerable{T}"/> to wrap. If it is <see langword="null"/>, the container is empty.</param>
+    public FlexEnumerableContainer(IEnumerable<T> enumerable) => _enumerable = enumerable;
 
-    // canonical discriminant: _empty -> Empty case; _enumerable!=null -> many; else single
+    // discriminant: _isSingle -> single (boxes through Value), _enumerable != null -> many, otherwise empty
     /// <summary>
-    /// Gets the (potentially boxed) wrapped value.
+    /// Gets the wrapped value, boxed if this instance wraps a single instance of <typeparamref name="T"/>, or <see langword="null"/> if it is empty.
     /// </summary>
-    public object Value => !_hasItems ? default(Empty) : _enumerable ?? (object)_item;
+    public object Value => _isSingle ? _item : _enumerable;
     /// <summary>
-    /// Gets whether the union contains a value.
+    /// Gets whether this instance wraps a value, that is, whether <see cref="Value"/> is not <see langword="null"/>.
     /// </summary>
-    public bool HasValue => !_hasItems || _enumerable is not null || _item is not null;
+    public bool HasValue => _isSingle || _enumerable is not null;
 
-    /// <summary>
-    /// Attempts to unwrap an empty <see cref="FlexEnumerableContainer{T}"/>. Only succeeds if it was created empty.
-    /// The <see cref="Empty"/> value itself is meaningless.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryGetValue(out Empty value)
-    {
-        value = default;
-        return !_hasItems;
-    }
     /// <summary>
     /// Attempts to unwrap a single instance of <typeparamref name="T"/> from the <see cref="FlexEnumerableContainer{T}"/>.
     /// </summary>
@@ -67,10 +56,8 @@ public readonly struct FlexEnumerableContainer<T> : IEnumerable<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetValue(out T value)
     {
-        if (_hasItems && _enumerable is null)
-        { value = _item; return true; }
-        value = default;
-        return false;
+        value = _item;
+        return _isSingle;
     }
     /// <summary>
     /// Attempts to unwrap an <see cref="IEnumerable{T}"/> from the <see cref="FlexEnumerableContainer{T}"/>.
@@ -88,7 +75,7 @@ public readonly struct FlexEnumerableContainer<T> : IEnumerable<T>
     /// </summary>
     /// <returns>The enumerator that can be used to iterate through the contained value(s).</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Enumerator GetEnumerator() => new(_hasItems, _enumerable, _item); // concrete, no box
+    public Enumerator GetEnumerator() => new(in this); // concrete, no box
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -97,19 +84,19 @@ public readonly struct FlexEnumerableContainer<T> : IEnumerable<T>
     /// </summary>
     public struct Enumerator : IEnumerator<T>
     {
-        private readonly bool _hasItems;
         private readonly IEnumerable<T> _enumerable;
         private readonly T _item;
+        private readonly bool _isSingle;
         private IEnumerator<T> _enumerator;
-        private int _state; // 0 = not started, 1 = single emitted
+        private bool _consumed;
 
-        internal Enumerator(bool hasItems, IEnumerable<T> enumerable, T item)
+        internal Enumerator(in FlexEnumerableContainer<T> container)
         {
-            _hasItems = hasItems;
-            _enumerable = enumerable;
-            _item = item;
+            _enumerable = container._enumerable;
+            _item = container._item;
+            _isSingle = container._isSingle;
             _enumerator = null;
-            _state = 0;
+            _consumed = false;
             Current = default;
         }
 
@@ -128,25 +115,33 @@ public readonly struct FlexEnumerableContainer<T> : IEnumerable<T>
         /// <returns><see langword="true"/> if the enumerator could be advanced; otherwise (that is, when enumeration has ended), <see langword="false"/>.</returns>
         public bool MoveNext()
         {
-            if (!_hasItems)
-                return false;
-
-            if (_enumerable is null) // single
+            if (_enumerable is not null)
             {
-                if (_state == 0)
-                { Current = _item; _state = 1; return true; }
-                Current = default;
-                return false;
+                _enumerator ??= _enumerable.GetEnumerator(); // lazy
+                var moved = _enumerator.MoveNext();
+                Current = moved ? _enumerator.Current : default;
+                return moved;
             }
 
-            _enumerator ??= _enumerable.GetEnumerator(); // many (lazy)
-            var moved = _enumerator.MoveNext();
-            Current = moved ? _enumerator.Current : default;
-            return moved;
+            if (_isSingle && !_consumed)
+            {
+                Current = _item;
+                _consumed = true;
+                return true;
+            }
+
+            Current = default;
+            return false;
         }
         /// <summary>
         /// Resets the enumerator to its initial position, which is before the first element.
         /// </summary>
-        public void Reset() { _enumerator?.Dispose(); _enumerator = null; _state = 0; Current = default; }
+        public void Reset()
+        {
+            _enumerator?.Dispose();
+            _enumerator = null;
+            _consumed = false;
+            Current = default;
+        }
     }
 }

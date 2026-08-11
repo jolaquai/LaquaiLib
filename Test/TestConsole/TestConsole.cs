@@ -8,6 +8,7 @@ using System.Runtime.Intrinsics.X86;
 using LaquaiLib.Extensions;
 using LaquaiLib.IO;
 using LaquaiLib.IO.Streams;
+using LaquaiLib.Wrappers;
 
 namespace TestConsole;
 
@@ -28,6 +29,7 @@ public static partial class TestConsole
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatExpr(object obj, string expr) => $"{expr}: {FormatSingleObj(obj)}";
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatExpr(string obj, string expr) => $"{expr}: {obj}";
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatExpr<T>(IEnumerable<T> obj, string expr) => $"{expr}: {FormatEnumerable(obj)}";
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatSingleObj<T>(T obj) => $"({typeof(T).GetFriendlyName(false)}){obj}";
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private static string FormatSingleObj<T>(IEnumerable<T> obj) => $"({typeof(T).GetFriendlyName(false)}){FormatEnumerable(obj)}";
@@ -40,10 +42,13 @@ public static partial class TestConsole
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void cw(this object obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine(FormatExpr(obj, expr));
+    private static void cw(this string obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine(FormatExpr(obj, expr));
     private static void cw<T>(this IEnumerable<T> obj, [CallerArgumentExpression(nameof(obj))] string expr = null) => Console.WriteLine(FormatExpr(obj, expr));
 
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
+        OneOf<int, long> inst = 3212123123123;
+        cw(inst);
     }
     public static byte[] RevolverBytes(int length)
     {
