@@ -7,12 +7,6 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class RegexExtensions
 {
-    private static class Accessors
-    {
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref Regex _regex(Match _);
-        [UnsafeAccessor(UnsafeAccessorKind.Method)] public static extern string get_Text(Capture _);
-    }
-
     extension(Match match)
     {
         /// <summary>
@@ -25,7 +19,7 @@ public static class RegexExtensions
             get
             {
                 ArgumentNullException.ThrowIfNull(match);
-                return Accessors._regex(match);
+                return UnsafeUtils.Accessors.RegexAccessors._regex(match);
             }
         }
     }
@@ -41,7 +35,7 @@ public static class RegexExtensions
             get
             {
                 ArgumentNullException.ThrowIfNull(capture);
-                return Accessors.get_Text(capture);
+                return UnsafeUtils.Accessors.RegexAccessors.get_Text(capture);
             }
         }
     }

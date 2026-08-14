@@ -5592,6 +5592,16 @@
             <param name="vm">The <see cref="T:System.Text.RegularExpressions.ValueMatch"/> specifying the range to slice.</param>
             <returns>The formed slice.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.RuntimeHelpersExtensions.IsReferenceOrContainsReferences(System.Type)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.RuntimeHelpersExtensions.&lt;G&gt;$55610594C8AF15FAD8C3BD36E8FD5C02.IsReferenceOrContainsReferences(System.Type)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RuntimeHelpersExtensions.&lt;G&gt;$55610594C8AF15FAD8C3BD36E8FD5C02.IsReferenceOrContainsReferences(System.Type)">
+            <summary>
+            Calls <see cref="M:System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences``1"/> for the specified <paramref name="type"/> instance.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> to check.</param>
+            <returns><see langword="true"/> if the type is a reference type or contains references; otherwise, <see langword="false"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.StreamExtensions">
             <summary>
             Provides extension methods for the <see cref="T:System.IO.Stream"/> Type.
@@ -9255,6 +9265,58 @@
         <member name="P:LaquaiLib.Collections.Observable.ResetEventArgs`1.NewContents">
             <summary>
             Gets the new contents.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.SequenceEqualityComparer">
+            <summary>
+            Implements a 
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Create(System.Collections.IEqualityComparer)">
+            <summary>
+            Creates an <see cref="T:LaquaiLib.Collections.SequenceEqualityComparer"/> that uses the specified <see cref="T:System.Collections.IEqualityComparer"/> to compare the elements of the sequences.
+            </summary>
+            <param name="inner">The <see cref="T:System.Collections.IEqualityComparer"/> to use to compare the elements of the sequences.</param>
+            <returns>The created <see cref="T:LaquaiLib.Collections.SequenceEqualityComparer"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Collections.IEnumerable,System.Collections.IEnumerable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Array,System.Array)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Collections.IList,System.Collections.IList)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Collections.ICollection,System.Collections.ICollection)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Object,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.EqualsSlow(System.Collections.IEnumerable,System.Collections.IEnumerable)">
+            <summary>
+            Determines sequence equality by advancing enumerators for both <see cref="T:System.Collections.IEnumerable"/>s simultaneously and comparing each element at corresponding positions in the sequence.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.GetHashCode(System.Collections.IEnumerable)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.GetHashCode(System.Array)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.GetHashCode(System.Collections.IList)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.GetHashCode(System.Collections.ICollection)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.GetHashCode(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.HashEnumerator(System.Collections.IEnumerator)">
+            <summary>
+            Uses <see cref="T:System.HashCode"/> to combine every element the specified <paramref name="enumerator"/> visits while it is enumerated.
             </summary>
         </member>
         <member name="T:LaquaiLib.Collections.TwoWayLookup`2">

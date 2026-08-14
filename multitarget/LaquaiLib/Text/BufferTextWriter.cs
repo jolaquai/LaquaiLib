@@ -174,12 +174,11 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
     public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, object arg0, object arg1, object arg2) => Write(format, [arg0, arg1, arg2]);
     /// <inheritdoc/>
     public override void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params object[] arg) => Write(format, (ReadOnlySpan<object>)arg);
-    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_segments")] private static extern ref (string Literal, int ArgIndex, int Alignment, string Format)[] FormatSegments(CompositeFormat comp);
     /// <inheritdoc/>
     public override unsafe void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params scoped ReadOnlySpan<object> arg)
     {
         var comp = CompositeFormat.Parse(format);
-        var segments = FormatSegments(comp);
+        var segments = UnsafeUtils.Accessors.CompositeFormatAccessors._segments(comp);
 
         scoped Span<char> temp = stackalloc char[Config.MaxStackallocSize / 2];
         for (var i = 0; i < segments.Length; i++)

@@ -44,7 +44,7 @@ public sealed class MultiDimArrayEnumerable<T> : IEnumerable<T>, ISpanProvider<T
         {
             var targetTracked = RuntimeHelpers.IsReferenceOrContainsReferences<T>();
             // Viewing GC-tracked slots as raw data or the reverse makes the GC walk arbitrary values as object pointers
-            if (targetTracked != ArrayElementLayout.ContainsReferences(elementType))
+            if (targetTracked != RuntimeHelpers.IsReferenceOrContainsReferences(elementType))
             {
                 throw new ArgumentException($"{typeof(T)} and the array's element type {elementType} disagree on whether they contain managed references.", nameof(array));
             }
@@ -168,15 +168,4 @@ public sealed class MultiDimArrayEnumerable<T> : IEnumerable<T>, ISpanProvider<T
         /// <inheritdoc/>
         public readonly void Dispose() { }
     }
-}
-
-static file class ArrayElementLayout
-{
-    private static readonly MethodInfo _isReferenceOrContainsReferences = typeof(RuntimeHelpers).GetMethod(nameof(RuntimeHelpers.IsReferenceOrContainsReferences));
-    private static readonly ConcurrentDictionary<Type, bool> _cache = [];
-
-    // No non-generic equivalent of RuntimeHelpers.IsReferenceOrContainsReferences exists, so ask the runtime once per type
-    public static bool ContainsReferences(Type type) => _cache.GetOrAdd(type, static t => !t.IsPointer
-        && !t.IsFunctionPointer
-        && (!t.IsValueType || (bool)_isReferenceOrContainsReferences.MakeGenericMethod(t).Invoke(null, null)));
 }

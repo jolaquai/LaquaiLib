@@ -5,13 +5,6 @@
 /// </summary>
 public static partial class StreamExtensions
 {
-    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref byte[] _buffer(this MemoryStream _);
-    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _capacity(this MemoryStream _);
-    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _length(this MemoryStream _);
-    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref int _position(this MemoryStream _);
-    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref bool _expandable(this MemoryStream _);
-    [UnsafeAccessor(UnsafeAccessorKind.Field)] private static extern ref bool _writable(this MemoryStream _);
-
     extension(MemoryStream stream)
     {
         /// <summary>
@@ -23,7 +16,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan() => stream._buffer();
+        public Span<byte> AsSpan() => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream);
         /// <summary>
         /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -34,7 +27,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(Index start) => stream._buffer().AsSpan(start);
+        public Span<byte> AsSpan(Index start) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsSpan(start);
         /// <summary>
         /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -45,7 +38,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(int start) => stream._buffer().AsSpan(start);
+        public Span<byte> AsSpan(int start) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsSpan(start);
         /// <summary>
         /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -56,7 +49,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(Range range) => stream._buffer().AsSpan(range);
+        public Span<byte> AsSpan(Range range) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsSpan(range);
         /// <summary>
         /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -68,7 +61,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(int start, int length) => stream._buffer().AsSpan(start, length);
+        public Span<byte> AsSpan(int start, int length) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsSpan(start, length);
         /// <summary>
         /// Gets a <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -78,7 +71,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Memory<byte> AsMemory() => stream._buffer();
+        public Memory<byte> AsMemory() => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream);
         /// <summary>
         /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -89,7 +82,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Memory<byte> AsMemory(Index start) => stream._buffer().AsMemory(start);
+        public Memory<byte> AsMemory(Index start) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsMemory(start);
         /// <summary>
         /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -100,7 +93,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Memory<byte> AsMemory(int start) => stream._buffer().AsMemory(start);
+        public Memory<byte> AsMemory(int start) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsMemory(start);
         /// <summary>
         /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -111,7 +104,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Memory<byte> AsMemory(Range range) => stream._buffer().AsMemory(range);
+        public Memory<byte> AsMemory(Range range) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsMemory(range);
         /// <summary>
         /// Gets a <see cref="Memory{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
@@ -123,7 +116,7 @@ public static partial class StreamExtensions
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Memory{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Memory<byte> AsMemory(int start, int length) => stream._buffer().AsMemory(start, length);
+        public Memory<byte> AsMemory(int start, int length) => UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream).AsMemory(start, length);
 
         /// <summary>
         /// Creates and returns an exact copy of this <see cref="MemoryStream"/>; its backing store references the same byte array as the original stream.
@@ -136,13 +129,13 @@ public static partial class StreamExtensions
         private MemoryStream Duplicate(bool writable, bool expandable)
         {
             var newMs = new MemoryStream();
-            newMs._buffer() = stream._buffer();
-            newMs._capacity() = stream._capacity();
-            newMs._length() = stream._length();
-            newMs._position() = stream._position();
+            UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(newMs) = UnsafeUtils.Accessors.MemoryStreamAccessors._buffer(stream);
+            UnsafeUtils.Accessors.MemoryStreamAccessors._capacity(newMs) = UnsafeUtils.Accessors.MemoryStreamAccessors._capacity(stream);
+            UnsafeUtils.Accessors.MemoryStreamAccessors._length(newMs) = UnsafeUtils.Accessors.MemoryStreamAccessors._length(stream);
+            UnsafeUtils.Accessors.MemoryStreamAccessors._position(newMs) = UnsafeUtils.Accessors.MemoryStreamAccessors._position(stream);
 
-            newMs._writable() = writable;
-            newMs._expandable() = expandable;
+            UnsafeUtils.Accessors.MemoryStreamAccessors._writable(newMs) = writable;
+            UnsafeUtils.Accessors.MemoryStreamAccessors._expandable(newMs) = expandable;
 
             return newMs;
         }

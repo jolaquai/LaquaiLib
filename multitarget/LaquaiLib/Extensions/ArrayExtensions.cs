@@ -391,7 +391,7 @@ public static partial class ArrayExtensions
             ArgumentOutOfRangeException.ThrowIfGreaterThan(count, array.Length);
 
             var list = new List<T>();
-            scoped ref var items = ref Accessors<T>._items(list);
+            scoped ref var items = ref UnsafeUtils.Accessors.ListAccessors<T>._items(list);
             items = array;
             CollectionsMarshal.SetCount(list, count);
             return list;
@@ -411,11 +411,11 @@ public static partial class ArrayExtensions
             ArgumentOutOfRangeException.ThrowIfGreaterThan(tail, array.Length);
 
             var queue = new Queue<T>();
-            scoped ref var items = ref Accessors<T>._array(queue);
+            scoped ref var items = ref UnsafeUtils.Accessors.QueueAccessors<T>._array(queue);
             items = array;
-            Accessors<T>._head(queue) = head;
-            Accessors<T>._tail(queue) = tail;
-            Accessors<T>._size(queue) = tail > head ? tail - head : array.Length - head + tail;
+            UnsafeUtils.Accessors.QueueAccessors<T>._head(queue) = head;
+            UnsafeUtils.Accessors.QueueAccessors<T>._tail(queue) = tail;
+            UnsafeUtils.Accessors.QueueAccessors<T>._size(queue) = tail > head ? tail - head : array.Length - head + tail;
             return queue;
         }
         /// <summary>
@@ -430,21 +430,10 @@ public static partial class ArrayExtensions
             ArgumentOutOfRangeException.ThrowIfGreaterThan(count, array.Length);
 
             var stack = new Stack<T>();
-            scoped ref var items = ref Accessors<T>._items(stack);
+            scoped ref var items = ref UnsafeUtils.Accessors.StackAccessors<T>._items(stack);
             items = array;
-            Accessors<T>._size(stack) = count;
+            UnsafeUtils.Accessors.StackAccessors<T>._size(stack) = count;
             return stack;
         }
-    }
-
-    private static class Accessors<T>
-    {
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(List<T> _);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _array(Queue<T> _);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(Stack<T> _);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _head(Queue<T> _);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _tail(Queue<T> _);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _size(Queue<T> _);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _size(Stack<T> _);
     }
 }

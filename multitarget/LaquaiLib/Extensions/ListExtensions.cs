@@ -15,13 +15,6 @@ public static class ListExtensions
         public void RemoveAt(Index index) => list.RemoveAt(index.GetOffset(list.Count));
     }
 
-    private static class Accessors<T>
-    {
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(List<T> list);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _size(List<T> list);
-        [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref int _version(List<T> list);
-    }
-
     extension<T>(List<T> list)
     {
         /// <summary>
@@ -67,7 +60,7 @@ public static class ListExtensions
                 throw new ArgumentOutOfRangeException(nameof(length), "The specified length is out of range.");
             }
 
-            Memory<T> memory = Accessors<T>._items(list);
+            Memory<T> memory = UnsafeUtils.Accessors.ListAccessors<T>._items(list);
             var endIndex = length == -1 ? list.Count : offset + length;
             return memory[offset..endIndex];
         }
@@ -110,7 +103,7 @@ public static class ListExtensions
                 throw new ArgumentOutOfRangeException(nameof(length), "The specified length is out of range.");
             }
 
-            Span<T> span = Accessors<T>._items(list);
+            Span<T> span = UnsafeUtils.Accessors.ListAccessors<T>._items(list);
             var endIndex = length == -1 ? list.Count : offset + length;
             return span[offset..endIndex];
         }
@@ -166,8 +159,8 @@ public static class ListExtensions
     {
         ArgumentNullException.ThrowIfNull(list);
 
-        ref var items = ref Accessors<T>._items(list);
-        ref var size = ref Accessors<T>._size(list);
+        ref var items = ref UnsafeUtils.Accessors.ListAccessors<T>._items(list);
+        ref var size = ref UnsafeUtils.Accessors.ListAccessors<T>._size(list);
         var count = size;
 
         T[] ret;
@@ -187,7 +180,7 @@ public static class ListExtensions
         // Detach: reset to the same state as a freshly-constructed empty list, then invalidate any live enumerators.
         items = [];
         size = 0;
-        Accessors<T>._version(list)++;
+        UnsafeUtils.Accessors.ListAccessors<T>._version(list)++;
         return ret;
     }
 }
