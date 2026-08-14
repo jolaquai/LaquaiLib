@@ -19,6 +19,10 @@ public static class SymbolExtensions
                     {
                         typeSymbol = arrayTypeSymbol.ElementType;
                         var rtType = typeSymbol.RuntimeType;
+                        if (rtType is null)
+                        {
+                            return null;
+                        }
                         if (arrayTypeSymbol.Rank == 1)
                         {
                             return rtType.MakeArrayType();
@@ -33,13 +37,35 @@ public static class SymbolExtensions
                     {
                         typeSymbol = pointerTypeSymbol.PointedAtType;
                         var rtType = typeSymbol.RuntimeType;
+                        if (rtType is null)
+                        {
+                            return null;
+                        }
                         return rtType.MakePointerType();
                     }
                 }
                 var name = TypeExtensions.Unkeyword(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
                     .Replace("global::", "")
                     .Replace("?", ""));
-                var type = Type.GetType(name);
+                Type type;
+                try
+                {
+                    // The display string above uses C#'s '<T>' generic syntax, which Type.GetType's assembly-qualified-name
+                    // parser can throw on for some shapes (e.g. tuples); treat any parse failure as "unresolvable" here.
+                    type = Type.GetType(name);
+                }
+                catch
+                {
+                    return null;
+                }
+
+                // Type.GetType only understands assembly-qualified/reflection syntax; the display string above
+                // uses C#'s '<T>' generic syntax, so this never resolves for generic types (e.g. Span<byte>).
+                // Returning null here is correct: callers fall back to other resolution strategies.
+                if (type is null)
+                {
+                    return null;
+                }
 
                 if (typeSymbol.IsRefLikeType)
                 {

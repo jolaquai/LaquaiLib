@@ -210,7 +210,16 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         var uaaTypeParameters = uaaMethodSymbol.TypeParameters;
 
         var uaaThisParam = uaaParameters.FirstOrDefault();
-        var targetTypeSymbol = uaaThisParam.Type;
+
+        // Constructors have no mandatory "this" parameter; the target type comes from the return type instead
+        if (unsafeAccessorKind is not UnsafeAccessorKind.Constructor && uaaThisParam is null)
+        {
+            var missingTargetDiag = Diagnostic.Create(MissingTargetTypeDescriptor, reportLocation);
+            context.ReportDiagnostic(missingTargetDiag);
+            return;
+        }
+
+        var targetTypeSymbol = uaaThisParam?.Type;
         var uaaReturnTypeSymbol = uaaMethodSymbol.ReturnType;
 
         var uaaRestParams = uaaParameters.Skip(1).ToImmutableArray();
@@ -286,7 +295,8 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
     private static void CheckRoslyn(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax uaaMethodDeclarationSyntax, Location reportLocation, IMethodSymbol uaaMethodSymbol, UnsafeAccessorKind unsafeAccessorKind, string description, string targetMemberName, ImmutableArray<IParameterSymbol> uaaParameters, ImmutableArray<ITypeParameterSymbol> uaaTypeParameters, IParameterSymbol uaaThisParam, ITypeSymbol targetTypeSymbol, ITypeSymbol uaaReturnTypeSymbol, ImmutableArray<IParameterSymbol> uaaRestParams, string signatureString)
     {
-        if (uaaParameters.Length == 0)
+        // Constructors have no mandatory "this" parameter, so an empty parameter list is legitimate there
+        if (unsafeAccessorKind is not UnsafeAccessorKind.Constructor && uaaParameters.Length == 0)
         {
             var diag = Diagnostic.Create(MissingTargetTypeDescriptor, reportLocation);
             context.ReportDiagnostic(diag);
@@ -506,7 +516,8 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
     private static void CheckReflection(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax uaaMethodDeclarationSyntax, Location reportLocation, IMethodSymbol uaaMethodSymbol, UnsafeAccessorKind unsafeAccessorKind, string description, string targetMemberName, ImmutableArray<IParameterSymbol> uaaParameters, ImmutableArray<ITypeParameterSymbol> uaaTypeParameters, IParameterSymbol uaaThisParam, Type targetType, ITypeSymbol uaaReturnTypeSymbol, ImmutableArray<IParameterSymbol> uaaRestParams, string signatureString)
     {
-        if (uaaParameters.Length == 0)
+        // Constructors have no mandatory "this" parameter, so an empty parameter list is legitimate there
+        if (unsafeAccessorKind is not UnsafeAccessorKind.Constructor && uaaParameters.Length == 0)
         {
             var diag = Diagnostic.Create(MissingTargetTypeDescriptor, reportLocation);
             context.ReportDiagnostic(diag);
@@ -526,7 +537,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                     return;
                 }
 
-                if (!ctors.Any(ctor => ctor.GetParameters().Select(p => p.ParameterType).SequenceEqual(uaaRestParams.Select(p => p.Type.RuntimeType))))
+                if (!ctors.Any(ctor => ParametersEqual(ctor.GetParameters(), uaaRestParams, context.SemanticModel)))
                 {
                     var diag = Diagnostic.Create(MissingCtorDescriptor, reportLocation, targetType.ToDisplayString(), signatureString);
                     context.ReportDiagnostic(diag);
@@ -667,13 +678,14 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     {
         // Intentionally omitting type parameter check here so we can later differentiate between missing method and type parameter mismatch
         var targetMethodInfo = methodInfos.FirstOrDefault(m =>
-            ParametersEqual(m.GetParameters().Select(p => p.ParameterType).ToArray(), restParams)
+            ParametersEqual(m.GetParameters(), restParams, context.SemanticModel)
             && TypesEqual(m.ReturnType, uaaReturnType, context.SemanticModel)
         );
         targetMethodInfo ??= methodInfos.FirstOrDefault(m =>
-            ParametersEqual(m.GetParameters().Select(p => p.ParameterType).ToArray(), restParams)
+            ParametersEqual(m.GetParameters(), restParams, context.SemanticModel)
         );
-        targetMethodInfo ??= methodInfos.FirstOrDefault();
+        // No arbitrary same-named-overload fallback here: falling through to the 'else' branch below
+        // correctly reports a missing-method diagnostic instead of a bogus return-type mismatch against an unrelated overload
 
         if (targetMethodInfo is not null)
         {
@@ -705,7 +717,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             var properties = targetType.GetProperties(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
             var events = targetType.GetEvents(BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).ToArray();
             if (properties.Any(p => ((p.GetMethod?.Name?.EndsWith(memberName, StringComparison.OrdinalIgnoreCase) is true || p.SetMethod?.Name?.EndsWith(memberName, StringComparison.OrdinalIgnoreCase) is true)
-                && ParametersEqual(p.GetIndexParameters().Select(p => p.ParameterType).ToArray(), restParams))
+                && ParametersEqual(p.GetIndexParameters(), restParams, context.SemanticModel))
                 || (events.Any(e => (e.AddMethod?.Name?.EndsWith(memberName, StringComparison.OrdinalIgnoreCase) is true || e.RemoveMethod?.Name?.EndsWith(memberName, StringComparison.OrdinalIgnoreCase) is true)
                 && restParams.Length == 1 && TypesEqual(e.EventHandlerType, restParams[0].Type, context.SemanticModel)))
             ))
@@ -843,17 +855,98 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         {
             return type == runtimeType;
         }
-        if (semanticModel.Compilation.GetTypeByMetadataName(type.FullName) is { } otherTypeSymbol)
+        // GetTypeByMetadataName only accepts unbound metadata names, so skip it for shapes it can't resolve anyway
+        if (!type.IsGenericType && !type.IsArray && !type.IsPointer && !type.IsByRef && !type.IsGenericParameter
+            && semanticModel.Compilation.GetTypeByMetadataName(type.FullName) is { } otherTypeSymbol)
         {
             return SymbolEqualityComparer.Default.Equals(typeSymbol, otherTypeSymbol);
         }
-        // Use names if we can't resolve the type to the other respective form
-        return type.FullName == typeSymbol.ToDisplayString();
+        // Reflection Type.FullName and ITypeSymbol.ToDisplayString() are never the same shape (e.g. "System.Byte[]" vs "byte[]"),
+        // so fall back to a structural comparison instead of comparing those strings directly
+        return TypeMatches(type, typeSymbol);
+    }
+    /// <summary>
+    /// Structurally compares a reflection <see cref="Type"/> against a Roslyn <see cref="ITypeSymbol"/>.
+    /// </summary>
+    private static bool TypeMatches(Type reflectionType, ITypeSymbol symbol)
+    {
+        if (reflectionType.IsByRef)
+        {
+            return TypeMatches(reflectionType.GetElementType(), symbol);
+        }
+
+        if (reflectionType.IsArray)
+        {
+            return symbol is IArrayTypeSymbol arraySymbol
+                && arraySymbol.Rank == reflectionType.GetArrayRank()
+                && TypeMatches(reflectionType.GetElementType(), arraySymbol.ElementType);
+        }
+
+        if (reflectionType.IsPointer)
+        {
+            return symbol is IPointerTypeSymbol pointerSymbol
+                && TypeMatches(reflectionType.GetElementType(), pointerSymbol.PointedAtType);
+        }
+
+        if (reflectionType.IsGenericParameter)
+        {
+            return symbol is ITypeParameterSymbol typeParamSymbol
+                && typeParamSymbol.Ordinal == reflectionType.GenericParameterPosition;
+        }
+
+        if (reflectionType.IsGenericType)
+        {
+            if (symbol is not INamedTypeSymbol namedSymbol || !namedSymbol.IsGenericType)
+            {
+                return false;
+            }
+
+            var openReflectionType = reflectionType.GetGenericTypeDefinition();
+            if (openReflectionType.FullName != GetReflectionFullName(namedSymbol.ConstructedFrom))
+            {
+                return false;
+            }
+
+            var reflectionArgs = reflectionType.GetGenericArguments();
+            var symbolArgs = namedSymbol.TypeArguments;
+            if (reflectionArgs.Length != symbolArgs.Length)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < reflectionArgs.Length; i++)
+            {
+                if (!TypeMatches(reflectionArgs[i], symbolArgs[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return symbol is INamedTypeSymbol plainNamedSymbol && reflectionType.FullName == GetReflectionFullName(plainNamedSymbol);
+    }
+    /// <summary>
+    /// Renders an <see cref="ITypeSymbol"/> in reflection's <see cref="Type.FullName"/> shape:
+    /// namespace, '+' as the nested-type separator, and metadata arity suffix (e.g. "Task`1") instead of Roslyn's display format.
+    /// </summary>
+    private static string GetReflectionFullName(INamedTypeSymbol symbol)
+    {
+        var chain = new List<string>();
+        for (var current = symbol; current is not null; current = current.ContainingType)
+        {
+            chain.Insert(0, current.MetadataName);
+        }
+
+        var nestedName = string.Join("+", chain);
+        var ns = symbol.ContainingNamespace;
+        return ns is null || ns.IsGlobalNamespace ? nestedName : $"{ns.ToDisplayString()}.{nestedName}";
     }
     /// <summary>
     /// Compares two sets of parameters for equality, including count, type matches and ref kinds.
     /// </summary>
-    private static bool ParametersEqual(Type[] expected, ImmutableArray<IParameterSymbol> actualSymbols)
+    private static bool ParametersEqual(ParameterInfo[] expected, ImmutableArray<IParameterSymbol> actualSymbols, SemanticModel semanticModel)
     {
         if (expected.Length != actualSymbols.Length)
         {
@@ -872,10 +965,9 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             }
 
             // Compare types - strip ref wrapper for comparison
-            var expectedType = expectedParam.IsByRef ? expectedParam.GetElementType() : expectedParam;
-            var actualTypeName = actualParam.Type.ToDisplayString();
+            var expectedType = expectedParam.ParameterType.IsByRef ? expectedParam.ParameterType.GetElementType() : expectedParam.ParameterType;
 
-            if (expectedType.FullName != actualTypeName)
+            if (!TypesEqual(expectedType, actualParam.Type, semanticModel))
             {
                 return false;
             }
@@ -883,21 +975,25 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
         return true;
     }
-    private static bool RefKindsMatch(Type paramType, IParameterSymbol symbol)
+    private static bool RefKindsMatch(ParameterInfo paramInfo, IParameterSymbol symbol)
     {
-        if (!paramType.IsByRef && symbol.RefKind == RefKind.None)
+        if (!paramInfo.ParameterType.IsByRef)
         {
-            return true;
+            return symbol.RefKind == RefKind.None;
         }
 
-        if (paramType.IsByRef)
+        // Reflection needs IsOut/IsIn on the ParameterInfo (not just Type.IsByRef) to distinguish ref/out/in
+        if (paramInfo.IsOut && !paramInfo.IsIn)
         {
-            // Reflection doesn't distinguish ref/in, both show as IsByRef
-            return symbol.RefKind is RefKind.Ref or RefKind.In;
+            return symbol.RefKind == RefKind.Out;
         }
 
-        // Check IsOut via parameter attributes if needed
-        return false;
+        if (paramInfo.IsIn)
+        {
+            return symbol.RefKind == RefKind.In;
+        }
+
+        return symbol.RefKind == RefKind.Ref;
     }
 
     // Copy from a decompilation
