@@ -150,4 +150,89 @@ internal static class GeneratorTestHost
             Assert.Fail($"Found unqualified 'System.' references (missing 'global::'):{Environment.NewLine}{string.Join(Environment.NewLine, offenders)}{Environment.NewLine}Full source:{Environment.NewLine}{generatedText}");
         }
     }
+
+    public const string SourceOutputStepName = "SourceOutput";
+
+    public static GeneratorDriver CreateTrackedDriver(IIncrementalGenerator generator)
+        => CSharpGeneratorDriver.Create(
+            generators: [generator.AsSourceGenerator()],
+            parseOptions: new CSharpParseOptions(LanguageVersion.Preview),
+            driverOptions: new GeneratorDriverOptions(IncrementalGeneratorOutputKind.None, trackIncrementalGeneratorSteps: true));
+
+    public static (GeneratorDriver Driver, CSharpCompilation Compilation, GeneratorRunResult Result) RunTracked(IIncrementalGenerator generator, params string[] sources)
+    {
+        var compilation = CreateCompilation(sources);
+        var driver = CreateTrackedDriver(generator);
+        driver = driver.RunGenerators(compilation);
+        return (driver, compilation, driver.GetRunResult().Results[0]);
+    }
+
+    public static GeneratorRunResult RunAgain(GeneratorDriver driver, Compilation next)
+    {
+        driver = driver.RunGenerators(next);
+        return driver.GetRunResult().Results[0];
+    }
+
+    public static void AssertStepsCached(GeneratorRunResult result, params string[] stepNames)
+        => AssertStepReasons(result, stepNames, static reason => reason is IncrementalStepRunReason.Cached or IncrementalStepRunReason.Unchanged);
+
+    public static void AssertStepsRan(GeneratorRunResult result, params string[] stepNames)
+        => AssertStepReasons(result, stepNames, static reason => reason is IncrementalStepRunReason.New or IncrementalStepRunReason.Modified);
+
+    private static void AssertStepReasons(GeneratorRunResult result, string[] stepNames, Func<IncrementalStepRunReason, bool> isExpected)
+    {
+        if (result.Exception is not null)
+        {
+            Assert.Fail($"Generator threw during run: {result.Exception}");
+        }
+
+        foreach (var stepName in stepNames)
+        {
+            if (!result.TrackedSteps.TryGetValue(stepName, out var steps) && !result.TrackedOutputSteps.TryGetValue(stepName, out steps))
+            {
+                Assert.Fail($"No tracked step named '{stepName}' found.{Environment.NewLine}{DumpTrackedSteps(result)}");
+            }
+
+            foreach (var step in steps)
+            {
+                foreach (var output in step.Outputs)
+                {
+                    if (!isExpected(output.Reason))
+                    {
+                        Assert.Fail($"Step '{stepName}' had unexpected reason '{output.Reason}'.{Environment.NewLine}{DumpTrackedSteps(result)}");
+                    }
+                }
+            }
+        }
+    }
+
+    private static string DumpTrackedSteps(GeneratorRunResult result)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("Tracked steps:");
+        foreach (var (name, steps) in result.TrackedSteps)
+        {
+            foreach (var step in steps)
+            {
+                sb.Append("  ").Append(name).Append(" [").Append(step.ElapsedTime).AppendLine("]:");
+                foreach (var output in step.Outputs)
+                {
+                    sb.Append("    ").AppendLine(output.Reason.ToString());
+                }
+            }
+        }
+        sb.AppendLine("Tracked output steps:");
+        foreach (var (name, steps) in result.TrackedOutputSteps)
+        {
+            foreach (var step in steps)
+            {
+                sb.Append("  ").Append(name).Append(" [").Append(step.ElapsedTime).AppendLine("]:");
+                foreach (var output in step.Outputs)
+                {
+                    sb.Append("    ").AppendLine(output.Reason.ToString());
+                }
+            }
+        }
+        return sb.ToString();
+    }
 }
