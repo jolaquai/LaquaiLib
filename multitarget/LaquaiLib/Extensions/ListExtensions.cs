@@ -117,7 +117,6 @@ public static class ListExtensions
         /// <summary>
         /// Retrieves a <see cref="Span{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>.
         /// </summary>
-        /// <param name="list">The <see cref="List{T}"/> to retrieve the backing array from.</param>
         /// <param name="range">The <see cref="Range"/> that indicates the portion of the backing array to be retrieved.</param>
         /// <returns>A <see cref="Span{T}"/> over the backing array of the specified <see cref="List{T}"/>.</returns>
         /// <remarks>

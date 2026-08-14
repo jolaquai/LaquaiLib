@@ -10,7 +10,6 @@ public static class ArrayExtensionsByte
         /// <summary>
         /// Creates a resizable <see cref="MemoryStream"/> from the given <see cref="byte"/> array. Its <see cref="Stream.Position"/> upon return is set to the <see cref="Array.Length"/> of <paramref name="bytes"/>, i.e. it is not sought to the beginning.
         /// </summary>
-        /// <param name="bytes">The <see cref="byte"/> array to write into the new <see cref="MemoryStream"/>.</param>
         /// <returns>The created <see cref="MemoryStream"/>.</returns>
         public MemoryStream ToMemoryStream()
         {

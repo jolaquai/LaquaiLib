@@ -13,7 +13,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is a property getter or setter.
         /// </summary>
-        /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns>A value indicating whether the method is a property getter or setter.</returns>
         public bool IsGetterOrSetter
         {
@@ -23,7 +22,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is a property getter.
         /// </summary>
-        /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns>A value indicating whether the method is a property getter.</returns>
         public bool IsGetter
         {
@@ -33,7 +31,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is a property setter.
         /// </summary>
-        /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns>A value indicating whether the method is a property setter.</returns>
         public bool IsSetter
         {
@@ -44,7 +41,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is an event subscription adder or remover.
         /// </summary>
-        /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns>A value indicating whether the method is an event subscription adder or remover.</returns>
         public bool IsAdderOrRemover
         {
@@ -54,7 +50,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is an event subscription adder.
         /// </summary>
-        /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns>A value indicating whether the method is an event subscription adder.</returns>
         public bool IsAdder
         {
@@ -64,7 +59,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is an event subscription remover.
         /// </summary>
-        /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns>A value indicating whether the method is an event subscription remover.</returns>
         public bool IsRemover
         {
@@ -75,7 +69,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is an accessor (includes property getters/setters and event subscription adders/removers).
         /// </summary>
-        /// <param name="methodInfo">A <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns>A value indicating whether the method is an accessor.</returns>
         public bool IsAccessor
         {
@@ -86,7 +79,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is marked <see langword="extern"/>.
         /// </summary>
-        /// <param name="methodInfo">The <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns><see langword="true"/> if the method is marked <see langword="extern"/>, otherwise <see langword="false"/>.</returns>
         public bool IsExtern
         {
@@ -96,7 +88,6 @@ public static class MethodInfoExtensions
         /// <summary>
         /// Determines whether a method represented by a <paramref name="methodInfo"/> instance is marked <see langword="partial"/>.
         /// </summary>
-        /// <param name="methodInfo">The <see cref="MethodInfo"/> instance representing the method to check.</param>
         /// <returns><see langword="true"/> if the method is marked <see langword="partial"/>, otherwise <see langword="false"/>.</returns>
         public bool IsPartial
         {

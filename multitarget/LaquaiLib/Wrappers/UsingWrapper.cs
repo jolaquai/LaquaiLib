@@ -16,7 +16,7 @@ public static class UsingWrapper
     public static UsingWrapper<T> Use<T>(T instance) where T : IDisposable
         => new UsingWrapper<T>(instance, static instance => instance.Dispose());
     /// <summary>
-    /// Creates a new <see cref="UsingWrapper{T}"/> instance for the given instance of <typeparamref name="T"/>.
+    /// Creates a new <see cref="UsingWrapper{T}"/> instance for the given instance of <typeparamref name="T"/> using a synchronous dispose action.
     /// </summary>
     /// <typeparam name="T">The type of the object to wrap.</typeparam>
     /// <param name="instance">The instance to wrap.</param>
@@ -24,6 +24,15 @@ public static class UsingWrapper
     /// <returns>The created <see cref="UsingWrapper{T}"/> instance.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static UsingWrapper<T> Use<T>(T instance, Action<T> dispose) => new UsingWrapper<T>(instance, dispose);
+    /// <summary>
+    /// Creates a new <see cref="UsingWrapper{T}"/> instance for the given instance of <typeparamref name="T"/> using an asynchronous dispose action.
+    /// </summary>
+    /// <typeparam name="T">The type of the object to wrap.</typeparam>
+    /// <param name="instance">The instance to wrap.</param>
+    /// <param name="dispose">The <see cref="Func{T, TResult}"/> that is executed when the <see cref="UsingWrapper{T}"/> is disposed. It is passed the wrapped instance.</param>
+    /// <returns>The created <see cref="UsingWrapper{T}"/> instance.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static UsingWrapper<T> Use<T>(T instance, Func<T, ValueTask> dispose) => new UsingWrapper<T>(instance, dispose);
 }
 
 /// <summary>

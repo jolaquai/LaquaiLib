@@ -52,7 +52,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Converts the specified input string to title case according to the rules of the specified <paramref name="culture"/>.
         /// </summary>
-        /// <param name="source">The <see cref="string"/> to convert.</param>
         /// <param name="culture">The <see cref="CultureInfo"/> to use for casing rules.</param>
         /// <returns><paramref name="source"/> in title case according to <paramref name="culture"/>.</returns>
         public string ToTitle(CultureInfo culture = null) => (culture ?? CultureInfo.CurrentCulture).TextInfo.ToTitleCase(source);
@@ -99,7 +98,6 @@ public static partial class StringExtensions
         /// <summary>
         /// "Transparently" splits a <see langword="string"/> at each match of the specified <see cref="Regex"/>; that is, the return value details both the <see langword="string"/>s that were split out of the original and the separators that were used to split them.
         /// </summary>
-        /// <param name="source">The <see langword="string"/> to split.</param>
         /// <param name="options"><see cref="StringSplitOptions"/> to apply to the split operation.</param>
         /// <param name="splitStrings">Any number of <see langword="string"/>s to split the original by. These are considered literals, not <see cref="Regex"/> patterns.</param>
         /// <returns>An array of tuples, each containing a split <see langword="string"/> and the separator that was used to split it.</returns>
@@ -117,14 +115,12 @@ public static partial class StringExtensions
         /// <summary>
         /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/>.
         /// </summary>
-        /// <param name="source">The <see cref="string"/> to modify.</param>
         /// <param name="remove">The <see cref="char"/>s to remove.</param>
         /// <returns>The original string with all occurrences of the <paramref name="remove"/> <see langword="char"/>s removed.</returns>
         public string Remove(params ReadOnlySpan<char> remove) => string.Concat(source.Except(remove.ToArray()));
         /// <summary>
         /// Removes all occurrences of the specified <see cref="char"/>s from this <see cref="string"/> starting at the specified index.
         /// </summary>
-        /// <param name="source">The <see cref="string"/> to modify.</param>
         /// <param name="startIndex">The zero-based index at which to begin removing <see cref="char"/>s.</param>
         /// <param name="remove">The <see cref="char"/>s to remove.</param>
         /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
@@ -133,7 +129,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Removes all occurrences of the specified <see cref="string"/>s from this <see cref="string"/>.
         /// </summary>
-        /// <param name="source">The <see cref="string"/> to modify.</param>
         /// <param name="remove">The <see cref="string"/>s to remove.</param>
         /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
         public string Remove(params ReadOnlySpan<string> remove)
@@ -148,7 +143,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Removes all occurrences of the specified <see cref="string"/>s from this <see cref="string"/> starting at the specified index.
         /// </summary>
-        /// <param name="source">The <see cref="string"/> to modify.</param>
         /// <param name="startIndex">The zero-based index at which to begin removing <see cref="string"/>s.</param>
         /// <param name="remove">The <see cref="string"/>s to remove.</param>
         /// <returns>The original string with all occurrences of the <paramref name="remove"/> chars removed.</returns>
@@ -159,7 +153,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of the specified <see langword="char"/> span in this instance.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="search">The <see langword="char"/> span to seek.</param>
         /// <returns>All zero-based index positions of <paramref name="search"/> if that <see langword="char"/> span is found, or an empty collection otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -167,7 +160,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of the specified <see langword="char"/> span in this instance. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="search">The <see langword="char"/> span to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>All zero-based index positions of <paramref name="search"/> if that <see langword="char"/> span is found, or an empty collection otherwise.</returns>
@@ -199,7 +191,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of the specified Unicode character in this string.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="search">A Unicode character to seek.</param>
         /// <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -207,7 +198,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of the specified Unicode character in this string. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="search">A Unicode character to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>All zero-based index positions of <paramref name="search"/> if that character is found, or an empty collection otherwise.</returns>
@@ -223,7 +213,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of the specified string in this instance.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="search">The string to seek.</param>
         /// <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -231,7 +220,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of the specified string in this instance. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="search">The string to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>All zero-based index positions of <paramref name="search"/> if that string is found, or an empty collection otherwise.</returns>
@@ -241,7 +229,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based index of the first occurrence of any of the specified Unicode <see langword="char"/>s in this <see langword="string"/>.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">The Unicode <see langword="char"/>s to seek.</param>
         /// <returns>The zero-based index position of the first occurrence in this instance where any <see langword="char"/> in <paramref name="searches"/> was found; -1 if no <see langword="char"/> in <paramref name="searches"/> was found.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -249,7 +236,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based index of the first occurrence of any of the specified Unicode <see langword="char"/>s in this <see langword="string"/>. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">The Unicode <see langword="char"/>s to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>The zero-based index position of the first occurrence in this instance where any <see langword="char"/> in <paramref name="searches"/> was found; -1 if no <see langword="char"/> in <paramref name="searches"/> was found.</returns>
@@ -258,7 +244,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based index of the first occurrence in this instance of any string in a specified sequence of strings.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">A sequence of strings to seek.</param>
         /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
         /// <returns>The zero-based index position of the first occurrence in this instance where any <see langword="string"/> in <paramref name="searches"/> was found; -1 if no <see langword="string"/> in <paramref name="searches"/> was found.</returns>
@@ -267,7 +252,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based index of the first occurrence in this instance of any <see langword="string"/> in a specified sequence of <see langword="string"/>s. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">A sequence of strings to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
@@ -278,7 +262,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">A sequence of strings to seek.</param>
         /// <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
         public IEnumerable<int> IndicesOfAny(ReadOnlySpan<char> searches)
@@ -293,7 +276,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences in this instance of any Unicode character in a specified sequence of characters. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">A sequence of strings to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>The zero-based index positions of all occurrences in this instance where any character in <paramref name="searches"/> was found; an empty collection if no character in <paramref name="searches"/> was found.</returns>
@@ -309,7 +291,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">A sequence of strings to seek.</param>
         /// <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
         public IEnumerable<int> IndicesOfAny(ReadOnlySpan<string> searches)
@@ -324,7 +305,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences in this instance of any string in a specified sequence of strings. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="searches">A sequence of strings to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>The zero-based index positions of all occurrences in this instance where any string in <paramref name="searches"/> was found; an empty collection if no string in <paramref name="searches"/> was found.</returns>
@@ -343,7 +323,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of Unicode characters other than the one specified in this string.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="except">A Unicode character to except.</param>
         /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
         public IEnumerable<int> IndicesOfExcept(char except)
@@ -359,7 +338,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of Unicode characters other than the one specified in this string. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="except">A Unicode character to except.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
@@ -376,7 +354,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="except">A string containing Unicode character to except.</param>
         /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
         public IEnumerable<int> IndicesOfExcept(string except)
@@ -394,7 +371,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="except">A string containing Unicode character to except.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>All zero-based index positions of any characters that are left, or an empty collection otherwise.</returns>
@@ -414,7 +390,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based index of the first occurrence of a character other than the ones specified in this string. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="excepts">A sequence of characters to except.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>The zero-based index position of the first occurrence in this instance where any character other than the ones in <paramref name="excepts"/> was found, or -1 otherwise.</returns>
@@ -422,7 +397,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based index of the first occurrence of a string (or single character) other than the ones specified in this string. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="excepts">A sequence of strings to except.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <param name="stringComparison">A <see cref="StringComparison"/> value specifying the comparison behavior.</param>
@@ -463,7 +437,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="excepts">A sequence of characters to except.</param>
         /// <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
         public IEnumerable<int> IndicesOfAnyExcept(ReadOnlySpan<char> excepts)
@@ -481,7 +454,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences of any Unicode character other than the ones specified in this string. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="excepts">A sequence of characters to except.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <returns>The zero-based index positions of all occurrences in this instance where any character not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
@@ -500,7 +472,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="excepts">A sequence of characters to except.</param>
         /// <param name="stringComparison">A <see cref="StringComparison"/> value specifying the comparison behavior.</param>
         /// <returns>The zero-based index positions of all occurrences in this instance where any string not contained in <paramref name="excepts"/> was found, or an empty collection otherwise.</returns>
@@ -519,7 +490,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Reports the zero-based indices of the all occurrences of any string (or single character) other than the ones specified in this string. The search starts at a specified character position.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="excepts">A sequence of characters to except.</param>
         /// <param name="startIndex">The search starting position.</param>
         /// <param name="stringComparison">A <see cref="StringComparison"/> value specifying the comparison behavior.</param>
@@ -542,21 +512,18 @@ public static partial class StringExtensions
         /// <summary>
         /// Applies a <paramref name="transform"/> function to each line of a string.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="transform">The function used to transform each line of the input string.</param>
         /// <returns>The transformed string.</returns>
         public string SelectLines(Func<string, string> transform) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select(line => transform(line)));
         /// <summary>
         /// Applies a <paramref name="transform"/> function to each line of a string, incorporating each line's index in the function.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="transform">The function used to transform each line of the input string.</param>
         /// <returns>The transformed string.</returns>
         public string SelectLines(Func<string, int, string> transform) => string.Join(Environment.NewLine, source.Split(Environment.NewLine).Select((line, index) => transform(line, index)));
         /// <summary>
         /// Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="transform">The function used to transform each line of the input string.</param>
         /// <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
         /// <returns></returns>
@@ -564,7 +531,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Applies a <paramref name="transform"/> function to each line of a string that satisfies conditions defined by <paramref name="predicate"/>, incorporating each line's index in the functions. Lines that do not satisfy this condition are copied without applying <paramref name="transform"/>.
         /// </summary>
-        /// <param name="source">The string to search.</param>
         /// <param name="transform">The function used to transform each line of the input string.</param>
         /// <param name="predicate">The function used to determine which lines are transformed using <paramref name="transform"/>.</param>
         /// <returns></returns>
@@ -573,7 +539,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Executes an <paramref name="action"/> for each line of a <see langword="string"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line.
         /// </summary>
-        /// <param name="source">The <see langword="string"/> to iterate over.</param>
         /// <param name="action">The <see cref="Action{T}"/> to execute for each line.</param>
         public void ForEachLine(Action<ReadOnlySpan<char>> action)
         {
@@ -585,7 +550,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Executes an <paramref name="action"/> for each line of a <see langword="string"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line and the index of the line.
         /// </summary>
-        /// <param name="source">The <see langword="string"/> to iterate over.</param>
         /// <param name="action">The <see cref="Action{T1, T2}"/> to execute for each line.</param>
         public void ForEachLine(Action<ReadOnlySpan<char>, int> action)
         {
@@ -598,7 +562,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Executes an <paramref name="action"/> for each line of a <see langword="string"/> that satisfies conditions defined by <paramref name="predicate"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line.
         /// </summary>
-        /// <param name="source">The <see langword="string"/> to iterate over.</param>
         /// <param name="action">The <see cref="Action{T}"/> to execute for each line.</param>
         /// <param name="predicate">The <see cref="Func{T, TResult}"/> used to determine which lines are processed by <paramref name="action"/>.</param>
         public void ForEachLine(Action<ReadOnlySpan<char>> action, Func<ReadOnlySpan<char>, bool> predicate)
@@ -614,7 +577,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Executes an <paramref name="action"/> for each line of a <see langword="string"/> that satisfies conditions defined by <paramref name="predicate"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line and the index of the line.
         /// </summary>
-        /// <param name="source">The <see langword="string"/> to iterate over.</param>
         /// <param name="action">The <see cref="Action{T1, T2}"/> to execute for each line.</param>
         /// <param name="predicate">The <see cref="Func{T1, T2, TResult}"/> used to determine which lines are processed by <paramref name="action"/>.</param>
         public void ForEachLine(Action<ReadOnlySpan<char>, int> action, Func<ReadOnlySpan<char>, int, bool> predicate)
@@ -635,7 +597,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Computes a value that indicates the similarity between two strings. "Similarity" is defined as the number of characters that are the same in both strings, divided by the length of the longer string. As such, the value returned by this method is always between <c>0</c> (the strings are have no characters in common) and <c>1</c> (the strings are equal), inclusive.
         /// </summary>
-        /// <param name="source">The first <see cref="string"/> to use for the comparison.</param>
         /// <param name="second">The second <see cref="string"/> to use for the comparison.</param>
         /// <param name="stringComparer">A <see cref="StringComparer"/> instance to use when comparing the <see cref="string"/>s. Defaults to <see cref="StringComparer.OrdinalIgnoreCase"/>.</param>
         /// <returns>The computed similarity as described.</returns>
@@ -669,7 +630,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s that are separated by any of the <see langword="string"/>s specified by <paramref name="strings"/>.
         /// </summary>
-        /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
         /// <param name="strings">The <see langword="string"/>s to use as delimiters.</param>
         /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ReadOnlySpan{T}"/>s representing the segments of the input <see cref="ReadOnlySpan{T}"/>.</returns>
@@ -683,7 +643,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s.
         /// </summary>
-        /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to search.</param>
         /// <param name="chars">The <see langword="char"/>s to search for.</param>
         /// <returns>The number of occurrences of any of the <paramref name="chars"/> in the input <see cref="ReadOnlySpan{T}"/>.</returns>
         public int FindCount(params ReadOnlySpan<char> chars)
@@ -704,7 +663,6 @@ public static partial class StringExtensions
         /// <summary>
         /// Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s.
         /// </summary>
-        /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to search.</param>
         /// <param name="strings">The <see langword="string"/>s to search for.</param>
         /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the strings. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
         /// <returns>The number of occurrences of any of the <paramref name="strings"/> in the input <see cref="ReadOnlySpan{T}"/>.</returns>

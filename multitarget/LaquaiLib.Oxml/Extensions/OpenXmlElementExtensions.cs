@@ -47,14 +47,12 @@ public static class OpenXmlElementExtensions
         /// Determines if this element is the only child of its parent.
         /// This takes into account various *Properties elements that should not be counted as children.
         /// </summary>
-        /// <param name="element">The element to check.</param>
         /// <returns><see langword="true"/> if <paramref name="element"/> is the only child of its parent, otherwise <see langword="false"/>.</returns>
         public bool IsOnlyChild => element.IsOnlyChildOf(element.Parent);
         /// <summary>
         /// Determines if this element is the only child of <paramref name="potentialParent"/>.
         /// If <paramref name="potentialParent"/> is not the actual parent of <paramref name="element"/>, this method returns <see langword="false"/>.
         /// </summary>
-        /// <param name="element">The element to check.</param>
         /// <param name="potentialParent">The potential parent to check against.</param>
         /// <returns><see langword="true"/> if <paramref name="element"/> is the only child of <paramref name="potentialParent"/>, otherwise <see langword="false"/>.</returns>
         public bool IsOnlyChildOf(OpenXmlElement potentialParent)
@@ -78,7 +76,6 @@ public static class OpenXmlElementExtensions
         /// <summary>
         /// Returns a normalized version of the <see cref="OpenXmlElement.OuterXml"/> property, removing all namespace declarations and prefixes, and all RSID attributes.
         /// </summary>
-        /// <param name="element">The element to normalize.</param>
         /// <returns>The normalized XML as an <see cref="XElement"/>.</returns>
         public XElement NormalizedOuterXml
         {
@@ -99,7 +96,6 @@ public static class OpenXmlElementExtensions
         /// <summary>
         /// Determines whether two <see cref="OpenXmlElement"/> instances are equal, taking into account their entire element trees.
         /// </summary>
-        /// <param name="element">The first <see cref="OpenXmlElement"/> to compare.</param>
         /// <param name="other">The second <see cref="OpenXmlElement"/> to compare.</param>
         /// <returns><see langword="true"/> if the specified <see cref="OpenXmlElement"/> instances are equal, otherwise <see langword="false"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -109,7 +105,6 @@ public static class OpenXmlElementExtensions
         /// Returns an array of the <see cref="OpenXmlElement"/>s that lie between <paramref name="child1"/> and <paramref name="child2"/> in the child element list of <paramref name="element"/>.
         /// This method fully enumerates the child elements of <paramref name="element"/>.
         /// </summary>
-        /// <param name="element">The element to search in.</param>
         /// <param name="child1">The first child element.</param>
         /// <param name="child2">The second child element.</param>
         /// <returns>The array as specified.</returns>
@@ -149,7 +144,6 @@ public static class OpenXmlElementExtensions
         /// <summary>
         /// Enumerates the <see cref="OpenXmlElement"/>s that lie between <paramref name="element"/> and the <paramref name="last"/> element. Neither is included in the enumeration.
         /// </summary>
-        /// <param name="element">The element to start from.</param>
         /// <param name="last">The element to stop at.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> that enumerates the elements as specified.</returns>
         public IEnumerable<OpenXmlElement> ElementsUpTo(OpenXmlElement last)
@@ -173,7 +167,6 @@ public static class OpenXmlElementExtensions
         /// Enumerates the <see cref="OpenXmlElement"/>s of type <typeparamref name="T"/> that lie between <paramref name="element"/> and the <paramref name="last"/> element. Neither is included in the enumeration.
         /// </summary>
         /// <typeparam name="T">The type of <see cref="OpenXmlElement"/> to enumerate.</typeparam>
-        /// <param name="element">The element to start from.</param>
         /// <param name="last">The element to stop at.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> that enumerates the elements as specified.</returns>
         public IEnumerable<T> ElementsUpTo<T>(OpenXmlElement last) where T : OpenXmlElement
@@ -199,7 +192,6 @@ public static class OpenXmlElementExtensions
         /// <summary>
         /// Creates an array of deep clones of the specified elements.
         /// </summary>
-        /// <param name="elements">The elements to clone.</param>
         /// <returns>The created clones.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public OpenXmlElement[] CloneAll() => elements.Select(static e => e.CloneNode(true)).ToArray();
@@ -211,7 +203,6 @@ public static class OpenXmlElementExtensions
         /// Determines if this element is the only child of its parent of type <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type of the child element.</typeparam>
-        /// <param name="element">The element to check.</param>
         /// <returns>The result of the check.</returns>
         public bool IsOnlyChildOfType()
         {
@@ -228,7 +219,6 @@ public static class OpenXmlElementExtensions
         /// </summary>
         /// <typeparam name="TFrom">The type of the element that is replaced.</typeparam>
         /// <typeparam name="TTo">The type of the new element.</typeparam>
-        /// <param name="element">The element to replace.</param>
         /// <param name="newElement">The new element to replace the specified element with.</param>
         /// <returns>A reference to the new element. Its parent is the same as the parent of the removed element.</returns>
         public TTo ReplaceWith<TTo>(TTo newElement) where TTo : OpenXmlElement
@@ -241,7 +231,6 @@ public static class OpenXmlElementExtensions
         /// Replaces the specified element with new content. The new elements must not have parents.
         /// </summary>
         /// <typeparam name="T">The type of the element that is replaced.</typeparam>
-        /// <param name="element">The element to replace.</param>
         /// <param name="newElements">The new elements to replace the specified element with.</param>
         /// <returns>A reference to the removed element (which no longer has a parent).</returns>
         /// <remarks>
@@ -264,7 +253,6 @@ public static class OpenXmlElementExtensions
         /// Resolving the specified <paramref name="index"/> unfortunately requires fully enumerating the child elements of <paramref name="element"/>.
         /// </summary>
         /// <typeparam name="T">The type of the element that is inserted into.</typeparam>
-        /// <param name="element">The element to insert into.</param>
         /// <param name="index">The index to insert the first new element at.</param>
         /// <param name="newElements">The new elements to insert into the specified element.</param>
         public void InsertAt(Index index, params ReadOnlySpan<OpenXmlElement> newElements)

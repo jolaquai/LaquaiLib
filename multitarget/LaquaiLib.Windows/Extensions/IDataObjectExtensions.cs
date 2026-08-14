@@ -12,7 +12,6 @@ public static class IDataObjectExtensions
         /// <summary>
         /// Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="IDataObject"/>.
         /// </summary>
-        /// <param name="dataObject">The <see cref="IDataObject"/> to retrieve the data from.</param>
         /// <param name="format">The format of the data to retrieve.</param>
         /// <param name="data">A <c>ref <see cref="object"/>?</c> variable that receives the data if the retrieval was successful.</param>
         /// <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>
@@ -33,7 +32,6 @@ public static class IDataObjectExtensions
         /// Attempts to retrieve the data with the specified <paramref name="format"/> from this <see cref="IDataObject"/>.
         /// </summary>
         /// <typeparam name="T">The actual type of which the data is expected to be.</typeparam>
-        /// <param name="dataObject">The <see cref="IDataObject"/> to retrieve the data from.</param>
         /// <param name="format">The format of the data to retrieve.</param>
         /// <param name="data">A <c>ref <typeparamref name="T"/>?</c> variable that receives the data if the retrieval was successful.</param>
         /// <returns><see langword="true"/> if the retrieval was successful, otherwise <see langword="false"/>.</returns>

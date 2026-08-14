@@ -8,7 +8,6 @@ public static partial class IEnumerableExtensions
         /// Using the specified <see cref="byte"/> sequence, creates a new <typeparamref name="T"/> instance.
         /// </summary>
         /// <typeparam name="T">The <see cref="Type"/> of the <see langword="struct"/> to marshal the specified bytes into.</typeparam>
-        /// <param name="enumerable">The <see cref="IEnumerable{T}"/> of <see cref="byte"/> to marshal into a new <typeparamref name="T"/> instance.</param>
         /// <returns>The new <typeparamref name="T"/> instance.</returns>
         public T IntoStruct<T>() where T : struct
         {

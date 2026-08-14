@@ -13,7 +13,6 @@ public static class QueueExtensions
         /// Adds items to the end of the <see cref="Queue{T}"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the collection.</typeparam>
-        /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from <paramref name="items"/> to.</param>
         /// <param name="items">The items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(params ReadOnlySpan<T> items)
         {
@@ -26,7 +25,6 @@ public static class QueueExtensions
         /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the collection.</typeparam>
-        /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from the <paramref name="collection"/> to.</param>
         /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(IEnumerable<T> collection)
         {
@@ -43,7 +41,6 @@ public static class QueueExtensions
         /// Adds items to the end of the <see cref="Queue{T}"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the collection.</typeparam>
-        /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from <paramref name="items"/> to.</param>
         /// <param name="items">The items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(params ReadOnlySpan<T> items)
         {
@@ -56,7 +53,6 @@ public static class QueueExtensions
         /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the collection.</typeparam>
-        /// <param name="queue">The <see cref="Queue{T}"/> instance to add the items from the <paramref name="collection"/> to.</param>
         /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(IEnumerable<T> collection)
         {

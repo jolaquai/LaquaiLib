@@ -5,6 +5,9 @@ namespace LaquaiLib.IO.Streams;
 /// <summary>
 /// Implements a <see cref="Stream"/> whose backing memory is source from an <see cref="ArrayPool{T}"/>.
 /// </summary>
+/// <remarks>
+/// This is by no means meant to replace an implementation such as <see href="https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream"/>. This type's design is much simpler.
+/// </remarks>
 public sealed class ArrayPoolMemoryStream : Stream
 {
     private readonly ArrayPool<byte> _pool;
@@ -81,7 +84,7 @@ public sealed class ArrayPoolMemoryStream : Stream
         {
             var current = segments[seg];
             var take = (int)long.Min(current.Length - off, count);
-            current.AsSpan(off, take).Clear();
+            current.AsSpan(off, take).ZeroMemory();
             count -= take;
             off += take;
             if (off == current.Length)

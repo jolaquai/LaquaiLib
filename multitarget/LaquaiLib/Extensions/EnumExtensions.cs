@@ -14,7 +14,6 @@ public static class EnumExtensions
         /// <summary>
         /// Returns the <see cref="DescriptionAttribute.Description"/> for the given <see cref="Enum"/> value. If the value is not decorated with a <see cref="DescriptionAttribute"/>, the default <see cref="string"/> representation of the value is returned.
         /// </summary>
-        /// <param name="any">The <see cref="Enum"/> value to retrieve the description for.</param>
         /// <returns>The value of the <see cref="DescriptionAttribute.Description"/> for the given <see cref="Enum"/> value or its default <see cref="string"/> representation.</returns>
         public string Description
         {
@@ -33,7 +32,6 @@ public static class EnumExtensions
         /// Because this implicitly makes <paramref name="any"/> a bitwise-AND combination of the resulting flags, it is not included in the result set.
         /// </summary>
         /// <typeparam name="TEnum">The <see cref="Enum"/> type to retrieve the flags for.</typeparam>
-        /// <param name="any">The <typeparamref name="TEnum"/> value to retrieve the flags for.</param>
         /// <returns>The flags that are currently set in the specified <typeparamref name="TEnum"/> value or an empty array if no flags are set.</returns>
         public TEnum[] Flags
         {

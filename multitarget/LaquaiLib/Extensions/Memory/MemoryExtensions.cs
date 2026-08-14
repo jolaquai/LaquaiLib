@@ -77,7 +77,6 @@ public static partial class MemoryExtensions
         /// Splits the specified <paramref name="span"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
-        /// <param name="span">The <see cref="ReadOnlySpan{T}"/> to split.</param>
         /// <param name="whereTrue">The <see cref="Span{T}"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
         /// <param name="whereFalse">The <see cref="Span{T}"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
@@ -111,7 +110,6 @@ public static partial class MemoryExtensions
         /// <summary>
         /// Reads a <c>\0</c> or equivalently terminated (based on the specified <paramref name="encoding"/>) <see langword="string"/> from the specified <paramref name="span"/>. This terminator is stripped from the input.
         /// </summary>
-        /// <param name="span">The <see cref="ReadOnlySpan{T}" /> from which to read.</param>
         /// <param name="ptr">The position at which to begin reading.</param>
         /// <param name="encoding">An <see cref="Encoding" /> instance to use to interpret the read <see langword="byte"/>s. Defaults to <see cref="Encoding.UTF8" /> (which might be undesirable for Interop scenarios...).</param>
         /// <returns>The reconstructed <see langword="string"/> or an empty <see langword="string"/> if the <see langword="byte"/> at <paramref name="ptr"/> was <c>0</c>. The length of the string is equal to the number by which <paramref name="ptr"/> was incremented.</returns>
@@ -214,7 +212,6 @@ public static partial class MemoryExtensions
         /// <summary>
         /// Reads a <c>\0</c> or equivalently terminated (based on the specified <paramref name="encoding"/>) <see langword="string"/> from the specified <paramref name="span"/>. This terminator is stripped from the input.
         /// </summary>
-        /// <param name="span">The <see cref="ReadOnlySpan{T}" /> from which to read.</param>
         /// <param name="ptr">The position at which to begin reading.</param>
         /// <param name="encoding">An <see cref="Encoding" /> instance to use to interpret the read <see langword="byte"/>s. Defaults to <see cref="Encoding.UTF8" /> (which might be undesirable for Interop scenarios...).</param>
         /// <returns>The reconstructed <see langword="string"/> or an empty <see langword="string"/> if the <see langword="byte"/> at <paramref name="ptr"/> was <c>0</c>. The length of the string is equal to the number by which <paramref name="ptr"/> was incremented.</returns>
@@ -229,7 +226,6 @@ public static partial class MemoryExtensions
         /// Reads a value of type <typeparamref name="T"/> from the specified <paramref name="span"/> at the specified <paramref name="ptr"/>.
         /// </summary>
         /// <typeparam name="T">The type of the value to read.</typeparam>
-        /// <param name="span">The source <see cref="ReadOnlySpan{T}"/> of <see langword="byte"/>.</param>
         /// <param name="ptr">The pointer to the position in the <paramref name="span"/> from which to read the value.</param>
         /// <returns>An instance of <typeparamref name="T"/> read from the <paramref name="span"/>.</returns>
         /// <remarks>
@@ -260,7 +256,6 @@ public static partial class MemoryExtensions
         /// Reads <paramref name="count"/> consecutive values of type <typeparamref name="T"/> from the specified <paramref name="span"/> at the specified <paramref name="ptr"/>.
         /// </summary>
         /// <typeparam name="T">The type of the values to read.</typeparam>
-        /// <param name="span">The source <see cref="ReadOnlySpan{T}"/> of <see langword="byte"/>.</param>
         /// <param name="ptr">The pointer to the position in the <paramref name="span"/> from which to read the values.</param>
         /// <param name="count">The number of values to read.</param>
         /// <returns>An array of <typeparamref name="T"/> of type <paramref name="count"/> read from the <paramref name="span"/>.</returns>
@@ -278,7 +273,6 @@ public static partial class MemoryExtensions
         /// Reads a value of type <typeparamref name="T"/> from the specified <paramref name="span"/> at the specified <paramref name="ptr"/>.
         /// </summary>
         /// <typeparam name="T">The type of the value to read.</typeparam>
-        /// <param name="span">The source <see cref="ReadOnlySpan{T}"/> of <see langword="byte"/>.</param>
         /// <param name="ptr">The pointer to the position in the <paramref name="span"/> from which to read the value.</param>
         /// <returns>An instance of <typeparamref name="T"/> read from the <paramref name="span"/>.</returns>
         /// <remarks>
@@ -299,7 +293,6 @@ public static partial class MemoryExtensions
         /// Reads <paramref name="count"/> consecutive values of type <typeparamref name="T"/> from the specified <paramref name="span"/> at the specified <paramref name="ptr"/>.
         /// </summary>
         /// <typeparam name="T">The type of the values to read.</typeparam>
-        /// <param name="span">The source <see cref="ReadOnlySpan{T}"/> of <see langword="byte"/>.</param>
         /// <param name="ptr">The pointer to the position in the <paramref name="span"/> from which to read the values.</param>
         /// <param name="count">The number of values to read.</param>
         /// <returns>An array of <typeparamref name="T"/> of type <paramref name="count"/> read from the <paramref name="span"/>.</returns>
@@ -327,7 +320,6 @@ public static partial class MemoryExtensions
         /// <summary>
         /// Returns a <see cref="SpanSplitEnumerable{T}"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/>s that are separated by any of the <typeparamref name="T"/>s specified by <paramref name="splits"/>.
         /// </summary>
-        /// <param name="span">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
         /// <param name="splits">The <see langword="t"/>s to use as delimiters.</param>
         /// <returns>The created <see cref="SpanSplitEnumerable{T}"/>.</returns>
         /// <remarks><typeparamref name="T"/> must implement <see cref="IEquatable{T}"/>.</remarks>
@@ -336,7 +328,6 @@ public static partial class MemoryExtensions
         /// <summary>
         /// Returns a <see cref="SpanSplitEnumerable{T}"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/>s that are separated by the specified <paramref name="sequence"/>.
         /// </summary>
-        /// <param name="span">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
         /// <param name="sequence">The sequence of <typeparamref name="T"/>s to use as a delimiter.</param>
         /// <returns>The created <see cref="SpanSplitEnumerable{T}"/>.</returns>
         /// <remarks><typeparamref name="T"/> must implement <see cref="IEquatable{T}"/>.</remarks>
@@ -413,7 +404,6 @@ public static partial class MemoryExtensions
         /// Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.
         /// </summary>
         /// <typeparam name="T">The type of the <paramref name="data"/> instance.</typeparam>
-        /// <param name="span">The target <see cref="Span{T}"/> of <see langword="byte"/>.</param>
         /// <param name="data">The <paramref name="data"/> instance to format into the <paramref name="span"/>.</param>
         /// <param name="index">The index at which to start writing the <paramref name="data"/> instance into the <paramref name="span"/>.</param>
         /// <returns>

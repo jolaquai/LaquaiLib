@@ -17,14 +17,10 @@ public class TempDirectory : IDisposable
     /// <param name="path">The path to the directory to wrap with this <see cref="TempDirectory"/>.</param>
     public TempDirectory(string path)
     {
-        _path = path;
-        if (!Directory.Exists(_path))
-        {
-            _ = Directory.CreateDirectory(_path);
-        }
+        Path = path;
+        if (!Directory.Exists(path))
+            _ = Directory.CreateDirectory(path);
     }
-
-    private string _path;
 
     /// <summary>
     /// The path to the file this <see cref="TempDirectory"/> wraps.
@@ -33,46 +29,24 @@ public class TempDirectory : IDisposable
     {
         get
         {
-            ObjectDisposedException.ThrowIf(IsDisposed, _path!);
-            return _path!;
+            ObjectDisposedException.ThrowIf(disposed == 1, this);
+            return field;
         }
+        private set;
     }
 
-    #region Dispose pattern
-    /// <summary>
-    /// Whether this <see cref="TempDirectory"/> has been disposed.
-    /// </summary>
-    public bool IsDisposed => string.IsNullOrWhiteSpace(_path);
-
-    private void Dispose(bool disposing)
-    {
-        // Delete the directory regardless of `disposing`: the cleanup only touches the _path string, so it is
-        // safe to run from the finalizer too. Gating it behind `disposing` would leak the directory on disk
-        // whenever the wrapper is finalized without an explicit Dispose.
-        if (!string.IsNullOrWhiteSpace(_path))
-        {
-            try
-            {
-                Directory.Delete(_path, true);
-            }
-            catch { }
-            _path = null;
-        }
-    }
-
-    /// <summary>
-    /// Finalizes this <see cref="TempDirectory"/>.
-    /// </summary>
-    ~TempDirectory()
-    {
-        Dispose(false);
-    }
-
+    private int disposed;
     /// <inheritdoc/>
     public void Dispose()
     {
+        if (Interlocked.Exchange(ref disposed, 1) == 1)
+            return;
+
+        try
+        {
+            Directory.Delete(Path, true);
+        }
+        catch { }
         GC.SuppressFinalize(this);
-        Dispose(true);
     }
-    #endregion
 }

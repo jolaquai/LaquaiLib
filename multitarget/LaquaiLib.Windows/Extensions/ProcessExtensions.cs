@@ -16,7 +16,6 @@ public static partial class ProcessExtensions
         /// Retrieves the command line of the specified <see cref="Process"/>.
         /// This is done either by using the <see cref="ProcessStartInfo"/> property of the <see cref="Process"/> instance or, if that is <see langword="null"/>, by using WMI.
         /// </summary>
-        /// <param name="process">A <see cref="Process"/> instance.</param>
         /// <returns>The command line of the specified <see cref="Process"/> or <see langword="null"/> if it could not be retrieved.</returns>
         public string CommandLine
         {

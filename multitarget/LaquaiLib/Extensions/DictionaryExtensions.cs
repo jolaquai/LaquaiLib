@@ -12,7 +12,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">They Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to clone. Must be mutable.</param>
         /// <returns>A shallow copy of the <see cref="IDictionary{TKey, TValue}"/>.</returns>
         public Dictionary<TKey, TValue> Clone() => source.ToDictionary();
 
@@ -54,7 +53,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to add to or update. Must be mutable.</param>
         /// <param name="key">The key of the element to add or update.</param>
         /// <param name="addValue">The value to be added for an absent key.</param>
         /// <param name="updateValueFactory">A factory <see cref="Func{T1, T2, TResult}"/> that takes the existing value for a key and <paramref name="addValue"/> itself and produces a new value. This avoids having to materialize the value twice.</param>
@@ -90,7 +88,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to add to or update. Must be mutable.</param>
         /// <param name="key">The key of the element to add or update.</param>
         /// <param name="addValueFactory">A <see cref="Func{TResult}"/> that produces the value to be added for an absent key. It is only invoked if the key does not already exist in the <see cref="IDictionary{TKey, TValue}"/>.</param>
         /// <param name="updateValueFactory">A factory <see cref="Func{T1, T2, TResult}"/> that takes the existing value for a key and produces a new value.</param>
@@ -128,7 +125,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to get the value from or add to. Must be mutable.</param>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValue">The value to be added for an absent key. If the key is absent, the return value is this value.</param>
         /// <returns>The value associated with the specified key, if the key is found, otherwise <paramref name="addValue"/>.</returns>
@@ -162,7 +158,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to get the value from or add to. Must be mutable.</param>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValueFactory">A factory <see cref="Func{TResult}"/> that produces the value to be added for an absent key. If the key is absent, the return value is the produced value.</param>
         /// <returns>The value associated with the specified key, if the key is found, otherwise the value produced by <paramref name="addValueFactory"/>.</returns>
@@ -198,7 +193,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The type of the keys in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to get the value from or add the value to. Must be mutable.</param>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValue">The value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.</param>
         /// <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
@@ -231,7 +225,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The type of the keys in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="source">The <see cref="IDictionary{TKey, TValue}"/> to get the value from or add the value to. Must be mutable.</param>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValueFactory">A factory <see cref="Func{TResult}"/> that produces the value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist. This overload is useful when constructing the value is expensive and should only be done when necessary.</param>
         /// <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
@@ -270,7 +263,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="dictionary">The <see cref="Dictionary{TKey, TValue}"/> to get the value from.</param>
         /// <param name="key">The key of the value to get.</param>
         /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
         /// <returns>A <see langword="ref"/> into the storage of the <paramref name="dictionary"/> if the key-value pair was present, otherwise a <see langword="null"/> <see langword="ref"/>.</returns>
@@ -287,7 +279,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="dictionary">The <see cref="Dictionary{TKey, TValue}"/> to get the value from or add to.</param>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="value">The value to add to the <paramref name="dictionary"/> if the key does not exist.</param>
         /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
@@ -308,7 +299,6 @@ public static class IDictionaryExtensions
         /// </summary>
         /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
         /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-        /// <param name="dictionary">The <see cref="Dictionary{TKey, TValue}"/> to get the value from or add to.</param>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="valueFactory">A factory <see cref="Func{TResult}"/> that produces the value to add to the <paramref name="dictionary"/> if the key does not exist.</param>
         /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>

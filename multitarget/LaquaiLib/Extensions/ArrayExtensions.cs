@@ -15,7 +15,6 @@ public static partial class ArrayExtensions
         /// This allows using Linq methods on multi-dimensional <see cref="Array"/>s.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
-        /// <param name="source">The <see cref="Array"/> to transform.</param>
         /// <returns>The reinterpreted reference to <paramref name="source"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<T> AsEnumerable<T>() => new MultiDimArrayEnumerable<T>(source);
@@ -24,7 +23,6 @@ public static partial class ArrayExtensions
         /// The array is referenced rather than pinned, so disposing the provider releases nothing; it only prevents further use of the provider.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
-        /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
         /// <returns>An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> over the array.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ISpanProvider<T> GetSpanProvider<T>() => new MultiDimArrayEnumerable<T>(source);
@@ -33,7 +31,6 @@ public static partial class ArrayExtensions
         /// The array is referenced rather than pinned, so disposing the provider releases nothing; it only prevents further use of the provider.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the array.</typeparam>
-        /// <param name="source">The <see cref="Array"/> to get the <see cref="ISpanProvider{T}"/> for.</param>
         /// <returns>An <see cref="ISpanProvider{T}"/> implementation that provides a <see cref="Span{T}"/> over the array.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IReadOnlySpanProvider<T> GetReadOnlySpanProvider<T>() => new MultiDimArrayEnumerable<T>(source);
@@ -42,7 +39,6 @@ public static partial class ArrayExtensions
         /// Copies the elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array, starting at position <c>0</c> in all dimensions of both arrays.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimCopyTo<T>(Array destination) => source.MultiDimCopyTo<T>(0, destination, 0, source.Length);
@@ -50,7 +46,6 @@ public static partial class ArrayExtensions
         /// Copies a range of elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array, starting at position <c>0</c> in all dimensions of both arrays.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="length">The total number of elements to copy.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -59,7 +54,6 @@ public static partial class ArrayExtensions
         /// Copies a range of elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="sourceIndex">The index in the source array at which copying begins.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="destinationIndex">The index in the destination array at which storing begins.</param>
@@ -71,7 +65,6 @@ public static partial class ArrayExtensions
         /// Copies a range of elements of the specified <paramref name="source"/> array to the specified <paramref name="destination"/> array.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="sourceIndex">The index in the source array at which copying begins.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="destinationIndex">The index in the destination array at which storing begins.</param>
@@ -139,7 +132,6 @@ public static partial class ArrayExtensions
         /// If the copy attempt fails for any reason, the original data is restored to the <paramref name="destination"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void MultiDimConstrainedCopyTo<T>(Array destination) => source.MultiDimConstrainedCopyTo<T>(0, destination, 0, source.Length);
@@ -148,7 +140,6 @@ public static partial class ArrayExtensions
         /// If the copy attempt fails for any reason, the original data is restored to the <paramref name="destination"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="length">The total number of elements to copy.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -158,7 +149,6 @@ public static partial class ArrayExtensions
         /// If the copy attempt fails for any reason, the original data is restored to the <paramref name="destination"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="sourceIndex">The index in the source array at which copying begins.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="destinationIndex">The index in the destination array at which storing begins.</param>
@@ -171,7 +161,6 @@ public static partial class ArrayExtensions
         /// If the copy attempt fails for any reason, the original data is restored to the <paramref name="destination"/>.
         /// </summary>
         /// <typeparam name="T">The Type of the items in the arrays.</typeparam>
-        /// <param name="source">The array to copy elements from.</param>
         /// <param name="sourceIndex">The index in the source array at which copying begins.</param>
         /// <param name="destination">The array to copy elements to.</param>
         /// <param name="destinationIndex">The index in the destination array at which storing begins.</param>
@@ -267,7 +256,6 @@ public static partial class ArrayExtensions
         /// Attempts to retrieve a <see cref="Span{T}"/> from the specified <paramref name="array"/>.
         /// </summary>
         /// <typeparam name="T">The type of the elements in the array.</typeparam>
-        /// <param name="array">The array to retrieve the span from.</param>
         /// <param name="spanProvider">An <see langword="out"/> variable that receives the <see cref="ISpanProvider{T}"/> for the array if it is not a one-dimensional array.</param>
         /// <param name="span">The <see cref="Span{T}"/> over the array.</param>
         /// <returns><see langword="true"/> if the span could be retrieved, otherwise <see langword="false"/>.</returns>
@@ -296,7 +284,6 @@ public static partial class ArrayExtensions
         /// Attempts to retrieve a <see cref="ReadOnlySpan{T}"/> from the specified <paramref name="array"/>.
         /// </summary>
         /// <typeparam name="T">The type of the elements in the array.</typeparam>
-        /// <param name="array">The array to retrieve the span from.</param>
         /// <param name="rosProvider">An <see langword="out"/> variable that receives the <see cref="ISpanProvider{T}"/> for the array if it is not a one-dimensional array.</param>
         /// <param name="span">The <see cref="ReadOnlySpan{T}"/> over the array.</param>
         /// <returns><see langword="true"/> if the span could be retrieved, otherwise <see langword="false"/>.</returns>
@@ -326,7 +313,6 @@ public static partial class ArrayExtensions
         /// Determines whether the two arrays are equal in length and contain the same elements in the same order.
         /// The dimensions of the arrays need not match for this method to return <see langword="true"/>.
         /// </summary>
-        /// <param name="source">The first array to compare.</param>
         /// <param name="other">The second array to compare.</param>
         /// <param name="equalityComparer">An optional <see cref="IEqualityComparer{T}"/> to use for comparing elements in the arrays.</param>
         /// <returns><see langword="true"/> if the arrays are equal in length and contain the same elements in the same order, otherwise <see langword="false"/>.</returns>
@@ -365,7 +351,6 @@ public static partial class ArrayExtensions
         /// Attempts to retrieve the element at the specified index from the array if that index is valid for the array.
         /// </summary>
         /// <typeparam name="T">The type of the array elements.</typeparam>
-        /// <param name="array">The array to retrieve the element from.</param>
         /// <param name="i">The index of the element to retrieve.</param>
         /// <param name="value">An <see langword="out"/> variable that receives the element at the specified index if it is valid.</param>
         /// <returns><see langword="true"/> if the index was valid and the element could be retrieved, otherwise <see langword="false"/>.</returns>
@@ -383,7 +368,6 @@ public static partial class ArrayExtensions
         /// Attempts to retrieve the element at specified index from the array if that index is valid for the array, otherwise returns the specified default value.
         /// </summary>
         /// <typeparam name="T">The type of the array elements.</typeparam>
-        /// <param name="array">The array to retrieve the element from.</param>
         /// <param name="i">The index of the element to retrieve.</param>
         /// <param name="defaultValue">The default value to return if the index is invalid.</param>
         /// <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>

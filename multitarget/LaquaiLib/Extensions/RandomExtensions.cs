@@ -12,7 +12,6 @@ public static class RandomExtensions
         /// <summary>
         /// Writes <paramref name="count"/> random <see langword="byte"/>s to the specified <paramref name="destination"/> <see cref="Stream"/>.
         /// </summary>
-        /// <param name="random">The <see cref="Random"/> instance to use.</param>
         /// <param name="destination">The <see cref="Stream"/> to write to.</param>
         /// <param name="count">The number of <see langword="byte"/>s to write.</param>
         /// <exception cref="ArgumentException">Thrown when the <paramref name="destination"/> <see cref="Stream"/> is not writable.</exception>
@@ -54,7 +53,6 @@ public static class RandomExtensions
         /// <summary>
         /// Asynchronously writes <paramref name="count"/> random <see langword="byte"/>s to the specified <paramref name="destination"/> <see cref="Stream"/>.
         /// </summary>
-        /// <param name="random">The <see cref="Random"/> instance to use.</param>
         /// <param name="destination">The <see cref="Stream"/> to write to.</param>
         /// <param name="count">The number of <see langword="byte"/>s to write.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

@@ -10,7 +10,6 @@ public static class TimingExtensions
         /// <summary>
         /// Advances the given <see cref="DateTime"/> to the next weekday.
         /// </summary>
-        /// <param name="startAt">The <see cref="DateTime"/> to start at.</param>
         /// <param name="timeComponent">The time of day to set the <see cref="DateTime"/> to. Defaults to <see langword="null"/>, which leaves the time component unchanged.</param>
         /// <param name="includeSaturdays">Whether to include Saturdays as weekdays. Defaults to <see langword="false"/>.</param>
         /// <returns>The next weekday after the given <see cref="DateTime"/>.</returns>
@@ -31,7 +30,6 @@ public static class TimingExtensions
         /// <summary>
         /// Advances the given <see cref="DateTime"/> to the next weekday.
         /// </summary>
-        /// <param name="startAt">The <see cref="DateTime"/> to start at.</param>
         /// <param name="timeComponent">Another <see cref="DateTime"/> instance the time component of which to set the resulting <see cref="DateTime"/> to. Defaults to <see langword="null"/>, which leaves the time component unchanged.</param>
         /// <param name="includeSaturdays">Whether to include Saturdays as weekdays. Defaults to <see langword="false"/>.</param>
         /// <returns>The next weekday after the given <see cref="DateTime"/>.</returns>
@@ -41,7 +39,6 @@ public static class TimingExtensions
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateTime"/> is reached.
         /// </summary>
-        /// <param name="dateTime">The <see cref="DateTime"/> to wait for.</param>
         /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
         public TaskAwaiter GetAwaiter()
         {
@@ -59,7 +56,6 @@ public static class TimingExtensions
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateTimeOffset"/> is reached.
         /// </summary>
-        /// <param name="dateTimeOffset">The <see cref="DateTimeOffset"/> to wait for.</param>
         /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
         public TaskAwaiter GetAwaiter()
         {
@@ -76,7 +72,6 @@ public static class TimingExtensions
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateOnly"/> at midnight is reached.
         /// </summary>
-        /// <param name="dateOnly">The <see cref="DateOnly"/> to wait for.</param>
         /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
         public TaskAwaiter GetAwaiter() => GetAwaiter(dateOnly.ToDateTime(TimeOnly.MinValue));
     }
@@ -85,7 +80,6 @@ public static class TimingExtensions
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="TimeOnly"/> on the current day is reached.
         /// </summary>
-        /// <param name="timeOnly">The <see cref="TimeOnly"/> to wait for.</param>
         /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
         public TaskAwaiter GetAwaiter() => GetAwaiter(DateTime.Today.AddTicks(timeOnly.Ticks));
     }
@@ -94,7 +88,6 @@ public static class TimingExtensions
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="TimeSpan"/>, starting from now, has passed.
         /// </summary>
-        /// <param name="timeSpan">The <see cref="TimeSpan"/> to wait for.</param>
         /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
         /// <remarks>
         /// This is essentially just a shorthand for creating a <see cref="Task.Delay(TimeSpan)"/> call.

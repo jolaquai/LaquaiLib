@@ -383,7 +383,7 @@ for ($n = 2; $n -le 16; $n++)
     W '}'
 }
 
-$text = ($L -join "`n") + "`n"
+$text = ($L -join [System.Environment]::NewLine) + [System.Environment]::NewLine
 $enc = [System.Text.UTF8Encoding]::new($true)
 $out = Join-Path $PSScriptRoot 'NonBoxingUnions.cs'
 [System.IO.File]::WriteAllText($out, $text, $enc)

@@ -14,7 +14,7 @@ public readonly struct TimeStamp() : IEquatable<TimeStamp>, IComparable<TimeStam
     /// <summary>
     /// Gets the value of the current timestamp in ticks.
     /// </summary>
-    public readonly long Start = Stopwatch.GetTimestamp();
+    public readonly long Value = Stopwatch.GetTimestamp();
 
     /// <summary>
     /// Gets the elapsed time since this timestamp was captured.
@@ -23,7 +23,7 @@ public readonly struct TimeStamp() : IEquatable<TimeStamp>, IComparable<TimeStam
     public readonly TimeSpan Elapsed
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Stopwatch.GetElapsedTime(Start);
+        get => Stopwatch.GetElapsedTime(Value);
     }
     /// <summary>
     /// Gets the elapsed time in ticks since this timestamp was captured.
@@ -32,7 +32,7 @@ public readonly struct TimeStamp() : IEquatable<TimeStamp>, IComparable<TimeStam
     public readonly long ElapsedTicks
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => Stopwatch.GetTimestamp() - Start;
+        get => Stopwatch.GetTimestamp() - Value;
     }
     /// <summary>
     /// Gets the elapsed time in milliseconds since this timestamp was captured.
@@ -44,19 +44,80 @@ public readonly struct TimeStamp() : IEquatable<TimeStamp>, IComparable<TimeStam
         get => ElapsedTicks * 1000 / Stopwatch.Frequency;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode() => Start.GetHashCode();
+    /// <summary>
+    /// Gets a hash code for the current instance.
+    /// </summary>
+    /// <returns>The hash code for the current instance.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public override int GetHashCode() => Value.GetHashCode();
+    /// <summary>
+    /// Determines whether the specified object is equal to the current instance.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current instance.</param>
+    /// <returns><see langword="true"/> if the other object is a <see cref="TimeStamp"/> and has the same value; otherwise, <see langword="false"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public override bool Equals(object obj) => obj is TimeStamp other && Equals(other);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(TimeStamp other) => Start == other.Start;
+    /// <summary>
+    /// Determines whether the specified <see cref="TimeStamp"/> is equal to the current instance.
+    /// </summary>
+    /// <param name="other">The <see cref="TimeStamp"/> to compare with the current instance.</param>
+    /// <returns>true if the other <see cref="TimeStamp"/> has the same value; otherwise, false.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public bool Equals(TimeStamp other) => Value == other.Value;
+    /// <summary>
+    /// Determines whether two <see cref="TimeStamp"/> instances are equal.
+    /// </summary>
+    /// <param name="left">The first <see cref="TimeStamp"/> to compare.</param>
+    /// <param name="right">The second <see cref="TimeStamp"/> to compare.</param>
+    /// <returns><see langword="true"/> if the two <see cref="TimeStamp"/> instances have the same value; otherwise, <see langword="false"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator ==(TimeStamp left, TimeStamp right) => left.Equals(right);
+    /// <summary>
+    /// Determines whether two <see cref="TimeStamp"/> instances are not equal.
+    /// </summary>
+    /// <param name="left">The first <see cref="TimeStamp"/> to compare.</param>
+    /// <param name="right">The second <see cref="TimeStamp"/> to compare.</param>
+    /// <returns><see langword="true"/> if the two <see cref="TimeStamp"/> instances do not have the same value; otherwise, <see langword="false"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator !=(TimeStamp left, TimeStamp right) => !left.Equals(right);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public int CompareTo(TimeStamp other) => Start.CompareTo(other.Start);
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator <(TimeStamp left, TimeStamp right) => left.Start < right.Start;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator >(TimeStamp left, TimeStamp right) => left.Start > right.Start;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator <=(TimeStamp left, TimeStamp right) => left.Start <= right.Start;
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator >=(TimeStamp left, TimeStamp right) => left.Start >= right.Start;
+    /// <summary>
+    /// Computes an <see langword="int"/> that describes whether the current instance compares less than, equal to, or greater than the specified <see cref="TimeStamp"/>.
+    /// </summary>
+    /// <param name="other">The <see cref="TimeStamp"/> to compare with the current instance.</param>
+    /// <returns>A negative value if the current instance is less than <paramref name="other"/>, zero if they are equal, and a positive value if the current instance is greater than <paramref name="other"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public int CompareTo(TimeStamp other) => Value.CompareTo(other.Value);
+    /// <summary>
+    /// Determines whether one <see cref="TimeStamp"/> is less than another.
+    /// </summary>
+    /// <param name="left">The first <see cref="TimeStamp"/> to compare.</param>
+    /// <param name="right">The second <see cref="TimeStamp"/> to compare.</param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> is less than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator <(TimeStamp left, TimeStamp right) => left.Value < right.Value;
+    /// <summary>
+    /// Determines whether one <see cref="TimeStamp"/> is greater than another.
+    /// </summary>
+    /// <param name="left">The first <see cref="TimeStamp"/> to compare.</param>
+    /// <param name="right">The second <see cref="TimeStamp"/> to compare.</param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> is greater than <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator >(TimeStamp left, TimeStamp right) => left.Value > right.Value;
+    /// <summary>
+    /// Determines whether one <see cref="TimeStamp"/> is less than or equal to another.
+    /// </summary>
+    /// <param name="left">The first <see cref="TimeStamp"/> to compare.</param>
+    /// <param name="right">The second <see cref="TimeStamp"/> to compare.</param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> is less than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator <=(TimeStamp left, TimeStamp right) => left.Value <= right.Value;
+    /// <summary>
+    /// Determines whether one <see cref="TimeStamp"/> is greater than or equal to another.
+    /// </summary>
+    /// <param name="left">The first <see cref="TimeStamp"/> to compare.</param>
+    /// <param name="right">The second <see cref="TimeStamp"/> to compare.</param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> is greater than or equal to <paramref name="right"/>; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static bool operator >=(TimeStamp left, TimeStamp right) => left.Value >= right.Value;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public override string ToString() => Start.ToString();
+    /// <summary>
+    /// Subtracts one <see cref="TimeStamp"/> from another, returning the elapsed time as a <see cref="TimeSpan"/>.
+    /// </summary>
+    /// <param name="left">The first <see cref="TimeStamp"/>.</param>
+    /// <param name="right">The second <see cref="TimeStamp"/> to subtract from the first.</param>
+    /// <returns>A <see cref="TimeSpan"/> representing the elapsed time between the two <see cref="TimeStamp"/> instances.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static TimeSpan operator -(TimeStamp left, TimeStamp right) => Stopwatch.GetElapsedTime(right.Value, left.Value);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public static TimeSpan operator -(TimeStamp left, TimeStamp right) => Stopwatch.GetElapsedTime(right.Start, left.Start);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public override string ToString() => string.Concat("TimeStamp {", Value, '}');
 }

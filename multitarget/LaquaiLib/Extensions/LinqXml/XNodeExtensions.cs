@@ -12,7 +12,6 @@ public static class XNodeExtensions
         /// <summary>
         /// Replaces this node with the specified replacement <paramref name="content"/>.
         /// </summary>
-        /// <param name="source">The <see cref="XNode"/> to replace.</param>
         /// <param name="content">The content to replace the node with.</param>
         /// <returns>A reference to the removed node (which no longer has a parent).</returns>
         /// <remarks>
@@ -27,7 +26,6 @@ public static class XNodeExtensions
         /// <summary>
         /// Returns a collection of the sibling nodes of this node, in document order.
         /// </summary>
-        /// <param name="source">The <see cref="XNode"/> to get the siblings of.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="XNode"/> containing the sibling nodes of this node, in document order.</returns>
         public IEnumerable<XNode> SiblingNodes() => source.NodesBeforeSelf().Concat(source.NodesAfterSelf()).InDocumentOrder();
     }

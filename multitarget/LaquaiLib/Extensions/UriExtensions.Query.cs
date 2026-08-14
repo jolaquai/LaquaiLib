@@ -7,7 +7,6 @@ public static partial class UriExtensions
         /// <summary>
         /// Creates a new <see cref="Uri"/> with the specified query parameter set.
         /// </summary>
-        /// <param name="uri">The <see cref="Uri"/> to set the query parameter in.</param>
         /// <param name="name">The name of the query parameter.</param>
         /// <param name="value">The value of the query parameter. If <see langword="null"/>, removes all values associated with the specified <paramref name="name"/> from the query.</param>
         public Uri SetQueryParameter(string name, object value)
@@ -19,7 +18,6 @@ public static partial class UriExtensions
         /// <summary>
         /// Creates a new <see cref="Uri"/> with the specified query parameters set.
         /// </summary>
-        /// <param name="uri">The <see cref="Uri"/> to begin with.</param>
         /// <param name="parameters">The parameters to set in the query.</param>
         /// <returns>A new <see cref="Uri"/> with the specified query parameters set.</returns>
         public Uri SetQueryParameters(params ReadOnlySpan<(string, object)> parameters)
@@ -34,7 +32,6 @@ public static partial class UriExtensions
         /// <summary>
         /// Creates a new <see cref="Uri"/> with the specified query parameters set.
         /// </summary>
-        /// <param name="uri">The <see cref="Uri"/> to begin with.</param>
         /// <param name="parameters">The parameters to set in the query. This must be an even number of strings, beginning with a name and followed by a value (which may be another <see langword="string"/> or <see langword="null"/>). <see langword="null"/> causes existing pairs with the same name to be removed.</param>
         /// <returns>A new <see cref="Uri"/> with the specified query parameters set.</returns>
         /// <exception cref="ArgumentException">Thrown when the number of parameters is not even or is less than or equal to zero.</exception>

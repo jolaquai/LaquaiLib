@@ -12,7 +12,6 @@ public static class XAttributeExtensions
         /// <summary>
         /// Replaces this <see cref="XAttribute"/> with another one.
         /// </summary>
-        /// <param name="attribute">The <see cref="XAttribute"/> to replace.</param>
         /// <param name="other">The <see cref="XAttribute"/> to replace <paramref name="attribute"/> with. If <see langword="null"/>, <paramref name="attribute"/> is removed without replacement.</param>
         public void ReplaceWith(XAttribute other)
         {

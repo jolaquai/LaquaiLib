@@ -17,7 +17,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Attempts to instantiate a new object of the supplied <paramref name="type"/> using the given <paramref name="parameters"/>.
         /// </summary>
-        /// <param name="type">A <see cref="Type"/> instance representing the type to instantiate.</param>
         /// <param name="parameters">The parameters to pass to the constructor. May be <see langword="null"/> to target the parameterless constructor.</param>
         /// <returns>An instance of the supplied <paramref name="type"/>, or <see langword="null"/> if a constructor matching the given <paramref name="parameters"/> could not be found or that constructor could not be invoked.</returns>
         public object New(params object[] parameters)
@@ -39,14 +38,12 @@ public static partial class TypeExtensions
         /// <summary>
         /// Returns a (potentially boxed) instance of the default value for the supplied type.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to get the default value for.</param>
         /// <returns>The default value for the supplied type.</returns>
         public object GetDefault() => type.IsValueType ? Activator.CreateInstance(type) : (type == typeof(string) ? string.Empty : null);
 
         /// <summary>
         /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all instance fields and properties of the supplied type from the given object, optionally calling all parameterless methods that do not return void.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
         /// <param name="obj">The object to use to collect the values from.</param>
         /// <param name="callMethods">Whether to call all parameterless methods that do not return void instead of adding all method names to the output dictionary. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
         /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
@@ -105,7 +102,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Compiles a <see cref="Dictionary{TKey, TValue}"/> of all static fields and properties of the supplied type, optionally calling all parameterless methods that do not return void.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> the <see cref="FieldInfo"/>, <see cref="PropertyInfo"/> and <see cref="MethodInfo"/> instances are to be reflected from.</param>
         /// <param name="callMethods">Whether to call all parameterless methods that do not return void. This is a dangerous operation and should only be used if the methods are known to be safe and not have side effects.</param>
         /// <returns>The <see cref="Dictionary{TKey, TValue}"/> as described.</returns>
         public Dictionary<string, object> GetStaticValues(bool callMethods = false)
@@ -167,7 +163,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Determines if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to check.</param>
         /// <param name="other">The <see cref="Type"/> to check against.</param>
         /// <returns><see langword="true"/> if there exists a narrowing conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         public bool HasNarrowingConversion(Type other)
@@ -188,7 +183,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Determines if there exists a consistent widening conversion (that is, a conversion that is guaranteed to not lose any information) from this <see cref="Type"/> to <paramref name="other"/>.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to check.</param>
         /// <param name="other">The <see cref="Type"/> to check against.</param>
         /// <returns><see langword="true"/> if there exists a consistent widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         public bool HasConsistentWideningConversion(Type other)
@@ -209,7 +203,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Determines if there exists a lossy widening conversion (that is, a conversion that may lose information) from this <see cref="Type"/> to <paramref name="other"/>.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to check.</param>
         /// <param name="other">The <see cref="Type"/> to check against.</param>
         /// <returns><see langword="true"/> if there exists a lossy widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         public bool HasLossyWideningConversion(Type other)
@@ -230,7 +223,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Determines if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to check.</param>
         /// <param name="other">The <see cref="Type"/> to check against.</param>
         /// <returns><see langword="true"/> if there exists a widening conversion from this <see cref="Type"/> to <paramref name="other"/>, otherwise <see langword="false"/>.</returns>
         public bool HasWideningConversion(Type other) => type.HasConsistentWideningConversion(other) || type.HasLossyWideningConversion(other);
@@ -239,7 +231,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Reflects the entirety of this <see cref="Type"/> and generates C# code that can be used to replicate it.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to reflect.</param>
         /// <param name="options.Inheriting">Whether to make the generated type(s) inherit from the <paramref name="type"/>. If <see langword="false"/>, a private static field of type <paramref name="type"/> is generated and all method calls are redirected to that field. If <see langword="true"/>, the generated type(s) inherit from <paramref name="type"/> and all method calls are redirected to <see langword="base"/>. If <see langword="null"/>, only a skeleton of the type is generated, with all methods throwing <see cref="NotImplementedException"/>s.</param>
         /// <returns>A <see cref="string"/> containing the generated code.</returns>
         /// <remarks>
@@ -535,7 +526,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Constructs a more easily readable name for the specified <see cref="Type"/>.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to construct a more easily readable name for.</param>
         /// <param name="includeNamespace">Whether to include the namespace in the name.</param>
         /// <returns>A more easily readable name for the specified <see cref="Type"/>.</returns>
         public string GetFriendlyName(bool includeNamespace = true)
@@ -592,7 +582,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Converts a <see cref="Type"/> to its C# keyword, if it exists.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to convert.</param>
         /// <returns>The <see cref="Type"/>'s name as a C# keyword, if it exists, otherwise the original <see cref="Type"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string AsKeyword() => AsKeyword(type.FullName);
@@ -600,7 +589,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Determines whether the specified <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to check.</param>
         /// <param name="returnType">An <see langword="out"/> variable that receives the <see cref="Func{TResult}"/> <see langword="delegate"/> overload that the <paramref name="type"/> is assignable to, if any.</param>
         /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
         public bool IsFunc([NotNullWhen(true)] out Type returnType)
@@ -697,7 +685,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Determines whether the specified <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload.
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to check.</param>
         /// <param name="takesParameters">Whether the <paramref name="type"/> takes parameters. If <see langword="false"/>, <paramref name="type"/> is not generic.</param>
         /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
         public bool IsAction(out bool takesParameters)
@@ -787,7 +774,6 @@ public static partial class TypeExtensions
         /// <summary>
         /// Finds <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible (i.e. that are not <see langword="interface"/>s, <see langword="abstract"/> or <see langword="static"/>).
         /// </summary>
-        /// <param name="type">The <see cref="Type"/> to find constructible subtypes of.</param>
         /// <param name="assembly">The <see cref="Assembly"/> to search in. If <see langword="null"/>, the assembly of the specified <paramref name="type"/> is used.</param>
         /// <returns>An <see cref="Array"/> of <see cref="Type"/>s that are assignable to the specified <paramref name="type"/> and constructible.</returns>
         public Type[] FindConstructibleSubtypes(Assembly assembly = null)

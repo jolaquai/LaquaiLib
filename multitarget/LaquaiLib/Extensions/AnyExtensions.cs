@@ -25,7 +25,6 @@ public static class AnyExtensions
         /// Changes the type of a reference to a <see langword="class"/> instance to <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to cast <paramref name="obj"/> to.</typeparam>
-        /// <param name="obj">The <see cref="object"/> to cast.</param>
         /// <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="T"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T As<T>() where T : class => Unsafe.As<T>(obj);

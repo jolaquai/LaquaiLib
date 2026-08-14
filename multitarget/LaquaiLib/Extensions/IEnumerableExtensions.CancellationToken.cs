@@ -9,7 +9,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Creates a <see cref="Task{TResult}"/> that completes successfully when any of the source sequence's <see cref="CancellationToken"/>s is cancelled.
         /// </summary>
-        /// <param name="tokens">The source sequence of <see cref="CancellationToken"/>s.</param>
         /// <returns>The <see cref="Task"/> as described. Its result is the <see cref="CancellationToken"/> that was cancelled first.</returns>
         public Task<CancellationToken> WhenAnyCancelled()
         {
@@ -29,7 +28,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Creates a <see cref="Task"/> that completes successfully when all of the source sequence's <see cref="CancellationToken"/>s are cancelled.
         /// </summary>
-        /// <param name="tokens">The source sequence of <see cref="CancellationToken"/>s.</param>
         /// <returns>The <see cref="Task"/> as described.</returns>
         public Task WhenAllCancelled()
         {
@@ -67,7 +65,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Throws an <see cref="OperationCanceledException"/> if any of the source sequence's <see cref="CancellationToken"/>s is cancelled.
         /// </summary>
-        /// <param name="tokens"></param>
         [StackTraceHidden]
         public void ThrowIfAnyCancelled()
         {
@@ -79,7 +76,6 @@ public static partial class IEnumerableExtensions
         /// <summary>
         /// Throws an <see cref="OperationCanceledException"/> if all of the source sequence's <see cref="CancellationToken"/>s are cancelled.
         /// </summary>
-        /// <param name="tokens">The source sequence of <see cref="CancellationToken"/>s.</param>
         /// <exception cref="OperationCanceledException">Thrown when all of the source sequence's <see cref="CancellationToken"/>s are cancelled.</exception>
         [StackTraceHidden]
         public void ThrowIfAllCancelled()

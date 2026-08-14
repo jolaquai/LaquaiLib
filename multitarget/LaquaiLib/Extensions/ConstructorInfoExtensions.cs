@@ -16,7 +16,6 @@ public static class ConstructorInfoExtensions
         /// Creates a delegate that acts like the instance constructor represented by <paramref name="ctorInfo"/>.
         /// </summary>
         /// <typeparam name="TDelegate">The type of delegate to create. Must be a <see cref="Func{TResult}"/> overload.</typeparam>
-        /// <param name="ctorInfo">The <see cref="ConstructorInfo"/> representing an instance constructor of a type.</param>
         /// <returns>The created delegate.</returns>
         /// <exception cref="ArgumentException">Thrown if the type specified for <typeparamref name="TDelegate"/> is not a <see cref="Func{TResult}"/> overload.</exception>
         /// <exception cref="ArgumentException">Thrown if the type specified for <typeparamref name="TDelegate"/> does not match the constructor's signature</exception>

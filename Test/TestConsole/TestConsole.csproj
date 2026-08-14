@@ -12,6 +12,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Resources\**" />
+      <EmbeddedResource Remove="Resources\**" />
+      <None Remove="Resources\**" />
+      <Page Remove="Resources\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
 
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
@@ -21,10 +28,6 @@
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Resources\" />
     </ItemGroup>
 
 </Project>

@@ -25,28 +25,24 @@
             <summary>
             Enumerates all <see langword="object"/>s which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
             </summary>
-            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <see langword="object"/>s from.</param>
             <returns>The pending <see langword="object"/>s.</returns>
         </member>
         <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.&lt;G&gt;$31ACC19CE081C796BC7AE2F44B832DEE.EnumeratePendingObjects``1">
             <summary>
             Enumerates all <typeparamref name="TUnderlying"/> instances which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
             </summary>
-            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <typeparamref name="TUnderlying"/> instances from.</param>
             <returns>The pending <typeparamref name="TUnderlying"/> instances.</returns>
         </member>
         <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.&lt;G&gt;$31ACC19CE081C796BC7AE2F44B832DEE.EnumeratePendingEntries">
             <summary>
             Enumerates all <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
             </summary>
-            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s from.</param>
             <returns>The pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s.</returns>
         </member>
         <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.&lt;G&gt;$31ACC19CE081C796BC7AE2F44B832DEE.EnumeratePendingEntries``1">
             <summary>
             Enumerates all <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry`1"/> of <typeparamref name="TUnderlying"/> which have pending operations in the specified <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> which a <see cref="M:Microsoft.EntityFrameworkCore.DbContext.SaveChanges"/> call would affect.
             </summary>
-            <param name="context">The <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> to get the pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry"/>s from.</param>
             <returns>The pending <see cref="T:Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry`1"/> of <typeparamref name="TUnderlying"/>.</returns>
         </member>
         <member name="T:LaquaiLib.EF.Extensions.DbSetExtensions">
@@ -65,7 +61,6 @@
             Gets an entity of type <typeparamref name="TEntity"/> if the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> contains one that fulfills the conditions of the <paramref name="selector"/>. If no entity is found, a new entity is created and added to the set using the <paramref name="factory"/>.
             </summary>
             <typeparam name="TEntity">The type of the entity.</typeparam>
-            <param name="set">The <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> to search in.</param>
             <param name="selector">A <see cref="T:System.Func`2"/> that defines the conditions of the entity to search for. If multiple entities fulfill the conditions, the first match is returned, so it is advisable to incorporate <typeparamref name="TEntity"/>'s primary key(s) in the conditions.</param>
             <param name="factory">A <see cref="T:System.Func`1"/> that asynchronously creates a new entity if no entity is found.</param>
             <returns>The found or created entity.</returns>
@@ -79,7 +74,6 @@
             Otherwise, it updates the existing entity found by the specified <paramref name="keys"/> with the specified <paramref name="entity"/> object.
             </summary>
             <typeparam name="TEntity">The type of the entity.</typeparam>
-            <param name="set">The <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> to add or update the entity in.</param>
             <param name="entity">The actual entity object to add or update.</param>
             <param name="keys">The primary key(s) of the entity to search for.</param>
             <returns>The existing entity from the database (which will not yet reflect the changes made to the <paramref name="entity"/> object) if an entity with the specified <paramref name="keys"/> is found, otherwise <paramref name="entity"/> object itself.</returns>

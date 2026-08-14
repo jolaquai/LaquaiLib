@@ -27,7 +27,6 @@ public static class IAsyncEnumerableExtensions
         /// Chains the specified <see cref="IAsyncEnumerable{T}"/> instances with the specified <paramref name="source"/> into a single <see cref="IAsyncEnumerable{T}"/>.
         /// </summary>
         /// <typeparam name="T">The Type of elements the <see cref="IAsyncEnumerable{T}"/> instances yield.</typeparam>
-        /// <param name="source">The <see cref="IAsyncEnumerable{T}"/> to start with.</param>
         /// <param name="with">The <see cref="IAsyncEnumerable{T}"/> instances to chain together.</param>
         /// <returns>An <see cref="IAsyncEnumerable{T}"/> implementation that iterates over each <paramref name="source"/> and <paramref name="with"/> in turn.</returns>
         public IAsyncEnumerable<T> Concat(params ReadOnlySpan<IAsyncEnumerable<T>> with)

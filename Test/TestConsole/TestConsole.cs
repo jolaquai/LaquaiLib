@@ -1,10 +1,12 @@
-﻿using System.Numerics;
+﻿using System.IO;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.Wasm;
 using System.Runtime.Intrinsics.X86;
 
+using LaquaiLib.Analyzers.Shared.Attributes;
 using LaquaiLib.Extensions;
 using LaquaiLib.IO;
 using LaquaiLib.IO.Streams;
@@ -47,9 +49,11 @@ public static partial class TestConsole
 
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
-        OneOf<int, long> inst = 3212123123123;
-        cw(inst);
     }
+
+    [FullAccessProxy("System.IO.MemoryStream")]
+    public partial class Test;
+
     public static byte[] RevolverBytes(int length)
     {
         var arr = new byte[length];

@@ -1008,7 +1008,6 @@ public static partial class IEnumerableExtensions
         /// Builds a <see cref="Dictionary{TKey, TValue}"/> from two separate input sequences representing the keys and values respectively.
         /// </summary>
         /// <typeparam name="TValue">The Type of the values in the input sequence.</typeparam>
-        /// <param name="keys">The sequence of keys.</param>
         /// <param name="values">The sequence of values.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequences.</returns>
         /// <exception cref="ArgumentException">Thrown if the input sequences do not have the same length.</exception>
@@ -1031,7 +1030,6 @@ public static partial class IEnumerableExtensions
         /// Builds a <see cref="Dictionary{TKey, TValue}"/> from the input sequence, using the specified <paramref name="valueFactory"/> to generate values for each key.
         /// </summary>
         /// <typeparam name="TValue">The Type of the values in the output dictionary.</typeparam>
-        /// <param name="keys">The input sequence of keys.</param>
         /// <param name="valueFactory">The <see cref="Func{T, TResult}"/> that is passed each key from the input sequence and produces a value for the output dictionary.</param>
         /// <returns>A <see cref="Dictionary{TKey, TValue}"/> built from the input sequence.</returns>
         public Dictionary<T, TValue> MapTo<TValue>(Func<T, TValue> valueFactory) => source.ToDictionary(static key => key, valueFactory);
