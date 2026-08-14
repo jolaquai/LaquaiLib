@@ -26,6 +26,9 @@ public static class GeneratorIncrementalityTests
         public struct Buf4 { private int _e0; }
         """;
 
+    private const string EnumSource = "public enum Color { Red, Green, Blue }";
+    private const string EnumSourceEdited = "public enum Color { Red, Green, Blue, Yellow }";
+
     private static SyntaxTree Parse(string source, string path)
         => CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Preview), path: path);
 
@@ -133,5 +136,55 @@ public static class GeneratorIncrementalityTests
         [Fact]
         public void InitializeHasNoCapturingLambdas()
             => CapturingLambdaAssertions.AssertNoCapturingLambdas<InlineArrayExtensionsGenerator>();
+    }
+
+    public class EnumExpander
+    {
+        // Every one of these fails on result.Exception first: EnumDataGenerator calls ConstructUnboundGenericType
+        // on an enum symbol, which throws unconditionally. The generator has never emitted anything.
+        [Fact]
+        public void UnrelatedEditKeepsSourceOutputCached()
+        {
+            var (driver, compilation, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
+            var result = GeneratorTestHost.RunAgain(driver, WithUnrelatedFile(compilation));
+            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+        }
+
+        [Fact]
+        public void NoOpRerunKeepsSourceOutputCached()
+        {
+            var (driver, compilation, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
+            var result = GeneratorTestHost.RunAgain(driver, compilation);
+            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+        }
+
+        [Fact]
+        public void EquivalentButFreshlyParsedTreesKeepSourceOutputCached()
+        {
+            var (driver, _, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
+            var freshCompilation = GeneratorTestHost.CreateCompilation(EnumSource);
+            var result = GeneratorTestHost.RunAgain(driver, freshCompilation);
+            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+        }
+
+        [Fact]
+        public void RelevantEditRerunsSourceOutput()
+        {
+            var (driver, _, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
+            var editedCompilation = GeneratorTestHost.CreateCompilation(EnumSourceEdited);
+            var result = GeneratorTestHost.RunAgain(driver, editedCompilation);
+            GeneratorTestHost.AssertStepsRan(result, GeneratorTestHost.SourceOutputStepName);
+        }
+
+        [Fact]
+        public void ModelHoldsNoRoslynObjects()
+        {
+            var (_, _, result) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
+            ModelPurityAssertions.AssertNoRoslynObjectsInModel(result);
+        }
+
+        [Fact]
+        public void InitializeHasNoCapturingLambdas()
+            => CapturingLambdaAssertions.AssertNoCapturingLambdas<EnumExpanderGenerator>();
     }
 }
