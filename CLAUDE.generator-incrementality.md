@@ -62,7 +62,7 @@ Line numbers in this file are anchored to commit `1d9ca88` and will drift. Locat
 
 | # | Step | Status | Notes |
 | --- | --- | --- | --- |
-| 1.1 | `EquatableArray<T>` helper in generator project | TODO | |
+| 1.1 | `EquatableArray<T>` helper in generator project | DONE | `netstandard2.0/LaquaiLib.Generators/EquatableArray.cs`, `internal`, `where T : IEquatable<T>` |
 | 1.2 | Tracked-driver harness in `GeneratorTestHost` | TODO | |
 | 1.3 | `AssertNoRoslynObjectsInModel` object-graph walker | TODO | |
 | 1.4 | `AssertNoCapturingLambdas` reflection guard | TODO | |
