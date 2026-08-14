@@ -63,14 +63,16 @@ internal static class GeneratorTestHost
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, allowUnsafe: true));
     }
 
-    public static GeneratorTestResult RunGenerator(params string[] sources)
+    public static GeneratorTestResult RunGenerator(params string[] sources) => RunGenerator(new FullAccessProxyGenerator(), sources);
+
+    public static GeneratorTestResult RunGenerator(IIncrementalGenerator generator, params string[] sources)
     {
         var compilation = CreateCompilation(sources);
 
         // The driver must parse its own generated trees with the same LanguageVersion as the input compilation,
         // otherwise adding them back in throws "Inconsistent language versions".
         var parseOptions = new CSharpParseOptions(LanguageVersion.Preview);
-        GeneratorDriver driver = CSharpGeneratorDriver.Create([new FullAccessProxyGenerator().AsSourceGenerator()], parseOptions: parseOptions);
+        GeneratorDriver driver = CSharpGeneratorDriver.Create([generator.AsSourceGenerator()], parseOptions: parseOptions);
         driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var finalCompilation, out var generatorDiagnostics);
 
         var generatedSources = driver.GetRunResult().Results
