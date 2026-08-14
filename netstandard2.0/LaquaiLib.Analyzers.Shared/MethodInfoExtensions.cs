@@ -19,15 +19,21 @@ public static class MethodInfoExtensions
         public string ParameterString
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => string.Join(", ", methodSymbol.Parameters.Select(p => p.ToDisplayString()));
+            get => string.Join(", ", methodSymbol.Parameters.Select(p => p.ToDisplayString(SymbolDisplayFormats.FullyQualifiedParameter)));
         }
         /// <summary>
-        /// Gets a comma-space-separated list of parameter names that can be used to call the method represented by the specified <see cref="IMethodSymbol"/>.
+        /// Gets a comma-space-separated list of parameter names that can be used to call the method represented by the specified <see cref="IMethodSymbol"/>. Ref kinds are preserved.
         /// </summary>
         public string ArgumentString
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => string.Join(", ", methodSymbol.Parameters.Select(p => p.Name));
+            get => string.Join(", ", methodSymbol.Parameters.Select(static p => p.RefKind switch
+            {
+                RefKind.Ref or RefKind.RefReadOnlyParameter => "ref " + p.Name,
+                RefKind.Out => "out " + p.Name,
+                RefKind.In => "in " + p.Name,
+                _ => p.Name
+            }));
         }
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> that enumerates the overridden methods (in upwards order of the type hierarchy) of the specified <see cref="IMethodSymbol"/>.

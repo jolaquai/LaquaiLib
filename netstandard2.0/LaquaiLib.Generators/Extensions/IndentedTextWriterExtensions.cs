@@ -66,16 +66,38 @@ internal static class IndentedTextWriterExtensions
     {
         private readonly IndentedTextWriter _itw;
         private readonly string _regionName;
+        private readonly System.Text.StringBuilder _sb;
+        private readonly string _indent;
+        private readonly int _start;
 
         public RegionDisposable(IndentedTextWriter itw, string regionName)
         {
             _itw = itw;
             _regionName = regionName;
 
-            _itw.WriteLine($"#region {regionName}");
+            // defer emitting the directives until we know the body isn't empty; only possible when the sink is a StringBuilder
+            _sb = (itw.InnerWriter as StringWriter)?.GetStringBuilder();
+            if (_sb is null)
+            {
+                _start = -1;
+                _itw.WriteLine($"#region {regionName}");
+                return;
+            }
+            _start = _sb.Length;
+            _indent = new string(' ', itw.Indent * IndentedTextWriter.DefaultTabString.Length);
         }
         public void Dispose()
         {
+            if (_start < 0)
+            {
+                _itw.WriteLine($"#endregion {_regionName}");
+                return;
+            }
+            if (_sb.Length == _start)
+            {
+                return;
+            }
+            _sb.Insert(_start, $"{_indent}#region {_regionName}{_itw.NewLine}");
             _itw.WriteLine($"#endregion {_regionName}");
         }
     }

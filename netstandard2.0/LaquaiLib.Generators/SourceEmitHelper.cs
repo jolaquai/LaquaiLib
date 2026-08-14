@@ -15,10 +15,10 @@ internal static class SourceEmitHelper
 
         """;
 
-    public const string UnsafeAccessor_Method = "[System.Runtime.CompilerServices.UnsafeAccessor(System.Runtime.CompilerServices.UnsafeAccessorKind.Method)]";
-    public const string UnsafeAccessor_Field = "[System.Runtime.CompilerServices.UnsafeAccessor(System.Runtime.CompilerServices.UnsafeAccessorKind.Field)]";
-    public const string UnsafeAccessor_Ctor = "[System.Runtime.CompilerServices.UnsafeAccessor(System.Runtime.CompilerServices.UnsafeAccessorKind.Constructor)]";
-    public const string MethodImpl_AggressiveInlining = "[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]";
+    public const string UnsafeAccessor_Method = "[global::System.Runtime.CompilerServices.UnsafeAccessor(global::System.Runtime.CompilerServices.UnsafeAccessorKind.Method)]";
+    public const string UnsafeAccessor_Field = "[global::System.Runtime.CompilerServices.UnsafeAccessor(global::System.Runtime.CompilerServices.UnsafeAccessorKind.Field)]";
+    public const string UnsafeAccessor_Ctor = "[global::System.Runtime.CompilerServices.UnsafeAccessor(global::System.Runtime.CompilerServices.UnsafeAccessorKind.Constructor)]";
+    public const string MethodImpl_AggressiveInlining = "[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]";
 
     public static string GeneratedCodeAttribute(Type type) => $"""
         [global::System.CodeDom.Compiler.GeneratedCode("{type.FullName}", "{_ownAsmName.Version}")]

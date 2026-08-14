@@ -1,6 +1,7 @@
 ﻿using System.CodeDom.Compiler;
 using System.Text;
 
+using LaquaiLib.Analyzers.Shared;
 using LaquaiLib.Generators.Extensions;
 
 namespace LaquaiLib.Generators;
@@ -34,7 +35,7 @@ public class EnumExpanderGenerator : IIncrementalGenerator
         var writtenEnumDataStruct = false;
         foreach (var (decl, symbol) in decls)
         {
-            var withoutTypeParams = symbol.ConstructUnboundGenericType().ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            var withoutTypeParams = symbol.ConstructUnboundGenericType().ToDisplayString(SymbolDisplayFormats.FullyQualified);
 
             var fqEnumName = withoutTypeParams;
             var enumFields = symbol.GetMembers()
@@ -48,7 +49,7 @@ public class EnumExpanderGenerator : IIncrementalGenerator
             var names = enumFields.Select(f => f.Name).ToArray();
             var fqNames = enumFields.Select(f => fqEnumName + '.' + f.Name).ToArray();
             var valuesUnderlying = enumFields.Select(f => f.ConstantValue).ToArray();
-            var fqUnderlying = symbol.EnumUnderlyingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            var fqUnderlying = symbol.EnumUnderlyingType.ToDisplayString(SymbolDisplayFormats.FullyQualified);
             var descs = enumFields.Select(f =>
             {
                 var descAttr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "DescriptionAttribute");
