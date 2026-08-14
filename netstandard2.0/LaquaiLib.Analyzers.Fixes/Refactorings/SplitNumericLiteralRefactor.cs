@@ -11,8 +11,9 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
 
         var format = ParseFormat(token.Text);
 
-        if (token.Parent.FirstAncestorOrSelf<EnumMemberDeclarationSyntax>() is { EqualsValue: { Value.Span: var valueSpan } equalsValue } enumMember
-            && valueSpan.Contains(token.Span))
+        // Identity, not containment: `X = 3 | 12` has two literals, and replacing the whole initializer from either one loses the other operand
+        if (token.Parent.FirstAncestorOrSelf<EnumMemberDeclarationSyntax>() is { EqualsValue: { } equalsValue } enumMember
+            && ReferenceEquals(equalsValue.Value, literalExpr))
         {
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
             if (semanticModel.GetDeclaredSymbol(enumMember, cancellationToken) is IFieldSymbol { ContainingType.TypeKind: TypeKind.Enum } enumMemberSymbol)
@@ -26,10 +27,28 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
         return [new CodeActionInfo("Split into powers of 2", editor => ReplaceWithChainAsync(editor, literalExpr, powerParts), "SplitNumericLiteralPowersOfTwo")];
     }
 
+    protected override ValueTask<ImmutableArray<TextSpan>> GetRefactorAllSpansAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, CancellationToken cancellationToken)
+    {
+        var builder = ImmutableArray.CreateBuilder<TextSpan>();
+        foreach (var token in compilationUnitSyntax.DescendantTokens())
+        {
+            if (token.IsKind(SyntaxKind.NumericLiteralToken))
+            {
+                builder.Add(token.Span);
+            }
+        }
+        return new ValueTask<ImmutableArray<TextSpan>>(builder.ToImmutable());
+    }
+
     private static ValueTask ReplaceWithChainAsync(DocumentEditor editor, ExpressionSyntax target, List<string> parts)
     {
-        var newExpression = SyntaxFactory.ParseExpression(string.Join(" | ", parts)).Formatted;
-        editor.ReplaceNode(target, newExpression);
+        ExpressionSyntax chain = SyntaxFactory.ParseExpression(string.Join(" | ", parts));
+        // `|` binds looser than almost everything, so an unparenthesized chain would rebind against whatever encloses the literal
+        if (target.Parent is ExpressionSyntax and not (ParenthesizedExpressionSyntax or AssignmentExpressionSyntax))
+        {
+            chain = SyntaxFactory.ParenthesizedExpression(chain);
+        }
+        editor.ReplaceNode(target, chain.WithTriviaFrom(target).Formatted);
         return ValueTask.CompletedTask;
     }
 

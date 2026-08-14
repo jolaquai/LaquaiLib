@@ -1,6 +1,3 @@
-using Microsoft.CodeAnalysis.CodeRefactorings;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 namespace LaquaiLib.Analyzers.Fixes;
 
 /// <summary>
@@ -102,7 +99,18 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
 
 public abstract class LaquaiLibRefactoring : CodeRefactoringProvider
 {
+    private static readonly ImmutableArray<RefactorAllScope> _refactorAllScopes = [RefactorAllScope.Document, RefactorAllScope.Project, RefactorAllScope.Solution, RefactorAllScope.ContainingType, RefactorAllScope.ContainingMember];
+    private readonly RefactorAllProvider _refactorAllProvider;
+    // Unlike a fixer, a refactoring has no diagnostics telling it where to apply, so "Refactor All" is only offered if the derived type declares its own anchors
+    protected LaquaiLibRefactoring()
+    {
+        // Bound virtually, so Method reports the override dispatch would actually reach (a `new` member correctly reads as no opt-in)
+        Func<Document, CompilationUnitSyntax, CancellationToken, ValueTask<ImmutableArray<TextSpan>>> anchors = GetRefactorAllSpansAsync;
+        _refactorAllProvider = anchors.Method.DeclaringType != typeof(LaquaiLibRefactoring) ? RefactorAllProvider.Create(RefactorAllAsync, _refactorAllScopes) : null;
+    }
+
     #region override
+    public override RefactorAllProvider GetRefactorAllProvider() => _refactorAllProvider;
     public sealed override async Task ComputeRefactoringsAsync(CodeRefactoringContext context)
     {
         var document = context.Document;
@@ -129,6 +137,89 @@ public abstract class LaquaiLibRefactoring : CodeRefactoringProvider
     #endregion
 
     private string Prefix => field ??= GetType().FullName;
+    private async Task<Document> RefactorAllAsync(RefactorAllContext refactorAllContext, Document document, Optional<ImmutableArray<TextSpan>> scopeSpans)
+    {
+        var cancellationToken = refactorAllContext.CancellationToken;
+        var root = await document.GetRootAsync(cancellationToken).ConfigureAwait(false);
+        var anchors = await GetRefactorAllSpansAsync(document, root, cancellationToken).ConfigureAwait(false);
+        if (anchors.IsDefaultOrEmpty)
+        {
+            return document;
+        }
+
+        var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
+        List<PostFixAction> postFixes = null;
+        var applied = false;
+        var lastApplied = default(TextSpan);
+        for (var i = 0; i < anchors.Length; i++)
+        {
+            var anchor = anchors[i];
+            // The member/type scopes hand back the regions to stay inside of, not the anchors themselves
+            if (scopeSpans.HasValue && !ContainsAny(scopeSpans.Value, anchor))
+            {
+                continue;
+            }
+            // A DocumentEditor throws if a node inside one it already replaced is replaced too; anchors come in document order, so only the last kept one can enclose this
+            if (applied && lastApplied.Contains(anchor))
+            {
+                continue;
+            }
+
+            var infos = await GetCodeActionInfosAsync(document, root, anchor, cancellationToken).ConfigureAwait(false);
+            for (var j = 0; j < infos.Length; j++)
+            {
+                var info = infos[j];
+                // A span may offer several alternative actions; apply only the one the user invoked the refactor-all from.
+                if ($"{Prefix}_{info.EquivalenceKey}" != refactorAllContext.CodeActionEquivalenceKey)
+                {
+                    continue;
+                }
+                await info.Action(editor).ConfigureAwait(false);
+                applied = true;
+                lastApplied = anchor;
+                if (!info.PostFixActions.IsDefaultOrEmpty)
+                {
+                    (postFixes ??= []).AddRange(info.PostFixActions);
+                }
+            }
+        }
+        if (!applied)
+        {
+            return document;
+        }
+
+        var changed = editor.GetChangedDocument();
+        if (postFixes is not null)
+        {
+            for (var i = 0; i < postFixes.Count; i++)
+            {
+                changed = await postFixes[i](changed, cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        return changed;
+    }
+    private static bool ContainsAny(ImmutableArray<TextSpan> spans, TextSpan span)
+    {
+        for (var i = 0; i < spans.Length; i++)
+        {
+            if (spans[i].Contains(span))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// When overridden in a derived class, produces the spans within <paramref name="compilationUnitSyntax"/> at which this provider may offer a refactoring, that is, the spans "Refactor All" feeds back into <see cref="GetCodeActionInfosAsync"/>.
+    /// Leaving this unoverridden (the returned <see cref="ImmutableArray{T}"/> is <see langword="default"/>) disables "Refactor All" for this provider entirely.
+    /// Spans must be distinct and in document order. An anchor nested inside one that was already applied is skipped, so a nesting refactoring converges over repeated invocations rather than in one pass.
+    /// </summary>
+    /// <param name="document">The <see cref="Document"/> being refactored.</param>
+    /// <param name="compilationUnitSyntax">The <see cref="CompilationUnitSyntax"/> of the document.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe.</param>
+    protected virtual ValueTask<ImmutableArray<TextSpan>> GetRefactorAllSpansAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, CancellationToken cancellationToken) => default;
 
     /// <summary>
     /// When overridden in a derived class, provides zero or more refactorings for the current selection span.
@@ -244,7 +335,7 @@ public abstract class LaquaiLibNodeRefactoring : LaquaiLibRefactoring
     /// Do not use. Override <see cref="GetCodeActionInfos(CompilationUnitSyntax, SyntaxNode, TextSpan)"/> instead.
     /// </summary>
     public sealed override ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken)
-        => new(GetCodeActionInfos(compilationUnitSyntax, compilationUnitSyntax.FindNode(span), span));
+        => new(GetCodeActionInfos(compilationUnitSyntax, compilationUnitSyntax.FindNode(span, getInnermostNodeForTie: true), span));
 }
 /// <summary>
 /// Provides a base class for refactoring providers that operate on the <see cref="IOperation"/> encompassing the selection span.
@@ -265,7 +356,7 @@ public abstract class LaquaiLibOperationRefactoring : LaquaiLibRefactoring
     public sealed override async ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken)
     {
         var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-        var operation = semanticModel.GetOperation(compilationUnitSyntax.FindNode(span), cancellationToken);
+        var operation = semanticModel.GetOperation(compilationUnitSyntax.FindNode(span, getInnermostNodeForTie: true), cancellationToken);
         return GetCodeActionInfos(compilationUnitSyntax, operation, span);
     }
 }

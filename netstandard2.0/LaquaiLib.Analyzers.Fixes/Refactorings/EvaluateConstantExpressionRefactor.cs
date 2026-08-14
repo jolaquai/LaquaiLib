@@ -20,6 +20,36 @@ public sealed class EvaluateConstantExpressionRefactor : LaquaiLibOperationRefac
         return [new CodeActionInfo("Evaluate constant expression", editor => ReplaceAsync(editor, expression, literal), "EvaluateConstantExpression")];
     }
 
+    protected override async ValueTask<ImmutableArray<TextSpan>> GetRefactorAllSpansAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, CancellationToken cancellationToken)
+    {
+        var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+        var builder = ImmutableArray.CreateBuilder<TextSpan>();
+        Collect(semanticModel, compilationUnitSyntax, builder, cancellationToken);
+        return builder.ToImmutable();
+    }
+
+    /// <summary>
+    /// Collects the outermost constant expression of each subtree; folding a nested one too would edit a subtree that the outer fold already replaced.
+    /// Unlike a single invocation, which the user aims at a specific expression, this only claims expressions that actually compute something - a bare reference to a constant or an enum member reads better than the value it stands for.
+    /// </summary>
+    private static void Collect(SemanticModel semanticModel, SyntaxNode node, ImmutableArray<TextSpan>.Builder builder, CancellationToken cancellationToken)
+    {
+        foreach (var child in node.ChildNodes())
+        {
+            if (child is BinaryExpressionSyntax or PrefixUnaryExpressionSyntax or ParenthesizedExpressionSyntax or ConditionalExpressionSyntax
+                // Folding an expression that straddles an #if destroys the directive and the inactive configuration
+                && !child.ContainsDirectives
+                && semanticModel.GetConstantValue(child, cancellationToken).HasValue
+                // The constant of an enum-typed expression is its underlying value, so folding one drops the names
+                && semanticModel.GetTypeInfo(child, cancellationToken) is not { ConvertedType.TypeKind: TypeKind.Enum })
+            {
+                builder.Add(child.Span);
+                continue;
+            }
+            Collect(semanticModel, child, builder, cancellationToken);
+        }
+    }
+
     private static ValueTask ReplaceAsync(DocumentEditor editor, ExpressionSyntax target, ExpressionSyntax replacement)
     {
         editor.ReplaceNode(target, replacement.WithTriviaFrom(target).Formatted);
@@ -32,8 +62,6 @@ public sealed class EvaluateConstantExpressionRefactor : LaquaiLibOperationRefac
         {
             return SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression);
         }
-        _ = 1 + 2;
-
         switch (value)
         {
             case bool b:
@@ -50,10 +78,11 @@ public sealed class EvaluateConstantExpressionRefactor : LaquaiLibOperationRefac
                 return SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(l));
             case ulong ul:
                 return SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(ul));
+            // NaN/Infinity have no literal syntax in C#, so a non-finite constant can't be represented as one
             case float f:
-                return SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(f));
+                return !float.IsNaN(f) && !float.IsInfinity(f) ? SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(f)) : null;
             case double d:
-                return SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(d));
+                return !double.IsNaN(d) && !double.IsInfinity(d) ? SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(d)) : null;
             case decimal m:
                 return SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(m));
             // No native literal syntax for these - preserve the type with an explicit cast

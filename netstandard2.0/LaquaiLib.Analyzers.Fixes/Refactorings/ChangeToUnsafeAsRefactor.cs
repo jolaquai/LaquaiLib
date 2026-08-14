@@ -21,4 +21,6 @@ public sealed class ChangeToUnsafeAsRefactor : LaquaiLibOperationRefactoring
 
         return [];
     }
+    // Explicitly disallow refactor-all for this since it's dangerous and irresponsible to blindly change all casts to Unsafe.As
+    public override RefactorAllProvider GetRefactorAllProvider() => null;
 }
