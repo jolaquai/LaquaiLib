@@ -6,6 +6,17 @@ using LaquaiLib.Generators.Extensions;
 
 namespace LaquaiLib.Generators;
 
+/// <summary>
+/// A pending FAP001 report, reduced to data. <see cref="Location"/> is a Roslyn object and may not survive the transform, so the pieces needed to rebuild one are carried instead.
+/// </summary>
+internal sealed record ProxyDiagnosticInfo(string TypeName, string FilePath, TextSpan Span, LinePositionSpan LineSpan);
+
+/// <summary>
+/// The result of resolving one <c>[FullAccessProxy]</c> application. Either <see cref="Source"/> is set, or <see cref="Diagnostic"/> is, never both.
+/// <para/>The emitted source text is the model: it is a string, so it compares by value and the pipeline never pins a Roslyn object.
+/// </summary>
+internal sealed record ProxyModel(string HintName, string Source, ProxyDiagnosticInfo Diagnostic);
+
 [Generator(LanguageNames.CSharp)]
 public class FullAccessProxyGenerator : IIncrementalGenerator
 {
@@ -21,63 +32,68 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var classDeclarationSyntaxProvider = context.SyntaxProvider
-            .ForAttributeWithMetadataNameOn<ClassDeclarationSyntax>("LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute");
+        var models = context.SyntaxProvider
+            .ForAttributeWithMetadataNameOn<ClassDeclarationSyntax, ProxyModel>("LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute", CreateModel)
+            .Where(static model => model is not null);
 
-        var withCompilation = context.CompilationProvider.Combine(classDeclarationSyntaxProvider.Collect());
-
-        context.RegisterSourceOutput(withCompilation, static (spc, source) =>
+        context.RegisterSourceOutput(models, static (spc, model) =>
         {
-            var compilation = source.Left;
-
-            for (var i = 0; i < source.Right.Length; i++)
+            if (model.Diagnostic is { } info)
             {
-                var gasc = source.Right[i];
-                var decl = Unsafe.As<ClassDeclarationSyntax>(gasc.TargetNode);
-                var attribute = gasc.Attributes[0];
-
-                var semanticModel = gasc.SemanticModel;
-                if (semanticModel is null)
-                {
-                    return;
-                }
-
-                var proxyClassSymbol = (INamedTypeSymbol)gasc.TargetSymbol;
-
-                if (attribute is null)
-                {
-                    return;
-                }
-
-                INamedTypeSymbol proxiedType = null;
-                // Get the type argument from the attribute (e.g., MemoryStream)
-                var type = attribute.ConstructorArguments[0];
-                if (type.Kind == TypedConstantKind.Type)
-                {
-                    // typeof(...) yields an ITypeSymbol here, never a System.Type
-                    proxiedType = type.Value as INamedTypeSymbol;
-                }
-                else if (type.Kind == TypedConstantKind.Primitive && type.Value is string fqTypeName)
-                {
-                    // Chances are high that the type won't be accessible, but we can try
-                    proxiedType = compilation.GetTypeByMetadataName(NormalizeMetadataName(fqTypeName));
-                }
-
-                if (proxiedType is { TypeKind: not TypeKind.Error })
-                {
-                    // Generate the proxied members into the class
-                    var proxyClassSource = GenerateProxyForClass(proxyClassSymbol, proxiedType, compilation);
-                    spc.AddSource(GetHintName(proxyClassSymbol, proxiedType), SourceText.From(proxyClassSource, Encoding.UTF8));
-                }
-                else
-                {
-                    var location = gasc.Attributes.FirstOrDefault()?.ApplicationSyntaxReference?.GetSyntax().GetLocation();
-                    location ??= decl.Identifier.GetLocation();
-                    var diagnostic = Diagnostic.Create(TypeByNameNotFound, location, attribute.ConstructorArguments[0].Value);
-                    spc.ReportDiagnostic(diagnostic);
-                }
+                spc.ReportDiagnostic(Diagnostic.Create(TypeByNameNotFound, Location.Create(info.FilePath, info.Span, info.LineSpan), info.TypeName));
+                return;
             }
+            spc.AddSource(model.HintName, SourceText.From(model.Source, Encoding.UTF8));
         });
+    }
+
+    /// <summary>
+    /// Resolves one <c>[FullAccessProxy]</c> application all the way to emitted source text. Every symbol touch happens here; nothing downstream sees a Roslyn object.
+    /// </summary>
+    private static ProxyModel CreateModel(GeneratorAttributeSyntaxContext gasc, CancellationToken cancellationToken)
+    {
+        var semanticModel = gasc.SemanticModel;
+        if (semanticModel is null)
+        {
+            return null;
+        }
+
+        var attribute = gasc.Attributes.FirstOrDefault();
+        if (attribute is null || attribute.ConstructorArguments.Length == 0)
+        {
+            return null;
+        }
+
+        var proxyClassSymbol = gasc.TargetSymbol as INamedTypeSymbol;
+        if (proxyClassSymbol is null)
+        {
+            return null;
+        }
+
+        // the compilation is reachable from inside the transform, so CompilationProvider is unnecessary and would only defeat caching
+        var compilation = semanticModel.Compilation;
+
+        INamedTypeSymbol proxiedType = null;
+        var type = attribute.ConstructorArguments[0];
+        if (type.Kind == TypedConstantKind.Type)
+        {
+            // typeof(...) yields an ITypeSymbol here, never a System.Type
+            proxiedType = type.Value as INamedTypeSymbol;
+        }
+        else if (type.Kind == TypedConstantKind.Primitive && type.Value is string fqTypeName)
+        {
+            // Chances are high that the type won't be accessible, but we can try
+            proxiedType = compilation.GetTypeByMetadataName(NormalizeMetadataName(fqTypeName));
+        }
+
+        if (proxiedType is { TypeKind: not TypeKind.Error })
+        {
+            return new ProxyModel(GetHintName(proxyClassSymbol, proxiedType), GenerateProxyForClass(proxyClassSymbol, proxiedType, compilation), null);
+        }
+
+        var location = attribute.ApplicationSyntaxReference?.GetSyntax(cancellationToken).GetLocation();
+        location ??= Unsafe.As<ClassDeclarationSyntax>(gasc.TargetNode).Identifier.GetLocation();
+        return new ProxyModel(null, null, new ProxyDiagnosticInfo(type.Value?.ToString(), location.SourceTree?.FilePath ?? "", location.SourceSpan, location.GetLineSpan().Span));
     }
 
     private static string GetHintName(INamedTypeSymbol proxyClassSymbol, INamedTypeSymbol proxiedType)
