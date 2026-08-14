@@ -22,33 +22,55 @@ internal static class ModelPurityAssertions
     private const int MaxReported = 25;
 
     /// <summary>
-    /// Fails if any Roslyn compiler object is reachable from the models flowing into <c>SourceOutput</c>.
+    /// Fails if any Roslyn compiler object is reachable from the models flowing into <c>SourceOutput</c> or out of any of <paramref name="namedSteps"/>.
     /// </summary>
     /// <remarks>
-    /// Only <c>SourceOutput</c> inputs are walked. Roslyn's own built-in steps legitimately hold a
+    /// Only <c>SourceOutput</c> inputs and explicitly named steps are walked. Roslyn's own built-in steps legitimately hold a
     /// <see cref="Compilation"/> and would be guaranteed false positives.
     /// </remarks>
-    public static void AssertNoRoslynObjectsInModel(GeneratorRunResult result)
+    public static void AssertNoRoslynObjectsInModel(GeneratorRunResult result, params string[] namedSteps)
     {
-        if (!result.TrackedOutputSteps.TryGetValue(GeneratorTestHost.SourceOutputStepName, out var steps))
-        {
-            return;
-        }
+        Assert.Null(result.Exception);
 
         var offenders = new List<string>();
         var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        var walked = false;
 
-        foreach (var step in steps)
+        if (result.TrackedOutputSteps.TryGetValue(GeneratorTestHost.SourceOutputStepName, out var outputSteps))
         {
-            foreach (var (source, outputIndex) in step.Inputs)
+            foreach (var step in outputSteps)
             {
-                var value = source.Outputs[outputIndex].Value;
-                if (value is not null)
+                foreach (var (source, outputIndex) in step.Inputs)
                 {
-                    Walk(value, value.GetType().Name, visited, offenders, 0);
+                    var value = source.Outputs[outputIndex].Value;
+                    if (value is not null)
+                    {
+                        walked = true;
+                        Walk(value, value.GetType().Name, visited, offenders, 0);
+                    }
                 }
             }
         }
+
+        foreach (var name in namedSteps)
+        {
+            // a rename would otherwise silently turn this whole assertion into a no-op
+            Assert.True(result.TrackedSteps.ContainsKey(name), $"Tracked step '{name}' was not found. Known steps: {string.Join(", ", result.TrackedSteps.Keys)}");
+
+            foreach (var step in result.TrackedSteps[name])
+            {
+                foreach (var (value, _) in step.Outputs)
+                {
+                    if (value is not null)
+                    {
+                        walked = true;
+                        Walk(value, $"{name}:{value.GetType().Name}", visited, offenders, 0);
+                    }
+                }
+            }
+        }
+
+        Assert.True(walked, "No model values were walked at all, so this assertion proved nothing. Check that the generator actually produced output.");
 
         if (offenders.Count == 0)
         {
@@ -56,7 +78,7 @@ internal static class ModelPurityAssertions
         }
 
         var sb = new StringBuilder();
-        sb.AppendLine("Roslyn compiler objects reachable from model(s) flowing into SourceOutput:");
+        sb.AppendLine("Roslyn compiler objects reachable from generator model(s):");
         foreach (var offender in offenders.Take(MaxReported))
         {
             sb.Append("  ").AppendLine(offender);

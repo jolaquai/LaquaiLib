@@ -37,14 +37,19 @@ public static class GeneratorIncrementalityTests
 
     public class FullAccessProxy
     {
-        // THE MONEY TEST: fails today because FullAccessProxyGenerator combines with context.CompilationProvider,
-        // whose identity changes on every edit, keeping SourceOutput permanently Modified instead of Cached.
+        private static readonly string[] _steps = [
+            GeneratorStepNames.FullAccessProxyModels,
+            GeneratorStepNames.FullAccessProxyFiltered,
+            GeneratorTestHost.SourceOutputStepName
+        ];
+
+        // THE MONEY TEST: an edit that touches nothing the generator cares about must not re-emit anything.
         [Fact]
         public void UnrelatedEditKeepsSourceOutputCached()
         {
             var (driver, compilation, _) = GeneratorTestHost.RunTracked(new FullAccessProxyGenerator(), ProxySource);
             var result = GeneratorTestHost.RunAgain(driver, WithUnrelatedFile(compilation));
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         // Regression guard: re-running with the exact same Compilation instance must stay cached.
@@ -53,7 +58,7 @@ public static class GeneratorIncrementalityTests
         {
             var (driver, compilation, _) = GeneratorTestHost.RunTracked(new FullAccessProxyGenerator(), ProxySource);
             var result = GeneratorTestHost.RunAgain(driver, compilation);
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         // Catches reference-based equality in the model: identical text, freshly parsed trees.
@@ -63,7 +68,7 @@ public static class GeneratorIncrementalityTests
             var (driver, _, _) = GeneratorTestHost.RunTracked(new FullAccessProxyGenerator(), ProxySource);
             var freshCompilation = GeneratorTestHost.CreateCompilation(ProxySource);
             var result = GeneratorTestHost.RunAgain(driver, freshCompilation);
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         // Guards against a generator that caches everything and never regenerates: a real edit must rerun.
@@ -73,14 +78,14 @@ public static class GeneratorIncrementalityTests
             var (driver, _, _) = GeneratorTestHost.RunTracked(new FullAccessProxyGenerator(), ProxySource);
             var editedCompilation = GeneratorTestHost.CreateCompilation(ProxySourceEdited);
             var result = GeneratorTestHost.RunAgain(driver, editedCompilation);
-            GeneratorTestHost.AssertStepsRan(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsRan(result, _steps);
         }
 
         [Fact]
         public void ModelHoldsNoRoslynObjects()
         {
             var (_, _, result) = GeneratorTestHost.RunTracked(new FullAccessProxyGenerator(), ProxySource);
-            ModelPurityAssertions.AssertNoRoslynObjectsInModel(result);
+            ModelPurityAssertions.AssertNoRoslynObjectsInModel(result, _steps[..^1]);
         }
 
         [Fact]
@@ -90,14 +95,20 @@ public static class GeneratorIncrementalityTests
 
     public class InlineArrayExtensions
     {
-        // THE MONEY TEST: fails today because ForAttributeWithMetadataNameOn returns the raw
-        // GeneratorAttributeSyntaxContext as the model, so .Collect() can never compare equal.
+        private static readonly string[] _steps = [
+            GeneratorStepNames.InlineArrayModels,
+            GeneratorStepNames.InlineArrayFiltered,
+            GeneratorStepNames.InlineArrayCollected,
+            GeneratorTestHost.SourceOutputStepName
+        ];
+
+        // THE MONEY TEST: an edit that touches nothing the generator cares about must not re-emit anything.
         [Fact]
         public void UnrelatedEditKeepsSourceOutputCached()
         {
             var (driver, compilation, _) = GeneratorTestHost.RunTracked(new InlineArrayExtensionsGenerator(), InlineArraySource);
             var result = GeneratorTestHost.RunAgain(driver, WithUnrelatedFile(compilation));
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         [Fact]
@@ -105,7 +116,7 @@ public static class GeneratorIncrementalityTests
         {
             var (driver, compilation, _) = GeneratorTestHost.RunTracked(new InlineArrayExtensionsGenerator(), InlineArraySource);
             var result = GeneratorTestHost.RunAgain(driver, compilation);
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         [Fact]
@@ -114,7 +125,7 @@ public static class GeneratorIncrementalityTests
             var (driver, _, _) = GeneratorTestHost.RunTracked(new InlineArrayExtensionsGenerator(), InlineArraySource);
             var freshCompilation = GeneratorTestHost.CreateCompilation(InlineArraySource);
             var result = GeneratorTestHost.RunAgain(driver, freshCompilation);
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         [Fact]
@@ -123,14 +134,14 @@ public static class GeneratorIncrementalityTests
             var (driver, _, _) = GeneratorTestHost.RunTracked(new InlineArrayExtensionsGenerator(), InlineArraySource);
             var editedCompilation = GeneratorTestHost.CreateCompilation(InlineArraySourceEdited);
             var result = GeneratorTestHost.RunAgain(driver, editedCompilation);
-            GeneratorTestHost.AssertStepsRan(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsRan(result, _steps);
         }
 
         [Fact]
         public void ModelHoldsNoRoslynObjects()
         {
             var (_, _, result) = GeneratorTestHost.RunTracked(new InlineArrayExtensionsGenerator(), InlineArraySource);
-            ModelPurityAssertions.AssertNoRoslynObjectsInModel(result);
+            ModelPurityAssertions.AssertNoRoslynObjectsInModel(result, _steps[..^1]);
         }
 
         [Fact]
@@ -140,14 +151,20 @@ public static class GeneratorIncrementalityTests
 
     public class EnumExpander
     {
-        // Every one of these fails on result.Exception first: EnumDataGenerator calls ConstructUnboundGenericType
-        // on an enum symbol, which throws unconditionally. The generator has never emitted anything.
+        private static readonly string[] _steps = [
+            GeneratorStepNames.EnumExpanderModels,
+            GeneratorStepNames.EnumExpanderFiltered,
+            GeneratorStepNames.EnumExpanderCollected,
+            GeneratorTestHost.SourceOutputStepName
+        ];
+
+        // THE MONEY TEST: an edit that touches nothing the generator cares about must not re-emit anything.
         [Fact]
         public void UnrelatedEditKeepsSourceOutputCached()
         {
             var (driver, compilation, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
             var result = GeneratorTestHost.RunAgain(driver, WithUnrelatedFile(compilation));
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         [Fact]
@@ -155,7 +172,7 @@ public static class GeneratorIncrementalityTests
         {
             var (driver, compilation, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
             var result = GeneratorTestHost.RunAgain(driver, compilation);
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         [Fact]
@@ -164,7 +181,7 @@ public static class GeneratorIncrementalityTests
             var (driver, _, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
             var freshCompilation = GeneratorTestHost.CreateCompilation(EnumSource);
             var result = GeneratorTestHost.RunAgain(driver, freshCompilation);
-            GeneratorTestHost.AssertStepsCached(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsCached(result, _steps);
         }
 
         [Fact]
@@ -173,14 +190,14 @@ public static class GeneratorIncrementalityTests
             var (driver, _, _) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
             var editedCompilation = GeneratorTestHost.CreateCompilation(EnumSourceEdited);
             var result = GeneratorTestHost.RunAgain(driver, editedCompilation);
-            GeneratorTestHost.AssertStepsRan(result, GeneratorTestHost.SourceOutputStepName);
+            GeneratorTestHost.AssertStepsRan(result, _steps);
         }
 
         [Fact]
         public void ModelHoldsNoRoslynObjects()
         {
             var (_, _, result) = GeneratorTestHost.RunTracked(new EnumExpanderGenerator(), EnumSource);
-            ModelPurityAssertions.AssertNoRoslynObjectsInModel(result);
+            ModelPurityAssertions.AssertNoRoslynObjectsInModel(result, _steps[..^1]);
         }
 
         [Fact]
