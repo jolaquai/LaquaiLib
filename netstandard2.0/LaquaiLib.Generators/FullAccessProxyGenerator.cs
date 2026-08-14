@@ -212,16 +212,16 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 {
                     switch (member)
                     {
-                        case IMethodSymbol { MethodKind: MethodKind.Ordinary } methodSymbol when methodSymbol.ReturnType.DeclaredAccessibility is Accessibility.Public:
+                        case IMethodSymbol { MethodKind: MethodKind.Ordinary } methodSymbol when IsPubliclyAccessible(methodSymbol.ReturnType):
                             WriteMethodProxy(writer, methodSymbol, proxiedType);
                             break;
-                        case IFieldSymbol fieldSymbol when fieldSymbol.Type.DeclaredAccessibility is Accessibility.Public:
+                        case IFieldSymbol fieldSymbol when IsPubliclyAccessible(fieldSymbol.Type):
                             WriteFieldProxy(writer, fieldSymbol, proxiedType);
                             break;
-                        case IEventSymbol eventSymbol when eventSymbol.Type.DeclaredAccessibility is Accessibility.Public:
+                        case IEventSymbol eventSymbol when IsPubliclyAccessible(eventSymbol.Type):
                             WriteEventProxy(writer, eventSymbol, proxiedType);
                             break;
-                        case IPropertySymbol propertySymbol when propertySymbol.Type.DeclaredAccessibility is Accessibility.Public:
+                        case IPropertySymbol propertySymbol when IsPubliclyAccessible(propertySymbol.Type):
                             WritePropertyProxy(writer, propertySymbol, proxiedType);
                             break;
                         default:
@@ -265,6 +265,17 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 }
                 if (member is IMethodSymbol { MethodKind: MethodKind.Destructor or MethodKind.UserDefinedOperator or MethodKind.Conversion or MethodKind.BuiltinOperator })
                 {
+                    continue;
+                }
+                if (member.IsImplicitlyDeclared && member is not IMethodSymbol { MethodKind: MethodKind.EventAdd or MethodKind.EventRemove })
+                {
+                    // field-like events' add/remove accessors are implicitly declared too but still need forwarding,
+                    // unlike backing fields/default ctors which this is meant to catch
+                    continue;
+                }
+                if (member is IFieldSymbol { AssociatedSymbol: not null })
+                {
+                    // covers auto-property backing fields and field-like-event backing fields, neither is nameable in C#
                     continue;
                 }
 
@@ -410,6 +421,90 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         _ => p.Name
     }));
 
+    private static string GetMethodTypeParameterList(IMethodSymbol method) => method.TypeParameters.Length > 0
+        ? "<" + string.Join(", ", method.TypeParameters.Select(static tp => tp.Name)) + ">"
+        : "";
+    /// <summary>
+    /// Renders the <c>where</c> clauses for <paramref name="typeParameters"/>, in the order required by C#
+    /// ([UnsafeAccessor] requires them to match the target exactly, or an <see cref="InvalidProgramException"/> is thrown at runtime).
+    /// </summary>
+    private static string GetTypeParameterConstraintsClause(ImmutableArray<ITypeParameterSymbol> typeParameters)
+    {
+        if (typeParameters.Length == 0)
+        {
+            return "";
+        }
+        var sb = new StringBuilder();
+        for (var i = 0; i < typeParameters.Length; i++)
+        {
+            var clause = RenderTypeParameterConstraintClause(typeParameters[i]);
+            if (clause.Length == 0)
+            {
+                continue;
+            }
+            if (sb.Length > 0)
+            {
+                sb.Append(' ');
+            }
+            sb.Append(clause);
+        }
+        return sb.Length > 0 ? " " + sb.ToString() : "";
+    }
+    private static string RenderTypeParameterConstraintClause(ITypeParameterSymbol tp)
+    {
+        var parts = new List<string>();
+        // primary constraint must come first: unmanaged implies struct, so check it first
+        if (tp.HasUnmanagedTypeConstraint)
+        {
+            parts.Add("unmanaged");
+        }
+        else if (tp.HasValueTypeConstraint)
+        {
+            parts.Add("struct");
+        }
+        else if (tp.HasReferenceTypeConstraint)
+        {
+            parts.Add("class");
+        }
+        else if (tp.HasNotNullConstraint)
+        {
+            parts.Add("notnull");
+        }
+
+        // base type constraint (if any) precedes interfaces in ConstraintTypes source order already
+        for (var i = 0; i < tp.ConstraintTypes.Length; i++)
+        {
+            parts.Add(tp.ConstraintTypes[i].ToDisplayString(SymbolDisplayFormats.FullyQualified));
+        }
+
+        // struct/unmanaged imply new() and can't be combined with it explicitly
+        if (tp.HasConstructorConstraint && !tp.HasValueTypeConstraint)
+        {
+            parts.Add("new()");
+        }
+        if (tp.AllowsRefLikeType)
+        {
+            parts.Add("allows ref struct");
+        }
+
+        return parts.Count > 0 ? $"where {tp.Name} : {string.Join(", ", parts)}" : "";
+    }
+
+    /// <summary>
+    /// Determines whether emitting a member involving <paramref name="type"/> requires the <c>unsafe</c> keyword.
+    /// </summary>
+    private static bool RequiresUnsafeContext(ITypeSymbol type) => type switch
+    {
+        IPointerTypeSymbol or IFunctionPointerTypeSymbol => true,
+        IArrayTypeSymbol array => RequiresUnsafeContext(array.ElementType),
+        _ => false
+    };
+    private static bool RequiresUnsafeContext(IMethodSymbol method)
+        => RequiresUnsafeContext(method.ReturnType) || method.Parameters.Any(static p => RequiresUnsafeContext(p.Type));
+    private static bool RequiresUnsafeContext(IPropertySymbol property)
+        => RequiresUnsafeContext(property.Type) || property.Parameters.Any(static p => RequiresUnsafeContext(p.Type));
+    private static bool RequiresUnsafeContext(IFieldSymbol field) => RequiresUnsafeContext(field.Type);
+
     private static void WriteInterfaceImplementations(IndentedTextWriter writer, INamedTypeSymbol[] interfaces)
     {
         if (interfaces.Length == 0)
@@ -518,8 +613,8 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 switch (members[i])
                 {
                     // Methods will also hit property and event accessors, whichever are declared
-                    case IMethodSymbol methodSymbol when methodSymbol.Name is not ".cctor" && methodSymbol.ReturnType.DeclaredAccessibility is Accessibility.Public
-                        && methodSymbol.ExplicitInterfaceImplementations.Length == 0:
+                    case IMethodSymbol methodSymbol when methodSymbol.Name is not ".cctor" && IsPubliclyAccessible(methodSymbol.ReturnType)
+                        && methodSymbol.ExplicitInterfaceImplementations.Length == 0 && !methodSymbol.IsInitOnly:
                     {
                         var targetTypeName = methodSymbol.ContainingType.ToDisplayString(SymbolDisplayFormats.FullyQualified);
                         writer.WriteLine(methodSymbol.IsStatic ? SourceEmitHelper.UnsafeAccessor_StaticMethod : SourceEmitHelper.UnsafeAccessor_Method);
@@ -528,15 +623,19 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                         {
                             parameterString = ", " + parameterString;
                         }
-                        writer.WriteLine($"public static extern {(methodSymbol.ReturnsByRef ? "ref " : methodSymbol.ReturnsByRefReadonly ? "ref readonly " : "")}{methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {methodSymbol.Name}({targetTypeName} target{parameterString});");
+                        var unsafeKeyword = RequiresUnsafeContext(methodSymbol) ? "unsafe " : "";
+                        var typeParameterList = GetMethodTypeParameterList(methodSymbol);
+                        var constraintsClause = GetTypeParameterConstraintsClause(methodSymbol.TypeParameters);
+                        writer.WriteLine($"public static {unsafeKeyword}extern {(methodSymbol.ReturnsByRef ? "ref " : methodSymbol.ReturnsByRefReadonly ? "ref readonly " : "")}{methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {methodSymbol.Name}{typeParameterList}({targetTypeName} target{parameterString}){constraintsClause};");
                         break;
                     }
                     // Fields will also hit events
-                    case IFieldSymbol fieldSymbol when fieldSymbol.Type.DeclaredAccessibility is Accessibility.Public:
+                    case IFieldSymbol fieldSymbol when IsPubliclyAccessible(fieldSymbol.Type):
                     {
                         var targetTypeName = fieldSymbol.ContainingType.ToDisplayString(SymbolDisplayFormats.FullyQualified);
                         writer.WriteLine(fieldSymbol.IsStatic ? SourceEmitHelper.UnsafeAccessor_StaticField : SourceEmitHelper.UnsafeAccessor_Field);
-                        writer.WriteLine($"public static extern ref {fieldSymbol.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {fieldSymbol.Name}({targetTypeName} target);");
+                        var unsafeKeyword = RequiresUnsafeContext(fieldSymbol) ? "unsafe " : "";
+                        writer.WriteLine($"public static {unsafeKeyword}extern ref {fieldSymbol.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {fieldSymbol.Name}({targetTypeName} target);");
                         break;
                     }
 
@@ -551,7 +650,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     private static void WriteMethodProxy(IndentedTextWriter writer, IMethodSymbol methodSymbol, INamedTypeSymbol proxiedType)
     {
         // Ignore non-public return types since we can't proxy those
-        if (methodSymbol.ReturnType.DeclaredAccessibility is not Accessibility.Public)
+        if (!IsPubliclyAccessible(methodSymbol.ReturnType))
         {
             return;
         }
@@ -574,20 +673,23 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
         var refPrefix = methodSymbol.ReturnsByRef ? "ref " : methodSymbol.ReturnsByRefReadonly ? "ref readonly " : "";
         var refReturn = refPrefix.Length > 0 ? "ref " : "";
+        var typeParameterList = GetMethodTypeParameterList(methodSymbol);
+        var constraintsClause = GetTypeParameterConstraintsClause(methodSymbol.TypeParameters);
+        var unsafeKeyword = RequiresUnsafeContext(methodSymbol) ? "unsafe " : "";
         if (methodSymbol.IsStatic)
         {
             writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
-            writer.WriteLine($"public static {refPrefix}{methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {methodSymbol.Name}({parameterString}) => {refReturn}Accessors.{methodSymbol.Name}(null{argumentString});");
+            writer.WriteLine($"public static {unsafeKeyword}{refPrefix}{methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {methodSymbol.Name}{typeParameterList}({parameterString}){constraintsClause} => {refReturn}Accessors.{methodSymbol.Name}{typeParameterList}(null{argumentString});");
         }
         else
         {
             writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
-            writer.WriteLine($"public {refPrefix}{methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {methodSymbol.Name}({parameterString}) => {refReturn}Accessors.{methodSymbol.Name}(_instance{argumentString});");
+            writer.WriteLine($"public {unsafeKeyword}{refPrefix}{methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {methodSymbol.Name}{typeParameterList}({parameterString}){constraintsClause} => {refReturn}Accessors.{methodSymbol.Name}{typeParameterList}(_instance{argumentString});");
         }
     }
     private static void WriteEventProxy(IndentedTextWriter writer, IEventSymbol eventSymbol, INamedTypeSymbol proxiedType)
     {
-        if (eventSymbol.Type.DeclaredAccessibility is not Accessibility.Public)
+        if (!IsPubliclyAccessible(eventSymbol.Type))
         {
             return;
         }
@@ -617,15 +719,15 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             using (writer.Scope)
             {
                 writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
-                writer.WriteLine($"add => Accessors.add_{eventSymbol.Name}(null, value);");
+                writer.WriteLine($"add => Accessors.add_{eventSymbol.Name}(_instance, value);");
                 writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
-                writer.WriteLine($"remove => Accessors.remove_{eventSymbol.Name}(null, value);");
+                writer.WriteLine($"remove => Accessors.remove_{eventSymbol.Name}(_instance, value);");
             }
         }
     }
     private static void WriteFieldProxy(IndentedTextWriter writer, IFieldSymbol field, INamedTypeSymbol proxiedType)
     {
-        if (field.Type.DeclaredAccessibility is not Accessibility.Public)
+        if (!IsPubliclyAccessible(field.Type))
         {
             return;
         }
@@ -635,10 +737,11 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         writer.WriteLine("/// </summary>");
 
         // Fields will be proxied with a property of the same name
+        var unsafeKeyword = RequiresUnsafeContext(field) ? "unsafe " : "";
 
         if (field.IsStatic)
         {
-            writer.WriteLine($"public static {field.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {field.Name}");
+            writer.WriteLine($"public static {unsafeKeyword}{field.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {field.Name}");
             using (writer.Scope)
             {
                 writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
@@ -649,7 +752,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         }
         else
         {
-            writer.WriteLine($"public {field.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {field.Name}");
+            writer.WriteLine($"public {unsafeKeyword}{field.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified)} {field.Name}");
             using (writer.Scope)
             {
                 writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
@@ -662,7 +765,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
     private static void WritePropertyProxy(IndentedTextWriter writer, IPropertySymbol property, INamedTypeSymbol proxiedType)
     {
-        if (property.Type.DeclaredAccessibility is not Accessibility.Public)
+        if (!IsPubliclyAccessible(property.Type))
         {
             return;
         }
@@ -677,12 +780,13 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         var target = property.IsStatic ? "null" : "_instance";
         var args = property.IsIndexer ? ArgumentString(property.Parameters) : "";
         var argsWithLeadingComma = args.Length > 0 ? ", " + args : "";
+        var unsafeKeyword = RequiresUnsafeContext(property) ? "unsafe " : "";
 
         writer.WriteLine("/// <summary>");
         writer.WriteLine($"/// Proxies the {(property.IsIndexer ? "indexer" : "property")} <c>{proxiedType.ToDisplayString(SymbolDisplayFormats.FullyQualified)}.{declaration.XmlEscape()}</c>.");
         writer.WriteLine("/// </summary>");
 
-        writer.WriteLine($"{(property.IsStatic ? "public static" : "public")} {refPrefix}{type} {declaration}");
+        writer.WriteLine($"{(property.IsStatic ? "public static" : "public")} {unsafeKeyword}{refPrefix}{type} {declaration}");
         using (writer.Scope)
         {
             if (refPrefix.Length > 0)

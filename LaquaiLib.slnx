@@ -20,6 +20,8 @@
         <File Path="global.json" />
         <File Path="TestProjects/.editorconfig" />
         <Project Path="TestProjects\LaquaiLib.Analyzers.Tests\LaquaiLib.Analyzers.Tests.csproj" />
+        <Project Path="TestProjects\LaquaiLib.Generators.RuntimeTests\LaquaiLib.Generators.RuntimeTests.csproj" />
+        <Project Path="TestProjects\LaquaiLib.Generators.Tests\LaquaiLib.Generators.Tests.csproj" />
         <Project Path="TestProjects\LaquaiLib.UnitTests\LaquaiLib.UnitTests.csproj" />
     </Folder>
     <Folder Name="/netstandard2.0/">
