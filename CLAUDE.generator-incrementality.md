@@ -66,7 +66,7 @@ Line numbers in this file are anchored to commit `1d9ca88` and will drift. Locat
 | 1.2 | Tracked-driver harness in `GeneratorTestHost` | DONE | `CreateTrackedDriver`, `RunTracked`, `RunAgain`, `AssertStepsCached`, `AssertStepsRan`, `SourceOutputStepName` const. Existing members untouched |
 | 1.3 | `AssertNoRoslynObjectsInModel` object-graph walker | DONE | `ModelPurityAssertions.cs`. Walks `SourceOutput` inputs only. Does not descend into a flagged offender (one `ISymbol` reaches the whole compilation graph) |
 | 1.4 | `AssertNoCapturingLambdas` reflection guard | DONE | `CapturingLambdaAssertions.cs`. `Type` and generic overloads. Passes today, all lambdas are `static` |
-| 2.1 | `GeneratorIncrementalityTests` - FullAccessProxyGenerator | TODO | expect RED until 4.3 |
+| 2.1 | `GeneratorIncrementalityTests` - FullAccessProxyGenerator | RED | Turns green at 4.3. Failing: `UnrelatedEditKeepsSourceOutputCached`, `EquivalentButFreshlyParsedTreesKeepSourceOutputCached`, `ModelHoldsNoRoslynObjects`. Passing: no-op rerun, relevant edit, capturing-lambda guard |
 | 2.2 | `GeneratorIncrementalityTests` - InlineArrayExtensionsGenerator | TODO | expect RED until 4.2 |
 | 2.3 | `GeneratorIncrementalityTests` - EnumExpanderGenerator | TODO | expect RED until 3.1 + 4.4 |
 | 3.1 | Fix `EnumExpanderGenerator` hard crash | TODO | |
