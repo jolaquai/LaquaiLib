@@ -289,4 +289,86 @@ public class EnumExpanderGeneratorEmissionTests
         Assert.Contains("public static class SecondEnumData", source);
         Assert.Contains("public static class ThirdEnumData", source);
     }
+
+    [Fact]
+    public void PublicEnumInsideInternalClassEmitsInternalDataClass()
+    {
+        var result = GeneratorTestHost.RunGenerator(new EnumExpanderGenerator(),
+            """
+            namespace TestNs
+            {
+                internal class Wrapper
+                {
+                    public enum Mode
+                    {
+                        On,
+                        Off
+                    }
+                }
+            }
+            """
+        );
+
+        GeneratorTestHost.AssertNoCompilationErrors(result);
+        var source = GeneratorTestHost.GetGeneratedSource(result, "EnumExpanderGenerator");
+
+        Assert.Contains("internal static class ModeData", source);
+        Assert.DoesNotContain("public static class ModeData", source);
+    }
+
+    [Fact]
+    public void PrivateNestedEnumIsSkippedEntirely()
+    {
+        var result = GeneratorTestHost.RunGenerator(new EnumExpanderGenerator(),
+            """
+            namespace TestNs
+            {
+                public class Holder
+                {
+                    private enum Hidden
+                    {
+                        A,
+                        B
+                    }
+                }
+            }
+            """
+        );
+
+        GeneratorTestHost.AssertNoCompilationErrors(result);
+        var source = GeneratorTestHost.GetGeneratedSource(result, "EnumExpanderGenerator");
+
+        Assert.DoesNotContain("HiddenData", source);
+        Assert.DoesNotContain("Hidden", source);
+    }
+
+    [Fact]
+    public void EnumNestedInsideGenericTypeIsSkippedEntirely()
+    {
+        var result = GeneratorTestHost.RunGenerator(new EnumExpanderGenerator(),
+            """
+            namespace TestNs
+            {
+                public class Box<T>
+                {
+                    public enum Kind
+                    {
+                        First,
+                        Second
+                    }
+                }
+                public enum Plain
+                {
+                    X
+                }
+            }
+            """
+        );
+
+        GeneratorTestHost.AssertNoCompilationErrors(result);
+        var source = GeneratorTestHost.GetGeneratedSource(result, "EnumExpanderGenerator");
+
+        Assert.DoesNotContain("KindData", source);
+        Assert.Contains("public static class PlainData", source);
+    }
 }

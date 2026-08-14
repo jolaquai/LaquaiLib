@@ -54,6 +54,26 @@ public class EnumExpanderGenerator : IIncrementalGenerator
             return null;
         }
 
+        // the Data class is emitted at namespace scope, so it must be able to name the enum from there
+        var accessibility = symbol.DeclaredAccessibility;
+        for (var containing = symbol.ContainingType; containing is not null; containing = containing.ContainingType)
+        {
+            // a nested enum's fully qualified name carries the containing type's type arguments, which are unbindable at namespace scope
+            if (containing.IsGenericType)
+            {
+                return null;
+            }
+            if (containing.DeclaredAccessibility < accessibility)
+            {
+                accessibility = containing.DeclaredAccessibility;
+            }
+        }
+        // anything less visible than internal cannot be referenced by a namespace-scope class at all
+        if (accessibility is not (Accessibility.Public or Accessibility.Internal))
+        {
+            return null;
+        }
+
         var enumFields = symbol.GetMembers()
             .Where(static m => m is IFieldSymbol { IsConst: true, HasConstantValue: true })
             .OrderBy(static f => f.DeclaringSyntaxReferences.FirstOrDefault()?.Span.Start ?? int.MaxValue)
@@ -80,7 +100,7 @@ public class EnumExpanderGenerator : IIncrementalGenerator
             // a top-level enum has no namespace to wrap in; ToDisplayString() would emit the literal "<global namespace>"
             containingNamespace.IsGlobalNamespace ? null : containingNamespace.ToDisplayString(),
             decl.Identifier.Text,
-            decl.Modifiers.Any(SyntaxKind.PublicKeyword) ? "public" : "internal",
+            accessibility == Accessibility.Public ? "public" : "internal",
             // enums can never be generic, so there is no unbound-generic form to construct here
             symbol.ToDisplayString(SymbolDisplayFormats.FullyQualified),
             symbol.EnumUnderlyingType.ToDisplayString(SymbolDisplayFormats.FullyQualified),
@@ -105,6 +125,10 @@ public class EnumExpanderGenerator : IIncrementalGenerator
             if (!writtenEnumDataStruct)
             {
                 writtenEnumDataStruct = true;
+                writer.WriteLines(SourceEmitHelper.GeneratedFileHeader);
+                // the arrays materialize every member, including obsolete ones, and that is the whole point of this generator
+                writer.WriteLine("#pragma warning disable CS0612, CS0618 // Type or member is obsolete");
+                writer.WriteLine();
                 writer.WriteLine($"namespace {assemblyRootNamespace}");
                 using (writer.Scope)
                 {

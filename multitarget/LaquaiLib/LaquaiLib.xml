@@ -6791,6 +6791,31 @@
             Assumes correct escaping for existing query parameters, otherwise the % signs would be escaped.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Extensions.InheritanceBehaviorData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Extensions.ReflectionOptions.InheritanceBehavior</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.InheritanceBehaviorData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Extensions.ReflectionOptions.InheritanceBehavior</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.InheritanceBehaviorData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Extensions.ReflectionOptions.InheritanceBehavior</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.InheritanceBehaviorData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Extensions.ReflectionOptions.InheritanceBehavior</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.InheritanceBehaviorData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Extensions.ReflectionOptions.InheritanceBehavior</c>.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Bcl.System.SpecialFolders">
             <summary>
             Provides access to the special folders of the system.
@@ -12616,6 +12641,106 @@
             Indicates that any version of Visual Studio is included in the search.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Util.Meta.ArchitectureData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Util.Meta.Architecture</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.ArchitectureData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Util.Meta.Architecture</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.ArchitectureData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Util.Meta.Architecture</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.ArchitectureData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Util.Meta.Architecture</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.ArchitectureData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Util.Meta.Architecture</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Meta.MetaToolData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Util.Meta.MetaTool</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.MetaToolData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Util.Meta.MetaTool</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.MetaToolData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Util.Meta.MetaTool</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.MetaToolData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Util.Meta.MetaTool</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.MetaToolData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Util.Meta.MetaTool</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Meta.VSEditionData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Util.Meta.VSEdition</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSEditionData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Util.Meta.VSEdition</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSEditionData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Util.Meta.VSEdition</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSEditionData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Util.Meta.VSEdition</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSEditionData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Util.Meta.VSEdition</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.Meta.VSVersionData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Util.Meta.VSVersion</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSVersionData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Util.Meta.VSVersion</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSVersionData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Util.Meta.VSVersion</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSVersionData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Util.Meta.VSVersion</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.Meta.VSVersionData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Util.Meta.VSVersion</c>.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Util.Misc.DelegateProgress">
             <summary>
             Contains static factory methods for creating <see cref="T:LaquaiLib.Util.Misc.DelegateProgress`1"/> instances.
@@ -15885,6 +16010,81 @@
         <member name="F:LaquaiLib.Util.WpfForms.WindowMessage.WM_APP">
             <summary>
             The WM_APP constant is used by applications to help define private messages, usually of the form WM_APP+X, where X is an integer value.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.ToolTipDisplayData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Util.WpfForms.ToolTipDisplay</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.ToolTipDisplayData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Util.WpfForms.ToolTipDisplay</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.ToolTipDisplayData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Util.WpfForms.ToolTipDisplay</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.ToolTipDisplayData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Util.WpfForms.ToolTipDisplay</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.ToolTipDisplayData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Util.WpfForms.ToolTipDisplay</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.VirtualKeyData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Util.WpfForms.VirtualKey</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Util.WpfForms.VirtualKey</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Util.WpfForms.VirtualKey</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Util.WpfForms.VirtualKey</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.VirtualKeyData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Util.WpfForms.VirtualKey</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Util.WpfForms.WindowMessageData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Util.WpfForms.WindowMessage</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.WindowMessageData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Util.WpfForms.WindowMessage</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.WindowMessageData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Util.WpfForms.WindowMessage</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.WindowMessageData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Util.WpfForms.WindowMessage</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Util.WpfForms.WindowMessageData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Util.WpfForms.WindowMessage</c>.
             </summary>
         </member>
         <member name="T:LaquaiLib.Threading.AsyncCountdownEvent">
@@ -26868,6 +27068,70 @@
             Converts a <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> instance to the wrapped instance. The wrapper instance is lost if not kept track of separately.
             </summary>
             <param name="wrapper">The <see cref="T:LaquaiLib.Wrappers.UsingWrapper`1"/> instance to convert.</param>
+        </member>
+        <member name="T:LaquaiLib.EnumFieldData`2">
+            <summary>
+            Encapsulates data of an enum field.
+            </summary>
+            <typeparam name="TEnum">The type of the enum.</typeparam>
+            <typeparam name="TUnderlying">The type of the enum's underlying value.</typeparam>
+            <param name="Name">The name of the enum member.</param>
+            <param name="Value">The value of the enum member.</param>
+            <param name="UnderlyingValue">The value of the enum member typed as the enum's underlying value.</param>
+            <param name="Description">The value of the <c>[DescriptionAttribute]</c> that adorns the enum member, if any; <see langword="null"/> if not present.</param>
+            <param name="DeclaredPosition">The 0-based index of the enum member at which it was declared in source. For members without explicitly declared values, this is generally equal to the <see cref="P:LaquaiLib.EnumFieldData`2.UnderlyingValue"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.EnumFieldData`2.#ctor(System.String,`0,`1,System.String,System.Int32)">
+            <summary>
+            Encapsulates data of an enum field.
+            </summary>
+            <typeparam name="TEnum">The type of the enum.</typeparam>
+            <typeparam name="TUnderlying">The type of the enum's underlying value.</typeparam>
+            <param name="Name">The name of the enum member.</param>
+            <param name="Value">The value of the enum member.</param>
+            <param name="UnderlyingValue">The value of the enum member typed as the enum's underlying value.</param>
+            <param name="Description">The value of the <c>[DescriptionAttribute]</c> that adorns the enum member, if any; <see langword="null"/> if not present.</param>
+            <param name="DeclaredPosition">The 0-based index of the enum member at which it was declared in source. For members without explicitly declared values, this is generally equal to the <see cref="P:LaquaiLib.EnumFieldData`2.UnderlyingValue"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.EnumFieldData`2.Name">
+            <summary>The name of the enum member.</summary>
+        </member>
+        <member name="P:LaquaiLib.EnumFieldData`2.Value">
+            <summary>The value of the enum member.</summary>
+        </member>
+        <member name="P:LaquaiLib.EnumFieldData`2.UnderlyingValue">
+            <summary>The value of the enum member typed as the enum's underlying value.</summary>
+        </member>
+        <member name="P:LaquaiLib.EnumFieldData`2.Description">
+            <summary>The value of the <c>[DescriptionAttribute]</c> that adorns the enum member, if any; <see langword="null"/> if not present.</summary>
+        </member>
+        <member name="P:LaquaiLib.EnumFieldData`2.DeclaredPosition">
+            <summary>The 0-based index of the enum member at which it was declared in source. For members without explicitly declared values, this is generally equal to the <see cref="P:LaquaiLib.EnumFieldData`2.UnderlyingValue"/>.</summary>
+        </member>
+        <member name="T:LaquaiLib.ProcessOpenAccessData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Interop.ProcessOpenAccess</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ProcessOpenAccessData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Interop.ProcessOpenAccess</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ProcessOpenAccessData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Interop.ProcessOpenAccess</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ProcessOpenAccessData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Interop.ProcessOpenAccess</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.ProcessOpenAccessData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Interop.ProcessOpenAccess</c>.
+            </summary>
         </member>
         <member name="T:System.Text.RegularExpressions.Generated.UnspeakableMemberNameRegex_0">
             <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the UnspeakableMemberNameRegex method.</summary>
