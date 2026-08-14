@@ -64,7 +64,7 @@ Line numbers in this file are anchored to commit `1d9ca88` and will drift. Locat
 | --- | --- | --- | --- |
 | 1.1 | `EquatableArray<T>` helper in generator project | DONE | `netstandard2.0/LaquaiLib.Generators/EquatableArray.cs`, `internal`, `where T : IEquatable<T>` |
 | 1.2 | Tracked-driver harness in `GeneratorTestHost` | DONE | `CreateTrackedDriver`, `RunTracked`, `RunAgain`, `AssertStepsCached`, `AssertStepsRan`, `SourceOutputStepName` const. Existing members untouched |
-| 1.3 | `AssertNoRoslynObjectsInModel` object-graph walker | TODO | |
+| 1.3 | `AssertNoRoslynObjectsInModel` object-graph walker | DONE | `ModelPurityAssertions.cs`. Walks `SourceOutput` inputs only. Does not descend into a flagged offender (one `ISymbol` reaches the whole compilation graph) |
 | 1.4 | `AssertNoCapturingLambdas` reflection guard | TODO | |
 | 2.1 | `GeneratorIncrementalityTests` - FullAccessProxyGenerator | TODO | expect RED until 4.3 |
 | 2.2 | `GeneratorIncrementalityTests` - InlineArrayExtensionsGenerator | TODO | expect RED until 4.2 |
