@@ -47,7 +47,7 @@ Do not re-derive the findings in section 2. They were measured, not guessed. The
 
 ```
 git log --oneline -20
-dotnet build LaquaiLib.sln
+dotnet build LaquaiLib.slnx
 dotnet test TestProjects/LaquaiLib.Generators.Tests/LaquaiLib.Generators.Tests.csproj
 ```
 Compare commit subjects against the ledger. If they disagree, the ledger loses and must be corrected to match reality in a commit of its own: `resync incrementality plan ledger`.
@@ -84,7 +84,7 @@ Line numbers in this file are anchored to commit `1d9ca88` and will drift. Locat
 | 4.4 | `EnumExpanderGenerator` -> equatable model | DONE | `EnumModel` + `EnumMemberModel` records; members carried as `EquatableArray<EnumMemberModel>`. `CreateSyntaxProvider` transform now projects the model and `.Where`-filters nulls (empty enums, which the emitter used to `continue` past). `Namespace` is null for global-namespace enums. All 10 emission tests still green, so output is byte-identical. Turned 2.3 green, 7 -> 3 failures |
 | 4.5 | `WithTrackingName` on every user-defined pipeline step | DONE | Names live as `public const string` on `GeneratorStepNames` in the generator project, referenced from both sides. `FullAccessProxy.{Models,Filtered}` (no `Collected`, 4.3 dropped `.Collect()`), `InlineArray.{Models,Filtered,Collected}`, `EnumExpander.{Models,Filtered,Collected}` |
 | 4.6 | Tighten 2.x to assert named steps, not just `SourceOutput` | DONE | All four scenarios now assert every named step plus `SourceOutput`. `AssertNoRoslynObjectsInModel` gained a `params string[] namedSteps` widening that walks those steps outputs, asserts each name exists (a rename can no longer no-op the assertion), asserts `result.Exception is null`, and asserts something was actually walked (kills the vacuous-pass hole recorded at 2.3) |
-| 5.1 | Full verify pass | TODO | |
+| 5.1 | Full verify pass | DONE | `dotnet build LaquaiLib.slnx -t:Rebuild` 0 errors, 0 warnings from any generated file. `dotnet test` 65/65, 0 failed, 0 skipped, no assertion weakened, every RED row green. Scratch driver (built in TEMP, not committed) confirms the objective on an unrelated edit: FullAccessProxy `SourceOutput` Cached 0.0ms (was Modified, 56ms re-emit) with cold `Models` 381.7ms not repeating (12.2ms transform re-run only); InlineArray `SourceOutput` Cached; EnumExpander `SourceOutput` Cached. NOTE: the solution file is `LaquaiLib.slnx`, not `LaquaiLib.sln` as section 5 states |
 
 ---
 
@@ -298,7 +298,7 @@ Commit: `assert named pipeline steps in incrementality tests`
 
 **5.1**
 ```
-dotnet build LaquaiLib.sln
+dotnet build LaquaiLib.slnx
 dotnet test TestProjects/LaquaiLib.Generators.Tests/LaquaiLib.Generators.Tests.csproj
 ```
 Every phase 2 test green with no assertion weakened. Every `RED` ledger row flipped to `DONE`. All pre-existing diagnostics, edge-case, and emission tests still green.
