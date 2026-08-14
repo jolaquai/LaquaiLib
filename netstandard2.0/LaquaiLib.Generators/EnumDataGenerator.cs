@@ -31,9 +31,11 @@ public class EnumExpanderGenerator : IIncrementalGenerator
         var models = context.SyntaxProvider.CreateSyntaxProvider(
             static (node, _) => node is EnumDeclarationSyntax,
             static (context, _) => CreateModel(context)
-        ).Where(static model => model is not null);
+        ).WithTrackingName(GeneratorStepNames.EnumExpanderModels)
+        .Where(static model => model is not null)
+        .WithTrackingName(GeneratorStepNames.EnumExpanderFiltered);
 
-        var collected = models.Collect();
+        var collected = models.Collect().WithTrackingName(GeneratorStepNames.EnumExpanderCollected);
         context.RegisterSourceOutput(collected, static (spc, models) =>
         {
             var sourceText = GenerateEnumExpansions(models);

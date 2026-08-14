@@ -30,9 +30,11 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
         var models = context.SyntaxProvider.ForAttributeWithMetadataNameOn<StructDeclarationSyntax, InlineArrayModel>(
             "System.Runtime.CompilerServices.InlineArrayAttribute",
             static (context, _) => CreateModel(context)
-        ).Where(static model => model is not null);
+        ).WithTrackingName(GeneratorStepNames.InlineArrayModels)
+        .Where(static model => model is not null)
+        .WithTrackingName(GeneratorStepNames.InlineArrayFiltered);
 
-        var collected = models.Collect();
+        var collected = models.Collect().WithTrackingName(GeneratorStepNames.InlineArrayCollected);
         context.RegisterSourceOutput(collected, static (spc, source) =>
         {
             if (source.Length == 0)

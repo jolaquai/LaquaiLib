@@ -34,7 +34,9 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     {
         var models = context.SyntaxProvider
             .ForAttributeWithMetadataNameOn<ClassDeclarationSyntax, ProxyModel>("LaquaiLib.Analyzers.Shared.Attributes.FullAccessProxyAttribute", CreateModel)
-            .Where(static model => model is not null);
+            .WithTrackingName(GeneratorStepNames.FullAccessProxyModels)
+            .Where(static model => model is not null)
+            .WithTrackingName(GeneratorStepNames.FullAccessProxyFiltered);
 
         context.RegisterSourceOutput(models, static (spc, model) =>
         {
