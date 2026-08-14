@@ -68,8 +68,8 @@ Line numbers in this file are anchored to commit `1d9ca88` and will drift. Locat
 | 1.4 | `AssertNoCapturingLambdas` reflection guard | DONE | `CapturingLambdaAssertions.cs`. `Type` and generic overloads. Passes today, all lambdas are `static` |
 | 2.1 | `GeneratorIncrementalityTests` - FullAccessProxyGenerator | RED | Turns green at 4.3. Failing: `UnrelatedEditKeepsSourceOutputCached`, `EquivalentButFreshlyParsedTreesKeepSourceOutputCached`, `ModelHoldsNoRoslynObjects`. Passing: no-op rerun, relevant edit, capturing-lambda guard |
 | 2.2 | `GeneratorIncrementalityTests` - InlineArrayExtensionsGenerator | RED | Turns green at 4.2. Same three failing as 2.1: unrelated edit, freshly-parsed trees, model purity |
-| 2.3 | `GeneratorIncrementalityTests` - EnumExpanderGenerator | RED | Turns green at 3.1 + 4.4. All four step tests fail on `result.Exception` (the 2.2 crash). `ModelHoldsNoRoslynObjects` passes VACUOUSLY: Roslyn records no `SourceOutput` output-step when the generator throws, so the walker finds nothing. Expect it to turn RED once 3.1 lands - verify this at 3.1 |
-| 3.1 | Fix `EnumExpanderGenerator` hard crash | TODO | |
+| 2.3 | `GeneratorIncrementalityTests` - EnumExpanderGenerator | RED | Turns green at 4.4. Post-3.1: `RelevantEditRerunsSourceOutput` green, `ModelHoldsNoRoslynObjects` now genuinely RED as predicted (walker confirmed not buggy). Still failing: unrelated edit, no-op rerun, freshly-parsed trees - all `SourceOutput [Modified]` because `context.SemanticModel` is a fresh instance per transform invocation |
+| 3.1 | Fix `EnumExpanderGenerator` hard crash | DONE | Dropped `ConstructUnboundGenericType()`, `symbol.ToDisplayString(FullyQualified)` directly. `SourceOutput` now executes and emits for the first time ever; `result.Exception` is null across all four scenarios |
 | 3.2 | Emission tests for `EnumExpanderGenerator` | TODO | none exist today |
 | 4.1 | Model-projecting `ForAttributeWithMetadataNameOn` overload | TODO | |
 | 4.2 | `InlineArrayExtensionsGenerator` -> equatable model | TODO | turns 2.2 green |

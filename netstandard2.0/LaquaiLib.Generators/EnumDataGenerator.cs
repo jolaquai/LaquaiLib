@@ -35,9 +35,8 @@ public class EnumExpanderGenerator : IIncrementalGenerator
         var writtenEnumDataStruct = false;
         foreach (var (decl, symbol) in decls)
         {
-            var withoutTypeParams = symbol.ConstructUnboundGenericType().ToDisplayString(SymbolDisplayFormats.FullyQualified);
-
-            var fqEnumName = withoutTypeParams;
+            // enums can never be generic, so there is no unbound-generic form to construct here
+            var fqEnumName = symbol.ToDisplayString(SymbolDisplayFormats.FullyQualified);
             var enumFields = symbol.GetMembers()
                 .Where(m => m is IFieldSymbol { IsConst: true, HasConstantValue: true })
                 .OrderBy(f => f.DeclaringSyntaxReferences.FirstOrDefault()?.Span.Start ?? int.MaxValue)
