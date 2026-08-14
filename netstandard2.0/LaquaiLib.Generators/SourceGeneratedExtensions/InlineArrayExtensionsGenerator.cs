@@ -7,6 +7,18 @@ using LaquaiLib.Generators.Extensions;
 namespace LaquaiLib.Generators.SourceGeneratedExtensions;
 
 /// <summary>
+/// Everything the emitter needs about one <c>[InlineArray]</c> struct, fully resolved to strings so the pipeline never pins a Roslyn object.
+/// </summary>
+internal sealed record InlineArrayModel(
+    string TypeName,
+    string SimpleName,
+    string Namespace,
+    string ElementTypeName,
+    string FieldName,
+    int Length,
+    string TypeParameterList);
+
+/// <summary>
 /// Generates extensions directly into <see langword="struct"/>s marked with the <c>[InlineArray]</c> attribute.
 /// </summary>
 [Generator(LanguageNames.CSharp)]
@@ -15,22 +27,63 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // For user-declared structs in the current compilation
-        var structDeclSyntaxProvider = context.SyntaxProvider.ForAttributeWithMetadataNameOn<StructDeclarationSyntax>("System.Runtime.CompilerServices.InlineArrayAttribute");
+        var models = context.SyntaxProvider.ForAttributeWithMetadataNameOn<StructDeclarationSyntax, InlineArrayModel>(
+            "System.Runtime.CompilerServices.InlineArrayAttribute",
+            static (context, _) => CreateModel(context)
+        ).Where(static model => model is not null);
 
-        var contexts = structDeclSyntaxProvider.Collect();
-        context.RegisterSourceOutput(contexts, static (spc, source) =>
+        var collected = models.Collect();
+        context.RegisterSourceOutput(collected, static (spc, source) =>
         {
-            var typeSymbols = source.Select(static c => c.TargetSymbol as INamedTypeSymbol).ToArray();
-            if (typeSymbols.Length == 0)
+            if (source.Length == 0)
             {
                 return;
             }
 
-            var declaredInlineArrayClassesSource = GenerateExtensionClasses(typeSymbols);
+            var declaredInlineArrayClassesSource = GenerateExtensionClasses(source);
             spc.AddSource($"InlineArraySpanExtensions.g.cs", SourceText.From(declaredInlineArrayClassesSource, Encoding.UTF8));
         });
     }
-    private static string GenerateExtensionClasses(INamedTypeSymbol[] results)
+
+    private static InlineArrayModel CreateModel(GeneratorAttributeSyntaxContext context)
+    {
+        if (context.TargetSymbol is not INamedTypeSymbol type)
+        {
+            return null;
+        }
+
+        // the singular field declared in the struct (it very literally has to have exactly one field)
+        var field = type.GetMembers().OfType<IFieldSymbol>().FirstOrDefault();
+        if (field is null)
+        {
+            return null;
+        }
+
+        var inlineArrayAttribute = type.GetAttributes().FirstOrDefault(static attr => attr.AttributeClass.ToDisplayString(SymbolDisplayFormats.FullyQualified) == "global::System.Runtime.CompilerServices.InlineArrayAttribute");
+        if (inlineArrayAttribute is null || inlineArrayAttribute.ConstructorArguments.Length == 0 || inlineArrayAttribute.ConstructorArguments[0].Value is not int length)
+        {
+            return null;
+        }
+
+        // If the field is a struct and explicitly declared nullable, we'll have to make it nullable in our returns as well
+        var elementTypeName = field.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified);
+        if (field.Type.NullableAnnotation == NullableAnnotation.Annotated)
+        {
+            elementTypeName += '?';
+        }
+
+        return new InlineArrayModel(
+            type.ToDisplayString(SymbolDisplayFormats.FullyQualified),
+            type.Name,
+            type.ContainingNamespace.ToDisplayString(),
+            elementTypeName,
+            field.Name,
+            length,
+            type.TypeParameters.Length > 0 ? $"<{string.Join(", ", type.TypeParameters.Select(static p => p.Name))}>" : ""
+        );
+    }
+
+    private static string GenerateExtensionClasses(ImmutableArray<InlineArrayModel> results)
     {
         var sb = new StringBuilder();
         using var sw = new StringWriter(sb);
@@ -40,20 +93,7 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
 
         for (var i = 0; i < results.Length; i++)
         {
-            var type = results[i];
-            var typeName = type.ToDisplayString(SymbolDisplayFormats.FullyQualified);
-            var typeNameNullable = typeName + '?';
-
-            // Find the type of the singular field declared in the struct (it very literally has to have exactly one field)
-            var field = type.GetMembers().OfType<IFieldSymbol>().First();
-            var fieldTypeName = field.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified);
-            var fieldName = field.Name;
-
-            // Get the AttributeData for the [InlineArray] attribute on this symbol, we know it's there
-            var inlineArrayAttribute = type.GetAttributes().First(attr => attr.AttributeClass.ToDisplayString(SymbolDisplayFormats.FullyQualified) == "global::System.Runtime.CompilerServices.InlineArrayAttribute");
-            // ...and get its constructor argument
-            var length = (int)inlineArrayAttribute.ConstructorArguments[0].Value;
-            WriteExtensionsForClass(writer, type, typeName, typeNameNullable, field, fieldTypeName, fieldName, length);
+            WriteExtensionsForClass(writer, results[i]);
             writer.WriteLine();
         }
 
@@ -62,23 +102,24 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
         return sb.ToString();
     }
 
-    private static void WriteExtensionsForClass(IndentedTextWriter writer, INamedTypeSymbol type, string typeName, string typeNameNullable, IFieldSymbol field, string fieldTypeName, string fieldName, int length)
+    private static void WriteExtensionsForClass(IndentedTextWriter writer, InlineArrayModel model)
     {
-        writer.WriteLine($"namespace {type.ContainingNamespace.ToDisplayString()}");
+        var typeName = model.TypeName;
+        var typeNameNullable = typeName + '?';
+        var useFieldTypeName = model.ElementTypeName;
+        var typeParams = model.TypeParameterList;
+        var length = model.Length;
+        var fieldName = model.FieldName;
+
+        writer.WriteLine($"namespace {model.Namespace}");
         using (writer.Scope)
         {
             writer.WriteLines(SourceEmitHelper.GeneratedCodeAttribute(typeof(InlineArrayExtensionsGenerator)));
 
             writer.WriteLines(SourceEmitHelper.Summary($"Provides <c>AsSpan</c> extension methods for <see cref=\"{typeName}\"/>."));
-            writer.WriteLine($"public static class {type.Name}Extensions");
+            writer.WriteLine($"public static class {model.SimpleName}Extensions");
             using (writer.Scope)
             {
-                // If the field is a struct and explicitly declared nullable, we'll have to make it nullable in our returns as well
-                var useFieldTypeName = field.Type.NullableAnnotation == NullableAnnotation.Annotated ? fieldTypeName + '?' : fieldTypeName;
-
-                var typeParams = type.TypeParameters.Length > 0
-                    ? $"<{string.Join(", ", type.TypeParameters.Select(p => p.Name))}>"
-                    : "";
                 var typeNameForDoc = typeName.Replace('<', '{').Replace('>', '}');
 
                 // Start with the nullable struct overloads
