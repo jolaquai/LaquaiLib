@@ -20,26 +20,22 @@ internal static class IndentedTextWriterExtensions
             while (ptr < span.Length)
             {
                 var nextNewLine = span.Slice(ptr).IndexOf(newLine);
+                var slice = nextNewLine == -1 ? span.Slice(ptr) : span.Slice(ptr, nextNewLine);
+                // a lone CR is a line terminator in C#, so leaving one behind splits every /// line into its own unterminated doc comment
+                if (slice.Length > 0 && slice[slice.Length - 1] == '\r')
+                {
+                    slice = slice.Slice(0, slice.Length - 1);
+                }
+                for (var i = 0; i < slice.Length; i++)
+                {
+                    itw.Write(slice[i]);
+                }
+                itw.WriteLine();
                 if (nextNewLine == -1)
                 {
-                    var slice = span.Slice(ptr);
-                    for (var i = 0; i < slice.Length; i++)
-                    {
-                        itw.Write(slice[i]);
-                    }
-                    itw.WriteLine();
                     break;
                 }
-                else
-                {
-                    var slice = span.Slice(ptr, nextNewLine);
-                    for (var i = 0; i < slice.Length; i++)
-                    {
-                        itw.Write(slice[i]);
-                    }
-                    itw.WriteLine();
-                    ptr += nextNewLine + 1;
-                }
+                ptr += nextNewLine + 1;
             }
         }
 
