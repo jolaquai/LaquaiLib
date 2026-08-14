@@ -55,10 +55,10 @@ public class EnumExpanderGenerator : IIncrementalGenerator
                 return descAttr?.ConstructorArguments.FirstOrDefault().Value?.ToString() ?? null;
             }).ToArray();
 
+            var assemblyRootNamespace = symbol.ContainingAssembly.Name;
             if (!writtenEnumDataStruct)
             {
                 writtenEnumDataStruct = true;
-                var assemblyRootNamespace = symbol.ContainingAssembly.Name;
                 writer.WriteLine($"namespace {assemblyRootNamespace}");
                 using (writer.Scope)
                 {
@@ -83,8 +83,14 @@ public class EnumExpanderGenerator : IIncrementalGenerator
             writer.WriteLine();
             using var _ = writer.Region(decl.Identifier.Text);
 
-            writer.WriteLine($"namespace {symbol.ContainingNamespace.ToDisplayString()}");
-            using (writer.Scope)
+            // a top-level enum has no namespace to wrap in; ToDisplayString() would emit the literal "<global namespace>"
+            var containingNamespace = symbol.ContainingNamespace;
+            var isGlobalNamespace = containingNamespace.IsGlobalNamespace;
+            if (!isGlobalNamespace)
+            {
+                writer.WriteLine($"namespace {containingNamespace.ToDisplayString()}");
+            }
+            using (isGlobalNamespace ? null : writer.Scope)
             {
                 var accessibility = decl.Modifiers.Any(SyntaxKind.PublicKeyword) ? "public" : decl.Modifiers.Any(SyntaxKind.InternalKeyword) ? "internal" : "internal";
 
@@ -116,7 +122,7 @@ public class EnumExpanderGenerator : IIncrementalGenerator
                     writer.WriteLine("];");
 
                     writer.WriteLines(SourceEmitHelper.Summary($"Gets the data of the enum members of <c>{fqEnumName}</c>."));
-                    writer.WriteLine($"public static EnumFieldData<{fqEnumName}, {fqUnderlying}>[] Data {{ get; }} = [");
+                    writer.WriteLine($"public static global::{assemblyRootNamespace}.EnumFieldData<{fqEnumName}, {fqUnderlying}>[] Data {{ get; }} = [");
                     writer.Indent++;
                     {
                         for (var i = 0; i < names.Length; i++)
