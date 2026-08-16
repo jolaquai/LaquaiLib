@@ -70,9 +70,9 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
         }
 
         var len = x.Length + y.Length;
-        Span<char> chars = len <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : new char[len];
-        var left = chars[..x.Length];
-        var right = chars[x.Length..];
+        scoped var chars = len <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : GC.AllocateUninitializedArray<char>(len);
+        scoped var left = chars[..x.Length];
+        scoped var right = chars[x.Length..];
         _ = x.ToUpperInvariant(left);
         _ = y.ToUpperInvariant(right);
 
@@ -283,7 +283,7 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
         }
 
         // Process from right to left
-        Span<char> upper = roman.Length <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : new char[roman.Length];
+        scoped var upper = roman.Length <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : GC.AllocateUninitializedArray<char>(roman.Length);
         _ = roman.ToUpperInvariant(upper);
         for (var i = roman.Length - 1; i >= 0; i--)
         {
@@ -321,31 +321,35 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     [GeneratedRegex("^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$", RegexOptions.ExplicitCapture)]
     private static partial Regex RomanNumeralRegex();
 
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
     public override bool Equals(string x, string y) => Equals(x.AsSpan(), y.AsSpan());
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(ReadOnlySpan<char> x, ReadOnlySpan<char> y) => Compare(x, y) == 0;
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
     public override int GetHashCode([DisallowNull] string obj) => GetHashCode(obj.AsSpan());
+    /// <inheritdoc/>
     public int GetHashCode([DisallowNull] ReadOnlySpan<char> span)
     {
-        HashCode hashCode = default;
+        HashCode hc = default;
 
         var comp = CharComparer.OrdinalIgnoreCase;
         for (var i = span.Length >= 8 ? span.Length - 8 : 0; i < span.Length; i++)
         {
             if (!_lenient || char.IsLetterOrDigit(span[i]))
             {
-                hashCode.Add(comp.GetHashCode(span[i]));
+                hc.Add(comp.GetHashCode(span[i]));
             }
             else
             {
-                hashCode.Add('\uE000');
+                hc.Add('\uE000');
             }
         }
 
-        return hashCode.ToHashCode();
+        return hc.ToHashCode();
     }
 }
