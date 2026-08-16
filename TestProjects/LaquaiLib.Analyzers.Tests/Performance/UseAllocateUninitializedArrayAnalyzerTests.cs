@@ -15,6 +15,53 @@ public class UseAllocateUninitializedArrayAnalyzerTests
 
     private static Task VerifyNoDiagnostic(string source) => VerifyAnalyzer(source);
 
+    #region well-known metadata struct sizes
+    // Every entry of the table, pinned through the analyzer by its own boundary pair. Both directions break:
+    // a larger entry lowers the threshold and trips the negative case, a smaller one raises it and trips the positive one.
+    [Theory]
+    [InlineData("System.Guid", 16)]
+    [InlineData("System.DateTimeOffset", 16)]
+    [InlineData("System.DateTime", 8)]
+    [InlineData("System.TimeSpan", 8)]
+    [InlineData("System.TimeOnly", 8)]
+    [InlineData("System.Range", 8)]
+    [InlineData("System.DateOnly", 4)]
+    [InlineData("System.Index", 4)]
+    [InlineData("System.Half", 2)]
+    [InlineData("System.Numerics.Matrix4x4", 64)]
+    [InlineData("System.Numerics.Matrix3x2", 24)]
+    [InlineData("System.Numerics.Vector4", 16)]
+    [InlineData("System.Numerics.Quaternion", 16)]
+    [InlineData("System.Numerics.Plane", 16)]
+    [InlineData("System.Numerics.Complex", 16)]
+    [InlineData("System.Numerics.Vector3", 12)]
+    [InlineData("System.Numerics.Vector2", 8)]
+    [InlineData("System.Runtime.Intrinsics.Vector512<int>", 64)]
+    [InlineData("System.Runtime.Intrinsics.Vector256<int>", 32)]
+    [InlineData("System.Runtime.Intrinsics.Vector128<int>", 16)]
+    [InlineData("System.Runtime.Intrinsics.Vector64<int>", 8)]
+    public async Task WellKnownStructSizeIsPinned(string type, int size)
+    {
+        var threshold = 2048 / size;
+        await VerifyAnalyzer(
+            $$"""
+            class C
+            {
+                {{type}}[] M() => {|LAQ0006:new|} {{type}}[{{threshold}}];
+            }
+            """
+        );
+        await VerifyNoDiagnostic(
+            $$"""
+            class C
+            {
+                {{type}}[] M() => new {{type}}[{{threshold - 1}}];
+            }
+            """
+        );
+    }
+    #endregion
+
     #region offered
     // 2048 / 4
     [Fact]
@@ -52,18 +99,6 @@ public class UseAllocateUninitializedArrayAnalyzerTests
             """
         );
 
-    // 2048 / 16, and the reference assembly hands out nothing but a fabricated int field for this one
-    [Fact]
-    public Task GuidAtThreshold()
-        => VerifyAnalyzer(
-            """
-            class C
-            {
-                System.Guid[] M() => {|LAQ0006:new|} System.Guid[128];
-            }
-            """
-        );
-
     [Fact]
     public Task EnumUsesItsUnderlyingType()
         => VerifyAnalyzer(
@@ -72,18 +107,6 @@ public class UseAllocateUninitializedArrayAnalyzerTests
             class C
             {
                 E[] M() => {|LAQ0006:new|} E[256];
-            }
-            """
-        );
-
-    // Unlike Vector<T>, the intrinsic vectors are fixed width, so 2048 / 32 applies
-    [Fact]
-    public Task IntrinsicVectorAtThreshold()
-        => VerifyAnalyzer(
-            """
-            class C
-            {
-                System.Runtime.Intrinsics.Vector256<int>[] M() => {|LAQ0006:new|} System.Runtime.Intrinsics.Vector256<int>[64];
             }
             """
         );
@@ -224,17 +247,6 @@ public class UseAllocateUninitializedArrayAnalyzerTests
             class C
             {
                 long[] M() => new long[255];
-            }
-            """
-        );
-
-    [Fact]
-    public Task GuidBelowThreshold()
-        => VerifyNoDiagnostic(
-            """
-            class C
-            {
-                System.Guid[] M() => new System.Guid[127];
             }
             """
         );
