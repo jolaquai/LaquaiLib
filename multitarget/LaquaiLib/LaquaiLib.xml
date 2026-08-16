@@ -9269,7 +9269,16 @@
         </member>
         <member name="T:LaquaiLib.Collections.SequenceEqualityComparer">
             <summary>
-            Implements a 
+            Implements an <see cref="T:System.Collections.IEqualityComparer"/> that considers two sequences equal if they yield equal elements in the same order.
+            </summary>
+            <remarks>
+            Sequences of unrelated concrete types compare just fine against one another; an <see cref="T:System.Int32"/>[] may equal a <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Int32"/>.
+            Prefer <see cref="T:LaquaiLib.Collections.SequenceEqualityComparer`1"/> whenever the element type is known statically; it avoids boxing every single element.
+            </remarks>
+        </member>
+        <member name="F:LaquaiLib.Collections.SequenceEqualityComparer.Default">
+            <summary>
+            Gets a <see cref="T:LaquaiLib.Collections.SequenceEqualityComparer"/> that compares elements the way <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> for <see cref="T:System.Object"/> does.
             </summary>
         </member>
         <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Create(System.Collections.IEqualityComparer)">
@@ -9282,9 +9291,6 @@
         <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Collections.IEnumerable,System.Collections.IEnumerable)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Array,System.Array)">
-            <inheritdoc/>
-        </member>
         <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Collections.IList,System.Collections.IList)">
             <inheritdoc/>
         </member>
@@ -9294,7 +9300,16 @@
         <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Object,System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.EqualsSlow(System.Collections.IEnumerable,System.Collections.IEnumerable)">
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.Equals(System.Array,System.Array)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.EqualsCore(System.Object,System.Object)">
+            <summary>
+            Determines sequence equality between two objects, narrowing to the most specific shape both of them expose.
+            </summary>
+            <exception cref="T:System.NotSupportedException">Thrown when neither <paramref name="x"/> nor <paramref name="y"/> is enumerable.</exception>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.EnumerablesEqual(System.Collections.IEnumerable,System.Collections.IEnumerable)">
             <summary>
             Determines sequence equality by advancing enumerators for both <see cref="T:System.Collections.IEnumerable"/>s simultaneously and comparing each element at corresponding positions in the sequence.
             </summary>
@@ -9314,9 +9329,81 @@
         <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.GetHashCode(System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.HashEnumerator(System.Collections.IEnumerator)">
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer.HashCore(System.Object)">
             <summary>
-            Uses <see cref="T:System.HashCode"/> to combine every element the specified <paramref name="enumerator"/> visits while it is enumerated.
+            Combines the hash codes of every element of <paramref name="obj"/> in order.
+            </summary>
+            <exception cref="T:System.NotSupportedException">Thrown when <paramref name="obj"/> is not enumerable.</exception>
+        </member>
+        <member name="T:LaquaiLib.Collections.SequenceEqualityComparer`1">
+            <summary>
+            Implements an <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> that considers two sequences of <typeparamref name="T"/> equal if they yield equal elements in the same order.
+            </summary>
+            <typeparam name="T">The type of the elements of the sequences to compare.</typeparam>
+            <remarks>
+            Sequences of unrelated concrete types compare just fine against one another; a <typeparamref name="T"/>[] may equal a <see cref="T:System.Collections.Generic.List`1"/>.
+            </remarks>
+        </member>
+        <member name="F:LaquaiLib.Collections.SequenceEqualityComparer`1.Default">
+            <summary>
+            Gets a <see cref="T:LaquaiLib.Collections.SequenceEqualityComparer`1"/> that compares elements using <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.Create(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>
+            Creates a <see cref="T:LaquaiLib.Collections.SequenceEqualityComparer`1"/> that uses the specified <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to compare the elements of the sequences.
+            </summary>
+            <param name="inner">The <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to use to compare the elements of the sequences.</param>
+            <returns>The created <see cref="T:LaquaiLib.Collections.SequenceEqualityComparer`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.Equals(`0[],`0[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.Equals(System.Collections.Generic.List{`0},System.Collections.Generic.List{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.Equals(System.Collections.Generic.IList{`0},System.Collections.Generic.IList{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.Equals(System.Collections.Generic.ICollection{`0},System.Collections.Generic.ICollection{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.Equals(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.GetHashCode(`0[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.GetHashCode(System.Collections.Generic.List{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.GetHashCode(System.Collections.Generic.IList{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.GetHashCode(System.Collections.Generic.ICollection{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.GetHashCode(System.Collections.Generic.IEnumerable{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceEqualityComparer`1.HashCore(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Combines the hash codes of every element of <paramref name="obj"/> in order.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceHelpers.GetBitwiseElementSize(System.Type)">
+            <summary>
+            Returns the element size of <paramref name="arrayType"/> if its elements compare equal exactly when their bytes do, otherwise 0.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceHelpers.GetBitwiseSize(System.Type)">
+            <summary>
+            Returns the size of <paramref name="type"/> if its values compare equal exactly when their bytes do, otherwise 0.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.SequenceHelpers.BytesEqual(System.Byte@,System.Byte@,System.Int64)">
+            <summary>
+            Compares <paramref name="byteCount"/> bytes at <paramref name="left"/> and <paramref name="right"/>, chunked so that counts beyond <see cref="F:System.Int32.MaxValue"/> still work.
             </summary>
         </member>
         <member name="T:LaquaiLib.Collections.TwoWayLookup`2">
