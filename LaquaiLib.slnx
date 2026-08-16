@@ -21,6 +21,7 @@
         <File Path="TestProjects/.editorconfig" />
         <Project Path="TestProjects\LaquaiLib.Analyzers.Tests\LaquaiLib.Analyzers.Tests.csproj" />
         <Project Path="TestProjects\LaquaiLib.Generators.RuntimeTests\LaquaiLib.Generators.RuntimeTests.csproj" />
+        <Project Path="TestProjects\LaquaiLib.Generators.RuntimeTests.External\LaquaiLib.Generators.RuntimeTests.External.csproj" />
         <Project Path="TestProjects\LaquaiLib.Generators.Tests\LaquaiLib.Generators.Tests.csproj" />
         <Project Path="TestProjects\LaquaiLib.UnitTests\LaquaiLib.UnitTests.csproj" />
     </Folder>

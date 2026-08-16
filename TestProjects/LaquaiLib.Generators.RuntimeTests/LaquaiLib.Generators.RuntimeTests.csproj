@@ -15,7 +15,8 @@
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
 
         <!-- Fixture types deliberately declare unused private members for the generator to reach; these diagnostics are the point, not a defect. -->
-        <NoWarn>$(NoWarn);CS0169;CS0414;CS0649;CS0067;IDE0051;IDE0052;CA1822;CA1852</NoWarn>
+        <!-- SYSLIB0050: StringBuilderProxy forwards StringBuilder's explicit ISerializable.GetObjectData implementation verbatim, which is the obsolete formatter-based serialization API. -->
+        <NoWarn>$(NoWarn);CS0169;CS0414;CS0649;CS0067;IDE0051;IDE0052;CA1822;CA1852;SYSLIB0050</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -29,6 +30,9 @@
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
         <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+
+        <!-- Plain data assembly with no InternalsVisibleTo grant; exercises genuine cross-assembly erasure. -->
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\LaquaiLib.Generators.RuntimeTests.External\LaquaiLib.Generators.RuntimeTests.External.csproj" />
 
         <Using Include="Xunit" />
         <Using Include="LaquaiLib.Analyzers.Shared.Attributes" />

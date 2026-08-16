@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net11.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <LangVersion>preview</LangVersion>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+
+        <!-- Fixture types deliberately declare unused private members for the generator to reach; these diagnostics are the point, not a defect. -->
+        <NoWarn>$(NoWarn);CS0169;CS0414;CS0649;CS0067;IDE0051;IDE0052;CA1822;CA1852</NoWarn>
+    </PropertyGroup>
+
+</Project>
