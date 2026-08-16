@@ -45,4 +45,10 @@ public sealed class FullAccessProxyAttribute : Attribute
     /// Gets the <see cref="Type"/> instance representing the type being proxied.
     /// </summary>
     public Type Proxied { get; }
+
+    /// <summary>
+    /// Gets or sets whether members whose signatures involve types that cannot be named from the proxying assembly should still be proxied, with those types erased to <see cref="object"/> (or <c>void*</c> for pointers).
+    /// <para/>This relies on <c>UnsafeAccessorTypeAttribute</c> and therefore cannot cover every member: fields, events, <see langword="ref"/>-returning members, function pointers and anything involving an inaccessible value type remain unproxyable. Binding failures for erased members surface as runtime exceptions on first call rather than as compilation errors.
+    /// </summary>
+    public bool IncludeInaccessible { get; set; }
 }
