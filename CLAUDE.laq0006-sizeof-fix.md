@@ -120,9 +120,12 @@ Also verified: `struct Empty {}` is 1 byte; `struct S { Empty a; int c; }` is 8,
 
 ## Status: COMPLETE
 
-Solution builds clean (0 errors; the 220 warnings are pre-existing XML-doc noise in `multitarget/LaquaiLib`, none from the touched files). `dotnet test TestProjects/LaquaiLib.Analyzers.Tests` is 74/74 green, 31 of them the new LAQ0006 tests.
+Solution builds clean (0 errors; the 220 warnings are pre-existing XML-doc noise in `multitarget/LaquaiLib`, none from the touched files). `dotnet test TestProjects/LaquaiLib.Analyzers.Tests` is 92/92 green, 49 of them LAQ0006 (28 facts plus the 21 cases of `WellKnownStructSizeIsPinned`).
 
-Sensitivity checked by mutation: forcing metadata structs back through the field walk fails exactly `HalfIsNotFourBytes`, `KeyValuePairIsNotFieldWalked`, `NullableIsUnderlyingPlusAFlag`, `GuidAtThreshold` and `IntrinsicVectorAtThreshold`, which is the ref-assembly regression class this change exists to kill.
+Sensitivity checked by mutation twice:
+
+- Forcing metadata structs back through the field walk fails exactly the metadata-sensitive cases (`HalfIsNotFourBytes`, `KeyValuePairIsNotFieldWalked`, `NullableIsUnderlyingPlusAFlag`, and the Guid and Vector256 boundaries), which is the ref-assembly regression class this change exists to kill. Run before the Guid and Vector256 facts were folded into the theory.
+- Perturbing one table entry (`Matrix3x2` 24 to 25) fails exactly that one theory case and nothing else.
 
 ## Work done in the first pass (builds clean, 0 warnings, 0 errors)
 
@@ -156,7 +159,7 @@ Sensitivity checked by mutation: forcing metadata structs back through the field
 
 ### 4. Tests
 
-`TestProjects/LaquaiLib.Analyzers.Tests/Performance/UseAllocateUninitializedArrayAnalyzerTests.cs`, 31 tests, house style as specified. csproj gained the two 1.1.4 testing packages and the `ProjectReference` to `LaquaiLib.Analyzers`.
+`TestProjects/LaquaiLib.Analyzers.Tests/Performance/UseAllocateUninitializedArrayAnalyzerTests.cs`, house style as specified. csproj gained the two 1.1.4 testing packages and the `ProjectReference` to `LaquaiLib.Analyzers`.
 
 Everything on the case list is covered. Notes on the ones that needed a specific shape:
 
@@ -173,3 +176,14 @@ dotnet test TestProjects/LaquaiLib.Analyzers.Tests
 ```
 
 MTP is the runner. Do not pass `--logger` or any other VSTest-only flag. Note `dotnet test --nologo` makes the runner print its help and exit 5; drop the flag.
+
+## Follow-ups done after the plan closed
+
+- Deleted the uncalled `Helpers` members (`GetArraySizes`, `ReportAll`, `HasNonSpanUsageAsync` and its three private helpers, `GetArraySymbolWithTypeCheck` and its two), 224 lines. `HasNonSpanUsageAsync` looked like an abandoned attempt at gating the fix on whether the buffer is only ever used as a span; that gate was considered and rejected, since a scratch buffer handed out as `Memory<T>` is exactly the case worth optimizing and any escape-analysis guard would reject it. The burden of "initial contents are irrelevant" stays on the caller, which is what the diagnostic description already says.
+- Added `WellKnownStructSizeIsPinned`, a boundary-pair theory over all 21 table entries. It pins the table against accidental edits, not against BCL drift. Note that no entry is load-bearing for soundness: drop the table and poisoned types fall to -1 via the `_dummy` detector while clean ones fall to `max(fieldSize)`, both lower bounds. A stale entry is only dangerous if a BCL struct shrinks, which is an ABI break.
+
+## Known limits, deliberately not addressed
+
+- Non-BCL metadata structs get `max(fieldSize)`, which underestimates badly (a 5-field sequential struct reads as its widest field). `StructLayout` and `FieldOffset` are pseudo-custom attributes with no public Roslyn surface, so nothing stronger is sound. Reading `ClassLayout` via `ModuleMetadata.GetMetadataReader()` does not rescue this, since the ref-assembly metadata is the poisoned thing being read. Missed suggestions only.
+- `Platform.AnyCpu` maps to a 4-byte pointer. There is no honest way to learn the bitness from inside the analyzer; the only correct mechanism is a shipped `.props` with `CompilerVisibleProperty` for `PlatformTarget`, which is disproportionate here. The exposure is narrow: `IsUnmanagedType` excludes reference fields and the analyzer rejects ref structs, so it only affects structs containing `nint`, `nuint` or raw pointers, at lengths between the 4-byte and 8-byte thresholds.
+- When the cycle set cuts a CS0523 self-referential struct, the partially computed size is still cached, so a later query for the inner type returns the poisoned value. Only reachable in code that does not compile.
