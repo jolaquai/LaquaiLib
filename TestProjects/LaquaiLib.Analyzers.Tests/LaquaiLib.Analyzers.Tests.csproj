@@ -13,12 +13,15 @@
 
   <ItemGroup>
       <PackageReference Include="xunit.v3" Version="3.2.2" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.4" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing" Version="1.1.4" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
       <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" />
   </ItemGroup>
 
   <ItemGroup>
+      <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" ReferenceOutputAssembly="true" />
       <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" ReferenceOutputAssembly="true" />
 
       <Using Include="Xunit" />
