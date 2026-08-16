@@ -63,8 +63,6 @@
       <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
       <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
 
-      <InternalsVisibleTo Include="LaquaiLib.EF" />
-      <InternalsVisibleTo Include="LaquaiLib.Oxml" />
       <InternalsVisibleTo Include="LaquaiLib.Windows" />
 
       <InternalsVisibleTo Include="LaquaiLib.UnitTests" />

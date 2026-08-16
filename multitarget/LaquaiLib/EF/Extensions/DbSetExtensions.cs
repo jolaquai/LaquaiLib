@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.EF.Extensions;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace LaquaiLib.EF.Extensions;
 
 /// <summary>
 /// Provides Extension Methods for the <see cref="DbSet{TEntity}"/> Type.
