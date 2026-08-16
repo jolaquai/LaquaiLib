@@ -23,6 +23,20 @@ internal static class SourceEmitHelper
     public const string UnsafeAccessor_Ctor = "[global::System.Runtime.CompilerServices.UnsafeAccessor(global::System.Runtime.CompilerServices.UnsafeAccessorKind.Constructor)]";
     public const string MethodImpl_AggressiveInlining = "[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]";
 
+    /// <summary>
+    /// Renders an <c>[UnsafeAccessorType]</c> attribute for a parameter position, including the trailing space.
+    /// </summary>
+    public static string UnsafeAccessorTypeParameter(string metadataName)
+        => $"[global::System.Runtime.CompilerServices.UnsafeAccessorType(\"{EscapeStringLiteral(metadataName)}\")] ";
+    /// <summary>
+    /// Renders an <c>[UnsafeAccessorType]</c> attribute for a return value position.
+    /// </summary>
+    public static string UnsafeAccessorTypeReturn(string metadataName)
+        => $"[return: global::System.Runtime.CompilerServices.UnsafeAccessorType(\"{EscapeStringLiteral(metadataName)}\")]";
+
+    // metadata names may legitimately contain backslashes (the reflection-name escape character); nothing else needs escaping since identifiers can't contain quotes
+    private static string EscapeStringLiteral(string value) => value.IndexOf('\\') < 0 ? value : value.Replace("\\", "\\\\");
+
     public static string GeneratedCodeAttribute(Type type) => $"""
         [global::System.CodeDom.Compiler.GeneratedCode("{type.FullName}", "{_ownAsmName.Version}")]
         [global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

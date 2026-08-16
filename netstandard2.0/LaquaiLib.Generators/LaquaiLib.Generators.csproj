@@ -2,7 +2,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-      <None Remove="bin\Debug\netstandard2.0\\LaquaiLib.Generators.dll" />
+        <None Remove="bin\Debug\netstandard2.0\\LaquaiLib.Generators.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="LaquaiLib.Generators.Tests" />
     </ItemGroup>
 
     <ItemGroup>
