@@ -2,6 +2,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Refactorings %284XXX%29\**" />
+    <EmbeddedResource Remove="Refactorings %284XXX%29\**" />
+    <None Remove="Refactorings %284XXX%29\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.dll" />
   </ItemGroup>
 
@@ -11,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Refactorings %284XXX%29\" />
     <Folder Include="Reliability %282XXX%29\" />
   </ItemGroup>
 
