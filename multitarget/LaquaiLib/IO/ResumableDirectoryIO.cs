@@ -282,7 +282,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
                 destStream.Position = fileState.BytesCopied;
             }
 
-            var buffer = new byte[BufferSize];
+            var buffer = GC.AllocateUninitializedArray<byte>(BufferSize);
             int bytesRead;
 
             // Copy the file in chunks

@@ -695,7 +695,7 @@ public static partial class FileSystemHelper
                 using var destStream = new FileStream(destFile, FileMode.Create);
 
                 const int size = 1 << 16;
-                Span<byte> buffer = size <= Config.MaxStackallocSize ? stackalloc byte[size] : new byte[size];
+                scoped var buffer = size <= Config.MaxStackallocSize ? stackalloc byte[size] : GC.AllocateUninitializedArray<byte>(size);
                 uint bytesRead = 0;
                 var context = nint.Zero;
                 var inDataStream = false;
