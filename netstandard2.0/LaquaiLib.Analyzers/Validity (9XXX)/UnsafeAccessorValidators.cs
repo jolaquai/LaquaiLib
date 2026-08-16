@@ -171,6 +171,35 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
     }
 
+    private const string UnsafeAccessorTypeAttributeName = "System.Runtime.CompilerServices.UnsafeAccessorTypeAttribute";
+    /// <summary>
+    /// Determines whether any position of <paramref name="method"/> carries <c>[UnsafeAccessorType]</c>, which decouples the declared type from the one the runtime binds against.
+    /// </summary>
+    private static bool HasErasedTypes(IMethodSymbol method)
+    {
+        var returnAttributes = method.GetReturnTypeAttributes();
+        for (var i = 0; i < returnAttributes.Length; i++)
+        {
+            if (returnAttributes[i].AttributeClass?.ToDisplayString() == UnsafeAccessorTypeAttributeName)
+            {
+                return true;
+            }
+        }
+        var parameters = method.Parameters;
+        for (var i = 0; i < parameters.Length; i++)
+        {
+            var attributes = parameters[i].GetAttributes();
+            for (var k = 0; k < attributes.Length; k++)
+            {
+                if (attributes[k].AttributeClass?.ToDisplayString() == UnsafeAccessorTypeAttributeName)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
     {
         var uaaMethodDeclarationSyntax = Unsafe.As<MethodDeclarationSyntax>(context.Node);
@@ -192,6 +221,12 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         }
 
         if (uaaMethodSymbol.GetAttributes().FirstOrDefault(attr => attr.AttributeClass.ToDisplayString() == "System.Runtime.CompilerServices.UnsafeAccessorAttribute") is not { } uaaData)
+        {
+            return;
+        }
+
+        // [UnsafeAccessorType] replaces a declared type with a reflection name resolved at runtime, so the declared signature deliberately no longer matches the target's
+        if (HasErasedTypes(uaaMethodSymbol))
         {
             return;
         }
@@ -443,22 +478,32 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
         return true;
     }
+    /// <summary>
+    /// Constructs <paramref name="method"/> over <paramref name="typeParameters"/> when arities match, so its own type parameters become symbol-comparable against the accessor's.
+    /// </summary>
+    private static IMethodSymbol SubstituteTypeParameters(IMethodSymbol method, ImmutableArray<ITypeParameterSymbol> typeParameters)
+        => method.TypeParameters.Length > 0 && method.TypeParameters.Length == typeParameters.Length
+            ? method.Construct(typeParameters.CastArray<ITypeSymbol>().ToArray())
+            : method;
     private static bool CheckMethodsRoslyn(SyntaxNodeAnalysisContext context, Location reportLocation, string memberName, ImmutableArray<ITypeParameterSymbol> uaaTypeParameters, IParameterSymbol uaaThisParam, ITypeSymbol targetTypeSymbol, ITypeSymbol uaaReturnTypeSymbol, ImmutableArray<IParameterSymbol> uaaRestParams, string signatureString, IMethodSymbol[] methodSymbols)
     {
         // Intentionally omitting type parameter check here so we can later differentiate between missing method and type parameter mismatch
-        var targetMethodSymbol = methodSymbols.FirstOrDefault(m =>
+        // Construct same-arity generic candidates over the accessor's own type parameters first, so symbol comparison below is meaningful
+        // (an ITypeParameterSymbol from the target's declaration is never SymbolEqualityComparer-equal to the accessor's own)
+        var substitutedMethods = methodSymbols.Select(m => SubstituteTypeParameters(m, uaaTypeParameters)).ToArray();
+        var targetMethodSymbol = substitutedMethods.FirstOrDefault(m =>
             m.Parameters.Select(p => p.Type).SequenceEqual(uaaRestParams.Select(p => p.Type), SymbolEqualityComparer.Default)
             && SymbolEqualityComparer.Default.Equals(uaaReturnTypeSymbol, m.ReturnType)
         );
-        targetMethodSymbol ??= methodSymbols.FirstOrDefault(m =>
+        targetMethodSymbol ??= substitutedMethods.FirstOrDefault(m =>
             m.Parameters.Select(p => p.Type).SequenceEqual(uaaRestParams.Select(p => p.Type), SymbolEqualityComparer.Default)
         );
 
         if (targetMethodSymbol is not null)
         {
-            // Check for mismatched type parameters
-            var requiredTypeParams = targetMethodSymbol.TypeParameters;
-            if (!ImmutableArrayExtensions.SequenceEqual(requiredTypeParams, uaaTypeParameters, SymbolEqualityComparer.Default))
+            // Check for mismatched type parameters - read off the original definition since targetMethodSymbol may be a constructed substitution
+            var requiredTypeParams = targetMethodSymbol.OriginalDefinition.TypeParameters;
+            if (!TypeParametersEqual(requiredTypeParams, uaaTypeParameters))
             {
                 var reqNames = requiredTypeParams.Length == 0 ? "none" : $"<{string.Join(", ", requiredTypeParams.Select(tp => tp.ToDisplayString()))}>";
                 var actualNames = uaaTypeParameters.Length == 0 ? "none" : $"<{string.Join(", ", uaaTypeParameters.Select(tp => tp.ToDisplayString()))}>";
@@ -612,11 +657,12 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
         // We want type parameters, not arguments
         var requiredTypeParams = (targetType.IsConstructedGenericType ? targetType.GetGenericTypeDefinition() : targetType).GetGenericArguments();
+        var containingTypeTypeParams = uaaMethodSymbol.ContainingType.TypeParameters;
 
-        if (!TypeParametersEqual(requiredTypeParams, uaaTypeParameters))
+        if (!TypeParametersEqual(requiredTypeParams, containingTypeTypeParams))
         {
             var reqNames = requiredTypeParams.Length == 0 ? "none" : $"<{string.Join(", ", requiredTypeParams.Select(tp => tp.ToDisplayString()))}>";
-            var actualNames = uaaTypeParameters.Length == 0 ? "none" : $"<{string.Join(", ", uaaTypeParameters.Select(tp => tp.ToDisplayString()))}>";
+            var actualNames = containingTypeTypeParams.Length == 0 ? "none" : $"<{string.Join(", ", containingTypeTypeParams.Select(tp => tp.ToDisplayString()))}>";
 
             var containingTypeDecl = uaaMethodDeclarationSyntax.FirstAncestorOrSelf<TypeDeclarationSyntax>();
             IEnumerable<Location> moreLocs = [];
@@ -677,11 +723,13 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     private static bool CheckMethodsReflection(SyntaxNodeAnalysisContext context, Location reportLocation, IMethodSymbol uaaMethodSymbol, string memberName, ImmutableArray<ITypeParameterSymbol> typeParameters, IParameterSymbol thisParam, Type targetType, ITypeSymbol uaaReturnType, ImmutableArray<IParameterSymbol> restParams, string signatureString, MethodInfo[] methodInfos)
     {
         // Intentionally omitting type parameter check here so we can later differentiate between missing method and type parameter mismatch
-        var targetMethodInfo = methodInfos.FirstOrDefault(m =>
+        // Restrict candidates to matching generic arity up front, otherwise a same-named non-matching-arity overload could win by accident
+        var candidateMethodInfos = methodInfos.Where(m => (m.IsGenericMethod ? m.GetGenericArguments().Length : 0) == typeParameters.Length).ToArray();
+        var targetMethodInfo = candidateMethodInfos.FirstOrDefault(m =>
             ParametersEqual(m.GetParameters(), restParams, context.SemanticModel)
             && TypesEqual(m.ReturnType, uaaReturnType, context.SemanticModel)
         );
-        targetMethodInfo ??= methodInfos.FirstOrDefault(m =>
+        targetMethodInfo ??= candidateMethodInfos.FirstOrDefault(m =>
             ParametersEqual(m.GetParameters(), restParams, context.SemanticModel)
         );
         // No arbitrary same-named-overload fallback here: falling through to the 'else' branch below
@@ -750,10 +798,56 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         return true;
     }
 
-    // Quick check using SymbolEqualityComparer takes care of type parameters
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// <summary>
+    /// Structurally compares two sets of Roslyn type parameters, which may come from unrelated declarations
+    /// (so <see cref="SymbolEqualityComparer"/> never matches them), by arity, variance and constraints.
+    /// </summary>
     private static bool TypeParametersEqual(ImmutableArray<ITypeParameterSymbol> expected, ImmutableArray<ITypeParameterSymbol> actualSymbols)
-        => ImmutableArrayExtensions.SequenceEqual(expected, actualSymbols, SymbolEqualityComparer.Default);
+    {
+        if (expected.Length != actualSymbols.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < expected.Length; i++)
+        {
+            var expectedParam = expected[i];
+            var actualParam = actualSymbols[i];
+
+            if (expectedParam.Ordinal != actualParam.Ordinal
+                || expectedParam.Variance != actualParam.Variance
+                || expectedParam.HasReferenceTypeConstraint != actualParam.HasReferenceTypeConstraint
+                || expectedParam.HasValueTypeConstraint != actualParam.HasValueTypeConstraint
+                || expectedParam.HasUnmanagedTypeConstraint != actualParam.HasUnmanagedTypeConstraint
+                || expectedParam.HasNotNullConstraint != actualParam.HasNotNullConstraint
+                || expectedParam.HasConstructorConstraint != actualParam.HasConstructorConstraint
+                || expectedParam.AllowsRefLikeType != actualParam.AllowsRefLikeType)
+            {
+                return false;
+            }
+
+            if (!ConstraintTypesEqual(expectedParam.ConstraintTypes, actualParam.ConstraintTypes))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    // Constraint types come from unrelated declarations too; type parameter constraints compare by ordinal+kind, everything else by display string
+    private static bool ConstraintTypesEqual(ImmutableArray<ITypeSymbol> expected, ImmutableArray<ITypeSymbol> actual)
+    {
+        if (expected.Length != actual.Length)
+        {
+            return false;
+        }
+
+        static string Key(ITypeSymbol t) => t is ITypeParameterSymbol tp ? $"#{tp.Ordinal}:{tp.TypeParameterKind}" : t.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        var expectedKeys = expected.Select(Key).OrderBy(x => x, StringComparer.Ordinal);
+        var actualKeys = actual.Select(Key).OrderBy(x => x, StringComparer.Ordinal);
+        return expectedKeys.SequenceEqual(actualKeys, StringComparer.Ordinal);
+    }
     /// <summary>
     /// Compares two sets of type parameters for equality, including count, type matches, variance and constraints.
     /// </summary>
@@ -767,7 +861,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         }
 
         var asRtTypes = actualSymbols.Select(s => s.RuntimeType).ToArray();
-        var allTypesResolved = asRtTypes.Any(t => t is null);
+        var allTypesResolved = asRtTypes.All(t => t is not null);
 
         // Handle generic type parameters when the symbols cannot be resolved to runtime Types
         // This unfortunately requires us to do all the checks [UnsafeAccessor] does at runtime right here
@@ -890,8 +984,10 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
         if (reflectionType.IsGenericParameter)
         {
+            // Position alone isn't enough: a type's 0th type parameter and a method's 0th type parameter are distinct positions
             return symbol is ITypeParameterSymbol typeParamSymbol
-                && typeParamSymbol.Ordinal == reflectionType.GenericParameterPosition;
+                && typeParamSymbol.Ordinal == reflectionType.GenericParameterPosition
+                && (reflectionType.DeclaringMethod is not null) == (typeParamSymbol.TypeParameterKind == TypeParameterKind.Method);
         }
 
         if (reflectionType.IsGenericType)
