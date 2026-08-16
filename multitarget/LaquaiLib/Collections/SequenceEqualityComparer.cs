@@ -167,7 +167,7 @@ public sealed class SequenceEqualityComparer : IEqualityComparer<ICollection>, I
         if (obj is null)
             return 0;
 
-        var hc = new HashCode();
+        HashCode hc = default;
         switch (obj)
         {
             case object[] array:
@@ -356,7 +356,7 @@ public sealed class SequenceEqualityComparer<T> : IEqualityComparer<T[]>, IEqual
         if (obj is null)
             return 0;
 
-        var hc = new HashCode();
+        HashCode hc = default;
         if (TryGetSpan(obj, out var span))
             for (var i = 0; i < span.Length; i++)
             {

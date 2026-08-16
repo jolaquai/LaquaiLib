@@ -787,7 +787,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
     public override int GetHashCode()
     {
         var n = EffectiveWordCount();
-        var hc = new HashCode();
+        HashCode hc = default;
         // Hash IsNegative (not Signed) so equal values hash equally: a non-negative value hashes the same
         // whether or not Signed is set, keeping the hash contract consistent with Equals.
         hc.Add(IsNegative);
