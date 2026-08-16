@@ -12475,14 +12475,14 @@
             Gets a <see cref="T:LaquaiLib.Text.CharComparer"/> that performs a case-insensitive ordinal comparison.
             </summary>
         </member>
-        <member name="T:LaquaiLib.Text.Json.DateTimeFromUnixConverter">
+        <member name="T:LaquaiLib.Text.Json.DateTimeUnixConverter">
             <summary>
             Implements a <see cref="T:System.Text.Json.Serialization.JsonConverter`1"/> that is able to serialize and deserialize <see cref="T:System.DateTime"/> values as Unix timestamps.
             </summary>
         </member>
         <member name="T:LaquaiLib.Text.Json.FlexibleUnmanagedTypeConverter`1">
             <summary>
-            Implements a <see cref="T:System.Text.Json.Serialization.JsonConverter`1"/> that is able to serialize and deserialize most numeric or otherwise <see cref="T:System.IParsable`1"/> and <see cref="T:System.IConvertible"/> values.
+            Implements a <see cref="T:System.Text.Json.Serialization.JsonConverter`1"/> that is able to serialize and deserialize most numeric or other values that are either <see cref="T:System.IUtf8SpanParsable`1"/>, <see cref="T:System.ISpanParsable`1"/>, <see cref="T:System.IUtf8SpanFormattable"/>, <see cref="T:System.ISpanFormattable"/>, <see cref="T:System.IParsable`1"/> or <see cref="T:System.IConvertible"/> values.
             </summary>
             <typeparam name="T">The type of the value to convert.</typeparam>
         </member>
@@ -12600,6 +12600,18 @@
             ○ Match if at the end of the string or if before an ending newline.<br/>
             </code>
             </remarks>
+        </member>
+        <member name="M:LaquaiLib.Util.NaturalStringComparer.Equals(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.NaturalStringComparer.Equals(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.NaturalStringComparer.GetHashCode(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Util.NaturalStringComparer.GetHashCode(System.ReadOnlySpan{System.Char})">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.Util.ArrayHelper">
             <summary>

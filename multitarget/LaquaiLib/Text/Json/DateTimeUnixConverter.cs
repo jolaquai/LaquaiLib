@@ -5,7 +5,7 @@ namespace LaquaiLib.Text.Json;
 /// <summary>
 /// Implements a <see cref="JsonConverter{T}"/> that is able to serialize and deserialize <see cref="DateTime"/> values as Unix timestamps.
 /// </summary>
-public class DateTimeFromUnixConverter : JsonConverter<DateTime>
+public class DateTimeUnixConverter : JsonConverter<DateTime>
 {
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

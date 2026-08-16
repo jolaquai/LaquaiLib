@@ -92,7 +92,7 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
         }
 
         var receiver = GetReceiver(semanticModel, arrayCreation.SpanStart, gc);
-        return [new CodeActionInfo("Change to GC.AllocateUninitializedArray", editor => ReplaceWithAllocateUninitializedArrayAsync(editor, arrayCreation, elementType, size, receiver), "ChangeToAllocateUninitializedArray")];
+        return [new CodeActionInfo("Change to 'GC.AllocateUninitializedArray'", editor => ReplaceWithAllocateUninitializedArrayAsync(editor, arrayCreation, elementType, size, receiver), "ChangeToAllocateUninitializedArray")];
     }
 
     /// <summary>
@@ -132,12 +132,12 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
                 return [];
             }
         }
-        if (length is null || GetTypeArgument(invocation.Expression) is not { } elementType)
+        if (length is null || GetTypeArgument(invocation.Expression) is not TypeSyntax elementType)
         {
             return [];
         }
 
-        return [new CodeActionInfo("Use zero-initializing array creation", editor => ReplaceWithArrayCreationAsync(editor, invocation, elementType, length), "UseZeroInitializingArrayCreation")];
+        return [new CodeActionInfo($"Change to 'new {elementType}[]'", editor => ReplaceWithArrayCreationAsync(editor, invocation, elementType, length), "ChangeToZeroInitializingArrayCreation")];
     }
 
     /// <summary>

@@ -14,9 +14,7 @@ public sealed class AsyncManualResetEvent(bool signaled = false)
     {
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         if (set)
-        {
             tcs.SetResult();
-        }
         return tcs;
     }
 
@@ -47,9 +45,7 @@ public sealed class AsyncManualResetEvent(bool signaled = false)
     {
         var currentTcs = _tcs;
         if (currentTcs.Task.IsCompleted)
-        {
             Interlocked.CompareExchange(ref _tcs, CreateTcs(false), currentTcs);
-        }
     }
 
     /// <summary>
