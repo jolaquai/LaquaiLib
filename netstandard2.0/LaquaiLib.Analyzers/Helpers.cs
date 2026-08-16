@@ -150,7 +150,7 @@ internal static class Helpers
             });
 
         // Get parent nodes that represent assignments or conversions
-        return identifiers.Select(id => id.Parent).ToArray();
+        return [.. identifiers.Select(id => id.Parent)];
     }
     private static bool IsConvertedToNonSpan(SyntaxNode node, SemanticModel semanticModel)
     {

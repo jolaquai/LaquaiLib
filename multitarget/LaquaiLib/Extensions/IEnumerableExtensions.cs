@@ -691,7 +691,7 @@ public static partial class IEnumerableExtensions
             }
 
             equalityComparer ??= EqualityComparer<T>.Default;
-            var enumerated = sequence as T[] ?? sequence.ToArray();
+            var enumerated = sequence as T[] ?? [.. sequence];
             if (enumerated.Length == 0)
             {
                 return 0;

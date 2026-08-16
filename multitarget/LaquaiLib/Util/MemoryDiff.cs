@@ -109,6 +109,6 @@ public static class MemoryDiff
             diffs.Add(pos++);
         }
 
-        return diffs.ToArray();
+        return [.. diffs];
     }
 }

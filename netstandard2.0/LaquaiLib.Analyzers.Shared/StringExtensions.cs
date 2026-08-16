@@ -13,7 +13,7 @@ public static class StringExtensions
         { '&', "&amp;" },
         { '"', "&quot;" },
     }.ToFrozenDictionary();
-    private static readonly char[] _escapeChars = _xmlEscapeDict.Keys.ToArray();
+    private static readonly char[] _escapeChars = [.. _xmlEscapeDict.Keys];
 
     extension(string str)
     {

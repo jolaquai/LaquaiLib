@@ -312,7 +312,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
     // We can cache these since we're not like ExpandoObject
     private HashSet<string> _dynamicMemberNames;
     /// <inheritdoc/>
-    public override IEnumerable<string> GetDynamicMemberNames() => _dynamicMemberNames ??= _instanceType.GetMembers(bindingFlags).Select(static p => p.Name).ToHashSet();
+    public override IEnumerable<string> GetDynamicMemberNames() => _dynamicMemberNames ??= [.. _instanceType.GetMembers(bindingFlags).Select(static p => p.Name)];
 
     /// <summary>
     /// Returns the underlying <typeparamref name="T"/> instance.

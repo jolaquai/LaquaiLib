@@ -253,7 +253,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             }
         }
 
-        return SortDeterministically(result.ToArray());
+        return SortDeterministically([.. result]);
     }
     /// <summary>
     /// Imposes a total order on the collected members. The emitted source text <i>is</i> the incremental cache key and erasure collisions are resolved first-wins, so neither may depend on Roslyn's enumeration order.
@@ -314,7 +314,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 result.Add(all[i]);
             }
         }
-        return result.ToArray();
+        return [.. result];
     }
     private static bool CanForwardAllMembers(INamedTypeSymbol iface)
     {
@@ -670,7 +670,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             _lineSpan = lineSpan;
         }
 
-        public EquatableArray<ProxyDiagnosticInfo> DiagnosticsArray => new EquatableArray<ProxyDiagnosticInfo>(_diagnostics.ToImmutableArray());
+        public EquatableArray<ProxyDiagnosticInfo> DiagnosticsArray => new EquatableArray<ProxyDiagnosticInfo>([.. _diagnostics]);
 
         private void Report(string id, params string[] args) => _diagnostics.Add(new ProxyDiagnosticInfo(id, ImmutableArray.Create(args), _filePath, _span, _lineSpan));
         private void ReportSkip(ISymbol member, string reason)

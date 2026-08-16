@@ -10136,7 +10136,7 @@
             <summary>
             Clears the contents of the buffer, optionally zeroing out the memory.
             </summary>
-            <param name="zero">Whether to zero out the memory of the buffer.</param>
+            <param name="zero">Whether to zero out the memory of the buffer. If <typeparamref name="T"/> is a reference type, the memory will always be zeroed to prevent memory leaks.</param>
         </member>
         <member name="M:LaquaiLib.IO.BufferWriterBase`1.Dispose">
             <summary>

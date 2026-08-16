@@ -117,7 +117,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
                         destinationStream.Position = copyState.BytesCopied;
                     }
 
-                    var buffer = new byte[BufferSize];
+                    var buffer = GC.AllocateUninitializedArray<byte>(BufferSize);
                     int bytesRead;
 
                     // Copy the file in chunks

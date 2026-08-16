@@ -42,7 +42,7 @@ public static class EnumExtensions
                     throw new ArgumentException($"The given Enum type '{typeof(TEnum).FullName}' is not marked with [FlagsAttribute].", nameof(any));
                 }
                 var flags = Enum.GetValues<TEnum>();
-                return flags.Where(f => any.HasFlag(f)).ToArray();
+                return [.. flags.Where(f => any.HasFlag(f))];
             }
         }
     }

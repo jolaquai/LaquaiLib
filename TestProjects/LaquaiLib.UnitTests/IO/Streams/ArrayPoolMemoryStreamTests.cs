@@ -1004,7 +1004,7 @@ public class ArrayPoolMemoryStreamTests
     public void WriteSpanOverloadAppendsBytes()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3 }.AsSpan());
+        stream.Write([1, 2, 3]);
         Assert.Equal(3L, stream.Length);
 
         stream.Position = 0;

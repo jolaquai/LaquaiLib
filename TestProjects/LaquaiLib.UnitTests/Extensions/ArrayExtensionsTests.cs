@@ -13,7 +13,7 @@ public class ArrayExtensionsTests
 
         var enumerable = array.AsEnumerable<int>();
 
-        Assert.Equal([1, 2, 3, 4, 5], enumerable.ToArray());
+        Assert.Equal([1, 2, 3, 4, 5], [.. enumerable]);
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class ArrayExtensionsTests
 
         var enumerable = array.AsEnumerable<int>();
 
-        Assert.Equal([1, 2, 3, 4, 5, 6], enumerable.ToArray());
+        Assert.Equal([1, 2, 3, 4, 5, 6], [.. enumerable]);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class ArrayExtensionsTests
 
         var enumerable = array.AsEnumerable<int>();
 
-        Assert.Equal([1, 2, 3, 4, 5, 6, 7, 8], enumerable.ToArray());
+        Assert.Equal([1, 2, 3, 4, 5, 6, 7, 8], [.. enumerable]);
     }
 
     [Fact]

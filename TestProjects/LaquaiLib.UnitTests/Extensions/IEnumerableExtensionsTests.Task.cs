@@ -32,7 +32,7 @@ public class IEnumerableExtensionsTaskTests
         }
 
         tasks.Start();
-        Task.WaitAll(tasks.ToArray(), TestContext.Current.CancellationToken);
+        Task.WaitAll([.. tasks], TestContext.Current.CancellationToken);
 
         Assert.Equal(3, counter);
     }

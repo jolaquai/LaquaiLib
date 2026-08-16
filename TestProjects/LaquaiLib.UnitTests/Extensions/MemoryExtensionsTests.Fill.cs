@@ -5,7 +5,7 @@ namespace LaquaiLib.UnitTests.Extensions;
 
 public class MemoryExtensionsFillTests
 {
-    private static T[] Flatten<T>(Array array) => array.Cast<T>().ToArray();
+    private static T[] Flatten<T>(Array array) => [.. array.Cast<T>()];
 
     [Fact]
     public void SpanZeroMemoryClearsAllElements()

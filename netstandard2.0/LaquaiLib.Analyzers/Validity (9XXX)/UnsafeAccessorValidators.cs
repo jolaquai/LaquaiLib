@@ -483,7 +483,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     /// </summary>
     private static IMethodSymbol SubstituteTypeParameters(IMethodSymbol method, ImmutableArray<ITypeParameterSymbol> typeParameters)
         => method.TypeParameters.Length > 0 && method.TypeParameters.Length == typeParameters.Length
-            ? method.Construct(typeParameters.CastArray<ITypeSymbol>().ToArray())
+            ? method.Construct([.. typeParameters.CastArray<ITypeSymbol>()])
             : method;
     private static bool CheckMethodsRoslyn(SyntaxNodeAnalysisContext context, Location reportLocation, string memberName, ImmutableArray<ITypeParameterSymbol> uaaTypeParameters, IParameterSymbol uaaThisParam, ITypeSymbol targetTypeSymbol, ITypeSymbol uaaReturnTypeSymbol, ImmutableArray<IParameterSymbol> uaaRestParams, string signatureString, IMethodSymbol[] methodSymbols)
     {

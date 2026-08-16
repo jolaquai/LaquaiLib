@@ -40,7 +40,7 @@ public abstract class BufferWriterBase<T> : IBufferWriter<T>, IDisposable
     /// <summary>
     /// Clears the contents of the buffer, optionally zeroing out the memory.
     /// </summary>
-    /// <param name="zero">Whether to zero out the memory of the buffer.</param>
+    /// <param name="zero">Whether to zero out the memory of the buffer. If <typeparamref name="T"/> is a reference type, the memory will always be zeroed to prevent memory leaks.</param>
     public abstract void Clear(bool zero = false);
 
     /// <summary>
@@ -124,7 +124,7 @@ public abstract class ContiguousBufferWriterBase<T> : BufferWriterBase<T>
     /// <inheritdoc/>
     public override void Clear(bool zero = false)
     {
-        if (zero)
+        if (zero || RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             buffer[..Length].Span.Clear();
         SetLength(0);
     }
@@ -284,7 +284,7 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
     public override void Clear(bool zero = false)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (zero)
+        if (zero || RuntimeHelpers.IsReferenceOrContainsReferences<T>())
             foreach (var segment in _segments)
                 segment.AsSpan().ZeroMemory();
         SetLength(0);

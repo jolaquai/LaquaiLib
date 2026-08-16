@@ -29,7 +29,7 @@ public static partial class IEnumerableExtensions
         /// <returns>The <see cref="Task"/> that completed.</returns>
         public Task WaitAny(CancellationToken cancellationToken = default)
         {
-            var taskArray = tasks as Task[] ?? tasks.ToArray();
+            var taskArray = tasks as Task[] ?? [.. tasks];
             return taskArray[Task.WaitAny(taskArray, cancellationToken)];
         }
         /// <summary>
@@ -67,7 +67,7 @@ public static partial class IEnumerableExtensions
         /// <returns>The <see cref="Task"/> that completed.</returns>
         public Task<TResult> WaitAny(CancellationToken cancellationToken = default)
         {
-            var taskArray = tasks as Task<TResult>[] ?? tasks.ToArray();
+            var taskArray = tasks as Task<TResult>[] ?? [.. tasks];
             return taskArray[Task.WaitAny(taskArray, cancellationToken)];
         }
         /// <summary>

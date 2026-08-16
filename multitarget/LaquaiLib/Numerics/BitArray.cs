@@ -154,7 +154,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
     public BitArray(BitArray other)
     {
         ArgumentNullException.ThrowIfNull(other);
-        _data = other._data.ToArray();
+        _data = [.. other._data];
         Signed = other.Signed;
     }
 

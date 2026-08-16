@@ -196,7 +196,7 @@ public static class OpenXmlElementExtensions
         /// </summary>
         /// <returns>The created clones.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public OpenXmlElement[] CloneAll() => elements.Select(static e => e.CloneNode(true)).ToArray();
+        public OpenXmlElement[] CloneAll() => [.. elements.EnumerateClones()];
         public IEnumerable<OpenXmlElement> EnumerateClones() => elements.Select(static e => e.CloneNode(true));
     }
     extension<T>(T element) where T : OpenXmlElement
@@ -219,7 +219,6 @@ public static class OpenXmlElementExtensions
         /// <summary>
         /// Replaces the specified element with new content. The new element must not have parents.
         /// </summary>
-        /// <typeparam name="TFrom">The type of the element that is replaced.</typeparam>
         /// <typeparam name="TTo">The type of the new element.</typeparam>
         /// <param name="newElement">The new element to replace the specified element with.</param>
         /// <returns>A reference to the new element. Its parent is the same as the parent of the removed element.</returns>
@@ -232,7 +231,6 @@ public static class OpenXmlElementExtensions
         /// <summary>
         /// Replaces the specified element with new content. The new elements must not have parents.
         /// </summary>
-        /// <typeparam name="T">The type of the element that is replaced.</typeparam>
         /// <param name="newElements">The new elements to replace the specified element with.</param>
         /// <returns>A reference to the removed element (which no longer has a parent).</returns>
         /// <remarks>
@@ -254,7 +252,6 @@ public static class OpenXmlElementExtensions
         /// Inserts the specified new elements at the specified index into the child list of the specified element. The order of <paramref name="newElements"/> is preserved.
         /// Resolving the specified <paramref name="index"/> unfortunately requires fully enumerating the child elements of <paramref name="element"/>.
         /// </summary>
-        /// <typeparam name="T">The type of the element that is inserted into.</typeparam>
         /// <param name="index">The index to insert the first new element at.</param>
         /// <param name="newElements">The new elements to insert into the specified element.</param>
         public void InsertAt(Index index, params ReadOnlySpan<OpenXmlElement> newElements)
