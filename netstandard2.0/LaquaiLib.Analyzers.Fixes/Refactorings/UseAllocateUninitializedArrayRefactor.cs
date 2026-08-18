@@ -84,9 +84,16 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
         }
 
         var elementType = arrayCreation.Type.ElementType;
-        // Same gate as LAQ0006: everything IsReferenceOrContainsReferences<T>() accepts is handed straight back to 'new T[length]', and pointers cannot be type arguments in the first place
-        if (semanticModel.GetTypeInfo(elementType, cancellationToken).Type is not { IsValueType: true, IsUnmanagedType: true, IsRefLikeType: false } type
-            || type.TypeKind is TypeKind.Pointer or TypeKind.FunctionPointer)
+        var type = semanticModel.GetTypeInfo(elementType, cancellationToken).Type;
+        // An open type parameter compiles against GC.AllocateUninitializedArray<T> no matter what it gets substituted with, degrading to the zeroing path only when that turns out to contain references; 'allows ref struct' is the sole exception, since the real method carries no matching anti-constraint
+        // Anything else needs the same gate as LAQ0006: IsReferenceOrContainsReferences<T>() hands everything but a genuinely unmanaged type straight back to 'new T[length]', and pointers cannot be type arguments in the first place
+        var eligible = type switch
+        {
+            ITypeParameterSymbol typeParameter => !typeParameter.AllowsRefLikeType,
+            { IsValueType: true, IsUnmanagedType: true, IsRefLikeType: false } => type.TypeKind is not (TypeKind.Pointer or TypeKind.FunctionPointer),
+            _ => false
+        };
+        if (!eligible)
         {
             return [];
         }

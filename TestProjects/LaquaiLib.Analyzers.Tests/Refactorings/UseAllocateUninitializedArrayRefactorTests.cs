@@ -155,6 +155,64 @@ public class UseAllocateUninitializedArrayRefactorTests
             """
         );
 
+    // Unconstrained, so the substituted type could turn out to contain references; GC.AllocateUninitializedArray<T> has no unmanaged constraint of its own and just degrades to zeroing in that case
+    [Fact]
+    public Task UnconstrainedTypeParameter()
+        => VerifyRefactoring(
+            """
+            using System;
+            class C
+            {
+                T[] M<T>() => [|new T[512]|];
+            }
+            """,
+            """
+            using System;
+            class C
+            {
+                T[] M<T>() => GC.AllocateUninitializedArray<T>(512);
+            }
+            """
+        );
+
+    [Fact]
+    public Task StructConstrainedTypeParameter()
+        => VerifyRefactoring(
+            """
+            using System;
+            class C
+            {
+                T[] M<T>() where T : struct => [|new T[512]|];
+            }
+            """,
+            """
+            using System;
+            class C
+            {
+                T[] M<T>() where T : struct => GC.AllocateUninitializedArray<T>(512);
+            }
+            """
+        );
+
+    [Fact]
+    public Task ClassConstrainedTypeParameter()
+        => VerifyRefactoring(
+            """
+            using System;
+            class C
+            {
+                T[] M<T>() where T : class => [|new T[512]|];
+            }
+            """,
+            """
+            using System;
+            class C
+            {
+                T[] M<T>() where T : class => GC.AllocateUninitializedArray<T>(512);
+            }
+            """
+        );
+
     [Fact]
     public Task CustomUnmanagedStruct()
         => VerifyRefactoring(
