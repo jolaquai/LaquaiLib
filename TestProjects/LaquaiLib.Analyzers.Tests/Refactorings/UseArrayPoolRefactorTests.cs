@@ -444,6 +444,265 @@ public class UseArrayPoolRefactorTests
         );
     #endregion
 
+    #region condition ? stackalloc T[length] : new T[length] -> stack-or-pool
+    [Fact]
+    public Task StackAllocTrueBranchSelected()
+        => VerifyRefactoring(
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    Span<byte> span = n <= 256 ? [|stackalloc byte[n]|] : new byte[n];
+                    Use(span);
+                }
+                void Use(Span<byte> s) { }
+            }
+            """,
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    byte[] spanBuffer = null;
+                    Span<byte> span = n <= 256 ? stackalloc byte[n] : (spanBuffer = ArrayPool<byte>.Shared.Rent(n)).AsSpan(0, n);
+                    try
+                    {
+                        Use(span);
+                    }
+                    finally
+                    {
+                        if (spanBuffer != null)
+                        {
+                            ArrayPool<byte>.Shared.Return(spanBuffer);
+                        }
+                    }
+                }
+                void Use(Span<byte> s) { }
+            }
+            """
+        );
+
+    // Caret inside the 'new' branch instead of the stackalloc branch reaches the same rewrite
+    [Fact]
+    public Task NewFalseBranchSelected()
+        => VerifyRefactoring(
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    Span<byte> span = n <= 256 ? stackalloc byte[n] : [|new byte[n]|];
+                    Use(span);
+                }
+                void Use(Span<byte> s) { }
+            }
+            """,
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    byte[] spanBuffer = null;
+                    Span<byte> span = n <= 256 ? stackalloc byte[n] : (spanBuffer = ArrayPool<byte>.Shared.Rent(n)).AsSpan(0, n);
+                    try
+                    {
+                        Use(span);
+                    }
+                    finally
+                    {
+                        if (spanBuffer != null)
+                        {
+                            ArrayPool<byte>.Shared.Return(spanBuffer);
+                        }
+                    }
+                }
+                void Use(Span<byte> s) { }
+            }
+            """
+        );
+
+    // The branches can be swapped - 'new' first, stackalloc second - and only the array branch is ever touched, so no branch-order bookkeeping is needed at all
+    [Fact]
+    public Task BranchesSwapped()
+        => VerifyRefactoring(
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    Span<byte> span = n > 256 ? new byte[n] : [|stackalloc byte[n]|];
+                    Use(span);
+                }
+                void Use(Span<byte> s) { }
+            }
+            """,
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    byte[] spanBuffer = null;
+                    Span<byte> span = n > 256 ? (spanBuffer = ArrayPool<byte>.Shared.Rent(n)).AsSpan(0, n) : stackalloc byte[n];
+                    try
+                    {
+                        Use(span);
+                    }
+                    finally
+                    {
+                        if (spanBuffer != null)
+                        {
+                            ArrayPool<byte>.Shared.Return(spanBuffer);
+                        }
+                    }
+                }
+                void Use(Span<byte> s) { }
+            }
+            """
+        );
+
+    [Fact]
+    public Task VarInferredDeclaration()
+        => VerifyRefactoring(
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    var span = n <= 256 ? [|stackalloc byte[n]|] : new byte[n];
+                    Use(span);
+                }
+                void Use(Span<byte> s) { }
+            }
+            """,
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    byte[] spanBuffer = null;
+                    var span = n <= 256 ? stackalloc byte[n] : (spanBuffer = ArrayPool<byte>.Shared.Rent(n)).AsSpan(0, n);
+                    try
+                    {
+                        Use(span);
+                    }
+                    finally
+                    {
+                        if (spanBuffer != null)
+                        {
+                            ArrayPool<byte>.Shared.Return(spanBuffer);
+                        }
+                    }
+                }
+                void Use(Span<byte> s) { }
+            }
+            """
+        );
+
+    // '.Length' on the span is always exactly the request on either path, so unlike the plain-array case it is never rebound
+    [Fact]
+    public Task SpanLengthReadIsLeftAlone()
+        => VerifyRefactoring(
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    Span<byte> span = n <= 256 ? [|stackalloc byte[n]|] : new byte[n];
+                    var len = span.Length;
+                }
+            }
+            """,
+            """
+            using System;
+            using System.Buffers;
+            class C
+            {
+                void M(int n)
+                {
+                    byte[] spanBuffer = null;
+                    Span<byte> span = n <= 256 ? stackalloc byte[n] : (spanBuffer = ArrayPool<byte>.Shared.Rent(n)).AsSpan(0, n);
+                    try
+                    {
+                        var len = span.Length;
+                    }
+                    finally
+                    {
+                        if (spanBuffer != null)
+                        {
+                            ArrayPool<byte>.Shared.Return(spanBuffer);
+                        }
+                    }
+                }
+            }
+            """
+        );
+    #endregion
+
+    #region stack-or-pool not offered
+    [Fact]
+    public Task StackAllocDifferentSizeExpressions()
+        => VerifyNoRefactoring(
+            """
+            using System;
+            class C
+            {
+                void M(int n, int m)
+                {
+                    Span<byte> span = n <= 256 ? [|stackalloc byte[n]|] : new byte[m];
+                }
+            }
+            """
+        );
+
+    [Fact]
+    public Task StackAllocWithInitializer()
+        => VerifyNoRefactoring(
+            """
+            using System;
+            class C
+            {
+                void M()
+                {
+                    Span<byte> span = true ? [|stackalloc byte[3] { 1, 2, 3 }|] : new byte[3];
+                }
+            }
+            """
+        );
+
+    [Fact]
+    public Task PlainTernaryWithoutStackAllocIsUnaffected()
+        => VerifyNoRefactoring(
+            """
+            class C
+            {
+                void M(bool cond, int n)
+                {
+                    var arr = cond ? [|new int[n]|] : new int[n + 1];
+                }
+            }
+            """
+        );
+    #endregion
+
     #region not offered
     [Fact]
     public Task MultiDimensional()

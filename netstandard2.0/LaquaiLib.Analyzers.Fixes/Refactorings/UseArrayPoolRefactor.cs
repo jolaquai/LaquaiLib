@@ -2,6 +2,7 @@ namespace LaquaiLib.Analyzers.Fixes.Refactorings;
 
 /// <summary>
 /// Switches a single-dimensional array creation between the GC-owned <c>new T[length]</c> form and a pooled <c>ArrayPool&lt;T&gt;.Shared.Rent(length)</c> / <c>Return</c> pair, in either direction.
+/// Also recognizes the "stack-or-pool" idiom <c>condition ? stackalloc T[length] : new T[length]</c> assigned to a <see cref="System.Span{T}"/> local, pooling just the array branch in place and wrapping the rest of the block in a <see langword="try"/>/<see langword="finally"/> that only returns what was actually rented.
 /// Deciding whether an array is safe to pool is escape analysis in the general case, which nothing here attempts to solve. Instead this is only offered where the array is a local declared directly in a block and every later use in that block is one this rewrite can account for -
 /// anything that leaves the block (returned, stored in a field, captured by a lambda, passed by <see langword="ref"/>/<see langword="out"/>) is left alone rather than silently mis-rewritten.
 /// <see cref="System.Buffers.ArrayPool{T}.Rent(int)"/> does not guarantee the returned array's <c>.Length</c> equals the request, so any <c>.Length</c> read is rebound to the requested length instead of being left to observe the oversized buffer.
@@ -30,6 +31,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
         {
             ArrayCreationExpressionSyntax arrayCreation => Pool(semanticModel, arrayCreation, arrayPool, cancellationToken),
             InvocationExpressionSyntax invocation => Unpool(semanticModel, invocation, arrayPool, cancellationToken),
+            StackAllocArrayCreationExpressionSyntax stackAlloc => PoolConditional(semanticModel, GetConditionalParent(stackAlloc), arrayPool, cancellationToken),
             _ => []
         };
     }
@@ -43,7 +45,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
         {
             switch (current)
             {
-                case ArrayCreationExpressionSyntax or InvocationExpressionSyntax:
+                case ArrayCreationExpressionSyntax or InvocationExpressionSyntax or StackAllocArrayCreationExpressionSyntax:
                     return (ExpressionSyntax)current;
                 case StatementSyntax or MemberDeclarationSyntax or AnonymousFunctionExpressionSyntax:
                     return null;
@@ -55,6 +57,12 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     #region new T[length] -> ArrayPool<T>.Shared.Rent(length)
     private static ImmutableArray<CodeActionInfo> Pool(SemanticModel semanticModel, ArrayCreationExpressionSyntax arrayCreation, INamedTypeSymbol arrayPool, CancellationToken cancellationToken)
     {
+        // 'condition ? stackalloc T[n] : new T[n]' is a different shape with a different rewrite - the plain gates below all assume a bare declarator initializer, which this is not
+        if (GetConditionalParent(arrayCreation) is { } conditional)
+        {
+            return PoolConditional(semanticModel, conditional, arrayPool, cancellationToken);
+        }
+
         // ArrayPool<T> only hands out single-dimensional arrays
         var rankSpecifiers = arrayCreation.Type.RankSpecifiers;
         if (rankSpecifiers.Count != 1 || rankSpecifiers[0].Sizes.Count != 1)
@@ -235,6 +243,159 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
         var shared = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, arrayPoolType, SyntaxFactory.IdentifierName("Shared"));
         var method = SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, shared, SyntaxFactory.IdentifierName(methodName));
         return SyntaxFactory.InvocationExpression(method, SyntaxFactory.ArgumentList(SyntaxFactory.SingletonSeparatedList(SyntaxFactory.Argument(argument))));
+    }
+    #endregion
+
+    #region condition ? stackalloc T[length] : new T[length] -> stack-or-pool
+    /// <summary>
+    /// Finds the <see cref="ConditionalExpressionSyntax"/> <paramref name="expression"/> sits in, if any, walking out through parentheses first.
+    /// </summary>
+    private static ConditionalExpressionSyntax GetConditionalParent(ExpressionSyntax expression)
+    {
+        SyntaxNode current = expression;
+        while (current.Parent is ParenthesizedExpressionSyntax parenthesized)
+        {
+            current = parenthesized;
+        }
+        return current.Parent as ConditionalExpressionSyntax;
+    }
+
+    private static ExpressionSyntax Unwrap(ExpressionSyntax expression)
+    {
+        while (expression is ParenthesizedExpressionSyntax parenthesized)
+        {
+            expression = parenthesized.Expression;
+        }
+        return expression;
+    }
+
+    /// <summary>
+    /// Recognizes the "stack-or-pool" idiom - a <see cref="System.Span{T}"/> local seeded from <c>condition ? stackalloc T[n] : new T[n]</c> - and pools the array branch in place.
+    /// The stack-allocated branch is left completely untouched: a <see langword="stackalloc"/>'s safe-to-escape scope is tied to the exact block it sits in, so moving it into a
+    /// freshly built <see langword="if"/>/<see langword="else"/> one block deeper than the original ternary would trade a compiling program for CS8353. Keeping the same ternary and
+    /// only swapping its array-creation branch for <c>(buffer = ArrayPool&lt;T&gt;.Shared.Rent(n)).AsSpan(0, n)</c> keeps every expression at the scope depth it already compiled at.
+    /// Unlike the plain array case, <c>.Length</c> on the resulting span never needs rebinding: both branches size it to exactly the requested length via <c>AsSpan(0, length)</c>.
+    /// </summary>
+    private static ImmutableArray<CodeActionInfo> PoolConditional(SemanticModel semanticModel, ConditionalExpressionSyntax conditional, INamedTypeSymbol arrayPool, CancellationToken cancellationToken)
+    {
+        if (conditional is null)
+        {
+            return [];
+        }
+
+        var whenTrue = Unwrap(conditional.WhenTrue);
+        var whenFalse = Unwrap(conditional.WhenFalse);
+
+        StackAllocArrayCreationExpressionSyntax stackAlloc;
+        ArrayCreationExpressionSyntax arrayCreation;
+        if (whenTrue is StackAllocArrayCreationExpressionSyntax trueStackAlloc && whenFalse is ArrayCreationExpressionSyntax falseArray)
+        {
+            (stackAlloc, arrayCreation) = (trueStackAlloc, falseArray);
+        }
+        else if (whenFalse is StackAllocArrayCreationExpressionSyntax falseStackAlloc && whenTrue is ArrayCreationExpressionSyntax trueArray)
+        {
+            (stackAlloc, arrayCreation) = (falseStackAlloc, trueArray);
+        }
+        else
+        {
+            return [];
+        }
+
+        // Rent, like the stack-allocated side, only ever hands back uninitialized storage - neither side has anything to seed from
+        if (stackAlloc.Initializer is not null || arrayCreation.Initializer is not null
+            || stackAlloc.Type is not ArrayTypeSyntax stackAllocType
+            || stackAllocType.RankSpecifiers.Count != 1 || stackAllocType.RankSpecifiers[0].Sizes.Count != 1
+            || arrayCreation.Type.RankSpecifiers.Count != 1 || arrayCreation.Type.RankSpecifiers[0].Sizes.Count != 1)
+        {
+            return [];
+        }
+
+        var stackAllocSize = stackAllocType.RankSpecifiers[0].Sizes[0];
+        var arraySize = arrayCreation.Type.RankSpecifiers[0].Sizes[0];
+        // Two independently-typed-out sizes are only trustworthy as 'the same buffer length' if they are, in fact, written the same way
+        if (stackAllocSize is OmittedArraySizeExpressionSyntax || arraySize is OmittedArraySizeExpressionSyntax
+            || !SyntaxFactory.AreEquivalent(stackAllocSize, arraySize))
+        {
+            return [];
+        }
+
+        var elementType = semanticModel.GetTypeInfo(arrayCreation.Type.ElementType, cancellationToken).Type;
+        var stackAllocElementType = semanticModel.GetTypeInfo(stackAllocType.ElementType, cancellationToken).Type;
+        // Pointer/function pointer types cannot be used as a type argument (CS0306), so ArrayPool<T> has nothing to bind T to
+        if (elementType is null || elementType.TypeKind is TypeKind.Pointer or TypeKind.FunctionPointer
+            || !SymbolEqualityComparer.Default.Equals(elementType, stackAllocElementType))
+        {
+            return [];
+        }
+
+        if (conditional.Parent is not EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax declarator }
+            || declarator.Parent is not VariableDeclarationSyntax { Variables.Count: 1, Parent: LocalDeclarationStatementSyntax localDeclaration }
+            || localDeclaration.Parent is not BlockSyntax block)
+        {
+            return [];
+        }
+
+        // Only offered for a Span<T> local - that is what both a stackalloc and an array convert to, and it is what the rewrite below preserves
+        if (semanticModel.GetDeclaredSymbol(declarator, cancellationToken) is not ILocalSymbol local
+            || semanticModel.Compilation.GetTypeByMetadataName("System.Span`1") is not { } spanType
+            || local.Type is not INamedTypeSymbol { TypeArguments.Length: 1 } localType
+            || !SymbolEqualityComparer.Default.Equals(localType.OriginalDefinition, spanType)
+            || !SymbolEqualityComparer.Default.Equals(localType.TypeArguments[0], elementType))
+        {
+            return [];
+        }
+
+        var rest = block.Statements.Skip(block.Statements.IndexOf(localDeclaration) + 1).ToImmutableArray();
+        // A Span<T> that spends part of its life as a stackalloc already cannot escape the method (the compiler's ref-safety rules see to that);
+        // the same escape gate as the plain-array case is reused anyway, if only to keep behavior conservative and consistent. Its collected '.Length'
+        // sites are discarded on purpose - both branches size the span to exactly the request via AsSpan(0, length), so it never needs rebinding here.
+        if (!IsSafeToPool(semanticModel, local, rest, cancellationToken, out _))
+        {
+            return [];
+        }
+
+        var elementTypeSyntax = arrayCreation.Type.ElementType;
+        return [new CodeActionInfo("Change to stack-or-pool", editor => PoolConditionalAsync(editor, block, localDeclaration, arrayCreation, elementTypeSyntax, arraySize), "ChangeToStackOrPoolRent", WellKnownPostFixActions.AddUsings("System.Buffers", "System"))];
+    }
+
+    private static ValueTask PoolConditionalAsync(DocumentEditor editor, BlockSyntax block, LocalDeclarationStatementSyntax localDeclaration, ArrayCreationExpressionSyntax arrayCreation, TypeSyntax elementType, ExpressionSyntax size)
+    {
+        var spanName = localDeclaration.Declaration.Variables[0].Identifier.ValueText;
+        var bufferIdentifier = SyntaxFactory.Identifier($"{spanName}Buffer").WithAdditionalAnnotations(RenameAnnotation.Create());
+        var bufferName = SyntaxFactory.IdentifierName(bufferIdentifier);
+
+        var bufferType = SyntaxFactory.ArrayType(elementType.WithoutTrivia(), SyntaxFactory.SingletonList(SyntaxFactory.ArrayRankSpecifier(SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(SyntaxFactory.OmittedArraySizeExpression()))));
+        // 'T[] buffer = null;'
+        var bufferDeclaration = SyntaxFactory.LocalDeclarationStatement(SyntaxFactory.VariableDeclaration(bufferType,
+            SyntaxFactory.SingletonSeparatedList(SyntaxFactory.VariableDeclarator(bufferIdentifier).WithInitializer(SyntaxFactory.EqualsValueClause(SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression))))));
+
+        // 'new T[size]' -> '(buffer = ArrayPool<T>.Shared.Rent(size)).AsSpan(0, size)' - an assignment's value is the assigned value, so this both
+        // records what to return later and produces the span, all within the ternary's own expression - no new block, no ref-safety change
+        var rentAssignment = SyntaxFactory.ParenthesizedExpression(SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, bufferName, ArrayPoolInvocation(elementType, "Rent", size.WithoutTrivia())));
+        var asSpanCall = SyntaxFactory.InvocationExpression(
+            SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, rentAssignment, SyntaxFactory.IdentifierName("AsSpan")),
+            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(new[]
+            {
+                SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(0))),
+                SyntaxFactory.Argument(size.WithoutTrivia())
+            })));
+
+        var newDeclaration = localDeclaration.ReplaceNode(arrayCreation, asSpanCall);
+
+        // 'finally { if (buffer != null) ArrayPool<T>.Shared.Return(buffer); }' - only the pooled branch has anything to give back
+        var returnCall = SyntaxFactory.ExpressionStatement(ArrayPoolInvocation(elementType, "Return", bufferName));
+        var notNull = SyntaxFactory.BinaryExpression(SyntaxKind.NotEqualsExpression, bufferName, SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression));
+        var finallyClause = SyntaxFactory.FinallyClause(SyntaxFactory.Block(SyntaxFactory.IfStatement(notNull, SyntaxFactory.Block(returnCall))));
+
+        var index = block.Statements.IndexOf(localDeclaration);
+        var rest = block.Statements.Skip(index + 1);
+        var tryStatement = SyntaxFactory.TryStatement(SyntaxFactory.Block(rest), SyntaxFactory.List<CatchClauseSyntax>(), finallyClause);
+
+        var before = block.Statements.Take(index);
+        var newBlock = block.WithStatements(SyntaxFactory.List(before.Append(bufferDeclaration).Append(newDeclaration).Append(tryStatement)));
+
+        editor.ReplaceNode(block, newBlock.Formatted);
+        return ValueTask.CompletedTask;
     }
     #endregion
 
