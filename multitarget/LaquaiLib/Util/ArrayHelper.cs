@@ -58,11 +58,12 @@ public static class ArrayHelper
         var temp = GC.AllocateUninitializedArray<TValue>(keysLength);
         for (var i = 0; i < itemsArrays.Length; i++)
         {
+            var arr = itemsArrays[i];
             // Copy the current array to the temp array
-            Array.Copy(itemsArrays[i], temp, keysLength);
+            Array.Copy(arr, temp, keysLength);
             // Reassign each index using the sorted indices
             for (var j = 0; j < keysLength; j++)
-                itemsArrays[i][j] = temp[indices[j]];
+                arr[j] = temp[indices[j]];
         }
     }
     private static void SortNonGenericImpl(Array keys, IComparer comparer, Array[] itemsArrays, delegate*<int[], Array, bool> inBetween)
@@ -89,11 +90,12 @@ public static class ArrayHelper
         var temp = new object[keysLength];
         for (var i = 0; i < itemsArrays.Length; i++)
         {
+            var arr = itemsArrays[i];
             // Copy the current array to the temp array
-            Array.Copy(itemsArrays[i], temp, keysLength);
+            Array.Copy(arr, temp, keysLength);
             // Reassign each index using the sorted indices
             for (var j = 0; j < keysLength; j++)
-                Unsafe.As<Array>(itemsArrays.GetValue(i)).SetValue(temp[indices[j]], j);
+                arr.SetValue(temp[indices[j]], j);
         }
     }
     // null = nothing to sort (itemsArrays empty), false = sort was a no-op, true = permutation changed
