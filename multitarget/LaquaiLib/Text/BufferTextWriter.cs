@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 using LaquaiLib.Extensions;
+using System;
 
 namespace LaquaiLib.Text;
 
@@ -461,33 +462,40 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
 
         // Ignore bufferSize if it's smaller than what we can afford to stackalloc, otherwise obey the user
         var bufferActual = bufferSize <= Config.MaxStackallocSize ? Config.MaxStackallocSize : Math.Clamp(bufferSize, Config.MaxStackallocSize, bufferSize);
-        Span<byte> scratch = bufferActual == Config.MaxStackallocSize ? stackalloc byte[bufferActual] : new byte[bufferActual];
-        bool completed;
-        var flush = false;
-        do
+        byte[] scratchBuffer = null;
+        scoped var scratch = bufferActual == Config.MaxStackallocSize ? stackalloc byte[bufferActual] : (scratchBuffer = ArrayPool<byte>.Shared.Rent(bufferActual)).AsSpan(0, bufferActual);
+        try
         {
-            if (charLength != _buffer.WrittenCount)
+            bool completed;
+            var flush = false;
+            do
             {
-                throw new InvalidOperationException(InvalidOperationException_BufferMutatedWhileEncoding);
-            }
+                if (charLength != _buffer.WrittenCount)
+                    throw new InvalidOperationException(InvalidOperationException_BufferMutatedWhileEncoding);
 
-            encoder.Convert(chars[charsConsumed..], scratch, flush, out var charsConsumedLocal, out var bytesWrittenLocal, out completed);
-            switch (bytesWrittenLocal)
-            {
-                case 0 when !flush:
-                    // No more characters to write
-                    flush = true;
-                    continue;
-                case > 0:
-                    stream.Write(scratch[..bytesWrittenLocal]);
-                    break;
-            }
-            bytesWritten += bytesWrittenLocal;
-            charsConsumed += charsConsumedLocal;
+                encoder.Convert(chars[charsConsumed..], scratch, flush, out var charsConsumedLocal, out var bytesWrittenLocal, out completed);
+                switch (bytesWrittenLocal)
+                {
+                    case 0 when !flush:
+                        // No more characters to write
+                        flush = true;
+                        continue;
+                    case > 0:
+                        stream.Write(scratch[..bytesWrittenLocal]);
+                        break;
+                }
+                bytesWritten += bytesWrittenLocal;
+                charsConsumed += charsConsumedLocal;
 
-            flush = charsConsumed >= charLength;
-        } while (!completed);
+                flush = charsConsumed >= charLength;
+            } while (!completed);
 
-        return bytesWritten;
+            return bytesWritten;
+        }
+        finally
+        {
+            if (scratchBuffer != null)
+                ArrayPool<byte>.Shared.Return(scratchBuffer);
+        }
     }
 }

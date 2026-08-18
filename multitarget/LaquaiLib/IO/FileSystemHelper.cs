@@ -5,6 +5,7 @@ using System.Security.AccessControl;
 
 using LaquaiLib.Extensions;
 using LaquaiLib.Wrappers;
+using System;
 
 namespace LaquaiLib.IO;
 
@@ -56,14 +57,12 @@ public static partial class FileSystemHelper
             _ = Directory.CreateDirectory(newDirPath);
 
             if (OperatingSystem.IsWindows())
-            {
                 if (restorePermissionsAndAttributes)
                 {
                     var srcSecurity = new DirectoryInfo(dirPath).GetAccessControl();
                     var di = new DirectoryInfo(newDirPath);
                     ReplacePermissions(di, srcSecurity);
                 }
-            }
         }
 
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
@@ -80,9 +79,7 @@ public static partial class FileSystemHelper
                 var fileDest = fileSrc.Replace(source, destination);
 
                 if (!allowExisting && File.Exists(fileDest))
-                {
                     throw new IOException($"Destination file '{fileDest}' already exists.");
-                }
 
                 cancellationToken.ThrowIfCancellationRequested();
                 {
@@ -123,9 +120,7 @@ public static partial class FileSystemHelper
                 }
 
                 if (!copy)
-                {
                     File.Delete(fileSrc);
-                }
 
                 var prog = Interlocked.Increment(ref filesCompleted);
                 progressSink?.Report((prog, partitioner.TotalCount));
@@ -133,9 +128,7 @@ public static partial class FileSystemHelper
         }, cancellationToken))).ContinueWith(_ =>
         {
             if (!copy)
-            {
                 Directory.Delete(source, true);
-            }
         }, cancellationToken);
         // I know that's ugly as hell but I'm not making this method async for a single meaningless await
     }
@@ -179,14 +172,12 @@ public static partial class FileSystemHelper
             var newDirPath = dirPath.Replace(source, destination);
             _ = Directory.CreateDirectory(newDirPath);
             if (OperatingSystem.IsWindows())
-            {
                 if (restorePermissionsAndAttributes)
                 {
                     var srcSecurity = new DirectoryInfo(dirPath).GetAccessControl();
                     var di = new DirectoryInfo(newDirPath);
                     ReplacePermissions(di, srcSecurity);
                 }
-            }
         }
 
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
@@ -206,9 +197,7 @@ public static partial class FileSystemHelper
                 var fileDest = fileSrc.Replace(source, destination);
 
                 if (!allowExisting && File.Exists(fileDest))
-                {
                     throw new IOException($"Destination file '{fileDest}' already exists.");
-                }
 
                 cancellationToken.ThrowIfCancellationRequested();
                 // Lots of stream overhead + compression and decompression for every file, but (ideally) less data to move around
@@ -220,15 +209,11 @@ public static partial class FileSystemHelper
                 {
                     var deflateStream = new DeflateStream(intermediary, compressionLevel, true);
                     await using (deflateStream.ConfigureAwait(false))
-                    {
                         await sourceFs.CopyToAsync(deflateStream, cancellationToken).ConfigureAwait(false);
-                    }
                     intermediary.Position = 0;
                     deflateStream = new DeflateStream(intermediary, CompressionMode.Decompress);
                     await using (deflateStream.ConfigureAwait(false))
-                    {
                         await deflateStream.CopyToAsync(destFs, cancellationToken).ConfigureAwait(false);
-                    }
                     await sourceFs.CopyToAsync(destFs, cancellationToken).ConfigureAwait(false);
                 }
                 cancellationToken.ThrowIfCancellationRequested();
@@ -248,9 +233,7 @@ public static partial class FileSystemHelper
                 }
 
                 if (!copy)
-                {
                     File.Delete(fileSrc);
-                }
 
                 var prog = Interlocked.Increment(ref filesCompleted);
                 progressSink?.Report((prog, partitioner.TotalCount));
@@ -258,9 +241,7 @@ public static partial class FileSystemHelper
         }, cancellationToken))).ContinueWith(_ =>
         {
             if (!copy)
-            {
                 Directory.Delete(source, true);
-            }
         }, cancellationToken);
     }
 
@@ -270,32 +251,20 @@ public static partial class FileSystemHelper
         ArgumentNullException.ThrowIfNull(destination);
         ArgumentOutOfRangeException.ThrowIfZero(maxDegreeOfParallelism);
         if (maxDegreeOfParallelism < 0)
-        {
             maxDegreeOfParallelism = Debugger.IsAttached ? 1 : Environment.ProcessorCount;
-        }
 
         if (!Directory.Exists(source))
-        {
             throw new ArgumentException($"Directory '{source}' does not exist.", nameof(source));
-        }
         if (!allowExisting && Directory.Exists(destination))
-        {
             throw new ArgumentException($"Directory '{destination}' already exists.", nameof(destination));
-        }
         if (source.Equals(destination, StringComparison.OrdinalIgnoreCase))
-        {
             throw new ArgumentException("Source and destination are the same.");
-        }
 
         // We can't use string.Contains to check for subdirectory relationship since one being prefixed by the other is not the same as being a subdirectory
         if (IsBaseOf(source, destination))
-        {
             throw new ArgumentException("Source is a subdirectory of the destination.", nameof(source));
-        }
         if (IsBaseOf(destination, source))
-        {
             throw new ArgumentException("Destination is a subdirectory of the source.", nameof(destination));
-        }
     }
 
     /// <summary>
@@ -308,9 +277,7 @@ public static partial class FileSystemHelper
     public static void ReplacePermissions(FileSystemInfo fsi, FileSystemSecurity takePermissionsFrom)
     {
         if (!OperatingSystem.IsWindows())
-        {
             throw new PlatformNotSupportedException("This method is only supported on Windows.");
-        }
 
         switch (fsi)
         {
@@ -330,44 +297,26 @@ public static partial class FileSystemHelper
 
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
-        {
             _ = sec.RemoveAccessRule(rule);
-        }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
-        {
             _ = sec.RemoveAccessRule(rule);
-        }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).ReinterpretCast<FileSystemAuditRule>())
-        {
             _ = sec.RemoveAuditRule(rule);
-        }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).ReinterpretCast<FileSystemAuditRule>())
-        {
             _ = sec.RemoveAuditRule(rule);
-        }
 
         // Now copy the rules from the source
         foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
-        {
             sec.AddAccessRule(rule);
-        }
         foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
-        {
             sec.AddAccessRule(rule);
-        }
         foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).ReinterpretCast<FileSystemAuditRule>())
-        {
             sec.AddAuditRule(rule);
-        }
         foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).ReinterpretCast<FileSystemAuditRule>())
-        {
             sec.AddAuditRule(rule);
-        }
 
         if (copyFrom.GetSecurityDescriptorBinaryForm() is byte[] secDesc)
-        {
             sec.SetSecurityDescriptorBinaryForm(secDesc);
-        }
 
         // Run this anyway to cover anything not explicitly copied
         target.SetAccessControl(sec);
@@ -378,44 +327,26 @@ public static partial class FileSystemHelper
 
         var sec = target.GetAccessControl();
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
-        {
             _ = sec.RemoveAccessRule(rule);
-        }
         foreach (var rule in sec.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
-        {
             _ = sec.RemoveAccessRule(rule);
-        }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).ReinterpretCast<FileSystemAuditRule>())
-        {
             _ = sec.RemoveAuditRule(rule);
-        }
         foreach (var rule in sec.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).ReinterpretCast<FileSystemAuditRule>())
-        {
             _ = sec.RemoveAuditRule(rule);
-        }
 
         // Now copy the rules from the source
         foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount)).OfType<FileSystemAccessRule>())
-        {
             sec.AddAccessRule(rule);
-        }
         foreach (var rule in copyFrom.GetAccessRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).OfType<FileSystemAccessRule>())
-        {
             sec.AddAccessRule(rule);
-        }
         foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.NTAccount)).ReinterpretCast<FileSystemAuditRule>())
-        {
             sec.AddAuditRule(rule);
-        }
         foreach (var rule in copyFrom.GetAuditRules(true, true, typeof(System.Security.Principal.SecurityIdentifier)).ReinterpretCast<FileSystemAuditRule>())
-        {
             sec.AddAuditRule(rule);
-        }
 
         if (copyFrom.GetSecurityDescriptorBinaryForm() is byte[] secDesc)
-        {
             sec.SetSecurityDescriptorBinaryForm(secDesc);
-        }
 
         // Run this anyway to cover anything not explicitly copied
         target.SetAccessControl(sec);
@@ -451,9 +382,7 @@ public static partial class FileSystemHelper
         {
             var fileStream = File.OpenRead(path);
             await using (fileStream.ConfigureAwait(false))
-            {
                 await fileStream.CopyToAsync(ms).ConfigureAwait(false);
-            }
         }
         File.Delete(path);
         return ms;
@@ -467,9 +396,7 @@ public static partial class FileSystemHelper
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
         using (var fileStream = File.OpenRead(path))
-        {
             fileStream.CopyTo(stream);
-        }
         File.Delete(path);
     }
     /// <summary>
@@ -483,9 +410,7 @@ public static partial class FileSystemHelper
 
         var fileStream = File.OpenRead(path);
         await using (fileStream.ConfigureAwait(false))
-        {
             await fileStream.CopyToAsync(stream).ConfigureAwait(false);
-        }
         File.Delete(path);
     }
 
@@ -509,22 +434,16 @@ public static partial class FileSystemHelper
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dirStructure);
         if (Path.IsPathRooted(dirStructure) || dirStructure.AsSpan().IndexOfAny(InvalidPathChars) > -1)
-        {
             throw new ArgumentException("The directory structure must be a well-formed relative path to a directory.", nameof(dirStructure));
-        }
 
         if (driveType is not null && !string.IsNullOrWhiteSpace(root))
-        {
             throw new ArgumentException("Cannot specify both a drive type and a root directory.", nameof(driveType));
-        }
 
         static IAsyncEnumerable<string> ExamineRootImpl(string dirStructure, string root, int maxRecursionDepth)
         {
             var dir = new DirectoryInfo(root);
             if (!dir.Exists)
-            {
                 return AsyncEnumerableWrapper<string>.Empty;
-            }
 
             return new AsyncEnumerableWrapper<string>(dir
                 .EnumerateDirectories("*", new EnumerationOptions()
@@ -546,9 +465,7 @@ public static partial class FileSystemHelper
             root = Path.GetFullPath(root);
 
             if (!Directory.Exists(root))
-            {
                 throw new IOException($"Directory '{root}' does not exist.");
-            }
 
             return ExamineRootImpl(dirStructure, root, maxRecursionDepth);
         }
@@ -573,30 +490,22 @@ public static partial class FileSystemHelper
     public static Task UnpackDirectory(string directory, bool overwrite = false, bool overwriteFromSubdirectories = false)
     {
         if (!Directory.Exists(directory))
-        {
             throw new DirectoryNotFoundException($"Directory '{directory}' does not exist.");
-        }
 
         var files = Directory.GetFiles(directory, "*", SearchOption.AllDirectories)
             .Except(Directory.GetFiles(directory))
             .OrderBy(f => f.Length)
             .ToArray();
         if (files.Length == 0)
-        {
             return Task.CompletedTask;
-        }
 
         var names = files.Select(Path.GetFileName).ToArray();
         var newPaths = names.Select(n => Path.Combine(directory, n)).ToArray();
         if (!overwrite && newPaths.FirstOrDefault(File.Exists) is string existing)
-        {
             throw new IOException($"The file '{existing}' already exists. Move cannot be completed.");
-        }
 
         if (!overwriteFromSubdirectories && names.Distinct().Count() < names.Length)
-        {
             throw new IOException("Multiple files with the same name exist in the directory structure.");
-        }
 
         return Task.Run(() =>
         {
@@ -640,14 +549,10 @@ public static partial class FileSystemHelper
     public static bool IsEmpty(this DirectoryInfo directoryInfo, bool allowEmptyDirectories = false)
     {
         if (!directoryInfo.Exists)
-        {
             return false;
-        }
         if (allowEmptyDirectories)
-        {
             // Only files count: the directory is "empty" when there are no files anywhere beneath it.
             return !directoryInfo.EnumerateFiles("*", SearchOption.AllDirectories).Any();
-        }
         // Any entry at all (including empty subdirectories) means it is not empty.
         return !directoryInfo.EnumerateFileSystemInfos("*", SearchOption.AllDirectories).Any();
     }
@@ -666,14 +571,12 @@ public static partial class FileSystemHelper
     public static void DeleteIfEmpty(this DirectoryInfo directoryInfo, bool allowEmptyDirectories = false)
     {
         if (IsEmpty(directoryInfo, allowEmptyDirectories))
-        {
             directoryInfo.Delete(allowEmptyDirectories);
-        }
     }
 
     private static partial class LockedFileInterop
     {
-        public static bool CopyLockedFile(string sourceFile, string destFile)
+        public static bool CopyLockedFile(string sourceFile, string destFile, int bufferSize)
         {
             const uint GENERIC_READ = 0x80000000;
             const uint FILE_SHARE_READ = 0x00000001;
@@ -686,72 +589,31 @@ public static partial class FileSystemHelper
             var handle = Kernel32.CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
 
             if (handle == new nint(-1))
-            {
                 return false;
-            }
 
             try
             {
                 using var destStream = new FileStream(destFile, FileMode.Create);
 
-                const int size = 1 << 16;
-                scoped var buffer = size <= Config.MaxStackallocSize ? stackalloc byte[size] : GC.AllocateUninitializedArray<byte>(size);
-                uint bytesRead = 0;
-                var context = nint.Zero;
-                var inDataStream = false;
-                long remainingDataSize = 0;
-
-                while (Kernel32.BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
+                byte[] array = null;
+                scoped var buffer = bufferSize <= Config.MaxStackallocSize ? stackalloc byte[bufferSize] : (array = ArrayPool<byte>.Shared.Rent(bufferSize)).AsSpan(0, bufferSize);
+                try
                 {
-                    if (bytesRead == 0)
+                    uint bytesRead = 0;
+                    var context = nint.Zero;
+                    var inDataStream = false;
+                    long remainingDataSize = 0;
+
+                    while (Kernel32.BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
                     {
-                        break;
-                    }
-
-                    var offset = 0;
-                    while (offset < bytesRead)
-                    {
-                        // Continue reading data from previous stream
-                        if (inDataStream)
-                        {
-                            var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
-                            destStream.Write(buffer.Slice(offset, dataChunkSize));
-
-                            remainingDataSize -= dataChunkSize;
-                            offset += dataChunkSize;
-
-                            if (remainingDataSize <= 0)
-                            {
-                                inDataStream = false;
-                            }
-
-                            continue;
-                        }
-
-                        // Not enough bytes left for a header
-                        if (offset + 20 > bytesRead)
-                        {
+                        if (bytesRead == 0)
                             break;
-                        }
 
-                        var streamId = MemoryMarshal.Read<int>(buffer[offset..]);
-                        var streamAttributes = MemoryMarshal.Read<uint>(buffer[(offset + 4)..]);
-                        var streamSize = MemoryMarshal.Read<long>(buffer[(offset + 8)..]);
-                        var streamNameSize = MemoryMarshal.Read<uint>(buffer[(offset + 16)..]);
-
-                        var headerSize = 20 + (int)streamNameSize;
-
-                        // Skip past header
-                        offset += headerSize;
-
-                        // Check if this is a data stream
-                        if (streamId == BACKUP_DATA)
+                        var offset = 0;
+                        while (offset < bytesRead)
                         {
-                            inDataStream = true;
-                            remainingDataSize = streamSize;
-
-                            // Process available data now
-                            if (offset < bytesRead)
+                            // Continue reading data from previous stream
+                            if (inDataStream)
                             {
                                 var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
                                 destStream.Write(buffer.Slice(offset, dataChunkSize));
@@ -760,29 +622,66 @@ public static partial class FileSystemHelper
                                 offset += dataChunkSize;
 
                                 if (remainingDataSize <= 0)
-                                {
                                     inDataStream = false;
+
+                                continue;
+                            }
+
+                            // Not enough bytes left for a header
+                            if (offset + 20 > bytesRead)
+                                break;
+
+                            var streamId = MemoryMarshal.Read<int>(buffer[offset..]);
+                            var streamAttributes = MemoryMarshal.Read<uint>(buffer[(offset + 4)..]);
+                            var streamSize = MemoryMarshal.Read<long>(buffer[(offset + 8)..]);
+                            var streamNameSize = MemoryMarshal.Read<uint>(buffer[(offset + 16)..]);
+
+                            var headerSize = 20 + (int)streamNameSize;
+
+                            // Skip past header
+                            offset += headerSize;
+
+                            // Check if this is a data stream
+                            if (streamId == BACKUP_DATA)
+                            {
+                                inDataStream = true;
+                                remainingDataSize = streamSize;
+
+                                // Process available data now
+                                if (offset < bytesRead)
+                                {
+                                    var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
+                                    destStream.Write(buffer.Slice(offset, dataChunkSize));
+
+                                    remainingDataSize -= dataChunkSize;
+                                    offset += dataChunkSize;
+
+                                    if (remainingDataSize <= 0)
+                                        inDataStream = false;
                                 }
                             }
-                        }
-                        else
-                        {
-                            // Skip non-data stream
-                            var skipSize = (int)Math.Min(streamSize, bytesRead - offset);
-                            offset += skipSize;
-                            remainingDataSize = streamSize - skipSize;
-
-                            if (remainingDataSize > 0)
+                            else
                             {
-                                inDataStream = true;  // Will be skipped next time
+                                // Skip non-data stream
+                                var skipSize = (int)Math.Min(streamSize, bytesRead - offset);
+                                offset += skipSize;
+                                remainingDataSize = streamSize - skipSize;
+
+                                if (remainingDataSize > 0)
+                                    inDataStream = true;  // Will be skipped next time
                             }
                         }
                     }
-                }
 
-                // Final read with bAbort = true
-                _ = Kernel32.BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
-                return true;
+                    // Final read with bAbort = true
+                    _ = Kernel32.BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
+                    return true;
+                }
+                finally
+                {
+                    if (array != null)
+                        ArrayPool<byte>.Shared.Return(array);
+                }
             }
             finally
             {
@@ -795,20 +694,18 @@ public static partial class FileSystemHelper
     /// </summary>
     /// <param name="source">The path to the file to copy.</param>
     /// <param name="destination">The path to copy the file to.</param>
+    /// <param name="bufferSize">The size of the buffer to use when copying the file, in bytes. Defaults to 4096. Setting this to <c>&lt;= 1024</c> may be beneficial if the file is very small so that the buffer may be stack-allocated.</param>
     /// <param name="overwrite">Whether to overwrite the destination file if it already exists. Defaults to <see langword="false"/>.</param>
     /// <returns><see langword="true"/> if the file was copied successfully, otherwise <see langword="false"/>.</returns>
-    public static bool TryCopyLockedFile(string source, string destination, bool overwrite = false)
+    public static bool TryCopyLockedFile(string source, string destination, int bufferSize = 4096, bool overwrite = false)
     {
         if (!File.Exists(source))
-        {
             return false;
-        }
         if (!overwrite && File.Exists(destination))
-        {
             return false;
-        }
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(bufferSize);
 
-        return LockedFileInterop.CopyLockedFile(source, destination);
+        return LockedFileInterop.CopyLockedFile(source, destination, bufferSize);
     }
 
     /// <summary>
@@ -820,9 +717,7 @@ public static partial class FileSystemHelper
     {
         path += ":Zone.Identifier";
         if (File.Exists(path))
-        {
             File.Delete(path);
-        }
     }
     /// <summary>
     /// Opens the alternate content stream with the specified name on the specified file.
@@ -838,15 +733,11 @@ public static partial class FileSystemHelper
         ArgumentException.ThrowIfNullOrWhiteSpace(file);
         ArgumentException.ThrowIfNullOrWhiteSpace(acsName);
         if (acsName.Length > 255)
-        {
             throw new ArgumentException("Alternate content stream name is too long, must be 255 characters or less.", nameof(acsName));
-        }
         if (acsName.AsSpan().ContainsAny(InvalidPathCharsSearchValues))
-        {
             throw new ArgumentException("Alternate content stream name contains invalid characters.", nameof(acsName));
-        }
 
-        var path = file + ":" + acsName;
+        var path = string.Concat(file, ":", acsName);
         return new FileStream(path, fileMode, fileAccess, fileShare);
     }
 
@@ -940,9 +831,7 @@ public static partial class FileSystemHelper
     public static void FillInvalidFileNameChars(Span<char> destination)
     {
         if (destination.Length < 8)
-        {
             throw new ArgumentException("Destination span is too short.", nameof(destination));
-        }
 
         InvalidFileNameChars.CopyTo(destination[..8]);
     }
@@ -953,9 +842,7 @@ public static partial class FileSystemHelper
     public static void FillInvalidPathChars(Span<char> destination)
     {
         if (destination.Length < 33)
-        {
             throw new ArgumentException("Destination span is too short.", nameof(destination));
-        }
         InvalidPathChars.CopyTo(destination);
     }
 }

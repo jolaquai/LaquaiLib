@@ -5,6 +5,8 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 
 using LaquaiLib.Text;
+using System.Buffers;
+using System;
 
 namespace LaquaiLib.Util;
 
@@ -57,80 +59,69 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     public int Compare(ReadOnlySpan<char> x, ReadOnlySpan<char> y)
     {
         if (x.IsEmpty && y.IsEmpty)
-        {
             return 0;
-        }
         if (x.IsEmpty)
-        {
             return -1;
-        }
         if (y.IsEmpty)
-        {
             return 1;
-        }
 
         var len = x.Length + y.Length;
-        scoped var chars = len <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : GC.AllocateUninitializedArray<char>(len);
-        scoped var left = chars[..x.Length];
-        scoped var right = chars[x.Length..];
-        _ = x.ToUpperInvariant(left);
-        _ = y.ToUpperInvariant(right);
-
-        if (left.SequenceEqual(right))
+        char[] charsBuffer = null;
+        scoped var chars = len <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : (charsBuffer = ArrayPool<char>.Shared.Rent(len)).AsSpan(0, len);
+        try
         {
-            return 0;
-        }
+            scoped var left = chars[..x.Length];
+            scoped var right = chars[x.Length..];
+            _ = x.ToUpperInvariant(left);
+            _ = y.ToUpperInvariant(right);
 
-        int ix = 0, iy = 0;
-        while (ix < left.Length && iy < right.Length)
-        {
-            // Check for Arabic numerals
-            if (char.IsDigit(left[ix]) && char.IsDigit(right[iy]))
-            {
-                // Extract numerical parts
-                var nx = GetNumber(left, ref ix);
-                var ny = GetNumber(right, ref iy);
-                if (nx != ny)
+            if (left.SequenceEqual(right))
+                return 0;
+
+            int ix = 0, iy = 0;
+            while (ix < left.Length && iy < right.Length)
+                // Check for Arabic numerals
+                if (char.IsDigit(left[ix]) && char.IsDigit(right[iy]))
                 {
-                    return nx.CompareTo(ny);
+                    // Extract numerical parts
+                    var nx = GetNumber(left, ref ix);
+                    var ny = GetNumber(right, ref iy);
+                    if (nx != ny)
+                        return nx.CompareTo(ny);
                 }
-            }
-            // Check for Roman numerals
-            else if (IsRomanNumeral(left, ix) && IsRomanNumeral(right, iy))
-            {
-                // Extract Roman numeral values
-                var rx = GetRomanValue(left, ref ix);
-                var ry = GetRomanValue(right, ref iy);
-                if (rx != ry)
+                // Check for Roman numerals
+                else if (IsRomanNumeral(left, ix) && IsRomanNumeral(right, iy))
                 {
-                    return rx.CompareTo(ry);
+                    // Extract Roman numeral values
+                    var rx = GetRomanValue(left, ref ix);
+                    var ry = GetRomanValue(right, ref iy);
+                    if (rx != ry)
+                        return rx.CompareTo(ry);
                 }
-            }
-            else if (_lenient && !char.IsLetterOrDigit(left[ix]) && !char.IsLetterOrDigit(right[iy]))
-            {
-                // Ignore non-letter, non-digit characters
-                ix++;
-                iy++;
-            }
-            else if (_lenient && !char.IsLetterOrDigit(left[ix]))
-            {
-                ix++;
-            }
-            else if (_lenient && !char.IsLetterOrDigit(right[iy]))
-            {
-                iy++;
-            }
-            else
-            {
-                if (left[ix] != right[iy])
+                else if (_lenient && !char.IsLetterOrDigit(left[ix]) && !char.IsLetterOrDigit(right[iy]))
                 {
-                    return left[ix].CompareTo(right[iy]);
+                    // Ignore non-letter, non-digit characters
+                    ix++;
+                    iy++;
                 }
-                ix++;
-                iy++;
-            }
+                else if (_lenient && !char.IsLetterOrDigit(left[ix]))
+                    ix++;
+                else if (_lenient && !char.IsLetterOrDigit(right[iy]))
+                    iy++;
+                else
+                {
+                    if (left[ix] != right[iy])
+                        return left[ix].CompareTo(right[iy]);
+                    ix++;
+                    iy++;
+                }
+            return left.Length - right.Length;
         }
-        return left.Length - right.Length;
+        finally
+        {
+            if (charsBuffer != null)
+                ArrayPool<char>.Shared.Return(charsBuffer);
+        }
     }
     private static long GetNumber(ReadOnlySpan<char> s, ref int index)
     {
@@ -269,39 +260,40 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     private static int RomanToInt(ReadOnlySpan<char> roman)
     {
         if (roman.Length == 0)
-        {
             return 0;
-        }
 
         var result = 0;
         var prevValue = 0;
 
         var alt = AlternateLookup;
         if (alt.TryGetValue(roman, out var value))
-        {
             return value;
-        }
+        char[] upperBuffer = null;
 
         // Process from right to left
-        scoped var upper = roman.Length <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : GC.AllocateUninitializedArray<char>(roman.Length);
-        _ = roman.ToUpperInvariant(upper);
-        for (var i = roman.Length - 1; i >= 0; i--)
+        scoped var upper = roman.Length <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : (upperBuffer = ArrayPool<char>.Shared.Rent(roman.Length)).AsSpan(0, roman.Length);
+        try
         {
-            var currentValue = alt[upper[i..(i + 1)]];
+            _ = roman.ToUpperInvariant(upper);
+            for (var i = roman.Length - 1; i >= 0; i--)
+            {
+                var currentValue = alt[upper[i..(i + 1)]];
 
-            // If current value is greater than or equal to previous value, add it
-            // Otherwise subtract it (handles cases like IV, IX, etc.)
-            if (currentValue >= prevValue)
-            {
-                result += prevValue = currentValue;
+                // If current value is greater than or equal to previous value, add it
+                // Otherwise subtract it (handles cases like IV, IX, etc.)
+                if (currentValue >= prevValue)
+                    result += prevValue = currentValue;
+                else
+                    result -= prevValue = currentValue;
             }
-            else
-            {
-                result -= prevValue = currentValue;
-            }
+
+            return result;
         }
-
-        return result;
+        finally
+        {
+            if (upperBuffer != null)
+                ArrayPool<char>.Shared.Return(upperBuffer);
+        }
     }
     /// <summary>
     /// Validates that a string is a properly formatted Roman numeral.

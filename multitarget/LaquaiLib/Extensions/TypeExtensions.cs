@@ -818,9 +818,7 @@ public static partial class TypeExtensions
         {
             var typeArgs = new Type[fromTypeArguments.Length];
             for (var i = 0; i < fromTypeArguments.Length; i++)
-            {
                 typeArgs[i] = fromTypeArguments[i].GetType();
-            }
             return type.MakeGenericType(typeArgs);
         }
     }

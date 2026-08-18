@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using System.Diagnostics;
+using System.Buffers;
 
 namespace LaquaiLib.IO;
 
@@ -78,31 +79,32 @@ public class FileSizePartitioner : Partitioner<string>
         // bucket that currently holds the least data. This yields exactly partitionCount buckets (some may be
         // empty when there are fewer files than partitions) with approximately equal total sizes.
         var buckets = new List<string>[partitionCount];
-        var sizes = new long[partitionCount];
-        for (var i = 0; i < partitionCount; i++)
+        var sizesBuf = ArrayPool<long>.Shared.Rent(partitionCount);
+        try
         {
-            buckets[i] = [];
-        }
+            var sizes = sizesBuf.AsSpan(0, partitionCount);
 
-        foreach (var (k, v) in ordered)
-        {
-            var minIndex = 0;
-            for (var i = 1; i < partitionCount; i++)
+            for (var i = 0; i < partitionCount; i++)
+                buckets[i] = [];
+
+            foreach (var (k, v) in ordered)
             {
-                if (sizes[i] < sizes[minIndex])
-                {
-                    minIndex = i;
-                }
+                var minIndex = 0;
+                for (var i = 1; i < partitionCount; i++)
+                    if (sizes[i] < sizes[minIndex])
+                        minIndex = i;
+                buckets[minIndex].Add(k);
+                sizes[minIndex] += v.Length;
             }
-            buckets[minIndex].Add(k);
-            sizes[minIndex] += v.Length;
+        }
+        finally
+        {
+            ArrayPool<long>.Shared.Return(sizesBuf);
         }
 
         var partitions = new List<IEnumerator<string>>(partitionCount);
         foreach (var bucket in buckets)
-        {
             partitions.Add(bucket.GetEnumerator());
-        }
 
         Debug.Assert(partitions.Count == partitionCount);
 

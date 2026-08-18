@@ -51,13 +51,7 @@ public static class RandomExtensions
 
             // Otherwise we have little choice but to read into a buffer and write it to the stream
             byte[] buffer = null;
-            if (count <= Config.MaxStackallocSize)
-                span = stackalloc byte[count];
-            else
-            {
-                buffer = ArrayPool<byte>.Shared.Rent(count);
-                span = buffer.AsSpan(0, count);
-            }
+            span = count <= Config.MaxStackallocSize ? span = stackalloc byte[count] : (buffer = ArrayPool<byte>.Shared.Rent(count)).AsSpan(0, count);
             try
             {
                 random.NextBytes(span);

@@ -68,9 +68,7 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
         _stripes = new Stripe[s];
         _comparer = comparer ?? EqualityComparer<T>.Default;
         for (var i = 0; i < _stripes.Length; i++)
-        {
             _stripes[i] = new Stripe(_comparer);
-        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -92,9 +90,7 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
             {
                 var stripe = _stripes[i];
                 lock (stripe.Lock)
-                {
                     total += stripe.Set.Count;
-                }
             }
             return total;
         }
@@ -122,9 +118,7 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
     {
         var stripe = GetStripe(item);
         lock (stripe.Lock)
-        {
             return stripe.Set.Contains(item);
-        }
     }
     /// <inheritdoc/>
     public bool Remove(T item)
@@ -145,25 +139,19 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
     {
         // lock stripes in order to avoid deadlocks
         foreach (var stripe in _stripes)
-        {
             stripe.Lock.Enter();
-        }
 
         try
         {
             foreach (var stripe in _stripes)
-            {
                 stripe.Set.Clear();
-            }
 
             Interlocked.Exchange(ref _count, 0);
         }
         finally
         {
             for (var i = _stripes.Length - 1; i >= 0; i--)
-            {
                 _stripes[i].Lock.Exit();
-            }
         }
     }
     /// <inheritdoc/>
@@ -172,7 +160,8 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
         ArgumentNullException.ThrowIfNull(array);
         ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
 
-        var items = new T[Count];
+        // can't pool because T might be-or-contain references, so this is the best we can do
+        var items = GC.AllocateUninitializedArray<T>(Count);
         var lastIndex = 0;
         foreach (var stripe in _stripes)
         {
@@ -183,9 +172,7 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
             }
 
             if (arrayIndex + items.Length > array.Length)
-            {
                 throw new ArgumentException("Destination array is too small.");
-            }
         }
 
         items.CopyTo(array, arrayIndex);
@@ -195,9 +182,7 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
     {
         ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
-        {
             Remove(item);
-        }
     }
     /// <inheritdoc/>
     public void IntersectWith(IEnumerable<T> other)
@@ -205,40 +190,28 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
         ArgumentNullException.ThrowIfNull(other);
         var otherSet = new HashSet<T>(other, _comparer);
         foreach (var stripe in _stripes)
-        {
             lock (stripe.Lock)
             {
                 var toRemove = stripe.Set.Where(x => !otherSet.Contains(x)).ToList();
                 foreach (var r in toRemove)
-                {
                     if (stripe.Set.Remove(r))
-                    {
                         Interlocked.Decrement(ref _count);
-                    }
-                }
             }
-        }
     }
     /// <inheritdoc/>
     public void UnionWith(IEnumerable<T> other)
     {
         ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
-        {
             Add(item);
-        }
     }
     /// <inheritdoc/>
     public void SymmetricExceptWith(IEnumerable<T> other)
     {
         ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
-        {
             if (!Remove(item))
-            {
                 Add(item);
-            }
-        }
     }
     /// <inheritdoc/>
     public bool IsSubsetOf(IEnumerable<T> other)
@@ -246,18 +219,10 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
         ArgumentNullException.ThrowIfNull(other);
         var otherSet = new HashSet<T>(other, _comparer);
         foreach (var stripe in _stripes)
-        {
             lock (stripe.Lock)
-            {
                 foreach (var item in stripe.Set)
-                {
                     if (!otherSet.Contains(item))
-                    {
                         return false;
-                    }
-                }
-            }
-        }
         return true;
     }
     /// <inheritdoc/>
@@ -265,12 +230,8 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
     {
         ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
-        {
             if (!Contains(item))
-            {
                 return false;
-            }
-        }
         return true;
     }
     /// <inheritdoc/>
@@ -294,12 +255,8 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
     {
         ArgumentNullException.ThrowIfNull(other);
         foreach (var item in other)
-        {
             if (Contains(item))
-            {
                 return true;
-            }
-        }
 
         return false;
     }
@@ -310,9 +267,7 @@ public sealed class ConcurrentSet<T> : ISet<T> where T : notnull
         var otherSet = new HashSet<T>(other, _comparer);
         var c = Count;
         if (c != otherSet.Count)
-        {
             return false;
-        }
 
         return IsSubsetOf(otherSet);
     }

@@ -10472,12 +10472,13 @@
             <param name="directoryInfo">A <see cref="T:System.IO.DirectoryInfo"/> instance that identifies the directory.</param>
             <param name="allowEmptyDirectories">Whether to delete the directory if it contains only empty directories (that is, only files are considered for the check).</param>
         </member>
-        <member name="M:LaquaiLib.IO.FileSystemHelper.TryCopyLockedFile(System.String,System.String,System.Boolean)">
+        <member name="M:LaquaiLib.IO.FileSystemHelper.TryCopyLockedFile(System.String,System.String,System.Int32,System.Boolean)">
             <summary>
             Attempts to copy the file at <paramref name="source"/> to <paramref name="destination"/> even if that file is locked by another process.
             </summary>
             <param name="source">The path to the file to copy.</param>
             <param name="destination">The path to copy the file to.</param>
+            <param name="bufferSize">The size of the buffer to use when copying the file, in bytes. Defaults to 4096. Setting this to <c>&lt;= 1024</c> may be beneficial if the file is very small so that the buffer may be stack-allocated.</param>
             <param name="overwrite">Whether to overwrite the destination file if it already exists. Defaults to <see langword="false"/>.</param>
             <returns><see langword="true"/> if the file was copied successfully, otherwise <see langword="false"/>.</returns>
         </member>
