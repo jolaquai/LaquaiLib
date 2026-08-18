@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Numerics;
 using System.Numerics.Tensors;
 
+using LaquaiLib.Interfaces;
+
 namespace LaquaiLib.Numerics;
 
 /// <remarks>
@@ -13,8 +15,13 @@ namespace LaquaiLib.Numerics;
 /// <item><description>When <see cref="Signed"/> is <see langword="true"/>, the value is a two's-complement integer at width <see cref="Capacity"/>; the bit at index <c><see cref="Capacity"/> - 1</c> is the sign bit.</description></item>
 /// </list>
 /// Identity (<see cref="Equals(BitArray)"/>, <see cref="GetHashCode"/>, <see cref="CompareTo(BitArray)"/>) is by numeric value: the <see cref="Signed"/> flag participates only when it actually makes the value negative (see <see cref="IsNegative"/>). Two instances with identical bits but different <see cref="Signed"/> flags are therefore equal when both are non-negative (the flag does not change a non-negative value) and unequal when one is negative (e.g. signed <c>-5</c> differs from the unsigned magnitude with the same bits).
+/// Because this identity is value-based on a mutable type, an instance must never be used as a <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/>/<see cref="System.Collections.Generic.HashSet{T}"/> key (or otherwise hashed/ordered) while it is still live and subject to mutation (e.g. via <see cref="ShiftLeft(int)"/>, <see cref="And(BitArray)"/>, or toggling <see cref="Signed"/> when the sign bit is set): doing so silently corrupts the container's hash/order invariant.
 /// </remarks>
-public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable, ISpanFormattable
+public class BitArray :
+    IEquatable<BitArray>, IComparable<BitArray>, ICloneable<BitArray>, ISpanFormattable,
+    IParsable<BitArray>, ISpanParsable<BitArray>,
+    IEqualityOperators<BitArray, BitArray, bool>, IComparisonOperators<BitArray, BitArray, bool>,
+    IBitwiseOperators<BitArray, BitArray, BitArray>, IShiftOperators<BitArray, int, BitArray>
 {
     private ulong[] _data;
     private BitArray() { _data = []; }
@@ -62,9 +69,47 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
     public static BitArray Parse(string str)
     {
         ArgumentNullException.ThrowIfNull(str);
-        var span = str.AsSpan().Trim();
+        return Parse(str.AsSpan(), null);
+    }
+    /// <inheritdoc/>
+    public static BitArray Parse(string s, IFormatProvider provider)
+    {
+        ArgumentNullException.ThrowIfNull(s);
+        return Parse(s.AsSpan(), provider);
+    }
+    /// <inheritdoc cref="Parse(string)"/>
+    /// <param name="s">The <see langword="ReadOnlySpan{T}"/> of <see langword="char"/>s to parse.</param>
+    /// <param name="provider">Ignored; none of the supported formats are culture-sensitive.</param>
+    public static BitArray Parse(ReadOnlySpan<char> s, IFormatProvider provider)
+    {
+        if (!TryParse(s, provider, out var result))
+            throw new FormatException($"The input string '{s}' was not in a correct format.");
+        return result;
+    }
+    /// <inheritdoc/>
+    public static bool TryParse(string s, IFormatProvider provider, out BitArray result)
+    {
+        if (s is null)
+        {
+            result = null;
+            return false;
+        }
+        return TryParse(s.AsSpan(), provider, out result);
+    }
+    /// <summary>
+    /// Attempts to parse <paramref name="s"/> as a <see cref="BitArray"/> using the same grammar as <see cref="Parse(string)"/>. Never throws.
+    /// </summary>
+    /// <param name="s">The <see langword="ReadOnlySpan{T}"/> of <see langword="char"/>s to parse.</param>
+    /// <param name="provider">Ignored; none of the supported formats are culture-sensitive.</param>
+    /// <param name="result">When this method returns, the parsed <see cref="BitArray"/> if parsing succeeded; otherwise <see langword="null"/>.</param>
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider provider, out BitArray result)
+    {
+        var span = s.Trim();
         if (span.IsEmpty)
-            throw new FormatException("The input string was empty.");
+        {
+            result = null;
+            return false;
+        }
 
         // 0x / 0b literal (always a non-negative magnitude).
         if (span.Length >= 2 && span[0] == '0' && span[1] is 'x' or 'X' or 'b' or 'B')
@@ -78,7 +123,10 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
                     digitCount++;
             }
             if (digitCount == 0)
-                throw new FormatException($"'{str}' contains no digits.");
+            {
+                result = null;
+                return false;
+            }
 
             var ba = CreateWithCapacity(digitCount * bitsPerDigit);
             var data = ba._data;
@@ -92,22 +140,16 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
                 ulong val;
                 if (bitsPerDigit == 4)
                 {
-                    val = (ulong)(c switch
+                    if (!TryHexDigit(c, out val))
                     {
-                        >= '0' and <= '9' => c - '0',
-                        >= 'a' and <= 'f' => c - 'a' + 10,
-                        >= 'A' and <= 'F' => c - 'A' + 10,
-                        _ => throw new FormatException($"'{c}' is not a valid hexadecimal digit."),
-                    });
+                        result = null;
+                        return false;
+                    }
                 }
-                else
+                else if (!TryBinDigit(c, out val))
                 {
-                    val = c switch
-                    {
-                        '0' => 0UL,
-                        '1' => 1UL,
-                        _ => throw new FormatException($"'{c}' is not a valid binary digit."),
-                    };
+                    result = null;
+                    return false;
                 }
                 if (val != 0)
                 {
@@ -120,24 +162,54 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
                 }
                 pos += bitsPerDigit;
             }
-            return ba;
+            result = ba;
+            return true;
         }
 
         // Decimal integer with optional leading sign. BigInteger does the heavy lifting.
-        var value = BigInteger.Parse(span, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        if (!BigInteger.TryParse(span, NumberStyles.Integer, CultureInfo.InvariantCulture, out var value))
+        {
+            result = null;
+            return false;
+        }
         if (value.IsZero)
-            return CreateWithCapacity(1);
+        {
+            result = CreateWithCapacity(1);
+            return true;
+        }
 
         var negative = value.Sign < 0;
         var byteCount = value.GetByteCount(isUnsigned: !negative);
-        var result = CreateWithCapacity(Math.Max((byteCount + 7) / 8, 1) * 64);
+        var r = CreateWithCapacity(Math.Max((byteCount + 7) / 8, 1) * 64);
         // For negatives, pre-fill the backing words with the sign-extension (all-ones); TryWriteBytes only
         // emits the minimal two's-complement bytes, so the unwritten high words must already carry the sign.
         if (negative)
-            result._data.AsSpan().Fill(ulong.MaxValue);
-        value.TryWriteBytes(MemoryMarshal.AsBytes(result._data.AsSpan()), out _, isUnsigned: !negative, isBigEndian: false);
-        result.Signed = negative;
-        return result;
+            r._data.AsSpan().Fill(ulong.MaxValue);
+        value.TryWriteBytes(MemoryMarshal.AsBytes(r._data.AsSpan()), out _, isUnsigned: !negative, isBigEndian: false);
+        r.Signed = negative;
+        result = r;
+        return true;
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool TryHexDigit(char c, out ulong val)
+    {
+        switch (c)
+        {
+            case >= '0' and <= '9': val = (ulong)(c - '0'); return true;
+            case >= 'a' and <= 'f': val = (ulong)(c - 'a' + 10); return true;
+            case >= 'A' and <= 'F': val = (ulong)(c - 'A' + 10); return true;
+            default: val = 0UL; return false;
+        }
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool TryBinDigit(char c, out ulong val)
+    {
+        switch (c)
+        {
+            case '0': val = 0UL; return true;
+            case '1': val = 1UL; return true;
+            default: val = 0UL; return false;
+        }
     }
     /// <summary>
     /// Initializes a new <see cref="BitArray"/> with the specified data. <paramref name="data"/>[0] holds bits [0..63] (least significant), <paramref name="data"/>[1] holds bits [64..127], and so on.
@@ -319,6 +391,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         return v;
     }
 
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void And(BitArray right)
     {
@@ -327,6 +400,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         var dst = _data.AsSpan(0, len);
         TensorPrimitives.BitwiseAnd(dst, right._data.AsSpan(0, len), dst);
     }
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Or(BitArray right)
     {
@@ -335,6 +409,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         var dst = _data.AsSpan(0, len);
         TensorPrimitives.BitwiseOr(dst, right._data.AsSpan(0, len), dst);
     }
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Xor(BitArray right)
     {
@@ -343,6 +418,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         var dst = _data.AsSpan(0, len);
         TensorPrimitives.Xor(dst, right._data.AsSpan(0, len), dst);
     }
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Not() => TensorPrimitives.OnesComplement(_data, _data);
 
@@ -368,6 +444,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
             _data[fullWords] ^= mask;
         }
     }
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int PopCount()
     {
@@ -386,6 +463,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         EnsureCapacityBits(bits);
         Set(^bits.., value);
     }
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void SetLower(int bits, bool value)
     {
@@ -393,6 +471,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         EnsureCapacityBits(bits);
         Set(..bits, value);
     }
+    /// <inheritdoc/>
     public void Set(Range range, bool value)
     {
         var start = range.Start;
@@ -404,6 +483,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         ArgumentOutOfRangeException.ThrowIfLessThan(endBit, startBit);
         Set(startBit, endBit - startBit, value);
     }
+    /// <inheritdoc/>
     public void Set(int offset, int length, bool value)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(offset);
@@ -460,7 +540,9 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         }
     }
 
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Clear() => _data.AsSpan().Clear();
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public void SetAll(bool value) => _data.AsSpan().Fill(value ? ulong.MaxValue : 0UL);
 
     /// <summary>
@@ -509,6 +591,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         ArgumentOutOfRangeException.ThrowIfNegative(n);
         ShiftLeftSpan(_data, n);
     }
+    /// <inheritdoc/>
     public static BitArray operator <<(BitArray value, int n)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -516,6 +599,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         clone.ShiftLeft(n);
         return clone;
     }
+    /// <inheritdoc/>
     public void operator <<=(int n) => ShiftLeft(n);
     /// <summary>
     /// Shifts every bit toward lower indices (toward the LSB) by <paramref name="n"/> positions. Bits shifted past index 0 are lost; vacated high bits are zero-filled.
@@ -525,6 +609,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         ArgumentOutOfRangeException.ThrowIfNegative(n);
         ShiftRightSpan(_data, n, 0UL);
     }
+    /// <inheritdoc/>
     public static BitArray operator >>(BitArray value, int n)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -532,6 +617,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         clone.ShiftRight(n);
         return clone;
     }
+    /// <inheritdoc/>
     public void operator >>=(int n) => ShiftRight(n);
 
     /// <summary>
@@ -545,6 +631,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
             fill = ulong.MaxValue;
         ShiftRightSpan(_data, n, fill);
     }
+    /// <inheritdoc/>
     public static BitArray operator >>>(BitArray value, int n)
     {
         ArgumentNullException.ThrowIfNull(value);
@@ -552,6 +639,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         clone.ShiftRightArithmetic(n);
         return clone;
     }
+    /// <inheritdoc/>
     public void operator >>>=(int n) => ShiftRightArithmetic(n);
 
     /// <summary>
@@ -648,12 +736,12 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         data.Slice(last - wordShift + 1).Fill(fill);
     }
 
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BitArray Clone() => new BitArray(this);
-    object ICloneable.Clone() => Clone();
 
     /// <summary>
-    /// Reinterprets the lowest <c>sizeof(<typeparamref name="T"/>)</c> bytes of this instance's backing storage as a value of type <typeparamref name="T"/>, using the same LSB-first word layout as the <see cref="BitArray(ReadOnlySpan{ulong})"/> constructor (word 0 holds the least significant bytes). This is a raw bit reinterpretation, <em>not</em> a numeric conversion: it ignores <see cref="Signed"/> and never sign-extends. When the backing storage holds fewer than <c>sizeof(<typeparamref name="T"/>)</c> bytes, the missing high bytes are treated as zero.
+    /// Reinterprets the lowest <c><see langword="sizeof"/>(<typeparamref name="T"/>)</c> bytes of this instance's backing storage as a value of type <typeparamref name="T"/>, using the same LSB-first word layout as the <see cref="BitArray(ReadOnlySpan{ulong})"/> constructor (word 0 holds the least significant bytes). This is a raw bit reinterpretation, <em>not</em> a numeric conversion: it ignores <see cref="Signed"/> and never sign-extends. When the backing storage holds fewer than <c><see langword="sizeof"/>(<typeparamref name="T"/>)</c> bytes, the missing high bytes are treated as zero.
     /// </summary>
     /// <typeparam name="T">The unmanaged type to reinterpret the bits as.</typeparam>
     /// <returns>The reinterpreted value.</returns>
@@ -716,11 +804,11 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         }
     }
     /// <summary>
-    /// Like <see cref="As{T}"/>, but throws <see cref="OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c>sizeof(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="As{T}"/>: a <see cref="Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
+    /// Like <see cref="As{T}"/>, but throws <see cref="OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c><see langword="sizeof"/>(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="As{T}"/>: a <see cref="Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
     /// </summary>
     /// <typeparam name="T">The unmanaged type to reinterpret the bits as.</typeparam>
     /// <returns>The reinterpreted value.</returns>
-    /// <exception cref="OverflowException">A set bit lies at or beyond <c>sizeof(<typeparamref name="T"/>) * 8</c>.</exception>
+    /// <exception cref="OverflowException">A set bit lies at or beyond <c><see langword="sizeof"/>(<typeparamref name="T"/>) * 8</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public T AsExact<T>() where T : unmanaged
     {
@@ -729,10 +817,10 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         return result;
     }
     [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)]
-    private static void ThrowOverflow(int size, Type t) =>throw new OverflowException($"The value has set bits beyond the {size} byte(s) of {t} and cannot be reinterpreted without loss.");
+    private static void ThrowOverflow(int size, Type t) => throw new OverflowException($"The value has set bits beyond the {size} byte(s) of {t} and cannot be reinterpreted without loss.");
 
     /// <summary>
-    /// Like <see cref="AsExact{T}"/>, but throws <see cref="OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c>sizeof(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="As{T}"/>: a <see cref="Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
+    /// Like <see cref="AsExact{T}"/>, but throws <see cref="OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c><see langword="sizeof"/>(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="As{T}"/>: a <see cref="Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
     /// </summary>
     /// <typeparam name="T">The unmanaged type to reinterpret the bits as.</typeparam>
     /// <returns>The reinterpreted value.</returns>
@@ -764,6 +852,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         return _data.AsSpan().LastIndexOfAnyExcept(0UL) + 1;
     }
 
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(BitArray other)
     {
@@ -781,8 +870,10 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
             return false;
         return _data.AsSpan(0, n).SequenceEqual(other._data.AsSpan(0, n));
     }
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override bool Equals(object obj) => Equals(obj as BitArray);
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int GetHashCode()
     {
@@ -859,6 +950,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
     /// Returns this <see cref="BitArray"/>'s value as a decimal integer, exactly as a primitive numeric type would render: the magnitude in base 10, prefixed with <c>-</c> only when this instance is <see cref="Signed"/> and logically negative. The <see cref="Signed"/> flag and backing width are otherwise not reflected in the output, so two instances that differ only by <see cref="Signed"/> while both non-negative render identically. Use <see cref="ToString(string, IFormatProvider)"/> with a format specifier for hexadecimal, binary, or the raw backing-word dump.
     /// </summary>
     public override string ToString() => ToString(null, null);
+    /// <inheritdoc/>
     public string ToString(string format) => ToString(format, null);
     /// <summary>
     /// Returns a textual representation of this <see cref="BitArray"/>'s value. All renderings are sign-magnitude: the magnitude is formatted in the requested base and prefixed with <c>-</c> when this instance is <see cref="Signed"/> and logically negative. Supported <paramref name="format"/> specifiers:
@@ -901,6 +993,7 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
                 ArrayPool<char>.Shared.Return(rented);
         }
     }
+    /// <inheritdoc/>
     public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider)
     {
         var kind = ParseFormat(format, out var lowercase);
@@ -1080,16 +1173,22 @@ public class BitArray : IEquatable<BitArray>, IComparable<BitArray>, ICloneable,
         return true;
     }
 
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator ==(BitArray left, BitArray right) => left is null ? right is null : left.Equals(right);
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator !=(BitArray left, BitArray right) => !(left == right);
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator <(BitArray left, BitArray right) => left is null ? right is not null : left.CompareTo(right) < 0;
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator <=(BitArray left, BitArray right) => left is null || left.CompareTo(right) <= 0;
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator >(BitArray left, BitArray right) => left is not null && left.CompareTo(right) > 0;
+    /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool operator >=(BitArray left, BitArray right) => left is null ? right is null : left.CompareTo(right) >= 0;
 

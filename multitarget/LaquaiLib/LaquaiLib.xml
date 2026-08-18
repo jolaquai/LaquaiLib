@@ -11400,6 +11400,7 @@
             <item><description>When <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> is <see langword="true"/>, the value is a two's-complement integer at width <see cref="P:LaquaiLib.Numerics.BitArray.Capacity"/>; the bit at index <c><see cref="P:LaquaiLib.Numerics.BitArray.Capacity"/> - 1</c> is the sign bit.</description></item>
             </list>
             Identity (<see cref="M:LaquaiLib.Numerics.BitArray.Equals(LaquaiLib.Numerics.BitArray)"/>, <see cref="M:LaquaiLib.Numerics.BitArray.GetHashCode"/>, <see cref="M:LaquaiLib.Numerics.BitArray.CompareTo(LaquaiLib.Numerics.BitArray)"/>) is by numeric value: the <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> flag participates only when it actually makes the value negative (see <see cref="P:LaquaiLib.Numerics.BitArray.IsNegative"/>). Two instances with identical bits but different <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> flags are therefore equal when both are non-negative (the flag does not change a non-negative value) and unequal when one is negative (e.g. signed <c>-5</c> differs from the unsigned magnitude with the same bits).
+            Because this identity is value-based on a mutable type, an instance must never be used as a <see cref="T:System.Collections.Generic.Dictionary`2"/>/<see cref="T:System.Collections.Generic.HashSet`1"/> key (or otherwise hashed/ordered) while it is still live and subject to mutation (e.g. via <see cref="M:LaquaiLib.Numerics.BitArray.ShiftLeft(System.Int32)"/>, <see cref="M:LaquaiLib.Numerics.BitArray.And(LaquaiLib.Numerics.BitArray)"/>, or toggling <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> when the sign bit is set): doing so silently corrupts the container's hash/order invariant.
             </remarks>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.CreateWithCapacity(System.Int32)">
@@ -11426,6 +11427,25 @@
             </summary>
             <param name="str">The <see langword="string"/> to parse.</param>
             <returns>The parsed <see cref="T:LaquaiLib.Numerics.BitArray"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Parse(System.String,System.IFormatProvider)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <inheritdoc cref="M:LaquaiLib.Numerics.BitArray.Parse(System.String)"/>
+            <param name="s">The <see langword="ReadOnlySpan{T}"/> of <see langword="char"/>s to parse.</param>
+            <param name="provider">Ignored; none of the supported formats are culture-sensitive.</param>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.TryParse(System.String,System.IFormatProvider,LaquaiLib.Numerics.BitArray@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,LaquaiLib.Numerics.BitArray@)">
+            <summary>
+            Attempts to parse <paramref name="s"/> as a <see cref="T:LaquaiLib.Numerics.BitArray"/> using the same grammar as <see cref="M:LaquaiLib.Numerics.BitArray.Parse(System.String)"/>. Never throws.
+            </summary>
+            <param name="s">The <see langword="ReadOnlySpan{T}"/> of <see langword="char"/>s to parse.</param>
+            <param name="provider">Ignored; none of the supported formats are culture-sensitive.</param>
+            <param name="result">When this method returns, the parsed <see cref="T:LaquaiLib.Numerics.BitArray"/> if parsing succeeded; otherwise <see langword="null"/>.</param>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.#ctor(System.ReadOnlySpan{System.UInt64})">
             <summary>
@@ -11489,16 +11509,46 @@
             Attempts to write <paramref name="value"/> to the bit at <paramref name="index"/>. Returns <see langword="true"/> when <paramref name="index"/> lies within <c>[0, <see cref="P:LaquaiLib.Numerics.BitArray.Capacity"/>)</c> and the bit is written; otherwise returns <see langword="false"/> with no side effects. Never grows the buffer.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.And(LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Or(LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Xor(LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Not">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Numerics.BitArray.Not(System.Int32)">
             <summary>
             Sets the lower (least significant) <paramref name="bits"/> to the bitwise NOT of their current value. Grows the buffer if <paramref name="bits"/> exceeds the current <see cref="P:LaquaiLib.Numerics.BitArray.Capacity"/>.
             </summary>
             <param name="bits">The number of lower bits to NOT.</param>
         </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.PopCount">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Numerics.BitArray.SetUpper(System.Int32,System.Boolean)">
             <summary>
             Sets the upper (most significant) <paramref name="bits"/> of the current <see cref="P:LaquaiLib.Numerics.BitArray.Capacity"/> to <paramref name="value"/>. Grows the buffer to hold at least <paramref name="bits"/> bits first, then operates relative to the (possibly newly grown) capacity.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.SetLower(System.Int32,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Set(System.Range,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Set(System.Int32,System.Int32,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Clear">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.SetAll(System.Boolean)">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.IsAllZero">
             <summary>
@@ -11535,15 +11585,33 @@
             Shifts every bit toward higher indices (toward the MSB) by <paramref name="n"/> positions. Bits shifted past the end are lost; vacated low bits are zero-filled.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_LeftShift(LaquaiLib.Numerics.BitArray,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_LeftShiftAssignment(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Numerics.BitArray.ShiftRight(System.Int32)">
             <summary>
             Shifts every bit toward lower indices (toward the LSB) by <paramref name="n"/> positions. Bits shifted past index 0 are lost; vacated high bits are zero-filled.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_RightShift(LaquaiLib.Numerics.BitArray,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_RightShiftAssignment(System.Int32)">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Numerics.BitArray.ShiftRightArithmetic(System.Int32)">
             <summary>
             Shifts every bit toward lower indices (toward the LSB) by <paramref name="n"/> positions. When <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> is <see langword="true"/>, vacated high bits are filled with the sign bit (the bit at index <c><see cref="P:LaquaiLib.Numerics.BitArray.Capacity"/> - 1</c>); otherwise vacated high bits are zero-filled (equivalent to <see cref="M:LaquaiLib.Numerics.BitArray.ShiftRight(System.Int32)"/>).
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_UnsignedRightShift(LaquaiLib.Numerics.BitArray,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_UnsignedRightShiftAssignment(System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.RotateLeft(System.Int32)">
             <summary>
@@ -11555,24 +11623,27 @@
             Rotates every bit toward lower indices by <paramref name="n"/> positions; bits shifted past index 0 wrap around to the end. Negative <paramref name="n"/> rotates left.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Clone">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Numerics.BitArray.As``1">
             <summary>
-            Reinterprets the lowest <c>sizeof(<typeparamref name="T"/>)</c> bytes of this instance's backing storage as a value of type <typeparamref name="T"/>, using the same LSB-first word layout as the <see cref="M:LaquaiLib.Numerics.BitArray.#ctor(System.ReadOnlySpan{System.UInt64})"/> constructor (word 0 holds the least significant bytes). This is a raw bit reinterpretation, <em>not</em> a numeric conversion: it ignores <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> and never sign-extends. When the backing storage holds fewer than <c>sizeof(<typeparamref name="T"/>)</c> bytes, the missing high bytes are treated as zero.
+            Reinterprets the lowest <c><see langword="sizeof"/>(<typeparamref name="T"/>)</c> bytes of this instance's backing storage as a value of type <typeparamref name="T"/>, using the same LSB-first word layout as the <see cref="M:LaquaiLib.Numerics.BitArray.#ctor(System.ReadOnlySpan{System.UInt64})"/> constructor (word 0 holds the least significant bytes). This is a raw bit reinterpretation, <em>not</em> a numeric conversion: it ignores <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> and never sign-extends. When the backing storage holds fewer than <c><see langword="sizeof"/>(<typeparamref name="T"/>)</c> bytes, the missing high bytes are treated as zero.
             </summary>
             <typeparam name="T">The unmanaged type to reinterpret the bits as.</typeparam>
             <returns>The reinterpreted value.</returns>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.AsExact``1">
             <summary>
-            Like <see cref="M:LaquaiLib.Numerics.BitArray.As``1"/>, but throws <see cref="T:System.OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c>sizeof(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="M:LaquaiLib.Numerics.BitArray.As``1"/>: a <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
+            Like <see cref="M:LaquaiLib.Numerics.BitArray.As``1"/>, but throws <see cref="T:System.OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c><see langword="sizeof"/>(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="M:LaquaiLib.Numerics.BitArray.As``1"/>: a <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
             </summary>
             <typeparam name="T">The unmanaged type to reinterpret the bits as.</typeparam>
             <returns>The reinterpreted value.</returns>
-            <exception cref="T:System.OverflowException">A set bit lies at or beyond <c>sizeof(<typeparamref name="T"/>) * 8</c>.</exception>
+            <exception cref="T:System.OverflowException">A set bit lies at or beyond <c><see langword="sizeof"/>(<typeparamref name="T"/>) * 8</c>.</exception>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.TryAsExact``1(``0@)">
             <summary>
-            Like <see cref="M:LaquaiLib.Numerics.BitArray.AsExact``1"/>, but throws <see cref="T:System.OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c>sizeof(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="M:LaquaiLib.Numerics.BitArray.As``1"/>: a <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
+            Like <see cref="M:LaquaiLib.Numerics.BitArray.AsExact``1"/>, but throws <see cref="T:System.OverflowException"/> when the reinterpretation would drop information — i.e. when any bit at or above index <c><see langword="sizeof"/>(<typeparamref name="T"/>) * 8</c> is set. This is a lossless <em>bit-width</em> guard and is sign-agnostic, exactly like <see cref="M:LaquaiLib.Numerics.BitArray.As``1"/>: a <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> negative value will throw, because its sign-extension bits count as set high bits. For "does the numeric value fit in <typeparamref name="T"/>" semantics, use a numeric conversion instead.
             </summary>
             <typeparam name="T">The unmanaged type to reinterpret the bits as.</typeparam>
             <returns>The reinterpreted value.</returns>
@@ -11581,6 +11652,15 @@
             <summary>
             Returns the number of backing words needed to represent the logical value under this instance's <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> interpretation. For non-negative values (unsigned, or signed with top bit clear) trailing all-zero words are trimmed. For signed-negative values (top bit of the highest word set), trailing <see cref="F:System.UInt64.MaxValue"/> words are trimmed so long as the next-lower word still has its top bit set, preserving the negative two's-complement semantic at the smaller width. Returns 0 only when the value is zero (non-negative case); always returns at least 1 for signed-negative.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Equals(LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.GetHashCode">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.CompareTo(LaquaiLib.Numerics.BitArray)">
             <summary>
@@ -11591,6 +11671,9 @@
             <summary>
             Returns this <see cref="T:LaquaiLib.Numerics.BitArray"/>'s value as a decimal integer, exactly as a primitive numeric type would render: the magnitude in base 10, prefixed with <c>-</c> only when this instance is <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> and logically negative. The <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> flag and backing width are otherwise not reflected in the output, so two instances that differ only by <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> while both non-negative render identically. Use <see cref="M:LaquaiLib.Numerics.BitArray.ToString(System.String,System.IFormatProvider)"/> with a format specifier for hexadecimal, binary, or the raw backing-word dump.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.ToString(System.String)">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.ToString(System.String,System.IFormatProvider)">
             <summary>
@@ -11603,6 +11686,9 @@
             </list>
             Unlike the BCL, hexadecimal and binary of a negative value use sign-magnitude (a <c>-</c> prefix), not two's-complement. <paramref name="formatProvider"/> is ignored since none of these renderings are culture-sensitive.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.ToBigInteger">
             <summary>
@@ -11618,6 +11704,24 @@
             <summary>
             Computes the sign-magnitude of this instance into <paramref name="magnitude"/> (which must be at least <see cref="F:LaquaiLib.Numerics.BitArray._data"/>.Length long), returning the number of significant magnitude words (0 for a zero value) and reporting whether the value is logically negative.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_Equality(LaquaiLib.Numerics.BitArray,LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_Inequality(LaquaiLib.Numerics.BitArray,LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_LessThan(LaquaiLib.Numerics.BitArray,LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_LessThanOrEqual(LaquaiLib.Numerics.BitArray,LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_GreaterThan(LaquaiLib.Numerics.BitArray,LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.Numerics.BitArray.op_GreaterThanOrEqual(LaquaiLib.Numerics.BitArray,LaquaiLib.Numerics.BitArray)">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Numerics.BitArray.op_BitwiseAnd(LaquaiLib.Numerics.BitArray,LaquaiLib.Numerics.BitArray)">
             <summary>
