@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Buffers;
 
 namespace LaquaiLib.Util;
 
@@ -23,23 +24,20 @@ public static class ArrayHelper
         Array.Reverse(keys);
 
         if (indices.AsSpan().SequenceEqual(Enumerable.Range(0, indices.Length).ToArray()))
-        {
             return false;
-        }
         return true;
     }
 
-    private static unsafe void SortGenericImpl<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, TValue[][] itemsArrays, delegate*<int[], TKey[], bool> inBetween)
+    private static void SortGenericImpl<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, TValue[][] itemsArrays, delegate*<int[], TKey[], bool> inBetween)
     {
         comparer ??= Comparer<TKey>.Default;
 
-        // What's in these is irrelevant if ValidateAndGetKeys returns false so we can skip initialization
+        // What's in these is irrelevant if ValidateAndGetKeys returns null so we can skip initialization
         Unsafe.SkipInit(out int keysLength);
         Unsafe.SkipInit(out int[] indices);
-        if (!ValidateAndGetKeys(keys, null, comparer, itemsArrays, ref keysLength, ref indices))
-        {
+        var changed = ValidateAndGetKeys(keys, null, comparer, itemsArrays, ref keysLength, ref indices);
+        if (changed is null)
             return;
-        }
 
         if (inBetween is not null)
             unsafe
@@ -47,6 +45,8 @@ public static class ArrayHelper
                 if (!inBetween(indices, keys))
                     return;
             }
+        else if (!changed.Value)
+            return;
 
         // Since we know all the passed arrays have the same length, we can use the same temp array for all of them in turn
         var temp = GC.AllocateUninitializedArray<TValue>(keysLength);
@@ -56,22 +56,19 @@ public static class ArrayHelper
             Array.Copy(itemsArrays[i], temp, keysLength);
             // Reassign each index using the sorted indices
             for (var j = 0; j < keysLength; j++)
-            {
                 itemsArrays[i][j] = temp[indices[j]];
-            }
         }
     }
-    private static unsafe void SortNonGenericImpl(Array keys, IComparer comparer, Array[] itemsArrays, delegate*<int[], Array, bool> inBetween)
+    private static void SortNonGenericImpl(Array keys, IComparer comparer, Array[] itemsArrays, delegate*<int[], Array, bool> inBetween)
     {
         comparer ??= Comparer.Default;
 
-        // What's in these is irrelevant if ValidateAndGetKeys returns false so we can skip initialization
+        // What's in these is irrelevant if ValidateAndGetKeys returns null so we can skip initialization
         Unsafe.SkipInit(out int keysLength);
         Unsafe.SkipInit(out int[] indices);
-        if (!ValidateAndGetKeys<object>(keys, comparer, null, itemsArrays, ref keysLength, ref indices))
-        {
+        var changed = ValidateAndGetKeys<object>(keys, comparer, null, itemsArrays, ref keysLength, ref indices);
+        if (changed is null)
             return;
-        }
 
         if (inBetween is not null)
             unsafe
@@ -79,6 +76,8 @@ public static class ArrayHelper
                 if (!inBetween(indices, keys))
                     return;
             }
+        else if (!changed.Value)
+            return;
 
         // Since we know all the passed arrays have the same length, we can use the same temp array for all of them in turn
         var temp = new object[keysLength];
@@ -88,28 +87,23 @@ public static class ArrayHelper
             Array.Copy(itemsArrays[i], temp, keysLength);
             // Reassign each index using the sorted indices
             for (var j = 0; j < keysLength; j++)
-            {
                 Unsafe.As<Array>(itemsArrays.GetValue(i)).SetValue(temp[indices[j]], j);
-            }
         }
     }
-    private static bool ValidateAndGetKeys<TKey>(Array keys, IComparer comparer, IComparer<TKey> genericComparer, Array[] itemsArrays, ref int keysLength, ref int[] indices)
+    // null = nothing to sort (itemsArrays empty), false = sort was a no-op, true = permutation changed
+    private static bool? ValidateAndGetKeys<TKey>(Array keys, IComparer comparer, IComparer<TKey> genericComparer, Array[] itemsArrays, ref int keysLength, ref int[] indices)
     {
         ArgumentNullException.ThrowIfNull(keys);
         ArgumentNullException.ThrowIfNull(itemsArrays);
         if (itemsArrays.Length == 0)
-        {
-            return false; // Nothing to sort
-        }
+            return null; // Nothing to sort
 
         var keysLengthLocal = keysLength = keys.Length;
         if (itemsArrays.Any(a => a.Length != keysLengthLocal))
-        {
             throw new ArgumentException("The length of the keys array must be equal to the length of all items arrays.");
-        }
 
         indices = [.. Enumerable.Range(0, keysLength)];
-        var originalIndices = new int[keysLength];
+        var originalIndices = GC.AllocateUninitializedArray<int>(keysLength);
         indices.CopyTo(originalIndices);
 
         switch (comparer)
@@ -119,9 +113,7 @@ public static class ArrayHelper
                 break;
             default:
                 if (keys is TKey[] typedKeys)
-                {
                     Array.Sort(typedKeys, indices, genericComparer);
-                }
                 else
                 {
                     Debug.Fail("Keys array is not of the same type as the comparer. We should not be here.");
@@ -131,13 +123,8 @@ public static class ArrayHelper
                 break;
         }
 
-        // If the indices array didn't change (it's SequenceEquals to the original ascending ints), then leave early
         // Force this to use the span implementation since its significantly faster than LINQ
-        if (indices.AsSpan().SequenceEqual(originalIndices))
-        {
-            return false;
-        }
-        return true;
+        return !indices.AsSpan().SequenceEqual(originalIndices);
     }
 
     /// <summary>
@@ -188,11 +175,9 @@ public static class ArrayHelper
         ArgumentNullException.ThrowIfNull(items);
         ArgumentNullException.ThrowIfNull(selector);
         ArgumentNullException.ThrowIfNull(itemsArrays);
-        var interimKeys = new TCompare[items.Length];
+        var interimKeys = GC.AllocateUninitializedArray<TCompare>(items.Length);
         for (var i = 0; i < interimKeys.Length; i++)
-        {
             interimKeys[i] = selector(items[i]);
-        }
         Sort(interimKeys, NonGenericComparer.Create(comparer ?? Comparer<TCompare>.Default), [items, .. itemsArrays]);
     }
     /// <summary>
@@ -241,11 +226,9 @@ public static class ArrayHelper
         ArgumentNullException.ThrowIfNull(items);
         ArgumentNullException.ThrowIfNull(selector);
         ArgumentNullException.ThrowIfNull(itemsArrays);
-        var interimKeys = new TCompare[items.Length];
+        var interimKeys = GC.AllocateUninitializedArray<TCompare>(items.Length);
         for (var i = 0; i < interimKeys.Length; i++)
-        {
             interimKeys[i] = selector(items[i]);
-        }
         SortDescending(interimKeys, NonGenericComparer.Create(comparer ?? Comparer<TCompare>.Default), [items, .. itemsArrays]);
     }
 
@@ -291,9 +274,7 @@ public static class ArrayHelper
         ArgumentNullException.ThrowIfNull(itemsArrays);
         var interimKeys = new object[keys.Length];
         for (var i = 0; i < interimKeys.Length; i++)
-        {
             interimKeys[i] = selector(keys.GetValue(i));
-        }
         Sort(interimKeys, comparer, [keys, .. itemsArrays]);
     }
 
@@ -314,7 +295,8 @@ public static class ArrayHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SortDescending(Array keys, IComparer comparer, params Array[] itemsArrays)
     {
-        unsafe { SortNonGenericImpl(keys, comparer, itemsArrays, &Reverse); }
+        unsafe
+        { SortNonGenericImpl(keys, comparer, itemsArrays, &Reverse); }
     }
 
     /// <summary>
@@ -339,9 +321,7 @@ public static class ArrayHelper
         ArgumentNullException.ThrowIfNull(itemsArrays);
         var interimKeys = new object[keys.Length];
         for (var i = 0; i < interimKeys.Length; i++)
-        {
             interimKeys[i] = selector(keys.GetValue(i));
-        }
         SortDescending(interimKeys, comparer, [keys, .. itemsArrays]);
     }
 }
