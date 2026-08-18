@@ -8725,7 +8725,7 @@
         </member>
         <member name="P:LaquaiLib.Collections.MultiKeyDictionary`1.Keys">
             <summary>
-            Creates an array of all keys in the dictionary (that is, the array is a shallow copy of the keys).
+            Enumerates all keys in the dictionary.
             </summary>
         </member>
         <member name="P:LaquaiLib.Collections.MultiKeyDictionary`1.Values">

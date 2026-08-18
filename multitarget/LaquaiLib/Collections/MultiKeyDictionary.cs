@@ -31,9 +31,7 @@ public class MultiKeyDictionary<TValue>
             HashCode hashCode = default;
 
             for (var i = alternate.Length >= 8 ? alternate.Length - 8 : 0; i < alternate.Length; i++)
-            {
                 hashCode.Add(_inner.GetHashCode(alternate[i]));
-            }
 
             return hashCode.ToHashCode();
         }
@@ -101,9 +99,7 @@ public class MultiKeyDictionary<TValue>
         ArgumentOutOfRangeException.ThrowIfZero(keyCount);
 
         if (IsAllocated(keyCount))
-        {
             return true;
-        }
 
         switch (keyCount)
         {
@@ -183,9 +179,7 @@ public class MultiKeyDictionary<TValue>
     public TValue GetValue(ReadOnlySpan<object> keys)
     {
         if (!TryGetValue(keys, out var value))
-        {
             ThrowKeysNotFoundException();
-        }
         return value;
     }
     /// <summary>
@@ -245,9 +239,7 @@ public class MultiKeyDictionary<TValue>
     public void Add(ReadOnlySpan<object> keys, TValue value)
     {
         if (!TryAdd(keys, value))
-        {
             ThrowKeysAlreadyExistsException();
-        }
     }
     /// <summary>
     /// Sets the value associated with the specified keys if that combination does not already exist.
@@ -262,9 +254,7 @@ public class MultiKeyDictionary<TValue>
         ref var theRef = ref GetRef(keys, true, out var existed);
         Debug.Assert(!SrcsUnsafe.IsNullRef(ref theRef));
         if (existed)
-        {
             return false;
-        }
         theRef = value;
         return true;
     }
@@ -294,9 +284,7 @@ public class MultiKeyDictionary<TValue>
         ArgumentOutOfRangeException.ThrowIfZero(keyCount);
 
         if (!IsAllocated(keyCount))
-        {
             return;
-        }
 
         switch (keyCount)
         {
@@ -440,13 +428,9 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
         if (!existed)
-        {
             return theRef = addValue;
-        }
         else
-        {
             return theRef;
-        }
     }
     /// <summary>
     /// Gets the value associated with the specified keys or adds a new key-value pair to the dictionary if the key combination does not already exist.
@@ -458,13 +442,9 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
         if (!existed)
-        {
             return theRef = addValueFactory();
-        }
         else
-        {
             return theRef;
-        }
     }
     /// <summary>
     /// Gets the value associated with the specified keys or adds a new key-value pair to the dictionary if the key combination does not exist.
@@ -478,13 +458,9 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
         if (!existed)
-        {
             element = theRef = addValue;
-        }
         else
-        {
             element = theRef;
-        }
         return existed;
     }
     /// <summary>
@@ -498,13 +474,9 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
         if (!existed)
-        {
             element = theRef = addValueFactory();
-        }
         else
-        {
             element = theRef;
-        }
         return existed;
     }
 
@@ -518,9 +490,7 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
         if (!existed)
-        {
             theRef = addValue;
-        }
         else
         {
             // Validate null only when needed
@@ -538,9 +508,7 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
         if (!existed)
-        {
             theRef = addValue;
-        }
         else
         {
             // Validate null only when needed
@@ -558,9 +526,7 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out var existed);
         if (!existed)
-        {
             theRef = addValueFactory();
-        }
         else
         {
             // Validate null only when needed
@@ -595,9 +561,7 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out existed);
         if (!existed)
-        {
             theRef = value;
-        }
         return ref theRef;
     }
     /// <summary>
@@ -611,85 +575,44 @@ public class MultiKeyDictionary<TValue>
     {
         ref var theRef = ref GetRef(keys, true, out existed);
         if (!existed)
-        {
             theRef = valueFactory();
-        }
         return ref theRef;
     }
 
     /// <summary>
-    /// Creates an array of all keys in the dictionary (that is, the array is a shallow copy of the keys).
+    /// Enumerates all keys in the dictionary.
     /// </summary>
-    public object[] Keys
+    public IEnumerable<object> Keys
     {
         get
         {
-            var keys = new object[KeySum];
-            var index = 0;
             if (_one is not null)
-            {
                 foreach (var key in _one.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_two is not null)
-            {
                 foreach (var key in _two.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_three is not null)
-            {
                 foreach (var key in _three.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_four is not null)
-            {
                 foreach (var key in _four.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_five is not null)
-            {
                 foreach (var key in _five.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_six is not null)
-            {
                 foreach (var key in _six.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_seven is not null)
-            {
                 foreach (var key in _seven.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_eight is not null)
-            {
                 foreach (var key in _eight.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
+                    yield return key;
             if (_many is not null)
-            {
                 foreach (var key in _many.Keys)
-                {
-                    keys[index++] = key;
-                }
-            }
-            return keys;
+                    yield return key;
         }
     }
     /// <summary>
@@ -701,68 +624,32 @@ public class MultiKeyDictionary<TValue>
         get
         {
             if (_one is not null)
-            {
                 foreach (var value in _one.Values)
-                {
                     yield return value;
-                }
-            }
             if (_two is not null)
-            {
                 foreach (var value in _two.Values)
-                {
                     yield return value;
-                }
-            }
             if (_three is not null)
-            {
                 foreach (var value in _three.Values)
-                {
                     yield return value;
-                }
-            }
             if (_four is not null)
-            {
                 foreach (var value in _four.Values)
-                {
                     yield return value;
-                }
-            }
             if (_five is not null)
-            {
                 foreach (var value in _five.Values)
-                {
                     yield return value;
-                }
-            }
             if (_six is not null)
-            {
                 foreach (var value in _six.Values)
-                {
                     yield return value;
-                }
-            }
             if (_seven is not null)
-            {
                 foreach (var value in _seven.Values)
-                {
                     yield return value;
-                }
-            }
             if (_eight is not null)
-            {
                 foreach (var value in _eight.Values)
-                {
                     yield return value;
-                }
-            }
             if (_many is not null)
-            {
                 foreach (var value in _many.Values)
-                {
                     yield return value;
-                }
-            }
         }
     }
 }

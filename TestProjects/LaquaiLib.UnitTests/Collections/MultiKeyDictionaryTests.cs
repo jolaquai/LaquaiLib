@@ -388,7 +388,7 @@ public class MultiKeyDictionaryTests
         dictionary.Add(["key1"], "value1");
         dictionary.Add(["key2", "key3"], "value2");
 
-        var keys = dictionary.Keys;
+        var keys = dictionary.Keys.ToArray();
 
         Assert.Equal(2, keys.Length);
         Assert.Contains("key1", keys);
@@ -437,7 +437,7 @@ public class MultiKeyDictionaryTests
         dictionary.Add(["key2", "key3"], "value2");
         dictionary.Add([1, 2, 3, 4, 5, 6, 7, 8, 9], "many-keys");
 
-        Assert.Equal(3, dictionary.Keys.Length);
+        Assert.Equal(3, dictionary.Keys.ToArray().Length);
     }
 
     [Fact]
