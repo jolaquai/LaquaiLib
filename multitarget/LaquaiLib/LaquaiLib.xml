@@ -13544,6 +13544,21 @@
         <member name="M:LaquaiLib.Util.SlidingWindowHttpMessageHandler.Dispose(System.Boolean)">
             <inheritdoc/>
         </member>
+        <member name="T:LaquaiLib.Util.SpanFiller">
+            <summary>
+            Provides extension methods for filling <see cref="T:System.Span`1"/>s with sequential numeric values.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Util.SpanFiller.FillSequential``1(System.Span{``0},``0,System.Boolean)">
+            <summary>
+            Fills <paramref name="destination"/> with sequential values of <typeparamref name="T"/>, beginning at <paramref name="start"/> and incrementing by <c>1</c> for each subsequent element.
+            </summary>
+            <typeparam name="T">The numeric type to fill <paramref name="destination"/> with.</typeparam>
+            <param name="destination">The <see cref="T:System.Span`1"/> to fill.</param>
+            <param name="start">The value to assign to the first element. Defaults to <c>0</c>.</param>
+            <param name="wrap">Whether the sequence wraps around to <typeparamref name="T"/>'s minimum value (equivalent to <c>0</c> for unsigned types) instead of throwing once it would exceed <typeparamref name="T"/>'s maximum value. Defaults to <see langword="true"/>.</param>
+            <exception cref="T:System.OverflowException">Thrown if <paramref name="wrap"/> is <see langword="false"/> and the sequence exceeds the range of <typeparamref name="T"/>.</exception>
+        </member>
         <member name="T:LaquaiLib.Util.WpfForms.MessageBox.MessageBox">
             <summary>
             Provides message box functionality to non-WinForms or WPF applications through P/Invoke.
