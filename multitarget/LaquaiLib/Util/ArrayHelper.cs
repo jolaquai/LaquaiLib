@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace LaquaiLib.Util;
 
@@ -7,16 +7,6 @@ namespace LaquaiLib.Util;
 /// </summary>
 public static class ArrayHelper
 {
-    internal class NonGenericComparer : IComparer
-    {
-        private Func<object, object, int> _compare;
-        public int Compare(object x, object y) => _compare(x, y);
-        internal static NonGenericComparer Create<T>(IComparer<T> comparer) => new NonGenericComparer
-        {
-            _compare = (x, y) => comparer.Compare((T)x, (T)y)
-        };
-    }
-
     // True if indices is not the identity permutation [0, 1, 2, ...] - needs no comparison buffer, unlike SequenceEqual against a materialized range
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool PermutationChanged(int[] indices)
@@ -96,6 +86,52 @@ public static class ArrayHelper
             // Reassign each index using the sorted indices
             for (var j = 0; j < keysLength; j++)
                 arr.SetValue(temp[indices[j]], j);
+        }
+    }
+    // items (TKey[]) and itemsArrays (TValue[][]) are unrelated element types and can't share one reassignment pass the way
+    // SortGenericImpl's homogeneous itemsArrays can - so this sorts interimKeys once to get the permutation, then applies it
+    // via two separate typed passes. Nothing here boxes: Array.Sort(TCompare[], int[], IComparer<TCompare>) and both
+    // reassignment loops stay fully typed.
+    private static void SortGenericSelectorImpl<TKey, TCompare, TValue>(TKey[] items, TCompare[] interimKeys, IComparer<TCompare> comparer, TValue[][] itemsArrays, delegate*<int[], TCompare[], bool> inBetween)
+    {
+        comparer ??= Comparer<TCompare>.Default;
+
+        var keysLength = interimKeys.Length;
+        for (var i = 0; i < itemsArrays.Length; i++)
+            if (itemsArrays[i].Length != keysLength)
+                throw new ArgumentException("The length of the keys array must be equal to the length of all items arrays.");
+
+        var indices = GC.AllocateUninitializedArray<int>(keysLength);
+        for (var i = 0; i < keysLength; i++)
+            indices[i] = i;
+
+        Array.Sort(interimKeys, indices, comparer);
+
+        if (inBetween is not null)
+            unsafe
+            {
+                if (!inBetween(indices, interimKeys))
+                    return;
+            }
+        else if (!PermutationChanged(indices))
+            return;
+
+        // items always needs reassigning here - unlike itemsArrays, it's never optional, so it gets its own temp buffer
+        var tempKeys = GC.AllocateUninitializedArray<TKey>(keysLength);
+        Array.Copy(items, tempKeys, keysLength);
+        for (var j = 0; j < keysLength; j++)
+            items[j] = tempKeys[indices[j]];
+
+        if (itemsArrays.Length == 0)
+            return;
+
+        var temp = GC.AllocateUninitializedArray<TValue>(keysLength);
+        for (var i = 0; i < itemsArrays.Length; i++)
+        {
+            var arr = itemsArrays[i];
+            Array.Copy(arr, temp, keysLength);
+            for (var j = 0; j < keysLength; j++)
+                arr[j] = temp[indices[j]];
         }
     }
     // null = nothing to sort (itemsArrays empty), false = sort was a no-op, true = permutation changed
@@ -186,7 +222,10 @@ public static class ArrayHelper
         var interimKeys = GC.AllocateUninitializedArray<TCompare>(items.Length);
         for (var i = 0; i < interimKeys.Length; i++)
             interimKeys[i] = selector(items[i]);
-        Sort(interimKeys, NonGenericComparer.Create(comparer ?? Comparer<TCompare>.Default), [items, .. itemsArrays]);
+        unsafe
+        {
+            SortGenericSelectorImpl(items, interimKeys, comparer, itemsArrays, null);
+        }
     }
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the default comparer for <typeparamref name="TKey"/> in descending order.
@@ -237,7 +276,10 @@ public static class ArrayHelper
         var interimKeys = GC.AllocateUninitializedArray<TCompare>(items.Length);
         for (var i = 0; i < interimKeys.Length; i++)
             interimKeys[i] = selector(items[i]);
-        SortDescending(interimKeys, NonGenericComparer.Create(comparer ?? Comparer<TCompare>.Default), [items, .. itemsArrays]);
+        unsafe
+        {
+            SortGenericSelectorImpl(items, interimKeys, comparer, itemsArrays, &Reverse);
+        }
     }
 
     /// <summary>
