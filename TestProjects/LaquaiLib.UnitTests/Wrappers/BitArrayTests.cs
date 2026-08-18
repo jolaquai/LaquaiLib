@@ -1,3 +1,5 @@
+using System.Numerics;
+
 using BitArray = LaquaiLib.Numerics.BitArray;
 
 namespace LaquaiLib.UnitTests.Wrappers;
@@ -467,5 +469,116 @@ public class BitArrayTests
         Assert.Throws<FormatException>(() => { BitArray.Parse("0xZZ"); });
         Assert.Throws<FormatException>(() => { BitArray.Parse("0x"); });
         Assert.Throws<FormatException>(() => { BitArray.Parse(""); });
+    }
+
+    [Fact]
+    public void ParseNullStringThrows()
+    {
+        Assert.Throws<ArgumentNullException>(() => BitArray.Parse((string)null));
+        Assert.Throws<ArgumentNullException>(() => BitArray.Parse((string)null, null));
+    }
+
+    [Fact]
+    public void TryParseStringSucceedsForValidInput()
+    {
+        Assert.True(BitArray.TryParse("255", null, out var decimalResult));
+        Assert.Equal("255", decimalResult.ToString());
+
+        Assert.True(BitArray.TryParse("-5", null, out var negativeResult));
+        Assert.Equal("-5", negativeResult.ToString());
+
+        Assert.True(BitArray.TryParse("0xFF", null, out var hexResult));
+        Assert.Equal("255", hexResult.ToString());
+
+        Assert.True(BitArray.TryParse("0b1010", null, out var binResult));
+        Assert.Equal("10", binResult.ToString());
+    }
+
+    [Fact]
+    public void TryParseStringFailsWithoutThrowingForInvalidInput()
+    {
+        Assert.False(BitArray.TryParse("0xZZ", null, out var r1));
+        Assert.Null(r1);
+        Assert.False(BitArray.TryParse("0x", null, out var r2));
+        Assert.Null(r2);
+        Assert.False(BitArray.TryParse("", null, out var r3));
+        Assert.Null(r3);
+        Assert.False(BitArray.TryParse("not a number", null, out var r4));
+        Assert.Null(r4);
+    }
+
+    [Fact]
+    public void TryParseNullStringFailsWithoutThrowing()
+    {
+        Assert.False(BitArray.TryParse((string)null, null, out var result));
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void TryParseSpanSucceedsForValidInput()
+    {
+        Assert.True(BitArray.TryParse("0xFF".AsSpan(), null, out var result));
+        Assert.Equal("255", result.ToString());
+    }
+
+    [Fact]
+    public void TryParseSpanFailsWithoutThrowingForInvalidInput()
+    {
+        Assert.False(BitArray.TryParse("0b12".AsSpan(), null, out var result));
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void ParseSpanRoundTrips()
+    {
+        Assert.Equal("42", BitArray.Parse("42".AsSpan(), null).ToString());
+    }
+
+    [Fact]
+    public void ParseSpanThrowsForInvalidInput()
+    {
+        Assert.Throws<FormatException>(() => BitArray.Parse("garbage".AsSpan(), null));
+    }
+
+    [Fact]
+    public void ParseAndTryParseAcceptDigitSeparatorsAndAgree()
+    {
+        Assert.Equal("255", BitArray.Parse("0xF_F").ToString());
+        Assert.True(BitArray.TryParse("0b1_010", null, out var result));
+        Assert.Equal("10", result.ToString());
+    }
+
+    private static TSelf ParseViaInterface<TSelf>(string s) where TSelf : IParsable<TSelf> => TSelf.Parse(s, null);
+    private static bool TryParseViaInterface<TSelf>(string s, out TSelf result) where TSelf : IParsable<TSelf> => TSelf.TryParse(s, null, out result);
+    private static TSelf ParseSpanViaInterface<TSelf>(ReadOnlySpan<char> s) where TSelf : ISpanParsable<TSelf> => TSelf.Parse(s, null);
+
+    [Fact]
+    public void IParsableInterfaceDispatchesToParse()
+    {
+        Assert.Equal("255", ParseViaInterface<BitArray>("255").ToString());
+        Assert.True(TryParseViaInterface<BitArray>("255", out var result));
+        Assert.Equal("255", result.ToString());
+        Assert.False(TryParseViaInterface<BitArray>("garbage", out var failed));
+        Assert.Null(failed);
+    }
+
+    [Fact]
+    public void ISpanParsableInterfaceDispatchesToParse()
+    {
+        Assert.Equal("255", ParseSpanViaInterface<BitArray>("0xFF".AsSpan()).ToString());
+    }
+
+    private static bool EqualViaInterface<T>(T left, T right) where T : IEqualityOperators<T, T, bool> => left == right;
+    private static bool LessThanViaInterface<T>(T left, T right) where T : IComparisonOperators<T, T, bool> => left < right;
+    private static T AndViaInterface<T>(T left, T right) where T : IBitwiseOperators<T, T, T> => left & right;
+    private static T ShiftLeftViaInterface<T>(T value, int amount) where T : IShiftOperators<T, int, T> => value << amount;
+
+    [Fact]
+    public void GenericMathInterfacesAreUsableAsConstraints()
+    {
+        Assert.True(EqualViaInterface(U(5), S(5)));
+        Assert.True(LessThanViaInterface(U(3), U(5)));
+        Assert.Equal(0b1000, AndViaInterface(U(0b1100), U(0b1010)).As<int>());
+        Assert.Equal(32, ShiftLeftViaInterface(U(1), 5).As<int>());
     }
 }
