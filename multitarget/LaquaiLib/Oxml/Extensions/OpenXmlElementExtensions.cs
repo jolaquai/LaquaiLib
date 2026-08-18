@@ -18,9 +18,7 @@ public static class OpenXmlElementExtensions
             attribute.Remove();
         }
         foreach (var descendant in xElement.Descendants())
-        {
             RemoveRsid(descendant);
-        }
     }
     private static void RemoveNamespaces(XElement xElement)
     {
@@ -38,9 +36,7 @@ public static class OpenXmlElementExtensions
             attribute.Remove();
         }
         foreach (var descendant in xElement.Descendants())
-        {
             RemoveNamespaces(descendant);
-        }
     }
 
     extension(OpenXmlElement element)
@@ -60,13 +56,9 @@ public static class OpenXmlElementExtensions
         public bool IsOnlyChildOf(OpenXmlElement potentialParent)
         {
             if (element.Parent != potentialParent)
-            {
                 return false;
-            }
             if (element.Parent is null)
-            {
                 return false;
-            }
 
             var children = element.Parent.ChildElements
                 .Where(static c => !c.GetType().Name.EndsWith("Properties", StringComparison.Ordinal))
@@ -125,21 +117,15 @@ public static class OpenXmlElementExtensions
             var index2 = Array.IndexOf(children, child2);
 
             if (index1 == -1)
-            {
                 throw new ArgumentException($"{nameof(child1)} must be a child of {nameof(element)}.", nameof(child1));
-            }
             if (index2 == -1)
-            {
                 throw new ArgumentException($"{nameof(child2)} must be a child of {nameof(element)}.", nameof(child2));
-            }
 
             var start = Math.Min(index1, index2);
             var end = Math.Max(index1, index2);
             var ret = children[start..(end + 1)];
             if (index1 > index2)
-            {
                 ret.AsSpan().Reverse();
-            }
             return ret;
         }
 
@@ -209,12 +195,14 @@ public static class OpenXmlElementExtensions
         public bool IsOnlyChildOfType()
         {
             if (element.Parent is null)
-            {
                 return false;
-            }
 
-            var children = element.Parent.ChildElements.OfType<T>().ToArray();
-            return children.Length == 1;
+            var kids = element.Parent.ChildElements;
+            var c = 0;
+            foreach (var kid in kids)
+                if (kid is T && ++c > 1)
+                    return false;
+            return true;
         }
         /// <summary>
         /// Replaces the specified element with new content. The new element must not have parents.
@@ -239,9 +227,7 @@ public static class OpenXmlElementExtensions
         public T ReplaceWith(params ReadOnlySpan<OpenXmlElement> newElements)
         {
             for (var i = newElements.Length - 1; i >= 0; i--)
-            {
                 _ = element.InsertAfterSelf(newElements[i]);
-            }
             element.Remove();
             return element;
         }
@@ -258,9 +244,7 @@ public static class OpenXmlElementExtensions
         {
             var i = index.GetOffset(element.ChildElements.Count);
             foreach (var newElement in newElements)
-            {
                 _ = element.InsertAt(newElement, i++);
-            }
         }
     }
 }
