@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using System.Buffers;
+
+namespace LaquaiLib.Extensions;
 
 #pragma warning disable CA5394 // Do not use insecure randomness
 
@@ -22,6 +24,8 @@ public static class RandomExtensions
                 throw new ArgumentException("The stream must be writable.", nameof(destination));
             }
 
+            scoped Span<byte> span;
+
             if (destination is MemoryStream ms)
             {
                 // Since a MemoryStream is resizable, calculate the next-greater power of 2 and resize it to that
@@ -39,16 +43,31 @@ public static class RandomExtensions
                 }
                 ms.SetLength(newSize);
 
-                var span = ms.AsSpan((int)ms.Position, count);
+                span = ms.AsSpan((int)ms.Position, count);
                 random.NextBytes(span);
                 ms.Position += count;
                 return;
             }
 
             // Otherwise we have little choice but to read into a buffer and write it to the stream
-            var buffer = count <= Config.MaxStackallocSize ? stackalloc byte[count] : new byte[count];
-            random.NextBytes(buffer);
-            destination.Write(buffer);
+            byte[] buffer = null;
+            if (count <= Config.MaxStackallocSize)
+                span = stackalloc byte[count];
+            else
+            {
+                buffer = ArrayPool<byte>.Shared.Rent(count);
+                span = buffer.AsSpan(0, count);
+            }
+            try
+            {
+                random.NextBytes(span);
+                destination.Write(span);
+            }
+            finally
+            {
+                if (buffer != null)
+                    ArrayPool<byte>.Shared.Return(buffer);
+            }
         }
         /// <summary>
         /// Asynchronously writes <paramref name="count"/> random <see langword="byte"/>s to the specified <paramref name="destination"/> <see cref="Stream"/>.
@@ -59,23 +78,17 @@ public static class RandomExtensions
         public async ValueTask NextBytesAsync(Stream destination, int count)
         {
             if (!destination.CanWrite)
-            {
                 throw new ArgumentException("The stream must be writable.", nameof(destination));
-            }
 
             // This branch actually remains synchronous
             if (destination is MemoryStream ms)
             {
                 var newSize = ms.Length + count;
                 if (newSize > Array.MaxLength)
-                {
                     throw new ArgumentOutOfRangeException(nameof(count), "The resulting size of the MemoryStream exceeds the maximum allowed size.");
-                }
 
                 if (newSize > ms.Capacity)
-                {
                     ms.Capacity = (int)newSize;
-                }
                 ms.SetLength(newSize);
                 var span = ms.AsSpan((int)ms.Position, count);
                 random.NextBytes(span);
@@ -83,9 +96,17 @@ public static class RandomExtensions
                 return;
             }
 
-            var buffer = new byte[count];
-            random.NextBytes(buffer);
-            await destination.WriteAsync(buffer).ConfigureAwait(false);
+            var buffer = ArrayPool<byte>.Shared.Rent(count);
+            var mem = buffer.AsMemory(0, count);
+            try
+            {
+                random.NextBytes(mem.Span);
+                await destination.WriteAsync(mem).ConfigureAwait(false);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+            }
         }
     }
 }
