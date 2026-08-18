@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Buffers;
+using System.Diagnostics;
 
 namespace LaquaiLib.Util;
 
@@ -18,14 +17,21 @@ public static class ArrayHelper
         };
     }
 
+    // True if indices is not the identity permutation [0, 1, 2, ...] - needs no comparison buffer, unlike SequenceEqual against a materialized range
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool PermutationChanged(int[] indices)
+    {
+        for (var i = 0; i < indices.Length; i++)
+            if (indices[i] != i)
+                return true;
+        return false;
+    }
+
     private static bool Reverse(int[] indices, Array keys)
     {
         Array.Reverse(indices);
         Array.Reverse(keys);
-
-        if (indices.AsSpan().SequenceEqual(Enumerable.Range(0, indices.Length).ToArray()))
-            return false;
-        return true;
+        return PermutationChanged(indices);
     }
 
     private static void SortGenericImpl<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, TValue[][] itemsArrays, delegate*<int[], TKey[], bool> inBetween)
@@ -98,13 +104,14 @@ public static class ArrayHelper
         if (itemsArrays.Length == 0)
             return null; // Nothing to sort
 
-        var keysLengthLocal = keysLength = keys.Length;
-        if (itemsArrays.Any(a => a.Length != keysLengthLocal))
-            throw new ArgumentException("The length of the keys array must be equal to the length of all items arrays.");
+        keysLength = keys.Length;
+        for (var i = 0; i < itemsArrays.Length; i++)
+            if (itemsArrays[i].Length != keysLength)
+                throw new ArgumentException("The length of the keys array must be equal to the length of all items arrays.");
 
-        indices = [.. Enumerable.Range(0, keysLength)];
-        var originalIndices = GC.AllocateUninitializedArray<int>(keysLength);
-        indices.CopyTo(originalIndices);
+        indices = GC.AllocateUninitializedArray<int>(keysLength);
+        for (var i = 0; i < keysLength; i++)
+            indices[i] = i;
 
         switch (comparer)
         {
@@ -123,8 +130,7 @@ public static class ArrayHelper
                 break;
         }
 
-        // Force this to use the span implementation since its significantly faster than LINQ
-        return !indices.AsSpan().SequenceEqual(originalIndices);
+        return PermutationChanged(indices);
     }
 
     /// <summary>
