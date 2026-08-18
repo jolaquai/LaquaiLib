@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Runtime.Intrinsics;
 
 namespace LaquaiLib.Util;
 
@@ -28,26 +29,84 @@ public static class SpanFiller
             FillChecked(destination, start);
     }
 
+    // Vector add wraps identically to unchecked scalar add, so each width can run over the whole span with no remainder masking;
+    // widest-first cascade means every tier below the top processes at most one block (its Count is half the tier above it)
     private static void FillWrapping<T>(Span<T> destination, T start)
         where T : IBinaryInteger<T>, IMinMaxValue<T>
     {
-        var i = 0;
-        if (Vector.IsHardwareAccelerated && Vector<T>.IsSupported && destination.Length >= Vector<T>.Count)
-        {
-            var current = Vector.CreateSequence(start, T.One);
-            var blockStep = new Vector<T>(T.CreateTruncating(Vector<T>.Count));
-            var vectorBound = destination.Length - Vector<T>.Count;
-            for (; i <= vectorBound; i += Vector<T>.Count)
-            {
-                current.CopyTo(destination.Slice(i, Vector<T>.Count));
-                current += blockStep;
-            }
-            // current already holds the values for the next (unwritten) block; vector add wraps identically to unchecked scalar add
-            start = current[0];
-        }
+        var written = 0;
 
-        for (; i < destination.Length; i++, start++)
-            destination[i] = start;
+        if (Vector512.IsHardwareAccelerated && Vector512<T>.IsSupported)
+            written += FillBlocks512(destination[written..], ref start);
+
+        if (Vector256.IsHardwareAccelerated && Vector256<T>.IsSupported)
+            written += FillBlocks256(destination[written..], ref start);
+
+        if (Vector128.IsHardwareAccelerated && Vector128<T>.IsSupported)
+            written += FillBlocks128(destination[written..], ref start);
+
+        for (; written < destination.Length; written++, start++)
+            destination[written] = start;
+    }
+
+    private static int FillBlocks512<T>(Span<T> destination, ref T start)
+        where T : IBinaryInteger<T>, IMinMaxValue<T>
+    {
+        var count = Vector512<T>.Count;
+        var bound = destination.Length - count;
+        if (bound < 0)
+            return 0;
+
+        var current = Vector512.CreateSequence(start, T.One);
+        var blockStep = Vector512.Create(T.CreateTruncating(count));
+        var written = 0;
+        for (; written <= bound; written += count)
+        {
+            current.CopyTo(destination.Slice(written, count));
+            current += blockStep;
+        }
+        start = current.GetElement(0);
+        return written;
+    }
+
+    private static int FillBlocks256<T>(Span<T> destination, ref T start)
+        where T : IBinaryInteger<T>, IMinMaxValue<T>
+    {
+        var count = Vector256<T>.Count;
+        var bound = destination.Length - count;
+        if (bound < 0)
+            return 0;
+
+        var current = Vector256.CreateSequence(start, T.One);
+        var blockStep = Vector256.Create(T.CreateTruncating(count));
+        var written = 0;
+        for (; written <= bound; written += count)
+        {
+            current.CopyTo(destination.Slice(written, count));
+            current += blockStep;
+        }
+        start = current.GetElement(0);
+        return written;
+    }
+
+    private static int FillBlocks128<T>(Span<T> destination, ref T start)
+        where T : IBinaryInteger<T>, IMinMaxValue<T>
+    {
+        var count = Vector128<T>.Count;
+        var bound = destination.Length - count;
+        if (bound < 0)
+            return 0;
+
+        var current = Vector128.CreateSequence(start, T.One);
+        var blockStep = Vector128.Create(T.CreateTruncating(count));
+        var written = 0;
+        for (; written <= bound; written += count)
+        {
+            current.CopyTo(destination.Slice(written, count));
+            current += blockStep;
+        }
+        start = current.GetElement(0);
+        return written;
     }
 
     private static void FillChecked<T>(Span<T> destination, T start)
