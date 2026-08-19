@@ -27,7 +27,7 @@ public static class ConstructorInfoExtensions
             // Prevent mismatch between TDelegate and the constructor's signature
             var ctorParams = ctorInfo.GetParameters();
             var tDelegateParams = typeof(TDelegate).GetMethod("Invoke")!.GetParameters();
-            if (!typeof(TDelegate).IsFunc(out var tDelegateReturn))
+            if (!typeof(TDelegate).IsFunc(out _, out var tDelegateReturn))
                 throw new ArgumentException($"The type specified for {nameof(TDelegate)} is not a System.Func overload.", nameof(TDelegate));
 
             if (ctorParams.Length != tDelegateParams.Length || !ctorParams.SequenceEqual(tDelegateParams, ParameterInfoTypeComparer) || ctorInfo.DeclaringType != tDelegateReturn)

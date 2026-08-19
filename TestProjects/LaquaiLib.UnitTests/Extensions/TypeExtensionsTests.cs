@@ -288,19 +288,19 @@ public static class TypeExtensionsTests
         [Fact]
         public void SizeOfForPrimitive()
         {
-            Assert.Equal(sizeof(int), typeof(int).SizeOf);
+            Assert.Equal(sizeof(int), typeof(int).Size);
         }
 
         [Fact]
         public void SizeOfForReferenceTypeEqualsPointerSize()
         {
-            Assert.Equal(IntPtr.Size, typeof(object).SizeOf);
+            Assert.Equal(IntPtr.Size, typeof(object).Size);
         }
 
         [Fact]
         public void SizeOfForCustomStruct()
         {
-            Assert.Equal(sizeof(int) * 2, typeof(MyStruct).SizeOf);
+            Assert.Equal(sizeof(int) * 2, typeof(MyStruct).Size);
         }
     }
 }

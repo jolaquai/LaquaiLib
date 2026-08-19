@@ -224,7 +224,7 @@ public static partial class TypeExtensions
             var friendlyTypeName = type.GetFriendlyName();
 
             if (type.IsSealed && options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
-                throw new TypeAccessException($"Cannot generate code for a type that inherits from sealed type '{friendlyTypeName}'.");
+                throw new TypeAccessException($"Cannot generate inherit code for a type that inherits from sealed type '{friendlyTypeName}'.");
 
             using var sw = new StringWriter();
             using var itw = new IndentedTextWriter(sw, "    ");
@@ -512,58 +512,109 @@ public static partial class TypeExtensions
         /// <summary>
         /// Converts a <see cref="Type"/> to its C# keyword, if it exists.
         /// </summary>
-        /// <returns>The <see cref="Type"/>'s name as a C# keyword, if it exists, otherwise the original <see cref="Type"/>.</returns>
+        /// <returns>The <see cref="Type"/>'s name as a C# keyword, if it exists; otherwise, <see cref="Type.FullName"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string AsKeyword() => AsKeyword(type.FullName);
 
         /// <summary>
         /// Determines whether the specified <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload.
         /// </summary>
+        /// <param name="parameterCount">An <see langword="out"/> variable that receives the number of parameters that the <paramref name="type"/> takes, if any.</param>
         /// <param name="returnType">An <see langword="out"/> variable that receives the <see cref="Func{TResult}"/> <see langword="delegate"/> overload that the <paramref name="type"/> is assignable to, if any.</param>
         /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to a <see cref="Func{TResult}"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
-        public bool IsFunc([NotNullWhen(true)] out Type returnType)
+        public bool IsFunc(out int parameterCount, out Type returnType)
         {
+            parameterCount = 0;
             returnType = null;
             if (!type.IsGenericType)
                 return false;
 
             var gtd = type.GetGenericTypeDefinition();
             if (gtd == typeof(Func<>))
+            {
+                parameterCount = 0;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,>))
+            {
+                parameterCount = 1;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,>))
+            {
+                parameterCount = 2;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,>))
+            {
+                parameterCount = 3;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,>))
+            {
+                parameterCount = 4;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,>))
+            {
+                parameterCount = 5;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,>))
+            {
+                parameterCount = 6;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,>))
+            {
+                parameterCount = 7;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,>))
+            {
+                parameterCount = 8;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,>))
+            {
+                parameterCount = 9;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,,>))
+            {
+                parameterCount = 10;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,,,>))
+            {
+                parameterCount = 11;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,>))
+            {
+                parameterCount = 12;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,>))
+            {
+                parameterCount = 13;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,,>))
+            {
+                parameterCount = 14;
                 returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
+            {
+                parameterCount = 15;
                 returnType = type;
-            else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
-                returnType = type;
+            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,,,,>))
+            {
+                parameterCount = 16;
                 returnType = type;
+            }
 
             switch (returnType)
             {
@@ -577,53 +628,99 @@ public static partial class TypeExtensions
         /// <summary>
         /// Determines whether the specified <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload.
         /// </summary>
-        /// <param name="takesParameters">Whether the <paramref name="type"/> takes parameters. If <see langword="false"/>, <paramref name="type"/> is not generic.</param>
+        /// <param name="parameterCount">An <see langword="out"/> variable that receives the number of parameters that the <paramref name="type"/> takes, if any.</param>
         /// <returns><see langword="true"/> if the <paramref name="type"/> is assignable to an <see cref="Action"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
-        public bool IsAction(out bool takesParameters)
+        public bool IsAction(out int parameterCount)
         {
-            takesParameters = false;
+            parameterCount = 0;
             if (type == typeof(Action))
                 return true;
 
-            // GetGenericTypeDefinition throws on non-generic types, so a non-generic type that isn't Action
-            // is simply not an Action delegate.
+            // GetGenericTypeDefinition throws on non-generic types, so a non-generic type that isn't Action can't be an Action of any arity
             if (!type.IsGenericType)
                 return false;
 
-            takesParameters = true;
             var gtd = type.GetGenericTypeDefinition();
             if (gtd == typeof(Action<>))
+            {
+                parameterCount = 1;
                 return true;
+            }
             else if (gtd == typeof(Action<,>))
+            {
+                parameterCount = 2;
                 return true;
+            }
             else if (gtd == typeof(Action<,,>))
+            {
+                parameterCount = 3;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,>))
+            {
+                parameterCount = 4;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,>))
+            {
+                parameterCount = 5;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,>))
+            {
+                parameterCount = 6;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,>))
+            {
+                parameterCount = 7;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,>))
+            {
+                parameterCount = 8;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,>))
+            {
+                parameterCount = 9;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,,>))
+            {
+                parameterCount = 10;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,,,>))
+            {
+                parameterCount = 11;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,,,,>))
+            {
+                parameterCount = 12;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,>))
+            {
+                parameterCount = 13;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,,>))
+            {
+                parameterCount = 14;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,,,>))
+            {
+                parameterCount = 15;
                 return true;
+            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,,,,>))
+            {
+                parameterCount = 16;
                 return true;
+            }
             return false;
         }
 
@@ -650,7 +747,7 @@ public static partial class TypeExtensions
         /// <summary>
         /// Gets the managed size of the type represented by this instance in bytes, or <c>-1</c> if the type does not have a predefined size.
         /// </summary>
-        public int SizeOf
+        public int Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -668,7 +765,7 @@ public static partial class TypeExtensions
         /// </summary>
         /// <param name="fromTypeArguments">The <see langword="object"/>s whose types are used to substitute the type parameters of the current unbound generic type definition.</param>
         /// <returns>The created <see cref="Type"/>.</returns>
-        public Type MakeGenericTypeWith(params ReadOnlySpan<object> fromTypeArguments)
+        public Type MakeGenericTypeFrom(params ReadOnlySpan<object> fromTypeArguments)
         {
             var typeArgs = new Type[fromTypeArguments.Length];
             for (var i = 0; i < fromTypeArguments.Length; i++)
