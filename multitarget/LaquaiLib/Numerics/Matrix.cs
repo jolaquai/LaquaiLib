@@ -11,7 +11,6 @@ namespace LaquaiLib.Numerics;
 public readonly struct Matrix<T> : IEnumerable<T>,
     IEquatable<Matrix<T>>,
     IStructuralEquatable,
-    ICloneable<Matrix<T>>,
     IAdditionOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
     ISubtractionOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
     IMultiplyOperators<Matrix<T>, Matrix<T>, Matrix<T>>,
@@ -30,30 +29,18 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix(params T[][] arrays)
     {
         if (arrays.Length == 0)
-        {
             throw new ArgumentOutOfRangeException(nameof(arrays), "At least one array must be provided.");
-        }
         if (arrays.All(static a => a.Length == 0))
-        {
             throw new ArgumentOutOfRangeException(nameof(arrays), "At least one array must not be empty.");
-        }
 
         var max = 0;
         for (var i = 0; i < arrays.Length; i++)
-        {
             if (arrays[i].Length > max)
-            {
                 max = arrays[i].Length;
-            }
-        }
         _data = new T[arrays.Length, max];
         for (var i = 0; i < arrays.Length; i++)
-        {
             for (var j = 0; j < arrays[i].Length; j++)
-            {
                 _data[i, j] = arrays[i][j];
-            }
-        }
 
         Rows = _data.GetLength(0);
         Columns = _data.GetLength(1);
@@ -67,11 +54,9 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix(T[,] data)
     {
         if (data.Length == 0)
-        {
             throw new ArgumentOutOfRangeException(nameof(data), "The data array must not be zero-sized.");
-        }
 
-        _data = Unsafe.As<T[,]>(data.Clone());
+        _data = data.Copy();
 
         Rows = _data.GetLength(0);
         Columns = _data.GetLength(1);
@@ -88,18 +73,12 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix(int rows, int columns, params T[] values)
     {
         if (values.Length != rows * columns)
-        {
             throw new ArgumentOutOfRangeException(nameof(values), "The number of values must match the size of the matrix.");
-        }
 
         _data = new T[rows, columns];
         for (var i = 0; i < rows; i++)
-        {
             for (var j = 0; j < columns; j++)
-            {
                 _data[i, j] = values[(i * columns) + j];
-            }
-        }
 
         Rows = rows;
         Columns = columns;
@@ -110,18 +89,12 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix(int rows, int columns, params ReadOnlySpan<T> values)
     {
         if (values.Length != rows * columns)
-        {
             throw new ArgumentOutOfRangeException(nameof(values), "The number of values must match the size of the matrix.");
-        }
 
         _data = new T[rows, columns];
         for (var i = 0; i < rows; i++)
-        {
             for (var j = 0; j < columns; j++)
-            {
                 _data[i, j] = values[(i * columns) + j];
-            }
-        }
 
         Rows = rows;
         Columns = columns;
@@ -166,9 +139,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         // Can't do span copying here since values in a column aren't contiguous in memory
         var result = new T[Rows];
         for (var i = 0; i < Rows; i++)
-        {
             result[i] = _data[i, column];
-        }
         return result;
     }
     /// <summary>
@@ -203,16 +174,14 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     {
         var result = new T[Columns][];
         for (var i = 0; i < Columns; i++)
-        {
             result[i] = GetColumn(i);
-        }
         return result;
     }
     /// <summary>
     /// Gets a copy of entire backing store of the matrix as a 2D array.
     /// </summary>
     /// <returns>A copy of the backing store of the matrix as a 2D array.</returns>
-    public T[,] ToArray() => Unsafe.As<T[,]>(_data.Clone());
+    public T[,] ToArray() => _data.Copy();
 
     /// <summary>
     /// Gets the number of columns in the matrix.
@@ -230,23 +199,17 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         get
         {
             if (!IsRowEchelonForm)
-            {
                 return GetRowEchelonForm().Rank;
-            }
 
             // Count the number of non-zero rows
             var count = 0;
             for (var i = 0; i < Rows; i++)
-            {
                 for (var j = 0; j < Columns; j++)
-                {
                     if (!_data[i, j].Equals(T.Zero))
                     {
                         count++;
                         break;
                     }
-                }
-            }
             return count;
         }
     }
@@ -262,20 +225,14 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         get
         {
             if (!IsSquare)
-            {
                 return false;
-            }
 
             for (var i = 1; i < Rows; i++)
-            {
                 for (var j = 0; j < i; j++)
-                {
                     if (!_data[i, j].Equals(T.Zero))
                     {
                         return false;
                     }
-                }
-            }
             return true;
         }
     }
@@ -287,20 +244,14 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         get
         {
             if (!IsSquare)
-            {
                 return false;
-            }
 
             for (var i = 0; i < Rows; i++)
-            {
                 for (var j = i + 1; j < Columns; j++)
-                {
                     if (!_data[i, j].Equals(T.Zero))
                     {
                         return false;
                     }
-                }
-            }
             return true;
         }
     }
@@ -312,14 +263,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         get
         {
             if (Rows == 1)
-            {
                 return true;
-            }
             // If the matrix is upper-triangular, it's also square and thus in row-echelon form, since that's the same thing for square matrices
             if (IsUpperTriangularForm)
-            {
                 return true;
-            }
 
             var colCount = Columns;
             var rowCount = Rows;
@@ -331,20 +278,14 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                 bool IsAllZerosFrom(ReadOnlySpan<T> span, int row)
                 {
                     if (row >= rowCount)
-                    {
                         return true;
-                    }
 
                     // Get a span over the remaining rows from the current row
                     var rowSpan = span[(row * colCount)..];
                     // Check if all elements are zero
                     for (var i = 0; i < rowSpan.Length; i++)
-                    {
                         if (!rowSpan[i].Equals(T.Zero))
-                        {
                             return false;
-                        }
-                    }
                     return true;
                 }
 
@@ -355,13 +296,11 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                     // Find the leftmost non-zero entry in this row
                     var firstNonZero = -1;
                     for (var c = 0; c < Columns; c++)
-                    {
                         if (_data[r, c] != T.Zero)
                         {
                             firstNonZero = c;
                             break;
                         }
-                    }
 
                     switch (firstNonZero)
                     {
@@ -372,20 +311,14 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                         {
                             // Condition: pivot must be strictly to the right compared to previous row's pivot
                             if (firstNonZero <= pivotCol)
-                            {
                                 return false;
-                            }
 
                             pivotCol = firstNonZero;
 
                             // Ensure all entries below this pivot in the same column are zero
                             for (var rr = r + 1; rr < Rows; rr++)
-                            {
                                 if (_data[rr, pivotCol] != T.Zero)
-                                {
                                     return false;
-                                }
-                            }
 
                             break;
                         }
@@ -409,43 +342,31 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         {
             // Must first be in row echelon form
             if (!IsRowEchelonForm)
-            {
                 return false;
-            }
 
             for (var r = 0; r < Rows; r++)
             {
                 // Find the leftmost non-zero entry in this row
                 var firstNonZero = -1;
                 for (var c = 0; c < Columns; c++)
-                {
                     if (_data[r, c] != T.Zero)
                     {
                         firstNonZero = c;
                         break;
                     }
-                }
 
                 // If row is all zero, nothing more to check for RREF in this row
                 if (firstNonZero < 0)
-                {
                     continue;
-                }
 
                 // Check pivot = 1
                 if (_data[r, firstNonZero] != T.One)
-                {
                     return false;
-                }
 
                 // Check it's the only non-zero in that column
                 for (var rr = 0; rr < Rows; rr++)
-                {
                     if (rr != r && _data[rr, firstNonZero] != T.Zero)
-                    {
                         return false;
-                    }
-                }
             }
             return true;
         }
@@ -460,9 +381,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         get
         {
             if (!IsSquare)
-            {
                 throw new InvalidOperationException("The matrix must be square to calculate the determinant.");
-            }
             // Fast paths for up to 3x3
             return Columns switch
             {
@@ -480,7 +399,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     private T DetRowReduce()
     {
         var n = _data.GetLength(0);
-        var mat = Unsafe.As<T[,]>(_data.Clone());
+        var mat = _data.Copy();
         var det = T.One;
 
         for (var i = 0; i < n; i++)
@@ -501,16 +420,12 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             if (pivotRow != i)
             {
                 for (var c = 0; c < n; c++)
-                {
                     (mat[i, c], mat[pivotRow, c]) = (mat[pivotRow, c], mat[i, c]);
-                }
                 det = -det;
             }
             // If pivot is zero => determinant is zero
             if (mat[i, i] == T.Zero)
-            {
                 return T.Zero;
-            }
 
             // Multiply by pivot on diagonal
             det *= mat[i, i];
@@ -520,9 +435,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             {
                 var factor = mat[r, i] / mat[i, i];
                 for (var c = i; c < n; c++)
-                {
                     mat[r, c] -= factor * mat[i, c];
-                }
             }
         }
 
@@ -538,18 +451,12 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public static Matrix<T> operator +(Matrix<T> left, Matrix<T> right)
     {
         if (left.Rows != right.Rows || left.Columns != right.Columns)
-        {
             throw new InvalidOperationException("The matrices must have the same size to multiply element-wise.");
-        }
 
-        var mat = Unsafe.As<T[,]>(left._data.Clone());
+        var mat = left._data.Copy();
         for (var i = 0; i < left.Rows; i++)
-        {
             for (var j = 0; j < left.Columns; j++)
-            {
                 mat[i, j] += right[i, j];
-            }
-        }
         return new Matrix<T>(mat);
     }
     /// <summary>
@@ -561,18 +468,12 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public static Matrix<T> operator -(Matrix<T> left, Matrix<T> right)
     {
         if (left.Rows != right.Rows || left.Columns != right.Columns)
-        {
             throw new InvalidOperationException("The matrices must have the same size to multiply element-wise.");
-        }
 
-        var mat = Unsafe.As<T[,]>(left._data.Clone());
+        var mat = left._data.Copy();
         for (var i = 0; i < left.Rows; i++)
-        {
             for (var j = 0; j < left.Columns; j++)
-            {
                 mat[i, j] -= right[i, j];
-            }
-        }
         return new Matrix<T>(mat);
     }
     /// <summary>
@@ -588,23 +489,17 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         // Another indication that the Hadamard product is not the default is that it's sometimes called "naive matrix multiplication" or "element-wise matrix multiplication"
 
         if (left.Columns != right.Rows)
-        {
             throw new InvalidOperationException("The number of columns in the left matrix must be equal to the number of rows in the right matrix.");
-        }
 
         var result = new T[left.Rows, right.Columns];
         for (var i = 0; i < left.Rows; i++)
-        {
             for (var j = 0; j < right.Columns; j++)
             {
                 var sum = T.Zero;
                 for (var k = 0; k < left.Columns; k++)
-                {
                     sum += left._data[i, k] * right._data[k, j];
-                }
                 result[i, j] = sum;
             }
-        }
         return new Matrix<T>(result);
     }
     /// <summary>
@@ -615,14 +510,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     /// <returns>The result of the multiplication.</returns>
     public static Matrix<T> operator *(Matrix<T> left, T right)
     {
-        var mat = Unsafe.As<T[,]>(left._data.Clone());
+        var mat = left._data.Copy();
         for (var i = 0; i < left.Rows; i++)
-        {
             for (var j = 0; j < left.Columns; j++)
-            {
                 mat[i, j] *= right;
-            }
-        }
         return new Matrix<T>(mat);
     }
     /// <summary>
@@ -658,14 +549,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     /// <returns>The result of the division.</returns>
     public static Matrix<T> operator /(Matrix<T> left, T right)
     {
-        var mat = Unsafe.As<T[,]>(left._data.Clone());
+        var mat = left._data.Copy();
         for (var i = 0; i < left.Rows; i++)
-        {
             for (var j = 0; j < left.Columns; j++)
-            {
                 mat[i, j] /= right;
-            }
-        }
         return new Matrix<T>(mat);
     }
 
@@ -679,16 +566,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         var result = new T[size, size];
         // This will never fail
         if (result.TryGetSpan<T>(out var provider, out var span))
-        {
             using (provider)
-            {
                 span.Fill(T.Zero);
-            }
-        }
         for (var i = 0; i < size; i++)
-        {
             result[i, i] = T.One;
-        }
         return new Matrix<T>(result);
     }
     /// <summary>
@@ -702,12 +583,8 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         var result = new T[rows, columns];
         // This will never fail
         if (result.TryGetSpan<T>(out var provider, out var span))
-        {
             using (provider)
-            {
                 span.Fill(T.Zero);
-            }
-        }
         return new Matrix<T>(result);
     }
 
@@ -719,13 +596,11 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix<T> GetRowEchelonForm()
     {
         if (IsRowEchelonForm)
-        {
             return this;
-        }
 
         var rowCount = Rows;
         var colCount = Columns;
-        var data = Unsafe.As<T[,]>(_data.Clone());
+        var data = _data.Copy();
 
         // We perform a standard Gaussian elimination without pivot normalization.
         for (var pivotIndex = 0; pivotIndex < rowCount && pivotIndex < colCount; pivotIndex++)
@@ -745,30 +620,20 @@ public readonly struct Matrix<T> : IEnumerable<T>,
 
             // If pivot is zero after searching, the entire column is zero from pivotIndex down, so skip
             if (data[pivotRow, pivotIndex] == T.Zero)
-            {
                 continue;
-            }
 
             // Swap pivot row if needed
             if (pivotRow != pivotIndex)
-            {
                 for (var c = 0; c < colCount; c++)
-                {
                     (data[pivotIndex, c], data[pivotRow, c]) = (data[pivotRow, c], data[pivotIndex, c]);
-                }
-            }
 
             // Eliminate below pivot
             for (var r = pivotIndex + 1; r < rowCount; r++)
             {
                 var factor = data[r, pivotIndex] / data[pivotIndex, pivotIndex];
                 if (factor != T.Zero)
-                {
                     for (var c = pivotIndex; c < colCount; c++)
-                    {
                         data[r, c] -= factor * data[pivotIndex, c];
-                    }
-                }
             }
         }
 
@@ -781,12 +646,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix<T> GetReducedRowEchelonForm()
     {
         if (!IsRowEchelonForm)
-        {
             return GetRowEchelonForm().GetReducedRowEchelonForm();
-        }
 
         // Work on a copy
-        var rref = Unsafe.As<T[,]>(_data.Clone());
+        var rref = _data.Copy();
         var rowCount = Rows;
         var colCount = Columns;
 
@@ -796,41 +659,29 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             // Locate pivot (first non-zero entry in this row)
             var pivotCol = -1;
             for (var c = 0; c < colCount; c++)
-            {
                 if (rref[pivotRow, c] != T.Zero)
                 {
                     pivotCol = c;
                     break;
                 }
-            }
 
             // If no pivot found, row is all zero; skip
             if (pivotCol < 0)
-            {
                 continue;
-            }
 
             // Normalize this pivot to 1
             var pivotVal = rref[pivotRow, pivotCol];
             if (pivotVal != T.One)
-            {
                 for (var c = pivotCol; c < colCount; c++)
-                {
                     rref[pivotRow, c] = rref[pivotRow, c] / pivotVal;
-                }
-            }
 
             // Eliminate above
             for (var r = pivotRow - 1; r >= 0; r--)
             {
                 var factor = rref[r, pivotCol];
                 if (factor != T.Zero)
-                {
                     for (var c = pivotCol; c < colCount; c++)
-                    {
                         rref[r, c] -= factor * rref[pivotRow, c];
-                    }
-                }
             }
         }
 
@@ -845,18 +696,12 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix<T> MultiplyElementWise(Matrix<T> other)
     {
         if (Rows != other.Rows || Columns != other.Columns)
-        {
             throw new InvalidOperationException("The matrices must have the same size to multiply element-wise.");
-        }
 
         var result = new T[Rows, Columns];
         for (var i = 0; i < Rows; i++)
-        {
             for (var j = 0; j < Columns; j++)
-            {
                 result[i, j] = _data[i, j] * other._data[i, j];
-            }
-        }
         return new Matrix<T>(result);
     }
     /// <summary>
@@ -867,12 +712,8 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     {
         var transposed = new T[Columns, Rows];
         for (var r = 0; r < Rows; r++)
-        {
             for (var c = 0; c < Columns; c++)
-            {
                 transposed[c, r] = _data[r, c];
-            }
-        }
         return new Matrix<T>(transposed);
     }
     /// <summary>
@@ -882,13 +723,11 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public Matrix<T> Inverse()
     {
         if (!IsSquare)
-        {
             throw new InvalidOperationException("The matrix must be square to invert.");
-        }
 
         var n = Rows;
         // Clone original data
-        var mat = Unsafe.As<T[,]>(_data.Clone());
+        var mat = _data.Copy();
         // Create identity matrix
         var inv = Identity(n)._data;
 
@@ -909,19 +748,15 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             }
             // If pivot is zero -> matrix is non-invertible
             if (pivotVal == T.Zero)
-            {
                 throw new InvalidOperationException("The matrix is singular and cannot be inverted.");
-            }
 
             // Swap rows in both mat and inv if needed
             if (pivotRow != i)
-            {
                 for (var c = 0; c < n; c++)
                 {
                     (mat[i, c], mat[pivotRow, c]) = (mat[pivotRow, c], mat[i, c]);
                     (inv[i, c], inv[pivotRow, c]) = (inv[pivotRow, c], inv[i, c]);
                 }
-            }
 
             // Normalize pivot row (make pivot = 1)
             var pivot = mat[i, i];
@@ -933,20 +768,16 @@ public readonly struct Matrix<T> : IEnumerable<T>,
 
             // Eliminate in other rows
             for (var r = 0; r < n; r++)
-            {
                 if (r != i)
                 {
                     var factor = mat[r, i];
                     if (factor != T.Zero)
-                    {
                         for (var c = 0; c < n; c++)
                         {
                             mat[r, c] -= factor * mat[i, c];
                             inv[r, c] -= factor * inv[i, c];
                         }
-                    }
                 }
-            }
         }
 
         return new Matrix<T>(inv);
@@ -965,11 +796,9 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(row1, Rows, nameof(row1));
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(row2, Rows, nameof(row2));
 
-        var mat = Unsafe.As<T[,]>(_data.Clone());
+        var mat = _data.Copy();
         for (var c = 0; c < Columns; c++)
-        {
             (mat[row1, c], mat[row2, c]) = (mat[row2, c], mat[row1, c]);
-        }
         return new Matrix<T>(mat);
     }
     /// <summary>
@@ -985,11 +814,9 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(column1, Columns, nameof(column1));
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(column2, Columns, nameof(column2));
 
-        var mat = Unsafe.As<T[,]>(_data.Clone());
+        var mat = _data.Copy();
         for (var r = 0; r < Rows; r++)
-        {
             (mat[r, column1], mat[r, column2]) = (mat[r, column2], mat[r, column1]);
-        }
         return new Matrix<T>(mat);
     }
     /// <summary>
@@ -1003,16 +830,12 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     {
         var result = new T[Rows];
         for (var i = 0; i < Rows; i++)
-        {
             for (var j = 0; j < Columns; j++)
-            {
                 if (!_data[i, j].Equals(T.Zero))
                 {
                     result[i] = _data[i, j];
                     break;
                 }
-            }
-        }
         return result;
     }
 
@@ -1031,12 +854,8 @@ public readonly struct Matrix<T> : IEnumerable<T>,
     public bool Equals(params ReadOnlySpan<Matrix<T>> others)
     {
         for (var i = 0; i < others.Length; i++)
-        {
             if (!_data.SequenceEqual<T>(others[i]._data))
-            {
                 return false;
-            }
-        }
         return true;
     }
     /// <inheritdoc/>
@@ -1079,13 +898,9 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                 {
                     _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
                     if (ros.Length >= 8)
-                    {
                         ros = ros[^8..];
-                    }
                     for (var i = 0; i < ros.Length; i++)
-                    {
                         hc.Add(typedComparer.GetHashCode(ros[i]));
-                    }
                 }
                 finally
                 {
@@ -1103,13 +918,9 @@ public readonly struct Matrix<T> : IEnumerable<T>,
                 {
                     _ = _data.TryGetReadOnlySpan(out spanProvider, out var ros);
                     if (ros.Length >= 8)
-                    {
                         ros = ros[^8..];
-                    }
                     for (var i = 0; i < ros.Length; i++)
-                    {
                         hc.Add(comparer.GetHashCode(ros[i]));
-                    }
                 }
                 finally
                 {
@@ -1129,9 +940,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
         // T[,].GetEnumerator() returns a non-generic IEnumerator that does not implement
         // IEnumerator<T>, so it cannot be cast directly. Iterate the backing store instead.
         foreach (var item in _data)
-        {
             yield return item;
-        }
     }
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     /// <inheritdoc/>

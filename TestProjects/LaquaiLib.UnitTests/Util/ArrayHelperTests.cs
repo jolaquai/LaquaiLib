@@ -1,3 +1,4 @@
+using LaquaiLib.Extensions;
 using LaquaiLib.Util;
 
 namespace LaquaiLib.UnitTests.Util;
@@ -703,8 +704,8 @@ public class ArrayHelperTests
     {
         int[] keys = [2, 1, 2, 1, 3];
         string[] values = ["a", "b", "c", "d", "e"];
-        var originalKeys = (int[])keys.Clone();
-        var originalValues = (string[])values.Clone();
+        var originalKeys = keys.Copy();
+        var originalValues = values.Copy();
 
         ArrayHelper.Sort(keys, values);
 
@@ -717,8 +718,8 @@ public class ArrayHelperTests
     {
         int[] keys = [2, 1, 2, 1, 3];
         string[] values = ["a", "b", "c", "d", "e"];
-        var originalKeys = (int[])keys.Clone();
-        var originalValues = (string[])values.Clone();
+        var originalKeys = keys.Copy();
+        var originalValues = values.Copy();
 
         ArrayHelper.SortDescending(keys, values);
 
@@ -765,8 +766,8 @@ public class ArrayHelperTests
             keys[i] = random.Next(-100, 100);
             values[i] = i;
         }
-        var originalKeys = (int[])keys.Clone();
-        var originalValues = (int[])values.Clone();
+        var originalKeys = keys.Copy();
+        var originalValues = values.Copy();
 
         ArrayHelper.Sort(keys, values);
 
@@ -785,8 +786,8 @@ public class ArrayHelperTests
             keys[i] = random.Next(-100, 100);
             values[i] = i;
         }
-        var originalKeys = (int[])keys.Clone();
-        var originalValues = (int[])values.Clone();
+        var originalKeys = keys.Copy();
+        var originalValues = values.Copy();
 
         ArrayHelper.SortDescending(keys, values);
 

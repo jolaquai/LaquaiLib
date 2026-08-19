@@ -4,8 +4,6 @@ using System.Globalization;
 using System.Numerics;
 using System.Numerics.Tensors;
 
-using LaquaiLib.Interfaces;
-
 namespace LaquaiLib.Numerics;
 
 /// <remarks>
@@ -18,7 +16,7 @@ namespace LaquaiLib.Numerics;
 /// Because this identity is value-based on a mutable type, an instance must never be used as a <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/>/<see cref="System.Collections.Generic.HashSet{T}"/> key (or otherwise hashed/ordered) while it is still live and subject to mutation (e.g. via <see cref="ShiftLeft(int)"/>, <see cref="And(BitArray)"/>, or toggling <see cref="Signed"/> when the sign bit is set): doing so silently corrupts the container's hash/order invariant.
 /// </remarks>
 public class BitArray :
-    IEquatable<BitArray>, IComparable<BitArray>, ICloneable<BitArray>, ISpanFormattable,
+    IEquatable<BitArray>, IComparable<BitArray>, ISpanFormattable,
     IParsable<BitArray>, ISpanParsable<BitArray>,
     IEqualityOperators<BitArray, BitArray, bool>, IComparisonOperators<BitArray, BitArray, bool>,
     IBitwiseOperators<BitArray, BitArray, BitArray>, IShiftOperators<BitArray, int, BitArray>
@@ -195,10 +193,18 @@ public class BitArray :
     {
         switch (c)
         {
-            case >= '0' and <= '9': val = (ulong)(c - '0'); return true;
-            case >= 'a' and <= 'f': val = (ulong)(c - 'a' + 10); return true;
-            case >= 'A' and <= 'F': val = (ulong)(c - 'A' + 10); return true;
-            default: val = 0UL; return false;
+            case >= '0' and <= '9':
+                val = (ulong)(c - '0');
+                return true;
+            case >= 'a' and <= 'f':
+                val = (ulong)(c - 'a' + 10);
+                return true;
+            case >= 'A' and <= 'F':
+                val = (ulong)(c - 'A' + 10);
+                return true;
+            default:
+                val = 0UL;
+                return false;
         }
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -206,9 +212,15 @@ public class BitArray :
     {
         switch (c)
         {
-            case '0': val = 0UL; return true;
-            case '1': val = 1UL; return true;
-            default: val = 0UL; return false;
+            case '0':
+                val = 0UL;
+                return true;
+            case '1':
+                val = 1UL;
+                return true;
+            default:
+                val = 0UL;
+                return false;
         }
     }
     /// <summary>
@@ -541,7 +553,7 @@ public class BitArray :
     }
 
     /// <inheritdoc/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Clear() => _data.AsSpan().Clear();
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] public void Clear() => _data.AsSpan().ZeroMemory();
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public void SetAll(bool value) => _data.AsSpan().Fill(value ? ulong.MaxValue : 0UL);
 
@@ -688,7 +700,10 @@ public class BitArray :
         if (n == 0)
             return;
         if (n >= totalBits)
-        { data.Clear(); return; }
+        {
+            data.ZeroMemory();
+            return;
+        }
 
         var wordShift = n >> 6;
         var bitShift = n & 63;
@@ -696,8 +711,8 @@ public class BitArray :
         if (bitShift == 0)
         {
             // Pure word displacement; CopyTo is SIMD-vectorized and handles overlap correctly.
-            data.Slice(0, data.Length - wordShift).CopyTo(data.Slice(wordShift));
-            data.Slice(0, wordShift).Clear();
+            data[..^wordShift].CopyTo(data[wordShift..]);
+            data[..wordShift].ZeroMemory();
             return;
         }
 
@@ -706,7 +721,7 @@ public class BitArray :
         for (var i = data.Length - 1; i > wordShift; i--)
             data[i] = (data[i - wordShift] << bitShift) | (data[i - wordShift - 1] >> inv);
         data[wordShift] = data[0] << bitShift;
-        data.Slice(0, wordShift).Clear();
+        data[..wordShift].ZeroMemory();
     }
     private static void ShiftRightSpan(Span<ulong> data, int n, ulong fill)
     {
@@ -722,8 +737,8 @@ public class BitArray :
 
         if (bitShift == 0)
         {
-            data.Slice(wordShift).CopyTo(data.Slice(0, data.Length - wordShift));
-            data.Slice(data.Length - wordShift).Fill(fill);
+            data[wordShift..].CopyTo(data[..^wordShift]);
+            data[^wordShift..].Fill(fill);
             return;
         }
 
@@ -733,12 +748,15 @@ public class BitArray :
             data[i] = (data[i + wordShift] >> bitShift) | (data[i + wordShift + 1] << inv);
         // Top in-range word: no further source, splice in the fill.
         data[last - wordShift] = (data[last] >> bitShift) | (fill << inv);
-        data.Slice(last - wordShift + 1).Fill(fill);
+        data[(last - wordShift + 1)..].Fill(fill);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Creates a new <see cref="BitArray"/> that has the same value as the current instance.
+    /// </summary>
+    /// <returns>The new <see cref="BitArray"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BitArray Clone() => new BitArray(this);
+    public BitArray Copy() => new BitArray(this);
 
     /// <summary>
     /// Reinterprets the lowest <c><see langword="sizeof"/>(<typeparamref name="T"/>)</c> bytes of this instance's backing storage as a value of type <typeparamref name="T"/>, using the same LSB-first word layout as the <see cref="BitArray(ReadOnlySpan{ulong})"/> constructor (word 0 holds the least significant bytes). This is a raw bit reinterpretation, <em>not</em> a numeric conversion: it ignores <see cref="Signed"/> and never sign-extends. When the backing storage holds fewer than <c><see langword="sizeof"/>(<typeparamref name="T"/>)</c> bytes, the missing high bytes are treated as zero.
@@ -797,7 +815,7 @@ public class BitArray :
                     return MemoryMarshal.Read<T>(bytes);
                 // Backing store is shorter than T; zero-extend the high bytes.
                 Span<byte> buffer = stackalloc byte[size];
-                buffer.Clear();
+                buffer.ZeroMemory();
                 bytes.CopyTo(buffer);
                 return MemoryMarshal.Read<T>(buffer);
             }
