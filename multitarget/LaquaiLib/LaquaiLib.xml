@@ -36,8 +36,8 @@
         <member name="M:LaquaiLib.Extensions.AnyExtensions.get_Annotations``1(``0)">
             <inheritdoc cref="P:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.Annotations"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.AnyExtensions.As``2(``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.As``1"/>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.As``1(System.Object)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.As``1"/>
         </member>
         <member name="P:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.Annotations">
             <summary>
@@ -47,12 +47,12 @@
             The return value of this extension property is never <see langword="null"/>; if no annotation set exists for the extended value, a new one is created.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.As``1">
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.As``1">
             <summary>
-            Changes the type of a reference to <typeparamref name="TTo"/>.
+            Changes the type of a reference to <typeparamref name="T"/>.
             </summary>
-            <typeparam name="TTo">The type to cast <paramref name="obj"/> to.</typeparam>
-            <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="TTo"/>.</returns>
+            <typeparam name="T">The type to cast <paramref name="obj"/> to.</typeparam>
+            <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="T"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensionsByte">
             <summary>
@@ -6422,6 +6422,70 @@
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> that can be used to cancel the wait.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous wait on <paramref name="task"/>.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.IndentedTextWriterExtensions">
+            <summary>
+            Provides extensions for the <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> type.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.get_Indent(System.CodeDom.Compiler.IndentedTextWriter)">
+            <inheritdoc cref="P:LaquaiLib.Extensions.IndentedTextWriterExtensions.&lt;G&gt;$12DAB16CA283B159FB17A66C2FB61741.Indent"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.IndentBy(System.CodeDom.Compiler.IndentedTextWriter,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.&lt;G&gt;$12DAB16CA283B159FB17A66C2FB61741.IndentBy(System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.get_Scope(System.CodeDom.Compiler.IndentedTextWriter)">
+            <inheritdoc cref="P:LaquaiLib.Extensions.IndentedTextWriterExtensions.&lt;G&gt;$12DAB16CA283B159FB17A66C2FB61741.Scope"/>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwIndent">
+            <summary>
+            Represents an indentation level for an <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/>.
+            On creation, it will increase the indentation level by the specified amount.
+            On disposal, it will decrease the indentation level by the same amount.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwIndent.#ctor(System.CodeDom.Compiler.IndentedTextWriter,System.Int32)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwIndent"/>.
+            </summary>
+            <param name="itw">The <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> to increase the indentation level of.</param>
+            <param name="by">The number of indentation levels to increase by.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwIndent.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwScope">
+            <summary>
+            Represents a scope for an <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> (that is, a brace plus an indentation level).
+            On creation, it will write an opening brace and increase the indentation level by 1.
+            On disposal, it will decrease the indentation level by 1 and write a closing brace.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwScope.#ctor(System.CodeDom.Compiler.IndentedTextWriter)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwScope"/>.
+            </summary>
+            <param name="itw">The <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> to increase the indentation level of.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwScope.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="P:LaquaiLib.Extensions.IndentedTextWriterExtensions.&lt;G&gt;$12DAB16CA283B159FB17A66C2FB61741.Indent">
+            <summary>
+            Creates and returns an <see cref="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwIndent"/> that will increase the indentation level of the <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> by 1 and decrease it by 1 on disposal.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.IndentedTextWriterExtensions.&lt;G&gt;$12DAB16CA283B159FB17A66C2FB61741.IndentBy(System.Int32)">
+            <summary>
+            Creates and returns an <see cref="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwIndent"/> that will increase the indentation level of the <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> by the specified amount and decrease it by the same amount on disposal.
+            </summary>
+            <param name="by">The number of indentation levels to increase by.</param>
+            <returns>The created <see cref="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwIndent"/>.</returns>
+        </member>
+        <member name="P:LaquaiLib.Extensions.IndentedTextWriterExtensions.&lt;G&gt;$12DAB16CA283B159FB17A66C2FB61741.Scope">
+            <summary>
+            Creates and returns an <see cref="T:LaquaiLib.Extensions.IndentedTextWriterExtensions.ItwScope"/> that will write an opening brace and increase the indentation level of the <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> by 1 and close that scope on disposal.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Extensions.ThreadingExtensions">
             <inheritdoc/>
         </member>
@@ -6556,20 +6620,20 @@
         <member name="M:LaquaiLib.Extensions.TypeExtensions.AsKeyword(System.Type)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.AsKeyword"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.IsFunc(System.Type,System.Type@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsFunc(System.Type@)"/>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.IsFunc(System.Type,System.Int32@,System.Type@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsFunc(System.Int32@,System.Type@)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.IsAction(System.Type,System.Boolean@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsAction(System.Boolean@)"/>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.IsAction(System.Type,System.Int32@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsAction(System.Int32@)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.FindConstructibleSubtypes(System.Type,System.Reflection.Assembly)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.FindConstructibleSubtypes(System.Reflection.Assembly)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.get_SizeOf(System.Type)">
-            <inheritdoc cref="P:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.SizeOf"/>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.get_Size(System.Type)">
+            <inheritdoc cref="P:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.Size"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.MakeGenericTypeWith(System.Type,System.ReadOnlySpan{System.Object})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.MakeGenericTypeWith(System.ReadOnlySpan{System.Object})"/>
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.MakeGenericTypeFrom(System.Type,System.ReadOnlySpan{System.Object})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.MakeGenericTypeFrom(System.ReadOnlySpan{System.Object})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.IsIntegralType(System.Type)">
             <summary>
@@ -6696,20 +6760,21 @@
             <summary>
             Converts a <see cref="T:System.Type"/> to its C# keyword, if it exists.
             </summary>
-            <returns>The <see cref="T:System.Type"/>'s name as a C# keyword, if it exists, otherwise the original <see cref="T:System.Type"/>.</returns>
+            <returns>The <see cref="T:System.Type"/>'s name as a C# keyword, if it exists; otherwise, <see cref="P:System.Type.FullName"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsFunc(System.Type@)">
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsFunc(System.Int32@,System.Type@)">
             <summary>
             Determines whether the specified <paramref name="type"/> is assignable to a <see cref="T:System.Func`1"/> <see langword="delegate"/> overload.
             </summary>
+            <param name="parameterCount">An <see langword="out"/> variable that receives the number of parameters that the <paramref name="type"/> takes, if any.</param>
             <param name="returnType">An <see langword="out"/> variable that receives the <see cref="T:System.Func`1"/> <see langword="delegate"/> overload that the <paramref name="type"/> is assignable to, if any.</param>
             <returns><see langword="true"/> if the <paramref name="type"/> is assignable to a <see cref="T:System.Func`1"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsAction(System.Boolean@)">
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.IsAction(System.Int32@)">
             <summary>
             Determines whether the specified <paramref name="type"/> is assignable to an <see cref="T:System.Action"/> <see langword="delegate"/> overload.
             </summary>
-            <param name="takesParameters">Whether the <paramref name="type"/> takes parameters. If <see langword="false"/>, <paramref name="type"/> is not generic.</param>
+            <param name="parameterCount">An <see langword="out"/> variable that receives the number of parameters that the <paramref name="type"/> takes, if any.</param>
             <returns><see langword="true"/> if the <paramref name="type"/> is assignable to an <see cref="T:System.Action"/> <see langword="delegate"/> overload, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.FindConstructibleSubtypes(System.Reflection.Assembly)">
@@ -6719,12 +6784,12 @@
             <param name="assembly">The <see cref="T:System.Reflection.Assembly"/> to search in. If <see langword="null"/>, the assembly of the specified <paramref name="type"/> is used.</param>
             <returns>An <see cref="T:System.Array"/> of <see cref="T:System.Type"/>s that are assignable to the specified <paramref name="type"/> and constructible.</returns>
         </member>
-        <member name="P:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.SizeOf">
+        <member name="P:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.Size">
             <summary>
             Gets the managed size of the type represented by this instance in bytes, or <c>-1</c> if the type does not have a predefined size.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.MakeGenericTypeWith(System.ReadOnlySpan{System.Object})">
+        <member name="M:LaquaiLib.Extensions.TypeExtensions.&lt;G&gt;$6B6159A298CA62A8C577E514BE40E3DD.MakeGenericTypeFrom(System.ReadOnlySpan{System.Object})">
             <summary>
             Creates a <see cref="T:System.Type"/> that represents the constructed type obtained by substituting the the types of the specified <see langword="object"/>s for the type parameters of the current unbound generic type definition.
             </summary>
@@ -17144,6 +17209,7 @@
             Initializes a new instance of the <see cref="T:LaquaiLib.Threading.ExtendedDebugTaskAwaiter"/> struct.
             </summary>
             <param name="awaiter">The wrapped awaiter.</param>
+            <param name="edt">The <see cref="T:LaquaiLib.Threading.ExtendedDebugTask"/> that this awaiter is for.</param>
             <param name="creationStack">The stack trace at the creation point of the task.</param>
         </member>
         <member name="P:LaquaiLib.Threading.ConfiguredExtendedDebugTaskAwaitable.ConfiguredExtendedDebugTaskAwaiter.IsCompleted">
