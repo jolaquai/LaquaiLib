@@ -12939,6 +12939,116 @@
             <param name="value">The <see cref="T:System.TimeSpan"/> value to write.</param>
             <param name="options">The <see cref="T:System.Text.Json.JsonSerializerOptions"/> to use.</param>
         </member>
+        <member name="T:LaquaiLib.Text.MSBuildErrorType">
+            <summary>
+            Specifies the type of MSBuild error.
+            None except the two members defined in this <see langword="enum"/> are valid as category values for MSBuild errors. Anything not defined in this <see langword="enum"/> will be treated the same as <see cref="F:LaquaiLib.Text.MSBuildErrorType.Error"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Text.MSBuildErrorType.Error">
+            <summary>
+            Emits <c>error</c> as the category of the MSBuild error.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Text.MSBuildErrorType.Warning">
+            <summary>
+            Emits <c>warning</c> as the category of the MSBuild error.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Text.Line">
+            <summary>
+            Represents a 1-based line number.
+            </summary>
+            <param name="line">The line number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.Line.#ctor(System.Int64)">
+            <summary>
+            Represents a 1-based line number.
+            </summary>
+            <param name="line">The line number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.Line.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Text.LineRange">
+            <summary>
+            Represents a range of lines, expressed as 1-based line numbers.
+            </summary>
+            <param name="start">The starting line number of the range (inclusive).</param>
+            <param name="end">The ending line number of the range (inclusive).</param>
+        </member>
+        <member name="M:LaquaiLib.Text.LineRange.#ctor(System.Int64,System.Int64)">
+            <summary>
+            Represents a range of lines, expressed as 1-based line numbers.
+            </summary>
+            <param name="start">The starting line number of the range (inclusive).</param>
+            <param name="end">The ending line number of the range (inclusive).</param>
+        </member>
+        <member name="M:LaquaiLib.Text.LineRange.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Text.LineAndColumn">
+            <summary>
+            Represents a pair of 1-based line and column numbers.
+            </summary>
+            <param name="line">The 1-based line number.</param>
+            <param name="column">The 1-based column number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumn.#ctor(System.Int64,System.Int64)">
+            <summary>
+            Represents a pair of 1-based line and column numbers.
+            </summary>
+            <param name="line">The 1-based line number.</param>
+            <param name="column">The 1-based column number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumn.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Text.LineAndColumnRange">
+            <summary>
+            Represents a 1-based line number and a range of 1-based column numbers.
+            </summary>
+            <param name="line">The 1-based line number.</param>
+            <param name="startColumn">The starting 1-based column number.</param>
+            <param name="endColumn">The ending 1-based column number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumnRange.#ctor(System.Int64,System.Int64,System.Int64)">
+            <summary>
+            Represents a 1-based line number and a range of 1-based column numbers.
+            </summary>
+            <param name="line">The 1-based line number.</param>
+            <param name="startColumn">The starting 1-based column number.</param>
+            <param name="endColumn">The ending 1-based column number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumnRange.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Text.TextRange">
+            <summary>
+            Represents a range of 1-based line numbers and a range of 1-based column numbers.
+            </summary>
+            <param name="startLine">The starting 1-based line number.</param>
+            <param name="endLine">The ending 1-based line number.</param>
+            <param name="startColumn">The starting 1-based column number.</param>
+            <param name="endColumn">The ending 1-based column number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.TextRange.#ctor(System.Int64,System.Int64,System.Int64,System.Int64)">
+            <summary>
+            Represents a range of 1-based line numbers and a range of 1-based column numbers.
+            </summary>
+            <param name="startLine">The starting 1-based line number.</param>
+            <param name="endLine">The ending 1-based line number.</param>
+            <param name="startColumn">The starting 1-based column number.</param>
+            <param name="endColumn">The ending 1-based column number.</param>
+        </member>
+        <member name="M:LaquaiLib.Text.TextRange.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Text.MSBuild">
+            <summary>
+            Provides functionality related to MSBuild operations.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Text.StringHelpers">
             <summary>
             Contains utility methods for the <see cref="T:System.String"/> type.
@@ -12947,6 +13057,31 @@
         <member name="M:LaquaiLib.Text.StringHelpers.AllocString(System.Int32)">
             <summary>
             Allocates a <see langword="string"/> that is safe to be mutated by the caller.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Text.MSBuildErrorTypeData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Text.MSBuildErrorType</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Text.MSBuildErrorTypeData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Text.MSBuildErrorType</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Text.MSBuildErrorTypeData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Text.MSBuildErrorType</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Text.MSBuildErrorTypeData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Text.MSBuildErrorType</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Text.MSBuildErrorTypeData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Text.MSBuildErrorType</c>.
             </summary>
         </member>
         <member name="T:LaquaiLib.Util.NaturalStringComparer">
@@ -17791,9 +17926,9 @@
             </summary>
             <typeparam name="T">The type of the elements in the <see cref="T:System.Collections.Generic.Stack`1"/>.</typeparam>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.Accessors.StackAccessors`1._items(System.Collections.Generic.Stack{`0})">
+        <member name="M:LaquaiLib.UnsafeUtils.Accessors.StackAccessors`1._array(System.Collections.Generic.Stack{`0})">
             <summary>
-            Accesses the private field <c>_items</c> of a <see cref="T:System.Collections.Generic.Stack`1"/> instance.
+            Accesses the private field <c>_array</c> of a <see cref="T:System.Collections.Generic.Stack`1"/> instance.
             </summary>
             <param name="_">The <see cref="T:System.Collections.Generic.Stack`1"/> instance to access.</param>
             <returns>A <see langword="ref"/> into the field.</returns>

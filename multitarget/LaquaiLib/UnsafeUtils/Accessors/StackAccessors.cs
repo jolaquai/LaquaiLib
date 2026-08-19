@@ -7,11 +7,11 @@
 public static class StackAccessors<T>
 {
     /// <summary>
-    /// Accesses the private field <c>_items</c> of a <see cref="Stack{T}"/> instance.
+    /// Accesses the private field <c>_array</c> of a <see cref="Stack{T}"/> instance.
     /// </summary>
     /// <param name="_">The <see cref="Stack{T}"/> instance to access.</param>
     /// <returns>A <see langword="ref"/> into the field.</returns>
-    [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _items(Stack<T> _);
+    [UnsafeAccessor(UnsafeAccessorKind.Field)] public static extern ref T[] _array(Stack<T> _);
     /// <summary>
     /// Accesses the private field <c>_size</c> of a <see cref="Stack{T}"/> instance.
     /// </summary>

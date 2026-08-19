@@ -386,7 +386,7 @@ public static partial class ArrayExtensions
             ArgumentOutOfRangeException.ThrowIfGreaterThan(count, array.Length);
 
             var stack = new Stack<T>();
-            scoped ref var items = ref StackAccessors<T>._items(stack);
+            scoped ref var items = ref StackAccessors<T>._array(stack);
             items = array;
             StackAccessors<T>._size(stack) = count;
             return stack;
