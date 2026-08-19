@@ -1958,7 +1958,7 @@ public class ArrayPoolMemoryStreamTests
             {
                 case 0:
                 {
-                    var chunk = new byte[random.Next(1, 41)];
+                    var chunk = new byte[random.Next(0, 41)];
                     random.NextBytes(chunk);
                     stream.Write(chunk, 0, chunk.Length);
                     oracle.Write(chunk, 0, chunk.Length);
@@ -1984,5 +1984,165 @@ public class ArrayPoolMemoryStreamTests
             Assert.Equal(stream.Length, sequence.Length);
             Assert.Equal(oracle.ToArray(), sequence.ToArray());
         }
+    }
+
+    [Fact]
+    public void ZeroLengthWritePastEndExtendsLengthToPosition()
+    {
+        var pool = new TrackingArrayPool(0xAB);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Write(Sequence(4), 0, 4);
+        stream.Position = 10;
+        stream.Write([], 0, 0);
+
+        Assert.Equal(10L, stream.Length);
+        Assert.Equal(10L, stream.Position);
+    }
+
+    [Fact]
+    public void ZeroLengthWritePastEndZeroesTheGap()
+    {
+        var pool = new TrackingArrayPool(0xAB);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(4);
+        stream.Write(data, 0, 4);
+        stream.Position = 12;
+        stream.Write([], 0, 0);
+
+        stream.Position = 0;
+        var buffer = new byte[12];
+        Assert.Equal(12, stream.Read(buffer, 0, 12));
+        Assert.Equal(data, buffer[..4]);
+        Assert.All(buffer[4..], b => Assert.Equal(0, b));
+    }
+
+    [Fact]
+    public void ZeroLengthWritePastEndSkipsZeroingWhenAskedTo()
+    {
+        var pool = new TrackingArrayPool(0xCD);
+        using var stream = new ArrayPoolMemoryStream(16, skipZeroing: true, pool: pool);
+        stream.Write(Sequence(4), 0, 4);
+        stream.Position = 12;
+        stream.Write([], 0, 0);
+
+        Assert.Equal(12L, stream.Length);
+        stream.Position = 4;
+        var buffer = new byte[8];
+        Assert.Equal(8, stream.Read(buffer, 0, 8));
+        Assert.Equal(new byte[] { 0xCD, 0xCD, 0xCD, 0xCD, 0xCD, 0xCD, 0xCD, 0xCD }, buffer);
+    }
+
+    [Fact]
+    public void ZeroLengthWritePastEndRentsTheNeededCapacity()
+    {
+        var pool = new TrackingArrayPool(0xAB);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Position = 100;
+        stream.Write([], 0, 0);
+
+        Assert.Equal(100L, stream.Length);
+        Assert.True(stream.Capacity >= 100);
+    }
+
+    [Fact]
+    public void ZeroLengthWritePastEndAcrossSegmentsZeroesTheWholeGap()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xAB), data, 16);
+        stream.SetLength(20);
+        stream.Position = 46;
+        stream.Write([], 0, 0);
+
+        stream.Position = 0;
+        var buffer = new byte[46];
+        Assert.Equal(46, stream.Read(buffer, 0, 46));
+        Assert.Equal(data[..20], buffer[..20]);
+        Assert.All(buffer[20..], b => Assert.Equal(0, b));
+    }
+
+    [Fact]
+    public void ZeroLengthWriteWithinExistingContentIsANoOp()
+    {
+        var data = Sequence(10);
+        using var stream = StreamWith(data);
+        stream.Position = 5;
+        stream.Write([], 0, 0);
+
+        Assert.Equal(10L, stream.Length);
+        Assert.Equal(5L, stream.Position);
+    }
+
+    [Fact]
+    public void ZeroLengthWriteAtEndOfStreamIsANoOp()
+    {
+        var data = Sequence(10);
+        using var stream = StreamWith(data);
+        stream.Position = 10;
+        stream.Write([], 0, 0);
+
+        Assert.Equal(10L, stream.Length);
+    }
+
+    [Fact]
+    public void ZeroLengthSpanWritePastEndExtendsLength()
+    {
+        var pool = new TrackingArrayPool(0xAB);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Write(Sequence(4), 0, 4);
+        stream.Position = 9;
+        stream.Write(ReadOnlySpan<byte>.Empty);
+
+        Assert.Equal(9L, stream.Length);
+    }
+
+    [Fact]
+    public async Task ZeroLengthWriteAsyncPastEndExtendsLength()
+    {
+        var pool = new TrackingArrayPool(0xAB);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.Write(Sequence(4), 0, 4);
+        stream.Position = 9;
+        await stream.WriteAsync(ReadOnlyMemory<byte>.Empty, TestContext.Current.CancellationToken);
+
+        Assert.Equal(9L, stream.Length);
+    }
+
+    [Fact]
+    public void ZeroLengthWritePastEndIsVisibleThroughAsReadOnlySequence()
+    {
+        var pool = new TrackingArrayPool(0xAB);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(4);
+        stream.Write(data, 0, 4);
+        stream.Position = 12;
+        stream.Write([], 0, 0);
+
+        var actual = stream.AsReadOnlySequence().ToArray();
+        Assert.Equal(12, actual.Length);
+        Assert.Equal(data, actual[..4]);
+        Assert.All(actual[4..], b => Assert.Equal(0, b));
+    }
+
+    [Fact]
+    public void ZeroLengthWritePastEndMatchesMemoryStream()
+    {
+        using var stream = new ArrayPoolMemoryStream(16);
+        using var oracle = new MemoryStream();
+        var data = Sequence(4);
+        stream.Write(data, 0, 4);
+        oracle.Write(data, 0, 4);
+
+        stream.Position = 20;
+        oracle.Position = 20;
+        stream.Write([], 0, 0);
+        oracle.Write([], 0, 0);
+
+        Assert.Equal(oracle.Length, stream.Length);
+        Assert.Equal(oracle.Position, stream.Position);
+
+        stream.Position = 0;
+        var buffer = new byte[oracle.Length];
+        Assert.Equal(buffer.Length, stream.Read(buffer, 0, buffer.Length));
+        Assert.Equal(oracle.ToArray(), buffer);
     }
 }

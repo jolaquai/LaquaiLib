@@ -176,8 +176,18 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
+        // MemoryStream grows to Position even for a zero-byte write past the end, and callers written against it rely on that
         if (buffer.IsEmpty)
+        {
+            if (position > length)
+            {
+                EnsureCapacity(position);
+                if (!_skipZeroing)
+                    ZeroRange(length, position - length);
+                length = position;
+            }
             return;
+        }
 
         var end = position + buffer.Length;
         EnsureCapacity(end);
