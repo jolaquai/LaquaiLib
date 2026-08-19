@@ -382,14 +382,14 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         if (length == 0)
             return ReadOnlySequence<byte>.Empty;
 
-        var (lastSeg, lastOff) = Locate(length);
+        // walking up to length instead of locating it keeps the length == capacity case in range and never emits an empty trailing segment
         Segment first = null, prev = null;
         long running = 0;
-        for (var i = 0; i <= lastSeg; i++)
+        for (var i = 0; running < length; i++)
         {
-            var mem = i < lastSeg ? _segments[i].AsMemory() : _segments[i].AsMemory(0, lastOff);
-            var seg = new Segment(mem, running);
-            running += mem.Length;
+            var take = (int)long.Min(_segments[i].Length, length - running);
+            var seg = new Segment(_segments[i].AsMemory(0, take), running);
+            running += take;
             if (prev is null)
                 first = seg;
             else
@@ -400,7 +400,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     }
     private sealed class Segment : ReadOnlySequenceSegment<byte>
     {
-        public Segment(Memory<byte> memory, long index)
+        public Segment(ReadOnlyMemory<byte> memory, long index)
         {
             Memory = memory;
             RunningIndex = index;

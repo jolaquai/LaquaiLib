@@ -10976,6 +10976,13 @@
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Dispose(System.Boolean)">
             <inheritdoc/>
         </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.AsReadOnlySequence">
+            <summary>
+            Gets a <see cref="T:System.Buffers.ReadOnlySequence`1"/> over the memory that has been written so far.
+            This is a snapshot; mutating calls, especially ones that return memory to the pool, invalidate the sequence. Reading from it after such a mutation is undefined behavior.
+            </summary>
+            <returns>The created <see cref="T:System.Buffers.ReadOnlySequence`1"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Advance(System.Int32)">
             <inheritdoc/>
             <remarks>
