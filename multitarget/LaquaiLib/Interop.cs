@@ -62,8 +62,8 @@ internal static partial class Interop
         [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static partial bool GetKeyboardState(Span<byte> lpKeyState);
-        [LibraryImport("user32.dll")]
-        public static partial int ToUnicodeEx(uint wVirtKey, uint wScanCode, ReadOnlySpan<byte> lpKeyState, [MarshalAs(UnmanagedType.LPWStr)] string pwszBuff, int cchBuff, uint wFlags, [Optional] int dwhkl);
+        [LibraryImport("user32.dll", StringMarshalling = StringMarshalling.Utf16)]
+        public static partial int ToUnicodeEx(uint wVirtKey, uint wScanCode, ReadOnlySpan<byte> lpKeyState, Span<char> pwszBuff, int cchBuff, uint wFlags, [Optional] nint dwhkl);
         [LibraryImport("user32.dll")]
         public static partial short GetKeyState(uint wVirtKey);
     }

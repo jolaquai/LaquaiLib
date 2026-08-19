@@ -107,10 +107,11 @@ public static partial class VirtualKeyUtils
         Span<byte> kbStateBuffer = stackalloc byte[256];
         _ = User32.GetKeyboardState(kbStateBuffer);
 
-        var keyboardLayout = cultureInfo.KeyboardLayoutId;
-        var receiver = new string('\0', 2);
-        var result = User32.ToUnicodeEx((uint)vk, 0, kbStateBuffer, receiver, 2, 0, keyboardLayout);
-        return result > 0 ? receiver.Trim('\0') : null;
+        // zero-extend the layout id; IME ids have bit 31 set and would sign-extend into a garbage HKL on x64
+        var keyboardLayout = (nint)(uint)cultureInfo.KeyboardLayoutId;
+        Span<char> receiver = stackalloc char[8];
+        var result = User32.ToUnicodeEx((uint)vk, 0, kbStateBuffer, receiver, receiver.Length, 0, keyboardLayout);
+        return result > 0 ? new string(receiver[..result]) : null;
     }
     /// <summary>
     /// Returns an array of all <see cref="VirtualKey"/>s that are currently pressed.
@@ -138,20 +139,7 @@ public static partial class VirtualKeyUtils
     /// <returns><see langword="true"/> if the key is toggled on, otherwise <see langword="false"/>.</returns>
     public static bool GetToggleState(VirtualKey vk)
     {
-#if NET9_0
-        var index = -1;
-        var tk = ToggleKeys;
-        for (var i = 0; i < tk.Length; i++)
-        {
-            if (tk[i] == vk)
-            {
-                index = i;
-                break;
-            }
-        }
-#elif NET10_0_OR_GREATER
         var index = ToggleKeys.IndexOf(vk);
-#endif
         switch (index)
         {
             case -1:
