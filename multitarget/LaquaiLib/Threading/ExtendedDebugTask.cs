@@ -305,6 +305,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
         /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
         /// </summary>
         /// <param name="awaiter">The wrapped awaiter.</param>
+        /// <param name="edt">The <see cref="ExtendedDebugTask"/> that this awaiter is for.</param>
         /// <param name="creationStack">The stack trace at the creation point of the task.</param>
         public ConfiguredExtendedDebugTaskAwaiter(ConfiguredTaskAwaitable.ConfiguredTaskAwaiter awaiter, ExtendedDebugTask edt, StackTrace creationStack) : this(creationStack)
         {
