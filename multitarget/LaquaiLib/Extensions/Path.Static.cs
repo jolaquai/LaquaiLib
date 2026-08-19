@@ -154,24 +154,23 @@ public static class PathExtensions
 
             // 2) SUBST drive resolution
             var drive = root.TrimEnd('\\'); // "X:"
-            var targetBuf = ArrayPool<char>.Shared.Rent(512);
-            try
+            Span<char> targetBuf = stackalloc char[512];
+            var chars = (int)Kernel32.QueryDosDevice(drive, targetBuf, targetBuf.Length);
+            if (chars != 0)
             {
-                var chars = Kernel32.QueryDosDevice(drive, targetBuf, targetBuf.Length);
-                if (chars != 0)
+                // the returned count includes the double-NUL terminator
+                var target = targetBuf[..chars];
+                var nul = target.IndexOf('\0');
+                if (nul >= 0)
                 {
-                    var target = new string(targetBuf, 0, (int)chars);
-                    const string prefix = @"\??\";
-                    if (target.StartsWith(prefix, StringComparison.Ordinal))
-                    {
-                        var realRoot = target.AsSpan(prefix.Length).ToString(); // e.g., "C:\Real\Path"
-                        return realRoot + path[root.Length..];
-                    }
+                    target = target[..nul];
                 }
-            }
-            finally
-            {
-                ArrayPool<char>.Shared.Return(targetBuf);
+                const string prefix = @"\??\";
+                if (target.StartsWith(prefix, StringComparison.Ordinal))
+                {
+                    // e.g. "C:\Real\Path" + the rest of the original path
+                    return string.Concat(target[prefix.Length..], path.AsSpan(root.Length));
+                }
             }
 
             return path;

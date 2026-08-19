@@ -120,7 +120,7 @@ internal static partial class Interop
         public static partial bool WriteProcessMemory(nint hProcess, nint lpBaseAddress, ReadOnlySpan<byte> lpBuffer, int nSize, out nint lpNumberOfBytesWritten);
 
         [LibraryImport("kernel32.dll", EntryPoint = "QueryDosDeviceW", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
-        public static partial uint QueryDosDevice(string lpDeviceName, [Out] char[] lpTargetPath, int ucchMax);
+        public static partial uint QueryDosDevice(string lpDeviceName, Span<char> lpTargetPath, int ucchMax);
     }
     #endregion
 
