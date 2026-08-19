@@ -4,6 +4,13 @@ using Microsoft.CSharp.RuntimeBinder;
 
 namespace LaquaiLib.UnitTests.Dynamic;
 
+#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS0628 // New protected member declared in sealed type
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0052 // Remove unread private members
+
 public class FullAccessDynamicTests
 {
     #region Test Fixture Classes
