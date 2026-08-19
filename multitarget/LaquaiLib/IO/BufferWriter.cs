@@ -1,6 +1,7 @@
 using System.Buffers;
 
 using LaquaiLib.Extensions;
+using LaquaiLib.UnsafeUtils.Accessors;
 
 namespace LaquaiLib.IO;
 
@@ -26,10 +27,11 @@ public abstract class BufferWriterBase<T> : IBufferWriter<T>, IDisposable
     /// <inheritdoc/>
     public virtual Span<T> GetSpan(int sizeHint = 0) => GetMemory(sizeHint).Span;
     /// <summary>
-    /// Returns either the current segment of the buffer if it is not full, or the next segment of the buffer.
+    /// For a contiguous backing memory model: Returns the current buffer of the writer, potentially grown so that it can fit at least <paramref name="sizeHint"/> more instances of <typeparamref name="T"/>.
+    /// <para/>For a segmented backing memory model: Returns either the current segment of the buffer if it can fit at least <paramref name="sizeHint"/> more instances of <typeparamref name="T"/>, or the next segment of the buffer, created so that it can fit at least <paramref name="sizeHint"/> more instances of <typeparamref name="T"/>.
     /// </summary>
-    /// <param name="sizeHint">The desired size of the next segment.</param>
-    /// <returns>The segment to write into next.</returns>
+    /// <param name="sizeHint">The minimum number of <typeparamref name="T"/> instances that the returned segment should be able to accommodate.</param>
+    /// <returns>A <see cref="Memory{T}"/> that represents either the entire new buffer or the next segment of the buffer, depending on the backing memory model.</returns>
     protected abstract Memory<T> Next(int sizeHint = 0);
 
     /// <summary>
@@ -101,31 +103,41 @@ public abstract class ContiguousBufferWriterBase<T> : BufferWriterBase<T>
     /// <summary>
     /// The contiguous underlying buffer of the writer.
     /// </summary>
-    protected Memory<T> buffer;
+    protected virtual Memory<T> Buffer { get; set; }
 
     /// <summary>
     /// Gets the position in the buffer where the next write will occur.
     /// </summary>
-    public int Length { get; protected set; }
+    public virtual int Length { get; protected set; }
 
     /// <inheritdoc/>
     public override void Advance(int count)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(count);
-        if (Length == -1 || buffer.IsEmpty)
+        if (Length == -1 || Buffer.IsEmpty)
             throw new InvalidOperationException("BufferWriter is not initialized.");
-        if (Length + count > buffer.Length)
+        if (Length + count > Buffer.Length)
             throw new ArgumentOutOfRangeException(nameof(count), "Cannot advance past the end of the buffer.");
 
         Length += count;
     }
     /// <inheritdoc/>
-    public override Memory<T> GetMemory(int sizeHint = 0) => buffer[Length..];
+    public override Memory<T> GetMemory(int sizeHint = 0)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(sizeHint);
+
+        var length = Length;
+        var buffer = Buffer;
+        // IBufferWriter guarantees a non-empty return even for sizeHint 0, so an exhausted buffer must grow either way
+        if (buffer.Length - length < int.Max(sizeHint, 1))
+            buffer = Next(sizeHint);
+        return buffer[length..];
+    }
     /// <inheritdoc/>
     public override void Clear(bool zero = false)
     {
         if (zero || RuntimeHelpers.IsReferenceOrContainsReferences<T>())
-            buffer[..Length].Span.Clear();
+            Buffer[..Length].Span.ZeroMemory();
         SetLength(0);
     }
 }
@@ -342,5 +354,156 @@ public sealed class PooledBufferWriter<T>(ArrayPool<T> pool = null, bool zeroOnD
         index = -1;
         _priorLength = 0;
         _disposed = true;
+    }
+}
+
+/// <summary>
+/// Implements a <see cref="BufferWriterBase{T}"/> that writes directly into the backing storage of a <see cref="MemoryStream"/>, bypassing the stream's own copy-based write path.
+/// </summary>
+/// <remarks>
+/// The writer does not maintain a cursor of its own; <see cref="ContiguousBufferWriterBase{T}.Length"/> projects onto the stream's <see cref="Stream.Position"/> and advancing extends <see cref="Stream.Length"/> exactly as <see cref="Stream.Write(ReadOnlySpan{byte})"/> would. Writes through the writer and through the stream may therefore be interleaved freely.
+/// <para/>Since the memory handed out aliases the stream's internal array, any previously returned <see cref="Memory{T}"/> or <see cref="Span{T}"/> is invalidated by whatever may reallocate that array, including a subsequent <see cref="GetMemory(int)"/>. Data written but not <see cref="BufferWriterBase{T}.Advance(int)"/>d is not carried across such a reallocation, matching <see cref="ArrayBufferWriter{T}"/>.
+/// </remarks>
+public sealed class MemoryStreamBufferWriter : ContiguousBufferWriterBase<byte>
+{
+    private readonly MemoryStream _ms;
+    private readonly bool _leaveOpen;
+    private bool _disposed;
+
+    /// <summary>
+    /// Gets the <see cref="MemoryStream"/> this instance writes to.
+    /// </summary>
+    public MemoryStream BaseStream => _ms;
+
+    /// <summary>
+    /// Gets the usable region of the stream's backing array. The span ends at the stream's capacity, not at the length of the array, so a stream created over a slice of a caller-supplied array cannot be written past its bounds.
+    /// </summary>
+    /// <exception cref="NotSupportedException">Thrown by the setter unconditionally; the backing storage belongs to the <see cref="MemoryStream"/>.</exception>
+    protected override Memory<byte> Buffer
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get
+        {
+            var origin = MemoryStreamAccessors._origin(_ms);
+            return MemoryStreamAccessors._buffer(_ms).AsMemory(origin, MemoryStreamAccessors._capacity(_ms) - origin);
+        }
+        set => throw new NotSupportedException($"The backing storage of a {nameof(MemoryStreamBufferWriter)} is owned by its {nameof(MemoryStream)}.");
+    }
+
+    /// <inheritdoc/>
+    public override int Length
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => MemoryStreamAccessors._position(_ms) - MemoryStreamAccessors._origin(_ms);
+        protected set
+        {
+            var position = MemoryStreamAccessors._origin(_ms) + value;
+            MemoryStreamAccessors._position(_ms) = position;
+            ref var length = ref MemoryStreamAccessors._length(_ms);
+            if (position > length)
+                length = position;
+        }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MemoryStreamBufferWriter"/> class that writes to a new, expandable <see cref="MemoryStream"/> exposed through <see cref="BaseStream"/> and disposed along with this instance.
+    /// </summary>
+    public MemoryStreamBufferWriter()
+    {
+        _ms = new();
+    }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MemoryStreamBufferWriter"/> class that writes to the specified <see cref="MemoryStream"/>, beginning at its current <see cref="Stream.Position"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="MemoryStream"/> to write to.</param>
+    /// <param name="leaveOpen">Whether to leave the <see cref="MemoryStream"/> open after the <see cref="MemoryStreamBufferWriter"/> is disposed.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="stream"/> is not writable.</exception>
+    public MemoryStreamBufferWriter(MemoryStream stream, bool leaveOpen = false)
+    {
+        ArgumentNullException.ThrowIfNull(stream);
+        if (!stream.CanWrite)
+            throw new ArgumentException("The stream must be writable.", nameof(stream));
+
+        _ms = stream;
+        _leaveOpen = leaveOpen;
+    }
+
+    /// <inheritdoc/>
+    public override Memory<byte> GetMemory(int sizeHint = 0)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        // a position seeked past the end of the stream leaves a gap of bytes that are not part of the stream; MemoryStream.Write zeroes it rather than publish whatever the array happened to hold, so do the same. Position may also sit past the capacity, in which case Next allocates a fresh (zeroed) array anyway and only the existing tail needs scrubbing.
+        var position = int.Min(MemoryStreamAccessors._position(_ms), MemoryStreamAccessors._capacity(_ms));
+        var length = MemoryStreamAccessors._length(_ms);
+        if (position > length)
+            MemoryStreamAccessors._buffer(_ms).AsSpan(length, position - length).ZeroMemory();
+        return base.GetMemory(sizeHint);
+    }
+    /// <inheritdoc/>
+    /// <exception cref="NotSupportedException">Thrown if the stream cannot grow to satisfy <paramref name="sizeHint"/> because it was created over a caller-supplied array.</exception>
+    protected override Memory<byte> Next(int sizeHint = 0)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentOutOfRangeException.ThrowIfNegative(sizeHint);
+
+        var need = int.Max(sizeHint, 1);
+        var position = MemoryStreamAccessors._position(_ms);
+        var capacity = MemoryStreamAccessors._capacity(_ms);
+        if (capacity - position >= need)
+            return Buffer;
+
+        if (!MemoryStreamAccessors._expandable(_ms))
+            throw new NotSupportedException($"The underlying {nameof(MemoryStream)} is not expandable and its remaining capacity of {capacity - position} bytes cannot satisfy a request for {need} bytes.");
+
+        // _origin is zero whenever the stream is expandable, so from here on absolute and stream-relative offsets coincide
+        var required = (long)position + need;
+        if (required > Array.MaxLength)
+            throw new ArgumentOutOfRangeException(nameof(sizeHint), $"Satisfying the request would grow the stream to {required} bytes, past the maximum supported length of {Array.MaxLength} bytes.");
+
+        // same schedule MemoryStream.EnsureCapacity uses, so a writer-driven stream reallocates no more often than a Write-driven one
+        var grown = long.Max(required, long.Max(256, 2L * capacity));
+        _ms.Capacity = (int)long.Min(grown, Array.MaxLength);
+        return Buffer;
+    }
+    /// <inheritdoc/>
+    /// <remarks>
+    /// Truncates the stream to <paramref name="length"/> bytes and pulls the write position back if it fell beyond the new end. The capacity is left untouched.
+    /// </remarks>
+    public override void SetLength(long length)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentOutOfRangeException.ThrowIfNegative(length);
+
+        var origin = MemoryStreamAccessors._origin(_ms);
+        ref var streamLength = ref MemoryStreamAccessors._length(_ms);
+        if (length > streamLength - origin)
+            throw new ArgumentOutOfRangeException(nameof(length), $"Cannot set length beyond the current length of the stream. Use {nameof(Advance)}.");
+
+        streamLength = origin + (int)length;
+        ref var position = ref MemoryStreamAccessors._position(_ms);
+        if (position > streamLength)
+            position = streamLength;
+    }
+    /// <inheritdoc/>
+    public override void Clear(bool zero = false)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (zero)
+        {
+            var origin = MemoryStreamAccessors._origin(_ms);
+            MemoryStreamAccessors._buffer(_ms).AsSpan(origin, MemoryStreamAccessors._length(_ms) - origin).ZeroMemory();
+        }
+        SetLength(0);
+    }
+
+    /// <inheritdoc/>
+    public override void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+        if (!_leaveOpen)
+            _ms.Dispose();
     }
 }

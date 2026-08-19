@@ -10121,10 +10121,11 @@
         </member>
         <member name="M:LaquaiLib.IO.BufferWriterBase`1.Next(System.Int32)">
             <summary>
-            Returns either the current segment of the buffer if it is not full, or the next segment of the buffer.
+            For a contiguous backing memory model: Returns the current buffer of the writer, potentially grown so that it can fit at least <paramref name="sizeHint"/> more instances of <typeparamref name="T"/>.
+            <para/>For a segmented backing memory model: Returns either the current segment of the buffer if it can fit at least <paramref name="sizeHint"/> more instances of <typeparamref name="T"/>, or the next segment of the buffer, created so that it can fit at least <paramref name="sizeHint"/> more instances of <typeparamref name="T"/>.
             </summary>
-            <param name="sizeHint">The desired size of the next segment.</param>
-            <returns>The segment to write into next.</returns>
+            <param name="sizeHint">The minimum number of <typeparamref name="T"/> instances that the returned segment should be able to accommodate.</param>
+            <returns>A <see cref="T:System.Memory`1"/> that represents either the entire new buffer or the next segment of the buffer, depending on the backing memory model.</returns>
         </member>
         <member name="M:LaquaiLib.IO.BufferWriterBase`1.SetLength(System.Int64)">
             <summary>
@@ -10186,7 +10187,7 @@
             </summary>
             <typeparam name="T">The type of elements written to the buffer.</typeparam>
         </member>
-        <member name="F:LaquaiLib.IO.ContiguousBufferWriterBase`1.buffer">
+        <member name="P:LaquaiLib.IO.ContiguousBufferWriterBase`1.Buffer">
             <summary>
             The contiguous underlying buffer of the writer.
             </summary>
@@ -10285,6 +10286,61 @@
             <returns>The created array.</returns>
         </member>
         <member name="M:LaquaiLib.IO.PooledBufferWriter`1.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.IO.MemoryStreamBufferWriter">
+            <summary>
+            Implements a <see cref="T:LaquaiLib.IO.BufferWriterBase`1"/> that writes directly into the backing storage of a <see cref="T:System.IO.MemoryStream"/>, bypassing the stream's own copy-based write path.
+            </summary>
+            <remarks>
+            The writer does not maintain a cursor of its own; <see cref="P:LaquaiLib.IO.ContiguousBufferWriterBase`1.Length"/> projects onto the stream's <see cref="P:System.IO.Stream.Position"/> and advancing extends <see cref="P:System.IO.Stream.Length"/> exactly as <see cref="M:System.IO.Stream.Write(System.ReadOnlySpan{System.Byte})"/> would. Writes through the writer and through the stream may therefore be interleaved freely.
+            <para/>Since the memory handed out aliases the stream's internal array, any previously returned <see cref="T:System.Memory`1"/> or <see cref="T:System.Span`1"/> is invalidated by whatever may reallocate that array, including a subsequent <see cref="M:LaquaiLib.IO.MemoryStreamBufferWriter.GetMemory(System.Int32)"/>. Data written but not <see cref="M:LaquaiLib.IO.BufferWriterBase`1.Advance(System.Int32)"/>d is not carried across such a reallocation, matching <see cref="T:System.Buffers.ArrayBufferWriter`1"/>.
+            </remarks>
+        </member>
+        <member name="P:LaquaiLib.IO.MemoryStreamBufferWriter.BaseStream">
+            <summary>
+            Gets the <see cref="T:System.IO.MemoryStream"/> this instance writes to.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.MemoryStreamBufferWriter.Buffer">
+            <summary>
+            Gets the usable region of the stream's backing array. The span ends at the stream's capacity, not at the length of the array, so a stream created over a slice of a caller-supplied array cannot be written past its bounds.
+            </summary>
+            <exception cref="T:System.NotSupportedException">Thrown by the setter unconditionally; the backing storage belongs to the <see cref="T:System.IO.MemoryStream"/>.</exception>
+        </member>
+        <member name="P:LaquaiLib.IO.MemoryStreamBufferWriter.Length">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.MemoryStreamBufferWriter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:LaquaiLib.IO.MemoryStreamBufferWriter"/> class that writes to a new, expandable <see cref="T:System.IO.MemoryStream"/> exposed through <see cref="P:LaquaiLib.IO.MemoryStreamBufferWriter.BaseStream"/> and disposed along with this instance.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.MemoryStreamBufferWriter.#ctor(System.IO.MemoryStream,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LaquaiLib.IO.MemoryStreamBufferWriter"/> class that writes to the specified <see cref="T:System.IO.MemoryStream"/>, beginning at its current <see cref="P:System.IO.Stream.Position"/>.
+            </summary>
+            <param name="stream">The <see cref="T:System.IO.MemoryStream"/> to write to.</param>
+            <param name="leaveOpen">Whether to leave the <see cref="T:System.IO.MemoryStream"/> open after the <see cref="T:LaquaiLib.IO.MemoryStreamBufferWriter"/> is disposed.</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="stream"/> is not writable.</exception>
+        </member>
+        <member name="M:LaquaiLib.IO.MemoryStreamBufferWriter.GetMemory(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.MemoryStreamBufferWriter.Next(System.Int32)">
+            <inheritdoc/>
+            <exception cref="T:System.NotSupportedException">Thrown if the stream cannot grow to satisfy <paramref name="sizeHint"/> because it was created over a caller-supplied array.</exception>
+        </member>
+        <member name="M:LaquaiLib.IO.MemoryStreamBufferWriter.SetLength(System.Int64)">
+            <inheritdoc/>
+            <remarks>
+            Truncates the stream to <paramref name="length"/> bytes and pulls the write position back if it fell beyond the new end. The capacity is left untouched.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.IO.MemoryStreamBufferWriter.Clear(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.MemoryStreamBufferWriter.Dispose">
             <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.IO.FileSizePartitioner">
@@ -10857,7 +10913,7 @@
             Returns every segment that lies entirely beyond <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> to the pool.
             </summary>
             <remarks>
-            Only whole segments can be released, so the segment <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> falls inside is kept and <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Capacity"/> may remain above <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>. <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> is left alone; writing past the end afterwards simply rents again.
+            Only whole segments can be released, so the segment <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> falls inside is kept and <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Capacity"/> may remain above <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>. <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> is left alone; writing past the end afterwards simply rents again. Any buffer previously handed out by <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetMemory(System.Int32)"/> or <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetSpan(System.Int32)"/> is invalidated.
             </remarks>
         </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Flush">
@@ -10868,6 +10924,24 @@
         </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Dispose(System.Boolean)">
             <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Advance(System.Int32)">
+            <inheritdoc/>
+            <remarks>
+            The write head is <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>, so this behaves exactly as if <paramref name="count"/> bytes had been written through <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Write(System.ReadOnlySpan{System.Byte})"/>.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetMemory(System.Int32)">
+            <inheritdoc/>
+            <remarks>
+            The buffer starts at <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>. It may be longer than <paramref name="sizeHint"/> and, where it overlaps existing content, exposes that content rather than blank memory.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetSpan(System.Int32)">
+            <inheritdoc/>
+            <remarks>
+            The buffer starts at <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>. It may be longer than <paramref name="sizeHint"/> and, where it overlaps existing content, exposes that content rather than blank memory.
+            </remarks>
         </member>
         <member name="T:LaquaiLib.IO.Streams.MemoryOrFileStream">
             <summary>
@@ -13231,39 +13305,6 @@
             <summary>
             Gets the data of the enum members of <c>global::LaquaiLib.Util.Meta.VSVersion</c>.
             </summary>
-        </member>
-        <member name="T:LaquaiLib.Util.Misc.DelegateProgress">
-            <summary>
-            Contains static factory methods for creating <see cref="T:LaquaiLib.Util.Misc.DelegateProgress`1"/> instances.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Util.Misc.DelegateProgress.Create``1(System.Action{``0})">
-            <summary>
-            Creates a new instance of <see cref="T:LaquaiLib.Util.Misc.DelegateProgress`1"/> using the specified delegate.
-            </summary>
-            <typeparam name="T">The type of progress value.</typeparam>
-            <param name="action">The delegate to proxy <see cref="M:System.IProgress`1.Report(`0)"/> invocations to.</param>
-            <returns>The created <see cref="T:LaquaiLib.Util.Misc.DelegateProgress`1"/> instance.</returns>
-        </member>
-        <member name="T:LaquaiLib.Util.Misc.DelegateProgress`1">
-            <summary>
-            Implements <see cref="T:System.IProgress`1"/> using a delegate.
-            </summary>
-            <typeparam name="T">The type of progress value.</typeparam>
-            <param name="action">The delegate to proxy <see cref="M:LaquaiLib.Util.Misc.DelegateProgress`1.Report(`0)"/> invocations to.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Misc.DelegateProgress`1.#ctor(System.Action{`0})">
-            <summary>
-            Implements <see cref="T:System.IProgress`1"/> using a delegate.
-            </summary>
-            <typeparam name="T">The type of progress value.</typeparam>
-            <param name="action">The delegate to proxy <see cref="M:LaquaiLib.Util.Misc.DelegateProgress`1.Report(`0)"/> invocations to.</param>
-        </member>
-        <member name="M:LaquaiLib.Util.Misc.DelegateProgress`1.Report(`0)">
-            <summary>
-            Reports the specified <paramref name="progress"/> value.
-            </summary>
-            <param name="progress">The value to report.</param>
         </member>
         <member name="T:LaquaiLib.Util.Sequence">
             <summary>
