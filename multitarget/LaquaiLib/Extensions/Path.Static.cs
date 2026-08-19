@@ -184,7 +184,7 @@ public static class PathExtensions
                     if (target.StartsWith(prefix, StringComparison.Ordinal))
                     {
                         var realRoot = target.AsSpan(prefix.Length).ToString(); // e.g., "C:\Real\Path"
-                        return realRoot + path.Substring(root.Length);
+                        return realRoot + path[root.Length..];
                     }
                 }
             }

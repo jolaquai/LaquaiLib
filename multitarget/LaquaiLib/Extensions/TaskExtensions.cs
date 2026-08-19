@@ -8,21 +8,29 @@ public static class TaskExtensions
     extension(Task task)
     {
         /// <summary>
-        /// Creates a <see cref="Task"/> that completes when the specified <paramref name="task"/> completes or when the specified <paramref name="cancellationToken"/> is canceled, but neither event will cause an exception to be thrown.
+        /// Creates a <see cref="Task"/> that completes when the specified <paramref name="task"/> completes or when the specified <paramref name="cancellationToken"/> is canceled, but neither event will fault the returned <see cref="Task"/>.
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that can be used to cancel the wait.</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous wait on <paramref name="task"/>.</returns>
-        public async Task WaitSafeAsync(CancellationToken cancellationToken = default)
+        public Task WaitSafeAsync(CancellationToken cancellationToken = default)
+        {
+            if (task.IsCompleted)
+                return Task.CompletedTask;
+
+            return Wait(task, cancellationToken);
+        }
+
+        private static async Task Wait(Task t, CancellationToken cancellationToken)
         {
             if (cancellationToken.CanBeCanceled)
             {
                 // Need some more work in this case
                 var timeout = Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
-                await ((Task)Task.WhenAny(task, timeout)).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+                await ((Task)Task.WhenAny(t, timeout)).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             }
             else
             {
-                await ((Task)Task.WhenAny(task)).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+                await t.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             }
         }
     }

@@ -6,6 +6,7 @@ public static partial class MemoryExtensions
 {
     extension<T>(Span<T> span)
     {
+        // This is the ONLY place in the codebase where Span.Clear() is acceptable, EVERYWHERE else should use ZeroMemory() unconditionally
         /// <summary>
         /// Generalizes <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(Span{byte})"/> to arbitrary <see cref="Span{T}"/>s of <typeparamref name="T"/>.
         /// </summary>
@@ -16,7 +17,7 @@ public static partial class MemoryExtensions
         /// Fills the specified <see cref="Span{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Fill() => span.Clear();
+        public void Fill() => span.ZeroMemory();
         /// <summary>
         /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>.
         /// </summary>
@@ -24,9 +25,7 @@ public static partial class MemoryExtensions
         public void Fill(Func<T> factory)
         {
             for (var i = 0; i < span.Length; i++)
-            {
                 span[i] = factory();
-            }
         }
         /// <summary>
         /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
@@ -36,9 +35,7 @@ public static partial class MemoryExtensions
         {
             T last = default;
             for (var i = 0; i < span.Length; i++)
-            {
                 last = span[i] = factory(last);
-            }
         }
         /// <summary>
         /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned.
@@ -47,9 +44,7 @@ public static partial class MemoryExtensions
         public void FillIndexed(Func<int, T> factory)
         {
             for (var i = 0; i < span.Length; i++)
-            {
                 span[i] = factory(i);
-            }
         }
         /// <summary>
         /// Fills the specified <see cref="Span{T}"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
@@ -59,9 +54,7 @@ public static partial class MemoryExtensions
         {
             T last = default;
             for (var i = 0; i < span.Length; i++)
-            {
                 last = span[i] = factory(i, last);
-            }
         }
     }
 
@@ -71,7 +64,7 @@ public static partial class MemoryExtensions
         /// Generalizes <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(Span{byte})"/> to <see cref="MultiDimArrayEnumerable{T}"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public void ZeroMemory() => multiDimArrayEnumerable.Span.Clear();
+        public void ZeroMemory() => multiDimArrayEnumerable.Span.ZeroMemory();
 
         /// <summary>
         /// Fills the specified <see cref="MultiDimArrayEnumerable{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
@@ -110,7 +103,7 @@ public static partial class MemoryExtensions
         /// Generalizes <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(Span{byte})"/> to arbitrary <see cref="Memory{T}"/>s of <typeparamref name="T"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public void ZeroMemory() => memory.Span.Clear();
+        public void ZeroMemory() => memory.Span.ZeroMemory();
 
         /// <summary>
         /// Fills the specified <see cref="Memory{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.

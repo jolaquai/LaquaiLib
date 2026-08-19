@@ -1,6 +1,4 @@
 using LaquaiLib.Interfaces;
-using LaquaiLib.Numerics;
-using LaquaiLib.Util.Misc;
 using LaquaiLib.Wrappers;
 
 namespace LaquaiLib.Extensions;
