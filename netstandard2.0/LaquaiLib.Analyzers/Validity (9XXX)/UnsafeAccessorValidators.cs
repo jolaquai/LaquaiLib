@@ -918,7 +918,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 return false;
 
             var openReflectionType = reflectionType.GetGenericTypeDefinition();
-            if (openReflectionType.FullName != GetReflectionFullName(namedSymbol.ConstructedFrom))
+            if (openReflectionType.FullName != namedSymbol.ConstructedFrom.ReflectionMetadataName)
                 return false;
 
             var reflectionArgs = reflectionType.GetGenericArguments();
@@ -933,21 +933,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             return true;
         }
 
-        return symbol is INamedTypeSymbol plainNamedSymbol && reflectionType.FullName == GetReflectionFullName(plainNamedSymbol);
-    }
-    /// <summary>
-    /// Renders an <see cref="ITypeSymbol"/> in reflection's <see cref="Type.FullName"/> shape:
-    /// namespace, '+' as the nested-type separator, and metadata arity suffix (e.g. "Task`1") instead of Roslyn's display format.
-    /// </summary>
-    private static string GetReflectionFullName(INamedTypeSymbol symbol)
-    {
-        var chain = new List<string>();
-        for (var current = symbol; current is not null; current = current.ContainingType)
-            chain.Insert(0, current.MetadataName);
-
-        var nestedName = string.Join("+", chain);
-        var ns = symbol.ContainingNamespace;
-        return ns is null || ns.IsGlobalNamespace ? nestedName : $"{ns.ToDisplayString()}.{nestedName}";
+        return symbol is INamedTypeSymbol plainNamedSymbol && reflectionType.FullName == plainNamedSymbol.ReflectionMetadataName;
     }
     /// <summary>
     /// Compares two sets of parameters for equality, including count, type matches and ref kinds.
