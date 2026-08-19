@@ -406,14 +406,14 @@ public class BitArrayTests
     }
 
     [Fact]
-    public void CloneIsIndependentAndCopiesSigned()
+    public void CopyIsIndependentAndCopiesSigned()
     {
         var original = S(0x0F);
-        var clone = original.Clone();
+        var copy = original.Copy();
         original[10] = true;
-        Assert.False(clone[10]);
-        Assert.True(clone.Signed);
-        Assert.Equal(0x0F, clone.As<int>());
+        Assert.False(copy[10]);
+        Assert.True(copy.Signed);
+        Assert.Equal(0x0F, copy.As<int>());
     }
 
     [Fact]
