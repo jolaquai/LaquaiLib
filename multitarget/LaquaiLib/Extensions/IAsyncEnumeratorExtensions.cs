@@ -1,7 +1,7 @@
 ﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IAsyncEnumerator{T}"/> Type.
+/// Provides extensions for the <see cref="IAsyncEnumerator{T}"/> type.
 /// </summary>
 public static class IAsyncEnumeratorExtensions
 {

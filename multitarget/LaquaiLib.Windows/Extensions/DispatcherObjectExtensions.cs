@@ -3,7 +3,7 @@ using System.Windows.Threading;
 namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="DispatcherObject"/> Type.
+/// Provides extensions for the <see cref="DispatcherObject"/> type.
 /// </summary>
 public static class DispatcherObjectExtensions
 {

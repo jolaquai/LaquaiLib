@@ -5,7 +5,7 @@ using System.Reflection;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides Extension Methods for <see cref="Enum"/> Types.
+/// Provides extensions for <see cref="Enum"/> Types.
 /// </summary>
 public static class EnumExtensions
 {

@@ -6,7 +6,7 @@
     <members>
         <member name="T:LaquaiLib.Windows.Extensions.ColorExtensions">
             <summary>
-            Provides Extension Methods for the <see cref="T:System.Drawing.Color"/> Type.
+            Provides extensions for the <see cref="T:System.Drawing.Color"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Windows.Extensions.ColorExtensions.get_Html(System.Drawing.Color)">
@@ -20,7 +20,7 @@
         </member>
         <member name="T:LaquaiLib.Windows.Extensions.DependencyObjectExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Windows.DependencyObject"/> Type.
+            Provides extensions for the <see cref="T:System.Windows.DependencyObject"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Windows.Extensions.DependencyObjectExtensions.UpdateBindings(System.Windows.DependencyObject)">
@@ -41,7 +41,7 @@
         </member>
         <member name="T:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Windows.Threading.DispatcherObject"/> Type.
+            Provides extensions for the <see cref="T:System.Windows.Threading.DispatcherObject"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Windows.Extensions.DispatcherObjectExtensions.Dispatch(System.Windows.Threading.DispatcherObject,System.Action)">
@@ -107,7 +107,7 @@
         </member>
         <member name="T:LaquaiLib.Windows.Extensions.IconExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Drawing.Icon"/> Type.
+            Provides extensions for the <see cref="T:System.Drawing.Icon"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Windows.Extensions.IconExtensions.get_ImageSource(System.Drawing.Icon)">
@@ -121,7 +121,7 @@
         </member>
         <member name="T:LaquaiLib.Windows.Extensions.IDataObjectExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Windows.Forms.IDataObject"/> Type.
+            Provides extensions for the <see cref="T:System.Windows.Forms.IDataObject"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Windows.Extensions.IDataObjectExtensions.TryGetData(System.Windows.Forms.IDataObject,System.String,System.Object@)">
@@ -149,7 +149,7 @@
         </member>
         <member name="T:LaquaiLib.Windows.Extensions.ProcessExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Diagnostics.Process"/> Type.
+            Provides extensions for the <see cref="T:System.Diagnostics.Process"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Windows.Extensions.ProcessExtensions.get_CommandLine(System.Diagnostics.Process)">

@@ -3,7 +3,7 @@
 namespace LaquaiLib.Extensions
 {
     /// <summary>
-    /// Provides extensions for the <see cref="global::System.Environment"/> type.
+    ///  for the <see cref="global::System.Environment"/> type.
     /// </summary>
     public static class EnvironmentExtensions
     {

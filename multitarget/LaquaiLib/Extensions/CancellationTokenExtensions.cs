@@ -1,7 +1,7 @@
 ﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="CancellationToken"/> Type.
+/// Provides extensions for the <see cref="CancellationToken"/> type.
 /// </summary>
 public static class CancellationTokenExtensions
 {

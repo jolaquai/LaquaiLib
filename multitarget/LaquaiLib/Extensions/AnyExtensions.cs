@@ -3,7 +3,7 @@ using LaquaiLib.Collections;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides Extension Methods for all Types.
+/// Provides extensions for all Types.
 /// </summary>
 public static class AnyExtensions
 {
@@ -22,7 +22,7 @@ public static class AnyExtensions
     extension(object obj)
     {
         /// <summary>
-        /// Changes the type of a reference to a <see langword="class"/> instance to <typeparamref name="T"/>.
+        /// Changes the type of a reference to <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to cast <paramref name="obj"/> to.</typeparam>
         /// <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="T"/>.</returns>

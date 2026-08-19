@@ -4,7 +4,7 @@ using LaquaiLib.Interfaces;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides Extension Methods for <see cref="Array"/> Types.
+/// Provides extensions for <see cref="Array"/> Types.
 /// </summary>
 public static partial class ArrayExtensions
 {

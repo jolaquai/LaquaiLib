@@ -1,7 +1,7 @@
 ﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extensions for <see cref="ICloneable"/>.
+///  for <see cref="ICloneable"/>.
 /// </summary>
 public static class ICloneableExtensions
 {
@@ -15,6 +15,9 @@ public static class ICloneableExtensions
         public T Copy()
         {
             var clone = cloneable.Clone();
+            if (typeof(T).IsValueType)
+                // Can't unbox any other way since Unsafe.Unbox<T>(object) is 'where T : struct'
+                return (T)clone;
             // no ref return
             return Unsafe.As<object, T>(ref clone);
         }

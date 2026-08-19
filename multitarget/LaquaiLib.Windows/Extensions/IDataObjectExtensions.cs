@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IDataObject"/> Type.
+/// Provides extensions for the <see cref="IDataObject"/> type.
 /// </summary>
 public static class IDataObjectExtensions
 {

@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Partitioner"/> type and derived types.
+/// Provides extensions for the <see cref="Partitioner"/> type and derived types.
 /// </summary>
 public static class PartitionerExtensions
 {

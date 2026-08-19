@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Regex"/> Types.
+/// Provides extensions for the <see cref="Regex"/> Types.
 /// </summary>
 public static class RegexExtensions
 {

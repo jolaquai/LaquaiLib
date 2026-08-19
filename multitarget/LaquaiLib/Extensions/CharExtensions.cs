@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="char"/> Type.
+/// Provides extensions for the <see cref="char"/> type.
 /// </summary>
 public static class CharExtensions
 {

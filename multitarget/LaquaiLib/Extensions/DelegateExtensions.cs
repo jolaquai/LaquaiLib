@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Delegate"/> Type.
+/// Provides extensions for the <see cref="Delegate"/> type.
 /// </summary>
 public static class DelegateExtensions
 {

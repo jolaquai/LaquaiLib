@@ -4,7 +4,7 @@ using System.Runtime.Intrinsics;
 namespace LaquaiLib.Util;
 
 /// <summary>
-/// Provides extension methods for filling <see cref="Span{T}"/>s with sequential numeric values.
+/// Provides extensions for filling <see cref="Span{T}"/>s with sequential numeric values.
 /// </summary>
 public static class SpanFiller
 {

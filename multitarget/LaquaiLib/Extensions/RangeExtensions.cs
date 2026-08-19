@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Range"/> Type.
+/// Provides extensions for the <see cref="Range"/> type.
 /// </summary>
 public static class RangeExtensions
 {

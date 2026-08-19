@@ -6,7 +6,7 @@
     <members>
         <member name="T:LaquaiLib.Extensions.EnvironmentExtensions">
             <summary>
-            Provides extensions for the <see cref="T:System.Environment"/> type.
+             for the <see cref="T:System.Environment"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption">
@@ -30,14 +30,14 @@
         </member>
         <member name="T:LaquaiLib.Extensions.AnyExtensions">
             <summary>
-            Provides Extension Methods for all Types.
+            Provides extensions for all Types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.AnyExtensions.get_Annotations``1(``0)">
             <inheritdoc cref="P:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.Annotations"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.AnyExtensions.As``1(System.Object)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.As``1"/>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.As``2(``0)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.As``1"/>
         </member>
         <member name="P:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.Annotations">
             <summary>
@@ -47,16 +47,16 @@
             The return value of this extension property is never <see langword="null"/>; if no annotation set exists for the extended value, a new one is created.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.As``1">
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.As``1">
             <summary>
-            Changes the type of a reference to a <see langword="class"/> instance to <typeparamref name="T"/>.
+            Changes the type of a reference to <typeparamref name="TTo"/>.
             </summary>
-            <typeparam name="T">The type to cast <paramref name="obj"/> to.</typeparam>
-            <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="T"/>.</returns>
+            <typeparam name="TTo">The type to cast <paramref name="obj"/> to.</typeparam>
+            <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="TTo"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensionsByte">
             <summary>
-            Provides extension methods for the <see cref="T:System.Array"/> of <see cref="T:System.Byte"/> Type.
+            Provides extensions for the <see cref="T:System.Array"/> of <see cref="T:System.Byte"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.ArrayExtensionsByte.ToMemoryStream(System.Byte[])">
@@ -70,7 +70,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensions">
             <summary>
-            Provides Extension Methods for <see cref="T:System.Array"/> Types.
+            Provides extensions for <see cref="T:System.Array"/> Types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.ArrayExtensions.AsEnumerable``1(System.Array)">
@@ -297,7 +297,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.CancellationTokenExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Threading.CancellationToken"/> Type.
+            Provides extensions for the <see cref="T:System.Threading.CancellationToken"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.CancellationTokenExtensions.WhenCancelled(System.Threading.CancellationToken)">
@@ -311,7 +311,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.CharExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Char"/> Type.
+            Provides extensions for the <see cref="T:System.Char"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.CharExtensions.get_IsVowel(System.Char)">
@@ -347,7 +347,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.ConstructorInfoExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Reflection.ConstructorInfo"/> Type.
+            Provides extensions for the <see cref="T:System.Reflection.ConstructorInfo"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.ConstructorInfoExtensions.CreateDelegate``1(System.Reflection.ConstructorInfo)">
@@ -367,7 +367,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.DelegateExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Delegate"/> Type.
+            Provides extensions for the <see cref="T:System.Delegate"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.DelegateExtensions.get_TypedInvocationList``1(``0)">
@@ -394,7 +394,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.IDictionaryExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.IDictionary`2"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.IDictionary`2"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.AddOrUpdate``2(System.Collections.Generic.IDictionary{``0,``1},``0,``1,System.Func{``1,``1})">
@@ -540,7 +540,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.EnumExtensions">
             <summary>
-            Provides Extension Methods for <see cref="T:System.Enum"/> Types.
+            Provides extensions for <see cref="T:System.Enum"/> Types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.EnumExtensions.get_Description``1(``0)">
@@ -583,7 +583,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.FileSystemModelExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.IO.DirectoryInfo"/> Type.
+            Provides extensions for the <see cref="T:System.IO.DirectoryInfo"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.FileSystemModelExtensions.Directory(System.IO.DirectoryInfo,System.String)">
@@ -1076,7 +1076,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.HttpListenerRequestExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Net.HttpListenerRequest"/> Type.
+            Provides extensions for the <see cref="T:System.Net.HttpListenerRequest"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.HttpListenerRequestExtensions.get_Route(System.Net.HttpListenerRequest)">
@@ -1091,7 +1091,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.IAsyncEnumerableExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.IAsyncEnumerableExtensions.Concat``1(System.Collections.Generic.IAsyncEnumerable{``0}[])">
@@ -1114,7 +1114,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.IAsyncEnumeratorExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.IAsyncEnumeratorExtensions.Chain``1(System.Collections.Generic.IAsyncEnumerator{``0}[])">
@@ -1137,12 +1137,12 @@
         </member>
         <member name="T:LaquaiLib.Extensions.IBufferWriterExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Buffers.IBufferWriter`1"/> Type.
+            Provides extensions for the <see cref="T:System.Buffers.IBufferWriter`1"/> type.
             </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.ICloneableExtensions">
             <summary>
-            Provides extensions for <see cref="T:System.ICloneable"/>.
+             for <see cref="T:System.ICloneable"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.ICloneableExtensions.Copy``1(``0)">
@@ -1157,7 +1157,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.ICollectionExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.ICollection`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.ICollection`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.ICollectionExtensions.KeepOnly``1(System.Collections.Generic.ICollection{``0},System.Func{``0,System.Boolean})">
@@ -1171,7 +1171,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumerableExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.IEnumerable`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.All(System.Collections.Generic.IEnumerable{System.Boolean})">
@@ -2195,7 +2195,7 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$12DDB66D758F50C43A453BEA48FDB6D3`1.Blitted">
             <summary>
             Blits the elements in the input sequence into a sequence of bytes.
-            <typeparamref name="T"/> must be an unmanaged Type.
+            <typeparamref name="T"/> must be an unmanaged type.
             </summary>
             <returns>All elements in the input sequence, blitted into a sequence of bytes and concatenated.</returns>
         </member>
@@ -2391,7 +2391,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.IEnumeratorExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.IEnumerator`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.IEnumerator`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumeratorExtensions.GetEnumerator``1(System.Collections.Generic.IEnumerator{``0})">
@@ -2413,7 +2413,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.IGroupingExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Linq.IGrouping`2"/> Type.
+            Provides extensions for the <see cref="T:System.Linq.IGrouping`2"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.IGroupingExtensions.Deconstruct``2(System.Linq.IGrouping{``0,``1},``0@,System.Collections.Generic.IEnumerable{``1}@)">
@@ -2490,7 +2490,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.NumberExtensions">
             <summary>
-            Provides extension methods for <see cref="T:System.Numerics.INumber`1"/>-implementing Types.
+            Provides extensions for <see cref="T:System.Numerics.INumber`1"/>-implementing Types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.NumberExtensions.HasFlag``1(``0,``0)">
@@ -2530,7 +2530,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.LinkedListNodeExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.LinkedListNode`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.LinkedListNode`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.LinkedListNodeExtensions.DequeNext``1(System.Collections.Generic.LinkedListNode{``0})">
@@ -2576,7 +2576,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.LinqXml.XElementExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Xml.Linq.XElement"/> Type.
+            Provides extensions for the <see cref="T:System.Xml.Linq.XElement"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqXml.XElementExtensions.Siblings(System.Xml.Linq.XElement)">
@@ -2600,7 +2600,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.LinqXml.XNodeExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Xml.Linq.XNode"/> type.
+            Provides extensions for the <see cref="T:System.Xml.Linq.XNode"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqXml.XNodeExtensions.ReplaceWith(System.Xml.Linq.XNode,System.ReadOnlySpan{System.Object})">
@@ -2627,7 +2627,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.ListExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.List`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.List`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.ListExtensions.RemoveAt``1(System.Collections.Generic.IList{``0},System.Index)">
@@ -4698,7 +4698,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.MemoryExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Span`1"/>, <see cref="T:System.ReadOnlySpan`1"/>, <see cref="T:System.Memory`1"/> and <see cref="T:System.ReadOnlyMemory`1"/> types.
+            Provides extensions for the <see cref="T:System.Span`1"/>, <see cref="T:System.ReadOnlySpan`1"/>, <see cref="T:System.Memory`1"/> and <see cref="T:System.ReadOnlyMemory`1"/> types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.ReadOnlySpan{``0},System.Action{``0})">
@@ -5092,7 +5092,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.MethodInfoExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Reflection.MethodInfo"/> Type.
+            Provides extensions for the <see cref="T:System.Reflection.MethodInfo"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.MethodInfoExtensions.get_IsGetterOrSetter(System.Reflection.MethodInfo)">
@@ -5207,7 +5207,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.PartitionerExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Concurrent.Partitioner"/> type and derived types.
+            Provides extensions for the <see cref="T:System.Collections.Concurrent.Partitioner"/> type and derived types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.PartitionerExtensions.ToArray``1(System.Collections.Concurrent.Partitioner{``0},System.Int32)">
@@ -5340,7 +5340,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.ProcessExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Diagnostics.Process"/> Type.
+            Provides extensions for the <see cref="T:System.Diagnostics.Process"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.ProcessExtensions.GetAffinity(System.Diagnostics.Process)">
@@ -5383,7 +5383,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.PropertyInfoExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Reflection.PropertyInfo"/> Type.
+            Provides extensions for the <see cref="T:System.Reflection.PropertyInfo"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.PropertyInfoExtensions.GetValue``1(System.Reflection.PropertyInfo,System.Object)">
@@ -5410,7 +5410,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.QueueExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Collections.Generic.Queue`1"/> Type.
+            Provides extensions for the <see cref="T:System.Collections.Generic.Queue`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.QueueExtensions.EnqueueRange``1(System.Collections.Generic.Queue{``0},System.ReadOnlySpan{``0})">
@@ -5451,7 +5451,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.RandomExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Random"/> type.
+            Provides extensions for the <see cref="T:System.Random"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.RandomExtensions.NextBytes(System.Random,System.IO.Stream,System.Int32)">
@@ -5478,7 +5478,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.RangeExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Range"/> Type.
+            Provides extensions for the <see cref="T:System.Range"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.RangeExtensions.GetRange(System.Range)">
@@ -5574,7 +5574,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.RegexExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Text.RegularExpressions.Regex"/> Types.
+            Provides extensions for the <see cref="T:System.Text.RegularExpressions.Regex"/> Types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.RegexExtensions.get_Regex(System.Text.RegularExpressions.Match)">
@@ -5640,10 +5640,10 @@
         </member>
         <member name="T:LaquaiLib.Extensions.StreamExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.IO.Stream"/> Type.
+            Provides extensions for the <see cref="T:System.IO.Stream"/> type.
             </summary>
             <summary>
-            Provides extension methods for the <see cref="T:System.IO.Stream"/> Type.
+            Provides extensions for the <see cref="T:System.IO.Stream"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEnd(System.IO.Stream)">
@@ -5864,7 +5864,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.StringExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.String"/> Type.
+            Provides extensions for the <see cref="T:System.String"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.Repeat(System.String,System.Int32)">
@@ -6409,7 +6409,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.TaskExtensions">
             <summary>
-            Provides extension methods for <see cref="T:System.Threading.Tasks.Task"/>, <see cref="T:System.Threading.Tasks.Task`1"/>, <see cref="T:System.Threading.Tasks.ValueTask"/> and <see cref="T:System.Threading.Tasks.ValueTask`1"/>.
+            Provides extensions for <see cref="T:System.Threading.Tasks.Task"/>, <see cref="T:System.Threading.Tasks.Task`1"/>, <see cref="T:System.Threading.Tasks.ValueTask"/> and <see cref="T:System.Threading.Tasks.ValueTask`1"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.TaskExtensions.WaitSafeAsync(System.Threading.Tasks.Task,System.Threading.CancellationToken)">
@@ -6445,7 +6445,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.TimingExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.DateTime"/>, <see cref="T:System.DateTimeOffset"/>, <see cref="T:System.DateOnly"/> and <see cref="T:System.TimeOnly"/> types.
+            Provides extensions for the <see cref="T:System.DateTime"/>, <see cref="T:System.DateTimeOffset"/>, <see cref="T:System.DateOnly"/> and <see cref="T:System.TimeOnly"/> types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.TimingExtensions.NextWeekday(System.DateTime,System.Nullable{System.TimeOnly},System.Boolean)">
@@ -6520,7 +6520,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.TypeExtensions">
             <summary>
-            Provides extension methods for the <see cref="T:System.Type"/> Type.
+            Provides extensions for the <see cref="T:System.Type"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.TypeExtensions.New(System.Type,System.Object[])">
@@ -9823,7 +9823,7 @@
         </member>
         <member name="T:LaquaiLib.EF.Extensions.DbContextExtensions">
             <summary>
-            Provides Extension Methods for <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.
+            Provides extensions for <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.EF.Extensions.DbContextExtensions.EnumeratePendingObjects(Microsoft.EntityFrameworkCore.DbContext)">
@@ -9864,7 +9864,7 @@
         </member>
         <member name="T:LaquaiLib.EF.Extensions.DbSetExtensions">
             <summary>
-            Provides Extension Methods for the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> Type.
+            Provides extensions for the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> type.
             </summary>
         </member>
         <member name="M:LaquaiLib.EF.Extensions.DbSetExtensions.GetOrAdd``1(Microsoft.EntityFrameworkCore.DbSet{``0},System.Func{``0,System.Boolean},System.Func{System.Threading.Tasks.Task{``0}})">
@@ -12391,7 +12391,7 @@
         </member>
         <member name="T:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions">
             <summary>
-            Provides extension methods for <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> and derived types.
+            Provides extensions for <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> and derived types.
             </summary>
         </member>
         <member name="M:LaquaiLib.Oxml.Extensions.OpenXmlElementExtensions.get_IsOnlyChild(DocumentFormat.OpenXml.OpenXmlElement)">
@@ -13790,7 +13790,7 @@
         </member>
         <member name="T:LaquaiLib.Util.SpanFiller">
             <summary>
-            Provides extension methods for filling <see cref="T:System.Span`1"/>s with sequential numeric values.
+            Provides extensions for filling <see cref="T:System.Span`1"/>s with sequential numeric values.
             </summary>
         </member>
         <member name="M:LaquaiLib.Util.SpanFiller.FillSequential``1(System.Span{``0},``0,System.Boolean)">
@@ -17741,7 +17741,7 @@
         </member>
         <member name="T:LaquaiLib.UnsafeUtils.Extensions.NintExtensions">
             <summary>
-            Provides Extension Methods for the <see cref="T:System.IntPtr"/> and <see cref="T:System.UIntPtr"/> types, which implicitly includes pointers.
+            Provides extensions for the <see cref="T:System.IntPtr"/> and <see cref="T:System.UIntPtr"/> types, which implicitly includes pointers.
             </summary>
         </member>
         <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.ToArray(System.IntPtr,System.Int32)">

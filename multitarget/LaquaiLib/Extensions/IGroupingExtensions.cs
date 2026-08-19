@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IGrouping{TKey, TElement}"/> Type.
+/// Provides extensions for the <see cref="IGrouping{TKey, TElement}"/> type.
 /// </summary>
 public static class IGroupingExtensions
 {

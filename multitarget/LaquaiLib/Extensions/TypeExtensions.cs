@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Type"/> Type.
+/// Provides extensions for the <see cref="Type"/> type.
 /// </summary>
 public static partial class TypeExtensions
 {

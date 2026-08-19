@@ -1,7 +1,7 @@
 ﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for <see cref="Task"/>, <see cref="Task{TResult}"/>, <see cref="ValueTask"/> and <see cref="ValueTask{TResult}"/>.
+/// Provides extensions for <see cref="Task"/>, <see cref="Task{TResult}"/>, <see cref="ValueTask"/> and <see cref="ValueTask{TResult}"/>.
 /// </summary>
 public static class TaskExtensions
 {

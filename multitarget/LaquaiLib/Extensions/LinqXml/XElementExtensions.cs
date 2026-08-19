@@ -3,7 +3,7 @@ using System.Xml.Linq;
 namespace LaquaiLib.Extensions.LinqXml;
 
 /// <summary>
-/// Provides extension methods for the <see cref="XElement"/> Type.
+/// Provides extensions for the <see cref="XElement"/> type.
 /// </summary>
 public static class XElementExtensions
 {

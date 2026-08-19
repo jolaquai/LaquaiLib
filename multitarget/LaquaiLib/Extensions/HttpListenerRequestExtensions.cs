@@ -3,7 +3,7 @@ using System.Net;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="HttpListenerRequest"/> Type.
+/// Provides extensions for the <see cref="HttpListenerRequest"/> type.
 /// </summary>
 public static class HttpListenerRequestExtensions
 {

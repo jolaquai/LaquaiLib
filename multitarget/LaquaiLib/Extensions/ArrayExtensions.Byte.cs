@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Array"/> of <see cref="byte"/> Type.
+/// Provides extensions for the <see cref="Array"/> of <see cref="byte"/> type.
 /// </summary>
 public static class ArrayExtensionsByte
 {

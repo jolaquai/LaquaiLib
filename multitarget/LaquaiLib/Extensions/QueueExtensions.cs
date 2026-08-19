@@ -3,7 +3,7 @@ using LaquaiLib.Collections.LimitedCollections;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Queue{T}"/> Type.
+/// Provides extensions for the <see cref="Queue{T}"/> type.
 /// </summary>
 public static class QueueExtensions
 {

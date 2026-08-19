@@ -4,7 +4,7 @@ using System.Numerics;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for <see cref="INumber{TSelf}"/>-implementing Types.
+/// Provides extensions for <see cref="INumber{TSelf}"/>-implementing Types.
 /// </summary>
 public static class NumberExtensions
 {

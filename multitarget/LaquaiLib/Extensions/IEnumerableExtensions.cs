@@ -4,7 +4,7 @@ using LaquaiLib.Wrappers;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IEnumerable{T}"/> Type.
+/// Provides extensions for the <see cref="IEnumerable{T}"/> type.
 /// </summary>
 public static partial class IEnumerableExtensions
 {
@@ -916,7 +916,7 @@ public static partial class IEnumerableExtensions
     {
         /// <summary>
         /// Blits the elements in the input sequence into a sequence of bytes.
-        /// <typeparamref name="T"/> must be an unmanaged Type.
+        /// <typeparamref name="T"/> must be an unmanaged type.
         /// </summary>
         /// <returns>All elements in the input sequence, blitted into a sequence of bytes and concatenated.</returns>
         public IEnumerable<byte> Blitted()

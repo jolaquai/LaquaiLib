@@ -3,7 +3,7 @@
 namespace LaquaiLib.EF.Extensions;
 
 /// <summary>
-/// Provides Extension Methods for the <see cref="DbSet{TEntity}"/> Type.
+/// Provides extensions for the <see cref="DbSet{TEntity}"/> type.
 /// </summary>
 public static class DbSetExtensions
 {

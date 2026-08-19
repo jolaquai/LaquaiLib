@@ -1157,7 +1157,7 @@ public class ArrayPoolMemoryStreamTests
     {
         using var stream = StreamWith(1, 2, 3, 4);
         var first = stream.ReadAsync(new byte[2], 0, 2, default);
-        var second = stream.ReadAsync(new byte[2], 0, 2, default);
+        var second = stream.ReadAsync(new byte[2], 0, 2, TestContext.Current.CancellationToken);
         Assert.Same(first, second);
         Assert.Equal(2, await first);
     }

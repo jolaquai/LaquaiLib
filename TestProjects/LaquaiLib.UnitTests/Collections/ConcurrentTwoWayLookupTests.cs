@@ -621,8 +621,8 @@ public class ConcurrentTwoWayLookupTests
             writer2BlockedFor = elapsed.TotalMilliseconds;
         }, TestContext.Current.CancellationToken);
 
-        await writer1.ConfigureAwait(false);
-        await writer2.ConfigureAwait(false);
+        await writer1;
+        await writer2;
 
         Assert.True(writer2BlockedFor > 150);
         Assert.Equal(5, lookup.Count);

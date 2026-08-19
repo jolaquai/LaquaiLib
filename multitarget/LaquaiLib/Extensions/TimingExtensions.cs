@@ -1,7 +1,7 @@
 ﻿namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="DateTime"/>, <see cref="DateTimeOffset"/>, <see cref="DateOnly"/> and <see cref="TimeOnly"/> types.
+/// Provides extensions for the <see cref="DateTime"/>, <see cref="DateTimeOffset"/>, <see cref="DateOnly"/> and <see cref="TimeOnly"/> types.
 /// </summary>
 public static class TimingExtensions
 {

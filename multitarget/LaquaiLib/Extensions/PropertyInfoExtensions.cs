@@ -3,7 +3,7 @@ using System.Reflection;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="PropertyInfo"/> Type.
+/// Provides extensions for the <see cref="PropertyInfo"/> type.
 /// </summary>
 public static class PropertyInfoExtensions
 {

@@ -5,7 +5,7 @@ using System.Windows.Media;
 namespace LaquaiLib.Windows.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="DependencyObject"/> Type.
+/// Provides extensions for the <see cref="DependencyObject"/> type.
 /// </summary>
 public static class DependencyObjectExtensions
 {

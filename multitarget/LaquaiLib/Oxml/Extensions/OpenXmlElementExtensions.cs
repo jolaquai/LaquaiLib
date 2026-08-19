@@ -5,7 +5,7 @@ using DocumentFormat.OpenXml;
 namespace LaquaiLib.Oxml.Extensions;
 
 /// <summary>
-/// Provides extension methods for <see cref="OpenXmlElement"/> and derived types.
+/// Provides extensions for <see cref="OpenXmlElement"/> and derived types.
 /// </summary>
 public static class OpenXmlElementExtensions
 {

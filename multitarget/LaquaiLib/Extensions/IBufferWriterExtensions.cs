@@ -3,7 +3,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="IBufferWriter{T}"/> Type.
+/// Provides extensions for the <see cref="IBufferWriter{T}"/> type.
 /// </summary>
 public static class IBufferWriterExtensions
 {

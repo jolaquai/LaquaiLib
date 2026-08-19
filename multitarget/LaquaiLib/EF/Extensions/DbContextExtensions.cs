@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 namespace LaquaiLib.EF.Extensions;
 
 /// <summary>
-/// Provides Extension Methods for <see cref="DbContext"/>.
+/// Provides extensions for <see cref="DbContext"/>.
 /// </summary>
 public static class DbContextExtensions
 {

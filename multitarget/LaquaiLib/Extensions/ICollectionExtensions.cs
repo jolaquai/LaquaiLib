@@ -1,7 +1,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="ICollection{T}"/> Type.
+/// Provides extensions for the <see cref="ICollection{T}"/> type.
 /// </summary>
 public static class ICollectionExtensions
 {

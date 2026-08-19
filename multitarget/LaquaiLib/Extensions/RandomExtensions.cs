@@ -5,7 +5,7 @@ namespace LaquaiLib.Extensions;
 #pragma warning disable CA5394 // Do not use insecure randomness
 
 /// <summary>
-/// Provides extension methods for the <see cref="Random"/> type.
+/// Provides extensions for the <see cref="Random"/> type.
 /// </summary>
 public static class RandomExtensions
 {

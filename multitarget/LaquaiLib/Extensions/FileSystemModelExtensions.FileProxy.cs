@@ -1,4 +1,6 @@
-﻿namespace LaquaiLib.Extensions;
+﻿using System.Runtime.Versioning;
+
+namespace LaquaiLib.Extensions;
 
 // This partial type proxies all static methods of System.IO.File class as extension methods to System.IO.FileInfo
 public static partial class FileSystemModelExtensions
@@ -115,6 +117,7 @@ public static partial class FileSystemModelExtensions
             set => System.IO.File.SetLastWriteTimeUtc(fileInfo.FullName, value);
         }
         /// <inheritdoc cref="File.GetUnixFileMode(string)"/>
+        [UnsupportedOSPlatform("windows")]
         public UnixFileMode UnixFileMode
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

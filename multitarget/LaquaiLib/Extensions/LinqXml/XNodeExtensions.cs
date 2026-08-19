@@ -3,7 +3,7 @@
 namespace LaquaiLib.Extensions.LinqXml;
 
 /// <summary>
-/// Provides extension methods for the <see cref="XNode"/> type.
+/// Provides extensions for the <see cref="XNode"/> type.
 /// </summary>
 public static class XNodeExtensions
 {

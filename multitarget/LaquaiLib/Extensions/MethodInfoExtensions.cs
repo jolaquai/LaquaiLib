@@ -4,7 +4,7 @@ using System.Reflection;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="MethodInfo"/> Type.
+/// Provides extensions for the <see cref="MethodInfo"/> type.
 /// </summary>
 public static class MethodInfoExtensions
 {

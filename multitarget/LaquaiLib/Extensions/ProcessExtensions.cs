@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="Process"/> Type.
+/// Provides extensions for the <see cref="Process"/> type.
 /// </summary>
 public static partial class ProcessExtensions
 {

@@ -9,7 +9,7 @@ using static System.MemoryExtensions;
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extension methods for the <see cref="string"/> Type.
+/// Provides extensions for the <see cref="string"/> type.
 /// </summary>
 public static partial class StringExtensions
 {
