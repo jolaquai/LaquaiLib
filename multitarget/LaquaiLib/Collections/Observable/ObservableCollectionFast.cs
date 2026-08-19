@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 using LaquaiLib.Collections.Enumeration;
-using LaquaiLib.Extensions;
 using LaquaiLib.Interfaces;
 
 namespace LaquaiLib.Collections.Observable;
@@ -37,9 +36,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         set
         {
             if (field != value && value)
-            {
                 Sort();
-            }
             field = value;
         }
     }
@@ -96,7 +93,11 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/>.
     /// </summary>
-    public ObservableCollectionFast() => items = [];
+    public ObservableCollectionFast()
+    {
+        items = [];
+    }
+
     /// <summary>
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified collection.
     /// </summary>
@@ -111,7 +112,10 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// Initializes a new <see cref="ObservableCollection{T}"/> that contains elements copied from the specified span.
     /// </summary>
     /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> from which the elements are copied.</param>
-    public ObservableCollectionFast(params ReadOnlySpan<T> span) => items = [.. span];
+    public ObservableCollectionFast(params ReadOnlySpan<T> span)
+    {
+        items = [.. span];
+    }
     #endregion
 
     #region Indexers
@@ -141,18 +145,14 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         {
             var (offset, length) = range.GetOffsetAndLength(Count);
             for (var i = offset; i < offset + length; i++)
-            {
                 yield return this[i];
-            }
         }
         set
         {
             var (offset, length) = range.GetOffsetAndLength(Count);
             var materialized = value as T[] ?? [.. value];
             for (var i = offset; i < offset + length; i++)
-            {
                 this[i] = materialized[i - offset];
-            }
             RaiseCollectionChanged();
         }
     }
@@ -222,9 +222,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         ArgumentNullException.ThrowIfNull(collection);
 
         foreach (var item in collection)
-        {
             AddSilent(item);
-        }
     }
     /// <summary>
     /// Adds the elements of the specified collection to the end of the <see cref="ObservableCollection{T}"/>.
@@ -300,13 +298,9 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     public void MoveSilent(int i, int j)
     {
         if (i < 0 || i >= Count || j < 0 || j >= Count)
-        {
             throw new IndexOutOfRangeException("Indices are out of range.");
-        }
         if (i == j)
-        {
             return;
-        }
 
         var item = RemoveAtSilent(i);
         InsertSilent(j, item);
@@ -368,9 +362,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         ArgumentNullException.ThrowIfNull(collection);
 
         foreach (var item in collection)
-        {
             _ = RemoveSilent(item);
-        }
         RaiseCollectionChanged();
     }
     /// <summary>
@@ -421,16 +413,12 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     public int IndexOf(T item, IEqualityComparer<T> comparer = null, int startIndex = 0)
     {
         if (item is null)
-        {
             return -1;
-        }
         var i = startIndex;
         foreach (var t in ((IEnumerable<T>)(Filter is not null ? this : items)).Skip(startIndex))
         {
             if (comparer is not null ? comparer.Equals(t, item) : t.Equals(item))
-            {
                 return i;
-            }
             i++;
         }
         return -1;
@@ -445,25 +433,17 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     public int LastIndexOf(T item, IEqualityComparer<T> comparer = null, int startIndex = -1)
     {
         if (item is null)
-        {
             return -1;
-        }
         comparer ??= EqualityComparer<T>.Default;
         // When a Filter is set, the meaningful indices are positions in the filtered view, so materialize it;
         // otherwise the backing list can be indexed directly.
         IReadOnlyList<T> list = Filter is not null ? [.. (IEnumerable<T>)this] : items;
         var start = startIndex == -1 ? list.Count - 1 : startIndex;
         if (start >= list.Count)
-        {
             start = list.Count - 1;
-        }
         for (var i = start; i >= 0; i--)
-        {
             if (comparer.Equals(list[i], item))
-            {
                 return i;
-            }
-        }
         return -1;
     }
     /// <inheritdoc/>
@@ -472,9 +452,7 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     public IEnumerator<T> GetEnumerator()
     {
         foreach (var item in new FilterableEnumerable<T>(items, Filter))
-        {
             yield return item;
-        }
     }
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
@@ -489,12 +467,8 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     {
         var span = ReadOnlySpan;
         for (var i = 0; i < span.Length; i++)
-        {
             if (predicate(span[i]))
-            {
                 return span[i];
-            }
-        }
         return default;
     }
     /// <summary>
@@ -506,12 +480,8 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     {
         var span = ReadOnlySpan;
         for (var i = span.Length - 1; i >= 0; i--)
-        {
             if (predicate(span[i]))
-            {
                 return span[i];
-            }
-        }
         return default;
     }
     /// <summary>
@@ -523,12 +493,8 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     {
         var span = ReadOnlySpan;
         for (var i = 0; i < span.Length; i++)
-        {
             if (predicate(span[i]))
-            {
                 return i;
-            }
-        }
         return -1;
     }
     /// <summary>
@@ -540,12 +506,8 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     {
         var span = ReadOnlySpan;
         for (var i = span.Length - 1; i >= 0; i--)
-        {
             if (predicate(span[i]))
-            {
                 return i;
-            }
-        }
         return -1;
     }
     #endregion
@@ -565,14 +527,10 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
         e ??= new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
 
         if (KeepOrdered)
-        {
             SortSilent();
-        }
 
         if (!IsSilenced)
-        {
             CollectionChanged?.Invoke(this, e);
-        }
     }
     #endregion
 }

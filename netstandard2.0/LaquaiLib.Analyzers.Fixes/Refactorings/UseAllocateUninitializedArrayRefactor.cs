@@ -13,16 +13,12 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
     public override async ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken)
     {
         if (FindTarget(compilationUnitSyntax.FindNode(span, getInnermostNodeForTie: true)) is not { } target)
-        {
             return [];
-        }
 
         var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
         // A target framework that predates the method would only get code that doesn't compile
         if (GetAllocateUninitializedArray(semanticModel.Compilation) is not { } allocate)
-        {
             return [];
-        }
 
         return target switch
         {
@@ -38,7 +34,6 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
     private static ExpressionSyntax FindTarget(SyntaxNode node)
     {
         for (var current = node; current is not null; current = current.Parent)
-        {
             switch (current)
             {
                 case ArrayCreationExpressionSyntax or InvocationExpressionSyntax:
@@ -46,25 +41,18 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
                 case StatementSyntax or MemberDeclarationSyntax or AnonymousFunctionExpressionSyntax:
                     return null;
             }
-        }
         return null;
     }
 
     private static IMethodSymbol GetAllocateUninitializedArray(Compilation compilation)
     {
         if (compilation.GetTypeByMetadataName("System.GC") is not { } gc)
-        {
             return null;
-        }
         foreach (var member in gc.GetMembers(MethodName))
-        {
             if (member is IMethodSymbol { IsStatic: true, Arity: 1, DeclaredAccessibility: Accessibility.Public } method
                 && method.Parameters.Length > 0
                 && method.Parameters[0].Type.SpecialType == SpecialType.System_Int32)
-            {
                 return method;
-            }
-        }
         return null;
     }
 
@@ -73,15 +61,11 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
         // The method takes a length and hands back a T[], so an initializer, a jagged type or a multi-dimensional one has nothing to rewrite to
         var rankSpecifiers = arrayCreation.Type.RankSpecifiers;
         if (arrayCreation.Initializer is not null || rankSpecifiers.Count != 1 || rankSpecifiers[0].Sizes.Count != 1)
-        {
             return [];
-        }
 
         var size = rankSpecifiers[0].Sizes[0];
         if (size is OmittedArraySizeExpressionSyntax)
-        {
             return [];
-        }
 
         var elementType = arrayCreation.Type.ElementType;
         var type = semanticModel.GetTypeInfo(elementType, cancellationToken).Type;
@@ -94,9 +78,7 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
             _ => false
         };
         if (!eligible)
-        {
             return [];
-        }
 
         var receiver = GetReceiver(semanticModel, arrayCreation.SpanStart, gc);
         return [new CodeActionInfo("Change to 'GC.AllocateUninitializedArray'", editor => ReplaceWithAllocateUninitializedArrayAsync(editor, arrayCreation, elementType, size, receiver), "ChangeToAllocateUninitializedArray")];
@@ -118,31 +100,21 @@ public sealed class UseAllocateUninitializedArrayRefactor : LaquaiLibRefactoring
     {
         if (semanticModel.GetOperation(invocation, cancellationToken) is not IInvocationOperation operation
             || !SymbolEqualityComparer.Default.Equals(operation.TargetMethod.OriginalDefinition, allocate))
-        {
             return [];
-        }
 
         ExpressionSyntax length = null;
         foreach (var argument in operation.Arguments)
         {
             if (argument.Parameter is not { } parameter)
-            {
                 continue;
-            }
             if (parameter.Name == "length")
-            {
                 length = (argument.Syntax as ArgumentSyntax)?.Expression;
-            }
             // 'new T[length]' cannot allocate into the pinned object heap, so anything but a provably unpinned allocation would silently lose its pinning
             else if (parameter.Name == "pinned" && argument.ArgumentKind is not ArgumentKind.DefaultValue && argument.Value.ConstantValue is not { HasValue: true, Value: false })
-            {
                 return [];
-            }
         }
         if (length is null || GetTypeArgument(invocation.Expression) is not TypeSyntax elementType)
-        {
             return [];
-        }
 
         return [new CodeActionInfo($"Change to 'new {elementType}[]'", editor => ReplaceWithArrayCreationAsync(editor, invocation, elementType, length), "ChangeToZeroInitializingArrayCreation")];
     }

@@ -1,6 +1,5 @@
 using System.Numerics;
 
-using LaquaiLib.Extensions;
 using LaquaiLib.Util;
 
 namespace LaquaiLib;
@@ -67,21 +66,15 @@ public static class RandomMath
     public static T GCD<T>(params ReadOnlySpan<T> numbers) where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>, IModulusOperators<T, T, T>
     {
         if (numbers.Length == 1)
-        {
             return numbers[0];
-        }
         var enumerated = numbers.ToArray();
         enumerated = Array.ConvertAll(enumerated, n => n < T.Zero ? -T.One * n : n);
         if (Array.Exists(enumerated, n => n == T.One))
-        {
             return T.One;
-        }
 
         foreach (var g in Sequence.Create(enumerated.Max(), T.Zero, -T.One)
             .Where(g => enumerated.All(n => n % g == T.Zero)))
-        {
             return g;
-        }
 
         return T.One;
     }
@@ -94,15 +87,11 @@ public static class RandomMath
     public static T LCM<T>(params ReadOnlySpan<T> numbers) where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>, IModulusOperators<T, T, T>
     {
         if (numbers.Length == 1)
-        {
             return numbers[0];
-        }
         var enumerated = numbers.ToArray();
         enumerated = Array.ConvertAll(enumerated, static n => n < T.Zero ? -T.One * n : n);
         if (Array.Exists(enumerated, static n => n == T.Zero))
-        {
             return T.Zero;
-        }
 
         return enumerated.Aggregate(static (a, b) => a * b / GCD(a, b));
     }
@@ -118,9 +107,7 @@ public static class RandomMath
     public static T RuleOfThree<T>(T x, T y, T targetX) where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>, IModulusOperators<T, T, T>
     {
         if (x == T.Zero || targetX == T.Zero)
-        {
             return T.Zero;
-        }
         return y / x * targetX;
     }
 

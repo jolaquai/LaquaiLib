@@ -96,9 +96,7 @@ public sealed class CommandInterface : IShellInterface
             await Task.Run(async () =>
             {
                 while (!Ready)
-                {
                     await Task.Delay(100).ConfigureAwait(false);
-                }
             }).ConfigureAwait(false);
             await Process.StandardInput.WriteLineAsync(input).ConfigureAwait(false);
             await Process.StandardInput.FlushAsync().ConfigureAwait(false);
@@ -129,9 +127,7 @@ public sealed class CommandInterface : IShellInterface
     public async Task WhenReady()
     {
         while (!Ready)
-        {
             await Task.Delay(100).ConfigureAwait(false);
-        }
     }
 
     // This was part of the interface before, but since DispatchAsync now always returns the output of a command, calling this would cause more problems than it solves

@@ -26,16 +26,25 @@ public class FlexibleUnmanagedTypeConverter<T> : JsonConverter<T>
         return method is null ? null : (TDelegate)Delegate.CreateDelegate(typeof(TDelegate), method);
     }
 
+    /// <summary>
+    /// Reads a single value of type <typeparamref name="T"/> from a JSON number that is itself the value, or a JSON string from which to parse the value.
+    /// </summary>
+    /// <param name="reader">The <see cref="Utf8JsonReader"/> to read from.</param>
+    /// <param name="typeToConvert">The type of the value to convert.</param>
+    /// <param name="options">The serialization options to use.</param>
+    /// <returns>The read (or parsed) <typeparamref name="T"/> value.</returns>
+    /// <exception cref="JsonException">Thrown when the JSON token type is not a number or a string.</exception>
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         switch (reader.TokenType)
         {
             case JsonTokenType.Number:
+            {
                 // Numbers can't contain escapes, so the raw UTF-8 span is always the exact number text; this also avoids the precision loss of routing through double.
                 if (_utf8Parse is not null && _utf8Parse(reader.ValueSpan, CultureInfo.InvariantCulture, out var utf8Result))
                     return utf8Result;
                 return (T)Convert.ChangeType(reader.GetDouble(), typeof(T), CultureInfo.InvariantCulture);
-
+            }
             case JsonTokenType.String:
             {
                 var stringValue = reader.GetString();
@@ -50,12 +59,18 @@ public class FlexibleUnmanagedTypeConverter<T> : JsonConverter<T>
                     return (T)Convert.ChangeType(doubleResult, typeof(T), CultureInfo.InvariantCulture);
                 return default;
             }
-
             default:
+            {
                 return default;
+            }
         }
     }
-
+    /// <summary>
+    /// Writes a single instance of <typeparamref name="T"/> as a JSON string.
+    /// </summary>
+    /// <param name="writer">The <see cref="Utf8JsonWriter"/> to write to.</param>
+    /// <param name="value">The <typeparamref name="T"/> value to write.</param>
+    /// <param name="options">The <see cref="JsonSerializerOptions"/> to use.</param>
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         if (value is IUtf8SpanFormattable utf8Formattable)

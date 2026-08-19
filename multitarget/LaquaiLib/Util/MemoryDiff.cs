@@ -33,9 +33,7 @@ public static class MemoryDiff
         {
             ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
             if (startIndex >= left.Length || startIndex >= right.Length)
-            {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must refer to a valid index in both spans.");
-            }
             left = left[startIndex..];
             right = right[startIndex..];
         }
@@ -44,19 +42,13 @@ public static class MemoryDiff
         {
             case 0:
                 if (right.Length == 0)
-                {
                     return -1;
-                }
                 else
-                {
                     return 0;
-                }
 
             default:
                 if (right.Length == 0)
-                {
                     return 0;
-                }
 
                 break;
         }
@@ -79,9 +71,7 @@ public static class MemoryDiff
     {
         var diff = FindDifference(left, right, startIndex, equalityComparer);
         if (diff == -1)
-        {
             return [];
-        }
 
         var minLength = Math.Min(left.Length, right.Length);
         var maxLength = Math.Max(left.Length, right.Length);
@@ -95,9 +85,7 @@ public static class MemoryDiff
         {
             var nextDiff = DiffImpl(left[pos..], right[pos..], equalityComparer);
             if (nextDiff == -1)
-            {
                 break;
-            }
 
             pos += nextDiff;
             diffs.Add(pos++);
@@ -105,9 +93,7 @@ public static class MemoryDiff
 
         // Add remaining indices if lengths differ
         while (pos < maxLength)
-        {
             diffs.Add(pos++);
-        }
 
         return [.. diffs];
     }

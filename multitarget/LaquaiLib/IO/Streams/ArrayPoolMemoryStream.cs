@@ -371,6 +371,43 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         base.Dispose(disposing);
     }
 
+    /// <summary>
+    /// Gets a <see cref="ReadOnlySequence{T}"/> over the memory that has been written so far.
+    /// This is a snapshot; mutating calls, especially ones that return memory to the pool, invalidate the sequence. Reading from it after such a mutation is undefined behavior.
+    /// </summary>
+    /// <returns>The created <see cref="ReadOnlySequence{T}"/>.</returns>
+    public ReadOnlySequence<byte> AsReadOnlySequence()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (length == 0)
+            return ReadOnlySequence<byte>.Empty;
+
+        var (lastSeg, lastOff) = Locate(length);
+        Segment first = null, prev = null;
+        long running = 0;
+        for (var i = 0; i <= lastSeg; i++)
+        {
+            var mem = i < lastSeg ? _segments[i].AsMemory() : _segments[i].AsMemory(0, lastOff);
+            var seg = new Segment(mem, running);
+            running += mem.Length;
+            if (prev is null)
+                first = seg;
+            else
+                prev.SetNext(seg);
+            prev = seg;
+        }
+        return new ReadOnlySequence<byte>(first, 0, prev, prev.Memory.Length);
+    }
+    private sealed class Segment : ReadOnlySequenceSegment<byte>
+    {
+        public Segment(Memory<byte> memory, long index)
+        {
+            Memory = memory;
+            RunningIndex = index;
+        }
+        public void SetNext(Segment next) => Next = next;
+    }
+
     #region IBufferWriter<byte>
     /// <inheritdoc/>
     /// <remarks>

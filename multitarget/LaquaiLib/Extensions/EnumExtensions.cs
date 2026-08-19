@@ -31,16 +31,13 @@ public static class EnumExtensions
         /// Retrieves all flags that are currently set in the specified <typeparamref name="TEnum"/> value.
         /// Because this implicitly makes <paramref name="any"/> a bitwise-AND combination of the resulting flags, it is not included in the result set.
         /// </summary>
-        /// <typeparam name="TEnum">The <see cref="Enum"/> type to retrieve the flags for.</typeparam>
         /// <returns>The flags that are currently set in the specified <typeparamref name="TEnum"/> value or an empty array if no flags are set.</returns>
         public TEnum[] Flags
         {
             get
             {
                 if (typeof(TEnum).GetCustomAttribute<FlagsAttribute>() is null)
-                {
                     throw new ArgumentException($"The given Enum type '{typeof(TEnum).FullName}' is not marked with [FlagsAttribute].", nameof(any));
-                }
                 var flags = Enum.GetValues<TEnum>();
                 return [.. flags.Where(f => any.HasFlag(f))];
             }

@@ -11,30 +11,22 @@ public sealed class UseTraditionalUsingRefactor : LaquaiLibNodeRefactoring
     public override ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, TextSpan span)
     {
         if (FindTarget(syntaxNode) is not { Parent: BlockSyntax block } localDeclaration)
-        {
             return [];
-        }
 
         var statements = block.Statements;
         var index = statements.IndexOf(localDeclaration);
 
         var runStart = index;
         while (runStart > 0 && statements[runStart - 1] is LocalDeclarationStatementSyntax previous && IsUsingDeclaration(previous))
-        {
             runStart--;
-        }
         var runEnd = index;
         while (runEnd + 1 < statements.Count && statements[runEnd + 1] is LocalDeclarationStatementSyntax next && IsUsingDeclaration(next))
-        {
             runEnd++;
-        }
 
         var infos = ImmutableArray.CreateBuilder<CodeActionInfo>();
         infos.Add(new CodeActionInfo("Change to traditional 'using' statement", editor => ConvertAsync(editor, block, index, index), "ChangeToTraditionalUsing"));
         if (runEnd > runStart)
-        {
             infos.Add(new CodeActionInfo("Change consecutive 'using' declarations to a stacked traditional 'using' statement", editor => ConvertAsync(editor, block, runStart, runEnd), "ChangeToStackedTraditionalUsing"));
-        }
         return infos.ToImmutable();
     }
 
@@ -46,13 +38,9 @@ public sealed class UseTraditionalUsingRefactor : LaquaiLibNodeRefactoring
         for (var current = node; current is not null; current = current.Parent)
         {
             if (current is LocalDeclarationStatementSyntax local)
-            {
                 return IsUsingDeclaration(local) ? local : null;
-            }
             if (current is StatementSyntax or MemberDeclarationSyntax or AnonymousFunctionExpressionSyntax)
-            {
                 return null;
-            }
         }
         return null;
     }
@@ -75,9 +63,7 @@ public sealed class UseTraditionalUsingRefactor : LaquaiLibNodeRefactoring
             var leading = declaration.GetLeadingTrivia();
             // Every nesting level but the outermost becomes another using statement's embedded 'Statement' - the formatter only breaks that onto its own line if trivia already asks it to
             if (i > start)
-            {
                 leading = leading.Insert(0, SyntaxFactory.ElasticEndOfLine("\n"));
-            }
             current = SyntaxFactory.UsingStatement(
                 declaration.AttributeLists,
                 declaration.AwaitKeyword,

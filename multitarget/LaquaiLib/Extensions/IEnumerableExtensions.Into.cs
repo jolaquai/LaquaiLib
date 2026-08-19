@@ -30,9 +30,7 @@ public static partial class IEnumerableExtensions
                     var src = other.AsSpan(0, other.Count);
                     var length = src.Length;
                     if (startIndex + length > target.Length)
-                    {
                         throw new ArgumentException("The destination array cannot accommodate the source collection.", nameof(target));
-                    }
                     var dest = target.AsSpan(startIndex, length);
                     src.CopyTo(dest);
                     return src.Length;
@@ -40,33 +38,23 @@ public static partial class IEnumerableExtensions
                 case ICollection<T> collection:
                 {
                     if (startIndex + collection.Count > target.Length)
-                    {
                         throw new ArgumentException("The destination array cannot accommodate the source collection.", nameof(target));
-                    }
                     collection.CopyTo(target, startIndex);
                     return collection.Count;
                 }
                 case IReadOnlyList<T> list:
                     if (startIndex + list.Count > target.Length)
-                    {
                         throw new ArgumentException("The destination array cannot accommodate the source collection.", nameof(target));
-                    }
                     for (var i = 0; i < list.Count; i++)
-                    {
                         target[startIndex++] = list[i];
-                    }
                     return list.Count;
                 case IReadOnlyCollection<T> coll:
                 {
                     if (startIndex + coll.Count > target.Length)
-                    {
                         throw new ArgumentException("The destination array cannot accommodate the source collection.", nameof(target));
-                    }
                     var dest = target.AsSpan(startIndex, coll.Count);
                     foreach (var item in source)
-                    {
                         dest[startIndex++] = item;
-                    }
                     return dest.Length;
                 }
                 default:
@@ -75,23 +63,15 @@ public static partial class IEnumerableExtensions
                     if (source.TryGetNonEnumeratedCount(out var length))
                     {
                         if (startIndex + length > target.Length)
-                        {
                             throw new ArgumentException("The destination array cannot accommodate the source collection.", nameof(target));
-                        }
                         var dest = target.AsSpan(startIndex, length);
                         foreach (var item in source)
-                        {
                             dest[startIndex++] = item;
-                        }
                     }
                     else if (allowUnsafeMutation)
-                    {
                         // dangerous fallback since it will mutate the array without knowing whether all elements will fit
                         foreach (var item in source)
-                        {
                             target[startIndex++] = item;
-                        }
-                    }
                     else
                     {
                         var enumerated = source.ToArray();
@@ -122,9 +102,7 @@ public static partial class IEnumerableExtensions
                     var src = other.AsSpan(0, other.Count);
                     var length = src.Length;
                     if (startIndex + length > target.Count)
-                    {
                         CollectionsMarshal.SetCount(target, startIndex + length);
-                    }
                     var dest = target.AsSpan(startIndex, length);
                     src.CopyTo(dest);
                     return length;
@@ -133,27 +111,19 @@ public static partial class IEnumerableExtensions
                 {
                     var length = list.Count;
                     if (startIndex + length > target.Count)
-                    {
                         CollectionsMarshal.SetCount(target, startIndex + length);
-                    }
                     for (var i = 0; i < length; i++)
-                    {
                         target[startIndex++] = list[i];
-                    }
                     return length;
                 }
                 case IReadOnlyCollection<T> collection:
                 {
                     var length = collection.Count;
                     if (startIndex + length > target.Count)
-                    {
                         CollectionsMarshal.SetCount(target, startIndex + length);
-                    }
                     var dest = target.AsSpan(startIndex, length);
                     foreach (var item in source)
-                    {
                         dest[startIndex++] = item;
-                    }
                     return length;
                 }
                 default:
@@ -161,15 +131,11 @@ public static partial class IEnumerableExtensions
                     if (source.TryGetNonEnumeratedCount(out var length))
                     {
                         if (startIndex + length > target.Count)
-                        {
                             CollectionsMarshal.SetCount(target, startIndex + length);
-                        }
                         var dest = target.AsSpan(startIndex, length);
                         var start = startIndex;
                         foreach (var item in source)
-                        {
                             dest[startIndex++] = item;
-                        }
                         return startIndex - start;
                     }
                     else
@@ -198,9 +164,7 @@ public static partial class IEnumerableExtensions
         public int Into(Span<T> target, int startIndex = 0, bool allowUnsafeMutation = false)
         {
             if (startIndex > 0)
-            {
                 target = target[startIndex..];
-            }
             switch (source)
             {
                 case List<T> other:
@@ -208,9 +172,7 @@ public static partial class IEnumerableExtensions
                     var src = other.AsSpan(0, other.Count);
                     var length = src.Length;
                     if (length > target.Length)
-                    {
                         throw new ArgumentException("The destination span cannot accommodate the source collection.", nameof(target));
-                    }
                     src.CopyTo(target);
                     return length;
                 }
@@ -218,27 +180,19 @@ public static partial class IEnumerableExtensions
                 {
                     var length = list.Count;
                     if (length > target.Length)
-                    {
                         throw new ArgumentException("The destination span cannot accommodate the source collection.", nameof(target));
-                    }
                     for (var i = 0; i < length; i++)
-                    {
                         target[i] = list[i];
-                    }
                     return length;
                 }
                 case IReadOnlyCollection<T> collection:
                 {
                     var length = collection.Count;
                     if (length > target.Length)
-                    {
                         throw new ArgumentException("The destination span cannot accommodate the source collection.", nameof(target));
-                    }
                     var i = 0;
                     foreach (var item in source)
-                    {
                         target[i++] = item;
-                    }
                     return length;
                 }
                 default:
@@ -247,22 +201,14 @@ public static partial class IEnumerableExtensions
                     if (source.TryGetNonEnumeratedCount(out var length))
                     {
                         if (length > target.Length)
-                        {
                             throw new ArgumentException("The destination span cannot accommodate the source collection.", nameof(target));
-                        }
                         foreach (var item in source)
-                        {
                             target[i++] = item;
-                        }
                     }
                     else if (allowUnsafeMutation)
-                    {
                         // dangerous fallback since it will mutate the array without knowing whether all elements will fit
                         foreach (var item in source)
-                        {
                             target[i++] = item;
-                        }
-                    }
                     else
                     {
                         // target has already been sliced by startIndex above, so copy from its start.
@@ -306,9 +252,7 @@ public static partial class IEnumerableExtensions
                             dest = valueFactory(key);
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
-                        }
                     }
 
                     break;
@@ -325,9 +269,7 @@ public static partial class IEnumerableExtensions
                             target[key] = valueFactory(key);
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and 'overwrite' is set to false.");
-                        }
                     }
 
                     break;
@@ -359,9 +301,7 @@ public static partial class IEnumerableExtensions
                             dest = value;
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
-                        }
                     }
 
                     break;
@@ -379,9 +319,7 @@ public static partial class IEnumerableExtensions
                             target[key] = value;
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and 'overwrite' is set to false.");
-                        }
                     }
 
                     break;
@@ -399,9 +337,7 @@ public static partial class IEnumerableExtensions
         public int Into(ICollection<T> target, bool allowUnsafeMutation = false)
         {
             if (target.IsReadOnly)
-            {
                 throw new InvalidOperationException("The target collection is read-only.");
-            }
 
             switch (target)
             {
@@ -435,13 +371,9 @@ public static partial class IEnumerableExtensions
         {
             var target = spanProvider.Span[startIndex..];
             if (startIndex < 0 || startIndex >= target.Length)
-            {
                 throw new IndexOutOfRangeException($"Start index must be within the bounds of the {typeof(Span<>)} provided by {nameof(spanProvider)}.");
-            }
             if (source.Length > target.Length)
-            {
                 throw new ArgumentException($"The destination {typeof(Span<>)} cannot accommodate the source {typeof(ReadOnlySpan<>)}.", nameof(spanProvider));
-            }
 
             source.CopyTo(target);
             return source.Length;
@@ -455,13 +387,9 @@ public static partial class IEnumerableExtensions
         public int CopyTo(T[] target, int startIndex = 0)
         {
             if (startIndex < 0 || startIndex >= target.Length)
-            {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), $"{nameof(startIndex)} must be within the bounds of the target array.");
-            }
             if (source.Length + startIndex > target.Length)
-            {
                 throw new ArgumentException($"The destination array cannot accommodate the source {typeof(ReadOnlySpan<>)}.", nameof(target));
-            }
 
             source.CopyTo(target.AsSpan(startIndex));
             return source.Length;
@@ -477,9 +405,7 @@ public static partial class IEnumerableExtensions
             var length = source.Length;
             var finalLen = startIndex + length;
             if (finalLen > target.Count)
-            {
                 CollectionsMarshal.SetCount(target, finalLen);
-            }
             var dest = target.AsSpan(startIndex, length);
             source.CopyTo(dest);
             return length;
@@ -501,13 +427,9 @@ public static partial class IEnumerableExtensions
         public int CopyTo(Memory<T> target, int startIndex = 0)
         {
             if (startIndex < 0 || startIndex >= target.Length)
-            {
                 throw new IndexOutOfRangeException($"Start index must be within the bounds of the target {typeof(Memory<>)}.");
-            }
             if (source.Length + startIndex > target.Length)
-            {
                 throw new ArgumentException($"The destination {typeof(Memory<>)} cannot accommodate the source {typeof(ReadOnlySpan<>)}.", nameof(target));
-            }
 
             source.CopyTo(target.Span[startIndex..]);
             return source.Length;
@@ -537,9 +459,7 @@ public static partial class IEnumerableExtensions
                             dest = valueFactory(key);
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
-                        }
                     }
 
                     break;
@@ -557,9 +477,7 @@ public static partial class IEnumerableExtensions
                             target[key] = valueFactory(key);
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains a value for the key '{key}' and '{nameof(overwrite)}' is set to false.");
-                        }
                     }
 
                     break;
@@ -592,9 +510,7 @@ public static partial class IEnumerableExtensions
                             dest = value;
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
-                        }
                     }
 
                     break;
@@ -613,9 +529,7 @@ public static partial class IEnumerableExtensions
                             target[key] = value;
                         }
                         else if (exists)
-                        {
                             throw new InvalidOperationException($"The target dictionary already contains the key-value pair {{{key}, {value}}} and '{nameof(overwrite)}' is set to false.");
-                        }
                     }
 
                     break;
@@ -631,15 +545,11 @@ public static partial class IEnumerableExtensions
         public int CopyTo(ICollection<T> target)
         {
             if (target.IsReadOnly)
-            {
                 throw new InvalidOperationException("The target collection is read-only.");
-            }
 
             var i = 0;
             for (; i < source.Length; i++)
-            {
                 target.Add(source[i]);
-            }
             return i;
         }
     }

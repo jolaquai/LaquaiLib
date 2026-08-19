@@ -72,17 +72,11 @@ public static partial class ArrayExtensions
         public void MultiDimCopyTo<T>(int sourceIndex, Array destination, int destinationIndex, int length)
         {
             if (source.GetType() != destination.GetType())
-            {
                 throw new ArgumentException("The specified source and destination arrays are not of the same type.", nameof(destination));
-            }
             if (typeof(T) != source.GetType().GetElementType())
-            {
                 throw new ArgumentException("The specified type does not match the type of the source array.", nameof(T));
-            }
             if (typeof(T) != destination.GetType().GetElementType())
-            {
                 throw new ArgumentException("The specified type does not match the type of the destination array.", nameof(T));
-            }
             // No Array.Rank comparison since a 2x3 and a 3x2 array are compatible for copying as long as the total number of elements is the same, and since length is specified, this is guaranteed
             // As such, this is able to transpose and even linearize arrays into a T[]
 
@@ -94,29 +88,17 @@ public static partial class ArrayExtensions
                 _ = TryGetSpan(destination, out destSpanProv, out var destSpan);
 
                 if (sourceIndex < 0)
-                {
                     throw new ArgumentOutOfRangeException(nameof(sourceIndex), sourceIndex, "The specified source index cannot be less than zero.");
-                }
                 if (destinationIndex < 0)
-                {
                     throw new ArgumentOutOfRangeException(nameof(destinationIndex), destinationIndex, "The specified destination index cannot be less than zero.");
-                }
                 if (sourceIndex + length > srcSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified index and length does not specify a valid range in the source array.");
-                }
                 if (destinationIndex + length > destSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified index and length does not specify a valid range in the destination array.");
-                }
                 if (length > srcSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified length exceeds the length of the source array.");
-                }
                 if (length > destSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified length exceeds the length of the destination array.");
-                }
 
                 srcSpan.Slice(sourceIndex, length).CopyTo(destSpan.Slice(destinationIndex, length));
             }
@@ -168,17 +150,11 @@ public static partial class ArrayExtensions
         public void MultiDimConstrainedCopyTo<T>(int sourceIndex, Array destination, int destinationIndex, int length)
         {
             if (source.GetType() != destination.GetType())
-            {
                 throw new ArgumentException("The specified source and destination arrays are not of the same type.", nameof(destination));
-            }
             if (typeof(T) != source.GetType().GetElementType())
-            {
                 throw new ArgumentException("The specified type does not match the type of the source array.", nameof(T));
-            }
             if (typeof(T) != destination.GetType().GetElementType())
-            {
                 throw new ArgumentException("The specified type does not match the type of the destination array.", nameof(T));
-            }
             // No Array.Rank comparison since a 2x3 and a 3x2 array are compatible for copying as long as the total number of elements is the same, and since length is specified, this is guaranteed
             // As such, this is able to transpose and even linearize arrays into a T[]
 
@@ -214,29 +190,17 @@ public static partial class ArrayExtensions
                 }
 
                 if (sourceIndex < 0)
-                {
                     throw new ArgumentOutOfRangeException(nameof(sourceIndex), sourceIndex, "The specified source index cannot be less than zero.");
-                }
                 if (destinationIndex < 0)
-                {
                     throw new ArgumentOutOfRangeException(nameof(destinationIndex), destinationIndex, "The specified destination index cannot be less than zero.");
-                }
                 if (sourceIndex + length > srcSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified index and length does not specify a valid range in the source array.");
-                }
                 if (destinationIndex + length > destSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified index and length does not specify a valid range in the destination array.");
-                }
                 if (length > srcSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified length exceeds the length of the source array.");
-                }
                 if (length > destSpan.Length)
-                {
                     throw new ArgumentOutOfRangeException(nameof(length), length, "The specified length exceeds the length of the destination array.");
-                }
 
                 srcSpan.Slice(sourceIndex, length).CopyTo(destSpan.Slice(destinationIndex, length));
             }
@@ -253,7 +217,7 @@ public static partial class ArrayExtensions
         }
 
         /// <summary>
-        /// Attempts to retrieve a <see cref="Span{T}"/> from the specified <paramref name="array"/>.
+        /// Attempts to retrieve a <see cref="Span{T}"/> from the specified array.
         /// </summary>
         /// <typeparam name="T">The type of the elements in the array.</typeparam>
         /// <param name="spanProvider">An <see langword="out"/> variable that receives the <see cref="ISpanProvider{T}"/> for the array if it is not a one-dimensional array.</param>
@@ -281,7 +245,7 @@ public static partial class ArrayExtensions
             }
         }
         /// <summary>
-        /// Attempts to retrieve a <see cref="ReadOnlySpan{T}"/> from the specified <paramref name="array"/>.
+        /// Attempts to retrieve a <see cref="ReadOnlySpan{T}"/> from the specified array.
         /// </summary>
         /// <typeparam name="T">The type of the elements in the array.</typeparam>
         /// <param name="rosProvider">An <see langword="out"/> variable that receives the <see cref="ISpanProvider{T}"/> for the array if it is not a one-dimensional array.</param>
@@ -321,13 +285,9 @@ public static partial class ArrayExtensions
             equalityComparer ??= EqualityComparer<T>.Default;
 
             if (source.GetType() != other.GetType())
-            {
                 return false;
-            }
             if (source.Length != other.Length)
-            {
                 return false;
-            }
 
             IReadOnlySpanProvider<T> firstSpanProv = null;
             IReadOnlySpanProvider<T> otherSpanProv = null;
@@ -350,7 +310,6 @@ public static partial class ArrayExtensions
         /// <summary>
         /// Attempts to retrieve the element at the specified index from the array if that index is valid for the array.
         /// </summary>
-        /// <typeparam name="T">The type of the array elements.</typeparam>
         /// <param name="i">The index of the element to retrieve.</param>
         /// <param name="value">An <see langword="out"/> variable that receives the element at the specified index if it is valid.</param>
         /// <returns><see langword="true"/> if the index was valid and the element could be retrieved, otherwise <see langword="false"/>.</returns>
@@ -367,16 +326,13 @@ public static partial class ArrayExtensions
         /// <summary>
         /// Attempts to retrieve the element at specified index from the array if that index is valid for the array, otherwise returns the specified default value.
         /// </summary>
-        /// <typeparam name="T">The type of the array elements.</typeparam>
         /// <param name="i">The index of the element to retrieve.</param>
         /// <param name="defaultValue">The default value to return if the index is invalid.</param>
         /// <returns>The element at the specified index if it is valid, otherwise the specified default value.</returns>
         public T GetAtOrDefault(int i, T defaultValue = default)
         {
             if ((uint)i < (uint)array.Length)
-            {
                 return array[i];
-            }
             return defaultValue;
         }
 
@@ -391,7 +347,7 @@ public static partial class ArrayExtensions
             ArgumentOutOfRangeException.ThrowIfGreaterThan(count, array.Length);
 
             var list = new List<T>();
-            scoped ref var items = ref UnsafeUtils.Accessors.ListAccessors<T>._items(list);
+            scoped ref var items = ref ListAccessors<T>._items(list);
             items = array;
             CollectionsMarshal.SetCount(list, count);
             return list;
@@ -411,11 +367,11 @@ public static partial class ArrayExtensions
             ArgumentOutOfRangeException.ThrowIfGreaterThan(tail, array.Length);
 
             var queue = new Queue<T>();
-            scoped ref var items = ref UnsafeUtils.Accessors.QueueAccessors<T>._array(queue);
+            scoped ref var items = ref QueueAccessors<T>._array(queue);
             items = array;
-            UnsafeUtils.Accessors.QueueAccessors<T>._head(queue) = head;
-            UnsafeUtils.Accessors.QueueAccessors<T>._tail(queue) = tail;
-            UnsafeUtils.Accessors.QueueAccessors<T>._size(queue) = tail > head ? tail - head : array.Length - head + tail;
+            QueueAccessors<T>._head(queue) = head;
+            QueueAccessors<T>._tail(queue) = tail;
+            QueueAccessors<T>._size(queue) = tail > head ? tail - head : array.Length - head + tail;
             return queue;
         }
         /// <summary>
@@ -430,9 +386,9 @@ public static partial class ArrayExtensions
             ArgumentOutOfRangeException.ThrowIfGreaterThan(count, array.Length);
 
             var stack = new Stack<T>();
-            scoped ref var items = ref UnsafeUtils.Accessors.StackAccessors<T>._items(stack);
+            scoped ref var items = ref StackAccessors<T>._items(stack);
             items = array;
-            UnsafeUtils.Accessors.StackAccessors<T>._size(stack) = count;
+            StackAccessors<T>._size(stack) = count;
             return stack;
         }
     }

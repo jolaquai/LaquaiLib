@@ -11,12 +11,8 @@ internal static class Helpers
     internal static async ValueTask<Document> ApplyPostFixesAsync(Document document, ImmutableArray<PostFixAction> postFixActions, CancellationToken cancellationToken)
     {
         if (!postFixActions.IsDefaultOrEmpty)
-        {
             for (var i = 0; i < postFixActions.Length; i++)
-            {
                 document = await postFixActions[i](document, cancellationToken).ConfigureAwait(false);
-            }
-        }
         return document;
     }
 
@@ -54,27 +50,21 @@ internal static class Helpers
         public string ToTitleCase()
         {
             if (string.IsNullOrEmpty(s))
-            {
                 return s;
-            }
 
             // Split the string by spaces
             var words = s.Split(' ');
 
             for (var i = 0; i < words.Length; i++)
-            {
                 if (!string.IsNullOrEmpty(words[i]))
                 {
                     // Convert first character to uppercase and the rest to lowercase
                     var letters = words[i].ToLower().ToCharArray();
                     if (letters.Length > 0)
-                    {
                         letters[0] = char.ToUpper(letters[0]);
-                    }
 
                     words[i] = new string(letters);
                 }
-            }
 
             // Join the words back together
             return string.Join(" ", words);

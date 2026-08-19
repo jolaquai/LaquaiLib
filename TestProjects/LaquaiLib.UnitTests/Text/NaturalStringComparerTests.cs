@@ -1,6 +1,4 @@
-﻿using LaquaiLib.Util;
-
-namespace LaquaiLib.UnitTests.Text;
+﻿namespace LaquaiLib.UnitTests.Text;
 
 #if !NET10_0_OR_GREATER
 public class NaturalStringComparerTests

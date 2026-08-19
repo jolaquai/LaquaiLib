@@ -123,9 +123,7 @@ public static class MethodInfoExtensions
         {
             var accessibility = methodInfo.GetAccessibility();
             if (accessibilityTransform is not null)
-            {
                 accessibility = accessibilityTransform(accessibility);
-            }
 
             // Determine if the generic method requires an unsafe context
             var unsafeRequired = methodInfo.GetParameters().Any(static p => p.ParameterType.IsPointer);
@@ -150,42 +148,30 @@ public static class MethodInfoExtensions
                 sb.Append(string.Join(", ", methodInfo.GetParameters().Select(static p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
                 sb.Append(')');
 
-                sb.AppendLine("\" />");
+                sb.AppendLine("\"/>");
             }
             sb.Append("    ");
 
             var modifiers = new List<string>();
             if (methodInfo.IsStatic)
-            {
                 modifiers.Add("static");
-            }
             if (unsafeRequired)
-            {
                 modifiers.Add("unsafe");
-            }
             if (methodInfo.IsAbstract)
-            {
                 modifiers.Add("abstract");
-            }
             if (methodInfo.IsVirtual)
-            {
                 modifiers.Add("virtual");
-            }
 
             switch (modifiersTransform)
             {
                 case not null:
                     modifiersTransform(modifiers);
                     if (modifiers.Contains("abstract") && bodyGenerator is not null)
-                    {
                         throw new InvalidOperationException("Cannot generate body for an abstract method.");
-                    }
                     break;
                 default:
                     if (methodInfo.IsAbstract && bodyGenerator is not null)
-                    {
                         throw new InvalidOperationException("Cannot generate body for an abstract method.");
-                    }
 
                     break;
             }
@@ -196,9 +182,7 @@ public static class MethodInfoExtensions
 
             var returnType = methodInfo.ReturnType.GetFriendlyName();
             if (returnTypeTransform is not null)
-            {
                 returnType = returnTypeTransform(returnType);
-            }
 
             sb.Append(' ');
             sb.Append(returnType);
@@ -206,9 +190,7 @@ public static class MethodInfoExtensions
 
             var methodName = methodInfo.Name;
             if (nameTransform is not null)
-            {
                 methodName = nameTransform(methodName);
-            }
             sb.Append(methodName);
 
             List<string> genericParameters = null;
@@ -216,30 +198,22 @@ public static class MethodInfoExtensions
             {
                 genericParameters = [.. methodInfo.GetGenericArguments().Select(static t => t.Name)];
                 if (genericParametersTransform is not null)
-                {
                     genericParametersTransform(genericParameters);
-                }
 
                 if (genericParameters.Count > 0)
-                {
                     sb.Append($"<{string.Join(", ", genericParameters)}>");
-                }
             }
 
             var parameters = methodInfo.GetParameters().Select(static p => (p.ParameterType.GetFriendlyName(), p.Name, p.DefaultValue)).ToList();
             if (parametersTransform is not null)
-            {
                 parametersTransform(parameters);
-            }
 
             sb.Append('(');
             var first = true;
             foreach (var (type, name, defaultValue) in parameters)
             {
                 if (!first)
-                {
                     sb.Append(", ");
-                }
                 first = false;
 
                 sb.Append(type);

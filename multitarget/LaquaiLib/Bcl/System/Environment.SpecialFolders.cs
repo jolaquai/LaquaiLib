@@ -2,6 +2,9 @@
 
 namespace LaquaiLib.Extensions
 {
+    /// <summary>
+    /// Provides extensions for the <see cref="global::System.Environment"/> type.
+    /// </summary>
     public static class EnvironmentExtensions
     {
         internal static global::System.Environment.SpecialFolderOption _sfo;
@@ -17,7 +20,10 @@ namespace LaquaiLib.Extensions
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 set => _sfo = value;
             }
-            public static global::LaquaiLib.Bcl.System.SpecialFolders SpecialFolders => global::LaquaiLib.Bcl.System.SpecialFolders.Instance;
+            /// <summary>
+            /// Gets an instance of <see cref="global::LaquaiLib.Bcl.System.SpecialFolders"/> that provides access to the special folders of the system.
+            /// </summary>
+            public static global::LaquaiLib.Bcl.System.SpecialFolders SpecialFolders => Bcl.System.SpecialFolders.Instance;
         }
     }
 }
@@ -29,422 +35,425 @@ namespace LaquaiLib.Bcl.System
     /// </summary>
     public class SpecialFolders
     {
+        /// <summary>
+        /// Gets the singleton instance of <see cref="SpecialFolders"/>.
+        /// </summary>
         public static readonly SpecialFolders Instance = new SpecialFolders();
         private SpecialFolders() { }
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Desktop"/> directory.
         /// </summary>
-        public string DesktopPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Desktop, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string DesktopPath => Environment.GetFolderPath(Environment.SpecialFolder.Desktop, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="DesktopPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Desktop => field ??= new global::System.IO.DirectoryInfo(DesktopPath);
+        public global::System.IO.DirectoryInfo Desktop => new global::System.IO.DirectoryInfo(DesktopPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Programs"/> directory.
         /// </summary>
-        public string ProgramsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Programs, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string ProgramsPath => Environment.GetFolderPath(Environment.SpecialFolder.Programs, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="ProgramsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Programs => field ??= new global::System.IO.DirectoryInfo(ProgramsPath);
+        public global::System.IO.DirectoryInfo Programs => new global::System.IO.DirectoryInfo(ProgramsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.MyDocuments"/> directory.
         /// </summary>
-        public string MyDocumentsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.MyDocuments, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string MyDocumentsPath => Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="MyDocumentsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo MyDocuments => field ??= new global::System.IO.DirectoryInfo(MyDocumentsPath);
+        public global::System.IO.DirectoryInfo MyDocuments => new global::System.IO.DirectoryInfo(MyDocumentsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Favorites"/> directory.
         /// </summary>
-        public string FavoritesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Favorites, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string FavoritesPath => Environment.GetFolderPath(Environment.SpecialFolder.Favorites, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="FavoritesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Favorites => field ??= new global::System.IO.DirectoryInfo(FavoritesPath);
+        public global::System.IO.DirectoryInfo Favorites => new global::System.IO.DirectoryInfo(FavoritesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Startup"/> directory.
         /// </summary>
-        public string StartupPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Startup, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string StartupPath => Environment.GetFolderPath(Environment.SpecialFolder.Startup, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="StartupPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Startup => field ??= new global::System.IO.DirectoryInfo(StartupPath);
+        public global::System.IO.DirectoryInfo Startup => new global::System.IO.DirectoryInfo(StartupPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Recent"/> directory.
         /// </summary>
-        public string RecentPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Recent, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string RecentPath => Environment.GetFolderPath(Environment.SpecialFolder.Recent, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="RecentPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Recent => field ??= new global::System.IO.DirectoryInfo(RecentPath);
+        public global::System.IO.DirectoryInfo Recent => new global::System.IO.DirectoryInfo(RecentPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.SendTo"/> directory.
         /// </summary>
-        public string SendToPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.SendTo, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string SendToPath => Environment.GetFolderPath(Environment.SpecialFolder.SendTo, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="SendToPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo SendTo => field ??= new global::System.IO.DirectoryInfo(SendToPath);
+        public global::System.IO.DirectoryInfo SendTo => new global::System.IO.DirectoryInfo(SendToPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.StartMenu"/> directory.
         /// </summary>
-        public string StartMenuPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.StartMenu, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string StartMenuPath => Environment.GetFolderPath(Environment.SpecialFolder.StartMenu, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="StartMenuPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo StartMenu => field ??= new global::System.IO.DirectoryInfo(StartMenuPath);
+        public global::System.IO.DirectoryInfo StartMenu => new global::System.IO.DirectoryInfo(StartMenuPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.MyMusic"/> directory.
         /// </summary>
-        public string MyMusicPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.MyMusic, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string MyMusicPath => Environment.GetFolderPath(Environment.SpecialFolder.MyMusic, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="MyMusicPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo MyMusic => field ??= new global::System.IO.DirectoryInfo(MyMusicPath);
+        public global::System.IO.DirectoryInfo MyMusic => new global::System.IO.DirectoryInfo(MyMusicPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.MyVideos"/> directory.
         /// </summary>
-        public string MyVideosPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.MyVideos, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string MyVideosPath => Environment.GetFolderPath(Environment.SpecialFolder.MyVideos, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="MyVideosPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo MyVideos => field ??= new global::System.IO.DirectoryInfo(MyVideosPath);
+        public global::System.IO.DirectoryInfo MyVideos => new global::System.IO.DirectoryInfo(MyVideosPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.DesktopDirectory"/> directory.
         /// </summary>
-        public string DesktopDirectoryPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.DesktopDirectory, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string DesktopDirectoryPath => Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="DesktopDirectoryPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo DesktopDirectory => field ??= new global::System.IO.DirectoryInfo(DesktopDirectoryPath);
+        public global::System.IO.DirectoryInfo DesktopDirectory => new global::System.IO.DirectoryInfo(DesktopDirectoryPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.MyComputer"/> directory.
         /// </summary>
-        public string MyComputerPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.MyComputer, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string MyComputerPath => Environment.GetFolderPath(Environment.SpecialFolder.MyComputer, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="MyComputerPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo MyComputer => field ??= new global::System.IO.DirectoryInfo(MyComputerPath);
+        public global::System.IO.DirectoryInfo MyComputer => new global::System.IO.DirectoryInfo(MyComputerPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.NetworkShortcuts"/> directory.
         /// </summary>
-        public string NetworkShortcutsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.NetworkShortcuts, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string NetworkShortcutsPath => Environment.GetFolderPath(Environment.SpecialFolder.NetworkShortcuts, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="NetworkShortcutsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo NetworkShortcuts => field ??= new global::System.IO.DirectoryInfo(NetworkShortcutsPath);
+        public global::System.IO.DirectoryInfo NetworkShortcuts => new global::System.IO.DirectoryInfo(NetworkShortcutsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Fonts"/> directory.
         /// </summary>
-        public string FontsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Fonts, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string FontsPath => Environment.GetFolderPath(Environment.SpecialFolder.Fonts, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="FontsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Fonts => field ??= new global::System.IO.DirectoryInfo(FontsPath);
+        public global::System.IO.DirectoryInfo Fonts => new global::System.IO.DirectoryInfo(FontsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Templates"/> directory.
         /// </summary>
-        public string TemplatesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Templates, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string TemplatesPath => Environment.GetFolderPath(Environment.SpecialFolder.Templates, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="TemplatesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Templates => field ??= new global::System.IO.DirectoryInfo(TemplatesPath);
+        public global::System.IO.DirectoryInfo Templates => new global::System.IO.DirectoryInfo(TemplatesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonStartMenu"/> directory.
         /// </summary>
-        public string CommonStartMenuPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonStartMenu, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonStartMenuPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonStartMenuPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonStartMenu => field ??= new global::System.IO.DirectoryInfo(CommonStartMenuPath);
+        public global::System.IO.DirectoryInfo CommonStartMenu => new global::System.IO.DirectoryInfo(CommonStartMenuPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonPrograms"/> directory.
         /// </summary>
-        public string CommonProgramsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonPrograms, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonProgramsPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonProgramsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonPrograms => field ??= new global::System.IO.DirectoryInfo(CommonProgramsPath);
+        public global::System.IO.DirectoryInfo CommonPrograms => new global::System.IO.DirectoryInfo(CommonProgramsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonStartup"/> directory.
         /// </summary>
-        public string CommonStartupPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonStartup, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonStartupPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonStartupPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonStartup => field ??= new global::System.IO.DirectoryInfo(CommonStartupPath);
+        public global::System.IO.DirectoryInfo CommonStartup => new global::System.IO.DirectoryInfo(CommonStartupPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonDesktopDirectory"/> directory.
         /// </summary>
-        public string CommonDesktopDirectoryPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonDesktopDirectory, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonDesktopDirectoryPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonDesktopDirectoryPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonDesktopDirectory => field ??= new global::System.IO.DirectoryInfo(CommonDesktopDirectoryPath);
+        public global::System.IO.DirectoryInfo CommonDesktopDirectory => new global::System.IO.DirectoryInfo(CommonDesktopDirectoryPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.ApplicationData"/> directory.
         /// </summary>
-        public string ApplicationDataPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.ApplicationData, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string ApplicationDataPath => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="ApplicationDataPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo ApplicationData => field ??= new global::System.IO.DirectoryInfo(ApplicationDataPath);
+        public global::System.IO.DirectoryInfo ApplicationData => new global::System.IO.DirectoryInfo(ApplicationDataPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.PrinterShortcuts"/> directory.
         /// </summary>
-        public string PrinterShortcutsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.PrinterShortcuts, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string PrinterShortcutsPath => Environment.GetFolderPath(Environment.SpecialFolder.PrinterShortcuts, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="PrinterShortcutsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo PrinterShortcuts => field ??= new global::System.IO.DirectoryInfo(PrinterShortcutsPath);
+        public global::System.IO.DirectoryInfo PrinterShortcuts => new global::System.IO.DirectoryInfo(PrinterShortcutsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.LocalApplicationData"/> directory.
         /// </summary>
-        public string LocalApplicationDataPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.LocalApplicationData, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string LocalApplicationDataPath => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="LocalApplicationDataPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo LocalApplicationData => field ??= new global::System.IO.DirectoryInfo(LocalApplicationDataPath);
+        public global::System.IO.DirectoryInfo LocalApplicationData => new global::System.IO.DirectoryInfo(LocalApplicationDataPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.InternetCache"/> directory.
         /// </summary>
-        public string InternetCachePath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.InternetCache, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string InternetCachePath => Environment.GetFolderPath(Environment.SpecialFolder.InternetCache, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="InternetCachePath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo InternetCache => field ??= new global::System.IO.DirectoryInfo(InternetCachePath);
+        public global::System.IO.DirectoryInfo InternetCache => new global::System.IO.DirectoryInfo(InternetCachePath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Cookies"/> directory.
         /// </summary>
-        public string CookiesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Cookies, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CookiesPath => Environment.GetFolderPath(Environment.SpecialFolder.Cookies, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CookiesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Cookies => field ??= new global::System.IO.DirectoryInfo(CookiesPath);
+        public global::System.IO.DirectoryInfo Cookies => new global::System.IO.DirectoryInfo(CookiesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.History"/> directory.
         /// </summary>
-        public string HistoryPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.History, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string HistoryPath => Environment.GetFolderPath(Environment.SpecialFolder.History, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="HistoryPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo History => field ??= new global::System.IO.DirectoryInfo(HistoryPath);
+        public global::System.IO.DirectoryInfo History => new global::System.IO.DirectoryInfo(HistoryPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonApplicationData"/> directory.
         /// </summary>
-        public string CommonApplicationDataPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonApplicationData, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonApplicationDataPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonApplicationDataPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonApplicationData => field ??= new global::System.IO.DirectoryInfo(CommonApplicationDataPath);
+        public global::System.IO.DirectoryInfo CommonApplicationData => new global::System.IO.DirectoryInfo(CommonApplicationDataPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Windows"/> directory.
         /// </summary>
-        public string WindowsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Windows, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string WindowsPath => Environment.GetFolderPath(Environment.SpecialFolder.Windows, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="WindowsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Windows => field ??= new global::System.IO.DirectoryInfo(WindowsPath);
+        public global::System.IO.DirectoryInfo Windows => new global::System.IO.DirectoryInfo(WindowsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.System"/> directory.
         /// </summary>
-        public string SystemPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.System, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string SystemPath => Environment.GetFolderPath(Environment.SpecialFolder.System, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="SystemPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo System => field ??= new global::System.IO.DirectoryInfo(SystemPath);
+        public global::System.IO.DirectoryInfo System => new global::System.IO.DirectoryInfo(SystemPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.ProgramFiles"/> directory.
         /// </summary>
-        public string ProgramFilesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.ProgramFiles, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string ProgramFilesPath => Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="ProgramFilesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo ProgramFiles => field ??= new global::System.IO.DirectoryInfo(ProgramFilesPath);
+        public global::System.IO.DirectoryInfo ProgramFiles => new global::System.IO.DirectoryInfo(ProgramFilesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.MyPictures"/> directory.
         /// </summary>
-        public string MyPicturesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.MyPictures, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string MyPicturesPath => Environment.GetFolderPath(Environment.SpecialFolder.MyPictures, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="MyPicturesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo MyPictures => field ??= new global::System.IO.DirectoryInfo(MyPicturesPath);
+        public global::System.IO.DirectoryInfo MyPictures => new global::System.IO.DirectoryInfo(MyPicturesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.UserProfile"/> directory.
         /// </summary>
-        public string UserProfilePath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.UserProfile, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string UserProfilePath => Environment.GetFolderPath(Environment.SpecialFolder.UserProfile, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="UserProfilePath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo UserProfile => field ??= new global::System.IO.DirectoryInfo(UserProfilePath);
+        public global::System.IO.DirectoryInfo UserProfile => new global::System.IO.DirectoryInfo(UserProfilePath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.SystemX86"/> directory.
         /// </summary>
-        public string SystemX86Path => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.SystemX86, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string SystemX86Path => Environment.GetFolderPath(Environment.SpecialFolder.SystemX86, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="SystemX86Path"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo SystemX86 => field ??= new global::System.IO.DirectoryInfo(SystemX86Path);
+        public global::System.IO.DirectoryInfo SystemX86 => new global::System.IO.DirectoryInfo(SystemX86Path);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.ProgramFilesX86"/> directory.
         /// </summary>
-        public string ProgramFilesX86Path => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.ProgramFilesX86, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string ProgramFilesX86Path => Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="ProgramFilesX86Path"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo ProgramFilesX86 => field ??= new global::System.IO.DirectoryInfo(ProgramFilesX86Path);
+        public global::System.IO.DirectoryInfo ProgramFilesX86 => new global::System.IO.DirectoryInfo(ProgramFilesX86Path);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonProgramFiles"/> directory.
         /// </summary>
-        public string CommonProgramFilesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonProgramFiles, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonProgramFilesPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonProgramFilesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonProgramFiles => field ??= new global::System.IO.DirectoryInfo(CommonProgramFilesPath);
+        public global::System.IO.DirectoryInfo CommonProgramFiles => new global::System.IO.DirectoryInfo(CommonProgramFilesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonProgramFilesX86"/> directory.
         /// </summary>
-        public string CommonProgramFilesX86Path => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonProgramFilesX86, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonProgramFilesX86Path => Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFilesX86, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonProgramFilesX86Path"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonProgramFilesX86 => field ??= new global::System.IO.DirectoryInfo(CommonProgramFilesX86Path);
+        public global::System.IO.DirectoryInfo CommonProgramFilesX86 => new global::System.IO.DirectoryInfo(CommonProgramFilesX86Path);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonTemplates"/> directory.
         /// </summary>
-        public string CommonTemplatesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonTemplates, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonTemplatesPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonTemplates, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonTemplatesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonTemplates => field ??= new global::System.IO.DirectoryInfo(CommonTemplatesPath);
+        public global::System.IO.DirectoryInfo CommonTemplates => new global::System.IO.DirectoryInfo(CommonTemplatesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonDocuments"/> directory.
         /// </summary>
-        public string CommonDocumentsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonDocuments, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonDocumentsPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonDocumentsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonDocuments => field ??= new global::System.IO.DirectoryInfo(CommonDocumentsPath);
+        public global::System.IO.DirectoryInfo CommonDocuments => new global::System.IO.DirectoryInfo(CommonDocumentsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonAdminTools"/> directory.
         /// </summary>
-        public string CommonAdminToolsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonAdminTools, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonAdminToolsPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonAdminTools, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonAdminToolsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonAdminTools => field ??= new global::System.IO.DirectoryInfo(CommonAdminToolsPath);
+        public global::System.IO.DirectoryInfo CommonAdminTools => new global::System.IO.DirectoryInfo(CommonAdminToolsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.AdminTools"/> directory.
         /// </summary>
-        public string AdminToolsPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.AdminTools, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string AdminToolsPath => Environment.GetFolderPath(Environment.SpecialFolder.AdminTools, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="AdminToolsPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo AdminTools => field ??= new global::System.IO.DirectoryInfo(AdminToolsPath);
+        public global::System.IO.DirectoryInfo AdminTools => new global::System.IO.DirectoryInfo(AdminToolsPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonMusic"/> directory.
         /// </summary>
-        public string CommonMusicPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonMusic, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonMusicPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonMusic, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonMusicPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonMusic => field ??= new global::System.IO.DirectoryInfo(CommonMusicPath);
+        public global::System.IO.DirectoryInfo CommonMusic => new global::System.IO.DirectoryInfo(CommonMusicPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonPictures"/> directory.
         /// </summary>
-        public string CommonPicturesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonPictures, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonPicturesPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonPictures, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonPicturesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonPictures => field ??= new global::System.IO.DirectoryInfo(CommonPicturesPath);
+        public global::System.IO.DirectoryInfo CommonPictures => new global::System.IO.DirectoryInfo(CommonPicturesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonVideos"/> directory.
         /// </summary>
-        public string CommonVideosPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonVideos, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonVideosPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonVideos, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonVideosPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonVideos => field ??= new global::System.IO.DirectoryInfo(CommonVideosPath);
+        public global::System.IO.DirectoryInfo CommonVideos => new global::System.IO.DirectoryInfo(CommonVideosPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.Resources"/> directory.
         /// </summary>
-        public string ResourcesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.Resources, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string ResourcesPath => Environment.GetFolderPath(Environment.SpecialFolder.Resources, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="ResourcesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo Resources => field ??= new global::System.IO.DirectoryInfo(ResourcesPath);
+        public global::System.IO.DirectoryInfo Resources => new global::System.IO.DirectoryInfo(ResourcesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.LocalizedResources"/> directory.
         /// </summary>
-        public string LocalizedResourcesPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.LocalizedResources, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string LocalizedResourcesPath => Environment.GetFolderPath(Environment.SpecialFolder.LocalizedResources, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="LocalizedResourcesPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo LocalizedResources => field ??= new global::System.IO.DirectoryInfo(LocalizedResourcesPath);
+        public global::System.IO.DirectoryInfo LocalizedResources => new global::System.IO.DirectoryInfo(LocalizedResourcesPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CommonOemLinks"/> directory.
         /// </summary>
-        public string CommonOemLinksPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CommonOemLinks, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CommonOemLinksPath => Environment.GetFolderPath(Environment.SpecialFolder.CommonOemLinks, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CommonOemLinksPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CommonOemLinks => field ??= new global::System.IO.DirectoryInfo(CommonOemLinksPath);
+        public global::System.IO.DirectoryInfo CommonOemLinks => new global::System.IO.DirectoryInfo(CommonOemLinksPath);
 
         /// <summary>
         /// Gets the path to the <see cref="global::System.Environment.SpecialFolder.CDBurning"/> directory.
         /// </summary>
-        public string CDBurningPath => field ??= global::System.Environment.GetFolderPath(global::System.Environment.SpecialFolder.CDBurning, global::LaquaiLib.Extensions.EnvironmentExtensions.get_DefaultSpecialFolderOption());
+        public string CDBurningPath => Environment.GetFolderPath(Environment.SpecialFolder.CDBurning, EnvironmentExtensions.get_DefaultSpecialFolderOption());
         /// <summary>
         /// Gets a <see cref="global::System.IO.DirectoryInfo"/> instance for the path returned by <see cref="CDBurningPath"/>.
         /// </summary>
-        public global::System.IO.DirectoryInfo CDBurning => field ??= new global::System.IO.DirectoryInfo(CDBurningPath);
+        public global::System.IO.DirectoryInfo CDBurning => new global::System.IO.DirectoryInfo(CDBurningPath);
 
     }
 }

@@ -16,9 +16,7 @@ public static partial class LinqMemoryExtensions
         {
             var arr = GC.AllocateUninitializedArray<TResult>(source.Length);
             for (var i = 0; i < source.Length; i++)
-            {
                 arr[i] = selector(source[i]);
-            }
             return arr;
         }
         /// <summary>
@@ -33,9 +31,7 @@ public static partial class LinqMemoryExtensions
         {
             var arr = GC.AllocateUninitializedArray<TResult>(source.Length);
             for (var i = 0; i < source.Length; i++)
-            {
                 arr[i] = selector(source[i], i);
-            }
             return arr;
         }
 
@@ -55,12 +51,8 @@ public static partial class LinqMemoryExtensions
             var ret = GC.AllocateUninitializedArray<TResult>(source.Length);
             var k = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 if (where(source[i]))
-                {
                     ret[k++] = select(source[i]);
-                }
-            }
             if (k != source.Length)
                 Array.Resize(ref ret, k);
             return ret;

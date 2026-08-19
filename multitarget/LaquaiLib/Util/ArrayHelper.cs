@@ -303,7 +303,7 @@ public static class ArrayHelper
     }
 
     /// <summary>
-    /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the default comparer for <typeparamref name="TCompare"/> in ascending order.
+    /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of arrays using the default comparer for the keys in ascending order.
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="selector">The function to produce the keys to sort by.</param>
@@ -311,7 +311,7 @@ public static class ArrayHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Sort(Array keys, Func<object, object> selector, params Array[] itemsArray) => Sort(keys, selector, null, itemsArray);
     /// <summary>
-    /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the specified <paramref name="comparer"/> in ascending order.
+    /// According to an array of keys produced using the specified <paramref name="selector"/> function, sorts an arbitrary number of arrays using the specified <paramref name="comparer"/> in ascending order.
     /// </summary>
     /// <param name="keys">The array of keys to sort by.</param>
     /// <param name="selector">The function to produce the keys to sort by.</param>

@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
-    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\Test\TestCore\TestCore.csproj" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj"/>
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\Test\TestCore\TestCore.csproj"/>
   </ItemGroup>
 
 </Project>

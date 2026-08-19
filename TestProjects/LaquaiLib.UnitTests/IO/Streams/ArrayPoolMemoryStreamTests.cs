@@ -156,7 +156,7 @@ public class ArrayPoolMemoryStreamTests
     public void WriteAdvancesLength()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3, 4 }, 0, 4);
+        stream.Write([1, 2, 3, 4], 0, 4);
         Assert.Equal(4L, stream.Length);
     }
 
@@ -164,7 +164,7 @@ public class ArrayPoolMemoryStreamTests
     public void WriteAdvancesPosition()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3, 4 }, 0, 4);
+        stream.Write([1, 2, 3, 4], 0, 4);
         Assert.Equal(4L, stream.Position);
     }
 
@@ -172,8 +172,8 @@ public class ArrayPoolMemoryStreamTests
     public void PositionMatchesLengthAfterSuccessiveWrites()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3, 4 }, 0, 4);
-        stream.Write(new byte[] { 5, 6 }, 0, 2);
+        stream.Write([1, 2, 3, 4], 0, 4);
+        stream.Write([5, 6], 0, 2);
         Assert.Equal(6L, stream.Length);
         Assert.Equal(6L, stream.Position);
     }
@@ -182,9 +182,9 @@ public class ArrayPoolMemoryStreamTests
     public void SuccessiveWritesAreContiguous()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3, 4 }, 0, 4);
-        stream.Write(new byte[] { 5, 6 }, 0, 2);
-        stream.Write(new byte[] { 7, 8, 9 }, 0, 3);
+        stream.Write([1, 2, 3, 4], 0, 4);
+        stream.Write([5, 6], 0, 2);
+        stream.Write([7, 8, 9], 0, 3);
         stream.Position = 0;
 
         var buffer = new byte[9];
@@ -216,9 +216,9 @@ public class ArrayPoolMemoryStreamTests
     public void OverwritingDoesNotGrowLength()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3, 4 }, 0, 4);
+        stream.Write([1, 2, 3, 4], 0, 4);
         stream.Position = 0;
-        stream.Write(new byte[] { 9, 9 }, 0, 2);
+        stream.Write([9, 9], 0, 2);
         Assert.Equal(4L, stream.Length);
     }
 
@@ -226,9 +226,9 @@ public class ArrayPoolMemoryStreamTests
     public void OverwritingReplacesExistingBytes()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3, 4 }, 0, 4);
+        stream.Write([1, 2, 3, 4], 0, 4);
         stream.Position = 1;
-        stream.Write(new byte[] { 9, 9 }, 0, 2);
+        stream.Write([9, 9], 0, 2);
         stream.Position = 0;
         var buffer = new byte[4];
         Assert.Equal(4, stream.Read(buffer, 0, 4));
@@ -566,7 +566,7 @@ public class ArrayPoolMemoryStreamTests
     {
         var pool = new TrackingArrayPool(0xFF);
         using var stream = new ArrayPoolMemoryStream(64, skipZeroing: true, pool: pool);
-        stream.Write(new byte[] { 1, 2, 3 }, 0, 3);
+        stream.Write([1, 2, 3], 0, 3);
         stream.SetLength(8);
         stream.Position = 0;
         var buffer = new byte[8];
@@ -579,7 +579,7 @@ public class ArrayPoolMemoryStreamTests
     {
         var pool = new TrackingArrayPool(0xFF);
         using var stream = new ArrayPoolMemoryStream(64, pool: pool);
-        stream.Write(new byte[] { 1, 2 }, 0, 2);
+        stream.Write([1, 2], 0, 2);
         stream.Position = 5;
         stream.WriteByte(9);
         stream.Position = 0;
@@ -593,7 +593,7 @@ public class ArrayPoolMemoryStreamTests
     {
         var pool = new TrackingArrayPool(0xFF);
         using var stream = new ArrayPoolMemoryStream(64, skipZeroing: true, pool: pool);
-        stream.Write(new byte[] { 1, 2 }, 0, 2);
+        stream.Write([1, 2], 0, 2);
         stream.Position = 5;
         stream.WriteByte(9);
         stream.Position = 0;
@@ -786,7 +786,7 @@ public class ArrayPoolMemoryStreamTests
     public async Task WriteAsyncArrayOverloadHonoursOffsetAndCount()
     {
         using var stream = new ArrayPoolMemoryStream();
-        await stream.WriteAsync(new byte[] { 0, 1, 2, 3, 0 }, 1, 3, default);
+        await stream.WriteAsync([0, 1, 2, 3, 0], 1, 3, default);
         Assert.Equal(3L, stream.Length);
         stream.Position = 0;
         var buffer = new byte[3];
@@ -1222,7 +1222,7 @@ public class ArrayPoolMemoryStreamTests
     public void GetSpanAndGetMemoryAliasTheSameBytes()
     {
         using var stream = new ArrayPoolMemoryStream();
-        stream.Write(new byte[] { 1, 2, 3 }, 0, 3);
+        stream.Write([1, 2, 3], 0, 3);
         var span = stream.GetSpan(4);
         span[0] = 42;
         var memory = stream.GetMemory(4);
@@ -1691,5 +1691,298 @@ public class ArrayPoolMemoryStreamTests
         Assert.Equal(data.Length, stream.Read(actual, 0, actual.Length));
         Assert.Equal(data, actual);
         Assert.Equal(stream.Capacity, pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length));
+    }
+
+    private static ArrayPoolMemoryStream SegmentedStream(ArrayPool<byte> pool, byte[] data, int chunk)
+    {
+        var stream = new ArrayPoolMemoryStream(chunk, pool: pool);
+        for (var i = 0; i < data.Length; i += chunk)
+            stream.Write(data, i, int.Min(chunk, data.Length - i));
+        return stream;
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().AsReadOnlySequence());
+
+    [Fact]
+    public void AsReadOnlySequenceOfEmptyStreamIsEmpty()
+    {
+        using var stream = new ArrayPoolMemoryStream(16);
+        var sequence = stream.AsReadOnlySequence();
+        Assert.True(sequence.IsEmpty);
+        Assert.Equal(0L, sequence.Length);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceOfPreallocatedButUnwrittenStreamIsEmpty()
+    {
+        using var stream = new ArrayPoolMemoryStream(16, 1024);
+        Assert.Equal(0L, stream.AsReadOnlySequence().Length);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(15)]
+    [InlineData(16)]
+    [InlineData(17)]
+    [InlineData(31)]
+    [InlineData(32)]
+    [InlineData(33)]
+    [InlineData(200)]
+    public void AsReadOnlySequenceMatchesWrittenBytes(int size)
+    {
+        var data = Sequence(size);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xCD), data, 16);
+        var sequence = stream.AsReadOnlySequence();
+        Assert.Equal(size, sequence.Length);
+        Assert.Equal(data, sequence.ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceOfSingleSegmentStreamIsSingleSegment()
+    {
+        var data = Sequence(10);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        Assert.True(stream.AsReadOnlySequence().IsSingleSegment);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceSpansMultipleSegments()
+    {
+        var data = Sequence(64);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var sequence = stream.AsReadOnlySequence();
+        Assert.False(sequence.IsSingleSegment);
+        Assert.Equal(data, sequence.ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceAtExactCapacityDoesNotThrow()
+    {
+        var data = Sequence(16);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        Assert.Equal(stream.Length, stream.Capacity);
+        Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceAtExactCapacityAcrossSegmentsDoesNotThrow()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        Assert.Equal(stream.Length, stream.Capacity);
+        Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceEndingOnASegmentBoundaryYieldsNoEmptySegments()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        stream.SetLength(32);
+
+        var sequence = stream.AsReadOnlySequence();
+        Assert.Equal(32L, sequence.Length);
+        Assert.Equal(data[..32], sequence.ToArray());
+        foreach (var segment in sequence)
+            Assert.False(segment.IsEmpty);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceYieldsNoEmptySegmentsAtExactCapacity()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        foreach (var segment in stream.AsReadOnlySequence())
+            Assert.False(segment.IsEmpty);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceDoesNotExposeCapacityBeyondLength()
+    {
+        var data = Sequence(40);
+        using var stream = SegmentedStream(new RoundingArrayPool(0xEE), data, 16);
+        Assert.True(stream.Capacity > stream.Length);
+        Assert.Equal(stream.Length, stream.AsReadOnlySequence().Length);
+        Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceSlicingAtEveryOffsetMatchesTheSourceData()
+    {
+        var data = Sequence(70);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var sequence = stream.AsReadOnlySequence();
+        for (var i = 0; i <= data.Length; i++)
+            Assert.Equal(data[i..], sequence.Slice(i).ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceSupportsSequenceReader()
+    {
+        var data = Sequence(100);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var reader = new SequenceReader<byte>(stream.AsReadOnlySequence());
+        var actual = new byte[data.Length];
+        Assert.True(reader.TryCopyTo(actual));
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceIgnoresPositionAndLeavesItAlone()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        stream.Position = 30;
+        Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+        Assert.Equal(30L, stream.Position);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceDoesNotChangeLengthOrCapacity()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var length = stream.Length;
+        var capacity = stream.Capacity;
+        stream.AsReadOnlySequence();
+        Assert.Equal(length, stream.Length);
+        Assert.Equal(capacity, stream.Capacity);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceReflectsTruncation()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xAB), data, 16);
+        stream.SetLength(20);
+        Assert.Equal(data[..20], stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceReflectsTruncationToZero()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xAB), data, 16);
+        stream.SetLength(0);
+        Assert.True(stream.AsReadOnlySequence().IsEmpty);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceExposesZeroesForSetLengthGrowth()
+    {
+        var pool = new TrackingArrayPool(0xAB);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(8);
+        stream.Write(data, 0, data.Length);
+        stream.SetLength(40);
+
+        var actual = stream.AsReadOnlySequence().ToArray();
+        Assert.Equal(40, actual.Length);
+        Assert.Equal(data, actual[..8]);
+        Assert.All(actual[8..], b => Assert.Equal(0, b));
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceSeesBufferWriterWrites()
+    {
+        var data = Sequence(50);
+        using var stream = new ArrayPoolMemoryStream(16, pool: new TrackingArrayPool());
+        data.CopyTo(stream.GetMemory(data.Length));
+        stream.Advance(data.Length);
+        Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceIsCorrectAfterConsolidation()
+    {
+        var data = Sequence(64);
+        using var stream = SegmentedStream(new RoundingArrayPool(0xEE), data, 16);
+        stream.Position = 8;
+        stream.GetSpan(40);
+        stream.Position = stream.Length;
+        Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceIsCorrectAfterTrimExcess()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        stream.SetLength(20);
+        stream.TrimExcess();
+        Assert.Equal(data[..20], stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceIsCorrectAfterTrimExcessOnASegmentBoundary()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        stream.SetLength(32);
+        stream.TrimExcess();
+        Assert.Equal(stream.Length, stream.Capacity);
+        Assert.Equal(data[..32], stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceWithSharedPoolMatchesWrittenBytes()
+    {
+        var data = Sequence(10000);
+        using var stream = new ArrayPoolMemoryStream(256);
+        for (var i = 0; i < data.Length; i += 256)
+            stream.Write(data, i, int.Min(256, data.Length - i));
+        Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceCopiesIntoADestinationSpan()
+    {
+        var data = Sequence(70);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var actual = new byte[data.Length];
+        stream.AsReadOnlySequence().CopyTo(actual);
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void AsReadOnlySequenceMatchesMemoryStreamOracle()
+    {
+        var random = new Random(12345);
+        using var stream = new ArrayPoolMemoryStream(16);
+        using var oracle = new MemoryStream();
+
+        for (var iteration = 0; iteration < 300; iteration++)
+        {
+            switch (random.Next(3))
+            {
+                case 0:
+                {
+                    var chunk = new byte[random.Next(1, 41)];
+                    random.NextBytes(chunk);
+                    stream.Write(chunk, 0, chunk.Length);
+                    oracle.Write(chunk, 0, chunk.Length);
+                    break;
+                }
+                case 1:
+                {
+                    var target = random.Next(0, (int)oracle.Length + 20);
+                    stream.Position = target;
+                    oracle.Position = target;
+                    break;
+                }
+                case 2:
+                {
+                    var newLength = random.Next(0, (int)oracle.Length + 40);
+                    stream.SetLength(newLength);
+                    oracle.SetLength(newLength);
+                    break;
+                }
+            }
+
+            var sequence = stream.AsReadOnlySequence();
+            Assert.Equal(stream.Length, sequence.Length);
+            Assert.Equal(oracle.ToArray(), sequence.ToArray());
+        }
     }
 }

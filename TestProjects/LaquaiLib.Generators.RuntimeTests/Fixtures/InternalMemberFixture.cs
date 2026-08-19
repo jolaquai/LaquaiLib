@@ -4,7 +4,10 @@ namespace LaquaiLib.Generators.RuntimeTests.Fixtures;
 internal class InternalResultType
 {
     public int Payload;
-    public InternalResultType(int payload) => Payload = payload;
+    public InternalResultType(int payload)
+    {
+        Payload = payload;
+    }
 }
 
 public class InternalMemberFixture

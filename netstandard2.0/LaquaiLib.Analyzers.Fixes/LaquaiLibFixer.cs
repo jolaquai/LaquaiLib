@@ -44,9 +44,7 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
     private async Task<Document> FixAllAsync(FixAllContext fixAllContext, Document document, ImmutableArray<Diagnostic> diagnostics)
     {
         if (diagnostics.IsEmpty)
-        {
             return document;
-        }
 
         var root = await document.GetRootAsync(fixAllContext.CancellationToken).ConfigureAwait(false);
         var editor = await DocumentEditor.CreateAsync(document, fixAllContext.CancellationToken).ConfigureAwait(false);
@@ -61,25 +59,17 @@ public abstract class LaquaiLibFixer(params ImmutableArray<string> fixableDiagno
                 var info = infos[j];
                 // A diagnostic may offer several alternative actions; apply only the one the user invoked the fix-all from.
                 if ($"{Prefix}_{info.EquivalenceKey}" != fixAllContext.CodeActionEquivalenceKey)
-                {
                     continue;
-                }
                 await info.Action(editor).ConfigureAwait(false);
                 if (!info.PostFixActions.IsDefaultOrEmpty)
-                {
                     (postFixes ??= []).AddRange(info.PostFixActions);
-                }
             }
         }
 
         var changed = editor.GetChangedDocument();
         if (postFixes is not null)
-        {
             for (var i = 0; i < postFixes.Count; i++)
-            {
                 changed = await postFixes[i](changed, fixAllContext.CancellationToken).ConfigureAwait(false);
-            }
-        }
 
         return changed;
     }
@@ -143,9 +133,7 @@ public abstract class LaquaiLibRefactoring : CodeRefactoringProvider
         var root = await document.GetRootAsync(cancellationToken).ConfigureAwait(false);
         var anchors = await GetRefactorAllSpansAsync(document, root, cancellationToken).ConfigureAwait(false);
         if (anchors.IsDefaultOrEmpty)
-        {
             return document;
-        }
 
         var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
         List<PostFixAction> postFixes = null;
@@ -156,14 +144,10 @@ public abstract class LaquaiLibRefactoring : CodeRefactoringProvider
             var anchor = anchors[i];
             // The member/type scopes hand back the regions to stay inside of, not the anchors themselves
             if (scopeSpans.HasValue && !ContainsAny(scopeSpans.Value, anchor))
-            {
                 continue;
-            }
             // A DocumentEditor throws if a node inside one it already replaced is replaced too; anchors come in document order, so only the last kept one can enclose this
             if (applied && lastApplied.Contains(anchor))
-            {
                 continue;
-            }
 
             var infos = await GetCodeActionInfosAsync(document, root, anchor, cancellationToken).ConfigureAwait(false);
             for (var j = 0; j < infos.Length; j++)
@@ -171,43 +155,29 @@ public abstract class LaquaiLibRefactoring : CodeRefactoringProvider
                 var info = infos[j];
                 // A span may offer several alternative actions; apply only the one the user invoked the refactor-all from.
                 if ($"{Prefix}_{info.EquivalenceKey}" != refactorAllContext.CodeActionEquivalenceKey)
-                {
                     continue;
-                }
                 await info.Action(editor).ConfigureAwait(false);
                 applied = true;
                 lastApplied = anchor;
                 if (!info.PostFixActions.IsDefaultOrEmpty)
-                {
                     (postFixes ??= []).AddRange(info.PostFixActions);
-                }
             }
         }
         if (!applied)
-        {
             return document;
-        }
 
         var changed = editor.GetChangedDocument();
         if (postFixes is not null)
-        {
             for (var i = 0; i < postFixes.Count; i++)
-            {
                 changed = await postFixes[i](changed, cancellationToken).ConfigureAwait(false);
-            }
-        }
 
         return changed;
     }
     private static bool ContainsAny(ImmutableArray<TextSpan> spans, TextSpan span)
     {
         for (var i = 0; i < spans.Length; i++)
-        {
             if (spans[i].Contains(span))
-            {
                 return true;
-            }
-        }
         return false;
     }
 
@@ -413,9 +383,7 @@ public static class WellKnownPostFixActions
         var newUsings = new HashSet<string>(usings);
         newUsings.ExceptWith(compilationUnitSyntax.Usings.Select(static u => u.Name.ToString()));
         if (newUsings.Count == 0)
-        {
             return document;
-        }
         var directives = newUsings.Select(static u => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(u))).ToArray();
         return document.WithSyntaxRoot(compilationUnitSyntax.AddUsings(directives));
     };

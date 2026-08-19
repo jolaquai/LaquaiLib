@@ -17,9 +17,7 @@ public static class DependencyObjectExtensions
         public void UpdateBindings()
         {
             if (obj is null)
-            {
                 return;
-            }
 
             var locals = obj.GetLocalValueEnumerator();
             while (locals.MoveNext())

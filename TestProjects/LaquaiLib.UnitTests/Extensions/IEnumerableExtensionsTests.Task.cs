@@ -11,9 +11,7 @@ public class IEnumerableExtensionsTaskTests
         var tasks = new List<Task>();
 
         for (var i = 0; i < 3; i++)
-        {
             tasks.Add(Task.Run(() => Interlocked.Increment(ref counter)));
-        }
 
         await tasks;
 
@@ -27,9 +25,7 @@ public class IEnumerableExtensionsTaskTests
         var tasks = new List<Task>();
 
         for (var i = 0; i < 3; i++)
-        {
             tasks.Add(new Task(() => Interlocked.Increment(ref counter)));
-        }
 
         tasks.Start();
         Task.WaitAll([.. tasks], TestContext.Current.CancellationToken);
@@ -44,13 +40,11 @@ public class IEnumerableExtensionsTaskTests
         var tasks = new List<Task>();
 
         for (var i = 0; i < 3; i++)
-        {
             tasks.Add(Task.Run(async () =>
             {
                 await Task.Delay(50);
                 Interlocked.Increment(ref counter);
             }, TestContext.Current.CancellationToken));
-        }
 
         tasks.WaitAll(cancellationToken: TestContext.Current.CancellationToken);
 
@@ -108,13 +102,11 @@ public class IEnumerableExtensionsTaskTests
         var tasks = new List<Task>();
 
         for (var i = 0; i < 3; i++)
-        {
             tasks.Add(Task.Run(async () =>
             {
                 await Task.Delay(50 * i);
                 Interlocked.Increment(ref counter);
             }, TestContext.Current.CancellationToken));
-        }
 
         await tasks.WhenAll();
 

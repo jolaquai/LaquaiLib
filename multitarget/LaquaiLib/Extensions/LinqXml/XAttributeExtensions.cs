@@ -18,9 +18,7 @@ public static class XAttributeExtensions
             var addTo = attribute.Parent;
             attribute.Remove();
             if (other is not null)
-            {
                 addTo.Add(other);
-            }
         }
     }
 }

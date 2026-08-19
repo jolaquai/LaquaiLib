@@ -37,9 +37,7 @@ public static partial class StreamExtensions
         {
             var requiredSpace = ms.Length - ms.Position;
             if (span.Length < requiredSpace)
-            {
                 throw new ArgumentException($"The provided {nameof(Span<>)} is too small to hold the rest of the stream (can only accommodate {span.Length}/{requiredSpace} bytes).");
-            }
             ms.ReadExactly(span);
         }
         /// <summary>
@@ -63,9 +61,7 @@ public static partial class StreamExtensions
         {
             var requiredSpace = ms.Length - ms.Position;
             if (memory.Length < requiredSpace)
-            {
                 throw new ArgumentException($"The provided {nameof(Memory<>)} is too small to hold the rest of the stream (can only accommodate {memory.Length}/{requiredSpace} bytes).");
-            }
             await ms.ReadExactlyAsync(memory, cancellationToken).ConfigureAwait(false);
         }
     }

@@ -1,8 +1,6 @@
-﻿using System.Buffers;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
 
-using LaquaiLib.Extensions;
 using LaquaiLib.UnsafeUtils;
 
 namespace LaquaiLib.IO;
@@ -20,14 +18,10 @@ public static partial class FileSystemHelper
         destination = Path.GetFullPath(destination);
 
         if (source == destination)
-        {
             throw new ArgumentException("Source and destination are the same.");
-        }
 
         if (!overwrite && File.Exists(destination))
-        {
             throw new IOException("Destination file already exists.");
-        }
     }
     /// <summary>
     /// Copies a file to a new location.
@@ -84,9 +78,7 @@ public static partial class FileSystemHelper
         var destFs = File.Create(destination);
         await using (srcFs.ConfigureAwait(false))
         await using (destFs.ConfigureAwait(false))
-        {
             await srcFs.CopyToAsync(destFs, cancellationToken).ConfigureAwait(false);
-        }
     }
     /// <summary>
     /// Asynchronously moves a file to a new location.
@@ -126,13 +118,9 @@ public static partial class FileSystemHelper
 
         // Fast file size retrieval via P/Invoke
         if (!Kernel32.GetFileAttributesEx(source, 0, out var fileData))
-        {
             throw new FileNotFoundException("Source file not found", source);
-        }
         if (!overwrite && Kernel32.GetFileAttributesEx(destination, 0, out _))
-        {
             throw new IOException("Destination file already exists.");
-        }
 
         var fileSize = ((long)fileData.nFileSizeHigh << 32) | fileData.nFileSizeLow;
 
@@ -142,36 +130,26 @@ public static partial class FileSystemHelper
 
         // For files that fit in your 25GB memory, use single-shot copy
         if (memoryConstraint < 0)
-        {
             memoryConstraint = (long)(GC.GetGCMemoryInfo().TotalAvailableMemoryBytes * 0.8);
-        }
         if (fileSize <= memoryConstraint
             && fileSize >= 1024 * 1024
             && fileSize % sectorSize == 0 // Unbuffered copy requires sector alignment
             && await Task.Run(() => TryUnbufferedCopy(source, destination)).ConfigureAwait(false)
         )
-        {
             return;
-        }
         // Attempt single-shot memory copy for files
         // - larger than the memory constraint (which almost definitely means it's larger than CopySingleShot can do), OR
         // - smaller than the minimum for unbuffered copy (since that would hurt performance), OR
         // - not sector aligned, OR
         // - as a fallback for unbuffered copy failure
         if (await Task.Run(() => CopySingleShot(source, destination, fileSize)).ConfigureAwait(false))
-        {
             return;
-        }
         // Attempt chunked memory copy for files as a fallback for SingleShotCopy
         if (await Task.Run(() => CopyChunked(source, destination, fileSize)).ConfigureAwait(false))
-        {
             return;
-        }
         // Final fallback is a typical streamed copy
         if (await CopyStreamed(source, destination).ConfigureAwait(false))
-        {
             return;
-        }
 
         // Last resort: let the OS handle it
         try
@@ -209,9 +187,7 @@ public static partial class FileSystemHelper
     {
         // Bail now if the file is larger than the 2GB we can contain in a Span<byte>
         if (fileSize > int.MaxValue)
-        {
             return false;
-        }
 
         // Always allocate unmanaged memory for this since it's dramatically faster than any kind of managed alloc
         var span = MemoryManager.Allocate<byte>(unchecked((int)fileSize));
@@ -233,9 +209,7 @@ public static partial class FileSystemHelper
     private static bool CopyChunked(string source, string dest, long fileSize)
     {
         if (fileSize <= int.MaxValue)
-        {
             return CopySingleShot(source, dest, fileSize);
-        }
 
         // Always allocate unmanaged memory for this since it's dramatically faster than any kind of managed alloc
         var span = MemoryManager.Allocate<byte>(int.MaxValue);

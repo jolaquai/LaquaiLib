@@ -1,7 +1,5 @@
 using System.Diagnostics;
 
-using LaquaiLib.Extensions;
-
 namespace LaquaiLib.Collections;
 
 /// <summary>
@@ -36,13 +34,11 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
             var i = 0;
             var current = Head;
             if (current is not null)
-            {
                 do
                 {
                     i++;
                     current = current.Next;
                 } while (!ReferenceEquals(current, Head));
-            }
             return i;
         }
     }
@@ -73,9 +69,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     public Deque(params ReadOnlySpan<T> values)
     {
         foreach (var value in values)
-        {
             _ = AddLast(value);
-        }
     }
     /// <summary>
     /// Initializes a new <see cref="Deque{T}"/> with the specified number of nodes that contain the default value of <typeparamref name="T"/>.
@@ -84,9 +78,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     public Deque(int nodes)
     {
         for (var i = 0; i < nodes; i++)
-        {
             _ = AddLast(default(T));
-        }
     }
     /// <summary>
     /// Initializes a new <see cref="Deque{T}"/> by creating copies of the nodes in the specified <see cref="LinkedList{T}"/>.
@@ -96,9 +88,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     public Deque(LinkedList<T> linkedList)
     {
         foreach (var value in linkedList)
-        {
             _ = AddLast(value);
-        }
     }
     #endregion
 
@@ -116,9 +106,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
             do
             {
                 if (node.Value?.Equals(value) is true)
-                {
                     return node;
-                }
                 node = node.Next;
             } while (node != Head && node is not null);
         }
@@ -137,9 +125,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
             do
             {
                 if (node.Value?.Equals(value) is true)
-                {
                     return node;
-                }
                 node = node.Previous;
             } while (node != Tail && node is not null);
         }
@@ -160,9 +146,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
                 do
                 {
                     if (node.Value?.Equals(value) is true)
-                    {
                         yield return node;
-                    }
                     node = node.Next;
                 } while (node != Head && node is not null);
             }
@@ -193,13 +177,9 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         ArgumentNullException.ThrowIfNull(newNode);
 
         if (node.Deque != this)
-        {
             throw new InvalidOperationException("The specified node does not belong to this deque.");
-        }
         if (newNode.Deque != null)
-        {
             throw new InvalidOperationException("The specified node already belongs to a deque.");
-        }
 
         var oldNext = node.Next!;
         node.Next = newNode;
@@ -251,9 +231,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         ArgumentNullException.ThrowIfNull(node);
 
         if (node.Deque != null)
-        {
             throw new InvalidOperationException("The specified node already belongs to a deque.");
-        }
 
         switch (Head)
         {
@@ -296,9 +274,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         ArgumentNullException.ThrowIfNull(node);
 
         if (node.Deque != null)
-        {
             throw new InvalidOperationException("The specified node already belongs to a deque.");
-        }
 
         switch (Head)
         {
@@ -338,16 +314,12 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     {
         var current = Head;
         if (current is not null)
-        {
             do
             {
                 if ((comparer ?? EqualityComparer<T>.Default).Equals(value, current.Value))
-                {
                     return true;
-                }
                 current = current.Next;
             } while (!ReferenceEquals(current, Head));
-        }
         return false;
     }
     /// <summary>
@@ -361,19 +333,13 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
 
         var nodeCount = Count;
         if (index < 0 || index > array.Length)
-        {
             throw new ArgumentOutOfRangeException(nameof(index), index, $"The specified index is out of range. It must be between 0 and {array.Length}.");
-        }
         if (index + nodeCount > array.Length)
-        {
             throw new ArgumentOutOfRangeException(nameof(array), $"The destination array (length {array.Length}) is not large enough to hold {nodeCount} elements starting at index {index}.");
-        }
 
         var current = Head;
         if (current is null)
-        {
             return;
-        }
         var i = index;
         do
         {
@@ -391,25 +357,15 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         do
         {
             if (current.Deque != this)
-            {
                 throw new DetachedDequeNodeException<T>(current, DetachedDequeNodeException<T>.OffenseKind.NoDeque);
-            }
             if (current.Next is null)
-            {
                 throw new DetachedDequeNodeException<T>(current, DetachedDequeNodeException<T>.OffenseKind.NoNext);
-            }
             if (current.Previous is null)
-            {
                 throw new DetachedDequeNodeException<T>(current, DetachedDequeNodeException<T>.OffenseKind.NoPrevious);
-            }
             if (current.Next.Previous != current)
-            {
                 throw new DetachedDequeNodeException<T>(current.Next, DetachedDequeNodeException<T>.OffenseKind.InconsistentNext);
-            }
             if (current.Previous.Next != current)
-            {
                 throw new DetachedDequeNodeException<T>(current.Previous, DetachedDequeNodeException<T>.OffenseKind.InconsistentPrevious);
-            }
             current = current.Next;
         } while (current != Head);
     }
@@ -422,25 +378,19 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
     public DequeNode<T> Rotate(int n)
     {
         if (Head is not null)
-        {
             switch (n)
             {
                 case 0:
                     return Head;
                 case > 0:
                     while (n-- != 0)
-                    {
                         Head = Head!.Previous;
-                    }
                     break;
                 case < 0:
                     while (n++ != 0)
-                    {
                         Head = Head!.Next;
-                    }
                     break;
             }
-        }
         return Head;
     }
     #endregion
@@ -459,9 +409,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         ArgumentNullException.ThrowIfNull(node);
 
         if (node.Deque != this)
-        {
             throw new InvalidOperationException("The specified node does not belong to this deque.");
-        }
 
         if (node == Head && node.Next == Head && node.Previous == Head)
         {
@@ -476,9 +424,7 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         oldPrevious.Next = oldNext;
 
         if (node == Head)
-        {
             Head = oldNext;
-        }
 
         node.Next = null;
         node.Previous = null;
@@ -495,7 +441,6 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
         var removed = 0;
         var current = Head;
         if (current is not null)
-        {
             do
             {
                 var next = current.Next;
@@ -506,7 +451,6 @@ public class Deque<T> : IEnumerable<DequeNode<T>>, IEnumerable<T>
                 }
                 current = next;
             } while (!ReferenceEquals(current, Head));
-        }
 
         return removed;
     }
@@ -620,7 +564,10 @@ public class DequeNode<T>(T value) : IEquatable<DequeNode<T>>
     /// <param name="next">The next node in the <see cref="Deque{T}"/>.</param>
     /// <param name="previous">The previous node in the <see cref="Deque{T}"/>.</param>
     /// <param name="deque">The <see cref="Deque{T}"/> this node belongs to.</param>
-    public DequeNode(T value, DequeNode<T> next, DequeNode<T> previous, Deque<T> deque) : this(value, next, previous) => Deque = deque;
+    public DequeNode(T value, DequeNode<T> next, DequeNode<T> previous, Deque<T> deque) : this(value, next, previous)
+    {
+        Deque = deque;
+    }
 
     /// <summary>
     /// Returns the <see cref="Deque{T}"/> this node belongs to.

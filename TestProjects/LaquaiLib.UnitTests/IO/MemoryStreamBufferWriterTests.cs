@@ -66,14 +66,14 @@ public class MemoryStreamBufferWriterTests
     public void InterleavedStreamAndWriterWritesConcatenateInOrder()
     {
         using var writer = new MemoryStreamBufferWriter();
-        writer.BaseStream.Write(new byte[] { 1, 2 });
+        writer.BaseStream.Write([1, 2]);
 
         var span = writer.GetMemory(2).Span;
         span[0] = 3;
         span[1] = 4;
         writer.Advance(2);
 
-        writer.BaseStream.Write(new byte[] { 5, 6 });
+        writer.BaseStream.Write([5, 6]);
 
         Assert.Equal(new byte[] { 1, 2, 3, 4, 5, 6 }, writer.BaseStream.ToArray());
     }
@@ -82,7 +82,7 @@ public class MemoryStreamBufferWriterTests
     public void WrappingPrepopulatedStreamAppendsFromCurrentPosition()
     {
         var stream = new MemoryStream();
-        stream.Write(new byte[] { 1, 2, 3, 4 });
+        stream.Write([1, 2, 3, 4]);
         stream.Position = 2;
 
         using var writer = new MemoryStreamBufferWriter(stream);
@@ -303,7 +303,7 @@ public class MemoryStreamBufferWriterTests
     public void SeekingPastLengthThenWritingZeroesTheGap()
     {
         var stream = new MemoryStream();
-        stream.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF });
+        stream.Write([0xFF, 0xFF, 0xFF, 0xFF]);
         stream.Position = 0;
 
         using var writer = new MemoryStreamBufferWriter(stream);

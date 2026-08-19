@@ -1,5 +1,3 @@
-using LaquaiLib.Extensions;
-
 namespace LaquaiLib.Util.WpfForms.MessageBox;
 
 // Contains just the Show method overloads
@@ -30,9 +28,7 @@ public partial class MessageBoxFactory
         otherOptions ??= OtherOptions;
 
         if (ownerHwnd == 0 && button.Value.HasFlag(MessageBoxButton.HelpButton))
-        {
             ownerHwnd = User32.CreateWindowExW(0, "STATIC", "DummyWindow", 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        }
 
         return User32.PInvokeMessageBox(ownerHwnd.Value, text, caption, button.Value | defaultButton.Value | icon.Value | modality.Value | otherOptions.Value);
     }

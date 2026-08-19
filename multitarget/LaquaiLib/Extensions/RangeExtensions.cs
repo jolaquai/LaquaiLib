@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-
 namespace LaquaiLib.Extensions;
 
 /// <summary>
@@ -38,20 +36,25 @@ public static class RangeExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerator<int> GetEnumerator() => new RangeEnumerator(range);
 
+        /// <inheritdoc/>
         public IEnumerable<TResult> Select<TResult>(Func<int, TResult> selector) =>
         range.GetRange().Select(selector);
 
+        /// <inheritdoc/>
         public IEnumerable<int> Where(Func<int, bool> predicate) =>
             range.GetRange().Where(predicate);
 
+        /// <inheritdoc/>
         public IEnumerable<TResult> SelectMany<TResult>(Func<int, IEnumerable<TResult>> selector) =>
             range.GetRange().SelectMany(selector);
 
+        /// <inheritdoc/>
         public IEnumerable<TResult> SelectMany<TCollection, TResult>(
             Func<int, IEnumerable<TCollection>> collectionSelector,
             Func<int, TCollection, TResult> resultSelector) =>
             range.GetRange().SelectMany(collectionSelector, resultSelector);
 
+        /// <inheritdoc/>
         public IEnumerable<TResult> Join<TInner, TKey, TResult>(
             IEnumerable<TInner> inner,
             Func<int, TKey> outerKeySelector,
@@ -59,6 +62,7 @@ public static class RangeExtensions
             Func<int, TInner, TResult> resultSelector) =>
             range.GetRange().Join(inner, outerKeySelector, innerKeySelector, resultSelector);
 
+        /// <inheritdoc/>
         public IEnumerable<TResult> GroupJoin<TInner, TKey, TResult>(
             IEnumerable<TInner> inner,
             Func<int, TKey> outerKeySelector,
@@ -66,15 +70,19 @@ public static class RangeExtensions
             Func<int, IEnumerable<TInner>, TResult> resultSelector) =>
             range.GetRange().GroupJoin(inner, outerKeySelector, innerKeySelector, resultSelector);
 
+        /// <inheritdoc/>
         public IOrderedEnumerable<int> OrderBy<TKey>(Func<int, TKey> keySelector) =>
             range.GetRange().OrderBy(keySelector);
 
+        /// <inheritdoc/>
         public IOrderedEnumerable<int> OrderByDescending<TKey>(Func<int, TKey> keySelector) =>
             range.GetRange().OrderByDescending(keySelector);
 
+        /// <inheritdoc/>
         public IEnumerable<IGrouping<TKey, int>> GroupBy<TKey>(Func<int, TKey> keySelector) =>
             range.GetRange().GroupBy(keySelector);
 
+        /// <inheritdoc/>
         public IEnumerable<IGrouping<TKey, TElement>> GroupBy<TKey, TElement>(
             Func<int, TKey> keySelector,
             Func<int, TElement> elementSelector) =>

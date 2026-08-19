@@ -162,6 +162,9 @@
             </summary>
             <returns>The command line of the specified <see cref="T:System.Diagnostics.Process"/> or <see langword="null"/> if it could not be retrieved.</returns>
         </member>
+        <member name="T:LaquaiLib.Windows.Extensions.ThreadingExtensions">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.SwitchTo(System.Windows.Threading.Dispatcher)">
             <inheritdoc cref="M:LaquaiLib.Windows.Extensions.ThreadingExtensions.&lt;G&gt;$F0DF1BEE62EB3104FCFBC02FE07DD85E.SwitchTo"/>
         </member>

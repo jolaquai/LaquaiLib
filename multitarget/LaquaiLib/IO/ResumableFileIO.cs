@@ -1,7 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using LaquaiLib.Extensions;
-
 namespace LaquaiLib.IO;
 
 /// <summary>
@@ -27,6 +25,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
     private volatile int running;
     private CancellationTokenSource cts;
 
+    /// <inheritdoc/>
     public Task<bool> CopyFileAsync(
         string sourcePath,
         string destinationPath,
@@ -35,6 +34,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
         CancellationToken cancellationToken = default
     )
         => MigrateFileAsync(sourcePath, destinationPath, true, overwrite, progress, cancellationToken);
+    /// <inheritdoc/>
     public Task<bool> MoveFileAsync(
         string sourcePath,
         string destinationPath,
@@ -53,9 +53,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
         CancellationToken cancellationToken = default)
     {
         if (Interlocked.Exchange(ref running, 1) == 1)
-        {
             throw new InvalidOperationException($"Another operation is already running on this instance. {nameof(ResumableFileIO)} instances are not thread-safe.");
-        }
 
         try
         {
@@ -64,13 +62,9 @@ public partial class ResumableFileIO(string stateFilePath = null)
 
             // Check if the source file exists
             if (!File.Exists(sourcePath))
-            {
                 throw new FileNotFoundException("Source file not found.", sourcePath);
-            }
             if (!overwrite && File.Exists(destinationPath))
-            {
                 throw new IOException("Destination file already exists.");
-            }
 
             cts = new CancellationTokenSource();
 
@@ -86,22 +80,18 @@ public partial class ResumableFileIO(string stateFilePath = null)
 
             // Check for existing state
             if (File.Exists(_stateFilePath))
-            {
                 try
                 {
                     var savedState = await LoadStateAsync().ConfigureAwait(false);
 
                     // Verify the saved state matches the current operation
                     if (savedState.SourcePath == sourcePath && savedState.DestinationPath == destinationPath)
-                    {
                         copyState = savedState;
-                    }
                 }
                 catch
                 {
                     // Continue with fresh copy
                 }
-            }
 
             try
             {
@@ -130,9 +120,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
 
                         // Update state file periodically (every ~5MB)
                         if (copyState.BytesCopied % (BufferSize * 64) < BufferSize)
-                        {
                             await SaveStateAsync(copyState).ConfigureAwait(false);
-                        }
 
                         // Report progress
                         progress?.Report((copyState.BytesCopied, totalBytes));
@@ -143,16 +131,12 @@ public partial class ResumableFileIO(string stateFilePath = null)
                     }
 
                     if (!copy)
-                    {
                         // Delete source file on successful move
                         File.Delete(sourcePath);
-                    }
 
                     // Ensure final size matches
                     if (copyState.BytesCopied != totalBytes)
-                    {
                         throw new IOException($"Copy failed: Expected {totalBytes} bytes but copied {copyState.BytesCopied} bytes.");
-                    }
 
                     // Clean up state file on successful completion
                     File.Delete(_stateFilePath);
@@ -200,9 +184,7 @@ public partial class ResumableFileIO(string stateFilePath = null)
             cts.Cancel();
             // wait until running becomes 0, longer on each iteration
             for (var i = 10; running == 1; i *= 2)
-            {
                 await Task.Delay(i).ConfigureAwait(false);
-            }
         }
     }
 }

@@ -18,9 +18,7 @@ public static partial class IEnumerableExtensions
         public IEnumerable<T> ReinterpretCast<T>() where T : class
         {
             foreach (var item in source)
-            {
                 yield return Unsafe.As<T>(item);
-            }
         }
     }
 
@@ -97,9 +95,7 @@ public static partial class IEnumerableExtensions
         {
             var enumerated = source.ToArray();
             if (enumerated.Length is < 2)
-            {
                 throw new ArgumentException("The input sequence must contain at least two elements.", nameof(source));
-            }
             var half = enumerated.Length / 2;
             return (enumerated[..half], enumerated[half..]);
         }
@@ -127,24 +123,18 @@ public static partial class IEnumerableExtensions
                 {
                     var count = collection.Count;
                     if (count == 0)
-                    {
                         throw new InvalidOperationException("Sequence contains no elements");
-                    }
 
                     var index = random.Next(count);
 
                     // Further optimize for indexed access
                     if (source is IReadOnlyList<T> list)
-                    {
                         return list[index];
-                    }
 
                     // Fall back to enumeration for collections without indexed access
                     using var enumerator = source.GetEnumerator();
                     for (var i = 0; i <= index; i++)
-                    {
                         _ = enumerator.MoveNext();
-                    }
                     return enumerator.Current;
                 }
 
@@ -154,9 +144,7 @@ public static partial class IEnumerableExtensions
                     // Reservoir sampling for unknown-length sequences
                     using var e = source.GetEnumerator();
                     if (!e.MoveNext())
-                    {
                         throw new InvalidOperationException("Sequence contains no elements");
-                    }
 
                     var result = e.Current;
                     var count = 1;
@@ -165,9 +153,7 @@ public static partial class IEnumerableExtensions
                     {
                         count++;
                         if (random.Next(count) == 0) // 1/count probability
-                        {
                             result = e.Current;
-                        }
                     }
 
                     return result;
@@ -182,15 +168,11 @@ public static partial class IEnumerableExtensions
         public void ForEach(Action<T> action)
         {
             if (source.TryGetNonEnumeratedCount(out var count) && count == 0)
-            {
                 return;
-            }
             if (source.TryGetReadOnlySpan(out var span) && span.Length > 0)
             {
                 for (var i = 0; i < span.Length; i++)
-                {
                     action(span[i]);
-                }
                 return;
             }
             switch (source)
@@ -199,17 +181,13 @@ public static partial class IEnumerableExtensions
                 {
                     var length = list.Count;
                     for (var i = 0; i < length; i++)
-                    {
                         action(list[i]);
-                    }
                     return;
                 }
                 default:
                 {
                     foreach (var element in source)
-                    {
                         action(element);
-                    }
                     return;
                 }
             }
@@ -221,15 +199,11 @@ public static partial class IEnumerableExtensions
         public void ForEach(Action<T, int> action)
         {
             if (source.TryGetNonEnumeratedCount(out var count) && count == 0)
-            {
                 return;
-            }
             if (source.TryGetReadOnlySpan(out var span) && span.Length > 0)
             {
                 for (var i = 0; i < span.Length; i++)
-                {
                     action(span[i], i);
-                }
                 return;
             }
             switch (source)
@@ -238,18 +212,14 @@ public static partial class IEnumerableExtensions
                 {
                     var length = list.Count;
                     for (var i = 0; i < length; i++)
-                    {
                         action(list[i], i);
-                    }
                     return;
                 }
                 default:
                 {
                     var i = 0;
                     foreach (var element in source)
-                    {
                         action(element, i++);
-                    }
                     return;
                 }
             }
@@ -265,33 +235,25 @@ public static partial class IEnumerableExtensions
                 case T[] array:
                 {
                     for (var i = 0; i < array.Length; i++)
-                    {
                         await func(array[i]).ConfigureAwait(false);
-                    }
                     return;
                 }
                 case List<T> list:
                 {
                     for (var i = 0; i < list.Count; i++)
-                    {
                         await func(list[i]).ConfigureAwait(false);
-                    }
                     return;
                 }
                 case IReadOnlyList<T> list:
                 {
                     for (var i = 0; i < list.Count; i++)
-                    {
                         await func(list[i]).ConfigureAwait(false);
-                    }
                     return;
                 }
                 default:
                 {
                     foreach (var element in source)
-                    {
                         await func(element).ConfigureAwait(false);
-                    }
                     return;
                 }
             }
@@ -307,34 +269,26 @@ public static partial class IEnumerableExtensions
                 case T[] array:
                 {
                     for (var i = 0; i < array.Length; i++)
-                    {
                         await func(array[i], i).ConfigureAwait(false);
-                    }
                     return;
                 }
                 case List<T> list:
                 {
                     for (var i = 0; i < list.Count; i++)
-                    {
                         await func(list[i], i).ConfigureAwait(false);
-                    }
                     return;
                 }
                 case IReadOnlyList<T> list:
                 {
                     for (var i = 0; i < list.Count; i++)
-                    {
                         await func(list[i], i).ConfigureAwait(false);
-                    }
                     return;
                 }
                 default:
                 {
                     var i = 0;
                     foreach (var element in source)
-                    {
                         await func(element, i++).ConfigureAwait(false);
-                    }
                     return;
                 }
             }
@@ -353,9 +307,7 @@ public static partial class IEnumerableExtensions
                 IEnumerable<T> GetRangeImpl()
                 {
                     for (var i = start; i < start + length; i++)
-                    {
                         yield return rol[i];
-                    }
                 }
                 return GetRangeImpl();
             }
@@ -370,18 +322,12 @@ public static partial class IEnumerableExtensions
         public bool AllEqual()
         {
             if (!source.Any())
-            {
                 throw new ArgumentException("The passed collection must not be empty.", nameof(source));
-            }
             if (source.Count() == 1)
-            {
                 return true;
-            }
 
             if (source.Any(o => o is null))
-            {
                 return source.All(o => o is null);
-            }
             var first = source.First();
             return source.Skip(1).All(item => item.Equals(first));
         }
@@ -398,9 +344,7 @@ public static partial class IEnumerableExtensions
             equalityComparer ??= EqualityComparer<T>.Default;
 
             if (!source.Any())
-            {
                 throw new ArgumentException("Sequence contains no elements.", nameof(source));
-            }
 
             var counts = source.Counts(equalityComparer);
             return counts.MaxBy(t => t.Value).Key;
@@ -495,9 +439,7 @@ public static partial class IEnumerableExtensions
         public T OnlyOrDefault(T defaultValue = default)
         {
             if (source.TryGetNonEnumeratedCount(out var count) && count > 1)
-            {
                 return defaultValue;
-            }
 
             switch (source)
             {
@@ -514,14 +456,10 @@ public static partial class IEnumerableExtensions
                 {
                     using var enumerator = source.GetEnumerator();
                     if (!enumerator.MoveNext())
-                    {
                         return defaultValue;
-                    }
                     var current = enumerator.Current;
                     if (!enumerator.MoveNext())
-                    {
                         return current;
-                    }
 
                     break;
                 }
@@ -538,24 +476,16 @@ public static partial class IEnumerableExtensions
         public T OnlyOrDefault(Func<T, bool> predicate, T defaultValue = default)
         {
             if (source.TryGetReadOnlySpan(out var span))
-            {
                 for (var i = 0; i < span.Length; i++)
                 {
                     var val = span[i];
                     if (!predicate(val))
-                    {
                         continue;
-                    }
                     for (i++; (uint)i < (uint)span.Length; i++)
-                    {
                         if (predicate(span[i]))
-                        {
                             return defaultValue;
-                        }
-                    }
                     return val;
                 }
-            }
             else
             {
                 using var enumerator = source.GetEnumerator();
@@ -563,16 +493,10 @@ public static partial class IEnumerableExtensions
                 {
                     var current = enumerator.Current;
                     if (!predicate(current))
-                    {
                         continue;
-                    }
                     while (enumerator.MoveNext())
-                    {
                         if (predicate(enumerator.Current))
-                        {
                             return defaultValue;
-                        }
-                    }
                     return current;
                 }
             }
@@ -628,18 +552,13 @@ public static partial class IEnumerableExtensions
 #endif
             }
             else
-            {
                 switch (source)
                 {
                     case IReadOnlyList<T> list:
                     {
                         for (var i = 0; i < list.Count; i++)
-                        {
                             if (equalityComparer.Equals(list[i], item))
-                            {
                                 return i;
-                            }
-                        }
 
                         break;
                     }
@@ -650,16 +569,13 @@ public static partial class IEnumerableExtensions
                         foreach (var element in source)
                         {
                             if (equalityComparer.Equals(element, item))
-                            {
                                 return i;
-                            }
                             i++;
                         }
 
                         break;
                     }
                 }
-            }
 
             return -1;
         }
@@ -672,7 +588,6 @@ public static partial class IEnumerableExtensions
         public int IndexOf(IEnumerable<T> sequence, IEqualityComparer<T> equalityComparer = null)
         {
             if (sequence.TryGetNonEnumeratedCount(out var count))
-            {
                 switch (count)
                 {
                     case 0:
@@ -680,20 +595,15 @@ public static partial class IEnumerableExtensions
                     case 1:
                     {
                         if (sequence.TryGetReadOnlySpan(out var asSpan))
-                        {
                             return source.IndexOf(asSpan[0], equalityComparer);
-                        }
                         return source.IndexOf(sequence.First(), equalityComparer);
                     }
                 }
-            }
 
             equalityComparer ??= EqualityComparer<T>.Default;
             var enumerated = sequence as T[] ?? [.. sequence];
             if (enumerated.Length == 0)
-            {
                 return 0;
-            }
 
             if (source.TryGetReadOnlySpan(out var span))
             {
@@ -710,7 +620,6 @@ public static partial class IEnumerableExtensions
 #endif
             }
             else
-            {
                 switch (source)
                 {
                     case IReadOnlyList<T> list:
@@ -718,22 +627,16 @@ public static partial class IEnumerableExtensions
                         for (var i = 0; i < list.Count; i++)
                         {
                             if (list.Count - i < enumerated.Length)
-                            {
                                 return -1;
-                            }
                             var found = true;
                             for (var j = 0; j < enumerated.Length; j++)
-                            {
                                 if (!equalityComparer.Equals(list[i + j], enumerated[j]))
                                 {
                                     found = false;
                                     break;
                                 }
-                            }
                             if (found)
-                            {
                                 return i;
-                            }
                         }
 
                         break;
@@ -743,9 +646,7 @@ public static partial class IEnumerableExtensions
                     {
                         // Handle general IEnumerable<T> case with enumerators
                         if (enumerated.Length == 0)
-                        {
                             return 0;
-                        }
 
                         var position = 0;
                         using var sourceEnumerator = source.GetEnumerator();
@@ -766,9 +667,7 @@ public static partial class IEnumerableExtensions
 
                             // If sequence is just one element, we found a match
                             if (enumerated.Length == 1)
-                            {
                                 return currentPosition;
-                            }
 
                             // Check remaining elements in the sequence
                             var sequenceIndex = 1;
@@ -786,14 +685,10 @@ public static partial class IEnumerableExtensions
 
                             // Check if we ran out of elements before completing the sequence check
                             if (sequenceIndex < enumerated.Length)
-                            {
                                 matchPossible = false;
-                            }
 
                             if (matchPossible)
-                            {
                                 return currentPosition;
-                            }
 
                             position++;
                         }
@@ -801,7 +696,6 @@ public static partial class IEnumerableExtensions
                         break;
                     }
                 }
-            }
 
             return -1;
         }
@@ -814,9 +708,7 @@ public static partial class IEnumerableExtensions
         public bool Majority(Func<T, bool> predicate)
         {
             if (!source.TryGetNonEnumeratedCount(out var total))
-            {
                 total = source.Count();
-            }
             var count = source.Count(predicate);
             return count > total / 2;
         }
@@ -830,15 +722,11 @@ public static partial class IEnumerableExtensions
         {
             var enumerated = source as IReadOnlyList<T> ?? [.. source];
             if (enumerated.Count == 0 || enumerated.Count % 2 != 0)
-            {
                 throw new ArgumentException("The input sequence must contain an even number of elements.", nameof(source));
-            }
             var result = new Dictionary<T, T>();
             var halfI = enumerated.Count / 2;
             for (var i = 0; i < halfI; i++)
-            {
                 result[enumerated[i]] = enumerated[i + halfI];
-            }
             return result;
         }
         /// <summary>
@@ -850,14 +738,10 @@ public static partial class IEnumerableExtensions
         {
             var enumerated = source as IReadOnlyList<T> ?? [.. source];
             if (enumerated.Count == 0 || enumerated.Count % 2 != 0)
-            {
                 throw new ArgumentException("The input sequence must contain a positive and even number of elements.", nameof(source));
-            }
             var result = new Dictionary<T, T>();
             for (var i = 0; i < enumerated.Count; i += 2)
-            {
                 result[enumerated[i]] = enumerated[i + 1];
-            }
             return result;
         }
 
@@ -908,17 +792,11 @@ public static partial class IEnumerableExtensions
         public bool SequenceEquivalent(IEnumerable<T> second, IEqualityComparer<T> comparer = null)
         {
             if (source == null || second == null)
-            {
                 return source == second;
-            }
             if (ReferenceEquals(source, second))
-            {
                 return true;
-            }
             if (source.TryGetNonEnumeratedCount(out var firstCount) && second.TryGetNonEnumeratedCount(out var secondCount) && firstCount != secondCount)
-            {
                 return false;
-            }
 
             comparer ??= EqualityComparer<T>.Default;
 
@@ -927,18 +805,14 @@ public static partial class IEnumerableExtensions
             var counts = new Dictionary<T, int>(comparer);
 
             foreach (var item in source)
-            {
                 CollectionsMarshal.GetValueRefOrAddDefault(counts, item, out _)++;
-            }
 
             foreach (var item in second)
             {
                 ref var count = ref CollectionsMarshal.GetValueRefOrNullRef(counts, item);
                 if (Unsafe.IsNullRef(ref count) || --count < 0)
-                {
                     // Item in second but not in first
                     return false;
-                }
             }
 
             // If counts is empty, sequences are equivalent
@@ -960,13 +834,9 @@ public static partial class IEnumerableExtensions
             equalityComparer ??= EqualityComparer<TSelect>.Default;
 
             if (selector is null)
-            {
                 return source.Mode();
-            }
             if (!source.Any())
-            {
                 throw new ArgumentException("Sequence contains no elements.", nameof(source));
-            }
 
             var counts = source.CountsBy(selector, equalityComparer);
             return counts.MaxBy(t => t.Value).Key;
@@ -1014,14 +884,10 @@ public static partial class IEnumerableExtensions
             var keysEnumerated = source as IReadOnlyList<T> ?? [.. source];
             var valuesEnumerated = values as IReadOnlyList<TValue> ?? [.. values];
             if (keysEnumerated.Count != valuesEnumerated.Count)
-            {
                 throw new ArgumentException("The input sequences must have the same length.", nameof(source));
-            }
             var result = new Dictionary<T, TValue>();
             for (var i = 0; i < keysEnumerated.Count; i++)
-            {
                 result[keysEnumerated[i]] = valuesEnumerated[i];
-            }
             return result;
         }
         /// <summary>

@@ -35,9 +35,7 @@ public static partial class FileSystemModelExtensions
             ArgumentNullException.ThrowIfNull(di);
             var directory = di.Directory(name);
             if (!directory.Exists)
-            {
                 directory.Create();
-            }
             return directory;
         }
         /// <summary>

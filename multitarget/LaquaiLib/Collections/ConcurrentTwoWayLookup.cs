@@ -77,14 +77,10 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         using var wLock = TakeWriteLock();
 
         if (_forward.ContainsKey(key))
-        {
             throw new ArgumentException($"The key '{key}' already exists in the lookup table.", nameof(key));
-        }
 
         if (_reverse.ContainsKey(value))
-        {
             throw new ArgumentException($"The value '{value}' already exists in the lookup table.", nameof(value));
-        }
 
         _forward[key] = value;
         _reverse[value] = key;
@@ -99,14 +95,10 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
         using var wLock = TakeWriteLock();
 
         if (_reverse.ContainsKey(key))
-        {
             throw new ArgumentException($"The key '{key}' already exists in the lookup table.", nameof(key));
-        }
 
         if (_forward.ContainsKey(value))
-        {
             throw new ArgumentException($"The value '{value}' already exists in the lookup table.", nameof(value));
-        }
 
         _reverse[key] = value;
         _forward[value] = key;
@@ -205,13 +197,9 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
 
         // Any previous pairs in either dictionary associated with either of the inputs are removed
         if (_forward.TryRemove(key, out var oldValue))
-        {
             _ = _reverse.TryRemove(oldValue, out _);
-        }
         if (_reverse.TryRemove(value, out var oldKey))
-        {
             _ = _forward.TryRemove(oldKey, out _);
-        }
 
         _forward[key] = value;
         _reverse[value] = key;
@@ -229,13 +217,9 @@ public class ConcurrentTwoWayLookup<T1, T2> : IEnumerable<KeyValuePair<T1, T2>>
 
         // Same as above
         if (_reverse.TryRemove(key, out var oldKey))
-        {
             _ = _forward.TryRemove(oldKey, out _);
-        }
         if (_forward.TryRemove(value, out var oldValue))
-        {
             _ = _reverse.TryRemove(oldValue, out _);
-        }
 
         _reverse[key] = value;
         _forward[value] = key;

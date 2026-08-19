@@ -16,15 +16,11 @@ public static class TimingExtensions
         public DateTime NextWeekday(TimeOnly? timeComponent = null, bool includeSaturdays = false)
         {
             if (timeComponent is not null)
-            {
                 dateTime = new DateTime(DateOnly.FromDateTime(dateTime), timeComponent.Value);
-            }
 
             var nextWeekday = dateTime.AddDays(1);
             while (nextWeekday <= dateTime || (nextWeekday.DayOfWeek is DayOfWeek.Saturday && !includeSaturdays) || nextWeekday.DayOfWeek is DayOfWeek.Sunday)
-            {
                 nextWeekday = nextWeekday.AddDays(1);
-            }
             return nextWeekday;
         }
         /// <summary>
@@ -44,9 +40,7 @@ public static class TimingExtensions
         {
             var now = DateTime.Now;
             if (dateTime > now)
-            {
                 return Task.Delay(dateTime - now).GetAwaiter();
-            }
             return Task.CompletedTask.GetAwaiter();
         }
     }
@@ -61,9 +55,7 @@ public static class TimingExtensions
         {
             var now = DateTimeOffset.Now;
             if (dateTimeOffset > now)
-            {
                 return Task.Delay(dateTimeOffset - now).GetAwaiter();
-            }
             return Task.CompletedTask.GetAwaiter();
         }
     }

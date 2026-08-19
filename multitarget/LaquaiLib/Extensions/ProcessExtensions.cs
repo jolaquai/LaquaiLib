@@ -11,6 +11,7 @@ public static partial class ProcessExtensions
     {
         // lotsa funny bit shifting in this one
 
+        /// <inheritdoc/>
         public ulong GetAffinity()
         {
             if (!Kernel32.GetProcessAffinityMask(process.Handle, out var processMask, out _))
@@ -29,25 +30,17 @@ public static partial class ProcessExtensions
         public bool SetAffinity(ulong mask, bool discard = true)
         {
             if (mask == 0ul)
-            {
                 mask = ~0ul;
-            }
             // (1ul << 64) is undefined (the shift count is masked to 6 bits), so a 64-processor system would
             // otherwise produce a 0 mask here. Treat >= 64 as "all 64 bits valid".
             var processorCount = Environment.ProcessorCount;
             var fullMask = processorCount >= 64 ? ~0ul : (1ul << processorCount) - 1;
             if (discard)
-            {
                 mask &= fullMask;
-            }
             if (mask > fullMask)
-            {
                 throw new ArgumentOutOfRangeException(nameof(mask), $"The bit mask '0b{mask.AsBinary()}' specifies more than the {processorCount} logical processors available to the system.");
-            }
             if (process.HasExited)
-            {
                 throw new InvalidOperationException("The specified process has exited.");
-            }
             return Kernel32.SetProcessAffinityMask(process.Handle, (nint)mask);
         }
         /// <summary>

@@ -19,7 +19,7 @@ public static class RegexExtensions
             get
             {
                 ArgumentNullException.ThrowIfNull(match);
-                return UnsafeUtils.Accessors.RegexAccessors._regex(match);
+                return RegexAccessors._regex(match);
             }
         }
     }
@@ -35,7 +35,7 @@ public static class RegexExtensions
             get
             {
                 ArgumentNullException.ThrowIfNull(capture);
-                return UnsafeUtils.Accessors.RegexAccessors.get_Text(capture);
+                return RegexAccessors.get_Text(capture);
             }
         }
     }

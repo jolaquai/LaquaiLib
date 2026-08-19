@@ -50,9 +50,7 @@ public class EnumExpanderGenerator : IIncrementalGenerator
     {
         var decl = Unsafe.As<EnumDeclarationSyntax>(context.Node);
         if (context.SemanticModel.GetDeclaredSymbol(decl) is not INamedTypeSymbol symbol)
-        {
             return null;
-        }
 
         // the Data class is emitted at namespace scope, so it must be able to name the enum from there
         var accessibility = symbol.DeclaredAccessibility;
@@ -60,28 +58,20 @@ public class EnumExpanderGenerator : IIncrementalGenerator
         {
             // a nested enum's fully qualified name carries the containing type's type arguments, which are unbindable at namespace scope
             if (containing.IsGenericType)
-            {
                 return null;
-            }
             if (containing.DeclaredAccessibility < accessibility)
-            {
                 accessibility = containing.DeclaredAccessibility;
-            }
         }
         // anything less visible than internal cannot be referenced by a namespace-scope class at all
         if (accessibility is not (Accessibility.Public or Accessibility.Internal))
-        {
             return null;
-        }
 
         var enumFields = symbol.GetMembers()
             .Where(static m => m is IFieldSymbol { IsConst: true, HasConstantValue: true })
             .OrderBy(static f => f.DeclaringSyntaxReferences.FirstOrDefault()?.Span.Start ?? int.MaxValue)
             .Select(static m => (IFieldSymbol)m).ToArray();
         if (enumFields.Length == 0)
-        {
             return null;
-        }
 
         var members = ImmutableArray.CreateBuilder<EnumMemberModel>(enumFields.Length);
         foreach (var field in enumFields)
@@ -156,9 +146,7 @@ public class EnumExpanderGenerator : IIncrementalGenerator
             // a top-level enum has no namespace to wrap in
             var isGlobalNamespace = model.Namespace is null;
             if (!isGlobalNamespace)
-            {
                 writer.WriteLine($"namespace {model.Namespace}");
-            }
             using (isGlobalNamespace ? null : writer.Scope)
             {
                 writer.WriteLines(SourceEmitHelper.Summary($"Provides alternative data representations for the enum <c>{fqEnumName}</c>."));
@@ -176,9 +164,7 @@ public class EnumExpanderGenerator : IIncrementalGenerator
                     writer.Indent++;
                     {
                         for (var i = 0; i < members.Length; i++)
-                        {
                             writer.WriteLine($"{fqEnumName}.{members[i].Name},");
-                        }
                     }
                     writer.Indent--;
                     writer.WriteLine("];");

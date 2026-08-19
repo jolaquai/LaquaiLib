@@ -16,24 +16,14 @@ public static partial class LinqMemoryExtensions
         {
             var requiredSpace = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 if (predicate(source[i]))
-                {
                     requiredSpace++;
-                }
-            }
             if (destination.Length < requiredSpace)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
             var index = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 if (predicate(source[i]))
-                {
                     destination[index++] = source[i];
-                }
-            }
             return requiredSpace;
         }
 
@@ -49,24 +39,14 @@ public static partial class LinqMemoryExtensions
         {
             var requiredSpace = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 if (predicate(source[i], i))
-                {
                     requiredSpace++;
-                }
-            }
             if (destination.Length < requiredSpace)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
             var index = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 if (predicate(source[i], i))
-                {
                     destination[index++] = source[i];
-                }
-            }
             return requiredSpace;
         }
     }

@@ -10,16 +10,10 @@ public class NonBoxingUnionsAritiesTests
     private static void AssertOnlyFlag(int expected, params bool[] flags)
     {
         for (var i = 0; i < flags.Length; i++)
-        {
             if (i + 1 == expected)
-            {
                 Assert.True(flags[i]);
-            }
             else
-            {
                 Assert.False(flags[i]);
-            }
-        }
     }
 
     [Fact]

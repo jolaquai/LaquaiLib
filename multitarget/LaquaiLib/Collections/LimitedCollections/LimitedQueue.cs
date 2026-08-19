@@ -41,29 +41,21 @@ public sealed class LimitedQueue<T> : ICollection<T>
         if (enumerable.TryGetNonEnumeratedCount(out var count))
         {
             if (count == 0)
-            {
                 throw InitializationLengthMustNotBeZero;
-            }
             Capacity = count;
             queue = new Queue<T>(count);
             foreach (var item in enumerable)
-            {
                 queue.Enqueue(item);
-            }
         }
         else
         {
             var array = enumerable.ToArray();
             if (array.Length == 0)
-            {
                 throw InitializationLengthMustNotBeZero;
-            }
             Capacity = array.Length;
             queue = new Queue<T>(array.Length);
             for (var i = 0; i < array.Length; i++)
-            {
                 queue.Enqueue(array[i]);
-            }
         }
     }
     /// <summary>
@@ -80,9 +72,7 @@ public sealed class LimitedQueue<T> : ICollection<T>
     public LimitedQueue(int capacity, IEnumerable<T> enumerable) : this(capacity)
     {
         if (enumerable.TryGetNonEnumeratedCount(out var count) && count > capacity)
-        {
             throw NeedCapacityGreaterThanInitialItemsException;
-        }
 
         queue = new Queue<T>(capacity);
         foreach (var item in enumerable)
@@ -90,9 +80,7 @@ public sealed class LimitedQueue<T> : ICollection<T>
             queue.Enqueue(item);
 
             if (queue.Count > capacity)
-            {
                 throw NeedCapacityGreaterThanInitialItemsException;
-            }
         }
     }
     /// <summary>
@@ -111,14 +99,10 @@ public sealed class LimitedQueue<T> : ICollection<T>
     public LimitedQueue(int capacity, ReadOnlySpan<T> span) : this(capacity)
     {
         if (Capacity < span.Length)
-        {
             throw NeedCapacityGreaterThanInitialItemsException;
-        }
         queue = new Queue<T>(capacity);
         for (var i = 0; i < span.Length; i++)
-        {
             queue.Enqueue(span[i]);
-        }
     }
     #endregion
 
@@ -131,9 +115,7 @@ public sealed class LimitedQueue<T> : ICollection<T>
     {
         // Dequeue before Enqueue if the collection is at capacity to prevent resizing the backing store
         if (queue.Count > 0 && queue.Count >= Capacity)
-        {
             _ = Dequeue();
-        }
         queue.Enqueue(item);
     }
     /// <summary>
@@ -183,6 +165,7 @@ public sealed class LimitedQueue<T> : ICollection<T>
     /// </summary>
     public int Count => queue.Count;
 
+    /// <inheritdoc/>
     public bool IsReadOnly { get; }
 
     /// <summary>
@@ -236,18 +219,15 @@ public sealed class LimitedQueue<T> : ICollection<T>
             Capacity = size;
             var newQueue = new Queue<T>(size);
             foreach (var item in queue)
-            {
                 newQueue.Enqueue(item);
-            }
             queue = newQueue;
         }
         else if (queue.Count > size)
         {
             Capacity = size;
             do
-            {
                 _ = Dequeue();
-            } while (queue.Count > size);
+            while (queue.Count > size);
         }
     }
 }

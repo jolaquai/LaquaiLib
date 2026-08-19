@@ -20,9 +20,7 @@ public static class RandomExtensions
         public void NextBytes(Stream destination, int count)
         {
             if (!destination.CanWrite)
-            {
                 throw new ArgumentException("The stream must be writable.", nameof(destination));
-            }
 
             scoped Span<byte> span;
 
@@ -36,9 +34,7 @@ public static class RandomExtensions
                     // would loop forever.
                     var newCapacity = Math.Max(ms.Capacity, 1);
                     while (newCapacity < newSize)
-                    {
                         newCapacity <<= 1;
-                    }
                     ms.Capacity = newCapacity;
                 }
                 ms.SetLength(newSize);

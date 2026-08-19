@@ -47,9 +47,7 @@ public static class FullAccessDynamicFactory
         // Only smart thing to make this worthwhile is to emit an optimized Func<object, dynamic> for each type
 
         if (type == typeof(void))
-        {
             return null;
-        }
 
         if (!_createCache.TryGetValue(type, out var func))
         {

@@ -323,9 +323,7 @@ public class ConcurrentLimitedQueueTests
         var expected = new[] { 1, 2, 3 };
         var actual = new List<int>();
         foreach (var item in queue)
-        {
             actual.Add(item);
-        }
         Assert.Equal(expected, actual);
     }
     #endregion
@@ -406,7 +404,6 @@ public class ConcurrentLimitedQueueTests
         var enqueueCount = 0;
         var dequeueCount = 0;
         for (var i = 0; i < 5; i++)
-        {
             tasks.Add(Task.Run(() =>
             {
                 for (var j = 0; j < operations; j++)
@@ -415,20 +412,13 @@ public class ConcurrentLimitedQueueTests
                     Interlocked.Increment(ref enqueueCount);
                 }
             }, TestContext.Current.CancellationToken));
-        }
         for (var i = 0; i < 5; i++)
-        {
             tasks.Add(Task.Run(() =>
             {
                 for (var j = 0; j < operations; j++)
-                {
                     if (queue.TryDequeue(out _))
-                    {
                         Interlocked.Increment(ref dequeueCount);
-                    }
-                }
             }, TestContext.Current.CancellationToken));
-        }
 
         await Task.WhenAll(tasks);
         Assert.True(queue.Count <= capacity);
@@ -444,9 +434,7 @@ public class ConcurrentLimitedQueueTests
         var queue = new ConcurrentLimitedQueue<int>(initialCapacity);
         var tasks = new List<Task>();
         for (var i = 0; i < initialCapacity; i++)
-        {
             queue.Enqueue(i);
-        }
         for (var i = 0; i < 3; i++)
         {
             var taskId = i; // Capture for closure
@@ -461,7 +449,6 @@ public class ConcurrentLimitedQueueTests
             }, TestContext.Current.CancellationToken));
         }
         for (var i = 0; i < 3; i++)
-        {
             tasks.Add(Task.Run(() =>
             {
                 for (var j = 0; j < operations; j++)
@@ -473,7 +460,6 @@ public class ConcurrentLimitedQueueTests
                     Thread.Sleep(1); // Small delay to increase chance of thread interleaving
                 }
             }, TestContext.Current.CancellationToken));
-        }
 
         await Task.WhenAll(tasks);
         Assert.True(queue.Count <= queue.Capacity);
@@ -490,7 +476,6 @@ public class ConcurrentLimitedQueueTests
         var tasks = new Task[10];
         var random = new Random(42); // Fixed seed for reproducibility
         for (var i = 0; i < 10; i++)
-        {
             tasks[i] = Task.Run(() =>
             {
                 for (var j = 0; j < operations; j++)
@@ -506,18 +491,21 @@ public class ConcurrentLimitedQueueTests
                             queue.TryEnqueue(j);
                             break;
                         case 2:
-                            try { queue.Dequeue(); } catch (InvalidOperationException) { }
+                            try
+                            { queue.Dequeue(); }
+                            catch (InvalidOperationException) { }
                             break;
                         case 3:
                             queue.TryDequeue(out _);
                             break;
                         case 4:
-                            try { queue.Peek(); } catch (InvalidOperationException) { }
+                            try
+                            { queue.Peek(); }
+                            catch (InvalidOperationException) { }
                             break;
                     }
                 }
             }, TestContext.Current.CancellationToken);
-        }
 
         await Task.WhenAll(tasks);
         Assert.True(queue.Count <= capacity);

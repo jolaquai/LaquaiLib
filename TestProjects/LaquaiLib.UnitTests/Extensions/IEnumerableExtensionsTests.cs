@@ -95,8 +95,8 @@ public class IEnumerableExtensionsTests
 
         var (trueList, falseList) = source.Split(x => x % 2 == 0);
 
-        Assert.Equal(new[] { 2, 4, 6 }, trueList);
-        Assert.Equal(new[] { 1, 3, 5 }, falseList);
+        Assert.Equal([2, 4, 6], trueList);
+        Assert.Equal([1, 3, 5], falseList);
     }
 
     [Fact]
@@ -621,9 +621,7 @@ public class IEnumerableExtensionsTests
         Assert.Equal(10, result.Length);
 
         for (var i = 1; i < result.Length; i++)
-        {
             Assert.True(result[i] > result[i - 1]);
-        }
     }
 
     [Fact]
@@ -1355,9 +1353,7 @@ public class IEnumerableExtensionsTests
 
         var result = new List<int>();
         await foreach (var item in source.AsAsynchronous())
-        {
             result.Add(item);
-        }
 
         Assert.Equal(source, result);
     }
@@ -1369,9 +1365,7 @@ public class IEnumerableExtensionsTests
 
         var result = new List<int>();
         await foreach (var item in source.AsAsynchronous())
-        {
             result.Add(item);
-        }
 
         Assert.Empty(result);
     }

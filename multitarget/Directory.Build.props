@@ -58,14 +58,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
 
-      <InternalsVisibleTo Include="LaquaiLib.Windows" />
+      <InternalsVisibleTo Include="LaquaiLib.Windows"/>
 
-      <InternalsVisibleTo Include="LaquaiLib.UnitTests" />
+      <InternalsVisibleTo Include="LaquaiLib.UnitTests"/>
 
       <Using Include="System.Collections"/>
       <Using Include="System.Collections.Concurrent"/>

@@ -55,9 +55,7 @@ public class DelegateExtensionsTests
         var result = multicastDelegate.GetInvocationList<Action>();
 
         foreach (var action in result)
-        {
             action();
-        }
 
         Assert.Equal(1, callOrder[0]);
         Assert.Equal(2, callOrder[1]);

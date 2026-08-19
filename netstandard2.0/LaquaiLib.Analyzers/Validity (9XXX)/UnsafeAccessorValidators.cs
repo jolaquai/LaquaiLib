@@ -179,23 +179,15 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     {
         var returnAttributes = method.GetReturnTypeAttributes();
         for (var i = 0; i < returnAttributes.Length; i++)
-        {
             if (returnAttributes[i].AttributeClass?.ToDisplayString() == UnsafeAccessorTypeAttributeName)
-            {
                 return true;
-            }
-        }
         var parameters = method.Parameters;
         for (var i = 0; i < parameters.Length; i++)
         {
             var attributes = parameters[i].GetAttributes();
             for (var k = 0; k < attributes.Length; k++)
-            {
                 if (attributes[k].AttributeClass?.ToDisplayString() == UnsafeAccessorTypeAttributeName)
-                {
                     return true;
-                }
-            }
         }
         return false;
     }
@@ -210,26 +202,18 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
         // Quick syntax check before expensive semantic model lookup
         if (!uaaMethodDeclarationSyntax.AttributeLists.Any())
-        {
             return;
-        }
 
         var uaaMethodSymbol = context.SemanticModel.GetDeclaredSymbol(uaaMethodDeclarationSyntax);
         if (uaaMethodSymbol == null)
-        {
             return;
-        }
 
         if (uaaMethodSymbol.GetAttributes().FirstOrDefault(attr => attr.AttributeClass.ToDisplayString() == "System.Runtime.CompilerServices.UnsafeAccessorAttribute") is not { } uaaData)
-        {
             return;
-        }
 
         // [UnsafeAccessorType] replaces a declared type with a reflection name resolved at runtime, so the declared signature deliberately no longer matches the target's
         if (HasErasedTypes(uaaMethodSymbol))
-        {
             return;
-        }
 
         var unsafeAccessorKind = (UnsafeAccessorKind)(int)uaaData.ConstructorArguments[0].Value!;
         var description = typeof(UnsafeAccessorKind).GetField(unsafeAccessorKind.ToString())!.GetCustomAttribute<DescriptionAttribute>()!.Description;
@@ -237,9 +221,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         var targetMemberName = uaaMethodDeclarationSyntax.Identifier.ToString();
         // Explicit name overrides method name
         if (uaaData.NamedArguments.FirstOrDefault(a => a.Key == "Name").Value.Value is string actualName)
-        {
             targetMemberName = actualName;
-        }
 
         var uaaParameters = uaaMethodSymbol.Parameters;
         var uaaTypeParameters = uaaMethodSymbol.TypeParameters;
@@ -314,14 +296,10 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             // All further checks happen there
             // Bail though if we can't even resolve the type
             if (targetTypeSymbol.RuntimeType is not { } typeInstance)
-            {
                 return;
-            }
 
             if (typeInstance is not null)
-            {
                 CheckReflection(context, uaaMethodDeclarationSyntax, reportLocation, uaaMethodSymbol, unsafeAccessorKind, description, targetMemberName, uaaParameters, uaaTypeParameters, uaaThisParam, typeInstance, uaaReturnTypeSymbol, uaaRestParams, signatureString);
-            }
             return;
         }
 
@@ -372,9 +350,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 var methods = targetTypeSymbol!.GetMembers(targetMemberName).OfType<IMethodSymbol>().Where(m => !m.IsStatic).ToArray();
                 var flowControl = CheckMethodsRoslyn(context, reportLocation, targetMemberName, uaaTypeParameters, uaaThisParam, targetTypeSymbol, uaaReturnTypeSymbol, uaaRestParams, signatureString, methods);
                 if (!flowControl)
-                {
                     return;
-                }
                 break;
             }
             case UnsafeAccessorKind.StaticMethod:
@@ -383,9 +359,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 var methods = targetTypeSymbol!.GetMembers(targetMemberName).OfType<IMethodSymbol>().Where(m => m.IsStatic).ToArray();
                 var flowControl = CheckMethodsRoslyn(context, reportLocation, targetMemberName, uaaTypeParameters, uaaThisParam, targetTypeSymbol, uaaReturnTypeSymbol, uaaRestParams, signatureString, methods);
                 if (!flowControl)
-                {
                     return;
-                }
                 break;
             }
             case UnsafeAccessorKind.Field:
@@ -394,9 +368,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 var fields = targetTypeSymbol!.GetMembers(targetMemberName).OfType<IFieldSymbol>().Where(f => !f.IsStatic).ToArray();
                 var flowControl = CheckFieldsRoslyn(context, reportLocation, description, targetMemberName, uaaThisParam, targetTypeSymbol, uaaReturnTypeSymbol, fields);
                 if (!flowControl)
-                {
                     return;
-                }
 
                 break;
             }
@@ -406,9 +378,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 var fields = targetTypeSymbol!.GetMembers(targetMemberName).OfType<IFieldSymbol>().Where(f => f.IsStatic).ToArray();
                 var flowControl = CheckFieldsRoslyn(context, reportLocation, description, targetMemberName, uaaThisParam, targetTypeSymbol, uaaReturnTypeSymbol, fields);
                 if (!flowControl)
-                {
                     return;
-                }
 
                 break;
             }
@@ -425,9 +395,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             var containingTypeDecl = uaaMethodDeclarationSyntax.FirstAncestorOrSelf<TypeDeclarationSyntax>();
             IEnumerable<Location> moreLocs = [];
             if (containingTypeDecl is not null)
-            {
                 moreLocs = [containingTypeDecl.Identifier.GetLocation()];
-            }
             var diag = Diagnostic.Create(ContainingTypeTypeParameterMismatchDescriptor, reportLocation, moreLocs, reqNames, actualNames);
             context.ReportDiagnostic(diag);
             return;
@@ -605,9 +573,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                     .ToArray();
                 var flowControl = CheckMethodsReflection(context, reportLocation, uaaMethodSymbol, targetMemberName, uaaTypeParameters, uaaThisParam, targetType, uaaReturnTypeSymbol, uaaRestParams, signatureString, methods);
                 if (!flowControl)
-                {
                     return;
-                }
                 break;
             }
             case UnsafeAccessorKind.StaticMethod:
@@ -618,9 +584,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                     .ToArray();
                 var flowControl = CheckMethodsReflection(context, reportLocation, uaaMethodSymbol, targetMemberName, uaaTypeParameters, uaaThisParam, targetType, uaaReturnTypeSymbol, uaaRestParams, signatureString, methods);
                 if (!flowControl)
-                {
                     return;
-                }
                 break;
             }
             case UnsafeAccessorKind.Field:
@@ -631,9 +595,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                     .ToArray();
                 var flowControl = CheckFieldsReflection(context, reportLocation, description, targetMemberName, uaaThisParam, targetType, uaaReturnTypeSymbol, fields);
                 if (!flowControl)
-                {
                     return;
-                }
 
                 break;
             }
@@ -645,9 +607,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                     .ToArray();
                 var flowControl = CheckFieldsReflection(context, reportLocation, description, targetMemberName, uaaThisParam, targetType, uaaReturnTypeSymbol, fields);
                 if (!flowControl)
-                {
                     return;
-                }
 
                 break;
             }
@@ -667,9 +627,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
             var containingTypeDecl = uaaMethodDeclarationSyntax.FirstAncestorOrSelf<TypeDeclarationSyntax>();
             IEnumerable<Location> moreLocs = [];
             if (containingTypeDecl is not null)
-            {
                 moreLocs = [containingTypeDecl.Identifier.GetLocation()];
-            }
             var diag = Diagnostic.Create(ContainingTypeTypeParameterMismatchDescriptor, reportLocation, moreLocs, reqNames, actualNames);
             context.ReportDiagnostic(diag);
             return;
@@ -805,9 +763,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     private static bool TypeParametersEqual(ImmutableArray<ITypeParameterSymbol> expected, ImmutableArray<ITypeParameterSymbol> actualSymbols)
     {
         if (expected.Length != actualSymbols.Length)
-        {
             return false;
-        }
 
         for (var i = 0; i < expected.Length; i++)
         {
@@ -822,14 +778,10 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 || expectedParam.HasNotNullConstraint != actualParam.HasNotNullConstraint
                 || expectedParam.HasConstructorConstraint != actualParam.HasConstructorConstraint
                 || expectedParam.AllowsRefLikeType != actualParam.AllowsRefLikeType)
-            {
                 return false;
-            }
 
             if (!ConstraintTypesEqual(expectedParam.ConstraintTypes, actualParam.ConstraintTypes))
-            {
                 return false;
-            }
         }
 
         return true;
@@ -838,9 +790,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     private static bool ConstraintTypesEqual(ImmutableArray<ITypeSymbol> expected, ImmutableArray<ITypeSymbol> actual)
     {
         if (expected.Length != actual.Length)
-        {
             return false;
-        }
 
         static string Key(ITypeSymbol t) => t is ITypeParameterSymbol tp ? $"#{tp.Ordinal}:{tp.TypeParameterKind}" : t.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
@@ -856,9 +806,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         Debug.Assert(expected.All(t => t.IsGenericParameter));
 
         if (expected.Length != actualSymbols.Length)
-        {
             return false;
-        }
 
         var asRtTypes = actualSymbols.Select(s => s.RuntimeType).ToArray();
         var allTypesResolved = asRtTypes.All(t => t is not null);
@@ -884,17 +832,13 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 _ => GenericParameterAttributes.None
             };
             if (expectedVariance != actualVariance)
-            {
                 return false;
-            }
 
             // Constraints
             var expectedConstraints = expectedParam.GenericParameterAttributes & GenericParameterAttributes.SpecialConstraintMask;
             var actualConstraints = GetConstraintFlags(actualParam);
             if (expectedConstraints != actualConstraints)
-            {
                 return false;
-            }
 
             if (allTypesResolved)
             {
@@ -903,9 +847,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 {
                     var expectedTypes = expectedParam.GetGenericParameterConstraints();
                     if (!expectedTypes.SequenceEqual(constraintTypes))
-                    {
                         return false;
-                    }
                 }
             }
             else
@@ -914,9 +856,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
                 var expectedTypes = expectedParam.GetGenericParameterConstraints().Select(t => t.FullName).OrderBy(x => x);
                 var actualTypes = actualParam.ConstraintTypes.Select(t => t.ToDisplayString()).OrderBy(x => x);
                 if (!expectedTypes.SequenceEqual(actualTypes))
-                {
                     return false;
-                }
             }
         }
 
@@ -927,17 +867,11 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         var flags = GenericParameterAttributes.None;
 
         if (symbol.HasConstructorConstraint)
-        {
             flags |= GenericParameterAttributes.DefaultConstructorConstraint;
-        }
         if (symbol.HasReferenceTypeConstraint)
-        {
             flags |= GenericParameterAttributes.ReferenceTypeConstraint;
-        }
         if (symbol.HasValueTypeConstraint)
-        {
             flags |= GenericParameterAttributes.NotNullableValueTypeConstraint;
-        }
 
         // Note: Reflection API predates notnull and unmanaged constraints and there is no way to check for them
 
@@ -946,15 +880,11 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     private static bool TypesEqual(Type type, ITypeSymbol typeSymbol, SemanticModel semanticModel)
     {
         if (typeSymbol.RuntimeType is { } runtimeType)
-        {
             return type == runtimeType;
-        }
         // GetTypeByMetadataName only accepts unbound metadata names, so skip it for shapes it can't resolve anyway
         if (!type.IsGenericType && !type.IsArray && !type.IsPointer && !type.IsByRef && !type.IsGenericParameter
             && semanticModel.Compilation.GetTypeByMetadataName(type.FullName) is { } otherTypeSymbol)
-        {
             return SymbolEqualityComparer.Default.Equals(typeSymbol, otherTypeSymbol);
-        }
         // Reflection Type.FullName and ITypeSymbol.ToDisplayString() are never the same shape (e.g. "System.Byte[]" vs "byte[]"),
         // so fall back to a structural comparison instead of comparing those strings directly
         return TypeMatches(type, typeSymbol);
@@ -965,58 +895,40 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     private static bool TypeMatches(Type reflectionType, ITypeSymbol symbol)
     {
         if (reflectionType.IsByRef)
-        {
             return TypeMatches(reflectionType.GetElementType(), symbol);
-        }
 
         if (reflectionType.IsArray)
-        {
             return symbol is IArrayTypeSymbol arraySymbol
                 && arraySymbol.Rank == reflectionType.GetArrayRank()
                 && TypeMatches(reflectionType.GetElementType(), arraySymbol.ElementType);
-        }
 
         if (reflectionType.IsPointer)
-        {
             return symbol is IPointerTypeSymbol pointerSymbol
                 && TypeMatches(reflectionType.GetElementType(), pointerSymbol.PointedAtType);
-        }
 
         if (reflectionType.IsGenericParameter)
-        {
             // Position alone isn't enough: a type's 0th type parameter and a method's 0th type parameter are distinct positions
             return symbol is ITypeParameterSymbol typeParamSymbol
                 && typeParamSymbol.Ordinal == reflectionType.GenericParameterPosition
                 && (reflectionType.DeclaringMethod is not null) == (typeParamSymbol.TypeParameterKind == TypeParameterKind.Method);
-        }
 
         if (reflectionType.IsGenericType)
         {
             if (symbol is not INamedTypeSymbol namedSymbol || !namedSymbol.IsGenericType)
-            {
                 return false;
-            }
 
             var openReflectionType = reflectionType.GetGenericTypeDefinition();
             if (openReflectionType.FullName != GetReflectionFullName(namedSymbol.ConstructedFrom))
-            {
                 return false;
-            }
 
             var reflectionArgs = reflectionType.GetGenericArguments();
             var symbolArgs = namedSymbol.TypeArguments;
             if (reflectionArgs.Length != symbolArgs.Length)
-            {
                 return false;
-            }
 
             for (var i = 0; i < reflectionArgs.Length; i++)
-            {
                 if (!TypeMatches(reflectionArgs[i], symbolArgs[i]))
-                {
                     return false;
-                }
-            }
 
             return true;
         }
@@ -1031,9 +943,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     {
         var chain = new List<string>();
         for (var current = symbol; current is not null; current = current.ContainingType)
-        {
             chain.Insert(0, current.MetadataName);
-        }
 
         var nestedName = string.Join("+", chain);
         var ns = symbol.ContainingNamespace;
@@ -1045,9 +955,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     private static bool ParametersEqual(ParameterInfo[] expected, ImmutableArray<IParameterSymbol> actualSymbols, SemanticModel semanticModel)
     {
         if (expected.Length != actualSymbols.Length)
-        {
             return false;
-        }
 
         for (int i = 0; i < expected.Length; i++)
         {
@@ -1056,17 +964,13 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
 
             // Compare ref kinds
             if (!RefKindsMatch(expectedParam, actualParam))
-            {
                 return false;
-            }
 
             // Compare types - strip ref wrapper for comparison
             var expectedType = expectedParam.ParameterType.IsByRef ? expectedParam.ParameterType.GetElementType() : expectedParam.ParameterType;
 
             if (!TypesEqual(expectedType, actualParam.Type, semanticModel))
-            {
                 return false;
-            }
         }
 
         return true;
@@ -1074,20 +978,14 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     private static bool RefKindsMatch(ParameterInfo paramInfo, IParameterSymbol symbol)
     {
         if (!paramInfo.ParameterType.IsByRef)
-        {
             return symbol.RefKind == RefKind.None;
-        }
 
         // Reflection needs IsOut/IsIn on the ParameterInfo (not just Type.IsByRef) to distinguish ref/out/in
         if (paramInfo.IsOut && !paramInfo.IsIn)
-        {
             return symbol.RefKind == RefKind.Out;
-        }
 
         if (paramInfo.IsIn)
-        {
             return symbol.RefKind == RefKind.In;
-        }
 
         return symbol.RefKind == RefKind.Ref;
     }

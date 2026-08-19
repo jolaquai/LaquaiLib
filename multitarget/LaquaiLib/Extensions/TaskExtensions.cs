@@ -29,9 +29,7 @@ public static class TaskExtensions
                 await ((Task)Task.WhenAny(t, timeout)).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             }
             else
-            {
                 await t.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
-            }
         }
     }
 

@@ -15,9 +15,7 @@ public static class IAsyncEnumeratorExtensions
     {
         ArgumentNullException.ThrowIfNull(toChain);
         if (toChain.Any(static e => e is null))
-        {
             throw new ArgumentNullException(nameof(toChain), "One or more enumerators are null.");
-        }
         return new AsyncEnumeratorCombiner<T>(toChain);
     }
 
@@ -26,16 +24,13 @@ public static class IAsyncEnumeratorExtensions
         /// <summary>
         /// Chains the specified <see cref="IAsyncEnumerator{T}"/> instances with the specified <paramref name="source"/> into a single <see cref="IAsyncEnumerator{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of elements the <see cref="IAsyncEnumerator{T}"/> instances yield.</typeparam>
         /// <param name="with">The <see cref="IAsyncEnumerator{T}"/> instances to chain together.</param>
         /// <returns>An <see cref="IAsyncEnumerator{T}"/> implementation that iterates over each <paramref name="source"/> and <paramref name="with"/> in turn.</returns>
         public IAsyncEnumerator<T> Chain(params ReadOnlySpan<IAsyncEnumerator<T>> with)
         {
             ArgumentNullException.ThrowIfNull(source);
             for (var i = 0; i < with.Length; i++)
-            {
                 ArgumentNullException.ThrowIfNull(with[i]);
-            }
 
             switch (source)
             {
@@ -70,9 +65,7 @@ internal class AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators
             }
         }
         if (exceptions.Count > 0)
-        {
             throw new AggregateException("One or more enumerators failed to dispose (the rest were still disposed).", exceptions);
-        }
     }
 
     private int i;
@@ -84,9 +77,7 @@ internal class AsyncEnumeratorCombiner<T>(params IAsyncEnumerator<T>[] iterators
         {
             var iterator = _iterators[i];
             if (await iterator.MoveNextAsync().ConfigureAwait(false))
-            {
                 return true;
-            }
         }
         return false;
     }

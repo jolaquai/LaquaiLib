@@ -15,9 +15,7 @@ public static partial class StringExtensions
         {
             var input = source;
             foreach (var find in finds)
-            {
                 input = input.Replace(find, replace);
-            }
             return input;
         }
         /// <summary>
@@ -36,9 +34,7 @@ public static partial class StringExtensions
                 var currentReplacement = replaceFactory();
                 source = source.Remove(index, searchLen).Insert(index, currentReplacement);
                 if (!recurse)
-                {
                     index += currentReplacement.Length;
-                }
                 index = source.IndexOf(search, index);
             }
             return source;
@@ -60,9 +56,7 @@ public static partial class StringExtensions
                 lastReplacement = replaceFactory(lastReplacement);
                 source = source.Remove(index, searchLen).Insert(index, lastReplacement);
                 if (!recurse)
-                {
                     index += lastReplacement.Length;
-                }
                 index = source.IndexOf(search, index);
             }
             return source;

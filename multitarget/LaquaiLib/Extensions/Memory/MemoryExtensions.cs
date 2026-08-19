@@ -20,9 +20,7 @@ public static partial class MemoryExtensions
         {
             ArgumentNullException.ThrowIfNull(action);
             for (var i = 0; i < span.Length; i++)
-            {
                 action(span[i]);
-            }
             return span;
         }
         /// <summary>
@@ -34,9 +32,7 @@ public static partial class MemoryExtensions
         {
             ArgumentNullException.ThrowIfNull(action);
             for (var i = 0; i < span.Length; i++)
-            {
                 action(span[i], i);
-            }
             return span;
         }
 
@@ -76,7 +72,6 @@ public static partial class MemoryExtensions
         /// <summary>
         /// Splits the specified <paramref name="span"/> into the specified destination <see cref="Span{T}"/>s based on the given <paramref name="predicate"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the items in the array.</typeparam>
         /// <param name="whereTrue">The <see cref="Span{T}"/> that will contain all elements that match the given <paramref name="predicate"/>.</param>
         /// <param name="whereFalse">The <see cref="Span{T}"/> that will contain all elements that do not match the given <paramref name="predicate"/>.</param>
         /// <param name="predicate">The <see cref="Predicate{T}"/> that checks each element for a condition.</param>
@@ -91,7 +86,6 @@ public static partial class MemoryExtensions
             var trueIndex = 0;
             var falseIndex = 0;
             for (var i = 0; i < span.Length; i++)
-            {
                 if (predicate(span[i]))
                 {
                     whereTrue[trueIndex] = span[i];
@@ -102,7 +96,6 @@ public static partial class MemoryExtensions
                     whereFalse[falseIndex] = span[i];
                     falseIndex++;
                 }
-            }
         }
     }
     extension(ReadOnlySpan<byte> span)
@@ -111,7 +104,7 @@ public static partial class MemoryExtensions
         /// Reads a <c>\0</c> or equivalently terminated (based on the specified <paramref name="encoding"/>) <see langword="string"/> from the specified <paramref name="span"/>. This terminator is stripped from the input.
         /// </summary>
         /// <param name="ptr">The position at which to begin reading.</param>
-        /// <param name="encoding">An <see cref="Encoding" /> instance to use to interpret the read <see langword="byte"/>s. Defaults to <see cref="Encoding.UTF8" /> (which might be undesirable for Interop scenarios...).</param>
+        /// <param name="encoding">An <see cref="Encoding"/> instance to use to interpret the read <see langword="byte"/>s. Defaults to <see cref="Encoding.UTF8"/> (which might be undesirable for Interop scenarios...).</param>
         /// <returns>The reconstructed <see langword="string"/> or an empty <see langword="string"/> if the <see langword="byte"/> at <paramref name="ptr"/> was <c>0</c>. The length of the string is equal to the number by which <paramref name="ptr"/> was incremented.</returns>
         /// <remarks>
         /// Reading to the end of the <paramref name="span"/> without encountering a <c>\0</c> <see langword="byte"/> is considered illegal behavior and will throw an exception.
@@ -131,63 +124,47 @@ public static partial class MemoryExtensions
                 end = slice.IndexOf((byte)0);
                 terminatorLength = 1;
                 if (end == -1)
-                {
                     throw new ArgumentException($"No null terminator found (started at position {ptr}).");
-                }
             }
             else if (encoding == Encoding.Unicode) // UTF16-LE
             {
                 // Look for two consecutive zero bytes (UTF-16 null char)
                 terminatorLength = 2;
                 for (var i = 0; i < slice.Length - 1; i += 2)
-                {
                     if (slice[i] == 0 && slice[i + 1] == 0)
                     {
                         end = i;
                         break;
                     }
-                }
                 if (end == 0 && !(slice.Length >= 2 && slice.IsZero(2)))
-                {
                     throw new ArgumentException($"No UTF-16 null terminator found (started at position {ptr}).");
-                }
             }
             else if (encoding == Encoding.BigEndianUnicode) // UTF16-BE
             {
                 terminatorLength = 2;
                 for (var i = 0; i < slice.Length - 1; i += 2)
-                {
                     if (slice[i] == 0 && slice[i + 1] == 0)
                     {
                         end = i;
                         break;
                     }
-                }
                 if (end == 0 && !(slice.Length >= 2 && slice.IsZero(2)))
-                {
                     throw new ArgumentException($"No UTF-16 BE null terminator found (started at position {ptr}).");
-                }
             }
             else if (encoding == Encoding.UTF32)
             {
                 terminatorLength = 4;
                 for (var i = 0; i < slice.Length - 3; i += 4)
-                {
                     if (slice[i] == 0 && slice[i + 1] == 0 && slice[i + 2] == 0 && slice[i + 3] == 0)
                     {
                         end = i;
                         break;
                     }
-                }
                 if (end == 0 && !(slice.Length >= 4 && slice.IsZero(4)))
-                {
                     throw new ArgumentException($"No UTF-32 null terminator found (started at position {ptr}).");
-                }
             }
             else
-            {
                 throw new ArgumentException($"Unsupported encoding: {encoding.EncodingName}.");
-            }
 
             // Handle empty string case
             if (end == 0)
@@ -201,9 +178,7 @@ public static partial class MemoryExtensions
             unsafe
             {
                 fixed (byte* p = &slice[0])
-                {
                     result = encoding.GetString(p, end);
-                }
             }
 
             ptr += end + terminatorLength; // Move past the string and terminator
@@ -213,7 +188,7 @@ public static partial class MemoryExtensions
         /// Reads a <c>\0</c> or equivalently terminated (based on the specified <paramref name="encoding"/>) <see langword="string"/> from the specified <paramref name="span"/>. This terminator is stripped from the input.
         /// </summary>
         /// <param name="ptr">The position at which to begin reading.</param>
-        /// <param name="encoding">An <see cref="Encoding" /> instance to use to interpret the read <see langword="byte"/>s. Defaults to <see cref="Encoding.UTF8" /> (which might be undesirable for Interop scenarios...).</param>
+        /// <param name="encoding">An <see cref="Encoding"/> instance to use to interpret the read <see langword="byte"/>s. Defaults to <see cref="Encoding.UTF8"/> (which might be undesirable for Interop scenarios...).</param>
         /// <returns>The reconstructed <see langword="string"/> or an empty <see langword="string"/> if the <see langword="byte"/> at <paramref name="ptr"/> was <c>0</c>. The length of the string is equal to the number by which <paramref name="ptr"/> was incremented.</returns>
         /// <remarks>
         /// Reading to the end of the <paramref name="span"/> without encountering a <c>\0</c> <see langword="byte"/> is considered illegal behavior and will throw an exception.
@@ -244,9 +219,7 @@ public static partial class MemoryExtensions
         {
             var size = Unsafe.SizeOf<T>();
             if (size > span.Length - ptr)
-            {
                 throw new ArgumentOutOfRangeException($"The source span is too short to read a value of type {typeof(T).Name} (size: {size}, remaining: {span.Length - ptr}).");
-            }
 
             var value = MemoryMarshal.Read<T>(span[ptr..(ptr + size)]);
             ptr += size;
@@ -264,9 +237,7 @@ public static partial class MemoryExtensions
         {
             var ret = new T[count];
             for (var i = 0; i < count; i++)
-            {
                 ret[i] = span.Read<T>(ref ptr);
-            }
             return ret;
         }
         /// <summary>
@@ -301,17 +272,11 @@ public static partial class MemoryExtensions
         private bool IsZero(int length)
         {
             if (span.Length < length)
-            {
                 return false;
-            }
 
             for (var i = 0; i < length; i++)
-            {
                 if (span[i] != 0)
-                {
                     return false;
-                }
-            }
             return true;
         }
     }
@@ -378,9 +343,7 @@ public static partial class MemoryExtensions
         {
             ArgumentNullException.ThrowIfNull(action);
             for (var i = 0; i < span.Length; i++)
-            {
                 action(span[i]);
-            }
             return span;
         }
         /// <summary>
@@ -392,9 +355,7 @@ public static partial class MemoryExtensions
         {
             ArgumentNullException.ThrowIfNull(action);
             for (var i = 0; i < span.Length; i++)
-            {
                 action(span[i], i);
-            }
             return span;
         }
     }
@@ -415,15 +376,11 @@ public static partial class MemoryExtensions
             where T : unmanaged
         {
             if (index > 0)
-            {
                 span = span[index..];
-            }
 
             var size = Marshal.SizeOf(data);
             if (span.Length < size)
-            {
                 throw new ArgumentException($"The target {nameof(span)} cannot accomodate the specified {nameof(data)} instance (need {size} bytes, have {span.Length}).");
-            }
 
             // Cool thing is, Span pointer magic does all of what we need to do here
             unsafe

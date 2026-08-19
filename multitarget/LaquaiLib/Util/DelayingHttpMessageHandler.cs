@@ -79,21 +79,16 @@ public class DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandle
                 _ = _semaphore.Release();
             }
         }
-        else
-        {
-            if (Interlocked.Exchange(ref running, 1) == 1)
+        else if (Interlocked.Exchange(ref running, 1) == 1)
+            try
             {
-                try
-                {
-                    Wait();
-                    SetNextAllowedTime(cancellationToken);
-                }
-                finally
-                {
-                    _ = Interlocked.Exchange(ref running, 0);
-                }
+                Wait();
+                SetNextAllowedTime(cancellationToken);
             }
-        }
+            finally
+            {
+                _ = Interlocked.Exchange(ref running, 0);
+            }
 
         return base.Send(request, cancellationToken);
     }
@@ -119,22 +114,17 @@ public class DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandle
                 _ = _semaphore.Release();
             }
         }
-        else
-        {
-            if (Interlocked.Exchange(ref running, 1) == 1)
+        else if (Interlocked.Exchange(ref running, 1) == 1)
+            try
             {
-                try
-                {
-                    await WaitAsync(cancellationToken).ConfigureAwait(false);
-                    cancellationToken.ThrowIfCancellationRequested();
-                    SetNextAllowedTime(cancellationToken);
-                }
-                finally
-                {
-                    _ = Interlocked.Exchange(ref running, 0);
-                }
+                await WaitAsync(cancellationToken).ConfigureAwait(false);
+                cancellationToken.ThrowIfCancellationRequested();
+                SetNextAllowedTime(cancellationToken);
             }
-        }
+            finally
+            {
+                _ = Interlocked.Exchange(ref running, 0);
+            }
 
         return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
     }
@@ -165,9 +155,7 @@ public class DelayingHttpMessageHandler(TimeSpan minimumDelay, HttpMessageHandle
     {
         var now = DateTime.Now.Ticks;
         if (now < nextCallAllowed)
-        {
             return Task.Delay(TimeSpan.FromTicks(nextCallAllowed - now), cancellationToken);
-        }
         return Task.CompletedTask;
     }
 

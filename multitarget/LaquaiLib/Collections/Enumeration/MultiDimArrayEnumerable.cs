@@ -1,5 +1,3 @@
-using System.Reflection;
-
 using LaquaiLib.Interfaces;
 
 namespace LaquaiLib.Collections.Enumeration;
@@ -45,33 +43,23 @@ public sealed class MultiDimArrayEnumerable<T> : IEnumerable<T>, ISpanProvider<T
             var targetTracked = RuntimeHelpers.IsReferenceOrContainsReferences<T>();
             // Viewing GC-tracked slots as raw data or the reverse makes the GC walk arbitrary values as object pointers
             if (targetTracked != RuntimeHelpers.IsReferenceOrContainsReferences(elementType))
-            {
                 throw new ArgumentException($"{typeof(T)} and the array's element type {elementType} disagree on whether they contain managed references.", nameof(array));
-            }
 
             if (targetTracked)
             {
                 // Only plain reference slots have a layout independent of their type; reference-holding structs do not
                 if (typeof(T).IsValueType || elementType.IsValueType)
-                {
                     throw new ArgumentException($"{typeof(T)} and {elementType} hold managed references at possibly differing offsets and cannot be viewed as one another.", nameof(array));
-                }
                 if (relaxation != Relaxation.SizeAndType)
-                {
                     throw new ArgumentException($"Viewing an array of {elementType} as {typeof(T)} defeats the store checks that array covariance performs. Use {nameof(ReinterpretUnsafe)} if that is intended.", nameof(array));
-                }
             }
             else if (elementSize != targetSize && relaxation == Relaxation.None)
-            {
                 throw new ArgumentException($"An array of {elementSize}-byte elements cannot be viewed as {typeof(T)} ({targetSize} bytes). Use {nameof(Reinterpret)} to reinterpret the array's memory instead.", nameof(array));
-            }
         }
 
         var length = (long)array.Length * elementSize / targetSize;
         if (length > int.MaxValue)
-        {
             throw new ArgumentException($"The array viewed as {typeof(T)} would contain {length} elements, which exceeds the maximum length of a {nameof(Span<>)}.", nameof(array));
-        }
 
         _array = array;
         _length = (int)length;

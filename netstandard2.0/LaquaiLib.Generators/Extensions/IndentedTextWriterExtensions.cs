@@ -23,18 +23,12 @@ internal static class IndentedTextWriterExtensions
                 var slice = nextNewLine == -1 ? span.Slice(ptr) : span.Slice(ptr, nextNewLine);
                 // a lone CR is a line terminator in C#, so leaving one behind splits every /// line into its own unterminated doc comment
                 if (slice.Length > 0 && slice[slice.Length - 1] == '\r')
-                {
                     slice = slice.Slice(0, slice.Length - 1);
-                }
                 for (var i = 0; i < slice.Length; i++)
-                {
                     itw.Write(slice[i]);
-                }
                 itw.WriteLine();
                 if (nextNewLine == -1)
-                {
                     break;
-                }
                 ptr += nextNewLine + 1;
             }
         }
@@ -90,9 +84,7 @@ internal static class IndentedTextWriterExtensions
                 return;
             }
             if (_sb.Length == _start)
-            {
                 return;
-            }
             _sb.Insert(_start, $"{_indent}#region {_regionName}{_itw.NewLine}");
             _itw.WriteLine($"#endregion {_regionName}");
         }

@@ -4,7 +4,7 @@ public static partial class LinqMemoryExtensions
 {
     extension<TKey, TValue>(ReadOnlySpan<KeyValuePair<TKey, TValue>> source)
     {
-        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}})" />
+        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Dictionary<TKey, TValue> ToDictionary()
         {
@@ -17,7 +17,7 @@ public static partial class LinqMemoryExtensions
             return dictionary;
         }
 
-        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}}, IEqualityComparer{TKey})" />
+        /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{KeyValuePair{TKey, TValue}}, IEqualityComparer{TKey})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Dictionary<TKey, TValue> ToDictionary(IEqualityComparer<TKey> comparer)
         {

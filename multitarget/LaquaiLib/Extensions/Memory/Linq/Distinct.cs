@@ -4,11 +4,11 @@ public static partial class LinqMemoryExtensions
 {
     extension<TSource>(ReadOnlySpan<TSource> source)
     {
-        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource})" />
+        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TSource> Distinct() => Distinct(source, EqualityComparer<TSource>.Default);
 
-        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})" />
+        /// <inheritdoc cref="Enumerable.Distinct{TSource}(IEnumerable{TSource}, IEqualityComparer{TSource})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<TSource> Distinct(IEqualityComparer<TSource> comparer) => ToHashSet(source, comparer);
 
@@ -23,9 +23,7 @@ public static partial class LinqMemoryExtensions
         public int Distinct(Span<TSource> destination, IEqualityComparer<TSource> comparer = null)
         {
             if (destination.Length < source.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
 
             comparer ??= EqualityComparer<TSource>.Default;
             var destIndex = 0;
@@ -34,23 +32,15 @@ public static partial class LinqMemoryExtensions
             if (source.Length < 10_000_000)
             {
                 for (var i = 0; i < source.Length; i++)
-                {
                     if (destIndex == 0 || destination[..destIndex].IndexOf(source[i], comparer) < 0)
-                    {
                         destination[destIndex++] = source[i];
-                    }
-                }
                 return destIndex;
             }
 
             var hashSet = new HashSet<TSource>(source.Length, comparer);
             for (var i = 0; i < source.Length; i++)
-            {
                 if (hashSet.Add(source[i]))
-                {
                     destination[destIndex++] = source[i];
-                }
-            }
             return destIndex;
         }
     }

@@ -2,8 +2,6 @@ using System.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-using LaquaiLib.Extensions;
-
 namespace LaquaiLib.Dynamic;
 
 /// <summary>
@@ -23,7 +21,11 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
     private const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
     internal FullAccessDynamic() : this(Activator.CreateInstance<T>()) { }
-    internal FullAccessDynamic(T instance) => _instance = instance;
+    internal FullAccessDynamic(T instance)
+    {
+        _instance = instance;
+    }
+
     /// <inheritdoc/>
     public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
     {
@@ -48,9 +50,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         var key = $"{_instanceType.Namespace}.{_instanceType.Name}.{binder.Name}({string.Join(',', args.Select(o => o.GetType().GetFriendlyName()))})";
         MethodInfo method;
         if (_memberCache.TryGetValue(key, out var value) && value is MethodInfo methodInfo)
-        {
             method = methodInfo;
-        }
         else
         {
             var targetType = _instanceType;
@@ -72,9 +72,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         _memberCache[key] = method;
 
         if (!method.IsStatic && _instance is null)
-        {
             throw new NullReferenceException($"Cannot invoke instance method '{method.Name}' on a null instance of type '{_instanceType.FullName}'.");
-        }
 
         result = FullAccessDynamicFactory.Create(method.ReturnType, method.Invoke(method.IsStatic ? null : _instance, args));
         return true;
@@ -85,15 +83,11 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name;
 
         if (_memberCache.TryGetValue(key, out var member))
-        {
             goto memberAssigned;
-        }
 
         var members = _instanceType.GetMember(binder.Name, bindingFlags);
         if (members?.Length is 0 or null)
-        {
             members = _instanceType.GetMember(binder.Name, bindingFlags | BindingFlags.FlattenHierarchy);
-        }
         switch (members.Length)
         {
             case 0:
@@ -131,15 +125,11 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         {
             var getter = prop.GetGetMethod(true);
             if (getter is null)
-            {
                 // I've decided against making this a binding failure since, technically, the binding was successful, the property exists, but it just has no getter
                 throw new MissingMethodException($"The property '{prop.Name}' in type '{_instanceType.FullName}' does not have a getter.");
-            }
 
             if (!getter.IsStatic && _instance is null)
-            {
                 throw new NullReferenceException($"Cannot invoke instance property getter '{getter.Name}' on a null instance of type '{_instanceType.FullName}'.");
-            }
 
             var propValue = prop.GetValue(getter.IsStatic ? null : _instance);
             var result = FullAccessDynamicFactory.Create(prop.PropertyType, propValue);
@@ -150,9 +140,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         object GetField(FieldInfo field)
         {
             if (!field.IsStatic && _instance is null)
-            {
                 throw new NullReferenceException($"Cannot get value of instance field '{field.Name}' on a null instance of type '{_instanceType.FullName}'.");
-            }
 
             var fieldValue = field.GetValue(field.IsStatic ? null : _instance);
             var result = FullAccessDynamicFactory.Create(field.FieldType, fieldValue);
@@ -166,15 +154,11 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         var key = _instanceType.Namespace + '.' + _instanceType.Name + '.' + binder.Name;
 
         if (_memberCache.TryGetValue(key, out var member))
-        {
             goto memberAssigned;
-        }
 
         var members = _instanceType.GetMember(binder.Name, bindingFlags);
         if (members?.Length is 0 or null)
-        {
             members = _instanceType.GetMember(binder.Name, bindingFlags | BindingFlags.FlattenHierarchy);
-        }
         switch (members.Length)
         {
             case 0:
@@ -211,14 +195,10 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         {
             var setter = prop.GetSetMethod(true);
             if (setter is null)
-            {
                 // I've decided against making this a binding failure since, technically, the binding was successful, the property exists, but it just has no getter
                 throw new MissingMethodException($"The property '{prop.Name}' in type '{_instanceType.FullName}' does not have a sgetter.");
-            }
             if (!setter.IsStatic && _instance is null)
-            {
                 throw new NullReferenceException($"Cannot invoke instance property setter '{setter.Name}' on a null instance of type '{_instanceType.FullName}'.");
-            }
 
             prop.SetValue(setter.IsStatic ? null : _instance, value);
             _memberCache[key] = prop;
@@ -227,9 +207,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         void SetField(FieldInfo field)
         {
             if (!field.IsStatic && _instance is null)
-            {
                 throw new NullReferenceException($"Cannot set value of instance field '{field.Name}' on a null instance of type '{_instanceType.FullName}'.");
-            }
 
             field.SetValue(field.IsStatic ? null : _instance, value);
             _memberCache[key] = field;
@@ -277,9 +255,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
     {
         // Static indexers don't exist
         if (_instance is null)
-        {
             return false;
-        }
 
         var itemProp = FindIndexer(indexes);
         switch (itemProp)
@@ -356,22 +332,16 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         var paramTypes = method.GetParameters().Select(p => p.ParameterType).ToArray();
 
         if (method.ReturnType == typeof(void))
-        {
             return Expression.GetActionType(paramTypes);
-        }
         else
-        {
             return Expression.GetFuncType([.. paramTypes, method.ReturnType]);
-        }
     }
     private Delegate GetMethodDelegate(MethodInfo methodInfo, string key)
     {
         if (!_delegateCache.TryGetValue(methodInfo, out var delg))
         {
             if (!methodInfo.IsStatic && _instance is null)
-            {
                 throw new InvalidOperationException($"Cannot create delegate for instance method '{methodInfo.Name}' on a null instance of type '{_instanceType.FullName}'.");
-            }
 
             var delegateType = GetDelegateType(methodInfo);
             _memberCache[key] = methodInfo;
@@ -394,9 +364,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
             var indexer = targetType.GetProperty("Item", bindingFlags, null, null, indexTypes, null);
             indexer ??= targetType.GetProperty("Item", bindingFlags | BindingFlags.FlattenHierarchy, null, null, indexTypes, null);
             if (indexer is not null)
-            {
                 return indexer;
-            }
             targetType = targetType.BaseType;
         }
         return null;
@@ -464,7 +432,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
     /// <returns>The hash code of the underlying instance or its <see cref="Type"/> if it is <see langword="null"/>.</returns>
     public override int GetHashCode() => _instance?.GetHashCode() ?? _instanceType.GetHashCode();
     /// <summary>
-    /// Returns the result of the underlying instance's <see cref="T.ToString"/> method or <see langword="null"/> if the instance is <see langword="null"/>.
+    /// Returns the result of the underlying instance's <see cref="object.ToString"/> method or <see langword="null"/> if the instance is <see langword="null"/>.
     /// </summary>
     /// <returns>The underlying instance's <see langword="string"/> representation or <see langword="null"/> if the instance is <see langword="null"/>.</returns>
     public override string ToString() => _instance?.ToString();

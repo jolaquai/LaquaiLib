@@ -18,14 +18,10 @@ public static partial class LinqMemoryExtensions
         {
             var minLen = Math.Min(source.Length, second.Length);
             if (minLen > destination.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
             var i = 0;
             for (; i < source.Length && i < second.Length; i++)
-            {
                 destination[i] = resultSelector(source[i], second[i]);
-            }
             return minLen;
         }
 
@@ -41,15 +37,11 @@ public static partial class LinqMemoryExtensions
         {
             var minLen = Math.Min(source.Length, second.Length);
             if (minLen > destination.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
 
             var i = 0;
             for (; i < source.Length && i < second.Length; i++)
-            {
                 destination[i] = (source[i], second[i]);
-            }
             return minLen;
         }
 
@@ -67,15 +59,11 @@ public static partial class LinqMemoryExtensions
         {
             var minLen = Math.Min(source.Length, Math.Min(second.Length, third.Length));
             if (minLen > destination.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
 
             var i = 0;
             for (; i < source.Length && i < second.Length && i < third.Length; i++)
-            {
                 destination[i] = (source[i], second[i], third[i]);
-            }
             return minLen;
         }
     }

@@ -10,8 +10,6 @@ public static class IGroupingExtensions
         /// <summary>
         /// Deconstructs an <see cref="IGrouping{TKey, TElement}"/> into its <see cref="IGrouping{TKey, TElement}.Key"/> and elements as an <see cref="IEnumerable{T}"/>.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the key of the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
-        /// <typeparam name="TElement">The Type of the elements of the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
         /// <param name="key">An <see langword="out"/> variable that will be assigned the <see cref="IGrouping{TKey, TElement}.Key"/> of the <see cref="IGrouping{TKey, TElement}"/>.</param>
         /// <param name="elements">An <see langword="out"/> variable that will be assigned the elements of the <see cref="IGrouping{TKey, TElement}"/> as an <see cref="IEnumerable{T}"/>.</param>
         public void Deconstruct(out TKey key, out IEnumerable<TElement> elements)
@@ -23,39 +21,29 @@ public static class IGroupingExtensions
         /// <summary>
         /// Constructs a <see cref="Dictionary{TKey, TValue}"/> from an <see cref="IEnumerable{T}"/> of <see cref="IGrouping{TKey, TElement}"/>. The keys of the dictionary are the <see cref="IGrouping{TKey, TElement}.Key"/>s of the <see cref="IGrouping{TKey, TElement}"/>s, and the values are the values of the <see cref="IGrouping{TKey, TElement}"/>s as <see cref="List{T}"/>s to allow for adding more values.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
-        /// <typeparam name="TElement">The Type of the values of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
         /// <returns>The constructed <see cref="Dictionary{TKey, TValue}"/>.</returns>
         public Dictionary<TKey, List<TElement>> ToListDictionary()
         {
             var result = new Dictionary<TKey, List<TElement>>();
             foreach (var grouping in source)
-            {
                 result.Add(grouping.Key, [.. grouping]);
-            }
             return result;
         }
         /// <summary>
         /// Constructs a <see cref="Dictionary{TKey, TValue}"/> from an <see cref="IEnumerable{T}"/> of <see cref="IGrouping{TKey, TElement}"/>. The keys of the dictionary are the <see cref="IGrouping{TKey, TElement}.Key"/>s of the <see cref="IGrouping{TKey, TElement}"/>s, and the values are the values of the <see cref="IGrouping{TKey, TElement}"/>s as <see cref="Array"/>s.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
-        /// <typeparam name="TElement">The Type of the values of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
         /// <returns>The constructed <see cref="Dictionary{TKey, TValue}"/>.</returns>
         public Dictionary<TKey, TElement[]> ToArrayDictionary()
         {
             var result = new Dictionary<TKey, TElement[]>();
             foreach (var grouping in source)
-            {
                 result.Add(grouping.Key, [.. grouping]);
-            }
             return result;
         }
 
         /// <summary>
         /// Constructs a <see cref="Dictionary{TKey, TValue}"/> from an <see cref="IEnumerable{T}"/> of <see cref="IGrouping{TKey, TElement}"/>. The keys of the dictionary are the <see cref="IGrouping{TKey, TElement}.Key"/>s of the <see cref="IGrouping{TKey, TElement}"/>s, and the values are the values of the <see cref="IGrouping{TKey, TElement}"/>s transformed using a selector <see cref="Func{T, TResult}"/> as <see cref="List{T}"/>s to allow for adding more values.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
-        /// <typeparam name="TElement">The Type of the values of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
         /// <typeparam name="TTransform">The Type of the values of the <see cref="List{T}"/>s.</typeparam>
         /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each <typeparamref name="TElement"/> in the <see cref="IGrouping{TKey, TElement}"/>s and returns an instance of <typeparamref name="TTransform"/>.</param>
         /// <returns>The constructed <see cref="Dictionary{TKey, TValue}"/>.</returns>
@@ -63,16 +51,12 @@ public static class IGroupingExtensions
         {
             var result = new Dictionary<TKey, List<TTransform>>();
             foreach (var grouping in source)
-            {
                 result.Add(grouping.Key, [.. grouping.Select(selector)]);
-            }
             return result;
         }
         /// <summary>
         /// Constructs a <see cref="Dictionary{TKey, TValue}"/> from an <see cref="IEnumerable{T}"/> of <see cref="IGrouping{TKey, TElement}"/>. The keys of the dictionary are the <see cref="IGrouping{TKey, TElement}.Key"/>s of the <see cref="IGrouping{TKey, TElement}"/>s, and the values are the values of the <see cref="IGrouping{TKey, TElement}"/>s as <see cref="Array"/>s.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
-        /// <typeparam name="TElement">The Type of the values of the <see cref="IGrouping{TKey, TElement}"/>s.</typeparam>
         /// <typeparam name="TTransform">The Type of the values of the <see cref="List{T}"/>s.</typeparam>
         /// <param name="selector">A <see cref="Func{T, TResult}"/> that is passed each <typeparamref name="TElement"/> in the <see cref="IGrouping{TKey, TElement}"/>s and returns an instance of <typeparamref name="TTransform"/>.</param>
         /// <returns>The constructed <see cref="Dictionary{TKey, TValue}"/>.</returns>
@@ -80,9 +64,7 @@ public static class IGroupingExtensions
         {
             var result = new Dictionary<TKey, TTransform[]>();
             foreach (var grouping in source)
-            {
                 result.Add(grouping.Key, [.. grouping.Select(selector)]);
-            }
             return result;
         }
     }
@@ -107,9 +89,7 @@ public static class IGroupingExtensions
         {
             var collection = new TCollection();
             foreach (var element in grouping)
-            {
                 collection.Add(element);
-            }
             result.Add(grouping.Key, collection);
         }
         return result;
@@ -135,9 +115,7 @@ public static class IGroupingExtensions
         {
             var collection = new TCollection();
             foreach (var element in grouping.Select(selector))
-            {
                 collection.Add(element);
-            }
             result.Add(grouping.Key, collection);
         }
         return result;

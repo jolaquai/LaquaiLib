@@ -3,9 +3,8 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Security.AccessControl;
 
-using LaquaiLib.Extensions;
+using LaquaiLib.IO.Streams;
 using LaquaiLib.Wrappers;
-using System;
 
 namespace LaquaiLib.IO;
 
@@ -146,7 +145,7 @@ public static partial class FileSystemHelper
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for cancellation requests.</param>
     /// <remarks>
     /// This method uses <see cref="FileSizePartitioner"/> to create partitions for parallel processing that accounts for the size of the files in the directories.
-    /// <para/>There are few cases where this method could realistically perform better than <see cref="MigrateDirectoryAsync(string, string, bool, bool, int, bool, CancellationToken)"/>; the additional compression/decompression overhead will likely only pay off when transferring over a slow network or to or from very slow storage media (that is, any situation where I/O is the bottleneck, instead of CPU).
+    /// <para/>There are few cases where this method could realistically perform better than <see cref="MigrateDirectoryAsync(string, string, bool, bool, int, int, IProgress{ValueTuple{int, int}}, bool, CancellationToken)"/>; the additional compression/decompression overhead will likely only pay off when transferring over a slow network or to or from very slow storage media (that is, any situation where I/O is the bottleneck, instead of CPU).
     /// </remarks>
     public static Task MigrateDirectoryAsArchiveAsync(
         string source,
@@ -187,7 +186,7 @@ public static partial class FileSystemHelper
         return Task.WhenAll(partitions.Select(p => Task.Run(async () =>
         {
             // Use a single intermediary stream for all files in this partition, since nobody but us will touch it
-            var intermediary = new MemoryStream();
+            var intermediary = new ArrayPoolMemoryStream();
             // Local copy so the reference doesn't change from under us
             var pathEnumerator = p;
 
@@ -230,6 +229,8 @@ public static partial class FileSystemHelper
                         var fi = new FileInfo(fileDest);
                         ReplacePermissions(fi, srcSecurity);
                     }
+                    else if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+                        File.SetUnixFileMode(fileDest, File.GetUnixFileMode(fileSrc));
                 }
 
                 if (!copy)
@@ -391,6 +392,7 @@ public static partial class FileSystemHelper
     /// Reads the file at <paramref name="path"/> into the specified <paramref name="stream"/>, then deletes the file. It then only exists in memory.
     /// </summary>
     /// <param name="path">The path to the file to cut.</param>
+    /// <param name="stream">The <see cref="Stream"/> to write the file data to.</param>
     public static void CutFile(string path, Stream stream)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
@@ -404,6 +406,7 @@ public static partial class FileSystemHelper
     /// </summary>
     /// <param name="path">The path to the file to cut.</param>
     /// <returns>A <see cref="Task"/> that completes when the operation is finished.</returns>
+    /// <param name="stream">The <see cref="Stream"/> to write the file data to.</param>
     public static async Task CutFileAsync(string path, Stream stream)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
@@ -425,12 +428,7 @@ public static partial class FileSystemHelper
     /// <returns>An <see cref="IAsyncEnumerable{T}"/> that enumerates the full paths of directories that match the specified structure.</returns>
     /// <exception cref="IOException">Thrown if the root directory does not exist.</exception>
     /// <exception cref="ArgumentException">Thrown if the directory structure or root directory is invalid.</exception>
-    public static IAsyncEnumerable<string> EnumerateDirectoryStructureMatches(
-        string dirStructure,
-        string root = null,
-        DriveType? driveType = null,
-        int maxRecursionDepth = int.MaxValue
-    )
+    public static IAsyncEnumerable<string> EnumerateDirectoryStructureMatches(string dirStructure, string root = null, DriveType? driveType = null, int maxRecursionDepth = int.MaxValue)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dirStructure);
         if (Path.IsPathRooted(dirStructure) || dirStructure.AsSpan().IndexOfAny(InvalidPathChars) > -1)

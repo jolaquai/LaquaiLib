@@ -475,12 +475,8 @@ public class ConcurrentTwoWayLookupTests
 
         var entries = new List<KeyValuePair<string, int>>();
         using (var enumerator = lookup.GetReverseEnumerator())
-        {
             while (enumerator.MoveNext())
-            {
                 entries.Add(enumerator.Current);
-            }
-        }
 
         Assert.Contains(new KeyValuePair<string, int>("One", 1), entries);
         Assert.Contains(new KeyValuePair<string, int>("Two", 2), entries);
@@ -508,9 +504,7 @@ public class ConcurrentTwoWayLookupTests
 
         Assert.Equal(numItems, lookup.Count);
         for (var i = 0; i < numItems; i++)
-        {
             Assert.Equal($"Item{i}", lookup.GetForward(i));
-        }
     }
 
     [Fact]
@@ -523,9 +517,7 @@ public class ConcurrentTwoWayLookupTests
         var numItems = 100;
 
         for (var i = 0; i < numItems / 2; i++)
-        {
             lookup.AddForward(i, $"Item{i}");
-        }
 
         for (var i = 0; i < numItems / 2; i++)
         {
@@ -568,9 +560,7 @@ public class ConcurrentTwoWayLookupTests
     {
         var lookup = new ConcurrentTwoWayLookup<int, string>();
         for (var i = 0; i < 10; i++)
-        {
             lookup.Add(i, $"Item{i}");
-        }
 
         var barrier = new Barrier(2);
         var reader1Done = false;
@@ -709,9 +699,7 @@ public class ConcurrentTwoWayLookupTests
         public override bool Equals(object obj)
         {
             if (obj is Person other)
-            {
                 return Id == other.Id && Name == other.Name;
-            }
             return false;
         }
 
@@ -726,9 +714,7 @@ public class ConcurrentTwoWayLookupTests
         public override bool Equals(object obj)
         {
             if (obj is Address other)
-            {
                 return Id == other.Id && Street == other.Street;
-            }
             return false;
         }
 

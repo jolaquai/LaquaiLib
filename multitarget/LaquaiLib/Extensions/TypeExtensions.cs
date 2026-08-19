@@ -24,9 +24,7 @@ public static partial class TypeExtensions
             try
             {
                 if (parameters.Length == 0)
-                {
                     return Activator.CreateInstance(type);
-                }
                 var types = parameters.ToArray(static obj => obj?.GetType());
                 return type.GetConstructor(types).Invoke(parameters);
             }
@@ -55,7 +53,6 @@ public static partial class TypeExtensions
             foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
                 or MemberTypes.Property
                 or MemberTypes.Method))
-            {
                 switch (memberInfo.MemberType)
                 {
                     case MemberTypes.Field:
@@ -71,14 +68,10 @@ public static partial class TypeExtensions
                         if (callMethods)
                         {
                             if (methodInfo.ReturnType != typeof(void))
-                            {
                                 dict.Add(methodInfo.Name, methodInfo.Invoke(obj, null));
-                            }
                         }
                         else
-                        {
                             dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))}", null);
-                        }
                         break;
                     case MemberTypes.Constructor:
                         break;
@@ -95,7 +88,6 @@ public static partial class TypeExtensions
                     default:
                         break;
                 }
-            }
 
             return dict;
         }
@@ -112,7 +104,6 @@ public static partial class TypeExtensions
             foreach (var memberInfo in members.Where(static member => member.MemberType is MemberTypes.Field
                 or MemberTypes.Property
                 or MemberTypes.Method))
-            {
                 switch (memberInfo.MemberType)
                 {
                     case MemberTypes.Field:
@@ -130,14 +121,10 @@ public static partial class TypeExtensions
                             if (callMethods)
                             {
                                 if (methodInfo.ReturnType != typeof(void))
-                                {
                                     dict.Add(methodInfo.Name, methodInfo.Invoke(null, null));
-                                }
                             }
                             else
-                            {
                                 dict.Add($"{methodInfo.Name}({string.Join(", ", methodInfo.GetParameters().Select(static paramInfo => $"{paramInfo.ParameterType.GetFriendlyName()} {paramInfo.Name}"))})", null);
-                            }
                         }
                         break;
                     case MemberTypes.Constructor:
@@ -155,7 +142,6 @@ public static partial class TypeExtensions
                     default:
                         break;
                 }
-            }
 
             return dict;
         }
@@ -169,14 +155,10 @@ public static partial class TypeExtensions
         {
             var (first, second) = GetSaneTypeCodes(type, other);
             if (first == second)
-            {
                 return false;
-            }
 
             if (_narrowingConversions.TryGetValue(first, out var narrowingConversions))
-            {
                 return narrowingConversions.Contains(second);
-            }
             // No narrowing conversions exist for the first type
             return false;
         }
@@ -189,14 +171,10 @@ public static partial class TypeExtensions
         {
             var (first, second) = GetSaneTypeCodes(type, other);
             if (first == second)
-            {
                 return false;
-            }
 
             if (_consistentWideningConversions.TryGetValue(first, out var consistentWideningConversions))
-            {
                 return Array.IndexOf(consistentWideningConversions, second) != -1;
-            }
             // No consistent widening conversions exist for the first type
             return false;
         }
@@ -209,14 +187,10 @@ public static partial class TypeExtensions
         {
             var (first, second) = GetSaneTypeCodes(type, other);
             if (first == second)
-            {
                 return false;
-            }
 
             if (_lossyWideningConversions.TryGetValue(first, out var lossyWideningConversions))
-            {
                 return Array.IndexOf(lossyWideningConversions, second) != -1;
-            }
             // No lossy widening conversions exist for the first type
             return false;
         }
@@ -244,25 +218,19 @@ public static partial class TypeExtensions
                 | BindingFlags.Instance
                 | BindingFlags.Static;
             if (!options.IncludeHierarchy)
-            {
                 bindingFlags |= BindingFlags.DeclaredOnly;
-            }
 
             ArgumentNullException.ThrowIfNull(type);
             var friendlyTypeName = type.GetFriendlyName();
 
             if (type.IsSealed && options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
-            {
                 throw new TypeAccessException($"Cannot generate code for a type that inherits from sealed type '{friendlyTypeName}'.");
-            }
 
             using var sw = new StringWriter();
             using var itw = new IndentedTextWriter(sw, "    ");
 
             if (!string.IsNullOrWhiteSpace(options.Namespace))
-            {
                 itw.WriteLine($"namespace {options.Namespace};");
-            }
 
             #region Type Declaration
             itw.WriteLine($"""
@@ -279,14 +247,10 @@ public static partial class TypeExtensions
                 itw.Write(">");
             }
             else
-            {
                 itw.WriteLine();
-            }
 
             if (options.Inherit is ReflectionOptions.InheritanceBehavior.Inherit)
-            {
                 itw.WriteLine($" : {friendlyTypeName}");
-            }
             #endregion
 
             itw.WriteLine("{");
@@ -295,9 +259,7 @@ public static partial class TypeExtensions
 
             #region options.Inheriting is ReflectionOptions.InheritanceBehavior.FieldDelegation
             if (options.Inherit is ReflectionOptions.InheritanceBehavior.FieldDelegation)
-            {
                 itw.WriteLine($"private readonly {friendlyTypeName} _base = new {friendlyTypeName}();");
-            }
             #endregion
 
             #region Fields
@@ -307,23 +269,17 @@ public static partial class TypeExtensions
                 var field = fields[i];
                 var accessibility = field.GetAccessibility();
                 if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
-                {
                     continue;
-                }
 
                 // If the field is anything above or equal to protected, it's prooooobably gonna have a documentation comment
                 // Since fields cannot be made virtual though, the interitance relationship doesn't matter
                 if (options.AddXmlDocCrefs && accessibility.Equals("public", StringComparison.OrdinalIgnoreCase))
-                {
-                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{field.Name}" />""");
-                }
+                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{field.Name}"/>""");
 
                 itw.Write(accessibility);
                 itw.Write(' ');
                 if (field.IsStatic)
-                {
                     itw.Write("static ");
-                }
                 itw.Write(field.FieldType.GetFriendlyName());
                 itw.Write(' ');
                 itw.Write(field.Name);
@@ -340,22 +296,16 @@ public static partial class TypeExtensions
                 var property = props[i];
                 var accessibility = property.GetAccessibility();
                 if (options.IgnoreInaccessible && IsInaccessibleAsReflectedType(accessibility, options.Inherit))
-                {
                     continue;
-                }
 
                 // If the property is anything above or equal to protected, it's prooooobably gonna have a documentation comment
                 if (options.AddXmlDocCrefs && (accessibility.Equals("public", StringComparison.OrdinalIgnoreCase) || (AccessibilityIsAtLeastFamily(accessibility) && !type.IsSealed)))
-                {
-                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{property.Name}" />""");
-                }
+                    itw.WriteLine($"""/// <inheritdoc cref="{friendlyTypeName}.{property.Name}"/>""");
 
                 itw.Write(accessibility);
                 itw.Write(' ');
                 if (property.GetMethod?.IsStatic is true || property.SetMethod?.IsStatic is true)
-                {
                     itw.Write("static ");
-                }
                 itw.Write(property.PropertyType.GetFriendlyName());
                 itw.Write(' ');
                 itw.WriteLine(property.Name);
@@ -462,27 +412,21 @@ public static partial class TypeExtensions
                     itw.Write(string.Join(", ", method.GetParameters().Select(p => p.ParameterType.GetFriendlyName().Replace('<', '{').Replace('>', '}'))));
                     itw.Write(')');
 
-                    itw.WriteLine("\" />");
+                    itw.WriteLine("\"/>");
                 }
 
                 itw.Write(accessibility);
                 itw.Write(' ');
                 if (method.IsStatic)
-                {
                     itw.Write("static ");
-                }
                 if (unsafeRequired)
-                {
                     itw.Write("unsafe ");
-                }
                 itw.Write(method.ReturnType.GetFriendlyName());
                 itw.Write(' ');
                 itw.Write(method.Name);
 
                 if (method.IsGenericMethod)
-                {
                     itw.Write($"<{string.Join(", ", method.GetGenericArguments().Select(t => t.Name))}>");
-                }
 
                 itw.Write('(');
                 itw.Write(string.Join(", ", method.GetParameters().Select(p => $"{p.ParameterType.GetFriendlyName()} {p.Name}")));
@@ -540,38 +484,24 @@ public static partial class TypeExtensions
             }
 
             if (includeNamespace)
-            {
                 operateOn = $"{type.Namespace}.{operateOn}";
-            }
 
             if (type.IsGenericParameter)
-            {
                 return operateOn;
-            }
             else if (type.IsArray && type.GetElementType() is Type elementType)
-            {
                 return elementType.GetFriendlyName() + "[]";
-            }
             if (operateOn.EndsWith('&'))
-            {
                 return "ref " + AsKeyword(operateOn[..^1]);
-            }
             if (operateOn.EndsWith('*'))
-            {
                 return AsKeyword(operateOn[..^1]) + '*';
-            }
             if (operateOn.EndsWith("[]", StringComparison.OrdinalIgnoreCase))
-            {
                 return AsKeyword(operateOn[..^2]) + "[]";
-            }
 
             if (type.IsGenericType)
             {
                 var tickAt = operateOn.IndexOf('`', StringComparison.OrdinalIgnoreCase);
                 if (tickAt != -1)
-                {
                     operateOn = operateOn[..tickAt];
-                }
                 var args = string.Join(", ", type.GetGenericArguments().Select(static t => t.GetFriendlyName()));
 
                 return $"{operateOn}<{args}>";
@@ -595,83 +525,45 @@ public static partial class TypeExtensions
         {
             returnType = null;
             if (!type.IsGenericType)
-            {
                 return false;
-            }
 
             var gtd = type.GetGenericTypeDefinition();
             if (gtd == typeof(Func<>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
             else if (gtd == typeof(Func<,,,,,,,,,,,,,,,,>))
-            {
                 returnType = type;
-            }
 
             switch (returnType)
             {
@@ -691,83 +583,47 @@ public static partial class TypeExtensions
         {
             takesParameters = false;
             if (type == typeof(Action))
-            {
                 return true;
-            }
 
             // GetGenericTypeDefinition throws on non-generic types, so a non-generic type that isn't Action
             // is simply not an Action delegate.
             if (!type.IsGenericType)
-            {
                 return false;
-            }
 
             takesParameters = true;
             var gtd = type.GetGenericTypeDefinition();
             if (gtd == typeof(Action<>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,,,>))
-            {
                 return true;
-            }
             else if (gtd == typeof(Action<,,,,,,,,,,,,,,,>))
-            {
                 return true;
-            }
             return false;
         }
 
@@ -800,9 +656,7 @@ public static partial class TypeExtensions
             get
             {
                 if (_sizeofMap.TryGetValue(type, out var size))
-                {
                     return size;
-                }
 
                 // No references means we can sizeof it
                 return _sizeofMap[type] = (int)typeof(Unsafe).GetMethod(nameof(Unsafe.SizeOf)).MakeGenericMethod(type).Invoke(null, null);
@@ -986,25 +840,15 @@ public static partial class TypeExtensions
     {
         var modifiersEnumerated = modifiers.ToArray();
         if (modifiersEnumerated.Contains("private protected"))
-        {
             return "private protected";
-        }
         if (modifiersEnumerated.Contains("protected internal"))
-        {
             return "protected internal";
-        }
         if (modifiersEnumerated.Contains("private")) // same type only
-        {
             return "private";
-        }
         if (modifiersEnumerated.Contains("protected"))
-        {
             return "protected";
-        }
         if (modifiersEnumerated.Contains("internal"))
-        {
             return "internal";
-        }
         return "public";
     }
     internal static bool IsInaccessibleAsReflectedType(string modifiers, ReflectionOptions.InheritanceBehavior inheritance) => modifiers.ToUpperInvariant() switch
@@ -1056,13 +900,9 @@ public static partial class TypeExtensions
             case PropertyInfo propertyInfo:
             {
                 if (propertyInfo.CanRead && propertyInfo.GetGetMethod(true) is MethodBase getMethod)
-                {
                     return GetAccessibility(getMethod);
-                }
                 else if (propertyInfo.CanWrite && propertyInfo.GetSetMethod(true) is MethodBase setMethod)
-                {
                     return GetAccessibility(setMethod);
-                }
                 return "private";
             }
 
@@ -1074,17 +914,11 @@ public static partial class TypeExtensions
             {
                 var accessors = new List<string>();
                 if (eventInfo.GetAddMethod(true) is MethodBase addMethod)
-                {
                     accessors.Add(GetAccessibility(addMethod));
-                }
                 if (eventInfo.GetRemoveMethod(true) is MethodBase removeMethod)
-                {
                     accessors.Add(GetAccessibility(removeMethod));
-                }
                 if (eventInfo.GetRaiseMethod(true) is MethodBase raiseMethod)
-                {
                     accessors.Add(GetAccessibility(raiseMethod));
-                }
                 return GetLeastAccessibleModifier(accessors);
             }
 
@@ -1100,13 +934,9 @@ public static partial class TypeExtensions
         var ret = (Type.GetTypeCode(type), Type.GetTypeCode(other));
 
         if (ret.Item1 is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String)
-        {
             throw new ArgumentException("Type must be a numeric primitive type.", nameof(type));
-        }
         if (ret.Item2 is TypeCode.Empty or TypeCode.Object or TypeCode.DBNull or TypeCode.Boolean or TypeCode.DateTime or TypeCode.String)
-        {
             throw new ArgumentException("Type must be a numeric primitive type.", nameof(other));
-        }
         return ret;
     }
 

@@ -26,17 +26,13 @@ public static partial class LinqMemoryExtensions
             var result = defaultValue;
             var found = false;
             for (var i = 0; i < source.Length; i++)
-            {
                 if (predicate(source[i]))
                 {
                     if (found)
-                    {
                         return defaultValue;
-                    }
                     result = source[i];
                     found = true;
                 }
-            }
             return found ? result : defaultValue;
         }
     }

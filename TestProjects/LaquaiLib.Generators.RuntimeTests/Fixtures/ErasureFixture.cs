@@ -6,7 +6,10 @@ public class ErasureFixture
     private sealed class Secret
     {
         public int Value;
-        public Secret(int value) => Value = value;
+        public Secret(int value)
+        {
+            Value = value;
+        }
     }
 
     private Secret _secretProp = new Secret(-1);

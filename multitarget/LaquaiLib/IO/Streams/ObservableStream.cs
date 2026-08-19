@@ -26,9 +26,7 @@ public class ObservableStream<T> : Stream
         set
         {
             if (_underlying.Position == value)
-            {
                 return;
-            }
 
             var oldPosition = _underlying.Position;
             _underlying.Position = value;
@@ -52,13 +50,9 @@ public class ObservableStream<T> : Stream
     public override int Read(byte[] buffer, int offset, int count)
     {
         if (count <= 0)
-        {
             return 0;
-        }
         if (offset >= buffer.Length)
-        {
             throw new ArgumentOutOfRangeException(nameof(offset), "Offset is greater than the buffer length.");
-        }
 
         var oldPosition = Position;
         var read = _underlying.Read(buffer, offset, count);
@@ -75,13 +69,9 @@ public class ObservableStream<T> : Stream
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
     {
         if (count <= 0)
-        {
             return 0;
-        }
         if (offset >= buffer.Length)
-        {
             throw new ArgumentOutOfRangeException(nameof(offset), "Offset is greater than the buffer length.");
-        }
 
         var oldPosition = Position;
         var read = await _underlying.ReadAsync(buffer.AsMemory(offset, count), cancellationToken).ConfigureAwait(false);
@@ -98,9 +88,7 @@ public class ObservableStream<T> : Stream
     public override int Read(Span<byte> buffer)
     {
         if (buffer.Length == 0)
-        {
             return 0;
-        }
 
         var temp = ArrayPool<byte>.Shared.Rent(buffer.Length);
         var read = Read(temp, 0, buffer.Length);
@@ -125,9 +113,7 @@ public class ObservableStream<T> : Stream
     public override int ReadByte()
     {
         if (Position == Length)
-        {
             return -1;
-        }
 
         var prevPosition = Position;
         var theByte = _underlying.ReadByte();
@@ -155,18 +141,14 @@ public class ObservableStream<T> : Stream
         var oldPos = Position;
         var newPos = _underlying.Seek(offset, origin);
         if (oldPos != newPos)
-        {
             Seeked?.Invoke(this, new SeekedEventArgs(oldPos, newPos));
-        }
         return newPos;
     }
     /// <inheritdoc/>
     public override void SetLength(long value)
     {
         if (Length == value)
-        {
             return;
-        }
 
         var oldLength = Length;
         _underlying.SetLength(value);
@@ -176,13 +158,9 @@ public class ObservableStream<T> : Stream
     public override void Write(byte[] buffer, int offset, int count)
     {
         if (count <= 0)
-        {
             return;
-        }
         if (offset >= buffer.Length)
-        {
             throw new ArgumentOutOfRangeException(nameof(offset), "Offset is greater than the buffer length.");
-        }
 
         var oldPosition = Position;
         var oldLength = Length;
@@ -192,21 +170,15 @@ public class ObservableStream<T> : Stream
         DataWritten?.Invoke(this, new WrittenEventArgs(memory));
         Seeked?.Invoke(this, new SeekedEventArgs(oldPosition, Position));
         if (Length > oldLength)
-        {
             Resized?.Invoke(this, new ResizedEventArgs(oldLength, Length));
-        }
     }
     /// <inheritdoc/>
     public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
     {
         if (count <= 0)
-        {
             return;
-        }
         if (offset >= buffer.Length)
-        {
             throw new ArgumentOutOfRangeException(nameof(offset), "Offset is greater than the buffer length.");
-        }
 
         var oldPosition = Position;
         var oldLength = Length;
@@ -216,9 +188,7 @@ public class ObservableStream<T> : Stream
         DataWritten?.Invoke(this, new WrittenEventArgs(memory));
         Seeked?.Invoke(this, new SeekedEventArgs(oldPosition, Position));
         if (Length > oldLength)
-        {
             Resized?.Invoke(this, new ResizedEventArgs(oldLength, Length));
-        }
     }
     /// <inheritdoc/>
     public override void Write(ReadOnlySpan<byte> buffer)
@@ -246,9 +216,7 @@ public class ObservableStream<T> : Stream
         DataWritten?.Invoke(this, new WrittenEventArgs(new ReadOnlyMemory<byte>([value])));
         Seeked?.Invoke(this, new SeekedEventArgs(prevPosition, Position));
         if (Length > oldLength)
-        {
             Resized?.Invoke(this, new ResizedEventArgs(oldLength, Length));
-        }
     }
     /// <inheritdoc/>
     public override void CopyTo(Stream destination, int bufferSize)
@@ -301,22 +269,21 @@ public class ObservableStream<T> : Stream
     /// Initializes a new <see cref="ObservableStream{T}"/> instance by wrapping an existing <see cref="Stream"/>.
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> to wrap.</param>
-    protected internal ObservableStream(T stream) => _underlying = stream;
+    protected internal ObservableStream(T stream)
+    {
+        _underlying = stream;
+    }
 
     private bool disposed;
     /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
         if (disposed)
-        {
             return;
-        }
 
         if (disposing)
-        {
             // managed
             _underlying.Dispose();
-        }
 
         // unmanaged
 
@@ -326,9 +293,7 @@ public class ObservableStream<T> : Stream
     public override async ValueTask DisposeAsync()
     {
         if (disposed)
-        {
             return;
-        }
 
         GC.SuppressFinalize(this);
         await _underlying.DisposeAsync().ConfigureAwait(false);
@@ -368,9 +333,7 @@ public static class ObservableStreamFactory
     public static ObservableStream<MemoryStream> Create(byte[] data, int offset = 0, int length = int.MinValue, bool canResize = false)
     {
         if (length == int.MinValue)
-        {
             length = data.Length - offset;
-        }
 
         MemoryStream ms;
         if (canResize)
@@ -381,9 +344,7 @@ public static class ObservableStreamFactory
             ms.Write(data.AsSpan(offset, length));
         }
         else
-        {
             ms = new MemoryStream(data, offset, length);
-        }
         return new ObservableStream<MemoryStream>(ms);
     }
     /// <summary>

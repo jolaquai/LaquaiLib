@@ -17,13 +17,9 @@ public static partial class LinqMemoryExtensions
         public int Select<TResult>(Func<TSource, TResult> selector, Span<TResult> destination)
         {
             if (destination.Length < source.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
             for (var i = 0; i < source.Length; i++)
-            {
                 destination[i] = selector(source[i]);
-            }
             return source.Length;
         }
 
@@ -39,13 +35,9 @@ public static partial class LinqMemoryExtensions
         public int Select<TResult>(Func<TSource, int, TResult> selector, Span<TResult> destination)
         {
             if (destination.Length < source.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
             for (var i = 0; i < source.Length; i++)
-            {
                 destination[i] = selector(source[i], i);
-            }
             return source.Length;
         }
     }

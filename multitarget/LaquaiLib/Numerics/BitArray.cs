@@ -116,10 +116,8 @@ public class BitArray :
             var digits = span[2..];
             var digitCount = 0;
             foreach (var c in digits)
-            {
                 if (c != '_')
                     digitCount++;
-            }
             if (digitCount == 0)
             {
                 result = null;
@@ -607,7 +605,7 @@ public class BitArray :
     public static BitArray operator <<(BitArray value, int n)
     {
         ArgumentNullException.ThrowIfNull(value);
-        var clone = value.Clone();
+        var clone = value.Copy();
         clone.ShiftLeft(n);
         return clone;
     }
@@ -625,7 +623,7 @@ public class BitArray :
     public static BitArray operator >>(BitArray value, int n)
     {
         ArgumentNullException.ThrowIfNull(value);
-        var clone = value.Clone();
+        var clone = value.Copy();
         clone.ShiftRight(n);
         return clone;
     }
@@ -647,7 +645,7 @@ public class BitArray :
     public static BitArray operator >>>(BitArray value, int n)
     {
         ArgumentNullException.ThrowIfNull(value);
-        var clone = value.Clone();
+        var clone = value.Copy();
         clone.ShiftRightArithmetic(n);
         return clone;
     }
@@ -1038,7 +1036,6 @@ public class BitArray :
         if (format.IsEmpty)
             return FormatKind.Decimal;
         if (format.Length == 1)
-        {
             switch (format[0])
             {
                 case 'D' or 'd' or 'G' or 'g':
@@ -1056,7 +1053,6 @@ public class BitArray :
                 case 'R':
                     return FormatKind.Raw;
             }
-        }
         throw new FormatException($"The '{format.ToString()}' format string is not supported.");
     }
 
@@ -1218,7 +1214,7 @@ public class BitArray :
         ArgumentNullException.ThrowIfNull(left);
         ArgumentNullException.ThrowIfNull(right);
         var (big, small) = left._data.Length >= right._data.Length ? (left, right) : (right, left);
-        var clone = big.Clone();
+        var clone = big.Copy();
         clone.And(small);
         // Any words in clone beyond small._data.Length must become zero (AND with implicit 0).
         if (clone._data.Length > small._data.Length)
@@ -1234,7 +1230,7 @@ public class BitArray :
         ArgumentNullException.ThrowIfNull(left);
         ArgumentNullException.ThrowIfNull(right);
         var (big, small) = left._data.Length >= right._data.Length ? (left, right) : (right, left);
-        var clone = big.Clone();
+        var clone = big.Copy();
         clone.Or(small);
         clone.Signed = left.Signed || right.Signed;
         return clone;
@@ -1247,7 +1243,7 @@ public class BitArray :
         ArgumentNullException.ThrowIfNull(left);
         ArgumentNullException.ThrowIfNull(right);
         var (big, small) = left._data.Length >= right._data.Length ? (left, right) : (right, left);
-        var clone = big.Clone();
+        var clone = big.Copy();
         clone.Xor(small);
         clone.Signed = left.Signed || right.Signed;
         return clone;
@@ -1258,7 +1254,7 @@ public class BitArray :
     public static BitArray operator ~(BitArray value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        var clone = value.Clone();
+        var clone = value.Copy();
         clone.Not();
         return clone;
     }

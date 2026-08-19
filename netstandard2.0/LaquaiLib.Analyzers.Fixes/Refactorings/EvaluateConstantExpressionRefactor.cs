@@ -59,9 +59,7 @@ public sealed class EvaluateConstantExpressionRefactor : LaquaiLibOperationRefac
     private static ExpressionSyntax CreateLiteral(object value, ITypeSymbol type)
     {
         if (value is null)
-        {
             return SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression);
-        }
         switch (value)
         {
             case bool b:

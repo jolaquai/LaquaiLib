@@ -4,6 +4,7 @@ using LaquaiLib.Threading;
 
 namespace LaquaiLib.Windows.Extensions;
 
+/// <inheritdoc/>
 public static class ThreadingExtensions
 {
     extension(Dispatcher dispatcher)

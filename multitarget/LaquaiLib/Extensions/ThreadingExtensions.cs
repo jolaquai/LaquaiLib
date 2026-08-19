@@ -2,6 +2,7 @@
 
 namespace LaquaiLib.Extensions;
 
+/// <inheritdoc/>
 public static class ThreadingExtensions
 {
     extension(SynchronizationContext synchronizationContext)

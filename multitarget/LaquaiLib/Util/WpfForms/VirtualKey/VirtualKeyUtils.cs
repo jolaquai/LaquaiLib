@@ -177,17 +177,13 @@ public static partial class VirtualKeyUtils
         for (var i = 0; i < NormalKeys.Length; i++)
         {
             if (GetKeyState(nk[i]))
-            {
                 arr[offset] = (uint)nk[i] | msb;
-            }
             offset++;
         }
         for (var i = 0; i < ToggleKeys.Length; i++)
         {
             if (GetToggleState(tk[i]))
-            {
                 arr[offset] = (uint)tk[i] | msb;
-            }
             offset++;
         }
         return [.. arr.Where(static x => (x & msb) == msb).Select(static x => (VirtualKey)(x & ~msb))];

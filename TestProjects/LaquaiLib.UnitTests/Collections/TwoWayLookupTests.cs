@@ -479,9 +479,7 @@ public class TwoWayLookupTests
         var entries = new List<KeyValuePair<string, int>>();
         var enumerator = lookup.GetReverseEnumerator();
         while (enumerator.MoveNext())
-        {
             entries.Add(enumerator.Current);
-        }
 
         Assert.Equal(3, entries.Count);
         Assert.Contains(entries, static e => e.Key == "One" && e.Value == 1);
@@ -555,9 +553,7 @@ public class TwoWayLookupTests
         public override bool Equals(object obj)
         {
             if (obj is Person other)
-            {
                 return Id == other.Id && Name == other.Name;
-            }
             return false;
         }
 
@@ -572,9 +568,7 @@ public class TwoWayLookupTests
         public override bool Equals(object obj)
         {
             if (obj is Address other)
-            {
                 return Id == other.Id && Street == other.Street;
-            }
             return false;
         }
 

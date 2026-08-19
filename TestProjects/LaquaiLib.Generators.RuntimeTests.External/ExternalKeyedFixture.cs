@@ -7,12 +7,18 @@ internal sealed class ExternalKeyedFixture
     public sealed class Key
     {
         public int Value;
-        public Key(int value) => Value = value;
+        public Key(int value)
+        {
+            Value = value;
+        }
     }
 
     public int KeyValue { get; }
 
-    public ExternalKeyedFixture(Key key) => KeyValue = key.Value;
+    public ExternalKeyedFixture(Key key)
+    {
+        KeyValue = key.Value;
+    }
 
     public static Key MakeKey(int v) => new Key(v);
 }

@@ -7,6 +7,7 @@ namespace LaquaiLib.Collections.Enumeration;
 /// </summary>
 /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
 /// <param name="split">The <typeparamref name="T"/>s to use as delimiters.</param>
+/// <param name="equalityComparer">The <see cref="IEqualityComparer{T}"/> to use to compare the elements of the source span and the split sequence.</param>
 public ref struct SpanSplitBySequenceEnumerable<T>(ReadOnlySpan<T> source, ReadOnlySpan<T> split, IEqualityComparer<T> equalityComparer = null)
 {
     private ReadOnlySpan<T> _source = source;
@@ -46,9 +47,7 @@ public ref struct SpanSplitBySequenceEnumerable<T>(ReadOnlySpan<T> source, ReadO
             case 2:
             {
                 if (_source.Length == 0)
-                {
                     return false;
-                }
 #if NET9_0
                 var end = -1;
                 for (var i = 0; i < _source.Length - _sequence.Length + 1; i++)
@@ -71,9 +70,7 @@ public ref struct SpanSplitBySequenceEnumerable<T>(ReadOnlySpan<T> source, ReadO
                 Current = _source[..end];
                 _source = _source[(end + _sequence.Length)..];
                 if (_source.Length == 0)
-                {
                     state = 3;
-                }
                 return true;
             }
             case 3:

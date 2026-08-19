@@ -220,7 +220,7 @@ public static class TypeExtensionsTests
             Assert.Equal("TypeExtensionsTests+FriendlyNamesAndKeywords+Outer+Inner", typeof(Outer.Inner).GetFriendlyName(includeNamespace: false));
         }
 
-        unsafe struct PtrHolder { }
+        private unsafe struct PtrHolder { }
 
         [Fact]
         public unsafe void GetFriendlyNameForPointerAndRef()

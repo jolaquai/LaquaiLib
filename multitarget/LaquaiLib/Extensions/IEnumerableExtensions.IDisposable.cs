@@ -15,7 +15,6 @@ public static partial class IEnumerableExtensions
         {
             var innerExceptions = new List<Exception>();
             foreach (var disposable in disposables)
-            {
                 try
                 {
                     disposable.Dispose();
@@ -24,11 +23,8 @@ public static partial class IEnumerableExtensions
                 {
                     innerExceptions.Add(ex);
                 }
-            }
             if (innerExceptions.Count > 0)
-            {
                 throw new AggregateException(innerExceptions);
-            }
         }
     }
 }

@@ -38,21 +38,13 @@ public static partial class LinqMemoryExtensions
         public int Convert<TResult>(Span<TResult> destination) where TResult : struct
         {
             if (destination.Length < source.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
 
             if (typeof(TSource) == typeof(TResult))
-            {
                 MemoryMarshal.Cast<TSource, TResult>(source).CopyTo(destination);
-            }
             else
-            {
                 for (var i = 0; i < source.Length; i++)
-                {
                     destination[i] = Unsafe.As<TSource, TResult>(ref Unsafe.AsRef(in source[i]));
-                }
-            }
             return source.Length;
         }
         /// <summary>
@@ -70,9 +62,7 @@ public static partial class LinqMemoryExtensions
         public int BitCast<TResult>(Span<TResult> destination) where TResult : struct
         {
             if (destination.Length < source.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
 
             MemoryMarshal.Cast<TSource, TResult>(source).CopyTo(destination);
             return source.Length;
@@ -91,14 +81,10 @@ public static partial class LinqMemoryExtensions
         public int Cast<TResult>(Span<TResult> destination) where TResult : class, TSource
         {
             if (destination.Length < source.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
 
             for (var i = 0; i < source.Length; i++)
-            {
                 destination[i] = (TResult)source[i];
-            }
             return source.Length;
         }
         /// <summary>
@@ -112,14 +98,10 @@ public static partial class LinqMemoryExtensions
         public int ReinterpretCast<TResult>(Span<TResult> destination) where TResult : class
         {
             if (destination.Length < source.Length)
-            {
                 throw new ArgumentException("Destination span is too short.", nameof(destination));
-            }
 
             for (var i = 0; i < source.Length; i++)
-            {
                 destination[i] = Unsafe.As<TResult>(source[i]);
-            }
             return source.Length;
         }
     }

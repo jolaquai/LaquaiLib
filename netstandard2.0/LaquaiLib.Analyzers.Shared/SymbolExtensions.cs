@@ -20,13 +20,9 @@ public static class SymbolExtensions
                         typeSymbol = arrayTypeSymbol.ElementType;
                         var rtType = typeSymbol.RuntimeType;
                         if (rtType is null)
-                        {
                             return null;
-                        }
                         if (arrayTypeSymbol.Rank == 1)
-                        {
                             return rtType.MakeArrayType();
-                        }
                         return rtType.MakeArrayType(arrayTypeSymbol.Rank);
                     }
                     case IDynamicTypeSymbol:
@@ -38,9 +34,7 @@ public static class SymbolExtensions
                         typeSymbol = pointerTypeSymbol.PointedAtType;
                         var rtType = typeSymbol.RuntimeType;
                         if (rtType is null)
-                        {
                             return null;
-                        }
                         return rtType.MakePointerType();
                     }
                 }
@@ -63,14 +57,10 @@ public static class SymbolExtensions
                 // uses C#'s '<T>' generic syntax, so this never resolves for generic types (e.g. Span<byte>).
                 // Returning null here is correct: callers fall back to other resolution strategies.
                 if (type is null)
-                {
                     return null;
-                }
 
                 if (typeSymbol.IsRefLikeType)
-                {
                     return type.MakeByRefType();
-                }
 
                 return type;
             }
@@ -108,15 +98,11 @@ public static class SymbolExtensions
             {
                 var prelim = parameterSymbol.Type.RuntimeType;
                 if (prelim is null)
-                {
                     return null;
-                }
 
                 // Add ref/in/out modifiers
                 if (parameterSymbol.RefKind is RefKind.Ref or RefKind.Out)
-                {
                     return prelim.MakeByRefType();
-                }
 
                 return prelim;
             }

@@ -32,9 +32,7 @@ public static unsafe class MemoryManager
     public static void* UnsafeMAlloc(int bytes, bool pressure = false)
     {
         if (pressure)
-        {
             GC.AddMemoryPressure(bytes);
-        }
         return (void*)Marshal.AllocHGlobal(bytes);
     }
     /// <summary>
@@ -49,9 +47,7 @@ public static unsafe class MemoryManager
     {
         var bytes = count * sizeof(T);
         if (pressure)
-        {
             GC.AddMemoryPressure(bytes);
-        }
         return (T*)Marshal.AllocHGlobal(bytes);
     }
     /// <summary>
@@ -100,13 +96,9 @@ public static unsafe class MemoryManager
         if (oldLength != 0)
         {
             if (bytes > oldLength)
-            {
                 GC.AddMemoryPressure(bytes - oldLength);
-            }
             else if (bytes < oldLength)
-            {
                 GC.RemoveMemoryPressure(oldLength - bytes);
-            }
         }
         return (void*)Marshal.ReAllocHGlobal((nint)ptr, bytes);
     }
@@ -125,13 +117,9 @@ public static unsafe class MemoryManager
         {
             var oldBytes = oldCount * sizeof(T);
             if (bytes > oldBytes)
-            {
                 GC.AddMemoryPressure(bytes - oldBytes);
-            }
             else if (bytes < oldBytes)
-            {
                 GC.RemoveMemoryPressure(oldBytes - bytes);
-            }
         }
         return (T*)Marshal.ReAllocHGlobal((nint)ptr, bytes);
     }
@@ -150,13 +138,9 @@ public static unsafe class MemoryManager
         {
             var oldBytes = oldCount * sizeof(T);
             if (bytes > oldBytes)
-            {
                 GC.AddMemoryPressure(bytes - oldBytes);
-            }
             else if (bytes < oldBytes)
-            {
                 GC.RemoveMemoryPressure(oldBytes - bytes);
-            }
         }
         var pointer = (T*)Unsafe.AsPointer(ref ptr);
         return ref Unsafe.AsRef<T>((void*)Marshal.ReAllocHGlobal((nint)pointer, bytes));
@@ -171,9 +155,7 @@ public static unsafe class MemoryManager
     public static void Free(void* ptr, long pressure = -1)
     {
         if (pressure > 0)
-        {
             GC.RemoveMemoryPressure(pressure);
-        }
         Marshal.FreeHGlobal((nint)ptr);
     }
     /// <summary>

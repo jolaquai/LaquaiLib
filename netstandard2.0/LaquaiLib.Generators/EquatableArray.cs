@@ -15,8 +15,15 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
 {
     private readonly ImmutableArray<T> _array;
 
-    public EquatableArray(ImmutableArray<T> array) => _array = array;
-    public EquatableArray(IEnumerable<T> items) => _array = items is null ? ImmutableArray<T>.Empty : ImmutableArray.CreateRange(items);
+    public EquatableArray(ImmutableArray<T> array)
+    {
+        _array = array;
+    }
+
+    public EquatableArray(IEnumerable<T> items)
+    {
+        _array = items is null ? ImmutableArray<T>.Empty : ImmutableArray.CreateRange(items);
+    }
 
     /// <summary>
     /// Gets the wrapped <see cref="ImmutableArray{T}"/>, normalizing the uninitialized <see langword="default"/> state to empty.
@@ -48,9 +55,7 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
         var mine = AsImmutableArray();
         var theirs = other.AsImmutableArray();
         if (mine.Length != theirs.Length)
-        {
             return false;
-        }
         for (var i = 0; i < mine.Length; i++)
         {
             var x = mine[i];
@@ -58,14 +63,10 @@ internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnu
             if (x is null)
             {
                 if (y is not null)
-                {
                     return false;
-                }
             }
             else if (!x.Equals(y))
-            {
                 return false;
-            }
         }
         return true;
     }

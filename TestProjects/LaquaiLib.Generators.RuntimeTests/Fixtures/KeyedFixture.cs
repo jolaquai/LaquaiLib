@@ -6,12 +6,18 @@ public class KeyedFixture
     private sealed class Key
     {
         public int Value;
-        public Key(int value) => Value = value;
+        public Key(int value)
+        {
+            Value = value;
+        }
     }
 
     public int KeyValue { get; }
 
-    private KeyedFixture(Key key) => KeyValue = key.Value;
+    private KeyedFixture(Key key)
+    {
+        KeyValue = key.Value;
+    }
 
     private static Key MakeKey(int v) => new Key(v);
 }

@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 using LaquaiLib.Extensions;
 
 namespace LaquaiLib.UnitTests.Extensions;
@@ -9,9 +7,7 @@ public class IAsyncEnumerableExtensionsTests
     private static async IAsyncEnumerable<int> CreateSequence(int start, int count)
     {
         for (var i = 0; i < count; i++)
-        {
             yield return start + i;
-        }
     }
 
     private static async IAsyncEnumerable<int> CreateDelayedSequence(int start, int count, int delayMs)
@@ -28,9 +24,7 @@ public class IAsyncEnumerableExtensionsTests
         for (var i = 0; i < count; i++)
         {
             if (i == throwAt)
-            {
                 throw new InvalidOperationException("Test exception");
-            }
             yield return start + i;
         }
     }
@@ -241,9 +235,7 @@ public class IAsyncEnumerableExtensionsTests
     {
         var result = new List<T>();
         await foreach (var item in source)
-        {
             result.Add(item);
-        }
         return result;
     }
 }

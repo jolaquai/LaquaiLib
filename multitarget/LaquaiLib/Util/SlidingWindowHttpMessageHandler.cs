@@ -45,9 +45,7 @@ public sealed class SlidingWindowHttpMessageHandler(HttpMessageHandler innerHand
         set
         {
             if (_isReadOnly)
-            {
                 throw new InvalidOperationException($"This {nameof(SlidingWindowHttpMessageHandler)} instance is read-only.");
-            }
             Interlocked.Exchange(ref _windowTicks, value > TimeSpan.Zero ? value.Ticks : throw new ArgumentOutOfRangeException(nameof(value), "Window duration must be positive."));
         }
     }
@@ -65,9 +63,7 @@ public sealed class SlidingWindowHttpMessageHandler(HttpMessageHandler innerHand
         set
         {
             if (_isReadOnly)
-            {
                 throw new InvalidOperationException($"This {nameof(SlidingWindowHttpMessageHandler)} instance is read-only.");
-            }
             _maxRequestCount = value > 0 ? value : throw new ArgumentOutOfRangeException(nameof(value), "Maximum request count must be positive.");
         }
     }
@@ -125,17 +121,13 @@ public sealed class SlidingWindowHttpMessageHandler(HttpMessageHandler innerHand
                 _ = _semaphore.Release();
                 semaphoreHeld = false;
                 if (waitFor > 0)
-                {
                     if (cancellationToken.WaitHandle.WaitOne(TimeSpan.FromTicks(waitFor)))
                         cancellationToken.ThrowIfCancellationRequested();
-                }
             }
             finally
             {
                 if (semaphoreHeld)
-                {
                     _ = _semaphore.Release();
-                }
             }
         }
     }
@@ -159,16 +151,12 @@ public sealed class SlidingWindowHttpMessageHandler(HttpMessageHandler innerHand
                 _ = _semaphore.Release();
                 semaphoreHeld = false;
                 if (waitFor > 0)
-                {
                     await Task.Delay(TimeSpan.FromTicks(waitFor), cancellationToken).ConfigureAwait(false);
-                }
             }
             finally
             {
                 if (semaphoreHeld)
-                {
                     _ = _semaphore.Release();
-                }
             }
         }
     }
@@ -178,18 +166,14 @@ public sealed class SlidingWindowHttpMessageHandler(HttpMessageHandler innerHand
     {
         var cutoff = now - windowTicks;
         while (_timestamps.Count > 0 && _timestamps.Peek() <= cutoff)
-        {
             _ = _timestamps.Dequeue();
-        }
     }
 
     /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
-        {
             _semaphore.Dispose();
-        }
         base.Dispose(disposing);
     }
 }

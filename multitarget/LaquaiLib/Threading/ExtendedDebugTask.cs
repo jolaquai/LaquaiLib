@@ -207,7 +207,11 @@ public readonly struct ExtendedDebugTaskAwaiter : INotifyCompletion
     private readonly ExtendedDebugTask _edt;
     private readonly StackTrace _creationStack;
 
-    private ExtendedDebugTaskAwaiter(StackTrace creationStack) => _creationStack = creationStack;
+    private ExtendedDebugTaskAwaiter(StackTrace creationStack)
+    {
+        _creationStack = creationStack;
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
     /// </summary>
@@ -220,9 +224,12 @@ public readonly struct ExtendedDebugTaskAwaiter : INotifyCompletion
         _edt = edt;
     }
 
+    /// <inheritdoc/>
     public readonly bool IsCompleted => _awaiter.IsCompleted;
 
+    /// <inheritdoc/>
     public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
+    /// <inheritdoc/>
     public readonly void GetResult()
     {
         var awaitStack = new StackTrace(true);
@@ -235,9 +242,7 @@ public readonly struct ExtendedDebugTaskAwaiter : INotifyCompletion
         {
             var mergedMessage = string.Format(ExtendedDebugTask.awaitStackTemplate, ex.Message, awaitStack);
             if (_creationStack is not null)
-            {
                 mergedMessage += string.Format(ExtendedDebugTask.creationStackTemplate, _creationStack);
-            }
             throw new ExtendedDebugTaskException(mergedMessage, ex, _creationStack, awaitStack, _edt);
         }
     }
@@ -263,8 +268,19 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
         _edt = edt;
         _creationStack = creationStack;
     }
-    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack) => _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
-    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack) => _options = options;
+    /// <inheritdoc/>
+    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack)
+    {
+        _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
+    }
+
+    /// <inheritdoc/>
+    public ConfiguredExtendedDebugTaskAwaitable(Task task, ExtendedDebugTask edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack)
+    {
+        _options = options;
+    }
+
+    /// <inheritdoc/>
     public ConfiguredExtendedDebugTaskAwaiter GetAwaiter() => new(_task.ConfigureAwait(_options).GetAwaiter(), _edt, _creationStack);
 
     #region ConfiguredExtendedDebugTaskAwaiter
@@ -280,7 +296,11 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
         private readonly ExtendedDebugTask _edt;
         private readonly StackTrace _creationStack;
 
-        private ConfiguredExtendedDebugTaskAwaiter(StackTrace creationStack) => _creationStack = creationStack;
+        private ConfiguredExtendedDebugTaskAwaiter(StackTrace creationStack)
+        {
+            _creationStack = creationStack;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
         /// </summary>
@@ -292,9 +312,12 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
             _edt = edt;
         }
 
+        /// <inheritdoc/>
         public readonly bool IsCompleted => _awaiter.IsCompleted;
 
+        /// <inheritdoc/>
         public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
+        /// <inheritdoc/>
         public readonly void GetResult()
         {
             var awaitStack = new StackTrace(true);
@@ -307,9 +330,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
             {
                 var mergedMessage = string.Format(ExtendedDebugTask.awaitStackTemplate, ex.Message, awaitStack);
                 if (_creationStack is not null)
-                {
                     mergedMessage += string.Format(ExtendedDebugTask.creationStackTemplate, _creationStack);
-                }
                 throw new ExtendedDebugTaskException(mergedMessage, ex, _creationStack, awaitStack, _edt);
             }
         }
@@ -472,11 +493,16 @@ public readonly struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
     private readonly ExtendedDebugTask<TResult> _edt;
     private readonly StackTrace _creationStack;
 
-    private ExtendedDebugTaskAwaiter(StackTrace creationStack) => _creationStack = creationStack;
+    private ExtendedDebugTaskAwaiter(StackTrace creationStack)
+    {
+        _creationStack = creationStack;
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
     /// </summary>
     /// <param name="awaiter">The wrapped awaiter.</param>
+    /// <param name="edt">The <see cref="ExtendedDebugTask{TResult}"/> that this awaiter is for.</param>
     /// <param name="creationStack">The stack trace at the creation point of the task.</param>
     public ExtendedDebugTaskAwaiter(TaskAwaiter<TResult> awaiter, ExtendedDebugTask<TResult> edt, StackTrace creationStack) : this(creationStack)
     {
@@ -484,9 +510,12 @@ public readonly struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
         _edt = edt;
     }
 
+    /// <inheritdoc/>
     public readonly bool IsCompleted => _awaiter.IsCompleted;
 
+    /// <inheritdoc/>
     public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
+    /// <inheritdoc/>
     public readonly TResult GetResult()
     {
         var awaitStack = new StackTrace(true);
@@ -499,9 +528,7 @@ public readonly struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
         {
             var mergedMessage = string.Format(ExtendedDebugTask.awaitStackTemplate, ex.Message, awaitStack);
             if (_creationStack is not null)
-            {
                 mergedMessage += string.Format(ExtendedDebugTask.creationStackTemplate, _creationStack);
-            }
             throw new ExtendedDebugTaskException<TResult>(mergedMessage, ex, _creationStack, awaitStack, _edt);
         }
     }
@@ -527,8 +554,32 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
         _edt = edt;
         _creationStack = creationStack;
     }
-    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack) => _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
-    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack) => _options = options;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfiguredExtendedDebugTaskAwaitable"/> struct.
+    /// </summary>
+    /// <param name="task">The <see cref="Task{TResult}"/> to wrap.</param>
+    /// <param name="edt">The <see cref="ExtendedDebugTask{TResult}"/> that this awaitable is for.</param>
+    /// <param name="creationStack">The stack trace at the creation point of the task.</param>
+    /// <param name="continueOnCapturedContext">Whether to attempt to marshal the continuation back to the original context captured.</param>
+    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, bool continueOnCapturedContext) : this(task, edt, creationStack)
+    {
+        _options = continueOnCapturedContext ? ConfigureAwaitOptions.ContinueOnCapturedContext : ConfigureAwaitOptions.None;
+    }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfiguredExtendedDebugTaskAwaitable"/> struct.
+    /// </summary>
+    /// <param name="task">The <see cref="Task{TResult}"/> to wrap.</param>
+    /// <param name="edt">The <see cref="ExtendedDebugTask{TResult}"/> that this awaitable is for.</param>
+    /// <param name="creationStack">The stack trace at the creation point of the task.</param>
+    /// <param name="options">A <see cref="ConfigureAwaitOptions"/> value that configures how the await will behave.</param>
+    public ConfiguredExtendedDebugTaskAwaitable(Task<TResult> task, ExtendedDebugTask<TResult> edt, StackTrace creationStack, ConfigureAwaitOptions options) : this(task, edt, creationStack)
+    {
+        _options = options;
+    }
+    /// <summary>
+    /// Gets an awaiter for this instance.
+    /// </summary>
+    /// <returns>The awaiter.</returns>
     public ConfiguredExtendedDebugTaskAwaiter GetAwaiter() => new(_task.ConfigureAwait(_options).GetAwaiter(), _edt, _creationStack);
 
     #region ConfiguredExtendedDebugTaskAwaiter
@@ -553,12 +604,19 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
         /// Initializes a new instance of the <see cref="ExtendedDebugTaskAwaiter"/> struct.
         /// </summary>
         /// <param name="awaiter">The wrapped awaiter.</param>
+        /// <param name="edt">The <see cref="ExtendedDebugTask{TResult}"/> that this awaiter is for.</param>
         /// <param name="creationStack">The stack trace at the creation point of the task.</param>
-        public ConfiguredExtendedDebugTaskAwaiter(ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter awaiter, ExtendedDebugTask<TResult> edt, StackTrace creationStack) : this(creationStack, edt) => _awaiter = awaiter;
+        public ConfiguredExtendedDebugTaskAwaiter(ConfiguredTaskAwaitable<TResult>.ConfiguredTaskAwaiter awaiter, ExtendedDebugTask<TResult> edt, StackTrace creationStack) : this(creationStack, edt)
+        {
+            _awaiter = awaiter;
+        }
 
+        /// <inheritdoc/>
         public readonly bool IsCompleted => _awaiter.IsCompleted;
 
+        /// <inheritdoc/>
         public readonly void OnCompleted(Action continuation) => _awaiter.OnCompleted(continuation);
+        /// <inheritdoc/>
         public readonly TResult GetResult()
         {
             var awaitStack = new StackTrace(true);
@@ -571,9 +629,7 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
             {
                 var mergedMessage = string.Format(ExtendedDebugTask.awaitStackTemplate, ex.Message, awaitStack);
                 if (_creationStack is not null)
-                {
                     mergedMessage += string.Format(ExtendedDebugTask.creationStackTemplate, _creationStack);
-                }
                 throw new ExtendedDebugTaskException<TResult>(mergedMessage, ex, _creationStack, awaitStack, _edt);
             }
         }

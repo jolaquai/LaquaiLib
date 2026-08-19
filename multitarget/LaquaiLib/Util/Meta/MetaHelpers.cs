@@ -1,7 +1,5 @@
 using System.Reflection;
 
-using LaquaiLib.Extensions;
-
 namespace LaquaiLib.Util.Meta;
 
 /// <summary>
@@ -45,9 +43,7 @@ public static class MetaHelpers
                     var vsEdition = vsEditions[m];
                     var msvc = Path.Combine(programFile, "Microsoft Visual Studio", vsVersion, vsEdition);
                     if (File.Exists(Path.Combine(msvc, "Common7", "IDE", "devenv.exe")))
-                    {
                         yield return msvc;
-                    }
                 }
             }
         }
@@ -91,16 +87,12 @@ public static class MetaHelpers
                     var vsEdition = vsEditions[m];
                     var msvc = Path.Combine(programFile, "Microsoft Visual Studio", vsVersion, vsEdition);
                     if (Directory.Exists(msvc))
-                    {
                         tasks.Add(Task.Run(() =>
                         {
                             foreach (var file in Directory.EnumerateFiles(msvc, fileName, SearchOption.AllDirectories))
-                            {
                                 return file;
-                            }
                             return null;
                         }));
-                    }
                 }
             }
         }

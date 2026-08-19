@@ -2,5 +2,5 @@ namespace LaquaiLib.Generators.RuntimeTests.Fixtures;
 
 public interface IGreeter
 {
-    string Greet();
+    public string Greet();
 }

@@ -4,7 +4,7 @@ public static partial class LinqMemoryExtensions
 {
     extension<TSource>(ReadOnlySpan<TSource> source)
     {
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})" />
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILookup<TKey, TSource> ToLookup<TKey>(Func<TSource, TKey> keySelector)
         {
@@ -21,7 +21,7 @@ public static partial class LinqMemoryExtensions
             return spanLookup;
         }
 
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILookup<TKey, TSource> ToLookup<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> comparer)
         {
@@ -37,7 +37,7 @@ public static partial class LinqMemoryExtensions
             return spanLookup;
         }
 
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement})" />
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILookup<TKey, TElement> ToLookup<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector)
         {
@@ -54,7 +54,7 @@ public static partial class LinqMemoryExtensions
             return spanLookup;
         }
 
-        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, IEqualityComparer{TKey})" />
+        /// <inheritdoc cref="Enumerable.ToLookup{TSource, TKey, TElement}(IEnumerable{TSource}, Func{TSource, TKey}, Func{TSource, TElement}, IEqualityComparer{TKey})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ILookup<TKey, TElement> ToLookup<TKey, TElement>(Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, IEqualityComparer<TKey> comparer)
         {

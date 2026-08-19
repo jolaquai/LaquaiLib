@@ -38,15 +38,11 @@ public class UseAllocateUninitializedArrayAnalyzer : DiagnosticAnalyzer
         var rankSpecifiers = arrayCreationExpressionSyntax.Type.RankSpecifiers;
         // >1 rank specifier is jagged (reference element type), >1 size in one is multi-dimensional; GC.AUA has no overload for either
         if (rankSpecifiers.Count != 1 || rankSpecifiers[0].Sizes.Count != 1)
-        {
             return;
-        }
 
         // GC.AUA only takes a length, so an explicit initializer has nothing to rewrite to
         if (arrayCreationExpressionSyntax.Initializer is not null)
-        {
             return;
-        }
 
         var elementType = semanticModel.GetTypeInfo(arrayCreationExpressionSyntax.Type.ElementType).Type;
         // GC.AUA hands anything IsReferenceOrContainsReferences<T>() accepts straight back to 'new T[length]', so only unmanaged types gain anything
@@ -55,30 +51,22 @@ public class UseAllocateUninitializedArrayAnalyzer : DiagnosticAnalyzer
             || elementType.TypeKind is TypeKind.Pointer or TypeKind.FunctionPointer
             // an array of a ref struct is CS0611, so there is nothing here to rewrite
             || elementType.IsRefLikeType)
-        {
             return;
-        }
 
         var sizeOf = elementType.SizeOf(context.Compilation, sizeCache);
         if (sizeOf <= 0)
-        {
             return;
-        }
 
         // Mirrors the runtime's own 'if (length < 2048 / sizeof(T)) return new T[length];', integer division included
         var minimumLength = 2048 / sizeOf;
         if (arrayCreationExpressionSyntax.GetArraySize(semanticModel) is int length)
         {
             if (length <= 0 || length < minimumLength)
-            {
                 return;
-            }
         }
         else if (minimumLength > 0)
-        {
             // Nothing to compare a non-constant length against unless the threshold has collapsed to zero
             return;
-        }
 
         // Report the diagnostic
         var diagnostic = Diagnostic.Create(Descriptor, arrayCreationExpressionSyntax.NewKeyword.GetLocation());

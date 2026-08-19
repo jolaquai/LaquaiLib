@@ -4,67 +4,57 @@ public static partial class LinqMemoryExtensions
 {
     extension<TSource>(ReadOnlySpan<TSource> source)
     {
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Sum(Func<TSource, int> selector)
         {
             var buf = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 buf += selector(source[i]);
-            }
             return buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long Sum(Func<TSource, long> selector)
         {
             var buf = 0L;
             for (var i = 0; i < source.Length; i++)
-            {
                 buf += selector(source[i]);
-            }
             return buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float Sum(Func<TSource, float> selector)
         {
             var buf = 0f;
             for (var i = 0; i < source.Length; i++)
-            {
                 buf += selector(source[i]);
-            }
             return buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double Sum(Func<TSource, double> selector)
         {
             var buf = 0d;
             for (var i = 0; i < source.Length; i++)
-            {
                 buf += selector(source[i]);
-            }
             return buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal Sum(Func<TSource, decimal> selector)
         {
             var buf = 0m;
             for (var i = 0; i < source.Length; i++)
-            {
                 buf += selector(source[i]);
-            }
             return buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int?})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, int?})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int? Sum(Func<TSource, int?> selector)
         {
@@ -82,7 +72,7 @@ public static partial class LinqMemoryExtensions
             return allNull ? null : buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long?})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, long?})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long? Sum(Func<TSource, long?> selector)
         {
@@ -100,7 +90,7 @@ public static partial class LinqMemoryExtensions
             return allNull ? null : buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float?})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, float?})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float? Sum(Func<TSource, float?> selector)
         {
@@ -118,7 +108,7 @@ public static partial class LinqMemoryExtensions
             return allNull ? null : buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double?})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, double?})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double? Sum(Func<TSource, double?> selector)
         {
@@ -136,7 +126,7 @@ public static partial class LinqMemoryExtensions
             return allNull ? null : buf;
         }
 
-        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})" />
+        /// <inheritdoc cref="Enumerable.Sum{TSource}(IEnumerable{TSource}, Func{TSource, decimal?})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal? Sum(Func<TSource, decimal?> selector)
         {

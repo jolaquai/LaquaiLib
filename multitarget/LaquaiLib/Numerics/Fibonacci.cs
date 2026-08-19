@@ -35,18 +35,14 @@ public static class Fibonacci
     public static IEnumerable<BigInteger> GenerateSequence(ulong start, ulong end)
     {
         if (end < start)
-        {
             throw new ArgumentException("End position must be greater than or equal to start position", nameof(end));
-        }
 
         // For very short sequences or sequences starting from 0/1, 
         // just use the iterative approach from the beginning
         if (end - start < 5 || start <= 1)
         {
             foreach (var fib in IterativeSequence(start, end))
-            {
                 yield return fib;
-            }
             yield break;
         }
 
@@ -59,9 +55,7 @@ public static class Fibonacci
         yield return a;
 
         if (start == end)
-        {
             yield break;
-        }
 
         yield return b;
 
@@ -126,9 +120,7 @@ public static class Fibonacci
         {
             // If the current bit is 1, multiply the result by the current power of the matrix
             if ((power & 1) == 1)
-            {
                 result = MultiplyMatrix(result, matrix);
-            }
 
             // Square the matrix for the next bit
             matrix = MultiplyMatrix(matrix, matrix);

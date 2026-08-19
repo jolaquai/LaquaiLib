@@ -28,18 +28,14 @@ public static class ConstructorInfoExtensions
             var ctorParams = ctorInfo.GetParameters();
             var tDelegateParams = typeof(TDelegate).GetMethod("Invoke")!.GetParameters();
             if (!typeof(TDelegate).IsFunc(out var tDelegateReturn))
-            {
                 throw new ArgumentException($"The type specified for {nameof(TDelegate)} is not a System.Func overload.", nameof(TDelegate));
-            }
 
             if (ctorParams.Length != tDelegateParams.Length || !ctorParams.SequenceEqual(tDelegateParams, ParameterInfoTypeComparer) || ctorInfo.DeclaringType != tDelegateReturn)
-            {
                 throw new ArgumentException($"""
                 The type specified for {nameof(TDelegate)} does not match the constructor's signature. The return type and all parameter types must match exactly:
                     Delegate:    delegate({string.Join(", ", tDelegateParams.Select(static p => p.ParameterType.Namespace + '.' + p.ParameterType.Name))}) => {tDelegateReturn.Namespace + '.' + tDelegateReturn.Name}
                     Constructor: .ctor({string.Join(", ", ctorParams.Select(static p => p.ParameterType.Namespace + '.' + p.ParameterType.Name))}) => {ctorInfo.DeclaringType.Namespace + '.' + ctorInfo.DeclaringType.Name}
                 """, nameof(TDelegate));
-            }
 
             var paramExprs = ctorParams.Select(static p => Expression.Parameter(p.ParameterType)).ToArray();
             var newExpr = Expression.New(ctorInfo, paramExprs);

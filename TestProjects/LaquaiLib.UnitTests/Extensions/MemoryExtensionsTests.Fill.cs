@@ -313,9 +313,7 @@ public class MemoryExtensionsFillTests
         var array = new long[2, 3] { { 1, 2, 3 }, { 4, 5, 6 } };
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.ZeroMemory();
-        }
 
         Assert.Equal(new long[6], Flatten<long>(array));
     }
@@ -326,9 +324,7 @@ public class MemoryExtensionsFillTests
         var array = new long[2, 2] { { 1, 2 }, { 3, 4 } };
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.Fill();
-        }
 
         Assert.Equal(new long[4], Flatten<long>(array));
     }
@@ -340,9 +336,7 @@ public class MemoryExtensionsFillTests
         var next = 1L;
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.Fill(() => next++);
-        }
 
         Assert.Equal([1L, 2L, 3L, 4L], Flatten<long>(array));
         Assert.Equal(1L, array[0, 0]);
@@ -355,9 +349,7 @@ public class MemoryExtensionsFillTests
         var array = new long[2, 2];
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.Fill(prev => prev + 3);
-        }
 
         Assert.Equal([3L, 6L, 9L, 12L], Flatten<long>(array));
     }
@@ -368,9 +360,7 @@ public class MemoryExtensionsFillTests
         var array = new int[2, 2];
 
         using (var enumerable = new MultiDimArrayEnumerable<int>(array))
-        {
             enumerable.Fill(prev => prev + 1);
-        }
 
         Assert.Equal([1, 2, 3, 4], Flatten<int>(array));
     }
@@ -381,9 +371,7 @@ public class MemoryExtensionsFillTests
         var array = new long[2, 3];
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.FillIndexed(i => (long)i);
-        }
 
         Assert.Equal([0L, 1L, 2L, 3L, 4L, 5L], Flatten<long>(array));
         Assert.Equal(3L, array[1, 0]);
@@ -395,9 +383,7 @@ public class MemoryExtensionsFillTests
         var array = new long[3, 1];
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.FillIndexed((i, prev) => prev + i + 1);
-        }
 
         Assert.Equal([1L, 3L, 6L], Flatten<long>(array));
     }
@@ -408,9 +394,7 @@ public class MemoryExtensionsFillTests
         var array = new long[2, 2, 2];
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.FillIndexed(i => i + 1L);
-        }
 
         Assert.Equal([1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L], Flatten<long>(array));
         Assert.Equal(1L, array[0, 0, 0]);
@@ -423,9 +407,7 @@ public class MemoryExtensionsFillTests
         var array = new long[3];
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.Fill(() => 9L);
-        }
 
         Assert.Equal([9L, 9L, 9L], array);
     }
@@ -437,13 +419,11 @@ public class MemoryExtensionsFillTests
         var calls = 0;
 
         using (var enumerable = new MultiDimArrayEnumerable<long>(array))
-        {
             enumerable.Fill(() =>
             {
                 calls++;
                 return 1L;
             });
-        }
 
         Assert.Equal(0, calls);
     }

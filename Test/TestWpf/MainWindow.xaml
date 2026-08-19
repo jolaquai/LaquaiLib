@@ -15,7 +15,7 @@
         Title="Test Window" Height="450" Width="800">
   <Window.Resources>
     <Style TargetType="Button">
-      <Setter Property="TextBlock.FontSize" Value="16" />
+      <Setter Property="TextBlock.FontSize" Value="16"/>
     </Style>
   </Window.Resources>
   

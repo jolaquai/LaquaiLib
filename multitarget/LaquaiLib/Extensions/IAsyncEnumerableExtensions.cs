@@ -15,9 +15,7 @@ public static class IAsyncEnumerableExtensions
     {
         ArgumentNullException.ThrowIfNull(toChain);
         if (toChain.Any(static e => e is null))
-        {
             throw new ArgumentNullException(nameof(toChain), "One or more of the provided IAsyncEnumerable<T> instances is null.");
-        }
         return new AsyncEnumerableCombiner<T>(toChain);
     }
 
@@ -26,16 +24,13 @@ public static class IAsyncEnumerableExtensions
         /// <summary>
         /// Chains the specified <see cref="IAsyncEnumerable{T}"/> instances with the specified <paramref name="source"/> into a single <see cref="IAsyncEnumerable{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of elements the <see cref="IAsyncEnumerable{T}"/> instances yield.</typeparam>
         /// <param name="with">The <see cref="IAsyncEnumerable{T}"/> instances to chain together.</param>
         /// <returns>An <see cref="IAsyncEnumerable{T}"/> implementation that iterates over each <paramref name="source"/> and <paramref name="with"/> in turn.</returns>
         public IAsyncEnumerable<T> Concat(params ReadOnlySpan<IAsyncEnumerable<T>> with)
         {
             ArgumentNullException.ThrowIfNull(source);
             for (var i = 0; i < with.Length; i++)
-            {
                 ArgumentNullException.ThrowIfNull(with[i]);
-            }
 
             switch (source)
             {
@@ -62,9 +57,7 @@ file class AsyncEnumerableCombiner<T>(params ReadOnlySpan<IAsyncEnumerable<T>> i
         {
             var iterator = _iterators[i];
             await foreach (var item in iterator.WithCancellation(cancellationToken).ConfigureAwait(false))
-            {
                 yield return item;
-            }
         }
     }
     internal void AddIterators(params ReadOnlySpan<IAsyncEnumerable<T>> with) => _iterators = [.. _iterators, .. with];

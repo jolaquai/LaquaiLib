@@ -8,9 +8,20 @@ public class ConstructorInfoExtensionsTests
     {
         public int Value { get; }
 
-        public SimpleClass() => Value = 0;
-        public SimpleClass(int value) => Value = value;
-        public SimpleClass(int value1, string value2) => Value = value1;
+        public SimpleClass()
+        {
+            Value = 0;
+        }
+
+        public SimpleClass(int value)
+        {
+            Value = value;
+        }
+
+        public SimpleClass(int value1, string value2)
+        {
+            Value = value1;
+        }
     }
 
     [Fact]
@@ -140,16 +151,12 @@ public class ConstructorInfoExtensionsTests
 
         var delegateWatch = System.Diagnostics.Stopwatch.StartNew();
         for (var i = 0; i < iterations; i++)
-        {
             factory(i);
-        }
         delegateWatch.Stop();
 
         var activatorWatch = System.Diagnostics.Stopwatch.StartNew();
         for (var i = 0; i < iterations; i++)
-        {
             Activator.CreateInstance(typeof(SimpleClass), i);
-        }
         activatorWatch.Stop();
 
         Assert.True(delegateWatch.ElapsedTicks < activatorWatch.ElapsedTicks);

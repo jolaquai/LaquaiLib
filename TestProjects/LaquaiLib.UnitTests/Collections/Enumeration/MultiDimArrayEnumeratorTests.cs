@@ -207,9 +207,7 @@ public class MultiDimArrayEnumeratorTests
 
         var seen = new List<int>();
         foreach (int item in sequence)
-        {
             seen.Add(item);
-        }
 
         Assert.Equal([1, 2, 3, 4], seen);
     }

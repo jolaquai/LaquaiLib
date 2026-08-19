@@ -19,9 +19,7 @@ internal static class CapturingLambdaAssertions
         {
             var name = nested.Name;
             if (!name.Contains("c__DisplayClass") || name == "<>c")
-            {
                 continue;
-            }
 
             if (name.Contains("Initialize"))
             {
@@ -35,22 +33,16 @@ internal static class CapturingLambdaAssertions
                 .Any(m => m.Name.Contains("<Initialize>b__"));
 
             if (hasInitializeMethod)
-            {
                 offenders.Add(name);
-            }
         }
 
         if (offenders.Count == 0)
-        {
             return;
-        }
 
         var sb = new StringBuilder();
         sb.AppendLine($"{generatorType.FullName} has capturing lambda(s) in Initialize:");
         foreach (var offender in offenders)
-        {
             sb.AppendLine(offender);
-        }
         sb.AppendLine("A capturing lambda in Initialize allocates a display class per invocation and can pin Roslyn objects into the incremental pipeline.");
 
         Assert.Fail(sb.ToString());

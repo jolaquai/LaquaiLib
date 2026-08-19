@@ -206,9 +206,7 @@ public class IAsyncEnumeratorExtensionsTests
         try
         {
             while (await enumerator.MoveNextAsync())
-            {
                 results.Add(enumerator.Current);
-            }
         }
         finally
         {

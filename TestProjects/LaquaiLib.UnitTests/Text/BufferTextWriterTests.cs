@@ -640,9 +640,7 @@ public class BufferTextWriterTests
             }
 
             for (var i = 0; i < _size; i++)
-            {
                 destination[i] = 'X';
-            }
 
             charsWritten = _size;
             return true;

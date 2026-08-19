@@ -9,9 +9,7 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
     public override ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, TextSpan span)
     {
         if (FindTargetBlock(syntaxNode, span) is not { } block)
-        {
             return [];
-        }
 
         return [new CodeActionInfo("Remove braces", editor =>
         {
@@ -35,12 +33,8 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
     {
         var builder = ImmutableArray.CreateBuilder<TextSpan>();
         foreach (var node in compilationUnitSyntax.DescendantNodes())
-        {
             if (node is BlockSyntax block && IsCollapsible(block))
-            {
                 builder.Add(block.Span);
-            }
-        }
         return new ValueTask<ImmutableArray<TextSpan>>(builder.ToImmutable());
     }
 
@@ -77,15 +71,11 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
                 if (trivia.IsKind(SyntaxKind.EndOfLineTrivia))
                 {
                     if (lineStart >= 0 && !keepLine)
-                    {
                         result.RemoveRange(lineStart, result.Count - lineStart);
-                    }
                     else
                     {
                         while (result.Count > 0 && result[result.Count - 1].IsKind(SyntaxKind.WhitespaceTrivia))
-                        {
                             result.RemoveAt(result.Count - 1);
-                        }
                         result.Add(trivia);
                     }
                     lineStart = result.Count;
@@ -94,9 +84,7 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
                 }
                 // Two runs of whitespace only ever meet where a brace used to be
                 if (trivia.IsKind(SyntaxKind.WhitespaceTrivia) && result.Count > 0 && result[result.Count - 1].IsKind(SyntaxKind.WhitespaceTrivia))
-                {
                     continue;
-                }
                 keepLine |= !trivia.IsKind(SyntaxKind.WhitespaceTrivia);
                 result.Add(trivia);
             }
@@ -112,17 +100,11 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
         for (var current = node; current is not null; current = current.Parent)
         {
             if (current is BlockSyntax block)
-            {
                 return IsCollapsible(block) ? block : null;
-            }
             if (GetEmbeddedStatement(current) is BlockSyntax owned && !owned.Span.Contains(span.Start) && IsCollapsible(owned))
-            {
                 return owned;
-            }
             if (current is MemberDeclarationSyntax or AnonymousFunctionExpressionSyntax)
-            {
                 return null;
-            }
         }
         return null;
     }
@@ -131,30 +113,20 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
     {
         // Only a block in an embedded statement position can lose its braces; method, try, switch section and free-standing scoping blocks cannot
         if (block.Parent is not { } parent || GetEmbeddedStatement(parent) != block || block.Statements.Count != 1)
-        {
             return false;
-        }
         var statement = block.Statements[0];
         // Not legal as an embedded statement
         if (statement is LocalDeclarationStatementSyntax or LocalFunctionStatementSyntax or LabeledStatementSyntax)
-        {
             return false;
-        }
         // Comments hanging off the braces are relocated, but a conditional directive cannot be: moving it changes what it guards, and the configuration that excludes the statement would be left with no statement at all
         if (HasConditionalDirective(block.OpenBraceToken) || HasConditionalDirective(block.CloseBraceToken))
-        {
             return false;
-        }
         // An unmatched `if` at the tail would swallow the `else` that follows the construct
         if (EndsWithUnmatchedIf(statement) && IsFollowedByElse(block))
-        {
             return false;
-        }
         // `if (a) if (b) X(); else Y();` is legal but the else no longer visibly belongs to anything; `else if` chains are idiomatic, so only the then-branch is refused
         if (parent is IfStatementSyntax && statement is IfStatementSyntax { Else: not null })
-        {
             return false;
-        }
         return true;
     }
 
@@ -178,7 +150,6 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
     private static bool EndsWithUnmatchedIf(StatementSyntax statement)
     {
         while (true)
-        {
             switch (statement)
             {
                 case IfStatementSyntax { Else: null }:
@@ -196,7 +167,6 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
                 default:
                     return false;
             }
-        }
     }
     /// <summary>
     /// Whether an <see langword="else"/> follows the position <paramref name="node"/> occupies, walking out through every construct that ends where <paramref name="node"/> does.
@@ -204,14 +174,11 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
     private static bool IsFollowedByElse(SyntaxNode node)
     {
         while (true)
-        {
             switch (node.Parent)
             {
                 case IfStatementSyntax ifStatement when ifStatement.Statement == node:
                     if (ifStatement.Else is not null)
-                    {
                         return true;
-                    }
                     node = ifStatement;
                     continue;
                 case ElseClauseSyntax elseClause:
@@ -223,19 +190,14 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
                 default:
                     return false;
             }
-        }
     }
 
     private static bool HasSignificantTrivia(SyntaxToken token) => HasSignificantTrivia(token.LeadingTrivia) || HasSignificantTrivia(token.TrailingTrivia);
     private static bool HasSignificantTrivia(SyntaxTriviaList trivia)
     {
         for (var i = 0; i < trivia.Count; i++)
-        {
             if (!trivia[i].IsKind(SyntaxKind.WhitespaceTrivia) && !trivia[i].IsKind(SyntaxKind.EndOfLineTrivia))
-            {
                 return true;
-            }
-        }
         return false;
     }
 
@@ -243,12 +205,8 @@ public sealed class RemoveBracesRefactor : LaquaiLibNodeRefactoring
     private static bool HasConditionalDirective(SyntaxTriviaList trivia)
     {
         for (var i = 0; i < trivia.Count; i++)
-        {
             if (trivia[i].Kind() is SyntaxKind.IfDirectiveTrivia or SyntaxKind.ElifDirectiveTrivia or SyntaxKind.ElseDirectiveTrivia or SyntaxKind.EndIfDirectiveTrivia or SyntaxKind.DisabledTextTrivia)
-            {
                 return true;
-            }
-        }
         return false;
     }
 }

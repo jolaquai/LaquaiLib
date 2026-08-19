@@ -80,15 +80,11 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             {
                 var descriptor = GetDescriptor(info.Id);
                 if (descriptor is null)
-                {
                     continue;
-                }
                 spc.ReportDiagnostic(Diagnostic.Create(descriptor, Location.Create(info.FilePath, info.Span, info.LineSpan), info.Args.AsImmutableArray().ToArray()));
             }
             if (model.Source is not null)
-            {
                 spc.AddSource(model.HintName, SourceText.From(model.Source, Encoding.UTF8));
-            }
         });
     }
 
@@ -99,20 +95,14 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     {
         var semanticModel = gasc.SemanticModel;
         if (semanticModel is null)
-        {
             return null;
-        }
 
         var attribute = gasc.Attributes.FirstOrDefault();
         if (attribute is null || attribute.ConstructorArguments.Length == 0)
-        {
             return null;
-        }
 
         if (gasc.TargetSymbol is not INamedTypeSymbol proxyClassSymbol)
-        {
             return null;
-        }
 
         // the compilation is reachable from inside the transform, so CompilationProvider is unnecessary and would only defeat caching
         var compilation = semanticModel.Compilation;
@@ -120,24 +110,16 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         INamedTypeSymbol proxiedType = null;
         var type = attribute.ConstructorArguments[0];
         if (type.Kind == TypedConstantKind.Type)
-        {
             // typeof(...) yields an ITypeSymbol here, never a System.Type
             proxiedType = type.Value as INamedTypeSymbol;
-        }
         else if (type.Kind == TypedConstantKind.Primitive && type.Value is string fqTypeName)
-        {
             proxiedType = compilation.GetTypeByMetadataName(NormalizeMetadataName(fqTypeName));
-        }
 
         var includeInaccessible = false;
         var namedArguments = attribute.NamedArguments;
         for (var i = 0; i < namedArguments.Length; i++)
-        {
             if (namedArguments[i].Key == "IncludeInaccessible" && namedArguments[i].Value.Value is bool flag)
-            {
                 includeInaccessible = flag;
-            }
-        }
 
         var location = attribute.ApplicationSyntaxReference?.GetSyntax(cancellationToken).GetLocation();
         location ??= Unsafe.As<ClassDeclarationSyntax>(gasc.TargetNode).Identifier.GetLocation();
@@ -160,9 +142,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     {
         var full = proxyClassSymbol.ToDisplayString(SymbolDisplayFormats.FullyQualified);
         if (full.StartsWith("global::", StringComparison.Ordinal))
-        {
             full = full.Substring("global::".Length);
-        }
         var raw = $"{full}_{proxiedType.Name}";
         var sb = new StringBuilder(raw.Length);
         for (var i = 0; i < raw.Length; i++)
@@ -212,42 +192,28 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             {
                 var member = members[i];
                 if (member is INamedTypeSymbol)
-                {
                     // nested type declarations are members too, but there is nothing to forward
                     continue;
-                }
                 if (member is IMethodSymbol { Name: ".ctor" or ".cctor" })
-                {
                     // constructors don't participate in the inheritance walk, only proxiedType's own flow to WriteStaticCtorProxies
                     continue;
-                }
                 if (member is IMethodSymbol { MethodKind: MethodKind.Destructor or MethodKind.UserDefinedOperator or MethodKind.Conversion or MethodKind.BuiltinOperator })
-                {
                     continue;
-                }
                 if (member.IsImplicitlyDeclared && member is not IMethodSymbol { MethodKind: MethodKind.EventAdd or MethodKind.EventRemove })
-                {
                     // field-like events' add/remove accessors are implicitly declared too but still need forwarding,
                     // unlike backing fields/default ctors which this is meant to catch
                     continue;
-                }
                 if (member is IFieldSymbol { AssociatedSymbol: not null })
-                {
                     // covers auto-property backing fields and field-like-event backing fields, neither is nameable in C#
                     continue;
-                }
 
                 var key = MakeMemberKey(member);
                 if (!seen.Add(key))
-                {
                     continue;
-                }
 
                 if (member.IsAbstract)
-                {
                     // nothing to forward to
                     continue;
-                }
 
                 result.Add(member);
             }
@@ -293,9 +259,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     {
         var keys = new string[ctors.Length];
         for (var i = 0; i < keys.Length; i++)
-        {
             keys[i] = ParameterSignature(ctors[i].Parameters);
-        }
         Array.Sort(keys, ctors, StringComparer.Ordinal);
     }
 
@@ -308,19 +272,14 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         var all = proxiedType.AllInterfaces;
         var result = new List<INamedTypeSymbol>(all.Length);
         for (var i = 0; i < all.Length; i++)
-        {
             if (IsEffectivelyPublic(all[i]) && CanForwardAllMembers(all[i]))
-            {
                 result.Add(all[i]);
-            }
-        }
         return [.. result];
     }
     private static bool CanForwardAllMembers(INamedTypeSymbol iface)
     {
         var members = iface.GetMembers();
         for (var i = 0; i < members.Length; i++)
-        {
             switch (members[i])
             {
                 case INamedTypeSymbol:
@@ -330,39 +289,28 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 case IMethodSymbol method:
                     if (method.MethodKind is not MethodKind.Ordinary || method.IsStatic
                         || !IsEffectivelyPublic(method.ReturnType) || !AreParametersAccessible(method.Parameters))
-                    {
                         return false;
-                    }
                     break;
                 case IPropertySymbol property:
                     // init-only setters can't be forwarded, assigning them outside an object initializer of the target is illegal
                     if (property.IsStatic || property.SetMethod is { IsInitOnly: true }
                         || !IsEffectivelyPublic(property.Type) || !AreParametersAccessible(property.Parameters))
-                    {
                         return false;
-                    }
                     break;
                 case IEventSymbol @event:
                     if (@event.IsStatic || !IsEffectivelyPublic(@event.Type))
-                    {
                         return false;
-                    }
                     break;
                 default:
                     return false;
             }
-        }
         return true;
     }
     private static bool AreParametersAccessible(ImmutableArray<IParameterSymbol> parameters)
     {
         for (var i = 0; i < parameters.Length; i++)
-        {
             if (!IsEffectivelyPublic(parameters[i].Type))
-            {
                 return false;
-            }
-        }
         return true;
     }
     /// <summary>
@@ -383,22 +331,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         }
 
         for (ITypeSymbol current = type; current is not null; current = current.ContainingType)
-        {
             if (current.DeclaredAccessibility is not Accessibility.Public)
-            {
                 return false;
-            }
-        }
         if (type is INamedTypeSymbol { IsGenericType: true } named)
-        {
             for (var i = 0; i < named.TypeArguments.Length; i++)
-            {
                 if (!IsEffectivelyPublic(named.TypeArguments[i]))
-                {
                     return false;
-                }
-            }
-        }
         return true;
     }
 
@@ -422,21 +360,15 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     private static string GetTypeParameterConstraintsClause(ImmutableArray<ITypeParameterSymbol> typeParameters)
     {
         if (typeParameters.Length == 0)
-        {
             return "";
-        }
         var sb = new StringBuilder();
         for (var i = 0; i < typeParameters.Length; i++)
         {
             var clause = RenderTypeParameterConstraintClause(typeParameters[i]);
             if (clause.Length == 0)
-            {
                 continue;
-            }
             if (sb.Length > 0)
-            {
                 sb.Append(' ');
-            }
             sb.Append(clause);
         }
         return sb.Length > 0 ? " " + sb.ToString() : "";
@@ -446,43 +378,29 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         var parts = new List<string>();
         // primary constraint must come first: unmanaged implies struct, so check it first
         if (tp.HasUnmanagedTypeConstraint)
-        {
             parts.Add("unmanaged");
-        }
         else if (tp.HasValueTypeConstraint)
-        {
             parts.Add("struct");
-        }
         else if (tp.HasReferenceTypeConstraint)
-        {
             parts.Add("class");
-        }
         else if (tp.HasNotNullConstraint)
-        {
             parts.Add("notnull");
-        }
 
         // base type constraint (if any) precedes interfaces in ConstraintTypes source order already
         for (var i = 0; i < tp.ConstraintTypes.Length; i++)
-        {
             parts.Add(tp.ConstraintTypes[i].ToDisplayString(SymbolDisplayFormats.FullyQualified));
-        }
 
         // struct/unmanaged imply new() and can't be combined with it explicitly
         if (tp.HasConstructorConstraint && !tp.HasValueTypeConstraint)
-        {
             parts.Add("new()");
-        }
         if (tp.AllowsRefLikeType)
-        {
             parts.Add("allows ref struct");
-        }
 
         return parts.Count > 0 ? $"where {tp.Name} : {string.Join(", ", parts)}" : "";
     }
 
     private static string EscapeIdentifier(string name)
-        => Microsoft.CodeAnalysis.CSharp.SyntaxFacts.GetKeywordKind(name) != Microsoft.CodeAnalysis.CSharp.SyntaxKind.None ? "@" + name : name;
+        => SyntaxFacts.GetKeywordKind(name) != SyntaxKind.None ? "@" + name : name;
 
     /// <summary>
     /// Determines whether a forwarder for <paramref name="method"/> would hide a member the proxy inherits from <see cref="object"/>, which needs <c>new</c> to avoid CS0114/CS0108.
@@ -490,9 +408,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     private static bool HidesObjectMember(IMethodSymbol method)
     {
         if (method.TypeParameters.Length > 0)
-        {
             return false;
-        }
         return method.Name switch
         {
             "ToString" or "GetHashCode" or "GetType" => method.Parameters.Length == 0,
@@ -510,9 +426,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
     private static string NormalizeMetadataName(string name)
     {
         if (string.IsNullOrEmpty(name) || name.IndexOf('<') < 0)
-        {
             return name;
-        }
 
         var sb = new StringBuilder(name.Length);
         var lastGenericEnd = -1;
@@ -532,10 +446,8 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                     j++;
                 }
                 if (j >= name.Length)
-                {
                     // Unbalanced - bail out, return original
                     return name;
-                }
 
                 // Count arity from commas at depth 1
                 var inner = name.Substring(i + 1, j - i - 1);
@@ -560,24 +472,18 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                     }
                 }
                 if (!isOpen)
-                {
                     // Closed/constructed generic - GetTypeByMetadataName can't handle these anyway, return original
                     return name;
-                }
 
                 sb.Append('`').Append(arity);
                 lastGenericEnd = sb.Length;
                 i = j; // skip past '>'
             }
             else if (c == '.' && lastGenericEnd == sb.Length)
-            {
                 // '.' immediately after a generic arity indicates a nested type in CLR metadata
                 sb.Append('+');
-            }
             else
-            {
                 sb.Append(c);
-            }
         }
         return sb.ToString();
     }
@@ -677,9 +583,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         {
             // staying silent by default keeps existing proxies noise-free; opting in means you asked for maximum coverage and deserve to know what's still missing
             if (_allowErasure)
-            {
                 Report("FAP003", member.ToDisplayString(), reason);
-            }
         }
 
         #region Type resolution
@@ -706,42 +610,26 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             }
 
             if (!_compilation.IsSymbolAccessibleWithin(type, _compilation.Assembly))
-            {
                 return false;
-            }
             // IsSymbolAccessibleWithin doesn't look at type arguments
             if (type is INamedTypeSymbol { IsGenericType: true } named)
-            {
                 for (var i = 0; i < named.TypeArguments.Length; i++)
-                {
                     if (!IsAccessible(named.TypeArguments[i]))
-                    {
                         return false;
-                    }
-                }
-            }
             return true;
         }
 
         private TypeRef ResolveType(ITypeSymbol type, bool byRefPosition)
         {
             if (type is null)
-            {
                 return default;
-            }
             if (IsAccessible(type))
-            {
                 return TypeRef.Nameable(type.ToDisplayString(SymbolDisplayFormats.FullyQualified), IsEffectivelyPublic(type), RequiresUnsafeContext(type));
-            }
             if (!_allowErasure)
-            {
                 return default;
-            }
             // the runtime refuses [UnsafeAccessorType] on by-ref returns (it would be a type safety hole) and on value types
             if (byRefPosition || type.IsValueType || type is IFunctionPointerTypeSymbol)
-            {
                 return default;
-            }
             var metadataName = MetadataTypeName.TryBuild(type, _compilation.Assembly);
             return metadataName is null ? default : TypeRef.Erased(type is IPointerTypeSymbol ? "void*" : "object", metadataName);
         }
@@ -757,14 +645,10 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         private TypeRef[] ResolveParameters(ImmutableArray<IParameterSymbol> parameters)
         {
             if (parameters.Length == 0)
-            {
                 return _noParameters;
-            }
             var result = new TypeRef[parameters.Length];
             for (var i = 0; i < parameters.Length; i++)
-            {
                 result[i] = ResolveType(parameters[i].Type, false);
-            }
             return result;
         }
         #endregion
@@ -806,30 +690,20 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             }
 
             if (!plan.Target.IsSupported)
-            {
                 plan.SkipReason = $"its declaring type '{member.ContainingType.ToDisplayString()}' cannot be referenced from this assembly";
-            }
             else if (!plan.Result.IsSupported)
-            {
                 plan.SkipReason = $"its result type '{GetResultType(member)?.ToDisplayString() ?? "?"}' cannot be referenced from this assembly";
-            }
             else
-            {
                 for (var i = 0; i < plan.Parameters.Length; i++)
-                {
                     if (!plan.Parameters[i].IsSupported)
                     {
                         plan.SkipReason = $"the type '{parameters[i].Type.ToDisplayString()}' of parameter '{parameters[i].Name}' cannot be referenced from this assembly";
                         break;
                     }
-                }
-            }
 
             plan.Supported = plan.SkipReason is null;
             if (!plan.Supported)
-            {
                 return plan;
-            }
 
             plan.EmitAccessor = true;
             plan.EmitForwarder = true;
@@ -856,16 +730,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         private static string SignatureOf(IReadOnlyList<IParameterSymbol> parameters, TypeRef[] refs)
         {
             if (refs.Length == 0)
-            {
                 return "";
-            }
             var sb = new StringBuilder();
             for (var i = 0; i < refs.Length; i++)
             {
                 if (i > 0)
-                {
                     sb.Append(',');
-                }
                 sb.Append(parameters[i].RefKind).Append(':').Append(refs[i].Text);
             }
             return sb.ToString();
@@ -877,9 +747,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         {
             var sb = new StringBuilder();
             if (forAccessor)
-            {
                 sb.Append(SourceEmitHelper.UnsafeAccessorTypeParameter(typeRef.MetadataName));
-            }
             switch (parameter.RefKind)
             {
                 case RefKind.Ref:
@@ -897,33 +765,25 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             }
             sb.Append(typeRef.Text).Append(' ').Append(EscapeIdentifier(parameter.Name));
             if (parameter.HasExplicitDefaultValue)
-            {
                 // the only default an erased reference can carry
                 sb.Append(" = null");
-            }
             return sb.ToString();
         }
         private static string RenderParameters(ImmutableArray<IParameterSymbol> parameters, TypeRef[] refs, bool forAccessor)
         {
             if (parameters.Length == 0)
-            {
                 return "";
-            }
             var parts = new string[parameters.Length];
             for (var i = 0; i < parameters.Length; i++)
-            {
                 parts[i] = refs[i].IsErased
                     ? RenderErasedParameter(parameters[i], refs[i], forAccessor)
                     : parameters[i].ToDisplayString(SymbolDisplayFormats.FullyQualifiedParameter);
-            }
             return string.Join(", ", parts);
         }
         private static string RenderArguments(ImmutableArray<IParameterSymbol> parameters)
         {
             if (parameters.Length == 0)
-            {
                 return "";
-            }
             var parts = new string[parameters.Length];
             for (var i = 0; i < parameters.Length; i++)
             {
@@ -956,9 +816,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 return null;
             }
             if (_proxyClassSymbol.DeclaredAccessibility is Accessibility.Public && !_proxiedRef.EffectivelyPublic)
-            {
                 Report("FAP002", _proxyClassSymbol.Name, _proxiedType.ToDisplayString());
-            }
 
             var members = GetProxyableMembers(_proxiedType);
             var plans = new MemberPlan[members.Length];
@@ -973,9 +831,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             SortCtorsDeterministically(ctorSymbols);
             var ctorPlans = new MemberPlan[ctorSymbols.Length];
             for (var i = 0; i < ctorSymbols.Length; i++)
-            {
                 ctorPlans[i] = PlanConstructor(ctorSymbols[i]);
-            }
 
             ResolveCollisions(plans, ctorPlans);
 
@@ -985,16 +841,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
             writer.WriteLine(SourceEmitHelper.GeneratedFileHeader);
             if (!_proxyClassSymbol.ContainingNamespace.IsGlobalNamespace)
-            {
                 writer.WriteLine($"namespace {_proxyClassSymbol.ContainingNamespace.ToDisplayString()};");
-            }
 
             // collect containing types outermost-first so we can nest the proxy declaration correctly
             var ancestors = new List<INamedTypeSymbol>();
             for (var t = _proxyClassSymbol.ContainingType; t is not null; t = t.ContainingType)
-            {
                 ancestors.Add(t);
-            }
             ancestors.Reverse();
 
             var openScopes = new Stack<IDisposable>();
@@ -1004,17 +856,11 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 var modifiers = new StringBuilder();
                 modifiers.Append(GetAccessibilityKeyword(ancestor.DeclaredAccessibility)).Append(' ');
                 if (ancestor.IsStatic)
-                {
                     modifiers.Append("static ");
-                }
                 if (ancestor.IsRefLikeType)
-                {
                     modifiers.Append("ref ");
-                }
                 if (ancestor.IsReadOnly)
-                {
                     modifiers.Append("readonly ");
-                }
                 modifiers.Append("partial ").Append(GetTypeKindKeyword(ancestor));
 
                 writer.WriteLine($"{modifiers} {ancestor.Name}{GetTypeParameterList(ancestor)}");
@@ -1034,9 +880,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
 
             var classModifiers = GetAccessibilityKeyword(_proxyClassSymbol.DeclaredAccessibility);
             if (_proxyClassSymbol.TypeKind == TypeKind.Class)
-            {
                 classModifiers += " sealed";
-            }
             writer.Write($"{classModifiers} partial class {_proxyClassSymbol.Name}{GetTypeParameterList(_proxyClassSymbol)}");
             if (interfaces.Length > 0)
             {
@@ -1066,9 +910,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                     foreach (var plan in group.Value)
                     {
                         if (!plan.Supported || !plan.EmitForwarder)
-                        {
                             continue;
-                        }
                         switch (plan.Symbol)
                         {
                             case IMethodSymbol { MethodKind: MethodKind.Ordinary } methodSymbol:
@@ -1091,9 +933,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             }
 
             while (openScopes.Count > 0)
-            {
                 openScopes.Pop().Dispose();
-            }
 
             writer.Flush();
             sw.Flush();
@@ -1110,13 +950,11 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 Parameters = ResolveParameters(ctor.Parameters)
             };
             for (var i = 0; i < plan.Parameters.Length; i++)
-            {
                 if (!plan.Parameters[i].IsSupported)
                 {
                     plan.SkipReason = $"the type '{ctor.Parameters[i].Type.ToDisplayString()}' of parameter '{ctor.Parameters[i].Name}' cannot be referenced from this assembly";
                     return plan;
                 }
-            }
             plan.Supported = true;
             plan.EmitAccessor = true;
             plan.EmitForwarder = true;
@@ -1225,9 +1063,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             writer.WriteLine($"/// <param name=\"instance\">The instance of <c>{_proxiedDisplay}</c> to proxy. Must not be <see langword=\"null\"/>, otherwise an exception is thrown.</param>");
             writer.WriteLine($"{(_proxiedRef.EffectivelyPublic ? "public" : "internal")} {_proxyClassSymbol.Name}({_proxiedRef.Text} instance)");
             using (writer.Scope)
-            {
                 writer.WriteLine("_instance = instance ?? throw new ArgumentNullException(nameof(instance));");
-            }
         }
         private void WriteStaticCtorProxies(IndentedTextWriter writer, IMethodSymbol[] ctors, MemberPlan[] ctorPlans)
         {
@@ -1237,9 +1073,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
             {
                 var plan = ctorPlans[i];
                 if (!plan.Supported || !plan.EmitForwarder)
-                {
                     continue;
-                }
                 var ctor = ctors[i];
 
                 writer.WriteLine("/// <summary>");
@@ -1249,9 +1083,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 writer.WriteLine(SourceEmitHelper.MethodImpl_AggressiveInlining);
                 writer.WriteLine($"{(plan.Clamp ? "internal" : "public")} static {(plan.RequiresUnsafe ? "unsafe " : "")}{_proxyClassSymbol.Name} Create({RenderParameters(ctor.Parameters, plan.Parameters, false)})");
                 using (writer.Scope)
-                {
                     writer.WriteLine($"return new {_proxyClassSymbol.Name}(Accessors.ProxyCtor({RenderArguments(ctor.Parameters)}));");
-                }
             }
         }
         private void WriteUnsafeAccessorUtility(IndentedTextWriter writer, MemberPlan[] plans, IMethodSymbol[] ctors, MemberPlan[] ctorPlans)
@@ -1265,14 +1097,10 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 {
                     var plan = ctorPlans[i];
                     if (!plan.Supported || !plan.EmitAccessor)
-                    {
                         continue;
-                    }
                     writer.WriteLine(SourceEmitHelper.UnsafeAccessor_Ctor);
                     if (_proxiedRef.IsErased)
-                    {
                         writer.WriteLine(SourceEmitHelper.UnsafeAccessorTypeReturn(_proxiedRef.MetadataName));
-                    }
                     writer.WriteLine($"public static {(plan.RequiresUnsafe ? "unsafe " : "")}extern {_proxiedRef.Text} ProxyCtor({RenderParameters(ctors[i].Parameters, plan.Parameters, true)});");
                 }
 
@@ -1280,9 +1108,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 {
                     var plan = plans[i];
                     if (!plan.Supported || !plan.EmitAccessor)
-                    {
                         continue;
-                    }
 
                     // [UnsafeAccessor] doesn't walk the base hierarchy, so target must be the member's OWN containing type, not the proxied type
                     switch (plan.Symbol)
@@ -1292,14 +1118,10 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                         {
                             writer.WriteLine(methodSymbol.IsStatic ? SourceEmitHelper.UnsafeAccessor_StaticMethod : SourceEmitHelper.UnsafeAccessor_Method);
                             if (plan.Result.IsErased)
-                            {
                                 writer.WriteLine(SourceEmitHelper.UnsafeAccessorTypeReturn(plan.Result.MetadataName));
-                            }
                             var parameterString = RenderParameters(methodSymbol.Parameters, plan.Parameters, true);
                             if (parameterString.Length > 0)
-                            {
                                 parameterString = ", " + parameterString;
-                            }
                             var unsafeKeyword = plan.RequiresUnsafe ? "unsafe " : "";
                             var typeParameterList = GetMethodTypeParameterList(methodSymbol);
                             var constraintsClause = GetTypeParameterConstraintsClause(methodSymbol.TypeParameters);
@@ -1325,16 +1147,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         private void WriteMethodProxy(IndentedTextWriter writer, IMethodSymbol methodSymbol, MemberPlan plan)
         {
             if (methodSymbol.IsAccessor || methodSymbol.ExplicitInterfaceImplementations.Length > 0)
-            {
                 return;
-            }
 
             var parameterString = RenderParameters(methodSymbol.Parameters, plan.Parameters, false);
             var argumentString = RenderArguments(methodSymbol.Parameters);
             if (argumentString.Length > 0)
-            {
                 argumentString = ", " + argumentString;
-            }
 
             writer.WriteLine("/// <summary>");
             writer.WriteLine($"/// Proxies the following method from <c>{_proxiedDisplay}</c>:");
@@ -1356,13 +1174,9 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         private void WriteEventProxy(IndentedTextWriter writer, IEventSymbol eventSymbol, MemberPlan plan, Dictionary<ISymbol, MemberPlan> planBySymbol)
         {
             if (eventSymbol.ExplicitInterfaceImplementations.Length > 0)
-            {
                 return;
-            }
             if (!AccessorAvailable(planBySymbol, eventSymbol.AddMethod) || !AccessorAvailable(planBySymbol, eventSymbol.RemoveMethod))
-            {
                 return;
-            }
 
             writer.WriteLine("/// <summary>");
             writer.WriteLine($"/// Proxies the event <c>{_proxiedDisplay}.{eventSymbol.Name}</c>.");
@@ -1398,16 +1212,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         private void WritePropertyProxy(IndentedTextWriter writer, IPropertySymbol property, MemberPlan plan, Dictionary<ISymbol, MemberPlan> planBySymbol)
         {
             if (property.ExplicitInterfaceImplementations.Length > 0)
-            {
                 return;
-            }
 
             var getAvailable = property.GetMethod is not null && AccessorAvailable(planBySymbol, property.GetMethod);
             var setAvailable = property.SetMethod is not null && !property.SetMethod.IsInitOnly && AccessorAvailable(planBySymbol, property.SetMethod);
             if (!getAvailable && !setAvailable)
-            {
                 return;
-            }
 
             var refPrefix = property.ReturnsByRef ? "ref " : property.ReturnsByRefReadonly ? "ref readonly " : "";
             var declaration = property.IsIndexer ? $"this[{RenderParameters(property.Parameters, plan.Parameters, false)}]" : property.Name;
@@ -1447,9 +1257,7 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         private static void WriteInterfaceImplementations(IndentedTextWriter writer, INamedTypeSymbol[] interfaces)
         {
             if (interfaces.Length == 0)
-            {
                 return;
-            }
 
             using var region = writer.Region("Interface implementations");
 
@@ -1459,7 +1267,6 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 var ifaceName = iface.ToDisplayString(SymbolDisplayFormats.FullyQualified);
                 var members = iface.GetMembers();
                 for (var k = 0; k < members.Length; k++)
-                {
                     // everything is emitted explicitly, that way it can never collide with the regularly proxied members
                     switch (members[k])
                     {
@@ -1473,7 +1280,6 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                             WriteEventProxyExplicit(writer, @event, ifaceName);
                             break;
                     }
-                }
             }
         }
         private static void WriteMethodProxyExplicit(IndentedTextWriter writer, IMethodSymbol method, string ifaceName)
@@ -1533,14 +1339,10 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
         private static TypeRef[] NameableRefs(ImmutableArray<IParameterSymbol> parameters)
         {
             if (parameters.Length == 0)
-            {
                 return _noParameters;
-            }
             var result = new TypeRef[parameters.Length];
             for (var i = 0; i < parameters.Length; i++)
-            {
                 result[i] = TypeRef.Nameable(null, true, false);
-            }
             return result;
         }
         #endregion

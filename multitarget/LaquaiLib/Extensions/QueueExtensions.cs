@@ -12,26 +12,20 @@ public static class QueueExtensions
         /// <summary>
         /// Adds items to the end of the <see cref="Queue{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the items in the collection.</typeparam>
         /// <param name="items">The items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(params ReadOnlySpan<T> items)
         {
             for (var i = 0; i < items.Length; i++)
-            {
                 queue.Enqueue(items[i]);
-            }
         }
         /// <summary>
         /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the items in the collection.</typeparam>
         /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(IEnumerable<T> collection)
         {
             foreach (var item in collection)
-            {
                 queue.Enqueue(item);
-            }
         }
     }
 
@@ -40,26 +34,20 @@ public static class QueueExtensions
         /// <summary>
         /// Adds items to the end of the <see cref="Queue{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the items in the collection.</typeparam>
         /// <param name="items">The items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(params ReadOnlySpan<T> items)
         {
             for (var i = 0; i < items.Length; i++)
-            {
                 queue.Enqueue(items[i]);
-            }
         }
         /// <summary>
         /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
         /// </summary>
-        /// <typeparam name="T">The Type of the items in the collection.</typeparam>
         /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         public void EnqueueRange(IEnumerable<T> collection)
         {
             foreach (var item in collection)
-            {
                 queue.Enqueue(item);
-            }
         }
     }
 }

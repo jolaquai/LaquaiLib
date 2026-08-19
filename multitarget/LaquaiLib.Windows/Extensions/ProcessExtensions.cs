@@ -24,11 +24,9 @@ public static partial class ProcessExtensions
                 try
                 {
                     if (process.StartInfo is ProcessStartInfo psi)
-                    {
                         return psi.ArgumentList.Count > 0
                             ? $"\"{psi.FileName}\" {string.Join(' ', psi.ArgumentList.Select(static a => '"' + a + '"'))}"
                             : $"\"{psi.FileName}\" {psi.Arguments}";
-                    }
                 }
                 catch { }
 

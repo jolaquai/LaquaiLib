@@ -32,5 +32,6 @@ public struct MemoryEnumerable<T>(ReadOnlyMemory<T> memory) : IEnumerable<T>, IE
     /// Resets the enumerator to immediately before the first element in the <see cref="Memory{T}"/>.
     /// </summary>
     public void Reset() => index = -1;
+    /// <inheritdoc/>
     public readonly void Dispose() { }
 }

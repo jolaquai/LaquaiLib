@@ -2,9 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-using LaquaiLib.Extensions;
-using System;
-
 namespace LaquaiLib.Text;
 
 /// <summary>
@@ -125,9 +122,7 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
             case ISpanFormattable spanFormattable:
             {
                 if (spanFormattable.TryFormat(_buffer.GetSpan(Config.MaxStackallocSize), out var written, format: null, FormatProvider))
-                {
                     _buffer.Advance(written);
-                }
                 else
                 {
                     var formatted = spanFormattable.ToString(null, FormatProvider);
@@ -179,7 +174,7 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
     public override unsafe void Write([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, params scoped ReadOnlySpan<object> arg)
     {
         var comp = CompositeFormat.Parse(format);
-        var segments = UnsafeUtils.Accessors.CompositeFormatAccessors._segments(comp);
+        var segments = CompositeFormatAccessors._segments(comp);
 
         scoped Span<char> temp = stackalloc char[Config.MaxStackallocSize / 2];
         for (var i = 0; i < segments.Length; i++)
@@ -213,13 +208,9 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
                                     // If we were preceded by stupid writes that requested large buffers, but then actually wrote small sequences, the request for the final 2048 might result in a much larger span than that, which means TryFormat will succeed
                                     // For example, if the buffer has a FreeCapacity of 2047 and we request 2048, the backing store resizes to 4095 and we're given that entire buffer to write into
                                     if (spanFormattable.TryFormat(_buffer.GetSpan(_buffer.FreeCapacity), out advanced, ArgFormat, FormatProvider))
-                                    {
                                         _buffer.Advance(advanced);
-                                    }
                                     else
-                                    {
                                         advanced = -1;
-                                    }
                                 }
 
                                 if (advanced == -1)
@@ -266,20 +257,14 @@ public class BufferTextWriter(int capacity = 2048, Encoding encoding = null) : T
                                     // To facilitate semi-efficient alignment, we'll try to write into the buffer first
                                     // Ideally, we'd have enough space to write the entire thing twice + the alignment, but we can't guarantee that, so we'll have to try and hope
                                     if (spanFormattable.TryFormat(temp, out toWrite, ArgFormat, FormatProvider))
-                                    {
                                         buffer = temp[..toWrite];
-                                    }
                                     else
-                                    {
                                         toWrite = -1;
-                                    }
                                 }
 
                                 // If we wrote nothing, use the IFormattable approach instead
                                 if (toWrite == -1)
-                                {
                                     buffer = formattable.ToString(ArgFormat, FormatProvider);
-                                }
 
                                 break;
                             }

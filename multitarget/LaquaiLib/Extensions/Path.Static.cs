@@ -4,6 +4,7 @@ namespace LaquaiLib.Extensions;
 
 #pragma warning disable IDE0058 // Expression value is never used
 
+/// <inheritdoc/>
 public static class PathExtensions
 {
     extension(Path)
@@ -17,18 +18,12 @@ public static class PathExtensions
         public static string EnsureQuoted(string value, char quoteChar = '"')
         {
             if (string.IsNullOrEmpty(value))
-            {
                 return new string(quoteChar, 2);
-            }
             if (IsQuoted(value))
-            {
                 return value;
-            }
             if (value.AsSpan().IndexOf(' ') == -1)
-            {
                 // No need to quote, no spaces
                 return value;
-            }
 
             var len = value.Length;
             var startsWith = value.StartsWith(quoteChar);
@@ -50,9 +45,7 @@ public static class PathExtensions
                 val.AsSpan().CopyTo(span[idx..]);
                 idx += val.Length;
                 if (!endsWith)
-                {
                     span[^1] = qc;
-                }
             });
         }
 
@@ -64,14 +57,10 @@ public static class PathExtensions
         public static string EnsureEndingDirectorySeparator(string path)
         {
             if (string.IsNullOrEmpty(path))
-            {
                 return Path.DirectorySeparatorChar.ToString();
-            }
 
             if (!path.EndsWith(Path.DirectorySeparatorChar) && !path.EndsWith(Path.AltDirectorySeparatorChar))
-            {
                 return path + Path.DirectorySeparatorChar;
-            }
             return path;
         }
 
@@ -128,25 +117,21 @@ public static class PathExtensions
         public static string ResolveMappedDrive(string path)
         {
             if (string.IsNullOrWhiteSpace(path) || !Path.IsPathRooted(path))
-            {
                 return path;
-            }
             var root = Path.GetPathRoot(path);
             if (root is null || root.StartsWith(@"\\", StringComparison.Ordinal))
-            {
                 return path;
-            }
 
             // 1) Mapped network drive -> UNC
             var size = 0;
-            var ret = Interop.Mpr.WNetGetUniversalName(path, Interop.Mpr.UNIVERSAL_NAME_INFO_LEVEL, null, ref size);
+            var ret = Mpr.WNetGetUniversalName(path, Mpr.UNIVERSAL_NAME_INFO_LEVEL, null, ref size);
             if (ret == Mpr.ERROR_MORE_DATA && size > nint.Size)
             {
                 var buf = ArrayPool<byte>.Shared.Rent(size);
                 try
                 {
                     Array.Clear(buf, 0, size); // ensure zeroed for safe pointer read
-                    ret = Interop.Mpr.WNetGetUniversalName(path, Interop.Mpr.UNIVERSAL_NAME_INFO_LEVEL, buf, ref size);
+                    ret = Mpr.WNetGetUniversalName(path, Mpr.UNIVERSAL_NAME_INFO_LEVEL, buf, ref size);
                     if (ret == 0)
                     {
                         // UNIVERSAL_NAME_INFO: first pointer is LPWSTR
@@ -155,9 +140,7 @@ public static class PathExtensions
                         {
                             var unc = Marshal.PtrToStringUni(strPtr);
                             if (!string.IsNullOrEmpty(unc))
-                            {
                                 return unc;
-                            }
                         }
                     }
                 }
@@ -166,17 +149,15 @@ public static class PathExtensions
                     ArrayPool<byte>.Shared.Return(buf);
                 }
             }
-            if (ret is not (0 or Interop.Mpr.ERROR_NOT_CONNECTED))
-            {
+            if (ret is not (0 or Mpr.ERROR_NOT_CONNECTED))
                 return path;
-            }
 
             // 2) SUBST drive resolution
             var drive = root.TrimEnd('\\'); // "X:"
             var targetBuf = ArrayPool<char>.Shared.Rent(512);
             try
             {
-                var chars = Interop.Kernel32.QueryDosDevice(drive, targetBuf, targetBuf.Length);
+                var chars = Kernel32.QueryDosDevice(drive, targetBuf, targetBuf.Length);
                 if (chars != 0)
                 {
                     var target = new string(targetBuf, 0, (int)chars);
@@ -224,9 +205,7 @@ public static class PathExtensions
             extension = default;
 
             if (path.Length == 0)
-            {
                 return;
-            }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             static bool IsSep(char c) => c is '\\' or '/';
 
@@ -237,16 +216,12 @@ public static class PathExtensions
                 // UNC: \\server\share\...
                 var i = 2;
                 while (i < path.Length && !IsSep(path[i]))
-                {
                     i++;
-                }
                 if (i <= path.Length)
                 {
                     // include trailing backslash if present in input
                     if (i < path.Length && IsSep(path[i]))
-                    {
                         i++;
-                    }
 
                     drive = path[..i];   // "\\server" or "\\server\"
                     idx = i;
@@ -256,9 +231,7 @@ public static class PathExtensions
             {
                 var i = 2;
                 if (i < path.Length && IsSep(path[i]))
-                {
                     i++;
-                }
 
                 drive = path[..i]; // "C:" or "C:\"
                 idx = i;
@@ -275,9 +248,8 @@ public static class PathExtensions
             // Directory + fileName
             var lastSep = -1;
             for (var i = rest.Length - 1; i >= 0; i--)
-            {
-                if (IsSep(rest[i])) { lastSep = i; break; }
-            }
+                if (IsSep(rest[i]))
+                { lastSep = i; break; }
 
             if (lastSep >= 0)
             {
@@ -308,13 +280,11 @@ public static class PathExtensions
 
             var lastDot = -1;
             for (var i = fileName.Length - 1; i >= 0; i--)
-            {
                 if (fileName[i] == '.')
                 {
                     lastDot = i;
                     break;
                 }
-            }
 
             if (lastDot > 0)
             {

@@ -1,5 +1,3 @@
-using Microsoft.CodeAnalysis;
-
 namespace LaquaiLib.Analyzers.Shared;
 
 /// <summary>

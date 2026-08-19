@@ -20,22 +20,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="xunit.v3" Version="3.2.2" />
+        <PackageReference Include="xunit.v3" Version="3.2.2"/>
     </ItemGroup>
 
     <ItemGroup>
         <!-- OutputItemType="Analyzer" makes the generator actually run over this project's sources, so the proxies under test are real compiled types.
              ReferenceOutputAssembly defaults to true, which is how the FullAccessProxyAttribute resolves at compile time and at runtime.
              LaquaiLib.Analyzers is included on purpose: its LAQ9xxx UnsafeAccessor validators then vet every generated accessor stub at compile time. -->
-        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
-        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
 
         <!-- Plain data assembly with no InternalsVisibleTo grant; exercises genuine cross-assembly erasure. -->
-        <ProjectReference Include="$(MSBuildProjectDirectory)\..\LaquaiLib.Generators.RuntimeTests.External\LaquaiLib.Generators.RuntimeTests.External.csproj" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\LaquaiLib.Generators.RuntimeTests.External\LaquaiLib.Generators.RuntimeTests.External.csproj"/>
 
-        <Using Include="Xunit" />
-        <Using Include="LaquaiLib.Analyzers.Shared.Attributes" />
+        <Using Include="Xunit"/>
+        <Using Include="LaquaiLib.Analyzers.Shared.Attributes"/>
     </ItemGroup>
 
 </Project>

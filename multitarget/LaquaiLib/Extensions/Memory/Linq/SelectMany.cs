@@ -19,17 +19,13 @@ public static partial class LinqMemoryExtensions
         {
             var destIndex = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 foreach (var item in selector(source[i]))
                 {
                     if (destIndex >= destination.Length)
-                    {
                         return destIndex; // Last assigned index
-                    }
 
                     destination[destIndex++] = item;
                 }
-            }
             return destIndex;
         }
 
@@ -48,17 +44,13 @@ public static partial class LinqMemoryExtensions
         {
             var destIndex = 0;
             for (var i = 0; i < source.Length; i++)
-            {
                 foreach (var item in selector(source[i], i))
                 {
                     if (destIndex >= destination.Length)
-                    {
                         return destIndex; // Last assigned index
-                    }
 
                     destination[destIndex++] = item;
                 }
-            }
             return destIndex;
         }
 
@@ -84,9 +76,7 @@ public static partial class LinqMemoryExtensions
                 foreach (var item in collection)
                 {
                     if (destIndex >= destination.Length)
-                    {
                         return destIndex;
-                    }
                     destination[destIndex++] = resultSelector(source[i], item);
                 }
             }
@@ -115,9 +105,7 @@ public static partial class LinqMemoryExtensions
                 foreach (var item in collection)
                 {
                     if (destIndex >= destination.Length)
-                    {
                         return destIndex;
-                    }
                     destination[destIndex++] = resultSelector(source[i], item);
                 }
             }

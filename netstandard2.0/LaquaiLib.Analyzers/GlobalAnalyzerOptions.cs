@@ -19,20 +19,14 @@ internal static class GlobalAnalyzerOptions
             var builder = new DiagnosticDescriptorBuilder(diagnosticDescriptor);
 
             if (analyzerConfigOptions.TryGetValue($"dotnet_diagnostic.{id}.enabled", out var value) && value.Equals("false", StringComparison.OrdinalIgnoreCase))
-            {
                 return null; // Analyzer is disabled
-            }
 
             if (analyzerConfigOptions.TryGetValue($"dotnet_diagnostic.{id}.severity", out var severity))
             {
                 if (Enum.TryParse<DiagnosticSeverity>(severity, true, out var parsed))
-                {
                     builder.DefaultSeverity = parsed;
-                }
                 else if (int.TryParse(severity, out var parsedNum) && Enum.IsDefined(typeof(DiagnosticSeverity), parsedNum))
-                {
                     builder.DefaultSeverity = (DiagnosticSeverity)parsedNum;
-                }
                 // else keep default severity
             }
 

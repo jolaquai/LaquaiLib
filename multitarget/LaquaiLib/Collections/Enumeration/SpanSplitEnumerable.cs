@@ -47,9 +47,7 @@ public ref struct SpanSplitEnumerable<T>(ReadOnlySpan<T> source, ReadOnlySpan<T>
             case 2:
             {
                 if (_source.Length == 0)
-                {
                     return false;
-                }
 
 #if NET9_0
                 var end = -1;
@@ -80,9 +78,7 @@ public ref struct SpanSplitEnumerable<T>(ReadOnlySpan<T> source, ReadOnlySpan<T>
                 Current = _source[..end];
                 _source = _source[++end..];
                 if (_source.Length == 0)
-                {
                     state = 3;
-                }
                 return true;
             }
             case 3:

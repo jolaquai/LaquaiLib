@@ -42,13 +42,9 @@ public static partial class ToolTip
             };
 
             if (User32.GetMonitorInfo(hMonitor, ref monitorInfo))
-            {
                 return monitorInfo;
-            }
             else
-            {
                 throw new Exception("Unable to get monitor information");
-            }
         }
 
         internal static readonly Version _win8 = new Version(6, 2);
@@ -58,9 +54,7 @@ public static partial class ToolTip
         internal static void RunMessageLoop(nint hWnd)
         {
             if (_runningMessageLoop)
-            {
                 return;
-            }
             _runningMessageLoop = true;
             {
                 var msg = default(TOOLTIPMSG);
@@ -131,9 +125,7 @@ public static partial class ToolTip
     public static ToolTipHandle ShowTooltip(string text, ToolTipDisplay displayMode = ToolTipDisplay.Cursor, TimeSpan? displayTime = null, int? x = null, int? y = null)
     {
         if (displayTime == Timeout.InfiniteTimeSpan)
-        {
             throw new ArgumentOutOfRangeException(nameof(displayTime), "Tooltips cannot be persistent (they must auto-hide after a finite amount of time).");
-        }
 
         var monitorinfo = Interop.GetMonitorInfoFromCursor();
         _ = User32.GetCursorPos(out var cursorPos);
@@ -160,19 +152,13 @@ public static partial class ToolTip
                 throw new ArgumentException($"Invalid display mode '{displayMode}'.");
         }
         if (x is not null)
-        {
             xActual += x.Value;
-        }
         if (y is not null)
-        {
             yActual += y.Value;
-        }
 
         var tooltipHwnd = User32.CreateWindowEx(0x8, "tooltips_class32", null, 0x3, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, Interop.CW_USEDEFAULT, nint.Zero, nint.Zero, nint.Zero, nint.Zero);
         if (tooltipHwnd == nint.Zero)
-        {
             throw new Exception("Unable to create tooltip window.", Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-        }
 
         _ = Task.Run(() => Interop.RunMessageLoop(tooltipHwnd));
 
@@ -207,13 +193,9 @@ public static partial class ToolTip
             var height = ttw.Bottom - ttw.Top;
             var width = ttw.Right - ttw.Left;
             if (xActual + width > textRect.Right)
-            {
                 xActual = textRect.Right - width - 1;
-            }
             if (yActual + height > textRect.Bottom)
-            {
                 yActual = textRect.Bottom - height - 1;
-            }
             ttw.Left = xActual;
             ttw.Top = yActual;
             ttw.Right = xActual + width;

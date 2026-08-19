@@ -20,13 +20,9 @@ public sealed class FullAccessProxyAttribute : Attribute
     private static void ValidateType(Type proxied)
     {
         if (proxied is null)
-        {
             throw new ArgumentNullException(nameof(proxied));
-        }
         if (proxied.IsValueType)
-        {
             throw new InvalidOperationException("The type to proxy must be a reference type.");
-        }
     }
 
     /// <summary>

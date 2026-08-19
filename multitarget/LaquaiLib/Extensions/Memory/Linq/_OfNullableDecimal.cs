@@ -1,5 +1,6 @@
 namespace LaquaiLib.Extensions;
 
+/// <inheritdoc/>
 public static partial class LinqMemoryExtensions
 {
     extension(ReadOnlySpan<decimal?> source)
@@ -22,17 +23,13 @@ public static partial class LinqMemoryExtensions
         public decimal? Max()
         {
             if (source.Length == 0)
-            {
                 throw new InvalidOperationException("Span is empty.");
-            }
             var max = source[0];
             for (var i = 0; i < source.Length; i++)
             {
                 var value = source[i];
                 if (value.HasValue && (!max.HasValue || value.Value > max.Value))
-                {
                     max = value;
-                }
             }
             return max;
         }
@@ -44,17 +41,13 @@ public static partial class LinqMemoryExtensions
         public decimal? Min()
         {
             if (source.Length == 0)
-            {
                 throw new InvalidOperationException("Span is empty.");
-            }
             var min = source[0];
             for (var i = 1; i < source.Length; i++)
             {
                 var value = source[i];
                 if (value.HasValue && (!min.HasValue || value.Value < min.Value))
-                {
                     min = value;
-                }
             }
             return min;
         }

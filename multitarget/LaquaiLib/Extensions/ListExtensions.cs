@@ -46,21 +46,15 @@ public static class ListExtensions
         public Memory<T> AsMemory(Index start = default, int length = -1)
         {
             if (length == 0)
-            {
                 return Memory<T>.Empty;
-            }
 
             var offset = start.GetOffset(list.Count);
             if (offset < 0 || offset > list.Count)
-            {
                 throw new ArgumentOutOfRangeException(nameof(start), "The specified start index is out of range.");
-            }
             if (length < -1 || length > list.Count - offset)
-            {
                 throw new ArgumentOutOfRangeException(nameof(length), "The specified length is out of range.");
-            }
 
-            Memory<T> memory = UnsafeUtils.Accessors.ListAccessors<T>._items(list);
+            Memory<T> memory = ListAccessors<T>._items(list);
             var endIndex = length == -1 ? list.Count : offset + length;
             return memory[offset..endIndex];
         }
@@ -89,21 +83,15 @@ public static class ListExtensions
         public Span<T> AsSpan(Index start = default, int length = -1)
         {
             if (length == 0)
-            {
                 return [];
-            }
 
             var offset = start.GetOffset(list.Count);
             if (offset < 0 || offset > list.Count)
-            {
                 throw new ArgumentOutOfRangeException(nameof(start), "The specified start index is out of range.");
-            }
             if (length < -1 || length > list.Count - offset)
-            {
                 throw new ArgumentOutOfRangeException(nameof(length), "The specified length is out of range.");
-            }
 
-            Span<T> span = UnsafeUtils.Accessors.ListAccessors<T>._items(list);
+            Span<T> span = ListAccessors<T>._items(list);
             var endIndex = length == -1 ? list.Count : offset + length;
             return span[offset..endIndex];
         }
@@ -159,8 +147,8 @@ public static class ListExtensions
     {
         ArgumentNullException.ThrowIfNull(list);
 
-        ref var items = ref UnsafeUtils.Accessors.ListAccessors<T>._items(list);
-        ref var size = ref UnsafeUtils.Accessors.ListAccessors<T>._size(list);
+        ref var items = ref ListAccessors<T>._items(list);
+        ref var size = ref ListAccessors<T>._size(list);
         var count = size;
 
         T[] ret;
@@ -180,7 +168,7 @@ public static class ListExtensions
         // Detach: reset to the same state as a freshly-constructed empty list, then invalidate any live enumerators.
         items = [];
         size = 0;
-        UnsafeUtils.Accessors.ListAccessors<T>._version(list)++;
+        ListAccessors<T>._version(list)++;
         return ret;
     }
 }

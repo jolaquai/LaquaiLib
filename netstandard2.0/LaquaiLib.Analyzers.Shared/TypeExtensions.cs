@@ -17,37 +17,23 @@ public static class TypeExtensions
             var operateOn = type.FullName ?? type.Namespace + '.' + type.Name;
 
             if (type.IsGenericParameter)
-            {
                 return type.Name;
-            }
             else if (type.IsArray && type.GetElementType() is Type elementType)
-            {
                 return elementType.ToDisplayString() + "[]";
-            }
             if (operateOn.Contains(['+'], StringComparison.OrdinalIgnoreCase))
-            {
                 operateOn = type.Namespace + '.' + type.Name;
-            }
             if (operateOn.EndsWith(['&']))
-            {
                 return "ref " + AsKeyword(operateOn.Substring(0, operateOn.Length - 1));
-            }
             if (operateOn.EndsWith(['*']))
-            {
                 return AsKeyword(operateOn.Substring(0, operateOn.Length - 1)) + '*';
-            }
             if (operateOn.EndsWith("[]", StringComparison.OrdinalIgnoreCase))
-            {
                 return AsKeyword(operateOn.Substring(0, operateOn.Length - 2)) + "[]";
-            }
 
             if (type.IsGenericType)
             {
                 var tickAt = operateOn.IndexOf(['`'], StringComparison.OrdinalIgnoreCase);
                 if (tickAt != -1)
-                {
                     operateOn = operateOn.Substring(0, tickAt);
-                }
                 var args = string.Join(", ", type.GetGenericArguments().Select(static t => t.ToDisplayString()));
 
                 return $"{operateOn}<{args}>";

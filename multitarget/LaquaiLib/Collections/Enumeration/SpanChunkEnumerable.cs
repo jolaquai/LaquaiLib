@@ -58,15 +58,11 @@ public ref struct SpanChunkEnumerable<T>(ReadOnlySpan<T> source, int chunkSize)
                 }
                 var end = start + _chunkSize;
                 if (end > _source.Length)
-                {
                     end = _source.Length;
-                }
                 Current = _source[start..end];
                 chunkIndex++;
                 if (end == _source.Length)
-                {
                     state = 0;
-                }
                 return true;
             }
         }

@@ -1,8 +1,4 @@
-using System.CodeDom.Compiler;
 using System.Reflection;
-using System.Text;
-
-using Microsoft.CodeAnalysis;
 
 namespace LaquaiLib.Analyzers.Shared;
 
@@ -135,9 +131,7 @@ public static class MethodInfoExtensions
             {
                 {
                     if (symbol is IMethodSymbol methodSymbol && methodSymbol.ExplicitInterfaceImplementations.Length > 0)
-                    {
                         return true;
-                    }
                 }
 
                 var declaringType = symbol.ContainingType;
@@ -155,9 +149,7 @@ public static class MethodInfoExtensions
                         var overrides = methodSymbol.OverrideChain.ToArray();
                         isImpl = overrides.Any(overriddenMethod => interfaceImplementations.Any(m => SymbolEqualityComparer.Default.Equals(m, overriddenMethod)));
                         if (isImpl)
-                        {
                             return true;
-                        }
                     }
                 }
 

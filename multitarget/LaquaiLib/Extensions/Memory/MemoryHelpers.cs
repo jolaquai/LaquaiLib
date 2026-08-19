@@ -1,6 +1,4 @@
-﻿#warning TODO: Documentation is currently largely inheritdoc'd from System.Linq.Enumerable - Rewrite that
-
-namespace LaquaiLib.Extensions;
+﻿namespace LaquaiLib.Extensions;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
@@ -10,9 +8,7 @@ internal sealed class SpanLookup<TKey, TElement>(int capacity, IEqualityComparer
     public IEnumerator<IGrouping<TKey, TElement>> GetEnumerator()
     {
         foreach (var kvp in _lookup)
-        {
             yield return new Grouping<TKey, TElement>(kvp.Key, kvp.Value);
-        }
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -30,8 +26,6 @@ internal sealed class SpanLookup<TKey, TElement>(int capacity, IEqualityComparer
     }
 }
 
-// I'd have loved to make this useless thing a ref struct, but since we're only going to be handed around as IGrouping<TKey, TElement>, I can't
-// And not even a normal struct makes sense since the interface cast will box us anyway
 internal sealed class Grouping<TKey, TElement>(TKey key, List<TElement> elements) : IGrouping<TKey, TElement>
 {
     public TKey Key

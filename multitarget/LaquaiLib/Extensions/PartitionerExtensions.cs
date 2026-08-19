@@ -10,55 +10,23 @@ public static class PartitionerExtensions
         /// <summary>
         /// Enumerates each partition of the <paramref name="partitioner"/> and returns a <see cref="List{T}"/> of <see cref="List{T}"/>s containing the elements of each partition.
         /// </summary>
-        /// <typeparam name="T">The type of the elements in the <paramref name="partitioner"/>.</typeparam>
         /// <param name="partitions">The number of partitions to request.</param>
-        /// <returns>The <see cref="List{T}"/> of <see cref="List{T}"/>s containing the elements of each partition.</returns>
-        public List<T[]> ToList(int partitions)
+        /// <returns>A jagged array containing the elements of each partition.</returns>
+        public T[][] ToArray(int partitions)
         {
             ArgumentNullException.ThrowIfNull(partitioner);
 
-            List<T[]> list = [];
+            var ret = new T[partitions][];
             var partitionEnumerators = partitioner.GetPartitions(partitions);
+            var list = new List<T>();
             for (var i = 0; i < partitionEnumerators.Count; i++)
             {
-                var enumerator = partitionEnumerators[i];
-                using (enumerator)
-                {
-                    list.Add([.. enumerator.AsEnumerable()]);
-                }
+                list.Clear();
+                foreach (var item in partitionEnumerators[i])
+                    list.Add(item);
+                ret[i] = list.DrainToArray();
             }
-            return list;
+            return ret;
         }
-        /// <summary>
-        /// Transforms each partition of the <paramref name="partitioner"/> into an <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/>s containing the elements of each partition.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements in the <paramref name="partitioner"/>.</typeparam>
-        /// <param name="partitions">The number of partitions to request.</param>
-        /// <returns>The <see cref="IEnumerable{T}"/> of <see cref="IEnumerable{T}"/>s enumerating the elements of each partition.</returns>
-        public IEnumerable<IEnumerable<T>> AsEnumerable(int partitions)
-        {
-            ArgumentNullException.ThrowIfNull(partitioner);
-
-            static IEnumerable<T> TransformPartition(IEnumerator<T> enumerator)
-            {
-                while (enumerator.MoveNext())
-                {
-                    yield return enumerator.Current;
-                }
-            }
-
-            var list = partitioner.GetPartitions(partitions);
-            for (var i = 0; i < list.Count; i++)
-            {
-                using var item = list[i];
-                yield return TransformPartition(item);
-            }
-        }
-        /// <summary>
-        /// Flattens a <see cref="Partitioner{TSource}"/> back into a single <see cref="IEnumerable{T}"/>.
-        /// </summary>
-        /// <returns>The flattened <see cref="IEnumerable{T}"/>.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<T> Flatten() => partitioner.AsEnumerable(1).SelectMany();
     }
 }

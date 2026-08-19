@@ -8,9 +8,7 @@ public class FilterableEnumerableTests
     {
         var drained = new List<T>();
         foreach (var item in enumerable)
-        {
             drained.Add(item);
-        }
         return drained;
     }
 

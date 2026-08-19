@@ -7,46 +7,6 @@ namespace LaquaiLib.UnitTests.Extensions;
 
 public class DictionaryExtensionsTests
 {
-    #region CloneTests
-
-    [Fact]
-    public void CloneReturnsNewDictionaryWithSameContents()
-    {
-        var source = new Dictionary<string, int> { { "one", 1 }, { "two", 2 }, { "three", 3 } };
-
-        var result = source.Clone();
-
-        Assert.NotSame(source, result);
-        Assert.Equal(source.Count, result.Count);
-        Assert.All(source, kvp => Assert.Equal(kvp.Value, result[kvp.Key]));
-    }
-
-    [Fact]
-    public void CloneWorksWithEmptyDictionary()
-    {
-        var source = new Dictionary<string, int>();
-
-        var result = source.Clone();
-
-        Assert.NotSame(source, result);
-        Assert.Empty(result);
-    }
-
-    [Fact]
-    public void CloneWithReferenceTypeCreatesShallowCopy()
-    {
-        var list1 = new List<int> { 1, 2, 3 };
-        var list2 = new List<int> { 4, 5, 6 };
-        var source = new Dictionary<string, List<int>> { { "one", list1 }, { "two", list2 } };
-
-        var result = source.Clone();
-
-        Assert.NotSame(source, result);
-        Assert.Same(list1, result["one"]);
-        Assert.Same(list2, result["two"]);
-    }
-    #endregion
-
     #region GetOrAddTests
 
     [Fact]

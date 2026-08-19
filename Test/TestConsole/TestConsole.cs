@@ -8,9 +8,6 @@ using System.Runtime.Intrinsics.X86;
 
 using LaquaiLib.Analyzers.Shared.Attributes;
 using LaquaiLib.Extensions;
-using LaquaiLib.IO;
-using LaquaiLib.IO.Streams;
-using LaquaiLib.Wrappers;
 
 namespace TestConsole;
 
@@ -49,9 +46,14 @@ public static partial class TestConsole
 
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
+        var bytes = RevolverBytes(512);
+        using (var ms = MemoryStream.UnsafeFromByteArray(bytes, 4, 8))
+        {
+            ;
+        }
     }
 
-    [FullAccessProxy("System.IO.MemoryStream")]
+    [FullAccessProxy(typeof(MemoryStream))]
     public partial class Test;
 
     public static byte[] RevolverBytes(int length)

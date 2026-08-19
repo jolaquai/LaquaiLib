@@ -183,6 +183,7 @@ public static class OpenXmlElementExtensions
         /// <returns>The created clones.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public OpenXmlElement[] CloneAll() => [.. elements.EnumerateClones()];
+        /// <inheritdoc/>
         public IEnumerable<OpenXmlElement> EnumerateClones() => elements.Select(static e => e.CloneNode(true));
     }
     extension<T>(T element) where T : OpenXmlElement
@@ -190,7 +191,6 @@ public static class OpenXmlElementExtensions
         /// <summary>
         /// Determines if this element is the only child of its parent of type <typeparamref name="T"/>.
         /// </summary>
-        /// <typeparam name="T">The type of the child element.</typeparam>
         /// <returns>The result of the check.</returns>
         public bool IsOnlyChildOfType()
         {

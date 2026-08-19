@@ -16,16 +16,12 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     public override async ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, TextSpan span, CancellationToken cancellationToken)
     {
         if (FindTarget(compilationUnitSyntax.FindNode(span, getInnermostNodeForTie: true)) is not { } target)
-        {
             return [];
-        }
 
         var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
         // A target framework that predates the type would only get code that doesn't compile
         if (semanticModel.Compilation.GetTypeByMetadataName(ArrayPoolMetadataName) is not { } arrayPool)
-        {
             return [];
-        }
 
         return target switch
         {
@@ -42,7 +38,6 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     private static ExpressionSyntax FindTarget(SyntaxNode node)
     {
         for (var current = node; current is not null; current = current.Parent)
-        {
             switch (current)
             {
                 case ArrayCreationExpressionSyntax or InvocationExpressionSyntax or StackAllocArrayCreationExpressionSyntax:
@@ -50,7 +45,6 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
                 case StatementSyntax or MemberDeclarationSyntax or AnonymousFunctionExpressionSyntax:
                     return null;
             }
-        }
         return null;
     }
 
@@ -59,51 +53,37 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     {
         // 'condition ? stackalloc T[n] : new T[n]' is a different shape with a different rewrite - the plain gates below all assume a bare declarator initializer, which this is not
         if (GetConditionalParent(arrayCreation) is { } conditional)
-        {
             return PoolConditional(semanticModel, conditional, arrayPool, cancellationToken);
-        }
 
         // ArrayPool<T> only hands out single-dimensional arrays
         var rankSpecifiers = arrayCreation.Type.RankSpecifiers;
         if (rankSpecifiers.Count != 1 || rankSpecifiers[0].Sizes.Count != 1)
-        {
             return [];
-        }
 
         var initializer = arrayCreation.Initializer;
         var size = rankSpecifiers[0].Sizes[0];
         // Without an initializer to source a length from, an omitted size leaves nothing to rent
         if (initializer is null && size is OmittedArraySizeExpressionSyntax)
-        {
             return [];
-        }
 
         var elementType = arrayCreation.Type.ElementType;
         // Pointer/function pointer types cannot be used as a type argument (CS0306), so ArrayPool<T> has nothing to bind T to
         if (semanticModel.GetTypeInfo(elementType, cancellationToken).Type is not { } elementTypeSymbol
             || elementTypeSymbol.TypeKind is TypeKind.Pointer or TypeKind.FunctionPointer)
-        {
             return [];
-        }
 
         // Renting only pays off for a local whose entire remaining lifetime is visible right here
         if (arrayCreation.Parent is not EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax declarator }
             || declarator.Parent is not VariableDeclarationSyntax { Variables.Count: 1, Parent: LocalDeclarationStatementSyntax localDeclaration }
             || localDeclaration.Parent is not BlockSyntax block)
-        {
             return [];
-        }
 
         if (semanticModel.GetDeclaredSymbol(declarator, cancellationToken) is not ILocalSymbol local)
-        {
             return [];
-        }
 
         var rest = block.Statements.Skip(block.Statements.IndexOf(localDeclaration) + 1).ToImmutableArray();
         if (!IsSafeToPool(semanticModel, local, rest, cancellationToken, out var lengthAccesses))
-        {
             return [];
-        }
 
         return [new CodeActionInfo("Change to 'ArrayPool<T>.Shared.Rent'", editor => PoolAsync(editor, block, localDeclaration, size, elementType, initializer, lengthAccesses), "ChangeToArrayPoolRent", WellKnownPostFixActions.AddUsings("System.Buffers"))];
     }
@@ -123,18 +103,14 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
             {
                 if (identifier.Identifier.ValueText != local.Name
                     || !SymbolEqualityComparer.Default.Equals(semanticModel.GetSymbolInfo(identifier, cancellationToken).Symbol, local))
-                {
                     continue;
-                }
 
                 for (var ancestor = identifier.Parent; ancestor is not null && ancestor != statement.Parent; ancestor = ancestor.Parent)
-                {
                     if (ancestor is AnonymousFunctionExpressionSyntax or LocalFunctionStatementSyntax)
                     {
                         lengthAccesses = default;
                         return false;
                     }
-                }
 
                 if (identifier.Parent is ReturnStatementSyntax or YieldStatementSyntax)
                 {
@@ -254,18 +230,14 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     {
         SyntaxNode current = expression;
         while (current.Parent is ParenthesizedExpressionSyntax parenthesized)
-        {
             current = parenthesized;
-        }
         return current.Parent as ConditionalExpressionSyntax;
     }
 
     private static ExpressionSyntax Unwrap(ExpressionSyntax expression)
     {
         while (expression is ParenthesizedExpressionSyntax parenthesized)
-        {
             expression = parenthesized.Expression;
-        }
         return expression;
     }
 
@@ -279,9 +251,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     private static ImmutableArray<CodeActionInfo> PoolConditional(SemanticModel semanticModel, ConditionalExpressionSyntax conditional, INamedTypeSymbol arrayPool, CancellationToken cancellationToken)
     {
         if (conditional is null)
-        {
             return [];
-        }
 
         var whenTrue = Unwrap(conditional.WhenTrue);
         var whenFalse = Unwrap(conditional.WhenFalse);
@@ -289,51 +259,37 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
         StackAllocArrayCreationExpressionSyntax stackAlloc;
         ArrayCreationExpressionSyntax arrayCreation;
         if (whenTrue is StackAllocArrayCreationExpressionSyntax trueStackAlloc && whenFalse is ArrayCreationExpressionSyntax falseArray)
-        {
             (stackAlloc, arrayCreation) = (trueStackAlloc, falseArray);
-        }
         else if (whenFalse is StackAllocArrayCreationExpressionSyntax falseStackAlloc && whenTrue is ArrayCreationExpressionSyntax trueArray)
-        {
             (stackAlloc, arrayCreation) = (falseStackAlloc, trueArray);
-        }
         else
-        {
             return [];
-        }
 
         // Rent, like the stack-allocated side, only ever hands back uninitialized storage - neither side has anything to seed from
         if (stackAlloc.Initializer is not null || arrayCreation.Initializer is not null
             || stackAlloc.Type is not ArrayTypeSyntax stackAllocType
             || stackAllocType.RankSpecifiers.Count != 1 || stackAllocType.RankSpecifiers[0].Sizes.Count != 1
             || arrayCreation.Type.RankSpecifiers.Count != 1 || arrayCreation.Type.RankSpecifiers[0].Sizes.Count != 1)
-        {
             return [];
-        }
 
         var stackAllocSize = stackAllocType.RankSpecifiers[0].Sizes[0];
         var arraySize = arrayCreation.Type.RankSpecifiers[0].Sizes[0];
         // Two independently-typed-out sizes are only trustworthy as 'the same buffer length' if they are, in fact, written the same way
         if (stackAllocSize is OmittedArraySizeExpressionSyntax || arraySize is OmittedArraySizeExpressionSyntax
             || !SyntaxFactory.AreEquivalent(stackAllocSize, arraySize))
-        {
             return [];
-        }
 
         var elementType = semanticModel.GetTypeInfo(arrayCreation.Type.ElementType, cancellationToken).Type;
         var stackAllocElementType = semanticModel.GetTypeInfo(stackAllocType.ElementType, cancellationToken).Type;
         // Pointer/function pointer types cannot be used as a type argument (CS0306), so ArrayPool<T> has nothing to bind T to
         if (elementType is null || elementType.TypeKind is TypeKind.Pointer or TypeKind.FunctionPointer
             || !SymbolEqualityComparer.Default.Equals(elementType, stackAllocElementType))
-        {
             return [];
-        }
 
         if (conditional.Parent is not EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax declarator }
             || declarator.Parent is not VariableDeclarationSyntax { Variables.Count: 1, Parent: LocalDeclarationStatementSyntax localDeclaration }
             || localDeclaration.Parent is not BlockSyntax block)
-        {
             return [];
-        }
 
         // Only offered for a Span<T> local - that is what both a stackalloc and an array convert to, and it is what the rewrite below preserves
         if (semanticModel.GetDeclaredSymbol(declarator, cancellationToken) is not ILocalSymbol local
@@ -341,18 +297,14 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
             || local.Type is not INamedTypeSymbol { TypeArguments.Length: 1 } localType
             || !SymbolEqualityComparer.Default.Equals(localType.OriginalDefinition, spanType)
             || !SymbolEqualityComparer.Default.Equals(localType.TypeArguments[0], elementType))
-        {
             return [];
-        }
 
         var rest = block.Statements.Skip(block.Statements.IndexOf(localDeclaration) + 1).ToImmutableArray();
         // A Span<T> that spends part of its life as a stackalloc already cannot escape the method (the compiler's ref-safety rules see to that);
         // the same escape gate as the plain-array case is reused anyway, if only to keep behavior conservative and consistent. Its collected '.Length'
         // sites are discarded on purpose - both branches size the span to exactly the request via AsSpan(0, length), so it never needs rebinding here.
         if (!IsSafeToPool(semanticModel, local, rest, cancellationToken, out _))
-        {
             return [];
-        }
 
         var elementTypeSyntax = arrayCreation.Type.ElementType;
         return [new CodeActionInfo("Change to stack-or-pool", editor => PoolConditionalAsync(editor, block, localDeclaration, arrayCreation, elementTypeSyntax, arraySize), "ChangeToStackOrPoolRent", WellKnownPostFixActions.AddUsings("System.Buffers", "System"))];
@@ -374,11 +326,11 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
         var rentAssignment = SyntaxFactory.ParenthesizedExpression(SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, bufferName, ArrayPoolInvocation(elementType, "Rent", size.WithoutTrivia())));
         var asSpanCall = SyntaxFactory.InvocationExpression(
             SyntaxFactory.MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, rentAssignment, SyntaxFactory.IdentifierName("AsSpan")),
-            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(new[]
-            {
+            SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(
+            [
                 SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.NumericLiteralExpression, SyntaxFactory.Literal(0))),
                 SyntaxFactory.Argument(size.WithoutTrivia())
-            })));
+            ])));
 
         var newDeclaration = localDeclaration.ReplaceNode(arrayCreation, asSpanCall);
 
@@ -403,31 +355,23 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     private static ImmutableArray<CodeActionInfo> Unpool(SemanticModel semanticModel, InvocationExpressionSyntax invocation, INamedTypeSymbol arrayPool, CancellationToken cancellationToken)
     {
         if (GetRentCall(semanticModel, invocation, arrayPool, cancellationToken) is not (TypeSyntax elementType, ExpressionSyntax size))
-        {
             return [];
-        }
 
         if (invocation.Parent is not EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax declarator }
             || declarator.Parent is not VariableDeclarationSyntax { Variables.Count: 1, Parent: LocalDeclarationStatementSyntax localDeclaration }
             || localDeclaration.Parent is not BlockSyntax block)
-        {
             return [];
-        }
 
         var statements = block.Statements;
         var index = statements.IndexOf(localDeclaration);
         // Only recognized in the exact shape 'Pool' produces: the try/finally immediately follows the declaration and owns everything left in the block
         if (index < 0 || index + 2 != statements.Count
             || statements[index + 1] is not TryStatementSyntax { Catches.Count: 0, Finally: { } finallyClause } tryStatement)
-        {
             return [];
-        }
 
         if (semanticModel.GetDeclaredSymbol(declarator, cancellationToken) is not ILocalSymbol local
             || !IsMatchingReturn(semanticModel, finallyClause, local, arrayPool, cancellationToken))
-        {
             return [];
-        }
 
         var (elements, remaining) = size is LiteralExpressionSyntax { Token.Value: int constantSize }
             ? SplitInitializerAssignments(tryStatement.Block.Statements, semanticModel, local, constantSize, cancellationToken)
@@ -443,9 +387,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     {
         if (expression is not MemberAccessExpressionSyntax { Expression: MemberAccessExpressionSyntax { Name.Identifier.ValueText: "Shared" } sharedAccess } outer
             || outer.Name.Identifier.ValueText != methodName)
-        {
             return null;
-        }
 
         var name = sharedAccess.Expression switch
         {
@@ -461,9 +403,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
     private static (TypeSyntax ElementType, ExpressionSyntax Size)? GetRentCall(SemanticModel semanticModel, InvocationExpressionSyntax invocation, INamedTypeSymbol arrayPool, CancellationToken cancellationToken)
     {
         if (GetArrayPoolElementType(invocation.Expression, "Rent") is not TypeSyntax elementType)
-        {
             return null;
-        }
 
         if (semanticModel.GetOperation(invocation, cancellationToken) is not IInvocationOperation operation
             || operation.TargetMethod.Name != "Rent"
@@ -471,9 +411,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
             || operation.Instance is not IPropertyReferenceOperation { Property.Name: "Shared" }
             || operation.Arguments.Length != 1
             || (operation.Arguments[0].Syntax as ArgumentSyntax)?.Expression is not ExpressionSyntax size)
-        {
             return null;
-        }
 
         return (elementType, size);
     }
@@ -483,9 +421,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
         if (finallyClause.Block.Statements.Count != 1
             || finallyClause.Block.Statements[0] is not ExpressionStatementSyntax { Expression: InvocationExpressionSyntax returnInvocation }
             || GetArrayPoolElementType(returnInvocation.Expression, "Return") is null)
-        {
             return false;
-        }
 
         if (semanticModel.GetOperation(returnInvocation, cancellationToken) is not IInvocationOperation operation
             || operation.TargetMethod.Name != "Return"
@@ -493,9 +429,7 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
             || operation.Instance is not IPropertyReferenceOperation { Property.Name: "Shared" }
             || operation.Arguments.Length == 0
             || (operation.Arguments[0].Syntax as ArgumentSyntax)?.Expression is not IdentifierNameSyntax arrayArgument)
-        {
             return false;
-        }
 
         return SymbolEqualityComparer.Default.Equals(semanticModel.GetSymbolInfo(arrayArgument, cancellationToken).Symbol, local);
     }
@@ -517,16 +451,12 @@ public sealed class UseArrayPoolRefactor : LaquaiLibRefactoring
                 || elementIndex != elements.Count
                 || targetName.Identifier.ValueText != local.Name
                 || !SymbolEqualityComparer.Default.Equals(semanticModel.GetSymbolInfo(targetName, cancellationToken).Symbol, local))
-            {
                 break;
-            }
             elements.Add(assignment.Right);
         }
 
         if (elements.Count != constantSize)
-        {
             return (default, statements.ToImmutableArray());
-        }
         return (elements.ToImmutable(), statements.Skip(i).ToImmutableArray());
     }
 

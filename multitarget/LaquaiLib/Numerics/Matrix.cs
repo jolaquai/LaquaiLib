@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 
-using LaquaiLib.Extensions;
 using LaquaiLib.Interfaces;
 
 namespace LaquaiLib.Numerics;
@@ -230,9 +229,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             for (var i = 1; i < Rows; i++)
                 for (var j = 0; j < i; j++)
                     if (!_data[i, j].Equals(T.Zero))
-                    {
                         return false;
-                    }
             return true;
         }
     }
@@ -249,9 +246,7 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             for (var i = 0; i < Rows; i++)
                 for (var j = i + 1; j < Columns; j++)
                     if (!_data[i, j].Equals(T.Zero))
-                    {
                         return false;
-                    }
             return true;
         }
     }

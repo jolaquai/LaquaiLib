@@ -60,9 +60,7 @@ public class CancellationTokenExtensionsTests
     {
         CancellationToken token;
         using (var cts = new CancellationTokenSource())
-        {
             token = cts.Token;
-        }
 
         var completionTask = token.WhenCancelled();
 

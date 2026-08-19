@@ -359,19 +359,13 @@ public sealed class SequenceEqualityComparer<T> : IEqualityComparer<T[]>, IEqual
         HashCode hc = default;
         if (TryGetSpan(obj, out var span))
             for (var i = 0; i < span.Length; i++)
-            {
                 hc.Add(HashElement(span[i]));
-            }
         else if (obj is IList<T> list)
             for (var i = 0; i < list.Count; i++)
-            {
                 hc.Add(HashElement(list[i]));
-            }
         else
             foreach (var item in obj)
-            {
                 hc.Add(HashElement(item));
-            }
         return hc.ToHashCode();
     }
     // matches what HashCode.Add<T> would produce for the default comparer, which keeps this consistent with the non-generic comparer

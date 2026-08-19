@@ -8,8 +8,25 @@ namespace LaquaiLib.Text;
 /// </summary>
 public abstract class CharComparer : IEqualityComparer<char>, IComparer<char>
 {
+    /// <summary>
+    /// Compares two <see langword="char"/> values and returns a value indicating whether one is less than, equal to, or greater than the other according to the rules of this instance.
+    /// </summary>
+    /// <param name="x">The first <see langword="char"/> to compare.</param>
+    /// <param name="y">The second <see langword="char"/> to compare.</param>
+    /// <returns>A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>.</returns>
     public abstract int Compare(char x, char y);
+    /// <summary>
+    /// Determines whether two <see langword="char"/> values are equal according to the rules of this instance.
+    /// </summary>
+    /// <param name="x">The first <see langword="char"/> to compare.</param>
+    /// <param name="y">The second <see langword="char"/> to compare.</param>
+    /// <returns></returns>
     public abstract bool Equals(char x, char y);
+    /// <summary>
+    /// Returns a hash code for the specified <see langword="char"/> according to the rules of this instance.
+    /// </summary>
+    /// <param name="obj">The <see langword="char"/> for which to get a hash code.</param>
+    /// <returns>The hash code for the specified <see langword="char"/>.</returns>
     public abstract int GetHashCode([DisallowNull] char obj);
 
     /// <summary>
@@ -57,9 +74,9 @@ public abstract class CharComparer : IEqualityComparer<char>, IComparer<char>
     #region Implementations
     internal interface ICompareStrategy
     {
-        static abstract int Compare(char x, char y);
-        static abstract bool Equals(char x, char y);
-        static abstract int GetHashCode([DisallowNull] char obj);
+        public static abstract int Compare(char x, char y);
+        public static abstract bool Equals(char x, char y);
+        public static abstract int GetHashCode([DisallowNull] char obj);
     }
     internal readonly struct CurrentCultureStrategy : ICompareStrategy
     {

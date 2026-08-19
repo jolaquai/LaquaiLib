@@ -225,13 +225,9 @@ public class LimitedQueueTests
         List<int> list1 = [];
         List<int> list2 = [];
         foreach (var item in queue1)
-        {
             list1.Add(item);
-        }
         foreach (var item in queue2)
-        {
             list2.Add(item);
-        }
 
         Assert.Equal(list1, list2);
     }
@@ -360,9 +356,7 @@ public class LimitedQueueTests
 
         queue.Resize(3);
         foreach (var item in queue)
-        {
             actual.Add(item);
-        }
 
         Assert.Equal(3, queue.Capacity);
         Assert.Equal(3, queue.Count);

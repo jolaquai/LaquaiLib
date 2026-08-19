@@ -85,9 +85,7 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         for (int i = 0; i < 100; i++)
-        {
             set.Add(i);
-        }
 
         set.Clear();
         Assert.Empty(set);
@@ -100,9 +98,7 @@ public sealed class ConcurrentSetTests
         var set = new ConcurrentSet<int>();
         var values = new[] { 1, 2, 3, 4, 5 };
         foreach (var v in values)
-        {
             set.Add(v);
-        }
 
         var array = new int[10];
         set.CopyTo(array, 2);
@@ -116,11 +112,9 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         for (int i = 1; i <= 5; i++)
-        {
             set.Add(i);
-        }
 
-        set.ExceptWith(new[] { 2, 4 });
+        set.ExceptWith([2, 4]);
 
         Assert.Equal(3, set.Count);
         Assert.Contains(1, set);
@@ -135,11 +129,9 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         for (int i = 1; i <= 5; i++)
-        {
             set.Add(i);
-        }
 
-        set.IntersectWith(new[] { 2, 3, 6 });
+        set.IntersectWith([2, 3, 6]);
 
         Assert.Equal(2, set.Count);
         Assert.Contains(2, set);
@@ -155,13 +147,11 @@ public sealed class ConcurrentSetTests
             2
         };
 
-        set.UnionWith(new[] { 2, 3, 4 });
+        set.UnionWith([2, 3, 4]);
 
         Assert.Equal(4, set.Count);
         for (int i = 1; i <= 4; i++)
-        {
             Assert.Contains(i, set);
-        }
     }
 
     [Fact]
@@ -173,7 +163,7 @@ public sealed class ConcurrentSetTests
             2
         };
 
-        set.SymmetricExceptWith(new[] { 2, 3 });
+        set.SymmetricExceptWith([2, 3]);
 
         Assert.Equal(2, set.Count);
         Assert.Contains(1, set);
@@ -189,9 +179,7 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         foreach (var item in setItems)
-        {
             set.Add(item);
-        }
 
         Assert.Equal(expected, set.IsSubsetOf(otherItems));
     }
@@ -204,9 +192,7 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         foreach (var item in setItems)
-        {
             set.Add(item);
-        }
 
         Assert.Equal(expected, set.IsSupersetOf(otherItems));
     }
@@ -219,9 +205,7 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         foreach (var item in setItems)
-        {
             set.Add(item);
-        }
 
         Assert.Equal(expected, set.IsProperSubsetOf(otherItems));
     }
@@ -234,9 +218,7 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         foreach (var item in setItems)
-        {
             set.Add(item);
-        }
 
         Assert.Equal(expected, set.IsProperSupersetOf(otherItems));
     }
@@ -248,9 +230,7 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         foreach (var item in setItems)
-        {
             set.Add(item);
-        }
 
         Assert.Equal(expected, set.Overlaps(otherItems));
     }
@@ -263,9 +243,7 @@ public sealed class ConcurrentSetTests
     {
         var set = new ConcurrentSet<int>();
         foreach (var item in setItems)
-        {
             set.Add(item);
-        }
 
         Assert.Equal(expected, set.SetEquals(otherItems));
     }
@@ -276,15 +254,11 @@ public sealed class ConcurrentSetTests
         var set = new ConcurrentSet<int>();
         var expected = new HashSet<int> { 1, 2, 3, 4, 5 };
         foreach (var item in expected)
-        {
             set.Add(item);
-        }
 
         var actual = new HashSet<int>();
         foreach (var item in set)
-        {
             actual.Add(item);
-        }
 
         Assert.Equal(expected, actual);
     }
@@ -301,9 +275,7 @@ public sealed class ConcurrentSetTests
         var count = 0;
         IEnumerable enumerable = set;
         foreach (var item in enumerable)
-        {
             count++;
-        }
 
         Assert.Equal(2, count);
     }
@@ -330,9 +302,7 @@ public sealed class ConcurrentSetTests
             tasks[i] = Task.Run(() =>
             {
                 for (int j = 0; j < 100; j++)
-                {
                     set.Add(start + j);
-                }
             }, TestContext.Current.CancellationToken);
         }
 
@@ -340,9 +310,7 @@ public sealed class ConcurrentSetTests
 
         Assert.Equal(1000, set.Count);
         for (int i = 0; i < 1000; i++)
-        {
             Assert.Contains(i, set);
-        }
     }
 
     [Fact]
@@ -353,9 +321,7 @@ public sealed class ConcurrentSetTests
         var errors = new ConcurrentBag<Exception>();
 
         for (int i = 0; i < 100; i++)
-        {
             set.Add(i);
-        }
 
         var t1 = Task.Run(() =>
         {
@@ -363,9 +329,7 @@ public sealed class ConcurrentSetTests
             {
                 barrier.SignalAndWait();
                 for (int i = 0; i < 50; i++)
-                {
                     set.Remove(i * 2);
-                }
             }
             catch (Exception ex) { errors.Add(ex); }
         }, TestContext.Current.CancellationToken);
@@ -376,9 +340,7 @@ public sealed class ConcurrentSetTests
             {
                 barrier.SignalAndWait();
                 for (int i = 100; i < 200; i++)
-                {
                     set.Add(i);
-                }
             }
             catch (Exception ex) { errors.Add(ex); }
         }, TestContext.Current.CancellationToken);
@@ -389,9 +351,7 @@ public sealed class ConcurrentSetTests
             {
                 barrier.SignalAndWait();
                 for (int i = 0; i < 100; i++)
-                {
                     set.Contains(i);
-                }
             }
             catch (Exception ex) { errors.Add(ex); }
         }, TestContext.Current.CancellationToken);
@@ -409,23 +369,22 @@ public sealed class ConcurrentSetTests
         var items = Enumerable.Range(0, 100).Select(i => new HashCollider(i)).ToArray();
 
         foreach (var item in items)
-        {
             Assert.True(set.Add(item));
-        }
 
         Assert.Equal(100, set.Count);
 
         foreach (var item in items)
-        {
             Assert.Contains(item, set);
-        }
     }
 
     private sealed class HashCollider : IEquatable<HashCollider>
     {
         private readonly int value;
 
-        public HashCollider(int value) => this.value = value;
+        public HashCollider(int value)
+        {
+            this.value = value;
+        }
 
         public override int GetHashCode() => value % 10;
 

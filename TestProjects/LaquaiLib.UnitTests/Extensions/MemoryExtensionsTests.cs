@@ -1,9 +1,6 @@
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-using LaquaiLib.Extensions;
-using LaquaiLib.Extensions;
 using LaquaiLib.Extensions;
 
 namespace LaquaiLib.UnitTests.Extensions;
@@ -101,9 +98,7 @@ public class MemoryExtensionsTests
 
         var list = new List<string>();
         foreach (var span in result)
-        {
             list.Add(new string(span.ToArray()));
-        }
 
         Assert.Equal(new[] { "a", "b", "c" }, list);
     }
@@ -118,9 +113,7 @@ public class MemoryExtensionsTests
 
         var list = new List<string>();
         foreach (var span in result)
-        {
             list.Add(new string(span.ToArray()));
-        }
 
         var i = Assert.Single(list);
         Assert.Equal("", i);
@@ -136,9 +129,7 @@ public class MemoryExtensionsTests
 
         var list = new List<string>();
         foreach (var span in result)
-        {
             list.Add(new string(span.ToArray()));
-        }
 
         Assert.Equal(new[] { "abc", "def", "ghi" }, list);
     }
@@ -153,16 +144,14 @@ public class MemoryExtensionsTests
 
         var list = new List<string>();
         foreach (var span in result)
-        {
             list.Add(new string(span));
-        }
 
         var i = Assert.Single(list);
         Assert.Equal("", i);
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    struct TestStruct
+    private struct TestStruct
     {
         public int Value;
         public double DoubleValue;
@@ -312,9 +301,7 @@ public class MemoryExtensionsTests
         unsafe
         {
             fixed (byte* dst = buffer)
-            {
                 Buffer.MemoryCopy(&testStruct, dst, structSize, structSize);
-            }
         }
 
         var ptr = 0;
@@ -358,9 +345,7 @@ public class MemoryExtensionsTests
         unsafe
         {
             fixed (byte* dst = buffer)
-            {
                 Buffer.MemoryCopy(&testStruct, dst, structSize, structSize);
-            }
         }
 
         var ptr = 0;

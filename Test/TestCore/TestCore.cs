@@ -21,9 +21,7 @@ public static class TestCore
     public static Task<AsyncServiceScope> GetScope()
     {
         if (!initialized)
-        {
             Initialize();
-        }
 
         return Task.FromResult(provider.CreateAsyncScope());
     }

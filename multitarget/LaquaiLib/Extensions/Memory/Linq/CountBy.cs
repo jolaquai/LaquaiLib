@@ -4,7 +4,7 @@ public static partial class LinqMemoryExtensions
 {
     extension<TSource>(ReadOnlySpan<TSource> source)
     {
-        /// <inheritdoc cref="Enumerable.CountBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})" />
+        /// <inheritdoc cref="Enumerable.CountBy{TSource, TKey}(IEnumerable{TSource}, Func{TSource, TKey}, IEqualityComparer{TKey})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<KeyValuePair<TKey, int>> CountBy<TKey>(Func<TSource, TKey> keySelector, IEqualityComparer<TKey> keyComparer)
         {

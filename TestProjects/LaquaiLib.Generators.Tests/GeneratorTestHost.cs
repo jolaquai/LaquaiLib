@@ -35,12 +35,8 @@ internal static class GeneratorTestHost
 
         var builder = ImmutableArray.CreateBuilder<MetadataReference>(paths.Length + 1);
         foreach (var path in paths)
-        {
             if (!string.IsNullOrEmpty(path) && File.Exists(path))
-            {
                 builder.Add(MetadataReference.CreateFromFile(path));
-            }
-        }
         builder.Add(MetadataReference.CreateFromFile(typeof(FullAccessProxyAttribute).Assembly.Location));
         return builder.ToImmutable();
     }
@@ -51,9 +47,7 @@ internal static class GeneratorTestHost
 
         var trees = new SyntaxTree[sources.Length + 1];
         for (var i = 0; i < sources.Length; i++)
-        {
             trees[i] = CSharpSyntaxTree.ParseText(sources[i], parseOptions, path: $"Source{i}.cs");
-        }
         trees[sources.Length] = CSharpSyntaxTree.ParseText(ImplicitUsingsSource, parseOptions, path: "ImplicitUsings.cs");
 
         return CSharpCompilation.Create(
@@ -92,16 +86,12 @@ internal static class GeneratorTestHost
     {
         var errors = result.FinalDiagnostics.Where(static d => d.Severity == DiagnosticSeverity.Error).ToArray();
         if (errors.Length == 0)
-        {
             return;
-        }
 
         var sb = new StringBuilder();
         sb.Append("Expected 0 compilation errors, found ").Append(errors.Length).AppendLine(":");
         foreach (var error in errors)
-        {
             sb.Append("  ").AppendLine(error.ToString());
-        }
         sb.AppendLine();
         sb.AppendLine("Generated sources:");
         foreach (var (hintName, text) in result.GeneratedSources)
@@ -117,13 +107,9 @@ internal static class GeneratorTestHost
     {
         var matches = result.GeneratedSources.Where(gs => gs.HintName.Contains(hintNameSubstring, StringComparison.Ordinal)).ToArray();
         if (matches.Length == 0)
-        {
             Assert.Fail($"No generated source found with hint name containing '{hintNameSubstring}'. Available: {string.Join(", ", result.GeneratedSources.Select(static gs => gs.HintName))}");
-        }
         if (matches.Length > 1)
-        {
             Assert.Fail($"Multiple generated sources found with hint name containing '{hintNameSubstring}': {string.Join(", ", matches.Select(static m => m.HintName))}");
-        }
         return matches[0].Text;
     }
 
@@ -138,19 +124,13 @@ internal static class GeneratorTestHost
         {
             var trimmed = line.TrimStart();
             if (trimmed.StartsWith("namespace ", StringComparison.Ordinal))
-            {
                 continue;
-            }
             if (_unqualifiedSystemReference.IsMatch(line))
-            {
                 offenders.Add(line.Trim());
-            }
         }
 
         if (offenders.Count > 0)
-        {
             Assert.Fail($"Found unqualified 'System.' references (missing 'global::'):{Environment.NewLine}{string.Join(Environment.NewLine, offenders)}{Environment.NewLine}Full source:{Environment.NewLine}{generatedText}");
-        }
     }
 
     public const string SourceOutputStepName = "SourceOutput";
@@ -184,27 +164,17 @@ internal static class GeneratorTestHost
     private static void AssertStepReasons(GeneratorRunResult result, string[] stepNames, Func<IncrementalStepRunReason, bool> isExpected)
     {
         if (result.Exception is not null)
-        {
             Assert.Fail($"Generator threw during run: {result.Exception}");
-        }
 
         foreach (var stepName in stepNames)
         {
             if (!result.TrackedSteps.TryGetValue(stepName, out var steps) && !result.TrackedOutputSteps.TryGetValue(stepName, out steps))
-            {
                 Assert.Fail($"No tracked step named '{stepName}' found.{Environment.NewLine}{DumpTrackedSteps(result)}");
-            }
 
             foreach (var step in steps)
-            {
                 foreach (var output in step.Outputs)
-                {
                     if (!isExpected(output.Reason))
-                    {
                         Assert.Fail($"Step '{stepName}' had unexpected reason '{output.Reason}'.{Environment.NewLine}{DumpTrackedSteps(result)}");
-                    }
-                }
-            }
         }
     }
 
@@ -213,28 +183,20 @@ internal static class GeneratorTestHost
         var sb = new StringBuilder();
         sb.AppendLine("Tracked steps:");
         foreach (var (name, steps) in result.TrackedSteps)
-        {
             foreach (var step in steps)
             {
                 sb.Append("  ").Append(name).Append(" [").Append(step.ElapsedTime).AppendLine("]:");
                 foreach (var output in step.Outputs)
-                {
                     sb.Append("    ").AppendLine(output.Reason.ToString());
-                }
             }
-        }
         sb.AppendLine("Tracked output steps:");
         foreach (var (name, steps) in result.TrackedOutputSteps)
-        {
             foreach (var step in steps)
             {
                 sb.Append("  ").Append(name).Append(" [").Append(step.ElapsedTime).AppendLine("]:");
                 foreach (var output in step.Outputs)
-                {
                     sb.Append("    ").AppendLine(output.Reason.ToString());
-                }
             }
-        }
         return sb.ToString();
     }
 }

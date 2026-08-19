@@ -27,9 +27,7 @@ public class CryptographicRandomStream() : RandomStream(null)
     protected override void Dispose(bool disposing)
     {
         if (disposing)
-        {
             rng?.Dispose();
-        }
 
         base.Dispose(disposing);
     }

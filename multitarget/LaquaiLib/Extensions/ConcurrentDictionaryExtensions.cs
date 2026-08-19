@@ -1,5 +1,6 @@
 ﻿namespace LaquaiLib.Extensions;
 
+/// <inheritdoc/>
 public static class ConcurrentDictionaryExtensions
 {
     extension<TKey, TValue>(ConcurrentDictionary<TKey, TValue>)
@@ -13,9 +14,7 @@ public static class ConcurrentDictionaryExtensions
         {
             var dictionary = new ConcurrentDictionary<TKey, TValue>();
             foreach (var kvp in keyValuePairs)
-            {
                 dictionary.TryAdd(kvp.Key, kvp.Value);
-            }
             return dictionary;
         }
     }

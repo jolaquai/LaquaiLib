@@ -31,12 +31,8 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
     {
         var builder = ImmutableArray.CreateBuilder<TextSpan>();
         foreach (var token in compilationUnitSyntax.DescendantTokens())
-        {
             if (token.IsKind(SyntaxKind.NumericLiteralToken))
-            {
                 builder.Add(token.Span);
-            }
-        }
         return new ValueTask<ImmutableArray<TextSpan>>(builder.ToImmutable());
     }
 
@@ -45,9 +41,7 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
         ExpressionSyntax chain = SyntaxFactory.ParseExpression(string.Join(" | ", parts));
         // `|` binds looser than almost everything, so an unparenthesized chain would rebind against whatever encloses the literal
         if (target.Parent is ExpressionSyntax and not (ParenthesizedExpressionSyntax or AssignmentExpressionSyntax))
-        {
             chain = SyntaxFactory.ParenthesizedExpression(chain);
-        }
         editor.ReplaceNode(target, chain.WithTriviaFrom(target).Formatted);
         return ValueTask.CompletedTask;
     }
@@ -59,9 +53,7 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
         {
             var mask = 1UL << bit;
             if ((value & mask) != 0)
-            {
                 parts.Add(FormatPart(mask, format));
-            }
         }
         return parts;
     }
@@ -72,18 +64,12 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
         foreach (var member in enumType.GetMembers().OfType<IFieldSymbol>())
         {
             if (!member.HasConstantValue)
-            {
                 continue;
-            }
             var memberValue = ToUInt64(member.ConstantValue);
             // Only single-bit members can serve as unambiguous constituent names
             if (memberValue != 0 && (memberValue & (memberValue - 1)) == 0)
-            {
                 if (!bitToName.ContainsKey(memberValue))
-                {
                     bitToName[memberValue] = member.Name;
-                }
-            }
         }
 
         var parts = new List<string>();
@@ -91,9 +77,7 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
         {
             var mask = 1UL << bit;
             if ((value & mask) == 0)
-            {
                 continue;
-            }
             parts.Add(bitToName.TryGetValue(mask, out var name) ? name : FormatPart(mask, format));
         }
         return parts;
@@ -138,20 +122,14 @@ public sealed class SplitNumericLiteralRefactor : LaquaiLibRefactoring
     {
         var suffixEnd = text.Length;
         while (suffixEnd > 0 && text[suffixEnd - 1] is 'u' or 'U' or 'l' or 'L')
-        {
             suffixEnd--;
-        }
         var suffix = text.Substring(suffixEnd);
         var body = text.Substring(0, suffixEnd);
 
         if (body.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-        {
             return (body.Substring(0, 2), suffix, 16);
-        }
         if (body.StartsWith("0b", StringComparison.OrdinalIgnoreCase))
-        {
             return (body.Substring(0, 2), suffix, 2);
-        }
         return ("", suffix, 10);
     }
     private static string FormatPart(ulong part, (string Prefix, string Suffix, int Base) format) => format.Base switch

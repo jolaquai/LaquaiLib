@@ -8,14 +8,6 @@ public static class IDictionaryExtensions
     extension<TKey, TValue>(IDictionary<TKey, TValue> source)
     {
         /// <summary>
-        /// Creates a mutable shallow copy of the <see cref="IDictionary{TKey, TValue}"/>.
-        /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">They Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <returns>A shallow copy of the <see cref="IDictionary{TKey, TValue}"/>.</returns>
-        public Dictionary<TKey, TValue> Clone() => source.ToDictionary();
-
-        /// <summary>
         /// Adds a key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not already exist. Otherwise, a factory <see cref="Func{T, TResult}"/> that produces a new value is invoked with the existing value.
         /// </summary>
         /// <param name="key">The key of the element to add or update.</param>
@@ -26,9 +18,7 @@ public static class IDictionaryExtensions
             ArgumentNullException.ThrowIfNull(source);
             ArgumentNullException.ThrowIfNull(key);
             if (source.IsReadOnly)
-            {
                 throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
-            }
 
             // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
             if (source is ConcurrentDictionary<TKey, TValue> concurrent)
@@ -38,9 +28,7 @@ public static class IDictionaryExtensions
             }
 
             if (!source.TryGetValue(key, out var old))
-            {
                 source[key] = addValue;
-            }
             else
             {
                 // Validate null only when needed
@@ -51,8 +39,6 @@ public static class IDictionaryExtensions
         /// <summary>
         /// Adds a key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not already exist. Otherwise, a factory <see cref="Func{T1, T2, TResult}"/> that produces a new value is invoked with the existing value and <paramref name="addValue"/>.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the element to add or update.</param>
         /// <param name="addValue">The value to be added for an absent key.</param>
         /// <param name="updateValueFactory">A factory <see cref="Func{T1, T2, TResult}"/> that takes the existing value for a key and <paramref name="addValue"/> itself and produces a new value. This avoids having to materialize the value twice.</param>
@@ -61,9 +47,7 @@ public static class IDictionaryExtensions
             ArgumentNullException.ThrowIfNull(source);
             ArgumentNullException.ThrowIfNull(key);
             if (source.IsReadOnly)
-            {
                 throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
-            }
 
             // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
             if (source is ConcurrentDictionary<TKey, TValue> concurrent)
@@ -73,9 +57,7 @@ public static class IDictionaryExtensions
             }
 
             if (!source.TryGetValue(key, out var old))
-            {
                 source[key] = addValue;
-            }
             else
             {
                 // Validate null only when needed
@@ -86,8 +68,6 @@ public static class IDictionaryExtensions
         /// <summary>
         /// Adds a key/value pair to the <see cref="IDictionary{TKey, TValue}"/> where the value is produced by <paramref name="addValueFactory"/> if the key does not already exist. Otherwise, a factory <see cref="Func{T, TResult}"/> that produces a new value is invoked with the existing value.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the element to add or update.</param>
         /// <param name="addValueFactory">A <see cref="Func{TResult}"/> that produces the value to be added for an absent key. It is only invoked if the key does not already exist in the <see cref="IDictionary{TKey, TValue}"/>.</param>
         /// <param name="updateValueFactory">A factory <see cref="Func{T1, T2, TResult}"/> that takes the existing value for a key and produces a new value.</param>
@@ -96,9 +76,7 @@ public static class IDictionaryExtensions
             ArgumentNullException.ThrowIfNull(source);
             ArgumentNullException.ThrowIfNull(key);
             if (source.IsReadOnly)
-            {
                 throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
-            }
 
             // ConcurrentDictionary has a thread-safe AddOrUpdate method, so special-case it
             if (source is ConcurrentDictionary<TKey, TValue> concurrent)
@@ -123,8 +101,6 @@ public static class IDictionaryExtensions
         /// <summary>
         /// Gets the value associated with the specified key or adds a new key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not already exist.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValue">The value to be added for an absent key. If the key is absent, the return value is this value.</param>
         /// <returns>The value associated with the specified key, if the key is found, otherwise <paramref name="addValue"/>.</returns>
@@ -133,15 +109,11 @@ public static class IDictionaryExtensions
             ArgumentNullException.ThrowIfNull(source);
             ArgumentNullException.ThrowIfNull(key);
             if (source.IsReadOnly)
-            {
                 throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
-            }
 
             // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
             if (source is ConcurrentDictionary<TKey, TValue> concurrent)
-            {
                 return concurrent.GetOrAdd(key, addValue);
-            }
 
             if (!source.TryGetValue(key, out var v))
             {
@@ -149,15 +121,11 @@ public static class IDictionaryExtensions
                 return addValue;
             }
             else
-            {
                 return v;
-            }
         }
         /// <summary>
         /// Gets the value associated with the specified key or adds a new key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not already exist.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The Type of the values of the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValueFactory">A factory <see cref="Func{TResult}"/> that produces the value to be added for an absent key. If the key is absent, the return value is the produced value.</param>
         /// <returns>The value associated with the specified key, if the key is found, otherwise the value produced by <paramref name="addValueFactory"/>.</returns>
@@ -167,15 +135,11 @@ public static class IDictionaryExtensions
             ArgumentNullException.ThrowIfNull(key);
             ArgumentNullException.ThrowIfNull(addValueFactory);
             if (source.IsReadOnly)
-            {
                 throw new ArgumentException($"The {nameof(IDictionary<,>)} must be mutable.", nameof(source));
-            }
 
             // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
             if (source is ConcurrentDictionary<TKey, TValue> concurrent)
-            {
                 return concurrent.GetOrAdd(key, k => addValueFactory());
-            }
 
             if (!source.TryGetValue(key, out var v))
             {
@@ -184,15 +148,11 @@ public static class IDictionaryExtensions
                 return addValue;
             }
             else
-            {
                 return v;
-            }
         }
         /// <summary>
         /// Gets the value associated with the specified key or adds a new key/value pair to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.
         /// </summary>
-        /// <typeparam name="TKey">The type of the keys in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValue">The value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.</param>
         /// <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
@@ -201,13 +161,9 @@ public static class IDictionaryExtensions
         public bool GetOrAdd(TKey key, TValue addValue, out TValue element)
         {
             if (source.IsReadOnly)
-            {
                 throw new ArgumentException($"{nameof(source)} must be mutable to use {nameof(GetOrAdd)} overloads.");
-            }
             if (source.TryGetValue(key, out element))
-            {
                 return true;
-            }
 
             // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
             if (source is ConcurrentDictionary<TKey, TValue> concurrent)
@@ -223,8 +179,6 @@ public static class IDictionaryExtensions
         /// <summary>
         /// Gets the value associated with the specified key or adds a new key/value pair produced by a factory to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist.
         /// </summary>
-        /// <typeparam name="TKey">The type of the keys in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The type of the elements in the <see cref="IDictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="addValueFactory">A factory <see cref="Func{TResult}"/> that produces the value to add to the <see cref="IDictionary{TKey, TValue}"/> if the key does not exist. This overload is useful when constructing the value is expensive and should only be done when necessary.</param>
         /// <param name="element">An <see langword="out"/> variable that receives the value associated with the specified key or the added value.</param>
@@ -233,13 +187,9 @@ public static class IDictionaryExtensions
         public bool GetOrAdd(TKey key, Func<TValue> addValueFactory, out TValue element)
         {
             if (source.IsReadOnly)
-            {
                 throw new ArgumentException($"{nameof(source)} must be mutable to use {nameof(GetOrAdd)} overloads.");
-            }
             if (source.TryGetValue(key, out element))
-            {
                 return true;
-            }
 
             // ConcurrentDictionary has a thread-safe GetOrAdd method, so special-case it
             if (source is ConcurrentDictionary<TKey, TValue> concurrent)
@@ -261,8 +211,6 @@ public static class IDictionaryExtensions
         /// Returns a <see langword="ref"/> into the storage of the specified <paramref name="dictionary"/> if the key-value pair was present, otherwise returns a <see langword="null"/> <see langword="ref"/>.
         /// If <paramref name="existed"/> is <see langword="false"/> when control returns to the caller, using the returned <see langword="ref"/> is undefined behavior and will likely result in a <see cref="NullReferenceException"/>.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the value to get.</param>
         /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
         /// <returns>A <see langword="ref"/> into the storage of the <paramref name="dictionary"/> if the key-value pair was present, otherwise a <see langword="null"/> <see langword="ref"/>.</returns>
@@ -277,8 +225,6 @@ public static class IDictionaryExtensions
         /// <summary>
         /// Checks if the specified <paramref name="dictionary"/> contains a key-value pair with the specified <paramref name="key"/>, adds one with the specified <paramref name="value"/> if not and returns a <see langword="ref"/> into its storage.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="value">The value to add to the <paramref name="dictionary"/> if the key does not exist.</param>
         /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
@@ -289,16 +235,12 @@ public static class IDictionaryExtensions
             ArgumentNullException.ThrowIfNull(key);
             ref var reference = ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
             if (!existed)
-            {
                 reference = value;
-            }
             return ref reference;
         }
         /// <summary>
         /// Checks if the specified <paramref name="dictionary"/> contains a key-value pair with the specified <paramref name="key"/>, adds one with the value produced by <paramref name="valueFactory"/> if not and returns a <see langword="ref"/> into its storage.
         /// </summary>
-        /// <typeparam name="TKey">The Type of the keys of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
-        /// <typeparam name="TValue">The Type of the values of the <see cref="Dictionary{TKey, TValue}"/>.</typeparam>
         /// <param name="key">The key of the value to get or add.</param>
         /// <param name="valueFactory">A factory <see cref="Func{TResult}"/> that produces the value to add to the <paramref name="dictionary"/> if the key does not exist.</param>
         /// <param name="existed">An <see langword="out"/> variable that indicates whether the key-value pair was present in the <paramref name="dictionary"/>.</param>
@@ -310,9 +252,7 @@ public static class IDictionaryExtensions
             ArgumentNullException.ThrowIfNull(valueFactory);
             ref var reference = ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
             if (!existed)
-            {
                 reference = valueFactory();
-            }
             return ref reference;
         }
 

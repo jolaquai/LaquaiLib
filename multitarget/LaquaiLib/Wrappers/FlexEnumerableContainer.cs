@@ -25,9 +25,7 @@ public readonly struct FlexEnumerableContainer<T> : IEnumerable<T>
     public FlexEnumerableContainer(T item)
     {
         if (item is null)
-        {
             return;
-        }
 
         _item = item;
         _isSingle = true;
@@ -36,7 +34,10 @@ public readonly struct FlexEnumerableContainer<T> : IEnumerable<T>
     /// Creates a <see cref="FlexEnumerableContainer{T}"/> that wraps the specified <see cref="IEnumerable{T}"/>.
     /// </summary>
     /// <param name="enumerable">The <see cref="IEnumerable{T}"/> to wrap. If it is <see langword="null"/>, the container is empty.</param>
-    public FlexEnumerableContainer(IEnumerable<T> enumerable) => _enumerable = enumerable;
+    public FlexEnumerableContainer(IEnumerable<T> enumerable)
+    {
+        _enumerable = enumerable;
+    }
 
     // discriminant: _isSingle -> single (boxes through Value), _enumerable != null -> many, otherwise empty
     /// <summary>

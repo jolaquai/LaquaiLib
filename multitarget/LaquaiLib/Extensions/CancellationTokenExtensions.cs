@@ -14,9 +14,7 @@ public static class CancellationTokenExtensions
         public Task WhenCancelled()
         {
             if (cancellationToken.IsCancellationRequested)
-            {
                 return Task.CompletedTask;
-            }
 
             var tcs = new TaskCompletionSource();
             _ = cancellationToken.Register(tcs.SetResult);

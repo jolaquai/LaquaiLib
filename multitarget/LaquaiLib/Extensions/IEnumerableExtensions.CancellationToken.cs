@@ -32,31 +32,23 @@ public static partial class IEnumerableExtensions
         public Task WhenAllCancelled()
         {
             if (!tokens.Any())
-            {
                 return Task.CompletedTask;
-            }
 
             using var uncancelled = tokens.Where(t => !t.IsCancellationRequested).GetEnumerator();
             if (!uncancelled.MoveNext())
-            {
                 return Task.CompletedTask;
-            }
 
             var tcs = new TaskCompletionSource();
             var remaining = 0;
             do
             {
                 if (uncancelled.Current.IsCancellationRequested)
-                {
                     continue;
-                }
                 remaining++;
                 _ = uncancelled.Current.Register(() =>
                 {
                     if (Interlocked.Decrement(ref remaining) == 0)
-                    {
                         _ = tcs.TrySetResult();
-                    }
                 });
             } while (uncancelled.MoveNext());
 
@@ -69,9 +61,7 @@ public static partial class IEnumerableExtensions
         public void ThrowIfAnyCancelled()
         {
             foreach (var token in tokens)
-            {
                 token.ThrowIfCancellationRequested();
-            }
         }
         /// <summary>
         /// Throws an <see cref="OperationCanceledException"/> if all of the source sequence's <see cref="CancellationToken"/>s are cancelled.
@@ -81,23 +71,17 @@ public static partial class IEnumerableExtensions
         public void ThrowIfAllCancelled()
         {
             if (!tokens.Any())
-            {
                 return;
-            }
             var count = 0;
             var cancelled = 0;
             foreach (var token in tokens)
             {
                 count++;
                 if (token.IsCancellationRequested)
-                {
                     cancelled++;
-                }
             }
             if (count == cancelled)
-            {
                 throw new OperationCanceledException();
-            }
         }
     }
 }

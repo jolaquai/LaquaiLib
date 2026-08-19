@@ -27,31 +27,23 @@ public static class WindowsServices
         var process = Process.GetProcessById(proc.Id);
 
         if (Environment.UserInteractive)
-        {
             return false;
-        }
 
         try
         {
             using var serviceController = new System.ServiceProcess.ServiceController(serviceName);
 
             if (serviceController.Status != System.ServiceProcess.ServiceControllerStatus.Running)
-            {
                 return false;
-            }
 
             // The service exists, but this could still be a non-service instance
             var parentPid = GetParentProcessId(proc.Id);
             if (parentPid is -1)
-            {
                 return false;
-            }
             using var parent = Process.GetProcessById(parentPid);
             if (parent != null && (parent.ProcessName.Contains("services", StringComparison.OrdinalIgnoreCase)
                || parent.ProcessName.Contains("svchost", StringComparison.OrdinalIgnoreCase)))
-            {
                 return false;
-            }
 
             return true;
         }
@@ -65,9 +57,7 @@ public static class WindowsServices
     {
         using var query = new ManagementObjectSearcher($"SELECT ParentProcessId FROM Win32_Process WHERE ProcessId = {processId}");
         foreach (var mo in query.Get())
-        {
             return Convert.ToInt32(mo["ParentProcessId"]);
-        }
 
         return -1;
     }

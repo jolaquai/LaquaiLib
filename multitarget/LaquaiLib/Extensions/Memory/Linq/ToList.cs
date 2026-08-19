@@ -4,7 +4,7 @@ public static partial class LinqMemoryExtensions
 {
     extension<TSource>(ReadOnlySpan<TSource> source)
     {
-        /// <inheritdoc cref="Enumerable.ToList{TSource}(IEnumerable{TSource})" />
+        /// <inheritdoc cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public List<TSource> ToList()
         {

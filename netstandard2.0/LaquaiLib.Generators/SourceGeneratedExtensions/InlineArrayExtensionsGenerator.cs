@@ -38,9 +38,7 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(collected, static (spc, source) =>
         {
             if (source.Length == 0)
-            {
                 return;
-            }
 
             var declaredInlineArrayClassesSource = GenerateExtensionClasses(source);
             spc.AddSource($"InlineArraySpanExtensions.g.cs", SourceText.From(declaredInlineArrayClassesSource, Encoding.UTF8));
@@ -50,29 +48,21 @@ public class InlineArrayExtensionsGenerator : IIncrementalGenerator
     private static InlineArrayModel CreateModel(GeneratorAttributeSyntaxContext context)
     {
         if (context.TargetSymbol is not INamedTypeSymbol type)
-        {
             return null;
-        }
 
         // the singular field declared in the struct (it very literally has to have exactly one field)
         var field = type.GetMembers().OfType<IFieldSymbol>().FirstOrDefault();
         if (field is null)
-        {
             return null;
-        }
 
         var inlineArrayAttribute = type.GetAttributes().FirstOrDefault(static attr => attr.AttributeClass.ToDisplayString(SymbolDisplayFormats.FullyQualified) == "global::System.Runtime.CompilerServices.InlineArrayAttribute");
         if (inlineArrayAttribute is null || inlineArrayAttribute.ConstructorArguments.Length == 0 || inlineArrayAttribute.ConstructorArguments[0].Value is not int length)
-        {
             return null;
-        }
 
         // If the field is a struct and explicitly declared nullable, we'll have to make it nullable in our returns as well
         var elementTypeName = field.Type.ToDisplayString(SymbolDisplayFormats.FullyQualified);
         if (field.Type.NullableAnnotation == NullableAnnotation.Annotated)
-        {
             elementTypeName += '?';
-        }
 
         return new InlineArrayModel(
             type.ToDisplayString(SymbolDisplayFormats.FullyQualified),

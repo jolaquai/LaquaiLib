@@ -13,11 +13,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.15.8"/>
     </ItemGroup>
 
     <ItemGroup>
-      <!--<ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\LaquaiLib.csproj" />-->
+      <!--<ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\LaquaiLib.csproj"/>-->
     </ItemGroup>
 
 </Project>

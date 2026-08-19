@@ -15,7 +15,7 @@ public class MemoryStreamProxyTests
         Assert.Equal(5, proxy.Position);
         Assert.True(proxy.Capacity >= 5);
 
-        proxy.Seek(0, System.IO.SeekOrigin.Begin);
+        proxy.Seek(0, SeekOrigin.Begin);
         var readBack = new byte[5];
         var read = proxy.Read(readBack, 0, 5);
 

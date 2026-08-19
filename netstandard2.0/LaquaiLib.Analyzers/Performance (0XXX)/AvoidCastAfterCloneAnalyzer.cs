@@ -27,15 +27,11 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
     {
         var invocation = (InvocationExpressionSyntax)context.Node;
         if (context.SemanticModel.GetSymbolInfo(invocation).Symbol is not IMethodSymbol methodSymbol)
-        {
             return;
-        }
 
         var targetName = "";
         if (!IsApplicable(methodSymbol, ref targetName))
-        {
             return;
-        }
 
         // Look for parent cast expression
         Location loc = null;
@@ -77,9 +73,7 @@ public class AvoidCastAfterCloneAnalyzer : DiagnosticAnalyzer
 
         var baseSymbol = methodSymbol;
         while (baseSymbol.OverriddenMethod is not null)
-        {
             baseSymbol = baseSymbol.OverriddenMethod;
-        }
 
         // Also report for Open XML Clone or CloneNode methods (regardless of arguments to the latter since casting either way is unnecessary)
         var isOpenXmlElement = baseSymbol.OriginalDefinition.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == "DocumentFormat.OpenXml.OpenXmlElement";

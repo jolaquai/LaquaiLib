@@ -11,9 +11,7 @@ public static partial class LinqMemoryExtensions
         public double Average()
         {
             if (source.Length == 0)
-            {
                 return 0;
-            }
             double sum = Sum(source);
             return sum / source.Length;
         }
@@ -25,17 +23,13 @@ public static partial class LinqMemoryExtensions
         public ulong Max()
         {
             if (source.Length == 0)
-            {
                 throw new InvalidOperationException("Span is empty.");
-            }
             var max = source[0];
             for (var i = 1; i < source.Length; i++)
             {
                 var value = source[i];
                 if (value > max)
-                {
                     max = value;
-                }
             }
             return max;
         }
@@ -47,17 +41,13 @@ public static partial class LinqMemoryExtensions
         public ulong Min()
         {
             if (source.Length == 0)
-            {
                 throw new InvalidOperationException("Span is empty.");
-            }
             var min = source[0];
             for (var i = 1; i < source.Length; i++)
             {
                 var value = source[i];
                 if (value < min)
-                {
                     min = value;
-                }
             }
             return min;
         }
@@ -69,14 +59,10 @@ public static partial class LinqMemoryExtensions
         public ulong Sum()
         {
             if (source.Length == 0)
-            {
                 return 0;
-            }
             ulong sum = default;
             for (var i = 0; i < source.Length; i++)
-            {
                 sum = checked(sum + source[i]);
-            }
             return sum;
         }
     }

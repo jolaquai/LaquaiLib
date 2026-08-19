@@ -1,8 +1,5 @@
 ﻿using System.IO.Hashing;
-using System.Security.Cryptography;
 using System.Text.Json.Serialization;
-
-using LaquaiLib.Extensions;
 
 namespace LaquaiLib.IO;
 
@@ -33,7 +30,6 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
     private partial class ResumableDirectoryCopySerializerContext : JsonSerializerContext;
 
     private const int BufferSize = 1 << 17;
-    private const int StackallocByteBufferSize = 2048;
     private readonly string _stateFilePath = stateFilePath ?? AppState.LocalAppData.File(nameof(ResumableDirectoryIO), Guid.NewGuid().ToString()).FullName;
     private volatile int running;
     private CancellationTokenSource cts;
@@ -92,9 +88,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
         CancellationToken cancellationToken = default)
     {
         if (Interlocked.Exchange(ref running, 1) == 1)
-        {
             throw new InvalidOperationException($"Another operation is already running on this instance. {nameof(ResumableDirectoryIO)} instances are not thread-safe.");
-        }
 
         try
         {
@@ -102,13 +96,9 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             ArgumentException.ThrowIfNullOrWhiteSpace(destinationPath);
 
             if (!Directory.Exists(sourcePath))
-            {
                 throw new DirectoryNotFoundException($"Source directory not found: '{sourcePath}'.");
-            }
             if (!overwrite && Directory.Exists(destinationPath))
-            {
                 throw new IOException($"Destination directory already exists: '{destinationPath}'.");
-            }
 
             cts = new CancellationTokenSource();
 
@@ -120,36 +110,26 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
 
             // Check for existing state
             if (File.Exists(_stateFilePath))
-            {
                 try
                 {
                     copyState = await LoadStateAsync().ConfigureAwait(false);
 
                     // Verify the saved state matches the current operation
                     if (copyState.SourcePath == sourcePath && copyState.DestinationPath == destinationPath)
-                    {
                         isResume = true;
-                    }
                     else
-                    {
                         copyState = CreateNewCopyState(sourcePath, destinationPath);
-                    }
                 }
                 catch
                 {
                     copyState = CreateNewCopyState(sourcePath, destinationPath);
                 }
-            }
             else
-            {
                 copyState = CreateNewCopyState(sourcePath, destinationPath);
-            }
 
             // If not resuming, scan the directory and build the file list
             if (!isResume)
-            {
                 await ScanDirectoryAsync(copyState, sourcePath, preserveTimestamps, cancellationToken).ConfigureAwait(false);
-            }
 
             // Copy progress tracking
             var totalFiles = copyState.PendingFiles.Count + copyState.CompletedFiles.Count;
@@ -226,16 +206,12 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
                 }
 
                 if (!copy)
-                {
                     // Delete source file on successful move
                     Directory.Delete(sourcePath, true);
-                }
 
                 // Clean up state file on successful completion
                 if (File.Exists(_stateFilePath))
-                {
                     File.Delete(_stateFilePath);
-                }
 
                 return true;
             }
@@ -301,18 +277,14 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
 
             // Verify final size matches
             if (fileState.BytesCopied != fileState.TotalBytes)
-            {
                 throw new IOException($"Copy failed: Expected {fileState.TotalBytes} bytes but copied {fileState.BytesCopied} bytes.");
-            }
 
             // Verify file hash if requested
             if (verifyFiles && fileState.FileHash.HasValue)
             {
                 var hash = await ComputeFileHashAsync(destFilePath, cancellationToken).ConfigureAwait(false);
                 if (hash != fileState.FileHash.Value)
-                {
                     throw new IOException($"File verification failed: Hash mismatch for '{destFilePath}'.");
-                }
             }
 
             // Set file timestamps if requested
@@ -324,10 +296,8 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             }
 
             if (!copy)
-            {
                 // Delete source file on successful move
                 File.Delete(sourceFilePath);
-            }
 
             return true;
         }
@@ -365,9 +335,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
 
             // Compute hash for verification if requested
             if (computeHashes)
-            {
                 fileState.FileHash = await ComputeFileHashAsync(filePath, cancellationToken).ConfigureAwait(false);
-            }
 
             copyState.PendingFiles.Add(fileState);
         }
@@ -416,9 +384,7 @@ public partial class ResumableDirectoryIO(string stateFilePath = null)
             cts.Cancel();
             // wait until running becomes 0, longer on each iteration
             for (var i = 10; running == 1; i *= 2)
-            {
                 await Task.Delay(i).ConfigureAwait(false);
-            }
         }
     }
 }

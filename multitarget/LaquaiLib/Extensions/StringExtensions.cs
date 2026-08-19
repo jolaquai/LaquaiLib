@@ -3,8 +3,6 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 
 using LaquaiLib.Collections.Enumeration;
-using LaquaiLib.Extensions;
-using LaquaiLib.Text;
 
 using static System.MemoryExtensions;
 
@@ -80,18 +78,14 @@ public static partial class StringExtensions
                 var separator = span.Slice(vm);
                 var value = span[lastIndex..vm.Index];
                 if (options.HasFlag(StringSplitOptions.TrimEntries))
-                {
                     value = value.Trim();
-                }
                 result.Add((value.ToString(), separator.ToString()));
                 lastIndex = vm.Index + vm.Length;
             }
 
             var lastValue = source[lastIndex..];
             if (options != StringSplitOptions.RemoveEmptyEntries || !string.IsNullOrWhiteSpace(lastValue))
-            {
                 result.Add((lastValue, ""));
-            }
 
             return [.. result];
         }
@@ -135,9 +129,7 @@ public static partial class StringExtensions
         {
             var ret = source;
             foreach (var r in remove)
-            {
                 ret = ret.Replace(r, "");
-            }
             return ret;
         }
         /// <summary>
@@ -169,9 +161,7 @@ public static partial class StringExtensions
             var span = source.AsSpan(startIndex);
             var find = span.IndexOf(search);
             if (find == -1)
-            {
                 return Array.Empty<int>();
-            }
 
             ret.Add(find + startIndex);
 
@@ -180,9 +170,7 @@ public static partial class StringExtensions
                 span = span[(find + 1)..];
                 find = span.IndexOf(search);
                 if (find == -1)
-                {
                     break;
-                }
 
                 ret.Add(find + ret[^1] + 1);
             }
@@ -268,9 +256,7 @@ public static partial class StringExtensions
         {
             List<IEnumerable<int>> indexLists = [];
             foreach (var search in searches)
-            {
                 indexLists.Add(source.IndicesOf(search));
-            }
             return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
         }
         /// <summary>
@@ -283,9 +269,7 @@ public static partial class StringExtensions
         {
             List<IEnumerable<int>> indexLists = [];
             foreach (var search in searches)
-            {
                 indexLists.Add(source.IndicesOf(search, startIndex));
-            }
             return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
         }
         /// <summary>
@@ -297,9 +281,7 @@ public static partial class StringExtensions
         {
             List<IEnumerable<int>> indexLists = [];
             foreach (var search in searches)
-            {
                 indexLists.Add(source.IndicesOf(search));
-            }
             return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
         }
         /// <summary>
@@ -312,9 +294,7 @@ public static partial class StringExtensions
         {
             List<IEnumerable<int>> indexLists = [];
             foreach (var search in searches)
-            {
                 indexLists.Add(source.IndicesOf(search, startIndex));
-            }
             return indexLists.Aggregate(Enumerable.Empty<int>(), static (seed, next) => seed = seed.Concat(next), static seed => seed.Distinct()).Order();
         }
         #endregion
@@ -328,12 +308,8 @@ public static partial class StringExtensions
         public IEnumerable<int> IndicesOfExcept(char except)
         {
             for (var i = 0; i < source.Length; i++)
-            {
                 if (source[i] != except)
-                {
                     yield return i;
-                }
-            }
         }
         /// <summary>
         /// Reports the zero-based indices of all occurrences of Unicode characters other than the one specified in this string. The search starts at a specified character position.
@@ -344,12 +320,8 @@ public static partial class StringExtensions
         public IEnumerable<int> IndicesOfExcept(char except, int startIndex)
         {
             for (var i = startIndex; i < source.Length; i++)
-            {
                 if (source[i] != except)
-                {
                     yield return i;
-                }
-            }
         }
         /// <summary>
         /// Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string.
@@ -361,12 +333,8 @@ public static partial class StringExtensions
             var exceptSet = new HashSet<char>(except);
 
             for (var i = 0; i < source.Length; i++)
-            {
                 if (!exceptSet.Contains(source[i]))
-                {
                     yield return i;
-                }
-            }
         }
         /// <summary>
         /// Reports the zero-based indices of all occurrences of Unicode characters other than the ones contained in <paramref name="except"/> in this string. The search starts at a specified character position.
@@ -379,12 +347,8 @@ public static partial class StringExtensions
             var exceptSet = new HashSet<char>(except);
 
             for (var i = startIndex; i < source.Length; i++)
-            {
                 if (!exceptSet.Contains(source[i]))
-                {
                     yield return i;
-                }
-            }
         }
 
         /// <summary>
@@ -404,9 +368,7 @@ public static partial class StringExtensions
         public int IndexOfAnyExcept(ReadOnlySpan<string> excepts, int startIndex, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
             if (startIndex >= source.Length)
-            {
                 return -1;
-            }
 
             for (var i = startIndex; i < source.Length; i++)
             {
@@ -414,9 +376,7 @@ public static partial class StringExtensions
                 foreach (var except in excepts)
                 {
                     if (except?.Length == 0)
-                    {
                         continue;
-                    }
 
                     if (source[i..].StartsWith(except, stringComparison))
                     {
@@ -426,9 +386,7 @@ public static partial class StringExtensions
                 }
 
                 if (!foundExcept)
-                {
                     return i;
-                }
             }
 
             return -1;
@@ -445,9 +403,7 @@ public static partial class StringExtensions
             var index = -1;
 
             while ((index = source.IndexOfAny(excepts.ToArray(), index + 1)) != -1)
-            {
                 indexes.Add(index);
-            }
 
             return indexes;
         }
@@ -463,9 +419,7 @@ public static partial class StringExtensions
             var index = startIndex - 1;
 
             while ((index = source.IndexOfAny(excepts, index + 1)) != -1)
-            {
                 indexes.Add(index);
-            }
 
             return indexes;
         }
@@ -481,9 +435,7 @@ public static partial class StringExtensions
             var index = -1;
 
             while ((index = source.IndexOfAny(excepts, index + 1, stringComparison)) != -1)
-            {
                 indexes.Add(index);
-            }
 
             return indexes;
         }
@@ -500,9 +452,7 @@ public static partial class StringExtensions
             var index = startIndex - 1;
 
             while ((index = source.IndexOfAny(excepts, index + 1, stringComparison)) != -1)
-            {
                 indexes.Add(index);
-            }
 
             return indexes;
         }
@@ -543,9 +493,7 @@ public static partial class StringExtensions
         public void ForEachLine(Action<ReadOnlySpan<char>> action)
         {
             foreach (var line in source.AsSpan().EnumerateLines())
-            {
                 action(line);
-            }
         }
         /// <summary>
         /// Executes an <paramref name="action"/> for each line of a <see langword="string"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line and the index of the line.
@@ -555,9 +503,7 @@ public static partial class StringExtensions
         {
             var index = 0;
             foreach (var line in source.AsSpan().EnumerateLines())
-            {
                 action(line, index++);
-            }
         }
         /// <summary>
         /// Executes an <paramref name="action"/> for each line of a <see langword="string"/> that satisfies conditions defined by <paramref name="predicate"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line.
@@ -567,12 +513,8 @@ public static partial class StringExtensions
         public void ForEachLine(Action<ReadOnlySpan<char>> action, Func<ReadOnlySpan<char>, bool> predicate)
         {
             foreach (var line in source.AsSpan().EnumerateLines())
-            {
                 if (predicate(line))
-                {
                     action(line);
-                }
-            }
         }
         /// <summary>
         /// Executes an <paramref name="action"/> for each line of a <see langword="string"/> that satisfies conditions defined by <paramref name="predicate"/>. It is passed a <see cref="ReadOnlySpan{T}"/> of the line and the index of the line.
@@ -585,9 +527,7 @@ public static partial class StringExtensions
             foreach (var line in source.AsSpan().EnumerateLines())
             {
                 if (predicate(line, index))
-                {
                     action(line, index);
-                }
                 index++;
             }
         }
@@ -607,9 +547,7 @@ public static partial class StringExtensions
             if (!source.Intersect(second).Any()
                 || string.IsNullOrEmpty(source)
                 || string.IsNullOrEmpty(second))
-            {
                 return 0;
-            }
 
             stringComparer ??= StringComparer.OrdinalIgnoreCase;
 
@@ -634,11 +572,10 @@ public static partial class StringExtensions
         /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ReadOnlySpan{T}"/>s representing the segments of the input <see cref="ReadOnlySpan{T}"/>.</returns>
         /// <remarks>
-        /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits{T}(ReadOnlySpan{T}, ReadOnlySpan{T})"/> instead.
+        /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits(ReadOnlySpan{char}, ReadOnlySpan{string}, StringComparison)"/> instead.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public SpanSplitByStringsEnumerable EnumerateSplits(ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)
-            => new SpanSplitByStringsEnumerable(source, strings, stringComparison);
+        public SpanSplitByStringsEnumerable EnumerateSplits(ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture) => new SpanSplitByStringsEnumerable(source, strings, stringComparison);
 
         /// <summary>
         /// Finds the number of occurrences of any of the specified <see langword="char"/>s in the input <see cref="ReadOnlySpan{T}"/> of <see cref="char"/>s.
@@ -652,9 +589,7 @@ public static partial class StringExtensions
             {
                 var index = source.IndexOfAny(chars);
                 if (index == -1)
-                {
                     break;
-                }
                 count++;
                 source = source[(index + 1)..];
             }
@@ -674,9 +609,7 @@ public static partial class StringExtensions
             {
                 var index = source.IndexOfAny(searchValues);
                 if (index == -1)
-                {
                     break;
-                }
                 count++;
                 source = source[(index + 1)..];
             }

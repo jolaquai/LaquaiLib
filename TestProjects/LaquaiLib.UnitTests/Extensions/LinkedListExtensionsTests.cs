@@ -118,7 +118,7 @@ public class LinkedListNodeExtensionsTests
     [Fact]
     public void ToDequeCreatesDequeFromLinkedList()
     {
-        var list = new LinkedList<int>(new[] { 1, 2, 3 });
+        var list = new LinkedList<int>([1, 2, 3]);
 
         var deque = list.ToDeque();
 

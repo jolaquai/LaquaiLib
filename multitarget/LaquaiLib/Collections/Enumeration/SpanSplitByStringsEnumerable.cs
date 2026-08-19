@@ -1,36 +1,21 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
+using System.Diagnostics;
 
 namespace LaquaiLib.Collections.Enumeration;
 
 /// <summary>
 /// Implements the enumerator pattern to enumerate the segments in a source <see cref="ReadOnlySpan{T}"/> of <see langword="char"/>s that are separated by any of the specified <see langword="string"/>s.
 /// </summary>
-public ref struct SpanSplitByStringsEnumerable
+public ref struct SpanSplitByStringsEnumerable(ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.Ordinal, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
 {
-    private ReadOnlySpan<char> _source;
-    private readonly StringComparison _stringComparison;
-    private readonly StringComparer _comparer;
-    private readonly StringSplitOptions _stringSplitOptions;
-    private readonly HashSet<string> _searchValues;
+    private readonly string[] _v = strings.ToArray();
+    private readonly SearchValues<string> _sv = SearchValues.Create(strings, stringComparison);
+    private readonly bool _trim = stringSplitOptions.HasFlag(StringSplitOptions.TrimEntries);
+    private readonly bool _removeEmpty = stringSplitOptions.HasFlag(StringSplitOptions.RemoveEmptyEntries);
 
-    /// <param name="source">The <see cref="ReadOnlySpan{T}"/> to enumerate the segments of.</param>
-    /// <param name="strings">The <see cref="ReadOnlySpan{T}"/>s to use as delimiters.</param>
-    /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
-    public SpanSplitByStringsEnumerable(ReadOnlySpan<char> source, ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture, StringSplitOptions stringSplitOptions = StringSplitOptions.None)
-    {
-        _source = source;
-        _stringComparison = stringComparison;
-        _stringSplitOptions = stringSplitOptions;
-
-        _comparer = StringComparer.FromComparison(_stringComparison);
-        _searchValues = [with(StringComparer.FromComparison(_stringComparison))];
-        for (var i = 0; i < strings.Length; i++)
-        {
-            _ = _searchValues.Add(strings[i]);
-        }
-    }
-
+    private ReadOnlySpan<char> _source = source;
     private byte state = 1;
+
     /// <summary>
     /// Retrieves the current segment at which the enumerator is positioned.
     /// </summary>
@@ -45,25 +30,21 @@ public ref struct SpanSplitByStringsEnumerable
     /// </summary>
     public bool MoveNext()
     {
-        var trim = _stringSplitOptions.HasFlag(StringSplitOptions.TrimEntries);
-        var removeEmpty = _stringSplitOptions.HasFlag(StringSplitOptions.RemoveEmptyEntries);
         switch (state)
         {
             case 1:
             {
-                state = 2;
+                _v.AsSpan().Sort(static (x, y) => y.Length.CompareTo(x.Length));
                 if (_source.Length == 0)
                 {
                     // An empty source yields a single empty segment, unless empty entries are removed.
-                    _source = [];
                     state = 4;
-                    if (removeEmpty)
-                    {
+                    if (_removeEmpty)
                         return false;
-                    }
                     Current = [];
                     return true;
                 }
+                state = 2;
                 goto case 2;
             }
             case 2:
@@ -71,29 +52,28 @@ public ref struct SpanSplitByStringsEnumerable
                 while (true)
                 {
                     if (_source.Length == 0)
-                    {
                         return false;
-                    }
 
                     // Find the earliest-occurring delimiter so the result doesn't depend on the
                     // (nondeterministic) iteration order of the delimiter set.
                     var end = -1;
                     var str = "";
-                    foreach (var searchValue in _searchValues)
+                    var idx = _source.IndexOfAny(_sv);
+                    if (idx != -1 && (end == -1 || idx < end))
                     {
-                        var idx = _source.IndexOf(searchValue, _stringComparison);
-                        if (idx != -1 && (end == -1 || idx < end))
-                        {
-                            end = idx;
-                            str = searchValue;
-                        }
+                        end = idx;
+                        // find what's actually there
+                        foreach (var sv in _v)
+                            if (_source.Slice(idx, sv.Length).Equals(sv, stringComparison))
+                                str = sv;
+                        Debug.Assert(!string.IsNullOrWhiteSpace(str),
+                            "ReadOnlySpan<char>.IndexOfAny(SearchValues<string>) says there's a match here, but a needle-wise Equals with the same StringComparison came up empty");
                     }
 
                     ReadOnlySpan<char> segment;
                     if (end == -1)
                     {
                         segment = _source;
-                        _source = [];
                         state = 4;
                     }
                     else
@@ -102,20 +82,14 @@ public ref struct SpanSplitByStringsEnumerable
                         _source = _source[(end + str.Length)..];
                         // A delimiter at the very end implies a final, empty segment.
                         if (_source.Length == 0)
-                        {
                             state = 3;
-                        }
                     }
 
-                    if (trim)
-                    {
+                    if (_trim)
                         segment = segment.Trim();
-                    }
-                    if (segment.Length == 0 && removeEmpty)
-                    {
-                        // _source has already been advanced past the delimiter, so this is safe.
+                    if (segment.Length == 0 && _removeEmpty)
+                        // source has already been advanced past the delimiter, so this is safe.
                         continue;
-                    }
                     Current = segment;
                     return true;
                 }
@@ -123,18 +97,20 @@ public ref struct SpanSplitByStringsEnumerable
             case 3:
             {
                 state = 4;
-                if (removeEmpty)
-                {
+                if (_removeEmpty)
                     return false;
-                }
                 Current = [];
                 return true;
             }
             case 4:
+            {
                 return false;
+            }
+            default:
+            {
+                Debug.Fail("Invalid state");
+                return false;
+            }
         }
-
-        Debug.Fail("Invalid state");
-        return false;
     }
 }

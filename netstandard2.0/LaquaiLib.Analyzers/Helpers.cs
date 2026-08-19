@@ -29,9 +29,7 @@ internal static class Helpers
     private static int SizeOfCore(ITypeSymbol type, int pointerSize, ConcurrentDictionary<ITypeSymbol, int> cache, HashSet<ITypeSymbol> inProgress)
     {
         if (type is null)
-        {
             return -1;
-        }
 
         switch (type.SpecialType)
         {
@@ -70,20 +68,14 @@ internal static class Helpers
     private static int StructSize(INamedTypeSymbol type, int pointerSize, ConcurrentDictionary<ITypeSymbol, int> cache, HashSet<ITypeSymbol> inProgress)
     {
         if (type is null)
-        {
             return -1;
-        }
 
         if (cache is not null && cache.TryGetValue(type, out var cached))
-        {
             return cached;
-        }
 
         // System.Numerics.Vector<T> has no fixed width; the JIT picks it per machine
         if (type.OriginalDefinition is { Name: "Vector", Arity: 1, ContainingNamespace: { Name: "Numerics", ContainingNamespace: { Name: "System", ContainingNamespace.IsGlobalNamespace: true } } })
-        {
             return -1;
-        }
 
         // Both are threaded down through the recursion; the cache also keeps nested layouts from being walked once per path through them
         cache ??= new ConcurrentDictionary<ITypeSymbol, int>(SymbolEqualityComparer.Default);
@@ -91,9 +83,7 @@ internal static class Helpers
 
         // A struct containing itself is CS0523, but the walk still has to terminate on it
         if (!inProgress.Add(type))
-        {
             return -1;
-        }
 
         int size;
         try
@@ -121,27 +111,19 @@ internal static class Helpers
         for (var i = 0; i < members.Length; i++)
         {
             if (members[i] is not IFieldSymbol { IsStatic: false, IsConst: false } field)
-            {
                 continue;
-            }
 
             fieldCount++;
             var fieldSize = FieldSize(field, pointerSize, cache, inProgress);
             if (fieldSize <= 0)
-            {
                 fieldSize = 1; // no field can occupy less, so substituting it keeps the result a lower bound
-            }
 
             if (isExplicit)
-            {
                 // Explicit fields may overlap, so the sum proves nothing
                 accumulated = Math.Max(accumulated, (long)FieldOffset(field) + fieldSize);
-            }
             else
-            {
                 // Padding and Auto reordering only ever grow a struct past the sum of its fields
                 accumulated += fieldSize;
-            }
         }
 
         return Clamp(Math.Max(ApplyInlineArray(type, accumulated, fieldCount), declaredSize));
@@ -153,9 +135,7 @@ internal static class Helpers
 
         var known = WellKnownStructSize(definition);
         if (known > 0)
-        {
             return known;
-        }
 
         // T? is its underlying value plus a flag byte, so the sum stays under whatever the padding makes of it
         if (definition.SpecialType == SpecialType.System_Nullable_T)
@@ -170,15 +150,11 @@ internal static class Helpers
         for (var i = 0; i < members.Length; i++)
         {
             if (members[i] is not IFieldSymbol { IsStatic: false, IsConst: false } field)
-            {
                 continue;
-            }
 
             // GenAPI strips concrete private fields out of reference assemblies and fabricates these two in their place, so anything left says nothing about the real layout
             if (field.Name is "_dummy" or "_dummyPrimitive")
-            {
                 return -1;
-            }
 
             fieldCount++;
             largest = Math.Max(largest, FieldSize(field, pointerSize, cache, inProgress));
@@ -195,20 +171,14 @@ internal static class Helpers
     {
         // An inline array is N copies of its one field; a different count means the declaration is broken (CS9169) and there is nothing to scale
         if (fieldCount != 1)
-        {
             return accumulated;
-        }
 
         var attributes = type.GetAttributes();
         for (var i = 0; i < attributes.Length; i++)
-        {
             if (IsSystemRuntimeAttribute(attributes[i].AttributeClass, "CompilerServices", "InlineArrayAttribute")
                 && attributes[i].ConstructorArguments.Length > 0
                 && attributes[i].ConstructorArguments[0].Value is int length and > 1)
-            {
                 return accumulated * length;
-            }
-        }
         return accumulated;
     }
 
@@ -219,7 +189,6 @@ internal static class Helpers
     {
         var containingNamespace = definition.ContainingNamespace;
         if (definition.Arity == 0 && containingNamespace is { Name: "System", ContainingNamespace.IsGlobalNamespace: true })
-        {
             return definition.Name switch
             {
                 "Guid" or "DateTimeOffset" => 16,
@@ -228,10 +197,8 @@ internal static class Helpers
                 "Half" => 2,
                 _ => 0
             };
-        }
 
         if (definition.Arity == 0 && containingNamespace is { Name: "Numerics", ContainingNamespace: { Name: "System", ContainingNamespace.IsGlobalNamespace: true } })
-        {
             return definition.Name switch
             {
                 "Matrix4x4" => 64,
@@ -241,11 +208,9 @@ internal static class Helpers
                 "Vector2" => 8,
                 _ => 0
             };
-        }
 
         // Unlike Vector<T>, the intrinsic vectors are fixed width by definition
         if (definition.Arity == 1 && containingNamespace is { Name: "Intrinsics", ContainingNamespace: { Name: "Runtime", ContainingNamespace: { Name: "System", ContainingNamespace.IsGlobalNamespace: true } } })
-        {
             return definition.Name switch
             {
                 "Vector512" => 64,
@@ -254,7 +219,6 @@ internal static class Helpers
                 "Vector64" => 8,
                 _ => 0
             };
-        }
 
         return 0;
     }
@@ -262,9 +226,7 @@ internal static class Helpers
     private static int FieldSize(IFieldSymbol field, int pointerSize, ConcurrentDictionary<ITypeSymbol, int> cache, HashSet<ITypeSymbol> inProgress)
     {
         if (field.RefKind != RefKind.None)
-        {
             return pointerSize;
-        }
 
         if (field.IsFixedSizeBuffer)
         {
@@ -287,13 +249,10 @@ internal static class Helpers
         {
             var attribute = attributes[i];
             if (!IsSystemRuntimeAttribute(attribute.AttributeClass, "InteropServices", "StructLayoutAttribute"))
-            {
                 continue;
-            }
 
             var ctorArgs = attribute.ConstructorArguments;
             if (ctorArgs.Length > 0)
-            {
                 // The LayoutKind argument surfaces as its underlying value, and the legacy overload takes a short
                 isExplicit = ctorArgs[0].Value switch
                 {
@@ -301,16 +260,11 @@ internal static class Helpers
                     short asShort => asShort == (short)LayoutKind.Explicit,
                     _ => false
                 };
-            }
 
             var namedArgs = attribute.NamedArguments;
             for (var j = 0; j < namedArgs.Length; j++)
-            {
                 if (namedArgs[j].Key == "Size" && namedArgs[j].Value.Value is int size and > 0)
-                {
                     declaredSize = size;
-                }
-            }
 
             return;
         }
@@ -320,14 +274,10 @@ internal static class Helpers
     {
         var attributes = field.GetAttributes();
         for (var i = 0; i < attributes.Length; i++)
-        {
             if (IsSystemRuntimeAttribute(attributes[i].AttributeClass, "InteropServices", "FieldOffsetAttribute")
                 && attributes[i].ConstructorArguments.Length > 0
                 && attributes[i].ConstructorArguments[0].Value is int offset and >= 0)
-            {
                 return offset;
-            }
-        }
         return 0;
     }
 
@@ -342,9 +292,7 @@ internal static class Helpers
         var sizeExpression = rankSpecifier?.Sizes.FirstOrDefault();
 
         if (sizeExpression == null)
-        {
             return null;
-        }
 
         var constantValue = semanticModel.GetConstantValue(sizeExpression);
         return constantValue.HasValue ? AsInt32(constantValue.Value) : null;

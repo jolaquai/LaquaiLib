@@ -1,5 +1,6 @@
 ﻿namespace LaquaiLib.Extensions;
 
+/// <inheritdoc/>
 public static partial class UriExtensions
 {
     extension(Uri uri)
@@ -24,9 +25,7 @@ public static partial class UriExtensions
         {
             var builder = new QueryBuilder(uri);
             foreach (var (name, value) in parameters)
-            {
                 builder[name] = value;
-            }
             return builder.Build();
         }
         /// <summary>
@@ -38,14 +37,10 @@ public static partial class UriExtensions
         public Uri SetQueryParameters(params ReadOnlySpan<string> parameters)
         {
             if (parameters.Length <= 0 || parameters.Length % 2 != 0)
-            {
                 throw new ArgumentException("The number of parameters must be even and greater than zero.", nameof(parameters));
-            }
             var builder = new QueryBuilder(uri);
             for (var i = 0; i < parameters.Length; i += 2)
-            {
                 builder[parameters[i]] = parameters[i + 1];
-            }
             return builder.Build();
         }
     }
@@ -63,9 +58,7 @@ internal readonly struct QueryBuilder
         set
         {
             if (value is null)
-            {
                 _ = _components.Remove(name);
-            }
             else
             {
                 var data = value as string ?? value.ToString();
@@ -88,9 +81,7 @@ internal readonly struct QueryBuilder
             {
                 var pair = span[range];
                 if (pair.IsEmpty)
-                {
                     continue;
-                }
                 var equalsIndex = pair.IndexOf('=');
                 if (equalsIndex < 0)
                 {

@@ -52,14 +52,10 @@ public class MofsTests
     {
         MemoryOrFileStream.Cutoff = 2;
         using (var stream = MemoryOrFileStream.Create(3))
-        {
             Assert.IsType<FileStream>((Stream)stream);
-        }
         MemoryOrFileStream.Cutoff = 4;
         using (var stream = MemoryOrFileStream.Create(3))
-        {
             Assert.IsType<MemoryStream>((Stream)stream);
-        }
     }
 
     [Fact]
@@ -67,12 +63,8 @@ public class MofsTests
     {
         MemoryOrFileStream.Cutoff = 2;
         using (var stream = MemoryOrFileStream.Create(3, 4))
-        {
             Assert.IsType<MemoryStream>((Stream)stream);
-        }
         using (var stream = MemoryOrFileStream.Create(4, 2))
-        {
             Assert.IsType<FileStream>((Stream)stream);
-        }
     }
 }

@@ -24,7 +24,7 @@ public class MultiKeyDictionary<TValue>
 
         public object[] Create(ReadOnlySpan<object> alternate) => alternate.ToArray();
         public bool Equals(ReadOnlySpan<object> alternate, object[] other) => alternate.SequenceEqual(other, _inner);
-        public bool Equals(object x, object y) => _inner.Equals(x, y);
+        public new bool Equals(object x, object y) => _inner.Equals(x, y);
         public int GetHashCode(ReadOnlySpan<object> alternate)
         {
             // Stolen directly from Array.cs
@@ -63,7 +63,10 @@ public class MultiKeyDictionary<TValue>
     /// </summary>
     /// <param name="capacity">The initial capacity of the dictionary.</param>
     /// <param name="mostLikelyKeyCount">The number of keys that will be used most likely.</param>
-    public MultiKeyDictionary(int capacity, int mostLikelyKeyCount) => Allocate(capacity, mostLikelyKeyCount);
+    public MultiKeyDictionary(int capacity, int mostLikelyKeyCount)
+    {
+        Allocate(capacity, mostLikelyKeyCount);
+    }
 
     private bool IsAllocated(int keyCount)
     {

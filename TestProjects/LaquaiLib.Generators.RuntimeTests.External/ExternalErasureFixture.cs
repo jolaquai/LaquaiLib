@@ -12,7 +12,10 @@ internal sealed class ExternalErasureFixture
     public sealed class Hidden
     {
         public int Value;
-        public Hidden(int value) => Value = value;
+        public Hidden(int value)
+        {
+            Value = value;
+        }
     }
 
     private Hidden _hiddenProp = new Hidden(-1);

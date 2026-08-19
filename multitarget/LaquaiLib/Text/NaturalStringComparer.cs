@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 
 using LaquaiLib.Text;
 using System.Buffers;
-using System;
 
 namespace LaquaiLib.Util;
 
@@ -37,7 +36,10 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     /// Initializes a new <see cref="NaturalStringComparer"/> with the specified <paramref name="lenientEquality"/> mode. See <see cref="LenientEquality"/>.
     /// </summary>
     /// <param name="lenientEquality">Whether to treat all non-digit, non-letter and non-Roman numeral characters as equal.</param>
-    private NaturalStringComparer(bool lenientEquality) => _lenient = lenientEquality;
+    private NaturalStringComparer(bool lenientEquality)
+    {
+        _lenient = lenientEquality;
+    }
 
     /// <summary>
     /// Compares two <see langword="string"/>s and returns a value indicating whether one is less than, equal to, or greater than the other.
@@ -139,24 +141,18 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     private static bool IsRomanNumeral(ReadOnlySpan<char> s, int index)
     {
         if (index >= s.Length)
-        {
             return false;
-        }
 
         // Escape hatch if our previous char is a Roman numeral character
         // If it was valid, it should be impossible to be in here.
         // If it wasn't, we shouldn't be in here because starting Roman identification partway through can't be correct
         if (index > 0 && s[index - 1] is 'I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M')
-        {
             return false;
-        }
 
         // Check if character is a valid Roman numeral character
         var c = s[index];
         if (c is not ('I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M'))
-        {
             return false;
-        }
 
         // Look ahead to see if we have a sequence of Roman numeral characters
         var i = index;
@@ -166,18 +162,14 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
         {
             c = s[i];
             if (c is not ('I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M'))
-            {
                 break;
-            }
 
             romanChars++;
             i++;
 
             // To avoid misidentifying regular words with Roman numeral characters
             if (romanChars > 15) // Arbitrary limit to prevent infinite loops
-            {
                 return false;
-            }
         }
 
         // Verify there's at least one valid Roman numeral
@@ -196,18 +188,14 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
         {
             var c = s[index];
             if (c is not ('I' or 'V' or 'X' or 'L' or 'C' or 'D' or 'M'))
-            {
                 break;
-            }
 
             length++;
             index++;
 
             // Safety check
             if (length > 15)
-            {
                 break;
-            }
         }
 
         // Extract and parse the Roman numeral
@@ -331,16 +319,10 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
 
         var comp = CharComparer.OrdinalIgnoreCase;
         for (var i = span.Length >= 8 ? span.Length - 8 : 0; i < span.Length; i++)
-        {
             if (!_lenient || char.IsLetterOrDigit(span[i]))
-            {
                 hc.Add(comp.GetHashCode(span[i]));
-            }
             else
-            {
                 hc.Add('\uE000');
-            }
-        }
 
         return hc.ToHashCode();
     }

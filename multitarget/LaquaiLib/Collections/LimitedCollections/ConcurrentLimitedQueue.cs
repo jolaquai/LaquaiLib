@@ -51,29 +51,21 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         if (enumerable.TryGetNonEnumeratedCount(out var count))
         {
             if (count == 0)
-            {
                 throw InitializationLengthMustNotBeZero;
-            }
             Capacity = count;
             queue = new ConcurrentQueue<T>();
             foreach (var item in enumerable)
-            {
                 queue.Enqueue(item);
-            }
         }
         else
         {
             var array = enumerable.ToArray();
             if (array.Length == 0)
-            {
                 throw InitializationLengthMustNotBeZero;
-            }
             Capacity = array.Length;
             queue = new ConcurrentQueue<T>();
             for (var i = 0; i < array.Length; i++)
-            {
                 queue.Enqueue(array[i]);
-            }
         }
     }
     /// <summary>
@@ -90,9 +82,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     public ConcurrentLimitedQueue(int capacity, IEnumerable<T> enumerable) : this(capacity)
     {
         if (enumerable.TryGetNonEnumeratedCount(out var count) && count > capacity)
-        {
             throw NeedCapacityGreaterThanInitialItemsException;
-        }
 
         queue = new ConcurrentQueue<T>();
         foreach (var item in enumerable)
@@ -100,9 +90,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
             queue.Enqueue(item);
 
             if (queue.Count > capacity)
-            {
                 throw NeedCapacityGreaterThanInitialItemsException;
-            }
         }
     }
     /// <summary>
@@ -121,14 +109,10 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     public ConcurrentLimitedQueue(int capacity, ReadOnlySpan<T> span) : this(capacity)
     {
         if (Capacity < span.Length)
-        {
             throw NeedCapacityGreaterThanInitialItemsException;
-        }
         queue = new ConcurrentQueue<T>();
         for (var i = 0; i < span.Length; i++)
-        {
             queue.Enqueue(span[i]);
-        }
     }
     #endregion
 
@@ -143,9 +127,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         {
             // Dequeue before Enqueue if the collection is at capacity to prevent resizing the backing store
             if (!queue.IsEmpty && queue.Count >= Capacity)
-            {
                 _ = Dequeue();
-            }
             queue.Enqueue(item);
         }
     }
@@ -177,9 +159,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     public T Dequeue()
     {
         lock (_lock)
-        {
             return queue.TryDequeue(out var result) ? result : throw new InvalidOperationException("The collection is empty.");
-        }
     }
     /// <summary>
     /// Attempts to remove and return the object at the beginning of the <see cref="ConcurrentLimitedQueue{T}"/>.
@@ -189,9 +169,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     public bool TryDequeue([NotNullWhen(true)] out T item)
     {
         lock (_lock)
-        {
             return queue.TryDequeue(out item);
-        }
     }
     /// <summary>
     /// Returns the object at the beginning of the <see cref="ConcurrentLimitedQueue{T}"/> without removing it.
@@ -201,9 +179,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     public T Peek()
     {
         lock (_lock)
-        {
             return queue.TryPeek(out var result) ? result : throw new InvalidOperationException("The collection is empty.");
-        }
     }
     /// <summary>
     /// Attempts to return the object at the beginning of the <see cref="ConcurrentLimitedQueue{T}"/> without removing it.
@@ -213,9 +189,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     public bool TryPeek([NotNullWhen(true)] out T item)
     {
         lock (_lock)
-        {
             return queue.TryPeek(out item);
-        }
     }
     #endregion
 
@@ -242,11 +216,9 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     {
         // Lock here instead of using (Try)Dequeue only since we need to be atomic (other queues mustn't (de)queue while we're working)
         lock (_lock)
-        {
             while (queue.TryDequeue(out _))
             {
             }
-        }
     }
     /// <summary>
     /// Determines whether the <see cref="ConcurrentLimitedQueue{T}"/> contains a specific value.
@@ -256,9 +228,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     public bool Contains(T item)
     {
         lock (_lock)
-        {
             return queue.Contains(item);
-        }
     }
     /// <summary>
     /// Copies the elements of the queue to a specified array starting at a given index.
@@ -269,9 +239,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
     {
         // Prevent mutation while we're copying to ensure we have a valid snapshot for the copy
         lock (_lock)
-        {
             queue.CopyTo(array, arrayIndex);
-        }
     }
     /// <summary>
     /// Always returns <see langword="false"/>. Items cannot be directly removed from a <see cref="ConcurrentLimitedQueue{T}"/>;
@@ -295,9 +263,7 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
         lock (_lock)
         {
             if (size == Capacity)
-            {
                 return;
-            }
 
             Capacity = size;
 
@@ -305,18 +271,12 @@ public sealed class ConcurrentLimitedQueue<T> : IReadOnlyCollection<T>
             {
                 var newQueue = new ConcurrentQueue<T>();
                 foreach (var item in queue)
-                {
                     newQueue.Enqueue(item);
-                }
                 queue = newQueue;
             }
             else if (size < queue.Count)
-            {
                 while (queue.Count > size)
-                {
                     _ = Dequeue();
-                }
-            }
         }
     }
 }
