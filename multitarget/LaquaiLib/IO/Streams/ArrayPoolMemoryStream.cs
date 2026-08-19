@@ -8,7 +8,7 @@ namespace LaquaiLib.IO.Streams;
 /// <remarks>
 /// This is by no means meant to replace an implementation such as <see href="https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream"/>. This type's design is much simpler.
 /// </remarks>
-public sealed class ArrayPoolMemoryStream : Stream
+public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
 {
     private readonly ArrayPool<byte> _pool;
     private readonly List<byte[]> _segments = [];
@@ -330,7 +330,7 @@ public sealed class ArrayPoolMemoryStream : Stream
     /// Returns every segment that lies entirely beyond <see cref="Length"/> to the pool.
     /// </summary>
     /// <remarks>
-    /// Only whole segments can be released, so the segment <see cref="Length"/> falls inside is kept and <see cref="Capacity"/> may remain above <see cref="Length"/>. <see cref="Position"/> is left alone; writing past the end afterwards simply rents again.
+    /// Only whole segments can be released, so the segment <see cref="Length"/> falls inside is kept and <see cref="Capacity"/> may remain above <see cref="Length"/>. <see cref="Position"/> is left alone; writing past the end afterwards simply rents again. Any buffer previously handed out by <see cref="GetMemory(int)"/> or <see cref="GetSpan(int)"/> is invalidated.
     /// </remarks>
     public void TrimExcess()
     {
@@ -370,4 +370,105 @@ public sealed class ArrayPoolMemoryStream : Stream
         }
         base.Dispose(disposing);
     }
+
+    #region IBufferWriter<byte>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The write head is <see cref="Position"/>, so this behaves exactly as if <paramref name="count"/> bytes had been written through <see cref="Write(ReadOnlySpan{byte})"/>.
+    /// </remarks>
+    public void Advance(int count)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentOutOfRangeException.ThrowIfNegative(count);
+
+        if (count == 0)
+            return;
+        // subtraction rather than position + count, which overflows for a Position near long.MaxValue and would leave position negative
+        if (count > capacity - position)
+            throw new InvalidOperationException("Cannot advance past the end of the rented capacity.");
+
+        if (position > length && !_skipZeroing)
+            ZeroRange(length, position - length);
+
+        position += count;
+        if (position > length)
+            length = position;
+    }
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The buffer starts at <see cref="Position"/>. It may be longer than <paramref name="sizeHint"/> and, where it overlaps existing content, exposes that content rather than blank memory.
+    /// </remarks>
+    public Memory<byte> GetMemory(int sizeHint = 0)
+    {
+        var (array, offset, count) = GetWritableSegment(sizeHint);
+        return array.AsMemory(offset, count);
+    }
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The buffer starts at <see cref="Position"/>. It may be longer than <paramref name="sizeHint"/> and, where it overlaps existing content, exposes that content rather than blank memory.
+    /// </remarks>
+    public Span<byte> GetSpan(int sizeHint = 0)
+    {
+        var (array, offset, count) = GetWritableSegment(sizeHint);
+        return array.AsSpan(offset, count);
+    }
+    private (byte[] Array, int Offset, int Count) GetWritableSegment(int sizeHint)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentOutOfRangeException.ThrowIfNegative(sizeHint);
+
+        // the contract forbids handing back an empty buffer, so 0 means "whatever is left, but at least one byte"
+        if (sizeHint == 0)
+            sizeHint = 1;
+
+        EnsureCapacity(position + sizeHint);
+        if (position > length && !_skipZeroing)
+            ZeroRange(length, position - length);
+
+        var (seg, off) = Locate(position);
+        var current = _segments[seg];
+        if (current.Length - off < sizeHint)
+        {
+            Consolidate(seg, off + (long)sizeHint);
+            current = _segments[seg]; // merging preserves offsets relative to the start of seg, so off still points at position
+        }
+        return (current, off, current.Length - off);
+    }
+    // IBufferWriter demands one contiguous run, which a segment chain only provides by accident; merging whole segments keeps every address outside the merged run where it was
+    private void Consolidate(int first, long needed)
+    {
+        var segments = SegmentsSpan();
+        long merged = 0;
+        var last = first;
+        // the sole caller runs EnsureCapacity(position + sizeHint) beforehand, so the tail always reaches needed
+        while (merged < needed)
+            merged += segments[last++].Length;
+
+        var buffer = RentContiguous(merged);
+        // the pool rounds up to bucket sizes, and surplus anywhere but the very end would shift every following segment, so the run grows until it absorbs the slack
+        while (last < segments.Length && merged != buffer.Length)
+        {
+            merged += segments[last++].Length;
+            if (merged > buffer.Length)
+            {
+                _pool.Return(buffer);
+                buffer = RentContiguous(merged);
+            }
+        }
+
+        var copied = 0;
+        for (var i = first; i < last; i++)
+        {
+            var current = segments[i];
+            current.AsSpan().CopyTo(buffer.AsSpan(copied));
+            copied += current.Length;
+            _pool.Return(current);
+        }
+
+        _segments[first] = buffer;
+        _segments.RemoveRange(first + 1, last - first - 1);
+        capacity += buffer.Length - merged;
+    }
+    private byte[] RentContiguous(long length) => length <= Array.MaxLength ? _pool.Rent((int)length) : throw new OutOfMemoryException("A contiguous buffer of the requested size cannot be rented.");
+    #endregion
 }

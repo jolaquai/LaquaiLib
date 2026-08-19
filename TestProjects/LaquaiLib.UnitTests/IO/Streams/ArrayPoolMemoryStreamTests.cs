@@ -29,6 +29,37 @@ public class ArrayPoolMemoryStreamTests
         }
     }
 
+    // real pools round up to bucket sizes; that surplus is what makes segment merging tricky, so it needs to be reproducible
+    private sealed class RoundingArrayPool(byte fill = 0) : ArrayPool<byte>
+    {
+        public List<int> RentRequests { get; } = [];
+        public List<byte[]> Rented { get; } = [];
+        public List<byte[]> Returns { get; } = [];
+
+        private static int RoundUp(int minimumLength)
+        {
+            var size = 16;
+            while (size < minimumLength)
+                size <<= 1;
+            return size;
+        }
+
+        public override byte[] Rent(int minimumLength)
+        {
+            var array = new byte[RoundUp(minimumLength)];
+            array.AsSpan().Fill(fill);
+            RentRequests.Add(minimumLength);
+            Rented.Add(array);
+            return array;
+        }
+        public override void Return(byte[] array, bool clearArray = false)
+        {
+            Returns.Add(array);
+            if (clearArray)
+                Array.Clear(array);
+        }
+    }
+
     private static byte[] Sequence(int length)
     {
         var data = new byte[length];
@@ -1140,5 +1171,525 @@ public class ArrayPoolMemoryStreamTests
         Assert.NotSame(first, second);
         Assert.Equal(2, await first);
         Assert.Equal(1, await second);
+    }
+
+    [Fact]
+    public void GetSpanWithZeroSizeHintReturnsNonEmptyBuffer()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.True(stream.GetSpan(0).Length >= 1);
+    }
+
+    [Fact]
+    public void GetMemoryWithZeroSizeHintReturnsNonEmptyBuffer()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.True(stream.GetMemory(0).Length >= 1);
+    }
+
+    [Fact]
+    public void GetSpanRejectsNegativeSizeHint()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.Throws<ArgumentOutOfRangeException>(() => stream.GetSpan(-1));
+    }
+
+    [Fact]
+    public void GetMemoryRejectsNegativeSizeHint()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.Throws<ArgumentOutOfRangeException>(() => stream.GetMemory(-1));
+    }
+
+    [Fact]
+    public void GetSpanHonoursSizeHintFarLargerThanMinimumSegmentSize()
+    {
+        using var stream = new ArrayPoolMemoryStream(16);
+        Assert.True(stream.GetSpan(5000).Length >= 5000);
+    }
+
+    [Fact]
+    public void GetSpanStartsAtPositionAndExposesExistingContent()
+    {
+        using var stream = StreamWith(1, 2, 3, 4, 5);
+        stream.Position = 1;
+        var span = stream.GetSpan(3);
+        Assert.True(span.Length >= 3);
+        Assert.Equal(new byte[] { 2, 3, 4 }, span[..3].ToArray());
+    }
+
+    [Fact]
+    public void GetSpanAndGetMemoryAliasTheSameBytes()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        stream.Write(new byte[] { 1, 2, 3 }, 0, 3);
+        var span = stream.GetSpan(4);
+        span[0] = 42;
+        var memory = stream.GetMemory(4);
+        Assert.Equal(42, memory.Span[0]);
+    }
+
+    [Fact]
+    public void GetSpanDoesNotChangePositionOrLength()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 1;
+        stream.GetSpan(10);
+        Assert.Equal(1L, stream.Position);
+        Assert.Equal(3L, stream.Length);
+    }
+
+    [Fact]
+    public void GetMemoryDoesNotChangePositionOrLength()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 1;
+        stream.GetMemory(10);
+        Assert.Equal(1L, stream.Position);
+        Assert.Equal(3L, stream.Length);
+    }
+
+    [Fact]
+    public void GetSpanThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().GetSpan(1));
+
+    [Fact]
+    public void GetMemoryThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().GetMemory(1));
+
+    [Fact]
+    public void AdvanceThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Advance(1));
+
+    [Fact]
+    public void AdvanceRejectsNegativeCount()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.Throws<ArgumentOutOfRangeException>(() => stream.Advance(-1));
+    }
+
+    [Fact]
+    public void AdvanceZeroIsNoOp()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Advance(0);
+        Assert.Equal(3L, stream.Length);
+        Assert.Equal(0L, stream.Position);
+    }
+
+    [Fact]
+    public void AdvanceExtendsLength()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        stream.GetSpan(10);
+        stream.Advance(5);
+        Assert.Equal(5L, stream.Length);
+    }
+
+    [Fact]
+    public void AdvanceMovesPosition()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        stream.GetSpan(10);
+        stream.Advance(5);
+        Assert.Equal(5L, stream.Position);
+    }
+
+    [Fact]
+    public void AdvancePastCapacityThrows()
+    {
+        // the requested capacity is a floor, not the real one, so the boundary has to come from Capacity itself
+        using var stream = new ArrayPoolMemoryStream(capacity: 10);
+        Assert.Throws<InvalidOperationException>(() => stream.Advance((int)stream.Capacity + 1));
+    }
+
+    [Fact]
+    public void AdvanceExactlyToCapacityIsAllowed()
+    {
+        using var stream = new ArrayPoolMemoryStream(capacity: 10);
+        stream.Advance((int)stream.Capacity);
+        Assert.Equal(stream.Capacity, stream.Position);
+        Assert.Equal(stream.Capacity, stream.Length);
+    }
+
+    [Fact]
+    public void AdvanceInsideExistingContentDoesNotShrinkLength()
+    {
+        using var stream = StreamWith(1, 2, 3, 4, 5);
+        stream.Position = 0;
+        stream.Advance(2);
+        Assert.Equal(5L, stream.Length);
+        Assert.Equal(2L, stream.Position);
+    }
+
+    [Fact]
+    public void GetSpanAndAdvanceRoundTripWritesAndReadsCorrectly()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        var data = Sequence(50);
+        var span = stream.GetSpan(50);
+        data.CopyTo(span);
+        stream.Advance(50);
+
+        stream.Position = 0;
+        var buffer = new byte[50];
+        Assert.Equal(50, stream.Read(buffer, 0, 50));
+        Assert.Equal(data, buffer);
+    }
+
+    [Fact]
+    public void AdvanceAfterSeekingPastEndZeroesTheGapWithoutPriorGetSpan()
+    {
+        var pool = new TrackingArrayPool(0xCD);
+        using var stream = new ArrayPoolMemoryStream(capacity: 64, pool: pool);
+        stream.Position = 5;
+        stream.Advance(1);
+
+        stream.Position = 0;
+        var buffer = new byte[6];
+        Assert.Equal(6, stream.Read(buffer, 0, 6));
+        Assert.Equal(new byte[] { 0, 0, 0, 0, 0, 0xCD }, buffer);
+    }
+
+    [Fact]
+    public void AdvanceAfterSeekingPastEndSkipsZeroingWhenAskedTo()
+    {
+        var pool = new TrackingArrayPool(0xCD);
+        using var stream = new ArrayPoolMemoryStream(capacity: 64, skipZeroing: true, pool: pool);
+        stream.Position = 5;
+        stream.Advance(1);
+
+        stream.Position = 0;
+        var buffer = new byte[6];
+        Assert.Equal(6, stream.Read(buffer, 0, 6));
+        Assert.Equal(new byte[] { 0xCD, 0xCD, 0xCD, 0xCD, 0xCD, 0xCD }, buffer);
+    }
+
+    [Fact]
+    public void GetSpanAcrossSegmentsConsolidatesAndPreservesContent()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(64);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        for (var offset = 0; offset < data.Length; offset += 16)
+            stream.Write(data, offset, 16);
+        Assert.True(pool.RentRequests.Count >= 4);
+
+        stream.Position = 0;
+        var span = stream.GetSpan(64);
+        Assert.True(span.Length >= 64);
+        Assert.Equal(data, span[..64].ToArray());
+    }
+
+    [Fact]
+    public void GetSpanConsolidationReturnsMergedSegmentsToThePool()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(64);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        for (var offset = 0; offset < data.Length; offset += 16)
+            stream.Write(data, offset, 16);
+        var rentedBeforeConsolidation = pool.Rented.ToList();
+
+        stream.Position = 0;
+        stream.GetSpan(64);
+
+        Assert.True(pool.Returns.Count > 0);
+        foreach (var returned in pool.Returns)
+            Assert.Contains(returned, rentedBeforeConsolidation);
+    }
+
+    private static ArrayPoolMemoryStream MultiSegmentStream(ArrayPool<byte> pool, byte[] data, int chunk = 20)
+    {
+        var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        for (var offset = 0; offset < data.Length; offset += chunk)
+        {
+            var take = Math.Min(chunk, data.Length - offset);
+            stream.Write(data, offset, take);
+        }
+        return stream;
+    }
+
+    [Fact]
+    public void GetSpanConsolidationOfNonTailRunPreservesContentWithRoundingPool()
+    {
+        var pool = new RoundingArrayPool();
+        var data = Sequence(200);
+        using var stream = MultiSegmentStream(pool, data);
+
+        stream.Position = 0;
+        var hint = (int)(stream.Capacity / 3);
+        Assert.True(hint > 0 && hint < stream.Capacity);
+        var span = stream.GetSpan(hint);
+        Assert.True(span.Length >= hint);
+
+        stream.Position = 0;
+        var buffer = new byte[stream.Length];
+        Assert.Equal(buffer.Length, stream.Read(buffer, 0, buffer.Length));
+        Assert.Equal(data, buffer);
+    }
+
+    [Fact]
+    public void GetSpanConsolidationOfNonTailRunPreservesContentWithSharedPool()
+    {
+        var data = Sequence(200);
+        using var stream = MultiSegmentStream(ArrayPool<byte>.Shared, data);
+
+        stream.Position = 0;
+        var hint = (int)(stream.Capacity / 3);
+        Assert.True(hint > 0 && hint < stream.Capacity);
+        var span = stream.GetSpan(hint);
+        Assert.True(span.Length >= hint);
+
+        stream.Position = 0;
+        var buffer = new byte[stream.Length];
+        Assert.Equal(buffer.Length, stream.Read(buffer, 0, buffer.Length));
+        Assert.Equal(data, buffer);
+    }
+
+    [Fact]
+    public void CapacityInvariantHoldsAfterConsolidationWithTrackingPool()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(200);
+        using var stream = MultiSegmentStream(pool, data);
+
+        stream.Position = 0;
+        stream.GetSpan((int)(stream.Capacity / 3));
+
+        var expected = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
+        Assert.Equal(expected, stream.Capacity);
+    }
+
+    [Fact]
+    public void CapacityInvariantHoldsAfterConsolidationWithRoundingPool()
+    {
+        var pool = new RoundingArrayPool();
+        var data = Sequence(200);
+        using var stream = MultiSegmentStream(pool, data);
+
+        stream.Position = 0;
+        stream.GetSpan((int)(stream.Capacity / 3));
+
+        var expected = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
+        Assert.Equal(expected, stream.Capacity);
+    }
+
+    [Fact]
+    public void RepeatedGetSpanWithSameHintDoesNotKeepRenting()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        stream.GetSpan(40);
+        var countAfterFirst = pool.RentRequests.Count;
+        stream.GetSpan(40);
+        stream.GetSpan(40);
+        Assert.Equal(countAfterFirst, pool.RentRequests.Count);
+    }
+
+    [Fact]
+    public void BufferWriterWritesAreVisibleThroughRead()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        var data = Sequence(30);
+        var span = stream.GetSpan(30);
+        data.CopyTo(span);
+        stream.Advance(30);
+
+        stream.Position = 0;
+        var buffer = new byte[30];
+        Assert.Equal(30, stream.Read(buffer, 0, 30));
+        Assert.Equal(data, buffer);
+    }
+
+    [Fact]
+    public void SeekToMiddleThenGetSpanAdvanceOverwritesInPlaceAndLeavesSurroundingBytesIntact()
+    {
+        using var stream = StreamWith(1, 2, 3, 4, 5, 6, 7, 8);
+        stream.Position = 3;
+        var span = stream.GetSpan(2);
+        span[0] = 100;
+        span[1] = 101;
+        stream.Advance(2);
+
+        stream.Position = 0;
+        var buffer = new byte[8];
+        Assert.Equal(8, stream.Read(buffer, 0, 8));
+        Assert.Equal(new byte[] { 1, 2, 3, 100, 101, 6, 7, 8 }, buffer);
+        Assert.Equal(8L, stream.Length);
+    }
+
+    [Fact]
+    public void SetLengthTruncationAfterAdvance()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        var data = Sequence(10);
+        var span = stream.GetSpan(10);
+        data.CopyTo(span);
+        stream.Advance(10);
+        stream.SetLength(4);
+        Assert.Equal(4L, stream.Length);
+
+        stream.Position = 0;
+        var buffer = new byte[4];
+        Assert.Equal(4, stream.Read(buffer, 0, 4));
+        Assert.Equal(data.AsSpan(0, 4).ToArray(), buffer);
+    }
+
+    [Fact]
+    public void CopyToAfterBufferWriterWrites()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        var data = Sequence(20);
+        data.CopyTo(stream.GetSpan(20));
+        stream.Advance(20);
+
+        stream.Position = 0;
+        using var target = new MemoryStream();
+        stream.CopyTo(target);
+        Assert.Equal(data, target.ToArray());
+    }
+
+    [Fact]
+    public void TrimExcessAfterBufferWriterUsageStillLeavesContentReadable()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(48);
+        for (var offset = 0; offset < data.Length; offset += 16)
+        {
+            var span = stream.GetSpan(16);
+            data.AsSpan(offset, 16).CopyTo(span);
+            stream.Advance(16);
+        }
+        stream.SetLength(20);
+        stream.TrimExcess();
+
+        stream.Position = 0;
+        var buffer = new byte[20];
+        Assert.Equal(20, stream.Read(buffer, 0, 20));
+        Assert.Equal(data.AsSpan(0, 20).ToArray(), buffer);
+    }
+
+    [Fact]
+    public void BufferWriterOperationsMatchMemoryStreamOracle()
+    {
+        var random = new Random(12345);
+        using var stream = new ArrayPoolMemoryStream(16);
+        using var oracle = new MemoryStream();
+
+        for (var iteration = 0; iteration < 300; iteration++)
+        {
+            switch (random.Next(4))
+            {
+                case 0:
+                {
+                    var hint = random.Next(0, 40);
+                    var span = stream.GetSpan(hint);
+                    var writeLength = Math.Min(random.Next(0, 41), span.Length);
+                    var chunk = new byte[writeLength];
+                    random.NextBytes(chunk);
+                    chunk.CopyTo(span);
+                    stream.Advance(writeLength);
+                    oracle.Write(chunk, 0, writeLength);
+                    break;
+                }
+                case 1:
+                {
+                    var maxSeek = (int)Math.Max(oracle.Length, 1);
+                    var target = random.Next(0, maxSeek + 20);
+                    stream.Position = target;
+                    oracle.Position = target;
+                    break;
+                }
+                case 2:
+                {
+                    var newLength = random.Next(0, (int)oracle.Length + 40);
+                    stream.SetLength(newLength);
+                    oracle.SetLength(newLength);
+                    break;
+                }
+                case 3:
+                {
+                    var hint = random.Next(0, 40);
+                    var memory = stream.GetMemory(hint);
+                    var writeLength = Math.Min(random.Next(0, 41), memory.Length);
+                    var chunk = new byte[writeLength];
+                    random.NextBytes(chunk);
+                    chunk.CopyTo(memory);
+                    stream.Advance(writeLength);
+                    oracle.Write(chunk, 0, writeLength);
+                    break;
+                }
+            }
+        }
+
+        Assert.Equal(oracle.Length, stream.Length);
+
+        stream.Position = 0;
+        oracle.Position = 0;
+        var expected = oracle.ToArray();
+        var actual = new byte[expected.Length];
+        Assert.Equal(actual.Length, stream.Read(actual, 0, actual.Length));
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void GetSpanAtExactlyCapacityGrowsInsteadOfThrowing()
+    {
+        using var stream = new ArrayPoolMemoryStream(16);
+        stream.Write(Sequence(16), 0, 16);
+        stream.Position = stream.Capacity;
+        var before = stream.Capacity;
+        Assert.True(stream.GetSpan(1).Length >= 1);
+        Assert.True(stream.Capacity > before);
+    }
+
+    [Fact]
+    public void WritesThroughGetMemoryAreVisibleThroughRead()
+    {
+        using var stream = new ArrayPoolMemoryStream(16);
+        var data = Sequence(40);
+        data.CopyTo(stream.GetMemory(40));
+        stream.Advance(40);
+
+        stream.Position = 0;
+        var actual = new byte[40];
+        Assert.Equal(40, stream.Read(actual, 0, 40));
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void StreamIsUsableThroughTheIBufferWriterInterface()
+    {
+        using var stream = new ArrayPoolMemoryStream(16);
+        IBufferWriter<byte> writer = stream;
+        var data = Sequence(50);
+        foreach (var b in data)
+        {
+            writer.GetSpan()[0] = b;
+            writer.Advance(1);
+        }
+
+        stream.Position = 0;
+        var actual = new byte[data.Length];
+        Assert.Equal(data.Length, stream.Read(actual, 0, actual.Length));
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void ConsolidationOfTheTrailingRunPreservesContent()
+    {
+        var pool = new RoundingArrayPool(0xEE);
+        using var stream = new ArrayPoolMemoryStream(16, pool: pool);
+        var data = Sequence(64);
+        stream.Write(data, 0, data.Length);
+
+        // start inside the first segment so the merged run runs all the way to the end of the chain
+        stream.Position = 8;
+        Assert.True(stream.GetSpan((int)(stream.Capacity - 8)).Length >= stream.Capacity - 8);
+
+        stream.Position = 0;
+        var actual = new byte[data.Length];
+        Assert.Equal(data.Length, stream.Read(actual, 0, actual.Length));
+        Assert.Equal(data, actual);
+        Assert.Equal(stream.Capacity, pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length));
     }
 }
