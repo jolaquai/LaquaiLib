@@ -36,7 +36,7 @@ dotnet build TestProjects/LaquaiLib.UnitTests/LaquaiLib.UnitTests.csproj -c Debu
 | # | Target | Tier | Cost | Status |
 |---|--------|------|------|--------|
 | 1 | `Extensions/Memory/Linq/**` (`LinqMemoryExtensions`) | S | L | TODO |
-| 2 | `UnsafeUtils/Accessors/**` | S | XS | TODO |
+| 2 | `UnsafeUtils/Accessors/**` | S | XS | DONE |
 | 3 | `Collections/SequenceEqualityComparer` | S | M | TODO |
 | 4 | `Numerics/Matrix<T>` | S | M | TODO |
 | 5 | `Collections/Observable/ObservableCollectionFast<T>` | S | M | TODO |
@@ -325,3 +325,5 @@ Not part of this plan's ranking (the ask was zero-coverage features), but worth 
 | `Numerics/BitArray` | 1261L | 63 | Good ratio, but check the SIMD paths are hit for large sizes. |
 
 Also: `SemaphoreExtensionsTests.cs`, `StackTraceExtensionsTests.cs` and `ThreadExtensionsTests.cs` name types that do not exist in the library (verified: no `SemaphoreExtensions`/`StackTraceExtensions`/`ThreadExtensions` class, and no `extension(Semaphore*)`/`extension(Thread)`/`extension(StackTrace)` block anywhere). Delete them, or rename `ThreadExtensionsTests.cs` to `ThreadingExtensionsTests.cs` and use it for rank 9.
+
+**Out-of-order completion, 2026-08-20**: rank 2 (`UnsafeUtils/Accessors/**`) was closed before rank 1 because `Check-AccessorTestCoverage.ps1` (`LaquaiLib.UnitTests.csproj`'s `CheckAccessorTestCoverage` target) hard-errors CI on any `[UnsafeAccessor]` member not referenced by name in test source, independent of ledger ranking. Added `ListAccessorsTests.cs`, `QueueAccessorsTests.cs`, `StackAccessorsTests.cs`, `MemoryStreamAccessorsTests.cs`, `CompositeFormatAccessorsTests.cs`, `RegexAccessorsTests.cs` alongside the existing reflection-driven `AccessorCanaryTests.cs` (which proves binding correctness but, by design, never mentions member names as literal text, so it cannot satisfy the textual gate on its own).
