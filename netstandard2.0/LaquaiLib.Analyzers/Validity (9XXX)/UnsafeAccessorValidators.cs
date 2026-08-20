@@ -947,7 +947,7 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
         if (expected.Length != actualSymbols.Length)
             return false;
 
-        for (int i = 0; i < expected.Length; i++)
+        for (var i = 0; i < expected.Length; i++)
         {
             var expectedParam = expected[i];
             var actualParam = actualSymbols[i];
