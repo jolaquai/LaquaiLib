@@ -636,7 +636,7 @@ public class BitArray :
     public void ShiftRightArithmetic(int n)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(n);
-        ulong fill = 0UL;
+        var fill = 0UL;
         if (IsNegative)
             fill = ulong.MaxValue;
         ShiftRightSpan(_data, n, fill);

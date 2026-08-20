@@ -11,7 +11,7 @@ public static partial class LinqMemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float? Average()
         {
-            float? sum = Sum(source);
+            var sum = Sum(source);
             return sum.HasValue ? sum.Value / source.Length : null;
         }
         /// <summary>

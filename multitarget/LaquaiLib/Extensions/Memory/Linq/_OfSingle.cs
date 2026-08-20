@@ -12,7 +12,7 @@ public static partial class LinqMemoryExtensions
         {
             if (source.Length == 0)
                 return 0;
-            float sum = Sum(source);
+            var sum = Sum(source);
             return sum / source.Length;
         }
         /// <summary>

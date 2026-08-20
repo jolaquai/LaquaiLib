@@ -12,7 +12,7 @@ public static partial class LinqMemoryExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public decimal? Average()
         {
-            decimal? sum = Sum(source);
+            var sum = Sum(source);
             return sum.HasValue ? sum.Value / source.Length : null;
         }
         /// <summary>
