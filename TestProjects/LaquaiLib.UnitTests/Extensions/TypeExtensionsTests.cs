@@ -250,23 +250,25 @@ public static class TypeExtensionsTests
         [Fact]
         public void IsFuncDetectsReturnType()
         {
-            Assert.True(typeof(Func<int>).IsFunc(out var r1));
+            Assert.True(typeof(Func<int>).IsFunc(out var pc1, out var r1));
+            Assert.Equal(0, pc1);
             Assert.Equal(typeof(int), r1);
-            Assert.True(typeof(Func<int, string>).IsFunc(out var r2));
+            Assert.True(typeof(Func<int, string>).IsFunc(out var pc2, out var r2));
+            Assert.Equal(1, pc2);
             Assert.Equal(typeof(string), r2);
         }
 
         [Fact]
         public void IsFuncFalseForAction()
         {
-            Assert.False(typeof(Action).IsFunc(out _));
+            Assert.False(typeof(Action).IsFunc(out _, out _));
         }
 
         [Fact]
         public void IsActionDetectsNonGenericAndGeneric()
         {
-            Assert.True(typeof(Action).IsAction(out var p0) && p0 == false);
-            Assert.True(typeof(Action<int, string>).IsAction(out var p2) && p2 == true);
+            Assert.True(typeof(Action).IsAction(out var p0) && p0 == 0);
+            Assert.True(typeof(Action<int, string>).IsAction(out var p2) && p2 == 2);
         }
     }
 
