@@ -3,7 +3,7 @@ namespace LaquaiLib.UnsafeUtils.Extensions;
 /// <summary>
 /// Provides extensions for the <see cref="nint"/> and <see cref="nuint"/> types, which implicitly includes pointers.
 /// </summary>
-public static class NintExtensions
+public static unsafe class NintExtensions
 {
     extension(nint address)
     {

@@ -879,7 +879,11 @@ public class UnsafeAccessorValidators : DiagnosticAnalyzer
     }
     private static bool TypesEqual(Type type, ITypeSymbol typeSymbol, SemanticModel semanticModel)
     {
-        if (typeSymbol.RuntimeType is { } runtimeType)
+        // A reflection type that still carries an open type parameter (e.g. 'IEnumerable<T>' where T is a method
+        // type parameter) can never '==' a resolved RuntimeType: unresolved type arguments make RuntimeType fall
+        // back to the unbound generic definition (e.g. plain 'IEnumerable<>'), which is never reference-equal to
+        // the closed-over-T type reflection actually reports. Such shapes must be compared structurally instead.
+        if (!type.ContainsGenericParameters && typeSymbol.RuntimeType is { } runtimeType)
             return type == runtimeType;
         // GetTypeByMetadataName only accepts unbound metadata names, so skip it for shapes it can't resolve anyway
         if (!type.IsGenericType && !type.IsArray && !type.IsPointer && !type.IsByRef && !type.IsGenericParameter

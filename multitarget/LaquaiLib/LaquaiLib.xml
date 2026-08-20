@@ -12868,6 +12868,69 @@
             Gets a <see cref="T:LaquaiLib.Text.CharComparer"/> that performs a case-insensitive ordinal comparison.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Text.FormattingHelpers">
+            <summary>
+            Provides helpers for formatting <see cref="T:System.ISpanFormattable"/> and <see cref="T:System.IUtf8SpanFormattable"/> instances.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Text.CharFormatResult`1">
+            <summary>
+            Encapsulates the result of a <see cref="M:LaquaiLib.Text.FormattingHelpers.TryFormatChars``1(``0@,System.ReadOnlySpan{System.Char},System.IFormatProvider)"/> call.
+            </summary>
+            <typeparam name="T">The type of the instance that was formatted.</typeparam>
+        </member>
+        <member name="F:LaquaiLib.Text.CharFormatResult`1.Value">
+            <summary>
+            The value that was formatted.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Text.CharFormatResult`1.Span">
+            <summary>
+            The chars that were written to the buffer.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Text.CharFormatResult`1.RentedArray">
+            <summary>
+            Gets or sets the array that was rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Text.CharFormatResult`1.Success">
+            <summary>
+            Whether the formatting operation was successful.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.CharFormatResult`1.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Text.ByteFormatResult`1">
+            <summary>
+            Encapsulates the result of a <see cref="M:LaquaiLib.Text.FormattingHelpers.TryFormatBytes``1(``0@,System.ReadOnlySpan{System.Char},System.IFormatProvider)"/> call.
+            </summary>
+            <typeparam name="T">The type of the instance that was formatted.</typeparam>
+        </member>
+        <member name="F:LaquaiLib.Text.ByteFormatResult`1.Value">
+            <summary>
+            The value that was formatted.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Text.ByteFormatResult`1.Span">
+            <summary>
+            The bytes that were written to the buffer.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Text.ByteFormatResult`1.RentedArray">
+            <summary>
+            Gets or sets the array that was rented from <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Text.ByteFormatResult`1.Success">
+            <summary>
+            Whether the formatting operation was successful.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.ByteFormatResult`1.Dispose">
+            <inheritdoc/>
+        </member>
         <member name="T:LaquaiLib.Text.Json.DateTimeUnixConverter">
             <summary>
             Implements a <see cref="T:System.Text.Json.Serialization.JsonConverter`1"/> that is able to serialize and deserialize <see cref="T:System.DateTime"/> values as Unix timestamps.
@@ -12968,7 +13031,24 @@
             <param name="line">The line number.</param>
         </member>
         <member name="M:LaquaiLib.Text.Line.ToString">
-            <inheritdoc/>
+            <summary>
+            Formats this instance to a <see langword="string"/> so that it is suitable for use in an MSBuild error entry.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.Line.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Returns the result of <see cref="M:LaquaiLib.Text.Line.ToString"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.Line.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="utf8Destination"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.Line.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="destination"/>.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Text.LineRange">
             <summary>
@@ -12985,7 +13065,24 @@
             <param name="end">The ending line number of the range (inclusive).</param>
         </member>
         <member name="M:LaquaiLib.Text.LineRange.ToString">
-            <inheritdoc/>
+            <summary>
+            Formats this instance to a <see langword="string"/> so that it is suitable for use in an MSBuild error entry.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineRange.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Returns the result of <see cref="M:LaquaiLib.Text.LineRange.ToString"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineRange.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="utf8Destination"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineRange.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="destination"/>.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Text.LineAndColumn">
             <summary>
@@ -13002,7 +13099,24 @@
             <param name="column">The 1-based column number.</param>
         </member>
         <member name="M:LaquaiLib.Text.LineAndColumn.ToString">
-            <inheritdoc/>
+            <summary>
+            Formats this instance to a <see langword="string"/> so that it is suitable for use in an MSBuild error entry.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumn.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Returns the result of <see cref="M:LaquaiLib.Text.LineAndColumn.ToString"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumn.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="utf8Destination"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumn.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="destination"/>.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Text.LineAndColumnRange">
             <summary>
@@ -13021,7 +13135,24 @@
             <param name="endColumn">The ending 1-based column number.</param>
         </member>
         <member name="M:LaquaiLib.Text.LineAndColumnRange.ToString">
-            <inheritdoc/>
+            <summary>
+            Formats this instance to a <see langword="string"/> so that it is suitable for use in an MSBuild error entry.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumnRange.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Returns the result of <see cref="M:LaquaiLib.Text.LineAndColumnRange.ToString"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumnRange.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="utf8Destination"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.LineAndColumnRange.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="destination"/>.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Text.TextRange">
             <summary>
@@ -13042,7 +13173,24 @@
             <param name="endColumn">The ending 1-based column number.</param>
         </member>
         <member name="M:LaquaiLib.Text.TextRange.ToString">
-            <inheritdoc/>
+            <summary>
+            Formats this instance to a <see langword="string"/> so that it is suitable for use in an MSBuild error entry.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.TextRange.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Returns the result of <see cref="M:LaquaiLib.Text.TextRange.ToString"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.TextRange.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="utf8Destination"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.TextRange.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
+            <summary>
+            Formats this instance into <paramref name="destination"/>.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Text.MSBuild">
             <summary>
