@@ -18,7 +18,7 @@ public class CrossAssemblyErasureTests
     public void ExternalErasedMethodResultRoundTripsThroughErasedParameter()
     {
         var proxy = ExternalErasureFixtureProxy.Create();
-        object hidden = proxy.MakeHidden(42);
+        var hidden = proxy.MakeHidden(42);
         Assert.NotNull(hidden);
         Assert.Equal(42, proxy.ReadHidden(hidden));
     }
@@ -27,7 +27,7 @@ public class CrossAssemblyErasureTests
     public void ExternalErasedPropertyGetAndSetRoundTrip()
     {
         var proxy = ExternalErasureFixtureProxy.Create();
-        object hidden = proxy.MakeHidden(7);
+        var hidden = proxy.MakeHidden(7);
 
         proxy.HiddenProperty = hidden;
 
@@ -37,7 +37,7 @@ public class CrossAssemblyErasureTests
     [Fact]
     public void ExternalErasedStaticMethodProducesUsableResult()
     {
-        object hidden = ExternalErasureFixtureProxy.CreateHidden(99);
+        var hidden = ExternalErasureFixtureProxy.CreateHidden(99);
         var proxy = ExternalErasureFixtureProxy.Create();
         Assert.Equal(99, proxy.ReadHidden(hidden));
     }
@@ -56,7 +56,7 @@ public class CrossAssemblyErasureTests
     [Fact]
     public void ExternalConstructorWithErasedParameterWorksThroughStaticFactories()
     {
-        object key = ExternalKeyedFixtureProxy.MakeKey(9);
+        var key = ExternalKeyedFixtureProxy.MakeKey(9);
         var proxy = ExternalKeyedFixtureProxy.Create(key);
         Assert.Equal(9, proxy.KeyValue);
     }
@@ -67,11 +67,11 @@ public class CrossAssemblyErasureTests
         // Pins the distinction MetadataTypeName.TryBuild draws: same-assembly names omit the assembly qualifier,
         // cross-assembly names include it (", LaquaiLib.Generators.RuntimeTests.External"). Both must resolve at runtime.
         var sameAssembly = new ErasureFixtureProxy(new Fixtures.ErasureFixture());
-        object sameSecret = sameAssembly.MakeSecret(1);
+        var sameSecret = sameAssembly.MakeSecret(1);
         Assert.Equal(1, sameAssembly.ReadSecret(sameSecret));
 
         var crossAssembly = ExternalErasureFixtureProxy.Create();
-        object crossHidden = crossAssembly.MakeHidden(2);
+        var crossHidden = crossAssembly.MakeHidden(2);
         Assert.Equal(2, crossAssembly.ReadHidden(crossHidden));
     }
 }

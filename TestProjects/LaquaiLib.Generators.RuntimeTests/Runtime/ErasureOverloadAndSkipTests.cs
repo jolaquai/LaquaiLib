@@ -15,7 +15,7 @@ public class ErasureOverloadAndSkipTests
     public void SurvivingErasedOverloadIsCallableWithARealInstance()
     {
         var proxy = new WhichFixtureProxy(new WhichFixture());
-        object a = WhichFixtureProxy.MakeA();
+        var a = WhichFixtureProxy.MakeA();
         Assert.Equal("A", proxy.Which(a));
     }
 
