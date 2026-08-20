@@ -19,7 +19,7 @@ public class IEnumerableExtensionsTaskTests
     }
 
     [Fact]
-    public void StartInitiatesAllTasks()
+    public async Task StartInitiatesAllTasksAsync()
     {
         var counter = 0;
         var tasks = new List<Task>();
@@ -28,7 +28,7 @@ public class IEnumerableExtensionsTaskTests
             tasks.Add(new Task(() => Interlocked.Increment(ref counter)));
 
         tasks.Start();
-        Task.WaitAll([.. tasks], TestContext.Current.CancellationToken);
+        await Task.WhenAll(tasks);
 
         Assert.Equal(3, counter);
     }

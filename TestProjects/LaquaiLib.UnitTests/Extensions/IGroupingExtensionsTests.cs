@@ -354,7 +354,7 @@ public class IGroupingExtensionsTests
 
         var dictionary = groupings.ToDictionary<int, HashSet<string>, string>();
 
-        Assert.Equal(1, dictionary.Count);
+        Assert.Single(dictionary);
         Assert.Equal(2, dictionary[1].Count);
         Assert.Contains("a", dictionary[1]);
         Assert.Contains("b", dictionary[1]);

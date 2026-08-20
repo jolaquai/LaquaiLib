@@ -607,7 +607,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.Sample();
 
-        Assert.Equal(1, result.Length);
+        Assert.Single(result);
         Assert.All(result, x => Assert.Contains(x, source));
     }
 
@@ -631,7 +631,7 @@ public class IEnumerableExtensionsTests
 
         var result = source.OrderedSample().ToArray();
 
-        Assert.Equal(1, result.Length);
+        Assert.Single(result);
     }
     #endregion
 

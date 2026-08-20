@@ -84,7 +84,7 @@ public sealed class ConcurrentSetTests
     public void ClearRemovesAllItems()
     {
         var set = new ConcurrentSet<int>();
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
             set.Add(i);
 
         set.Clear();
@@ -111,7 +111,7 @@ public sealed class ConcurrentSetTests
     public void ExceptWithRemovesSpecifiedItems()
     {
         var set = new ConcurrentSet<int>();
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
             set.Add(i);
 
         set.ExceptWith([2, 4]);
@@ -128,7 +128,7 @@ public sealed class ConcurrentSetTests
     public void IntersectWithKeepsOnlyCommonItems()
     {
         var set = new ConcurrentSet<int>();
-        for (int i = 1; i <= 5; i++)
+        for (var i = 1; i <= 5; i++)
             set.Add(i);
 
         set.IntersectWith([2, 3, 6]);
@@ -150,7 +150,7 @@ public sealed class ConcurrentSetTests
         set.UnionWith([2, 3, 4]);
 
         Assert.Equal(4, set.Count);
-        for (int i = 1; i <= 4; i++)
+        for (var i = 1; i <= 4; i++)
             Assert.Contains(i, set);
     }
 
@@ -296,12 +296,12 @@ public sealed class ConcurrentSetTests
         var set = new ConcurrentSet<int>();
         var tasks = new Task[10];
 
-        for (int i = 0; i < tasks.Length; i++)
+        for (var i = 0; i < tasks.Length; i++)
         {
             var start = i * 100;
             tasks[i] = Task.Run(() =>
             {
-                for (int j = 0; j < 100; j++)
+                for (var j = 0; j < 100; j++)
                     set.Add(start + j);
             }, TestContext.Current.CancellationToken);
         }
@@ -309,18 +309,18 @@ public sealed class ConcurrentSetTests
         await Task.WhenAll(tasks);
 
         Assert.Equal(1000, set.Count);
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
             Assert.Contains(i, set);
     }
 
     [Fact]
-    public void ThreadSafetyMixedOperations()
+    public async Task ThreadSafetyMixedOperations()
     {
         var set = new ConcurrentSet<int>();
         using var barrier = new Barrier(3);
         var errors = new ConcurrentBag<Exception>();
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
             set.Add(i);
 
         var t1 = Task.Run(() =>
@@ -328,7 +328,7 @@ public sealed class ConcurrentSetTests
             try
             {
                 barrier.SignalAndWait();
-                for (int i = 0; i < 50; i++)
+                for (var i = 0; i < 50; i++)
                     set.Remove(i * 2);
             }
             catch (Exception ex) { errors.Add(ex); }
@@ -339,7 +339,7 @@ public sealed class ConcurrentSetTests
             try
             {
                 barrier.SignalAndWait();
-                for (int i = 100; i < 200; i++)
+                for (var i = 100; i < 200; i++)
                     set.Add(i);
             }
             catch (Exception ex) { errors.Add(ex); }
@@ -350,13 +350,13 @@ public sealed class ConcurrentSetTests
             try
             {
                 barrier.SignalAndWait();
-                for (int i = 0; i < 100; i++)
+                for (var i = 0; i < 100; i++)
                     set.Contains(i);
             }
             catch (Exception ex) { errors.Add(ex); }
         }, TestContext.Current.CancellationToken);
 
-        Task.WaitAll(t1, t2, t3);
+        await Task.WhenAll(t1, t2, t3);
 
         Assert.Empty(errors);
         Assert.Equal(150, set.Count);
@@ -388,8 +388,8 @@ public sealed class ConcurrentSetTests
 
         public override int GetHashCode() => value % 10;
 
-        public bool Equals(HashCollider? other) => other != null && value == other.value;
+        public bool Equals(HashCollider other) => other != null && value == other.value;
 
-        public override bool Equals(object? obj) => Equals(obj as HashCollider);
+        public override bool Equals(object obj) => Equals(obj as HashCollider);
     }
 }

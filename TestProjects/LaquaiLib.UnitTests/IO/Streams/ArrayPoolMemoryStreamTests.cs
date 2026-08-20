@@ -717,7 +717,7 @@ public class ArrayPoolMemoryStreamTests
         Assert.Equal(pool.Rented.Count, pool.Returns.Count);
         Assert.Equal(pool.Returns.Count, pool.Returns.Distinct().Count());
         foreach (var rented in pool.Rented)
-            Assert.True(pool.Returns.Any(returned => ReferenceEquals(returned, rented)));
+            Assert.Contains(pool.Returns, returned => ReferenceEquals(returned, rented));
     }
 
     [Fact]
@@ -759,7 +759,7 @@ public class ArrayPoolMemoryStreamTests
     {
         using var stream = StreamWith(1, 2, 3);
         using var target = new MemoryStream();
-        await stream.CopyToAsync(target);
+        await stream.CopyToAsync(target, TestContext.Current.CancellationToken);
         Assert.Equal(new byte[] { 1, 2, 3 }, target.ToArray());
     }
 
@@ -767,14 +767,14 @@ public class ArrayPoolMemoryStreamTests
     public async Task CopyToAsyncRejectsNullDestination()
     {
         using var stream = StreamWith(1, 2, 3);
-        await Assert.ThrowsAsync<ArgumentNullException>(async () => { await stream.CopyToAsync(null, 4096, default); });
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => { await stream.CopyToAsync(null, 4096, TestContext.Current.CancellationToken); });
     }
 
     [Fact]
     public async Task WriteAsyncMatchesSynchronousWrite()
     {
         using var stream = new ArrayPoolMemoryStream();
-        await stream.WriteAsync(new byte[] { 1, 2, 3 }.AsMemory());
+        await stream.WriteAsync(new byte[] { 1, 2, 3 }.AsMemory(), TestContext.Current.CancellationToken);
         Assert.Equal(3L, stream.Length);
         stream.Position = 0;
         var buffer = new byte[3];
@@ -786,7 +786,8 @@ public class ArrayPoolMemoryStreamTests
     public async Task WriteAsyncArrayOverloadHonoursOffsetAndCount()
     {
         using var stream = new ArrayPoolMemoryStream();
-        await stream.WriteAsync([0, 1, 2, 3, 0], 1, 3, default);
+        byte[] src = [0, 1, 2, 3, 0];
+        await stream.WriteAsync(src.AsMemory(1, 3), TestContext.Current.CancellationToken);
         Assert.Equal(3L, stream.Length);
         stream.Position = 0;
         var buffer = new byte[3];
@@ -799,7 +800,7 @@ public class ArrayPoolMemoryStreamTests
     {
         using var stream = StreamWith(1, 2, 3);
         var buffer = new byte[3];
-        Assert.Equal(3, await stream.ReadAsync(buffer.AsMemory()));
+        Assert.Equal(3, await stream.ReadAsync(buffer.AsMemory(), TestContext.Current.CancellationToken));
         Assert.Equal(new byte[] { 1, 2, 3 }, buffer);
     }
 
@@ -808,7 +809,7 @@ public class ArrayPoolMemoryStreamTests
     {
         using var stream = StreamWith(1, 2, 3);
         var buffer = new byte[5];
-        Assert.Equal(3, await stream.ReadAsync(buffer, 1, 3, default));
+        Assert.Equal(3, await stream.ReadAsync(buffer.AsMemory(1, 3), TestContext.Current.CancellationToken));
         Assert.Equal(new byte[] { 0, 1, 2, 3, 0 }, buffer);
     }
 
@@ -816,7 +817,7 @@ public class ArrayPoolMemoryStreamTests
     public async Task ReadAsyncAdvancesPosition()
     {
         using var stream = StreamWith(1, 2, 3);
-        Assert.Equal(2, await stream.ReadAsync(new byte[2].AsMemory()));
+        Assert.Equal(2, await stream.ReadAsync(new byte[2].AsMemory(), TestContext.Current.CancellationToken));
         Assert.Equal(2L, stream.Position);
     }
 
@@ -824,14 +825,14 @@ public class ArrayPoolMemoryStreamTests
     public void ReadAsyncArrayOverloadRejectsNullBuffer()
     {
         using var stream = StreamWith(1, 2, 3);
-        Assert.Throws<ArgumentNullException>(() => { _ = stream.ReadAsync(null, 0, 1, default); });
+        Assert.Throws<ArgumentNullException>(() => { _ = stream.ReadAsync(null, 0, 1, TestContext.Current.CancellationToken); });
     }
 
     [Fact]
     public void WriteAsyncArrayOverloadRejectsNullBuffer()
     {
         using var stream = new ArrayPoolMemoryStream();
-        Assert.Throws<ArgumentNullException>(() => { _ = stream.WriteAsync(null, 0, 1, default); });
+        Assert.Throws<ArgumentNullException>(() => { _ = stream.WriteAsync(null, 0, 1, TestContext.Current.CancellationToken); });
     }
 
     [Fact]
@@ -856,7 +857,7 @@ public class ArrayPoolMemoryStreamTests
     public void CopyToAsyncRejectsNullDestinationSynchronously()
     {
         using var stream = StreamWith(1, 2, 3);
-        Assert.Throws<ArgumentNullException>(() => { _ = stream.CopyToAsync(null, 4096, default); });
+        Assert.Throws<ArgumentNullException>(() => { _ = stream.CopyToAsync(null, 4096, TestContext.Current.CancellationToken); });
     }
 
     [Fact]
@@ -975,7 +976,7 @@ public class ArrayPoolMemoryStreamTests
     {
         var stream = DisposedStream();
         using var target = new MemoryStream();
-        Assert.Throws<ObjectDisposedException>(() => { _ = stream.CopyToAsync(target, 4096, default); });
+        Assert.Throws<ObjectDisposedException>(() => { _ = stream.CopyToAsync(target, 4096, TestContext.Current.CancellationToken); });
     }
 
     [Fact]

@@ -11,14 +11,14 @@ public class CancellationTokenExtensionsTests
         var completionTask = cts.Token.WhenCancelled();
 
         cts.Cancel();
-        var completedTask = await Task.WhenAny(completionTask, Task.Delay(1000));
+        var completedTask = await Task.WhenAny(completionTask, Task.Delay(1000, TestContext.Current.CancellationToken));
 
         Assert.Equal(completionTask, completedTask);
         Assert.True(completionTask.IsCompletedSuccessfully);
     }
 
     [Fact]
-    public async Task WhenCancelledTokenAlreadyCancelledTaskCompletesImmediately()
+    public void WhenCancelledTokenAlreadyCancelledTaskCompletesImmediately()
     {
         using var cts = new CancellationTokenSource();
         cts.Cancel();
@@ -49,7 +49,7 @@ public class CancellationTokenExtensionsTests
 
         cts.Cancel();
 
-        await completionTask.ConfigureAwait(false);
+        await completionTask;
         Assert.True(completionTask.IsCompletedSuccessfully);
         Assert.False(completionTask.IsFaulted);
         Assert.False(completionTask.IsCanceled);

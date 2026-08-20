@@ -4,6 +4,7 @@
     <TargetFramework>net11.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>$(NoWarn);IDE0058</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
