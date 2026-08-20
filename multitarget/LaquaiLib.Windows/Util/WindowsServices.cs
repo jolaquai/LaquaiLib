@@ -21,7 +21,6 @@ public static class WindowsServices
     /// <param name="serviceName">The name of the Windows service.</param>
     /// <param name="proc">The process to check.</param>
     /// <returns><see langword="true"/> if the process is running as a Windows service, otherwise <see langword="false"/>.</returns>
-    /// <exception cref="InvalidOperationException">
     public static bool IsRunningAsService(string serviceName, Process proc)
     {
         var process = Process.GetProcessById(proc.Id);

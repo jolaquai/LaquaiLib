@@ -12,7 +12,7 @@ public readonly struct DispatcherAwaitable(Dispatcher dispatcher, DispatcherPrio
     private readonly Dispatcher _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
     /// <summary>
-    /// Gets a <see cref="DispatcherAwaiter"/> instance that resumes the <see langword="await"/>'s continuation on the specified <paramref name="dispatcher"/> with the specified <paramref name="dispatcherPriority"/>.
+    /// Gets a <see cref="DispatcherAwaiter"/> instance that resumes continuations on the specified <see cref="Dispatcher"/> with the specified <see cref="DispatcherPriority"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public readonly DispatcherAwaiter GetAwaiter() => new DispatcherAwaiter(_dispatcher, dispatcherPriority);
@@ -25,7 +25,7 @@ public readonly struct DispatcherAwaiter(Dispatcher dispatcher, DispatcherPriori
     private readonly Dispatcher _dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
 
     /// <summary>
-    /// Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <paramref name="dispatcher"/>.
+    /// Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <see cref="Dispatcher"/>.
     /// </summary>
     public readonly bool IsCompleted
     {
@@ -35,7 +35,7 @@ public readonly struct DispatcherAwaiter(Dispatcher dispatcher, DispatcherPriori
     /// <inheritdoc cref="UnsafeOnCompleted"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly void OnCompleted(Action continuation) => UnsafeOnCompleted(continuation);
     /// <summary>
-    /// Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <paramref name="dispatcher"/>.
+    /// Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <see cref="Dispatcher"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly void UnsafeOnCompleted(Action continuation) => _dispatcher.InvokeAsync(continuation, dispatcherPriority);
     /// <summary>

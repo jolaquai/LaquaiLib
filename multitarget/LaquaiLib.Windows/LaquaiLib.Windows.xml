@@ -321,7 +321,14 @@
             <param name="processId">The ID of the process to check.</param> 
             <returns><see langword="true"/> if the process is running as a Windows service, otherwise <see langword="false"/>.</returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:LaquaiLib.Windows.Util.WindowsServices.IsRunningAsService(System.String,System.Diagnostics.Process)" -->
+        <member name="M:LaquaiLib.Windows.Util.WindowsServices.IsRunningAsService(System.String,System.Diagnostics.Process)">
+            <summary>
+            Determines whether the specified <paramref name="proc"/> is running as a Windows service with the specified <paramref name="serviceName"/>.
+            </summary>
+            <param name="serviceName">The name of the Windows service.</param>
+            <param name="proc">The process to check.</param>
+            <returns><see langword="true"/> if the process is running as a Windows service, otherwise <see langword="false"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Windows.Util.WpfHelper">
             <summary>
             Provides utility methods for WPF applications.
@@ -392,7 +399,7 @@
         </member>
         <member name="M:LaquaiLib.Threading.DispatcherAwaitable.GetAwaiter">
             <summary>
-            Gets a <see cref="T:LaquaiLib.Threading.DispatcherAwaiter"/> instance that resumes the <see langword="await"/>'s continuation on the specified <paramref name="dispatcher"/> with the specified <paramref name="dispatcherPriority"/>.
+            Gets a <see cref="T:LaquaiLib.Threading.DispatcherAwaiter"/> instance that resumes continuations on the specified <see cref="T:System.Windows.Threading.Dispatcher"/> with the specified <see cref="T:System.Windows.Threading.DispatcherPriority"/>.
             </summary>
         </member>
         <member name="T:LaquaiLib.Threading.DispatcherAwaiter">
@@ -407,7 +414,7 @@
         </member>
         <member name="P:LaquaiLib.Threading.DispatcherAwaiter.IsCompleted">
             <summary>
-            Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <paramref name="dispatcher"/>.
+            Gets whether the thread <see langword="await"/>ing this instance is the same as the thread associated with the specified <see cref="T:System.Windows.Threading.Dispatcher"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.DispatcherAwaiter.OnCompleted(System.Action)">
@@ -415,7 +422,7 @@
         </member>
         <member name="M:LaquaiLib.Threading.DispatcherAwaiter.UnsafeOnCompleted(System.Action)">
             <summary>
-            Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <paramref name="dispatcher"/>.
+            Schedules the specified <paramref name="continuation"/> to be executed on the thread associated with the specified <see cref="T:System.Windows.Threading.Dispatcher"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Threading.DispatcherAwaiter.GetResult">
