@@ -10,7 +10,7 @@ public class UseAllocateUninitializedArrayAnalyzerTests
             TestCode = source,
             ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
             // Without this the formatter reflows with Environment.NewLine, making the expected sources platform-dependent
-            TestState = { AnalyzerConfigFiles = { ("/.editorconfig", "root = true\n\n[*.cs]\nend_of_line = lf\n") } },
+            TestState = { AnalyzerConfigFiles = { ("/.editorconfig", "root = true\n\n[*.cs]\nend_of_line = crlf\n") } },
         }.RunAsync();
 
     private static Task VerifyNoDiagnostic(string source) => VerifyAnalyzer(source);
