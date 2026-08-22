@@ -52,7 +52,6 @@ public class MultiKeyDictionary<TValue>
     // Beyond 8 (which fits into a default ValueTuple), switch to an array-based dictionary instead
     private Dictionary<object[], TValue> _many;
     private Dictionary<object[], TValue>.AlternateLookup<ReadOnlySpan<object>> _manyLookup;
-    private int KeySum => (_one?.Count ?? 0) + (_two?.Count ?? 0) + (_three?.Count ?? 0) + (_four?.Count ?? 0) + (_five?.Count ?? 0) + (_six?.Count ?? 0) + (_seven?.Count ?? 0) + (_eight?.Count ?? 0) + (_many?.Count ?? 0);
 
     /// <summary>
     /// Initializes a new <see cref="MultiKeyDictionary{TValue}"/> with no backing storage allocated.
