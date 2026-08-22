@@ -33,7 +33,7 @@ public class ArrayExtensionsByteTests
     [Fact]
     public void ToMemoryStreamWithEmptyArrayCreatesValidStream()
     {
-        byte[] bytes =[];
+        byte[] bytes = [];
 
         using var stream = bytes.ToMemoryStream();
 
