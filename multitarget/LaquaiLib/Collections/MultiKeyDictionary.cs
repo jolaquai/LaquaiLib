@@ -38,8 +38,8 @@ public class MultiKeyDictionary<TValue>
         public int GetHashCode([DisallowNull] object obj) => obj.GetHashCode();
     }
 
-    [DoesNotReturn] private static void ThrowKeysNotFoundException() => throw new KeyNotFoundException("The specified key combination was not found.");
-    [DoesNotReturn] private static void ThrowKeysAlreadyExistsException() => throw new InvalidOperationException("The specified key combination already exists in the dictionary.");
+    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowKeysNotFoundException() => throw new KeyNotFoundException("The specified key combination was not found.");
+    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowKeysAlreadyExistsException() => throw new InvalidOperationException("The specified key combination already exists in the dictionary.");
 
     private Dictionary<object, TValue> _one;
     private Dictionary<(object, object), TValue> _two;

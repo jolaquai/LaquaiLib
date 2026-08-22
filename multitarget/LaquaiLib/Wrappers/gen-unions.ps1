@@ -21,7 +21,7 @@ W '    /// </summary>'
 W '    public const string NoValue = "Empty";'
 W '    // constrained callvirt, so no boxing for value types that override ToString'
 W '    internal static string ToString<T>(in T value) => value is null ? NoValue : value.ToString() ?? NoValue;'
-W '    [DoesNotReturn]'
+W '    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn]'
 W '    internal static T ThrowNotHeld<T>() => throw new InvalidOperationException($"The union does not encapsulate a value of type ''{typeof(T)}''.");'
 W '}'
 

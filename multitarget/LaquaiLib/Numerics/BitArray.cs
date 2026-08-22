@@ -832,7 +832,7 @@ public class BitArray :
             ThrowOverflow(Unsafe.SizeOf<T>(), typeof(T));
         return result;
     }
-    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)]
+    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn]
     private static void ThrowOverflow(int size, Type t) => throw new OverflowException($"The value has set bits beyond the {size} byte(s) of {t} and cannot be reinterpreted without loss.");
 
     /// <summary>
