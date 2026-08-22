@@ -43,7 +43,6 @@ public static class FormattingHelpers
             throw;
         }
     }
-
     public static CharFormatResult<T> TryFormatChars<T>(in T instance, ReadOnlySpan<char> format = default, IFormatProvider formatProvider = null) where T : ISpanFormattable
     {
         var size = RentStartSize;

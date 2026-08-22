@@ -13018,6 +13018,11 @@
             Emits <c>warning</c> as the category of the MSBuild error.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Text.IMSBuildErrorLocation">
+            <summary>
+            Defines a contract for types that can be formatted as MSBuild error locations, which can include line numbers, column numbers, and ranges thereof.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Text.Line">
             <summary>
             Represents a 1-based line number.
@@ -13195,6 +13200,66 @@
         <member name="T:LaquaiLib.Text.MSBuild">
             <summary>
             Provides functionality related to MSBuild operations.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.BuildError(System.String,System.String,System.String,System.String)">
+            <summary>
+            Builds an MSBuild-recognizable <c>error</c> entry with no location information, as a <see langword="string"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.BuildWarning(System.String,System.String,System.String,System.String)">
+            <summary>
+            Builds an MSBuild-recognizable <c>warning</c> entry with no location information, as a <see langword="string"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.BuildError``1(System.String,``0,System.String,System.String,System.String)">
+            <summary>
+            Builds an MSBuild-recognizable <c>error</c> entry that references <paramref name="path"/> at <paramref name="location"/>, as a <see langword="string"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.BuildWarning``1(System.String,``0,System.String,System.String,System.String)">
+            <summary>
+            Builds an MSBuild-recognizable <c>warning</c> entry that references <paramref name="path"/> at <paramref name="location"/>, as a <see langword="string"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteError(System.IO.TextWriter,System.String,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>error</c> line with no location information to <paramref name="writer"/>, terminated using <paramref name="writer"/>'s own <see cref="P:System.IO.TextWriter.NewLine"/>. The caller is responsible for ensuring <paramref name="writer"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteWarning(System.IO.TextWriter,System.String,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>warning</c> line with no location information to <paramref name="writer"/>, terminated using <paramref name="writer"/>'s own <see cref="P:System.IO.TextWriter.NewLine"/>. The caller is responsible for ensuring <paramref name="writer"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteError``1(System.IO.TextWriter,System.String,``0,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>error</c> line that references <paramref name="path"/> at <paramref name="location"/> to <paramref name="writer"/>, terminated using <paramref name="writer"/>'s own <see cref="P:System.IO.TextWriter.NewLine"/>. The caller is responsible for ensuring <paramref name="writer"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteWarning``1(System.IO.TextWriter,System.String,``0,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>warning</c> line that references <paramref name="path"/> at <paramref name="location"/> to <paramref name="writer"/>, terminated using <paramref name="writer"/>'s own <see cref="P:System.IO.TextWriter.NewLine"/>. The caller is responsible for ensuring <paramref name="writer"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteError(System.IO.Stream,System.String,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>error</c> line with no location information, UTF8-encoded, to <paramref name="stream"/>, terminated with CRLF. The caller is responsible for ensuring <paramref name="stream"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteWarning(System.IO.Stream,System.String,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>warning</c> line with no location information, UTF8-encoded, to <paramref name="stream"/>, terminated with CRLF. The caller is responsible for ensuring <paramref name="stream"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteError``1(System.IO.Stream,System.String,``0,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>error</c> line that references <paramref name="path"/> at <paramref name="location"/>, UTF8-encoded, to <paramref name="stream"/>, terminated with CRLF. The caller is responsible for ensuring <paramref name="stream"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Text.MSBuild.WriteWarning``1(System.IO.Stream,System.String,``0,System.String,System.String,System.String)">
+            <summary>
+            Writes an MSBuild-recognizable <c>warning</c> line that references <paramref name="path"/> at <paramref name="location"/>, UTF8-encoded, to <paramref name="stream"/>, terminated with CRLF. The caller is responsible for ensuring <paramref name="stream"/> is positioned such that the written line will actually be recognized as process output by MSBuild/Visual Studio.
             </summary>
         </member>
         <member name="T:LaquaiLib.Text.StringHelpers">
