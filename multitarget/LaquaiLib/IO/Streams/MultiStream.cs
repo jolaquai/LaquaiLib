@@ -236,6 +236,6 @@ public sealed class MultiStream : Stream
         await base.DisposeAsync().ConfigureAwait(false);
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowSeekNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support seeking.");
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowReadNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support reading.");
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowSeekNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support seeking.");
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowReadNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support reading.");
 }

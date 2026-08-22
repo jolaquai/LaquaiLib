@@ -17,7 +17,7 @@ public static class LaquaiLibUnion
     public const string NoValue = "Empty";
     // constrained callvirt, so no boxing for value types that override ToString
     internal static string ToString<T>(in T value) => value is null ? NoValue : value.ToString() ?? NoValue;
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn]
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)]
     internal static T ThrowNotHeld<T>() => throw new InvalidOperationException($"The union does not encapsulate a value of type '{typeof(T)}'.");
 }
 /// <summary>

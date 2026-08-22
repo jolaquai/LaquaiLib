@@ -33,5 +33,5 @@ public partial class NullToBoolConverter : IValueConverter
     /// <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
     /// <param name="culture">Which culture to use when converting / formatting the value.</param>
     /// <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
 }

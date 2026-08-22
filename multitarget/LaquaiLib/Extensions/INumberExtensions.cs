@@ -50,5 +50,5 @@ public static class NumberExtensions
         }
     }
 
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowAlignmentNotPow2() => throw new ArgumentException("Alignment must be a power of two.");
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowAlignmentNotPow2() => throw new ArgumentException("Alignment must be a power of two.");
 }

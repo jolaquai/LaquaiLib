@@ -570,10 +570,10 @@ public static class MSBuild
         if (text.IndexOfAny('\r', '\n') >= 0)
             ThrowTextContainsLineBreaks();
     }
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowOriginContainsLineBreaks() => throw new ArgumentException("Origin must not contain line breaks.", "origin");
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowSubcategoryContainsLineBreaks() => throw new ArgumentException("Subcategory must not contain line breaks.", "subcategory");
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowCodeContainsInvalidChars() => throw new ArgumentException("Code must not contain line breaks, spaces or colons.", "code");
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowTextContainsLineBreaks() => throw new ArgumentException("Text must not contain line breaks.", "text");
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowOriginContainsLineBreaks() => throw new ArgumentException("Origin must not contain line breaks.", "origin");
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowSubcategoryContainsLineBreaks() => throw new ArgumentException("Subcategory must not contain line breaks.", "subcategory");
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowCodeContainsInvalidChars() => throw new ArgumentException("Code must not contain line breaks, spaces or colons.", "code");
+    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowTextContainsLineBreaks() => throw new ArgumentException("Text must not contain line breaks.", "text");
 
     private static int FormatChars<TLocation>(Span<char> destination, MSBuildErrorType type, ReadOnlySpan<char> origin, TLocation location, ReadOnlySpan<char> subcategory, ReadOnlySpan<char> code, ReadOnlySpan<char> text, ReadOnlySpan<char> newLine)
         where TLocation : struct, IMSBuildErrorLocation
