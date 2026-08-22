@@ -70,6 +70,7 @@ public sealed class MultiStream : Stream
     /// <inheritdoc/>
     public override long Length
     {
+        [DoesNotReturn]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
@@ -80,12 +81,14 @@ public sealed class MultiStream : Stream
     /// <inheritdoc/>
     public override long Position
     {
+        [DoesNotReturn]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get
         {
             ThrowSeekNotSupported();
             return default;
         }
+        [DoesNotReturn]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         set => ThrowSeekNotSupported();
     }
@@ -101,7 +104,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>. <see cref="MultiStream"/> does not support seeking.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override long Seek(long offset, SeekOrigin origin)
     {
         ThrowSeekNotSupported();
@@ -162,7 +166,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int Read(byte[] buffer, int offset, int count)
     {
         ThrowReadNotSupported();
@@ -171,7 +176,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int Read(Span<byte> buffer)
     {
         ThrowReadNotSupported();
@@ -180,7 +186,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int ReadByte()
     {
         ThrowReadNotSupported();
@@ -189,7 +196,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
         ThrowReadNotSupported();
@@ -198,7 +206,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         ThrowReadNotSupported();
@@ -207,7 +216,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>.
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
     {
         ThrowReadNotSupported();
@@ -216,7 +226,8 @@ public sealed class MultiStream : Stream
     /// <summary>
     /// Unconditionally throws a <see cref="NotSupportedException"/>. <see cref="MultiStream"/> does not support operations affecting the underlying streams directly (beyond broadcasted writes).
     /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining), DoesNotReturn]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override void SetLength(long value) => ThrowSeekNotSupported();
 
     /// <inheritdoc/>
@@ -236,6 +247,6 @@ public sealed class MultiStream : Stream
         await base.DisposeAsync().ConfigureAwait(false);
     }
 
-    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowSeekNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support seeking.");
-    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowReadNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support reading.");
+    [DoesNotReturn][MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowSeekNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support seeking.");
+    [DoesNotReturn][MethodImpl(MethodImplOptions.NoInlining)] private static void ThrowReadNotSupported() => throw new NotSupportedException($"{nameof(MultiStream)} does not support reading.");
 }

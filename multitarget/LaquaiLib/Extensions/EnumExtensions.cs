@@ -44,7 +44,8 @@ public static class EnumExtensions
         }
     }
 
-    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.NoInlining)]
     private static void ThrowTypeUnsupported(Type type) => throw new NotSupportedException($"The underlying type of the enum '{type.FullName}' ('{type.GetEnumUnderlyingType().FullName}') is not supported.");
 
     extension<T>(T source) where T : struct, Enum

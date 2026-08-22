@@ -48,8 +48,8 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     /// <param name="x">The first <see langword="string"/> to compare.</param>
     /// <param name="y">The second <see langword="string"/> to compare.</param>
     /// <returns>A signed integer that indicates the result of the comparison. A negative value indicates that <paramref name="x"/> is less than <paramref name="y"/>, zero indicates that they are equal, and a positive value indicates that <paramref name="x"/> is greater than <paramref name="y"/>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int Compare(string x, string y) => Compare(x.AsSpan(), y.AsSpan());
     /// <summary>
     /// Compares two <see cref="ReadOnlySpan{T}"/> of <see langword="char"/> and returns a value indicating whether one is less than, equal to, or greater than the other.
@@ -302,15 +302,15 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
     private static partial Regex RomanNumeralRegex();
 
     /// <inheritdoc/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override bool Equals(string x, string y) => Equals(x.AsSpan(), y.AsSpan());
     /// <inheritdoc/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Equals(ReadOnlySpan<char> x, ReadOnlySpan<char> y) => Compare(x, y) == 0;
     /// <inheritdoc/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public override int GetHashCode([DisallowNull] string obj) => GetHashCode(obj.AsSpan());
     /// <inheritdoc/>
     public int GetHashCode([DisallowNull] ReadOnlySpan<char> span)

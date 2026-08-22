@@ -26,12 +26,7 @@ public partial class NullToBoolConverter : IValueConverter
     };
 
     /// <summary>
-    /// [Unsupported] Converts a previously converted <paramref name="value"/> back to its original value. This method unconditionally throws a <see cref="NotSupportedException"/>.
+    /// This method unconditionally throws a <see cref="NotSupportedException"/>.
     /// </summary>
-    /// <param name="value">The input value.</param>
-    /// <param name="targetType">The <see cref="Type"/> that the receiving context expects the output of this method to be of.</param>
-    /// <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
-    /// <param name="culture">Which culture to use when converting / formatting the value.</param>
-    /// <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
-    [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)] public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
+    [DoesNotReturn][MethodImpl(MethodImplOptions.NoInlining)] public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) => throw new NotSupportedException();
 }

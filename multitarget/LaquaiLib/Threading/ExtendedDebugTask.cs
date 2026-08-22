@@ -9,8 +9,8 @@ namespace LaquaiLib.Threading;
 /// <summary>
 /// Provides factory methods for creating <see cref="ExtendedDebugTask"/> instances.
 /// </summary>
-[StackTraceHidden]
 [DebuggerStepThrough]
+[StackTraceHidden]
 public static class ExtendedDebugTaskExtensions
 {
     /// <summary>
@@ -31,8 +31,8 @@ public static class ExtendedDebugTaskExtensions
 /// <summary>
 /// Wraps a <see cref="System.Threading.Tasks.Task"/> to provide additional debugging information.
 /// </summary>
-[StackTraceHidden]
 [DebuggerStepThrough]
+[StackTraceHidden]
 public class ExtendedDebugTask(Task task)
 {
     internal const string awaitStackTemplate = $$"""
@@ -199,8 +199,8 @@ public class ExtendedDebugTask(Task task)
 /// <summary>
 /// Enables waiting for the task to complete execution while capturing the stack trace at the await point.
 /// </summary>
-[StackTraceHidden]
 [DebuggerStepThrough]
+[StackTraceHidden]
 public readonly struct ExtendedDebugTaskAwaiter : INotifyCompletion
 {
     private readonly TaskAwaiter _awaiter;
@@ -253,8 +253,8 @@ public readonly struct ExtendedDebugTaskAwaiter : INotifyCompletion
 /// <summary>
 /// Provides an awaitable object that allows for configured awaits on <see cref="ExtendedDebugTask"/>.
 /// </summary>
-[StackTraceHidden]
 [DebuggerStepThrough]
+[StackTraceHidden]
 public readonly struct ConfiguredExtendedDebugTaskAwaitable
 {
     private readonly Task _task;
@@ -287,8 +287,8 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
     /// <summary>
     /// Enables waiting for the task to complete execution while capturing the stack trace at the await point.
     /// </summary>
-    [StackTraceHidden]
     [DebuggerStepThrough]
+    [StackTraceHidden]
     public readonly struct ConfiguredExtendedDebugTaskAwaiter : INotifyCompletion
     {
         // I know this is ugly as hell, but we need to be compatible with all sorts of Task variants
@@ -344,8 +344,8 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable
 /// Wraps a <see cref="Task{TResult}"/> to provide additional debugging information.
 /// </summary>
 /// <param name="task">The <see cref="Task{TResult}"/> to wrap.</param>
-[StackTraceHidden]
 [DebuggerStepThrough]
+[StackTraceHidden]
 public class ExtendedDebugTask<TResult>(Task<TResult> task)
 {
     private readonly StackTrace _creationStack = new StackTrace(true);
@@ -486,8 +486,8 @@ public class ExtendedDebugTask<TResult>(Task<TResult> task)
 /// <summary>
 /// Enables waiting for the task to complete execution while capturing the stack trace at the await point.
 /// </summary>
-[StackTraceHidden]
 [DebuggerStepThrough]
+[StackTraceHidden]
 public readonly struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
 {
     private readonly TaskAwaiter<TResult> _awaiter;
@@ -540,8 +540,8 @@ public readonly struct ExtendedDebugTaskAwaiter<TResult> : INotifyCompletion
 /// <summary>
 /// Provides an awaitable object that allows for configured awaits on <see cref="ExtendedDebugTask"/>.
 /// </summary>
-[StackTraceHidden]
 [DebuggerStepThrough]
+[StackTraceHidden]
 public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
 {
     private readonly Task<TResult> _task;
@@ -587,8 +587,8 @@ public readonly struct ConfiguredExtendedDebugTaskAwaitable<TResult>
     /// <summary>
     /// Enables waiting for the task to complete execution while capturing the stack trace at the await point.
     /// </summary>
-    [StackTraceHidden]
     [DebuggerStepThrough]
+    [StackTraceHidden]
     public readonly struct ConfiguredExtendedDebugTaskAwaiter : INotifyCompletion
     {
         // I know this is ugly as hell, but we need to be compatible with all sorts of Task variants
