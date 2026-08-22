@@ -548,7 +548,7 @@ public static partial class IEnumerableExtensions
                     }
                 }
 #elif NET10_0_OR_GREATER
-            return span.IndexOf(item, equalityComparer);
+                return span.IndexOf(item, equalityComparer);
 #endif
             }
             else
@@ -616,7 +616,7 @@ public static partial class IEnumerableExtensions
                     }
                 }
 #elif NET10_0_OR_GREATER
-            return span.IndexOf(enumerated, equalityComparer);
+                return span.IndexOf(enumerated, equalityComparer);
 #endif
             }
             else

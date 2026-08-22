@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 namespace LaquaiLib.Extensions;
+
 public static partial class StringExtensions
 {
     extension(string source)

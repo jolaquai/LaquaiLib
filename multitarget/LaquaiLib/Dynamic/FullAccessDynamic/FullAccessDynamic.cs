@@ -98,7 +98,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         }
 
         member = members[0];
-        memberAssigned:
+    memberAssigned:
         switch (member)
         {
             case PropertyInfo propInfo:
@@ -168,7 +168,7 @@ public class FullAccessDynamic<T> : DynamicObject, IEquatable<FullAccessDynamic<
         }
 
         member = members[0];
-        memberAssigned:
+    memberAssigned:
         switch (member)
         {
             case PropertyInfo propInfo:
