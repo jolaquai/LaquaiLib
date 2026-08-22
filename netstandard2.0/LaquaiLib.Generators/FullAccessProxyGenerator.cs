@@ -440,9 +440,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 var j = i + 1;
                 while (j < name.Length && depth > 0)
                 {
-                    if (name[j] == '<') depth++;
-                    else if (name[j] == '>') depth--;
-                    if (depth == 0) break;
+                    if (name[j] == '<')
+                        depth++;
+                    else if (name[j] == '>')
+                        depth--;
+                    if (depth == 0)
+                        break;
                     j++;
                 }
                 if (j >= name.Length)
@@ -456,9 +459,12 @@ public class FullAccessProxyGenerator : IIncrementalGenerator
                 for (var k = 0; k < inner.Length; k++)
                 {
                     var ic = inner[k];
-                    if (ic == '<') d++;
-                    else if (ic == '>') d--;
-                    else if (ic == ',' && d == 0) arity++;
+                    if (ic == '<')
+                        d++;
+                    else if (ic == '>')
+                        d--;
+                    else if (ic == ',' && d == 0)
+                        arity++;
                 }
                 // Only treat as open generic if inner is empty or only commas/whitespace
                 var isOpen = true;
