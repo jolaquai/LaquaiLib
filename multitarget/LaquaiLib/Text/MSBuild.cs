@@ -48,7 +48,7 @@ public readonly struct Line(long line) : ISpanFormattable, IUtf8SpanFormattable
 
         utf8Destination[0] = (byte)'(';
         result.Span.CopyTo(utf8Destination[1..^1]);
-        utf8Destination[^1] = (byte)')';
+        utf8Destination[acc - 1] = (byte)')';
         bytesWritten = acc;
         return true;
     }
@@ -68,7 +68,7 @@ public readonly struct Line(long line) : ISpanFormattable, IUtf8SpanFormattable
 
         destination[0] = '(';
         result.Span.CopyTo(destination[1..^1]);
-        destination[^1] = ')';
+        destination[acc - 1] = ')';
         charsWritten = acc;
         return true;
     }
@@ -112,7 +112,7 @@ public readonly struct LineRange(long start, long end) : ISpanFormattable, IUtf8
         startResult.Span.CopyTo(utf8Destination[1..]);
         utf8Destination[dashIdx] = (byte)'-';
         endResult.Span.CopyTo(utf8Destination[(dashIdx + 1)..^1]);
-        utf8Destination[^1] = (byte)')';
+        utf8Destination[acc - 1] = (byte)')';
         bytesWritten = acc;
         return true;
     }
@@ -140,7 +140,7 @@ public readonly struct LineRange(long start, long end) : ISpanFormattable, IUtf8
         startResult.Span.CopyTo(destination[1..]);
         destination[dashIdx] = '-';
         endResult.Span.CopyTo(destination[(dashIdx + 1)..^1]);
-        destination[^1] = ')';
+        destination[acc - 1] = ')';
         charsWritten = acc;
         return true;
     }
@@ -184,7 +184,7 @@ public readonly struct LineAndColumn(long line, long column) : ISpanFormattable,
         lineResult.Span.CopyTo(utf8Destination[1..]);
         utf8Destination[commaIdx] = (byte)',';
         colResult.Span.CopyTo(utf8Destination[(commaIdx + 1)..^1]);
-        utf8Destination[^1] = (byte)')';
+        utf8Destination[acc - 1] = (byte)')';
         bytesWritten = acc;
         return true;
     }
@@ -212,7 +212,7 @@ public readonly struct LineAndColumn(long line, long column) : ISpanFormattable,
         lineResult.Span.CopyTo(destination[1..]);
         destination[commaIdx] = ',';
         colResult.Span.CopyTo(destination[(commaIdx + 1)..^1]);
-        destination[^1] = ')';
+        destination[acc - 1] = ')';
         charsWritten = acc;
         return true;
     }
@@ -264,7 +264,7 @@ public readonly struct LineAndColumnRange(long line, long startColumn, long endC
         startColResult.Span.CopyTo(utf8Destination[(commaIdx + 1)..]);
         utf8Destination[dashIdx] = (byte)'-';
         endColResult.Span.CopyTo(utf8Destination[(dashIdx + 1)..^1]);
-        utf8Destination[^1] = (byte)')';
+        utf8Destination[acc - 1] = (byte)')';
         bytesWritten = acc;
         return true;
     }
@@ -299,7 +299,7 @@ public readonly struct LineAndColumnRange(long line, long startColumn, long endC
         startColResult.Span.CopyTo(destination[(commaIdx + 1)..]);
         destination[dashIdx] = '-';
         endColResult.Span.CopyTo(destination[(dashIdx + 1)..^1]);
-        destination[^1] = ')';
+        destination[acc - 1] = ')';
         charsWritten = acc;
         return true;
     }
@@ -360,7 +360,7 @@ public readonly struct TextRange(long startLine, long endLine, long startColumn,
         endLineResult.Span.CopyTo(utf8Destination[(comma2Idx + 1)..]);
         utf8Destination[comma3Idx] = (byte)',';
         endColResult.Span.CopyTo(utf8Destination[(comma3Idx + 1)..^1]);
-        utf8Destination[^1] = (byte)')';
+        utf8Destination[acc - 1] = (byte)')';
         bytesWritten = acc;
         return true;
     }
@@ -403,7 +403,7 @@ public readonly struct TextRange(long startLine, long endLine, long startColumn,
         endLineResult.Span.CopyTo(destination[(comma2Idx + 1)..]);
         destination[comma3Idx] = ',';
         endColResult.Span.CopyTo(destination[(comma3Idx + 1)..^1]);
-        destination[^1] = ')';
+        destination[acc - 1] = ')';
         charsWritten = acc;
         return true;
     }
