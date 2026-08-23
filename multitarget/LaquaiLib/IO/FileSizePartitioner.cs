@@ -80,12 +80,9 @@ public class FileSizePartitioner : Partitioner<string>
         // empty when there are fewer files than partitions) with approximately equal total sizes.
         var buckets = new List<string>[partitionCount];
         var longCount = partitionCount * sizeof(long);
-        var sizesBuf = ArrayPool<byte>.Shared.Rent(longCount);
+        var sizesBuf = ArrayPool<byte>.Shared.Rent(longCount, out Span<long> sizes);
         try
         {
-            var sizes = MemoryMarshal.Cast<byte, long>(sizesBuf.AsSpan(0, longCount));
-            Debug.Assert(sizes.Length == partitionCount);
-
             for (var i = 0; i < partitionCount; i++)
                 buckets[i] = [];
 
