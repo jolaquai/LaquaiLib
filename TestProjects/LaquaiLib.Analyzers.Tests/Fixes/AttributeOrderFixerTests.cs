@@ -78,7 +78,7 @@ public class AttributeOrderFixerTests
             Attributes + """
             class C
             {
-                [DoesNotReturn][MethodImpl(MethodImplOptions.NoInlining)]
+                [DoesNotReturn, MethodImpl(MethodImplOptions.NoInlining)]
                 static void M() => throw null;
             }
             """
