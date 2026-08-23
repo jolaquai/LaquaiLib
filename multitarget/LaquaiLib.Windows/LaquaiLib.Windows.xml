@@ -379,13 +379,8 @@
         </member>
         <member name="M:LaquaiLib.Windows.ValueConverters.NullToBoolConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
             <summary>
-            [Unsupported] Converts a previously converted <paramref name="value"/> back to its original value. This method unconditionally throws a <see cref="T:System.NotSupportedException"/>.
+            This method unconditionally throws a <see cref="T:System.NotSupportedException"/>.
             </summary>
-            <param name="value">The input value.</param>
-            <param name="targetType">The <see cref="T:System.Type"/> that the receiving context expects the output of this method to be of.</param>
-            <param name="parameter">An additional parameter passed by the calling context. May be null.</param>
-            <param name="culture">Which culture to use when converting / formatting the value.</param>
-            <returns><see langword="true"/> if the given input <paramref name="value"/> is not null, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Threading.DispatcherAwaitable">
             <summary>
