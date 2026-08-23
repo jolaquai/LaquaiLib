@@ -10,12 +10,24 @@ namespace LaquaiLib.IO.Streams;
 /// </remarks>
 public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
 {
+    private struct CachedInt32Task
+    {
+        private Task<int> task;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Task<int> Get(int value)
+        {
+            if (task != null && task.Result == value)
+                return task;
+            return task = Task.FromResult(value);
+        }
+    }
+
     private readonly ArrayPool<byte> _pool;
     private readonly List<byte[]> _segments = [];
     private readonly int _minimumSegmentSize;
     private readonly bool _skipZeroing;
 
-    private Task<int> _lastReadTask;
+    private CachedInt32Task _lastReadTask;
     private long position, length, capacity;
     private bool _disposed;
 
@@ -143,8 +155,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
             return Task.FromCanceled<int>(cancellationToken);
 
         var read = ReadCore(buffer.AsSpan(offset, count));
-        var last = _lastReadTask;
-        return last is not null && last.Result == read ? last : (_lastReadTask = Task.FromResult(read));
+        return _lastReadTask.Get(read);
     }
     /// <inheritdoc/>
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) => cancellationToken.IsCancellationRequested
@@ -374,7 +385,6 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
                 _pool.Return(segment);
             _segments.Clear();
 
-            _lastReadTask = null;
             position = length = capacity = 0;
             _disposed = true;
         }
