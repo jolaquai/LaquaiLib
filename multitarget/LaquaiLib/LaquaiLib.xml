@@ -295,6 +295,32 @@
             <param name="count">The value to set the <see cref="P:System.Collections.Generic.Stack`1.Count"/> of the returned <see cref="T:System.Collections.Generic.Stack`1"/> to. The first <paramref name="count"/> items will be returned by methods such as <see cref="M:System.Collections.Generic.Stack`1.Pop"/> or <see cref="M:System.Collections.Generic.Stack`1.Peek"/> in reverse.</param>
             <returns>The created <see cref="T:System.Collections.Generic.Stack`1"/>.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.ArrayPoolExtensions">
+            <summary>
+            Provides extensions for <see cref="T:System.Buffers.ArrayPool`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.ReturnSafe``1(System.Buffers.ArrayPool{``0},``0[])">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$5CA848B3CF1D8163DBCE92377A052BF2`1.ReturnSafe(`0[])"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.Rent``1(System.Buffers.ArrayPool{System.Byte},System.Int32,System.Span{``0}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$55B4EE358E73D0BE5C96A67BF02B8C4D.Rent``1(System.Int32,System.Span{``0}@)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$5CA848B3CF1D8163DBCE92377A052BF2`1.ReturnSafe(`0[])">
+            <summary>
+            Returns <paramref name="array"/> to <paramref name="pool"/>, ensuring it is cleared if <typeparamref name="T"/> is a reference type or contains references.
+            </summary>
+            <param name="array">The array to return to the pool.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$55B4EE358E73D0BE5C96A67BF02B8C4D.Rent``1(System.Int32,System.Span{``0}@)">
+            <summary>
+            Rents a <see langword="byte"/> array from the <paramref name="pool"/> and hands out a <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> over it.
+            </summary>
+            <typeparam name="TAs">The <see langword="unmanaged"/> type to cast views over the rented <see langword="byte"/> array to.</typeparam>
+            <param name="minimumSize">The minimum number of instances of <typeparamref name="TAs"/> to request for the rented array.</param>
+            <param name="span">The <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> view over the rented <see langword="byte"/> array.</param>
+            <returns>The rented <see langword="byte"/> array.</returns>
+        </member>
         <member name="T:LaquaiLib.Extensions.CancellationTokenExtensions">
             <summary>
             Provides extensions for the <see cref="T:System.Threading.CancellationToken"/> type.
