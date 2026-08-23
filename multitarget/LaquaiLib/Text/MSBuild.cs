@@ -481,8 +481,15 @@ public static class MSBuild
         ValidateParts(originSpan, subcategorySpan, codeSpan, textSpan);
 
         var maxChars = EstimateCharCount(originSpan, subcategorySpan, codeSpan, textSpan, 0);
-        char[] rented = null;
-        scoped var buffer = maxChars * sizeof(char) <= StackallocByteLimit ? stackalloc char[maxChars] : (rented = ArrayPool<char>.Shared.Rent(maxChars));
+        byte[] rented = null;
+        scoped Span<char> buffer;
+        if (maxChars * sizeof(char) <= StackallocByteLimit)
+            buffer = stackalloc char[maxChars];
+        else
+        {
+            rented = ArrayPool<byte>.Shared.Rent(maxChars, out buffer);
+        }
+
         try
         {
             var written = FormatChars(buffer, type, originSpan, location, subcategorySpan, codeSpan, textSpan, default);
@@ -491,7 +498,7 @@ public static class MSBuild
         finally
         {
             if (rented is not null)
-                ArrayPool<char>.Shared.Return(rented);
+                ArrayPool<byte>.Shared.Return(rented);
         }
     }
     private static void WriteTo<TLocation>(TextWriter writer, MSBuildErrorType type, string origin, TLocation location, string text, string subcategory, string code)
@@ -507,8 +514,15 @@ public static class MSBuild
 
         ReadOnlySpan<char> newLine = writer.NewLine;
         var maxChars = EstimateCharCount(originSpan, subcategorySpan, codeSpan, textSpan, newLine.Length);
-        char[] rented = null;
-        scoped var buffer = maxChars * sizeof(char) <= StackallocByteLimit ? stackalloc char[maxChars] : (rented = ArrayPool<char>.Shared.Rent(maxChars));
+        byte[] rented = null;
+        scoped Span<char> buffer;
+        if (maxChars * sizeof(char) <= StackallocByteLimit)
+            buffer = stackalloc char[maxChars];
+        else
+        {
+            rented = ArrayPool<byte>.Shared.Rent(maxChars, out buffer);
+        }
+
         try
         {
             var written = FormatChars(buffer, type, originSpan, location, subcategorySpan, codeSpan, textSpan, newLine);
@@ -517,7 +531,7 @@ public static class MSBuild
         finally
         {
             if (rented is not null)
-                ArrayPool<char>.Shared.Return(rented);
+                ArrayPool<byte>.Shared.Return(rented);
         }
     }
     private static void WriteTo<TLocation>(Stream stream, MSBuildErrorType type, string origin, TLocation location, string text, string subcategory, string code)

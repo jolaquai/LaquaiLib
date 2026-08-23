@@ -1,4 +1,5 @@
 ﻿using System.Buffers;
+using LaquaiLib.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
@@ -662,14 +663,13 @@ public class BitArray :
         if (n == 0)
             return;
 
-        ulong[] arr = null;
+        byte[] arr = null;
         scoped Span<ulong> buf;
         if (_data.Length <= 128)
             buf = stackalloc ulong[_data.Length];
         else
         {
-            arr = ArrayPool<ulong>.Shared.Rent(_data.Length);
-            buf = arr.AsSpan(0, _data.Length);
+            arr = ArrayPool<byte>.Shared.Rent(_data.Length, out buf);
         }
 
         try
@@ -683,7 +683,7 @@ public class BitArray :
         finally
         {
             if (arr is not null)
-                ArrayPool<ulong>.Shared.Return(arr);
+                ArrayPool<byte>.Shared.Return(arr);
         }
     }
     /// <summary>
@@ -988,17 +988,20 @@ public class BitArray :
             return ToBigInteger().ToString(CultureInfo.InvariantCulture);
 
         // Hex/binary/raw all have computable lengths; format into a scratch buffer, then materialize once.
-        var words = Math.Max(_data.Length, 1);
+        var words = _data.Length > 0 ? _data.Length : 1;
         var maxLength = kind switch
         {
             FormatKind.Hex => 1 + (16 * words),
             FormatKind.Binary => 1 + (64 * words),
             _ => (words * 17) + 1, // Raw
         };
-        char[] rented = null;
-        var buffer = maxLength <= 256
-            ? stackalloc char[maxLength]
-            : (rented = ArrayPool<char>.Shared.Rent(maxLength)).AsSpan(0, maxLength);
+        byte[] rented = null;
+        scoped Span<char> buffer;
+        if (maxLength <= 256)
+            buffer = stackalloc char[maxLength];
+        else
+            rented = ArrayPool<byte>.Shared.Rent(maxLength, out buffer);
+
         try
         {
             TryFormatCore(buffer, out var written, kind, lowercase);
@@ -1007,7 +1010,7 @@ public class BitArray :
         finally
         {
             if (rented is not null)
-                ArrayPool<char>.Shared.Return(rented);
+                ArrayPool<byte>.Shared.Return(rented);
         }
     }
     /// <inheritdoc/>
@@ -1054,7 +1057,7 @@ public class BitArray :
                 case 'R':
                     return FormatKind.Raw;
             }
-        throw new FormatException($"The '{format.ToString()}' format string is not supported.");
+        throw new FormatException($"The '{format}' format string is not supported.");
     }
 
     /// <summary>
@@ -1089,11 +1092,16 @@ public class BitArray :
             return TryFormatRaw(destination, out charsWritten, lowercase);
 
         // Hex/binary: sign-magnitude.
-        var words = Math.Max(_data.Length, 1);
-        ulong[] rented = null;
-        var magnitude = words <= 64
-            ? stackalloc ulong[words]
-            : (rented = ArrayPool<ulong>.Shared.Rent(words)).AsSpan(0, words);
+        var words = _data.Length > 0 ? _data.Length : 1;
+        byte[] rented = null;
+        scoped Span<ulong> magnitude;
+        if (words <= 64)
+            magnitude = stackalloc ulong[words];
+        else
+        {
+            rented = ArrayPool<byte>.Shared.Rent(words, out magnitude);
+        }
+
         try
         {
             var m = GetMagnitude(magnitude, out var negative);
@@ -1147,7 +1155,7 @@ public class BitArray :
         finally
         {
             if (rented is not null)
-                ArrayPool<ulong>.Shared.Return(rented);
+                ArrayPool<byte>.Shared.Return(rented);
         }
     }
 

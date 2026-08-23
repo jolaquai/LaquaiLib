@@ -46,29 +46,29 @@ public static class FormattingHelpers
     public static CharFormatResult<T> TryFormatChars<T>(in T instance, ReadOnlySpan<char> format = default, IFormatProvider formatProvider = null) where T : ISpanFormattable
     {
         var size = RentStartSize;
-        var pool = ArrayPool<char>.Shared;
-        var buf = pool.Rent(size);
+        var pool = ArrayPool<byte>.Shared;
+        var arr = pool.Rent(size, out Span<char> buf);
         try
         {
             for (var i = 0; i < MaxRetries; i++)
             {
                 if (!instance.TryFormat(buf, out var written, format, formatProvider))
                 {
-                    pool.Return(buf);
-                    buf = pool.Rent(size <<= 1);
+                    pool.Return(arr);
+                    arr = pool.Rent(size <<= 1, out buf);
                 }
                 else
                 {
-                    return new CharFormatResult<T>(instance, buf.AsSpan(0, written), buf, true);
+                    return new CharFormatResult<T>(instance, buf[..written], arr, true);
                 }
             }
 
-            pool.Return(buf);
+            pool.Return(arr);
             return default;
         }
         catch
         {
-            pool.Return(buf);
+            pool.Return(arr);
             throw;
         }
     }
@@ -92,13 +92,13 @@ public ref struct CharFormatResult<T> : IDisposable
     /// <summary>
     /// Gets or sets the array that was rented from <see cref="ArrayPool{T}.Shared"/>.
     /// </summary>
-    public char[] RentedArray { get; private set; }
+    public byte[] RentedArray { get; private set; }
     /// <summary>
     /// Whether the formatting operation was successful.
     /// </summary>
     public readonly bool Success;
 
-    internal CharFormatResult(T value, ReadOnlySpan<char> chars, char[] rentedArray, bool success)
+    internal CharFormatResult(T value, ReadOnlySpan<char> chars, byte[] rentedArray, bool success)
     {
         Value = value;
         Span = chars;
@@ -113,9 +113,9 @@ public ref struct CharFormatResult<T> : IDisposable
     {
         if (Interlocked.Exchange(ref _live, 0) == 0)
             return;
-        if (RentedArray is char[] arr)
+        if (RentedArray is byte[] arr)
         {
-            ArrayPool<char>.Shared.Return(arr);
+            ArrayPool<byte>.Shared.Return(arr);
             RentedArray = null;
         }
     }

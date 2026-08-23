@@ -68,8 +68,16 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
             return 1;
 
         var len = x.Length + y.Length;
-        char[] charsBuffer = null;
-        scoped var chars = len <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[len] : (charsBuffer = ArrayPool<char>.Shared.Rent(len)).AsSpan(0, len);
+        byte[] charsBuffer = null;
+        scoped Span<char> chars;
+        if (len <= Config.MaxStackallocSize / sizeof(char))
+            chars = stackalloc char[len];
+        else
+        {
+            charsBuffer = ArrayPool<byte>.Shared.Rent(len, out chars);
+            chars = chars[..len];
+        }
+
         try
         {
             scoped var left = chars[..x.Length];
@@ -122,7 +130,7 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
         finally
         {
             if (charsBuffer != null)
-                ArrayPool<char>.Shared.Return(charsBuffer);
+                ArrayPool<byte>.Shared.Return(charsBuffer);
         }
     }
     private static long GetNumber(ReadOnlySpan<char> s, ref int index)
@@ -256,10 +264,18 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
         var alt = AlternateLookup;
         if (alt.TryGetValue(roman, out var value))
             return value;
-        char[] upperBuffer = null;
 
+        byte[] upperBuffer = null;
         // Process from right to left
-        scoped var upper = roman.Length <= Config.MaxStackallocSize / sizeof(char) ? stackalloc char[roman.Length] : (upperBuffer = ArrayPool<char>.Shared.Rent(roman.Length)).AsSpan(0, roman.Length);
+        scoped Span<char> upper;
+        if (roman.Length <= Config.MaxStackallocSize / sizeof(char))
+            upper = stackalloc char[roman.Length];
+        else
+        {
+            upperBuffer = ArrayPool<byte>.Shared.Rent(roman.Length, out upper);
+            upper = upper[..roman.Length];
+        }
+
         try
         {
             _ = roman.ToUpperInvariant(upper);
@@ -280,7 +296,7 @@ public partial class NaturalStringComparer : StringComparer, IComparer<string>, 
         finally
         {
             if (upperBuffer != null)
-                ArrayPool<char>.Shared.Return(upperBuffer);
+                ArrayPool<byte>.Shared.Return(upperBuffer);
         }
     }
     /// <summary>

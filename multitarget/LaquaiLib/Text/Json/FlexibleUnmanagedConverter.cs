@@ -95,20 +95,19 @@ public class FlexibleUnmanagedTypeConverter<T> : JsonConverter<T>
         }
         else if (value is ISpanFormattable spanFormattable)
         {
-            ArrayPool<char> pool = null;
-            char[] arr = null;
+            ArrayPool<byte> pool = null;
+            byte[] arr = null;
             Span<char> buffer = stackalloc char[64];
 
             int written;
             while (!spanFormattable.TryFormat(buffer, out written, default, CultureInfo.InvariantCulture))
             {
                 if (pool is null)
-                    pool = ArrayPool<char>.Shared;
+                    pool = ArrayPool<byte>.Shared;
                 else if (arr is not null)
                     pool.Return(arr);
 
-                arr = pool.Rent(buffer.Length * 2);
-                buffer = arr;
+                arr = pool.Rent(buffer.Length * 2, out buffer);
             }
             writer.WriteStringValue(buffer[..written]);
         }
