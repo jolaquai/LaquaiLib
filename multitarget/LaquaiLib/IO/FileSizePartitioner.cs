@@ -79,10 +79,12 @@ public class FileSizePartitioner : Partitioner<string>
         // bucket that currently holds the least data. This yields exactly partitionCount buckets (some may be
         // empty when there are fewer files than partitions) with approximately equal total sizes.
         var buckets = new List<string>[partitionCount];
-        var sizesBuf = ArrayPool<long>.Shared.Rent(partitionCount);
+        var longCount = partitionCount * sizeof(long);
+        var sizesBuf = ArrayPool<byte>.Shared.Rent(longCount);
         try
         {
-            var sizes = sizesBuf.AsSpan(0, partitionCount);
+            var sizes = MemoryMarshal.Cast<byte, long>(sizesBuf.AsSpan(0, longCount));
+            Debug.Assert(sizes.Length == partitionCount);
 
             for (var i = 0; i < partitionCount; i++)
                 buckets[i] = [];
@@ -99,7 +101,7 @@ public class FileSizePartitioner : Partitioner<string>
         }
         finally
         {
-            ArrayPool<long>.Shared.Return(sizesBuf);
+            ArrayPool<byte>.Shared.Return(sizesBuf);
         }
 
         var partitions = new List<IEnumerator<string>>(partitionCount);
