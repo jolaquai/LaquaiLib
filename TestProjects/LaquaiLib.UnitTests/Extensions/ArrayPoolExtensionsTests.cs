@@ -106,7 +106,7 @@ public class ArrayPoolExtensionsTests
     [InlineData(4096)]
     public void RentByteSpanCoversEntireRentedArray(int minimumSize)
     {
-        var array = ArrayPool<byte>.Shared.Rent<byte>(minimumSize, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(minimumSize, out Span<byte> span);
 
         Assert.True(array.Length >= minimumSize);
         Assert.Equal(array.Length, span.Length);
@@ -123,7 +123,7 @@ public class ArrayPoolExtensionsTests
     [InlineData(4096)]
     public void RentCharSpanFitsMaximallyWithinRentedBytes(int minimumSize)
     {
-        var array = ArrayPool<byte>.Shared.Rent<char>(minimumSize, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(minimumSize, out Span<char> span);
 
         Assert.True(span.Length >= minimumSize);
         Assert.True(span.Length * sizeof(char) <= array.Length);
@@ -142,7 +142,7 @@ public class ArrayPoolExtensionsTests
     [InlineData(1000)]
     public void RentGuidSpanFitsMaximallyWithinRentedBytes(int minimumSize)
     {
-        var array = ArrayPool<byte>.Shared.Rent<Guid>(minimumSize, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(minimumSize, out Span<Guid> span);
 
         Assert.True(span.Length >= minimumSize);
         Assert.True(span.Length * Unsafe.SizeOf<Guid>() <= array.Length);
@@ -163,7 +163,7 @@ public class ArrayPoolExtensionsTests
     [InlineData(337)]
     public void RentThreeIntsSpanFitsMaximallyWithinRentedBytes(int minimumSize)
     {
-        var array = ArrayPool<byte>.Shared.Rent<ThreeInts>(minimumSize, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(minimumSize, out Span<ThreeInts> span);
 
         Assert.True(span.Length >= minimumSize);
         Assert.True(span.Length * Unsafe.SizeOf<ThreeInts>() <= array.Length);
@@ -172,10 +172,84 @@ public class ArrayPoolExtensionsTests
         ArrayPool<byte>.Shared.Return(array);
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(7)]
+    [InlineData(8)]
+    [InlineData(9)]
+    [InlineData(100)]
+    [InlineData(4096)]
+    public void RentNarrowingFromLongToByteSpanCoversEntireRentedBytes(int minimumSize)
+    {
+        var array = ArrayPool<long>.Shared.Rent(minimumSize, out Span<byte> span);
+
+        var arrayBytes = array.Length * sizeof(long);
+        Assert.True(span.Length >= minimumSize);
+        Assert.Equal(arrayBytes, span.Length);
+
+        ArrayPool<long>.Shared.Return(array);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(100)]
+    public void RentNarrowingFromLongToIntSpanCoversEntireRentedBytes(int minimumSize)
+    {
+        var array = ArrayPool<long>.Shared.Rent(minimumSize, out Span<int> span);
+
+        var arrayBytes = array.Length * sizeof(long);
+        Assert.True(span.Length >= minimumSize);
+        Assert.Equal(arrayBytes, span.Length * sizeof(int));
+
+        ArrayPool<long>.Shared.Return(array);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(5)]
+    [InlineData(50)]
+    public void RentNarrowingFromGuidToThreeIntsSpanFitsMaximallyWithinRentedBytes(int minimumSize)
+    {
+        var array = ArrayPool<Guid>.Shared.Rent(minimumSize, out Span<ThreeInts> span);
+
+        var arrayBytes = array.Length * Unsafe.SizeOf<Guid>();
+        Assert.True(span.Length >= minimumSize);
+        Assert.True(span.Length * Unsafe.SizeOf<ThreeInts>() <= arrayBytes);
+        Assert.True((span.Length + 1) * Unsafe.SizeOf<ThreeInts>() > arrayBytes);
+
+        ArrayPool<Guid>.Shared.Return(array);
+    }
+
+    [Theory]
+    [InlineData(8, 1)]
+    [InlineData(9, 2)]
+    [InlineData(64, 8)]
+    [InlineData(65, 9)]
+    public void RentNarrowingCeilingDividesElementCountForUnderlyingPool(int minimumBytes, int expectedLongsRequested)
+    {
+        var pool = new RecordingArrayPool<long>();
+
+        var array = pool.Rent(minimumBytes, out Span<byte> span);
+
+        Assert.Equal(expectedLongsRequested, pool.LastRentMinimumLength);
+        Assert.Same(pool.LastRentedArray, array);
+    }
+
+    [Fact]
+    public void RentNarrowingThrowsForNegativeMinimumSizeRegardlessOfSourceElementSize()
+        => Assert.Throws<ArgumentOutOfRangeException>(() => ArrayPool<long>.Shared.Rent<long, byte>(-1, out _));
+
     [Fact]
     public void RentSpanIsALiveViewOverTheRentedArray()
     {
-        var array = ArrayPool<byte>.Shared.Rent<int>(4, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(4, out Span<int> span);
 
         span[0] = 123456789;
 
@@ -188,7 +262,7 @@ public class ArrayPoolExtensionsTests
     [Fact]
     public void RentWithZeroMinimumSizeReturnsEmptyArrayAndSpan()
     {
-        var array = ArrayPool<byte>.Shared.Rent<byte>(0, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(0, out Span<byte> span);
 
         Assert.Empty(array);
         Assert.Equal(0, span.Length);
@@ -197,7 +271,7 @@ public class ArrayPoolExtensionsTests
     [Fact]
     public void RentWithZeroMinimumSizeWorksForLargerElementType()
     {
-        var array = ArrayPool<byte>.Shared.Rent<Guid>(0, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(0, out Span<Guid> span);
 
         Assert.Empty(array);
         Assert.Equal(0, span.Length);
@@ -206,25 +280,25 @@ public class ArrayPoolExtensionsTests
     [Fact]
     public void RentThrowsWhenEffectiveSizeExceedsArrayMaxLength()
     {
-        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => ArrayPool<byte>.Shared.Rent<byte>(Array.MaxLength + 1, out _));
+        var ex = Assert.Throws<ArgumentOutOfRangeException>(() => ArrayPool<byte>.Shared.Rent<byte, byte>(Array.MaxLength + 1, out _));
 
         Assert.Equal("minimumSize", ex.ParamName);
     }
 
     [Fact]
     public void RentThrowsForNegativeMinimumSize()
-        => Assert.Throws<ArgumentOutOfRangeException>(() => ArrayPool<byte>.Shared.Rent<byte>(-1, out _));
+        => Assert.Throws<ArgumentOutOfRangeException>(() => ArrayPool<byte>.Shared.Rent<byte, byte>(-1, out _));
 
     [Fact]
     public void RentThrowsWhenElementSizeMultiplicationOverflows()
-        => Assert.Throws<ArgumentOutOfRangeException>(() => ArrayPool<byte>.Shared.Rent<Guid>(200_000_000, out _));
+        => Assert.Throws<ArgumentOutOfRangeException>(() => ArrayPool<byte>.Shared.Rent<byte, Guid>(200_000_000, out _));
 
     [Fact]
     public void RentPassesEffectiveByteSizeToUnderlyingPool()
     {
         var pool = new RecordingArrayPool<byte>();
 
-        var array = pool.Rent<char>(10, out var span);
+        var array = pool.Rent(10, out Span<char> span);
 
         Assert.Equal(20, pool.LastRentMinimumLength);
         Assert.Same(pool.LastRentedArray, array);
@@ -234,7 +308,7 @@ public class ArrayPoolExtensionsTests
     [Fact]
     public void RentedArrayCanBeReturnedThroughReturnSafe()
     {
-        var array = ArrayPool<byte>.Shared.Rent<int>(8, out var span);
+        var array = ArrayPool<byte>.Shared.Rent(8, out Span<int> span);
 
         span[0] = 42;
 

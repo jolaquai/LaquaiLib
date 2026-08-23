@@ -303,8 +303,8 @@
         <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.ReturnSafe``1(System.Buffers.ArrayPool{``0},``0[])">
             <inheritdoc cref="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$5CA848B3CF1D8163DBCE92377A052BF2`1.ReturnSafe(`0[])"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.Rent``1(System.Buffers.ArrayPool{System.Byte},System.Int32,System.Span{``0}@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$55B4EE358E73D0BE5C96A67BF02B8C4D.Rent``1(System.Int32,System.Span{``0}@)"/>
+        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.Rent``2(System.Buffers.ArrayPool{``0},System.Int32,System.Span{``1}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$A56A913095EC3730FE0F1B82A48331E3`1.Rent``1(System.Int32,System.Span{``0}@)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$5CA848B3CF1D8163DBCE92377A052BF2`1.ReturnSafe(`0[])">
             <summary>
@@ -312,14 +312,22 @@
             </summary>
             <param name="array">The array to return to the pool.</param>
         </member>
-        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$55B4EE358E73D0BE5C96A67BF02B8C4D.Rent``1(System.Int32,System.Span{``0}@)">
+        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$A56A913095EC3730FE0F1B82A48331E3`1.Rent``1(System.Int32,System.Span{``0}@)">
             <summary>
-            Rents a <see langword="byte"/> array from the <paramref name="pool"/> and hands out a <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> over it.
+            Requests a <typeparamref name="TSource"/> array from the <paramref name="pool"/> and hands out a <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> over it.
+            <paramref name="minimumSize"/> is used as a base for calculating the minimum number of <typeparamref name="TSource"/> instances to request from the pool, based on the size of <typeparamref name="TAs"/>.
             </summary>
-            <typeparam name="TAs">The <see langword="unmanaged"/> type to cast views over the rented <see langword="byte"/> array to.</typeparam>
+            <typeparam name="TAs">The <see langword="unmanaged"/> type to cast views over the rented <typeparamref name="TSource"/> array to.</typeparam>
             <param name="minimumSize">The minimum number of instances of <typeparamref name="TAs"/> to request for the rented array.</param>
-            <param name="span">The <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> view over the rented <see langword="byte"/> array.</param>
-            <returns>The rented <see langword="byte"/> array.</returns>
+            <param name="span">The <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> view over the rented <typeparamref name="TSource"/> array.</param>
+            <returns>The rented <typeparamref name="TSource"/> array.</returns>
+            <remarks>
+            Easiest way to use this method is to call it by explicitly typing the <paramref name="span"/> parameter:
+            <code lang="csharp">
+            var array = ArrayPool&lt;byte&gt;.Shared.Rent(minimumSize, out Span&lt;long&gt; span);
+            // array.GetType() == typeof(byte[])
+            </code>
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Extensions.CancellationTokenExtensions">
             <summary>
