@@ -34,6 +34,9 @@ public static class Sequence
     /// <param name="step">The step width of the range.</param>
     /// <returns>An <see cref="IEnumerable{T}"/> of <typeparamref name="T"/> as described.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
+    /// <remarks>
+    /// Prefer <see cref="SpanFiller.FillSequential{T}(Span{T}, T, bool)"/> over a buffer for performance reasons.
+    /// </remarks>
     public static IEnumerable<T> Create<T>(T start, T stop, T step) where T : ISignedNumber<T>, IComparisonOperators<T, T, bool>
     {
         if (step == T.Zero)

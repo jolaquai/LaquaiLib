@@ -97,7 +97,7 @@ public class NumberExtensionsTests
     {
         var value = 42;
 
-        var result = value.AsBinary();
+        var result = value.ToBinary();
 
         Assert.Equal("101010", result);
     }
@@ -107,7 +107,7 @@ public class NumberExtensionsTests
     {
         var value = -42;
 
-        var result = value.AsBinary();
+        var result = value.ToBinary();
 
         Assert.Equal("11111111111111111111111111010110", result);
     }
@@ -117,7 +117,7 @@ public class NumberExtensionsTests
     {
         uint value = 42;
 
-        var result = value.AsBinary();
+        var result = value.ToBinary();
 
         Assert.Equal("101010", result);
     }
@@ -127,7 +127,7 @@ public class NumberExtensionsTests
     {
         var value = int.MaxValue;
 
-        var result = value.AsBinary();
+        var result = value.ToBinary();
 
         Assert.Equal("1111111111111111111111111111111", result);
     }
@@ -137,7 +137,7 @@ public class NumberExtensionsTests
     {
         var value = int.MinValue;
 
-        var result = value.AsBinary();
+        var result = value.ToBinary();
 
         Assert.Equal("10000000000000000000000000000000", result);
     }
@@ -147,7 +147,7 @@ public class NumberExtensionsTests
     {
         var value = 0;
 
-        var result = value.AsBinary();
+        var result = value.ToBinary();
 
         Assert.Equal("0", result);
     }
@@ -157,7 +157,7 @@ public class NumberExtensionsTests
     {
         var value = 42;
 
-        var result = value.AsHex();
+        var result = value.ToHex();
 
         Assert.Equal("2A", result);
     }
@@ -167,7 +167,7 @@ public class NumberExtensionsTests
     {
         var value = -42;
 
-        var result = value.AsHex();
+        var result = value.ToHex();
 
         Assert.Equal("FFFFFFD6", result);
     }
@@ -177,7 +177,7 @@ public class NumberExtensionsTests
     {
         var value = 0xDEADBEEF;
 
-        var result = value.AsHex();
+        var result = value.ToHex();
 
         Assert.Equal("DEADBEEF", result);
     }
@@ -187,7 +187,7 @@ public class NumberExtensionsTests
     {
         var value = int.MaxValue;
 
-        var result = value.AsHex();
+        var result = value.ToHex();
 
         Assert.Equal("7FFFFFFF", result);
     }
@@ -197,7 +197,7 @@ public class NumberExtensionsTests
     {
         var value = int.MinValue;
 
-        var result = value.AsHex();
+        var result = value.ToHex();
 
         Assert.Equal("80000000", result);
     }
@@ -207,7 +207,7 @@ public class NumberExtensionsTests
     {
         var value = 0;
 
-        var result = value.AsHex();
+        var result = value.ToHex();
 
         Assert.Equal("0", result);
     }
@@ -217,7 +217,7 @@ public class NumberExtensionsTests
     {
         var value = 0x123456789ABCDEF0;
 
-        var result = value.AsHex();
+        var result = value.ToHex();
 
         Assert.Equal("123456789ABCDEF0", result);
     }
@@ -227,7 +227,7 @@ public class NumberExtensionsTests
     {
         byte value = 15;
 
-        var result = value.AsBinary();
+        var result = value.ToBinary();
 
         Assert.Equal("1111", result);
     }

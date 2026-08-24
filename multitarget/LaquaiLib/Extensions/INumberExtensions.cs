@@ -27,13 +27,13 @@ public static class NumberExtensions
         /// </summary>
         /// <returns>The binary representation of the specified number.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string AsBinary() => number.ToString("B", null);
+        public string ToBinary() => number.ToString("B", null);
         /// <summary>
         /// Converts the specified number to its hexadecimal representation.
         /// </summary>
         /// <returns>The hexadecimal representation of the specified number.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string AsHex() => number.ToString("X", null);
+        public string ToHex() => number.ToString("X", null);
     }
 
     extension<T>(T number) where T : IBinaryInteger<T>

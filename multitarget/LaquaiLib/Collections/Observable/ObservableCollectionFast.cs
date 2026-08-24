@@ -10,7 +10,7 @@ namespace LaquaiLib.Collections.Observable;
 /// Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
 /// </summary>
 /// <typeparam name="T">The Type of the elements in the collection.</typeparam>
-public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection<T>, IEnumerable<T>, IReadOnlySpanProvider<T>
+public closed class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection<T>, IEnumerable<T>, IReadOnlySpanProvider<T>
 {
     #region Fields / Properties
     /// <summary>
@@ -86,7 +86,8 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     /// Only valid slots in the backing store are included (only its actual count is respected, not its capacity). Allows for more efficient enumeration than use of <see cref="IEnumerable{T}"/>.
     /// </summary>
     public ReadOnlySpan<T> ReadOnlySpan => CollectionsMarshal.AsSpan(items);
-    void IDisposable.Dispose() => GC.SuppressFinalize(this);
+    /// <inheritdoc/>
+    public virtual void Dispose() => GC.SuppressFinalize(this);
     #endregion
 
     #region Constructors
@@ -534,3 +535,189 @@ public class ObservableCollectionFast<T> : INotifyCollectionChanged, ICollection
     }
     #endregion
 }
+
+/// <summary>
+/// Derives from <see cref="ObservableCollectionFast{T}"/> to support disposing of all items in the collection that implement <see cref="IDisposable"/> when the collection itself is disposed.
+/// The collection is protected against multiple disposal.
+/// </summary>
+/// <typeparam name="T">The type of elements in the collection.</typeparam>
+public sealed class DisposableObservableCollectionFast<T> : ObservableCollectionFast<T>, IDisposable
+{
+    /// <summary>
+    /// Initializes a new <see cref="DisposableObservableCollectionFast{T}"/>.
+    /// </summary>
+    public DisposableObservableCollectionFast() : base() { }
+    /// <summary>
+    /// Initializes a new <see cref="DisposableObservableCollectionFast{T}"/> that contains elements copied from the specified collection.
+    /// </summary>
+    /// <param name="collection">The collection from which the elements are copied.</param>
+    public DisposableObservableCollectionFast(IEnumerable<T> collection) : base(collection) { }
+    /// <summary>
+    /// Initializes a new <see cref="DisposableObservableCollectionFast{T}"/> that contains elements copied from the specified span.
+    /// </summary>
+    /// <param name="span">The <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/> from which the elements are copied.</param>
+    public DisposableObservableCollectionFast(params ReadOnlySpan<T> span) : base(span) { }
+
+    private int disposed;
+    /// <inheritdoc/>
+    public override void Dispose()
+    {
+        if (Interlocked.Exchange(ref disposed, 1) == 1)
+            return;
+
+        foreach (var item in this)
+            if (item is IDisposable disposable)
+                disposable.Dispose();
+        // This is checked inside Clear again, but we can avoid the entire store for non-ref Ts
+        if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())
+            Clear();
+
+        base.Dispose();
+    }
+}
+
+#region EventArgs
+/// <summary>
+/// Represents the event arguments for the Added event.
+/// </summary>
+/// <typeparam name="T">The type of the item being added.</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="AddedEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="item">The item that was added.</param>
+public class AddedEventArgs<T>(T item)
+{
+    /// <summary>
+    /// Gets the item that was added.
+    /// </summary>
+    public T Item { get; } = item;
+}
+/// <summary>
+/// Represents the event arguments for the IndexGet event.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="IndexGetEventArgs"/> class.
+/// </remarks>
+/// <param name="index">The index being accessed.</param>
+public class IndexGetEventArgs(int index)
+{
+    /// <summary>
+    /// Gets the index being accessed.
+    /// </summary>
+    public int Index { get; } = index;
+}
+/// <summary>
+/// Represents the event arguments for the IndexSet event.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="IndexSetEventArgs"/> class.
+/// </remarks>
+/// <param name="index">The index being accessed.</param>
+public class IndexSetEventArgs(int index)
+{
+    /// <summary>
+    /// Gets the index being accessed.
+    /// </summary>
+    public int Index { get; } = index;
+}
+/// <summary>
+/// Represents the event arguments for the RangeAdded event.
+/// </summary>
+/// <typeparam name="T">The type of the items being added.</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="RangeAddedEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="items">The items that were added.</param>
+public class RangeAddedEventArgs<T>(IEnumerable<T> items)
+{
+    /// <summary>
+    /// Gets the items that were added.
+    /// </summary>
+    public IEnumerable<T> Items { get; } = items;
+}
+/// <summary>
+/// Represents the event arguments for the RangeGet event.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="RangeGetEventArgs"/> class.
+/// </remarks>
+/// <param name="index">The starting index of the range being accessed.</param>
+/// <param name="count">The number of items in the range being accessed.</param>
+public class RangeGetEventArgs(int index, int count)
+{
+    /// <summary>
+    /// Gets the starting index of the range being accessed.
+    /// </summary>
+    public int Index { get; } = index;
+
+    /// <summary>
+    /// Gets the number of items in the range being accessed.
+    /// </summary>
+    public int Count { get; } = count;
+}
+/// <summary>
+/// Represents the event arguments for the RangeRemoved event.
+/// </summary>
+/// <typeparam name="T">The type of the items being removed.</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="RangeRemovedEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="items">The items that were removed.</param>
+public class RangeRemovedEventArgs<T>(IEnumerable<T> items)
+{
+    /// <summary>
+    /// Gets the items that were removed.
+    /// </summary>
+    public IEnumerable<T> Items { get; } = items;
+}
+/// <summary>
+/// Represents the event arguments for the RangeSet event.
+/// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="RangeSetEventArgs"/> class.
+/// </remarks>
+/// <param name="index">The starting index of the range being accessed.</param>
+/// <param name="count">The number of items in the range being accessed.</param>
+public class RangeSetEventArgs(int index, int count)
+{
+    /// <summary>
+    /// Gets the starting index of the range being accessed.
+    /// </summary>
+    public int Index { get; } = index;
+
+    /// <summary>
+    /// Gets the number of items in the range being accessed.
+    /// </summary>
+    public int Count { get; } = count;
+}
+/// <summary>
+/// Represents the event arguments for the Removed event.
+/// </summary>
+/// <typeparam name="T">The type of the item being removed.</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="RemovedEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="item">The item that was removed.</param>
+public class RemovedEventArgs<T>(T item)
+{
+    /// <summary>
+    /// Gets the item that was removed.
+    /// </summary>
+    public T Item { get; } = item;
+}
+/// <summary>
+/// Represents the event arguments for the Reset event.
+/// </summary>
+/// <typeparam name="T">The type of the new contents.</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="ResetEventArgs{T}"/> class.
+/// </remarks>
+/// <param name="newContents">The new contents.</param>
+public class ResetEventArgs<T>(IEnumerable<T> newContents)
+{
+    /// <summary>
+    /// Gets the new contents.
+    /// </summary>
+    public IEnumerable<T> NewContents { get; } = newContents;
+}
+#endregion

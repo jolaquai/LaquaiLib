@@ -36,7 +36,7 @@ public static partial class ProcessExtensions
             if (discard)
                 mask &= fullMask;
             if (mask > fullMask)
-                throw new ArgumentOutOfRangeException(nameof(mask), $"The bit mask '0b{mask.AsBinary()}' specifies more than the {processorCount} logical processors available to the system.");
+                throw new ArgumentOutOfRangeException(nameof(mask), $"The bit mask '0b{mask.ToBinary()}' specifies more than the {processorCount} logical processors available to the system.");
             if (process.HasExited)
                 throw new InvalidOperationException("The specified process has exited.");
             return Kernel32.SetProcessAffinityMask(process.Handle, (nint)mask);
