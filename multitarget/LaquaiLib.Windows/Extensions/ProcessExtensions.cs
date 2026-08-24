@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Management;
 
 using LaquaiLib.Extensions;

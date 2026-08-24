@@ -69,6 +69,7 @@
 
       <Using Include="System.Collections"/>
       <Using Include="System.Collections.Concurrent"/>
+      <Using Include="System.Diagnostics"/>
       <Using Include="System.Runtime.CompilerServices"/>
       <Using Include="System.Runtime.InteropServices"/>
       <Using Include="System.Text"/>

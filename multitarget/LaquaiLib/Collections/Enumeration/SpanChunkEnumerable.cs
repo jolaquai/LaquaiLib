@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace LaquaiLib.Collections.Enumeration;
+﻿namespace LaquaiLib.Collections.Enumeration;
 
 /// <summary>
 /// Implements the enumerator pattern to enumerate slices of a <see cref="ReadOnlySpan{T}"/> in chunks of a specified size.

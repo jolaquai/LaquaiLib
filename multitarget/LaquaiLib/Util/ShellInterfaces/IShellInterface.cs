@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace LaquaiLib.Util.ShellInterfaces;
+﻿namespace LaquaiLib.Util.ShellInterfaces;
 
 /// <summary>
 /// Defines a type that interfaces and handles communication with a shell (such as PowerShell).

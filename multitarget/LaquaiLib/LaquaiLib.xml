@@ -4735,47 +4735,32 @@
             Provides extensions for the <see cref="T:System.Span`1"/>, <see cref="T:System.ReadOnlySpan`1"/>, <see cref="T:System.Memory`1"/> and <see cref="T:System.ReadOnlyMemory`1"/> types.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.ReadOnlySpan{``0},System.Action{``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.ReadOnlySpan{``0}@,System.Action{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.ReadOnlySpan{``0},System.Action{``0,System.Int32})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.ReadOnlySpan{``0}@,System.Action{``0,System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Split``1(System.ReadOnlySpan{``0},System.Span{``0},System.Span{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Split``1(System.ReadOnlySpan{``0}@,System.Span{``0},System.Span{``0},System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Split(System.Span{`0},System.Span{`0},System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32@,System.Text.Encoding)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32@,System.Text.Encoding)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32,System.Text.Encoding)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32,System.Text.Encoding)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32@)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32@,System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32@,System.Int32)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32,System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32,System.Int32)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplits``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplits(System.ReadOnlySpan{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplitsBySequence``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplitsBySequence(System.ReadOnlySpan{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.Span{``0},System.Action{``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.Span{``0}@,System.Action{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.Span{``0},System.Action{``0,System.Int32})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.Span{``0}@,System.Action{``0,System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Write``1(System.Span{System.Byte},``0,System.Int32)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$BFA23C8808B2873C0738C2637169E9F3.Write``1(``0,System.Int32)"/>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeArraySpan``1(System.Memory{``0}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.UnsafeArraySpan"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeManagerSpan``2(System.Memory{``0}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.UnsafeManagerSpan``1"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeArraySpan``1(System.ReadOnlyMemory{``0}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3387D7F181FA234A9158DADA9224047F`1.UnsafeArraySpan"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeManagerSpan``2(System.ReadOnlyMemory{``0}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3387D7F181FA234A9158DADA9224047F`1.UnsafeManagerSpan``1"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Span{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory"/>
@@ -4843,6 +4828,39 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexedAsync``1(System.Memory{``0},System.Func{System.Int32,``0,System.Threading.Tasks.ValueTask{``0}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32@,System.Text.Encoding)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32@,System.Text.Encoding)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32,System.Text.Encoding)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32,System.Text.Encoding)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32@)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32@,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32@,System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Write``1(System.Span{System.Byte},``0,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$BFA23C8808B2873C0738C2637169E9F3.Write``1(``0,System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeStringSpan(System.Memory{System.Char}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$2613AA208F782F9F71758DD5BE30BD83.UnsafeStringSpan"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeStringSpan(System.ReadOnlyMemory{System.Char}@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$4DAF1BD91680853E88605FA5C5B79236.UnsafeStringSpan"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplits``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplits(System.ReadOnlySpan{`0})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplitsBySequence``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplitsBySequence(System.ReadOnlySpan{`0})"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0})">
             <summary>
             Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.ReadOnlySpan`1"/>.
@@ -4868,6 +4886,180 @@
             <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="span"/>'s length.
             If they are too small, an <see cref="T:System.IndexOutOfRangeException"/> will be thrown by the runtime.
             </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0})">
+            <summary>
+            Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.Span`1"/>.
+            </summary>
+            <param name="action">The <see cref="T:System.Action`1"/> to invoke for each element.</param>
+            <returns>The original <see cref="T:System.Span`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0,System.Int32})">
+            <summary>
+            Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.Span`1"/>, passing the element and its index.
+            </summary>
+            <param name="action">The <see cref="T:System.Action`2"/> to invoke for each element.</param>
+            <returns>The original <see cref="T:System.Span`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory">
+            <summary>
+            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Span`1"/>s of <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill">
+            <summary>
+            Fills the specified <see cref="T:System.Span`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0,`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0,`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.UnsafeArraySpan">
+            <summary>
+            Forcibly obtains a <see cref="T:System.Span`1"/> from <paramref name="memory"/>, assuming its backing store is an array.
+            If this invariant is not true, this results in undefined behavior (likely access violations).
+            </summary>
+            <returns>The created <see cref="T:System.Span`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.UnsafeManagerSpan``1">
+            <summary>
+            Forcibly obtains a <see cref="T:System.Span`1"/> from <paramref name="memory"/>, assuming its backing store is a <see cref="T:System.Buffers.MemoryManager`1"/>.
+            To offer performance similar to <see cref="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeArraySpan``1(System.Memory{``0}@)"/> and <see cref="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeStringSpan(System.Memory{System.Char}@)"/>, <typeparamref name="TManager"/> must be the exact type of the backing <see cref="T:System.Buffers.MemoryManager`1"/>, otherwise <see cref="M:System.Buffers.MemoryManager`1.GetSpan"/> will still incur a virtual call.
+            </summary>
+            <typeparam name="TManager">The type of the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</typeparam>
+            <returns>The <see cref="T:System.Span`1"/> created by the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.ZeroMemory">
+            <summary>
+            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Memory`1"/>s of <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill">
+            <summary>
+            Fills the specified <see cref="T:System.Memory`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0,`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0,`0})">
+            <summary>
+            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Threading.Tasks.ValueTask{`0}})">
+            <summary>
+            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})">
+            <summary>
+            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})">
+            <summary>
+            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})">
+            <summary>
+            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3387D7F181FA234A9158DADA9224047F`1.UnsafeArraySpan">
+            <summary>
+            Forcibly obtains a <see cref="T:System.ReadOnlySpan`1"/> from <paramref name="memory"/>, assuming its backing store is an array.
+            If this invariant is not true, this results in undefined behavior (likely access violations).
+            </summary>
+            <returns>The created <see cref="T:System.ReadOnlySpan`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3387D7F181FA234A9158DADA9224047F`1.UnsafeManagerSpan``1">
+            <summary>
+            Forcibly obtains a <see cref="T:System.ReadOnlySpan`1"/> from <paramref name="memory"/>, assuming its backing store is a <see cref="T:System.Buffers.MemoryManager`1"/>.
+            To offer performance similar to <see cref="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeArraySpan``1(System.Memory{``0}@)"/> and <see cref="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeStringSpan(System.Memory{System.Char}@)"/>, <typeparamref name="TManager"/> must be the exact type of the backing <see cref="T:System.Buffers.MemoryManager`1"/>, otherwise <see cref="M:System.Buffers.MemoryManager`1.GetSpan"/> will still incur a virtual call.
+            </summary>
+            <typeparam name="TManager">The type of the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</typeparam>
+            <returns>The <see cref="T:System.ReadOnlySpan`1"/> created by the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.ZeroMemory">
+            <summary>
+            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill">
+            <summary>
+            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0})">
+            <summary>
+            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0,`0})">
+            <summary>
+            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0})">
+            <summary>
+            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0,`0})">
+            <summary>
+            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
+            </summary>
+            <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32@,System.Text.Encoding)">
             <summary>
@@ -4951,6 +5143,33 @@
             <param name="count">The number of values to read.</param>
             <returns>An array of <typeparamref name="T"/> of type <paramref name="count"/> read from the <paramref name="span"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$BFA23C8808B2873C0738C2637169E9F3.Write``1(``0,System.Int32)">
+            <summary>
+            Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.
+            </summary>
+            <typeparam name="T">The type of the <paramref name="data"/> instance.</typeparam>
+            <param name="data">The <paramref name="data"/> instance to format into the <paramref name="span"/>.</param>
+            <param name="index">The index at which to start writing the <paramref name="data"/> instance into the <paramref name="span"/>.</param>
+            <returns>
+            A slice of the input span that begins immediately after the last byte written. It may have length 0.
+            This can be used to chain calls to this method.
+            </returns>
+            <exception cref="T:System.ArgumentException">Thrown if the target <paramref name="span"/> cannot accomodate the specified <paramref name="data"/> instance.</exception>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$2613AA208F782F9F71758DD5BE30BD83.UnsafeStringSpan">
+            <summary>
+            Forcibly obtains a <see cref="T:System.ReadOnlySpan`1"/> from <paramref name="memory"/>, assuming its backing store is a <see langword="string"/>.
+            If this invariant is not true, this results in undefined behavior (likely access violations).
+            </summary>
+            <returns>The created <see cref="T:System.ReadOnlySpan`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$4DAF1BD91680853E88605FA5C5B79236.UnsafeStringSpan">
+            <summary>
+            Forcibly obtains a <see cref="T:System.Span`1"/> from <paramref name="memory"/>, assuming its backing store is a <see langword="string"/>.
+            If this invariant is not true, this results in undefined behavior (likely access violations).
+            </summary>
+            <returns>The created <see cref="T:System.Span`1"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplits(System.ReadOnlySpan{`0})">
             <summary>
             Returns a <see cref="T:LaquaiLib.Collections.Enumeration.SpanSplitEnumerable`1"/> that enumerates the segments of a <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/>s that are separated by any of the <typeparamref name="T"/>s specified by <paramref name="splits"/>.
@@ -4966,163 +5185,6 @@
             <param name="sequence">The sequence of <typeparamref name="T"/>s to use as a delimiter.</param>
             <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.SpanSplitEnumerable`1"/>.</returns>
             <remarks><typeparamref name="T"/> must implement <see cref="T:System.IEquatable`1"/>.</remarks>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0})">
-            <summary>
-            Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.Span`1"/>.
-            </summary>
-            <param name="action">The <see cref="T:System.Action`1"/> to invoke for each element.</param>
-            <returns>The original <see cref="T:System.Span`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0,System.Int32})">
-            <summary>
-            Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.Span`1"/>, passing the element and its index.
-            </summary>
-            <param name="action">The <see cref="T:System.Action`2"/> to invoke for each element.</param>
-            <returns>The original <see cref="T:System.Span`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory">
-            <summary>
-            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Span`1"/>s of <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill">
-            <summary>
-            Fills the specified <see cref="T:System.Span`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Span`1"/> using the specified <paramref name="factory"/>. It is passed the index in the span that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$BFA23C8808B2873C0738C2637169E9F3.Write``1(``0,System.Int32)">
-            <summary>
-            Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.
-            </summary>
-            <typeparam name="T">The type of the <paramref name="data"/> instance.</typeparam>
-            <param name="data">The <paramref name="data"/> instance to format into the <paramref name="span"/>.</param>
-            <param name="index">The index at which to start writing the <paramref name="data"/> instance into the <paramref name="span"/>.</param>
-            <returns>
-            A slice of the input span that begins immediately after the last byte written. It may have length 0.
-            This can be used to chain calls to this method.
-            </returns>
-            <exception cref="T:System.ArgumentException">Thrown if the target <paramref name="span"/> cannot accomodate the specified <paramref name="data"/> instance.</exception>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.ZeroMemory">
-            <summary>
-            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.ZeroMemory">
-            <summary>
-            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Memory`1"/>s of <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.MethodInfoExtensions">
             <summary>

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace LaquaiLib.Util;
+﻿namespace LaquaiLib.Util;
 
 /// <summary>
 /// Contains helper methods for arrays and spans.

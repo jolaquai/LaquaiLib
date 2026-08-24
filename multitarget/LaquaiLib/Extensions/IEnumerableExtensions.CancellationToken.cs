@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace LaquaiLib.Extensions;
+﻿namespace LaquaiLib.Extensions;
 
 public static partial class IEnumerableExtensions
 {

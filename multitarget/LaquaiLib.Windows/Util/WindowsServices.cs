@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Management;
+﻿using System.Management;
 
 namespace LaquaiLib.Windows.Util;
 

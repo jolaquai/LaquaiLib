@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace LaquaiLib.Util.ShellInterfaces;
+﻿namespace LaquaiLib.Util.ShellInterfaces;
 
 /// <summary>
 /// Implements <see cref="IShellInterface"/> using a PowerShell instance.
