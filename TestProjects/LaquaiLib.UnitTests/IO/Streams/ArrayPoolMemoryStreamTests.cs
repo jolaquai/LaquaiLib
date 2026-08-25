@@ -84,6 +84,202 @@ public class ArrayPoolMemoryStreamTests
     [Fact]
     public void ConstructorRejectsNegativeCapacity() => Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayPoolMemoryStream(2048, -1));
 
+    #region disallowLohRenting
+
+    // the whole point of the option: 65536 is the largest power-of-two bucket that still allocates below the 85000-byte LOH threshold
+    private const int LohSegmentCap = 65536;
+    private const int LohThreshold = 85000;
+
+    private static void AssertNoSegmentExceedsCap(IEnumerable<byte[]> rented) => Assert.All(rented, a => Assert.True(a.Length <= LohSegmentCap, $"rented a {a.Length}-byte array, above the {LohSegmentCap}-byte cap"));
+
+    [Fact]
+    public void DisallowLohRentingRejectsAMinimumSegmentSizeAboveTheCap() => Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayPoolMemoryStream(LohSegmentCap + 1, disallowLohRenting: true));
+
+    [Fact]
+    public void DisallowLohRentingAcceptsAMinimumSegmentSizeExactlyAtTheCap()
+    {
+        using var stream = new ArrayPoolMemoryStream(LohSegmentCap, disallowLohRenting: true);
+        Assert.Equal(0L, stream.Length);
+    }
+
+    // without the option a single rent covers the whole request, which is exactly the LOH allocation the option exists to avoid
+    [Fact]
+    public void WithoutDisallowLohRentingASingleLargeRentIsMade()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, 200_000, pool: pool);
+        Assert.Equal(new[] { 200_000 }, pool.RentRequests);
+    }
+
+    [Fact]
+    public void DisallowLohRentingSplitsTheInitialCapacityIntoCappedRents()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, 200_000, pool: pool, disallowLohRenting: true);
+        Assert.Equal(new[] { LohSegmentCap, LohSegmentCap, LohSegmentCap, 3392 }, pool.RentRequests);
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.Equal(200_000L, stream.Capacity);
+    }
+
+    // a pool that rounds up to bucket sizes must not round a capped request back above the cap; 65536 is a bucket boundary precisely so it cannot
+    [Fact]
+    public void DisallowLohRentingStaysUnderTheCapAfterPoolRounding()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, 200_000, pool: pool, disallowLohRenting: true);
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.All(pool.Rented, a => Assert.True(a.Length < LohThreshold));
+    }
+
+    [Fact]
+    public void DisallowLohRentingCapsRentsForOneOversizedWrite()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, pool: pool, disallowLohRenting: true);
+        stream.Write(new byte[300_000], 0, 300_000);
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.Equal(300_000L, stream.Length);
+    }
+
+    [Fact]
+    public void DisallowLohRentingCapsRentsForManySmallWrites()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool, disallowLohRenting: true);
+        var chunk = Sequence(997);
+        for (var i = 0; i < 400; i++)
+            stream.Write(chunk, 0, chunk.Length);
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.Equal(400L * chunk.Length, stream.Length);
+    }
+
+    [Fact]
+    public void DisallowLohRentingCapsRentsForSetLengthGrowth()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, pool: pool, disallowLohRenting: true);
+        stream.SetLength(1_000_000);
+        AssertNoSegmentExceedsCap(pool.Rented);
+    }
+
+    // seeking past the end and writing a single byte forces the gap to be covered by rents too
+    [Fact]
+    public void DisallowLohRentingCapsRentsForGrowthThroughASeekPastTheEnd()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, pool: pool, disallowLohRenting: true);
+        stream.Position = 500_000;
+        stream.WriteByte(1);
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.Equal(500_001L, stream.Length);
+    }
+
+    [Fact]
+    public void DisallowLohRentingCapsRentsAfterTrimExcessAndRegrowth()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(2048, pool: pool, disallowLohRenting: true);
+        stream.Write(new byte[300_000], 0, 300_000);
+        stream.SetLength(1000);
+        stream.TrimExcess();
+        stream.Position = stream.Length;
+        stream.Write(new byte[300_000], 0, 300_000);
+        AssertNoSegmentExceedsCap(pool.Rented);
+    }
+
+    // the shared pool is the default and rounds to real bucket sizes, so the cap has to hold against it too
+    [Fact]
+    public void DisallowLohRentingKeepsEverySegmentUnderTheCapWithTheSharedPool()
+    {
+        using var stream = new ArrayPoolMemoryStream(2048, disallowLohRenting: true);
+        var chunk = Sequence(4096);
+        for (var i = 0; i < 500; i++)
+            stream.Write(chunk, 0, chunk.Length);
+
+        // one sequence segment per stream segment, with only the trailing one truncated to Length
+        foreach (var segment in stream.AsReadOnlySequence())
+            Assert.True(segment.Length <= LohSegmentCap, $"segment of {segment.Length} bytes exceeds the {LohSegmentCap}-byte cap");
+    }
+
+    [Fact]
+    public void DisallowLohRentingSurvivesAMemoryStreamOracle()
+    {
+        var random = new Random(4242);
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(1024, pool: pool, disallowLohRenting: true);
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 300; i++)
+        {
+            var chunk = new byte[random.Next(1, 8192)];
+            random.NextBytes(chunk);
+            stream.Write(chunk, 0, chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.Equal(oracle.ToArray(), stream.ToArray());
+    }
+
+    // appending at the very end of a segment used to merge two capped segments into one oversized rent; the write head
+    // is at the end of the stream, so the segment is ended early and the next one serves the run instead
+    [Fact]
+    public void GetSpanStaysUnderTheCapWhenAppendingAtTheEndOfASegment()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(LohSegmentCap, pool: pool, disallowLohRenting: true);
+        stream.Position = LohSegmentCap - 36;
+        var span = stream.GetSpan(1000);
+
+        Assert.True(span.Length >= 1000);
+        AssertNoSegmentExceedsCap(pool.Rented);
+    }
+
+    [Fact]
+    public void GetSpanStaysUnderTheCapWhenTheRunFitsInTheCurrentSegment()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(LohSegmentCap, pool: pool, disallowLohRenting: true);
+        stream.Position = 1024;
+        var span = stream.GetSpan(1000);
+
+        Assert.True(span.Length >= 1000);
+        AssertNoSegmentExceedsCap(pool.Rented);
+    }
+
+    [Fact]
+    public void GetSpanStaysUnderTheCapWhileAppendingRepeatedlyAcrossManySegments()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(4096, pool: pool, disallowLohRenting: true);
+        var chunk = Sequence(3000);
+        for (var i = 0; i < 200; i++)
+        {
+            chunk.CopyTo(stream.GetSpan(chunk.Length));
+            stream.Advance(chunk.Length);
+        }
+
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.Equal(200L * chunk.Length, stream.Length);
+    }
+
+    // KNOWN CARVE-OUT: ending a segment early renumbers everything behind it, which is only safe while nothing is
+    // stored there. Writing into the middle of the stream therefore still has to merge, and the merge can exceed the
+    // cap. This pins the behaviour so a future change to it is deliberate rather than accidental.
+    [Fact]
+    public void GetSpanRentsAboveTheCapWhenWritingIntoTheMiddleOfTheStream()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(LohSegmentCap, pool: pool, disallowLohRenting: true);
+        stream.Write(new byte[200_000], 0, 200_000);
+
+        stream.Position = LohSegmentCap - 36;
+        var span = stream.GetSpan(1000);
+
+        Assert.True(span.Length >= 1000);
+        Assert.Contains(pool.Rented, a => a.Length > LohSegmentCap);
+    }
+
+    #endregion
+
     [Fact]
     public void NewStreamIsEmpty()
     {
@@ -980,6 +1176,56 @@ public class ArrayPoolMemoryStreamTests
     }
 
     [Fact]
+    public void LengthThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Length);
+
+    [Fact]
+    public void CapacityThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Capacity);
+
+    [Fact]
+    public void PositionGetterThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Position);
+
+    [Fact]
+    public void ReadAsyncThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().ReadAsync(new byte[3], 0, 3, TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void ReadAsyncMemoryThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().ReadAsync(new byte[3].AsMemory(), TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void WriteSpanThrowsWhenDisposed()
+    {
+        var stream = DisposedStream();
+        Assert.Throws<ObjectDisposedException>(() => stream.Write(new byte[3].AsSpan()));
+    }
+
+    [Fact]
+    public void WriteAsyncThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().WriteAsync(new byte[3], 0, 3, TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void WriteAsyncMemoryThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().WriteAsync(new byte[3].AsMemory(), TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void ToArrayThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().ToArray());
+
+    // the disposal checks are cheap enough to add everywhere, but Flush is documented as a no-op and must stay callable
+    [Fact]
+    public async Task FlushDoesNotThrowWhenDisposed()
+    {
+        var stream = DisposedStream();
+        stream.Flush();
+        await stream.FlushAsync(TestContext.Current.CancellationToken);
+    }
+
+    // MemoryStream and FileStream both validate arguments before noticing they are closed, and callers written against them see the argument exception first
+    [Fact]
+    public void ArgumentValidationPrecedesDisposalCheck() => Assert.Throws<ArgumentNullException>(() => DisposedStream().Read(null, 0, 0));
+
+    [Fact]
+    public void ArgumentValidationPrecedesDisposalCheckOnPositionSetter() => Assert.Throws<ArgumentOutOfRangeException>(() => DisposedStream().Position = -1);
+
+    [Fact]
+    public void ArgumentValidationPrecedesDisposalCheckOnSetLength() => Assert.Throws<ArgumentOutOfRangeException>(() => DisposedStream().SetLength(-1));
+
+    [Fact]
     public void ReadRejectsNullBuffer()
     {
         using var stream = StreamWith(1, 2, 3);
@@ -1459,8 +1705,10 @@ public class ArrayPoolMemoryStreamTests
         Assert.Equal(expected, stream.Capacity);
     }
 
+    // a merged run that stops short of the end cannot address the pool's rounding surplus without shifting every
+    // segment behind it, so the surplus is deliberately left rented but unaddressed and Capacity falls below what is held
     [Fact]
-    public void CapacityInvariantHoldsAfterConsolidationWithRoundingPool()
+    public void CapacityStaysWithinWhatIsHeldAfterConsolidationWithRoundingPool()
     {
         var pool = new RoundingArrayPool();
         var data = Sequence(200);
@@ -1469,8 +1717,110 @@ public class ArrayPoolMemoryStreamTests
         stream.Position = 0;
         stream.GetSpan((int)(stream.Capacity / 3));
 
-        var expected = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
-        Assert.Equal(expected, stream.Capacity);
+        var held = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
+        Assert.True(stream.Capacity <= held, $"Capacity {stream.Capacity} exceeds the {held} bytes actually held");
+        Assert.True(stream.Capacity >= stream.Length);
+    }
+
+    // appending only ends the current segment early and uses the next one, so nothing is copied and nothing is returned
+    [Fact]
+    public void GetSpanAtTheEndAppendsWithoutCopyingOrReturningAnything()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(60);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(data, 0, data.Length);
+
+        // 4 bytes left in the segment, far short of the hint, and the write head is at the end of the stream
+        var span = stream.GetSpan(40);
+
+        Assert.True(span.Length >= 40);
+        Assert.Empty(pool.Returns);
+    }
+
+    [Fact]
+    public void GetSpanAtTheEndKeepsEarlierContentAddressableAcrossTheAbandonedTail()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(60);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(data, 0, data.Length);
+
+        var tail = Sequence(40);
+        tail.CopyTo(stream.GetSpan(tail.Length));
+        stream.Advance(tail.Length);
+
+        var expected = new byte[100];
+        data.CopyTo(expected, 0);
+        tail.CopyTo(expected, 60);
+        Assert.Equal(100L, stream.Length);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void GetSpanAtTheEndLeavesCapacityAtOrBelowWhatIsHeld()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(Sequence(60), 0, 60);
+        stream.GetSpan(40);
+
+        var held = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
+        Assert.True(stream.Capacity <= held, $"Capacity {stream.Capacity} exceeds the {held} bytes actually held");
+        Assert.True(stream.Capacity >= stream.Length);
+    }
+
+    // the abandoned tail must not be readable, or the bytes after it would all be off by its length
+    [Fact]
+    public void AppendingThroughGetSpanMatchesAMemoryStreamOracle()
+    {
+        var random = new Random(99);
+        var pool = new RoundingArrayPool(0xEE);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 300; i++)
+        {
+            var chunk = new byte[random.Next(1, 200)];
+            random.NextBytes(chunk);
+            chunk.CopyTo(stream.GetSpan(chunk.Length));
+            stream.Advance(chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+        Assert.Equal(oracle.Length, stream.Length);
+        Assert.Equal(oracle.ToArray(), stream.ToArray());
+    }
+
+    // mixing both paths is where an addressing mistake in either would show up
+    [Fact]
+    public void InterleavedAppendingAndMidStreamGetSpanMatchesAMemoryStreamOracle()
+    {
+        var random = new Random(31337);
+        using var stream = new ArrayPoolMemoryStream(64, pool: new RoundingArrayPool(0xEE));
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 300; i++)
+        {
+            var chunk = new byte[random.Next(1, 200)];
+            random.NextBytes(chunk);
+
+            // every few rounds, go back and rewrite something already written
+            if (oracle.Length > chunk.Length && i % 5 == 0)
+            {
+                var at = random.NextInt64(0, oracle.Length - chunk.Length);
+                stream.Position = at;
+                oracle.Position = at;
+            }
+            else
+            {
+                stream.Position = stream.Length;
+                oracle.Position = oracle.Length;
+            }
+
+            chunk.CopyTo(stream.GetSpan(chunk.Length));
+            stream.Advance(chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+        Assert.Equal(oracle.Length, stream.Length);
+        Assert.Equal(oracle.ToArray(), stream.ToArray());
     }
 
     [Fact]
@@ -1934,6 +2284,91 @@ public class ArrayPoolMemoryStreamTests
         for (var i = 0; i < data.Length; i += 256)
             stream.Write(data, i, int.Min(256, data.Length - i));
         Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void ToArrayOfEmptyStreamIsEmpty()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.Empty(stream.ToArray());
+    }
+
+    [Fact]
+    public void ToArrayIsExactlyLengthSizedEvenWithSpareCapacity()
+    {
+        var data = Sequence(20);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xEE), data, 16);
+        Assert.True(stream.Capacity > stream.Length);
+        var actual = stream.ToArray();
+        Assert.Equal(data.Length, actual.Length);
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void ToArraySpansEverySegment()
+    {
+        var data = Sequence(70);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        Assert.Equal(data, stream.ToArray());
+    }
+
+    [Fact]
+    public void ToArrayDoesNotMovePosition()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 1;
+        stream.ToArray();
+        Assert.Equal(1, stream.Position);
+    }
+
+    [Fact]
+    public void ToArrayReturnsAnIndependentCopy()
+    {
+        var data = Sequence(40);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var actual = stream.ToArray();
+        stream.Position = 0;
+        stream.Write(new byte[40], 0, 40);
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void ToArrayIgnoresBytesBeyondLength()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xEE), data, 16);
+        stream.SetLength(20);
+        Assert.Equal(data[..20], stream.ToArray());
+    }
+
+    [Fact]
+    public void ToArrayExposesZeroesForSetLengthGrowth()
+    {
+        using var stream = new ArrayPoolMemoryStream(16, pool: new TrackingArrayPool(0xAB));
+        var data = Sequence(8);
+        stream.Write(data, 0, data.Length);
+        stream.SetLength(40);
+
+        var actual = stream.ToArray();
+        Assert.Equal(40, actual.Length);
+        Assert.Equal(data, actual[..8]);
+        Assert.All(actual[8..], b => Assert.Equal(0, b));
+    }
+
+    [Fact]
+    public void ToArrayMatchesMemoryStreamOracle()
+    {
+        var random = new Random(12345);
+        using var stream = new ArrayPoolMemoryStream(16);
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 200; i++)
+        {
+            var chunk = new byte[random.Next(1, 64)];
+            random.NextBytes(chunk);
+            stream.Write(chunk, 0, chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+        Assert.Equal(oracle.ToArray(), stream.ToArray());
     }
 
     [Fact]

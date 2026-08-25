@@ -29,4 +29,33 @@ internal static class SegmentedBufferHelpers
         length += index;
         return length;
     }
+
+    // the BufferSegment overloads walk the addressed extent rather than the arrays' own lengths, so a chain whose segments deliberately address less than they hold still maps contiguously
+    public static (int SegmentIndex, int OffsetInSegment) AbsoluteToRelative<T>(ReadOnlySpan<BufferSegment<T>> segments, long index)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+
+        // Fast zero-seek path
+        if (index == 0)
+            return (0, 0);
+
+        long length = 0;
+        for (var i = 0; i < segments.Length; i++)
+        {
+            var len = segments[i].Length;
+            length += len;
+            if (index < length)
+                return (i, (int)(index - (length - len)));
+        }
+        throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range of the buffer.");
+    }
+
+    public static long RelativeToAbsolute<T>(ReadOnlySpan<BufferSegment<T>> segments, int segment, int index)
+    {
+        long length = 0;
+        for (var i = 0; i < segment; i++)
+            length += segments[i].Length;
+        length += index;
+        return length;
+    }
 }
