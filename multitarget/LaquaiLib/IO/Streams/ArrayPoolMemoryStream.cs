@@ -25,6 +25,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     private readonly ArrayPool<byte> _pool;
     private readonly List<byte[]> _segments = [];
     private readonly int _minimumSegmentSize;
+    private readonly int _maxSegmentSize;
     private readonly bool _skipZeroing;
 
     private CachedInt32Task _lastReadTask;
@@ -38,10 +39,14 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <param name="capacity">Initial capacity to rent up front.</param>
     /// <param name="skipZeroing">If <see langword="true"/>, memory exposed by seeking or <see cref="SetLength(long)"/> past the current length is not zeroed and may contain arbitrary prior contents. Only set this if all such memory is overwritten before being read.</param>
     /// <param name="pool">The <see cref="ArrayPool{T}"/> to rent segments from, or <see langword="null"/> to use <see cref="ArrayPool{T}.Shared"/>.</param>
-    public ArrayPoolMemoryStream(int minimumSegmentSize = 2048, long capacity = 0, bool skipZeroing = false, ArrayPool<byte> pool = null)
+    /// <param name="disallowLohRenting">If <see langword="true"/>, no single segment is rented larger than 65536 bytes, the largest pool bucket below the 85000-byte Large Object Heap threshold. This only bounds individual rents made to grow <see cref="Capacity"/>; a single <see cref="GetMemory(int)"/>/<see cref="GetSpan(int)"/> call whose <c>sizeHint</c> exceeds 65536 still requires a larger contiguous rent and is not subject to this cap.</param>
+    public ArrayPoolMemoryStream(int minimumSegmentSize = 2048, long capacity = 0, bool skipZeroing = false, ArrayPool<byte> pool = null, bool disallowLohRenting = false)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(minimumSegmentSize);
         ArgumentOutOfRangeException.ThrowIfNegative(capacity, nameof(capacity));
+
+        _maxSegmentSize = disallowLohRenting ? 65536 : Array.MaxLength;
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(minimumSegmentSize, _maxSegmentSize, nameof(minimumSegmentSize));
 
         _minimumSegmentSize = minimumSegmentSize;
         _skipZeroing = skipZeroing;
@@ -82,7 +87,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     {
         while (capacity < required)
         {
-            var arr = _pool.Rent((int)long.Min(long.Max(required - capacity, _minimumSegmentSize), Array.MaxLength));
+            var arr = _pool.Rent((int)long.Min(long.Max(required - capacity, _minimumSegmentSize), _maxSegmentSize));
             _segments.Add(arr);
             capacity += arr.Length;
         }
