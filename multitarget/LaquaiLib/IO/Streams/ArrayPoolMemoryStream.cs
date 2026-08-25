@@ -483,17 +483,39 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
 
         // every byte is overwritten by the copy below, so the runtime's zeroing pass would be wasted work
         var result = GC.AllocateUninitializedArray<byte>((int)length);
-        var destination = result.AsSpan();
+        CopyToCore(result);
+        return result;
+    }
+    /// <summary>
+    /// Copies the memory that has been written so far into <paramref name="destination"/>.
+    /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="CopyTo(Stream, int)"/>, which copies what is left from <see cref="Position"/> onwards and advances it, this copies the whole of <see cref="Length"/> from the start and leaves <see cref="Position"/> alone; it is <see cref="ToArray"/> without the allocation. Use <see cref="Read(Span{byte})"/> for the read-from-<see cref="Position"/> behaviour. <paramref name="destination"/> may be longer than <see cref="Length"/>, in which case the bytes past it are left as they were.
+    /// </remarks>
+    /// <param name="destination">The span to copy into. Must be at least <see cref="Length"/> long.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="destination"/> is shorter than <see cref="Length"/>.</exception>
+    public void CopyTo(Span<byte> destination)
+    {
+        ThrowIfDisposed();
+        if (destination.Length < length)
+            throw new ArgumentException($"The destination is {destination.Length} bytes long, too short to hold the {length} bytes this stream contains.", nameof(destination));
+
+        CopyToCore(destination);
+    }
+    // the entry points check disposal and destination length and hand off here, so no path does either twice
+    private void CopyToCore(Span<byte> destination)
+    {
         var segments = SegmentsSpan();
-        // the final segment is only partially filled whenever length falls inside it, so the destination drives the loop rather than the segment lengths
-        for (var i = 0; !destination.IsEmpty; i++)
+        var remaining = length;
+        // the last segment is only partially filled whenever length falls inside it, so what is left drives the loop rather than the segment lengths
+        for (var i = 0; remaining > 0; i++)
         {
             var current = segments[i];
-            var take = int.Min(current.Length, destination.Length);
+            var take = (int)long.Min(current.Length, remaining);
             current.Array.AsSpan(0, take).CopyTo(destination);
             destination = destination[take..];
+            remaining -= take;
         }
-        return result;
     }
     private sealed class SequenceSegment : ReadOnlySequenceSegment<byte>
     {

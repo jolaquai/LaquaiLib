@@ -2371,6 +2371,180 @@ public class ArrayPoolMemoryStreamTests
         Assert.Equal(oracle.ToArray(), stream.ToArray());
     }
 
+    #region CopyTo(Span<byte>)
+
+    [Fact]
+    public void CopyToSpanFillsAnExactlySizedDestination()
+    {
+        var data = Sequence(70);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var actual = new byte[data.Length];
+        stream.CopyTo(actual);
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void CopyToSpanSpansEverySegment()
+    {
+        var data = Sequence(200);
+        using var stream = SegmentedStream(new RoundingArrayPool(0xEE), data, 16);
+        var actual = new byte[data.Length];
+        stream.CopyTo(actual);
+        Assert.Equal(data, actual);
+    }
+
+    // a destination longer than the stream is fine; what sits past Length must be left exactly as it was
+    [Fact]
+    public void CopyToSpanLeavesTheDestinationTailUntouched()
+    {
+        var data = Sequence(20);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var actual = new byte[40];
+        actual.AsSpan().Fill(0xAB);
+        stream.CopyTo(actual);
+
+        Assert.Equal(data, actual[..20]);
+        Assert.All(actual[20..], b => Assert.Equal(0xAB, b));
+    }
+
+    [Fact]
+    public void CopyToSpanRejectsADestinationOneByteTooShort()
+    {
+        var data = Sequence(70);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var actual = new byte[69];
+        var ex = Assert.Throws<ArgumentException>(() => stream.CopyTo(actual));
+        Assert.Equal("destination", ex.ParamName);
+    }
+
+    [Fact]
+    public void CopyToSpanRejectsAnEmptyDestinationForANonEmptyStream()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        Assert.Throws<ArgumentException>(() => stream.CopyTo(Span<byte>.Empty));
+    }
+
+    [Fact]
+    public void CopyToSpanOfEmptyStreamIntoEmptyDestinationIsANoOp()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        stream.CopyTo(Span<byte>.Empty);
+        Assert.Equal(0L, stream.Length);
+    }
+
+    [Fact]
+    public void CopyToSpanDoesNotMovePosition()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 1;
+        stream.CopyTo(new byte[3]);
+        Assert.Equal(1, stream.Position);
+    }
+
+    // the whole point of the overload being distinct from CopyTo(Stream): Position is ignored, not honoured
+    [Fact]
+    public void CopyToSpanCopiesFromTheStartRegardlessOfPosition()
+    {
+        var data = Sequence(70);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        stream.Position = 50;
+        var actual = new byte[data.Length];
+        stream.CopyTo(actual);
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void CopyToSpanIgnoresBytesBeyondLength()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xEE), data, 16);
+        stream.SetLength(20);
+        var actual = new byte[20];
+        stream.CopyTo(actual);
+        Assert.Equal(data[..20], actual);
+    }
+
+    [Fact]
+    public void CopyToSpanExposesZeroesForSetLengthGrowth()
+    {
+        using var stream = new ArrayPoolMemoryStream(16, pool: new TrackingArrayPool(0xAB));
+        var data = Sequence(8);
+        stream.Write(data, 0, data.Length);
+        stream.SetLength(40);
+
+        var actual = new byte[40];
+        stream.CopyTo(actual);
+        Assert.Equal(data, actual[..8]);
+        Assert.All(actual[8..], b => Assert.Equal(0, b));
+    }
+
+    // segments ended early by the buffer-writer append path must not leak their abandoned tails into the copy
+    [Fact]
+    public void CopyToSpanSkipsTailsAbandonedByAppending()
+    {
+        var pool = new TrackingArrayPool(0xEE);
+        var data = Sequence(60);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(data, 0, data.Length);
+
+        var tail = Sequence(40);
+        tail.CopyTo(stream.GetSpan(tail.Length));
+        stream.Advance(tail.Length);
+
+        var expected = new byte[100];
+        data.CopyTo(expected, 0);
+        tail.CopyTo(expected, 60);
+
+        var actual = new byte[100];
+        stream.CopyTo(actual);
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void CopyToSpanThrowsWhenDisposed()
+    {
+        var stream = DisposedStream();
+        Assert.Throws<ObjectDisposedException>(() => stream.CopyTo(new byte[3].AsSpan()));
+    }
+
+    [Fact]
+    public void CopyToSpanAgreesWithToArray()
+    {
+        var random = new Random(777);
+        using var stream = new ArrayPoolMemoryStream(16);
+        for (var i = 0; i < 200; i++)
+        {
+            var chunk = new byte[random.Next(1, 64)];
+            random.NextBytes(chunk);
+            stream.Write(chunk, 0, chunk.Length);
+        }
+
+        var actual = new byte[stream.Length];
+        stream.CopyTo(actual);
+        Assert.Equal(stream.ToArray(), actual);
+    }
+
+    [Fact]
+    public void CopyToSpanMatchesMemoryStreamOracle()
+    {
+        var random = new Random(24680);
+        using var stream = new ArrayPoolMemoryStream(16, pool: new RoundingArrayPool(0xEE));
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 200; i++)
+        {
+            var chunk = new byte[random.Next(1, 64)];
+            random.NextBytes(chunk);
+            stream.Write(chunk, 0, chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+
+        var actual = new byte[oracle.Length];
+        stream.CopyTo(actual);
+        Assert.Equal(oracle.ToArray(), actual);
+    }
+
+    #endregion
+
     [Fact]
     public void AsReadOnlySequenceCopiesIntoADestinationSpan()
     {
