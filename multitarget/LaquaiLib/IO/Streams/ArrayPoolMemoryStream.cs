@@ -23,14 +23,14 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     }
 
     private readonly ArrayPool<byte> _pool;
-    private readonly List<byte[]> _segments = [];
+    private readonly List<BufferSegment<byte>> _segments = [];
     private readonly int _minimumSegmentSize;
     private readonly int _maxSegmentSize;
     private readonly bool _skipZeroing;
 
     private CachedInt32Task _lastReadTask;
     private long position, length, capacity;
-    private bool _disposed;
+    private int _disposed;
 
     /// <summary>
     /// Initializes a new <see cref="ArrayPoolMemoryStream"/>.
@@ -56,14 +56,14 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(_disposed, this);
+    private void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
 
     /// <inheritdoc/>
-    public override bool CanRead => !_disposed;
+    public override bool CanRead => Volatile.Read(ref _disposed) == 0;
     /// <inheritdoc/>
-    public override bool CanSeek => !_disposed;
+    public override bool CanSeek => Volatile.Read(ref _disposed) == 0;
     /// <inheritdoc/>
-    public override bool CanWrite => !_disposed;
+    public override bool CanWrite => Volatile.Read(ref _disposed) == 0;
     /// <inheritdoc/>
     public override long Length
     {
@@ -100,7 +100,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] private Span<byte[]> SegmentsSpan() => CollectionsMarshal.AsSpan(_segments);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)] private Span<BufferSegment<byte>> SegmentsSpan() => CollectionsMarshal.AsSpan(_segments);
     [MethodImpl(MethodImplOptions.AggressiveInlining)] private (int Segment, int Offset) Locate(long absolute) => SegmentedBufferHelpers.AbsoluteToRelative<byte>(SegmentsSpan(), absolute);
 
     // one rent covers the entire gap unless it exceeds what a single array can hold; the minimum keeps many tiny writes from degenerating into rent-per-write
@@ -109,7 +109,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         while (capacity < required)
         {
             var arr = _pool.Rent((int)long.Min(long.Max(required - capacity, _minimumSegmentSize), _maxSegmentSize));
-            _segments.Add(arr);
+            _segments.Add(BufferSegment<byte>.Full(arr));
             capacity += arr.Length;
         }
     }
@@ -122,7 +122,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         {
             var current = segments[seg];
             var take = (int)long.Min(current.Length - off, count);
-            current.AsSpan(off, take).ZeroMemory();
+            current.Array.AsSpan(off, take).ZeroMemory();
             count -= take;
             off += take;
             if (off == current.Length)
@@ -162,7 +162,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         {
             var current = segments[seg];
             var take = int.Min(current.Length - off, count - copied);
-            current.AsSpan(off, take).CopyTo(buffer[copied..]);
+            current.Array.AsSpan(off, take).CopyTo(buffer[copied..]);
             copied += take;
             off += take;
             if (off == current.Length)
@@ -205,7 +205,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
 
         var (seg, off) = Locate(position);
         position++;
-        return _segments[seg][off];
+        return _segments[seg].Array[off];
     }
 
     /// <inheritdoc/>
@@ -250,7 +250,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         {
             var current = segments[seg];
             var put = int.Min(current.Length - off, buffer.Length - written);
-            buffer.Slice(written, put).CopyTo(current.AsSpan(off));
+            buffer.Slice(written, put).CopyTo(current.Array.AsSpan(off));
             written += put;
             off += put;
             if (off == current.Length)
@@ -320,7 +320,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         {
             var current = _segments[seg];
             var take = (int)long.Min(current.Length - off, remaining);
-            destination.Write(current, off, take);
+            destination.Write(current.Array, off, take);
             remaining -= take;
             off += take;
             if (off == current.Length)
@@ -352,7 +352,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
             ThrowIfDisposed();
             var current = _segments[seg];
             var take = (int)long.Min(current.Length - off, remaining);
-            await destination.WriteAsync(current.AsMemory(off, take), cancellationToken).ConfigureAwait(false);
+            await destination.WriteAsync(current.Array.AsMemory(off, take), cancellationToken).ConfigureAwait(false);
             remaining -= take;
             off += take;
             if (off == current.Length)
@@ -413,7 +413,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         }
 
         for (var i = keep; i < _segments.Count; i++)
-            _pool.Return(_segments[i]);
+            _pool.Return(_segments[i].Array);
         _segments.RemoveRange(keep, _segments.Count - keep);
         capacity = kept;
     }
@@ -426,14 +426,14 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
-        if (!_disposed)
+        // claiming the flag up front means a second call, from either this thread or another, cannot return the same segments twice
+        if (Interlocked.Exchange(ref _disposed, 1) == 0)
         {
             foreach (var segment in _segments)
-                _pool.Return(segment);
+                _pool.Return(segment.Array);
             _segments.Clear();
 
             position = length = capacity = 0;
-            _disposed = true;
         }
         base.Dispose(disposing);
     }
@@ -450,12 +450,12 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
             return ReadOnlySequence<byte>.Empty;
 
         // walking up to length instead of locating it keeps the length == capacity case in range and never emits an empty trailing segment
-        Segment first = null, prev = null;
+        SequenceSegment first = null, prev = null;
         long running = 0;
         for (var i = 0; running < length; i++)
         {
             var take = (int)long.Min(_segments[i].Length, length - running);
-            var seg = new Segment(_segments[i].AsMemory(0, take), running);
+            var seg = new SequenceSegment(_segments[i].Array.AsMemory(0, take), running);
             running += take;
             if (prev is null)
                 first = seg;
@@ -490,19 +490,19 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         {
             var current = segments[i];
             var take = int.Min(current.Length, destination.Length);
-            current.AsSpan(0, take).CopyTo(destination);
+            current.Array.AsSpan(0, take).CopyTo(destination);
             destination = destination[take..];
         }
         return result;
     }
-    private sealed class Segment : ReadOnlySequenceSegment<byte>
+    private sealed class SequenceSegment : ReadOnlySequenceSegment<byte>
     {
-        public Segment(ReadOnlyMemory<byte> memory, long index)
+        public SequenceSegment(ReadOnlyMemory<byte> memory, long index)
         {
             Memory = memory;
             RunningIndex = index;
         }
-        public void SetNext(Segment next) => Next = next;
+        public void SetNext(SequenceSegment next) => Next = next;
     }
 
     #region IBufferWriter<byte>
@@ -561,12 +561,60 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
 
         var (seg, off) = Locate(position);
         var current = _segments[seg];
-        if (current.Length - off < sizeHint)
+        if (current.Length - off >= sizeHint)
+            return (current.Array, off, current.Length - off);
+
+        // nothing is addressed at or past the write head, so this segment's tail can simply be abandoned rather than copied somewhere larger
+        if (position >= length)
         {
-            Consolidate(seg, off + (long)sizeHint);
-            current = _segments[seg]; // merging preserves offsets relative to the start of seg, so off still points at position
+            var appended = AppendWritableSegment(seg, off, sizeHint);
+            return (appended.Array, 0, appended.Length);
         }
-        return (current, off, current.Length - off);
+
+        // there is live data past the write head, and moving it would renumber it, so the run has to be made contiguous the expensive way
+        Consolidate(seg, off + (long)sizeHint);
+        current = _segments[seg]; // merging preserves offsets relative to the start of seg, so off still points at position
+        return (current.Array, off, current.Length - off);
+    }
+    // ends the segment holding the write head at `off`, so whatever follows starts exactly at position and can serve the run without anything being moved
+    // only legal while position >= length: it renumbers every address past position, which is harmless only because nothing is stored there
+    private BufferSegment<byte> AppendWritableSegment(int head, int off, int sizeHint)
+    {
+        var current = _segments[head];
+        if (off == 0)
+        {
+            // the segment would address nothing at all, so it is dropped rather than left behind as a zero-length hole
+            capacity -= current.Length;
+            _pool.Return(current.Array);
+            _segments.RemoveAt(head);
+        }
+        else
+        {
+            // the abandoned tail stays rented until the segment is released; wasting it is the entire point, since the alternative is copying the run
+            capacity -= current.Length - off;
+            _segments[head] = current.Truncate(off);
+            head++;
+        }
+
+        // EnsureCapacity already rented the tail, and the segment that now starts at the head usually covers the run on its own
+        if (head < _segments.Count && _segments[head].Length >= sizeHint)
+            return _segments[head];
+
+        // it does not, and nothing from the head on holds anything, so it can all go back
+        for (var i = head; i < _segments.Count; i++)
+        {
+            capacity -= _segments[i].Length;
+            _pool.Return(_segments[i].Array);
+        }
+        if (head < _segments.Count)
+            _segments.RemoveRange(head, _segments.Count - head);
+
+        // _minimumSegmentSize is capped at _maxSegmentSize by the constructor, so this exceeds the cap only when the caller asks for more than a capped segment could ever hold
+        var arr = _pool.Rent(int.Max(sizeHint, _minimumSegmentSize));
+        var appended = BufferSegment<byte>.Full(arr);
+        _segments.Add(appended);
+        capacity += appended.Length;
+        return appended;
     }
     // IBufferWriter demands one contiguous run, which a segment chain only provides by accident; merging whole segments keeps every address outside the merged run where it was
     private void Consolidate(int first, long needed)
@@ -579,29 +627,20 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
             merged += segments[last++].Length;
 
         var buffer = RentContiguous(merged);
-        // the pool rounds up to bucket sizes, and surplus anywhere but the very end would shift every following segment, so the run grows until it absorbs the slack
-        while (last < segments.Length && merged != buffer.Length)
-        {
-            merged += segments[last++].Length;
-            if (merged > buffer.Length)
-            {
-                _pool.Return(buffer);
-                buffer = RentContiguous(merged);
-            }
-        }
-
         var copied = 0;
         for (var i = first; i < last; i++)
         {
             var current = segments[i];
-            current.AsSpan().CopyTo(buffer.AsSpan(copied));
+            current.Span.CopyTo(buffer.AsSpan(copied));
             copied += current.Length;
-            _pool.Return(current);
+            _pool.Return(current.Array);
         }
 
-        _segments[first] = buffer;
+        // the pool's rounding surplus can only be addressed when the merge ran to the very end, since anywhere else it would shift every following segment
+        var addressed = last == _segments.Count ? buffer.Length : (int)merged;
+        _segments[first] = new BufferSegment<byte>(buffer, addressed);
         _segments.RemoveRange(first + 1, last - first - 1);
-        capacity += buffer.Length - merged;
+        capacity += addressed - merged;
     }
     // deliberately not bounded by _maxSegmentSize: the run has to be contiguous and has to start at position, which no capped segment can offer once position sits deep enough inside one
     private byte[] RentContiguous(long length) => length <= Array.MaxLength ? _pool.Rent((int)length) : throw new OutOfMemoryException("A contiguous buffer of the requested size cannot be rented.");

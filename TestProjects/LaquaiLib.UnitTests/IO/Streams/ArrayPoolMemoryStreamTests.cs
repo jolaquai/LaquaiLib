@@ -219,11 +219,10 @@ public class ArrayPoolMemoryStreamTests
         Assert.Equal(oracle.ToArray(), stream.ToArray());
     }
 
-    // KNOWN CARVE-OUT: IBufferWriter demands one contiguous run starting at Position. Once Position sits deep inside a
-    // capped segment, no capped segment can hold that run, so Consolidate has to merge and rents above the cap - even
-    // for a small sizeHint. This pins the behaviour so a future change to it is deliberate rather than accidental.
+    // appending at the very end of a segment used to merge two capped segments into one oversized rent; the write head
+    // is at the end of the stream, so the segment is ended early and the next one serves the run instead
     [Fact]
-    public void GetSpanRentsAboveTheCapWhenAContiguousRunCannotFitInACappedSegment()
+    public void GetSpanStaysUnderTheCapWhenAppendingAtTheEndOfASegment()
     {
         var pool = new RoundingArrayPool();
         using var stream = new ArrayPoolMemoryStream(LohSegmentCap, pool: pool, disallowLohRenting: true);
@@ -231,10 +230,9 @@ public class ArrayPoolMemoryStreamTests
         var span = stream.GetSpan(1000);
 
         Assert.True(span.Length >= 1000);
-        Assert.Contains(pool.Rented, a => a.Length > LohSegmentCap);
+        AssertNoSegmentExceedsCap(pool.Rented);
     }
 
-    // ...but as long as the run fits inside what a capped segment can still offer, the cap holds
     [Fact]
     public void GetSpanStaysUnderTheCapWhenTheRunFitsInTheCurrentSegment()
     {
@@ -245,6 +243,39 @@ public class ArrayPoolMemoryStreamTests
 
         Assert.True(span.Length >= 1000);
         AssertNoSegmentExceedsCap(pool.Rented);
+    }
+
+    [Fact]
+    public void GetSpanStaysUnderTheCapWhileAppendingRepeatedlyAcrossManySegments()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(4096, pool: pool, disallowLohRenting: true);
+        var chunk = Sequence(3000);
+        for (var i = 0; i < 200; i++)
+        {
+            chunk.CopyTo(stream.GetSpan(chunk.Length));
+            stream.Advance(chunk.Length);
+        }
+
+        AssertNoSegmentExceedsCap(pool.Rented);
+        Assert.Equal(200L * chunk.Length, stream.Length);
+    }
+
+    // KNOWN CARVE-OUT: ending a segment early renumbers everything behind it, which is only safe while nothing is
+    // stored there. Writing into the middle of the stream therefore still has to merge, and the merge can exceed the
+    // cap. This pins the behaviour so a future change to it is deliberate rather than accidental.
+    [Fact]
+    public void GetSpanRentsAboveTheCapWhenWritingIntoTheMiddleOfTheStream()
+    {
+        var pool = new RoundingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(LohSegmentCap, pool: pool, disallowLohRenting: true);
+        stream.Write(new byte[200_000], 0, 200_000);
+
+        stream.Position = LohSegmentCap - 36;
+        var span = stream.GetSpan(1000);
+
+        Assert.True(span.Length >= 1000);
+        Assert.Contains(pool.Rented, a => a.Length > LohSegmentCap);
     }
 
     #endregion
@@ -1674,8 +1705,10 @@ public class ArrayPoolMemoryStreamTests
         Assert.Equal(expected, stream.Capacity);
     }
 
+    // a merged run that stops short of the end cannot address the pool's rounding surplus without shifting every
+    // segment behind it, so the surplus is deliberately left rented but unaddressed and Capacity falls below what is held
     [Fact]
-    public void CapacityInvariantHoldsAfterConsolidationWithRoundingPool()
+    public void CapacityStaysWithinWhatIsHeldAfterConsolidationWithRoundingPool()
     {
         var pool = new RoundingArrayPool();
         var data = Sequence(200);
@@ -1684,8 +1717,110 @@ public class ArrayPoolMemoryStreamTests
         stream.Position = 0;
         stream.GetSpan((int)(stream.Capacity / 3));
 
-        var expected = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
-        Assert.Equal(expected, stream.Capacity);
+        var held = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
+        Assert.True(stream.Capacity <= held, $"Capacity {stream.Capacity} exceeds the {held} bytes actually held");
+        Assert.True(stream.Capacity >= stream.Length);
+    }
+
+    // appending only ends the current segment early and uses the next one, so nothing is copied and nothing is returned
+    [Fact]
+    public void GetSpanAtTheEndAppendsWithoutCopyingOrReturningAnything()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(60);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(data, 0, data.Length);
+
+        // 4 bytes left in the segment, far short of the hint, and the write head is at the end of the stream
+        var span = stream.GetSpan(40);
+
+        Assert.True(span.Length >= 40);
+        Assert.Empty(pool.Returns);
+    }
+
+    [Fact]
+    public void GetSpanAtTheEndKeepsEarlierContentAddressableAcrossTheAbandonedTail()
+    {
+        var pool = new TrackingArrayPool();
+        var data = Sequence(60);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(data, 0, data.Length);
+
+        var tail = Sequence(40);
+        tail.CopyTo(stream.GetSpan(tail.Length));
+        stream.Advance(tail.Length);
+
+        var expected = new byte[100];
+        data.CopyTo(expected, 0);
+        tail.CopyTo(expected, 60);
+        Assert.Equal(100L, stream.Length);
+        Assert.Equal(expected, stream.ToArray());
+    }
+
+    [Fact]
+    public void GetSpanAtTheEndLeavesCapacityAtOrBelowWhatIsHeld()
+    {
+        var pool = new TrackingArrayPool();
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        stream.Write(Sequence(60), 0, 60);
+        stream.GetSpan(40);
+
+        var held = pool.Rented.Sum(a => (long)a.Length) - pool.Returns.Sum(a => (long)a.Length);
+        Assert.True(stream.Capacity <= held, $"Capacity {stream.Capacity} exceeds the {held} bytes actually held");
+        Assert.True(stream.Capacity >= stream.Length);
+    }
+
+    // the abandoned tail must not be readable, or the bytes after it would all be off by its length
+    [Fact]
+    public void AppendingThroughGetSpanMatchesAMemoryStreamOracle()
+    {
+        var random = new Random(99);
+        var pool = new RoundingArrayPool(0xEE);
+        using var stream = new ArrayPoolMemoryStream(64, pool: pool);
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 300; i++)
+        {
+            var chunk = new byte[random.Next(1, 200)];
+            random.NextBytes(chunk);
+            chunk.CopyTo(stream.GetSpan(chunk.Length));
+            stream.Advance(chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+        Assert.Equal(oracle.Length, stream.Length);
+        Assert.Equal(oracle.ToArray(), stream.ToArray());
+    }
+
+    // mixing both paths is where an addressing mistake in either would show up
+    [Fact]
+    public void InterleavedAppendingAndMidStreamGetSpanMatchesAMemoryStreamOracle()
+    {
+        var random = new Random(31337);
+        using var stream = new ArrayPoolMemoryStream(64, pool: new RoundingArrayPool(0xEE));
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 300; i++)
+        {
+            var chunk = new byte[random.Next(1, 200)];
+            random.NextBytes(chunk);
+
+            // every few rounds, go back and rewrite something already written
+            if (oracle.Length > chunk.Length && i % 5 == 0)
+            {
+                var at = random.NextInt64(0, oracle.Length - chunk.Length);
+                stream.Position = at;
+                oracle.Position = at;
+            }
+            else
+            {
+                stream.Position = stream.Length;
+                oracle.Position = oracle.Length;
+            }
+
+            chunk.CopyTo(stream.GetSpan(chunk.Length));
+            stream.Advance(chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+        Assert.Equal(oracle.Length, stream.Length);
+        Assert.Equal(oracle.ToArray(), stream.ToArray());
     }
 
     [Fact]
