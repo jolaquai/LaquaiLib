@@ -39,7 +39,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <param name="capacity">Initial capacity to rent up front.</param>
     /// <param name="skipZeroing">If <see langword="true"/>, memory exposed by seeking or <see cref="SetLength(long)"/> past the current length is not zeroed and may contain arbitrary prior contents. Only set this if all such memory is overwritten before being read.</param>
     /// <param name="pool">The <see cref="ArrayPool{T}"/> to rent segments from, or <see langword="null"/> to use <see cref="ArrayPool{T}.Shared"/>.</param>
-    /// <param name="disallowLohRenting">If <see langword="true"/>, no single segment is rented larger than 65536 bytes, the largest pool bucket below the 85000-byte Large Object Heap threshold. This only bounds individual rents made to grow <see cref="Capacity"/>; a single <see cref="GetMemory(int)"/>/<see cref="GetSpan(int)"/> call whose <c>sizeHint</c> exceeds 65536 still requires a larger contiguous rent and is not subject to this cap.</param>
+    /// <param name="disallowLohRenting">If <see langword="true"/>, no single segment is rented larger than 65536 bytes, the largest pool bucket below the 85000-byte Large Object Heap threshold. This bounds the rents made to grow <see cref="Capacity"/>, which covers every path except <see cref="GetMemory(int)"/>/<see cref="GetSpan(int)"/>: those must hand back one contiguous run starting at <see cref="Position"/>, and once <see cref="Position"/> sits deep enough inside a segment that the run cannot fit in what remains, segments have to be merged into a single larger rent. That happens for any <c>sizeHint</c> exceeding the space left in the current segment, not just for one exceeding 65536. Writing through the <see cref="Stream"/> members only is enough to keep every rent under the cap.</param>
     public ArrayPoolMemoryStream(int minimumSegmentSize = 2048, long capacity = 0, bool skipZeroing = false, ArrayPool<byte> pool = null, bool disallowLohRenting = false)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(minimumSegmentSize);
@@ -94,8 +94,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         }
         set
         {
-            ThrowIfDisposed();
             ArgumentOutOfRangeException.ThrowIfNegative(value, nameof(value));
+            ThrowIfDisposed();
             position = value;
         }
     }
@@ -136,8 +136,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count)
     {
-        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
+        ThrowIfDisposed();
         return ReadCore(buffer.AsSpan(offset, count));
     }
     /// <inheritdoc/>
@@ -178,8 +178,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
+        ThrowIfDisposed();
 
         if (cancellationToken.IsCancellationRequested)
             return Task.FromCanceled<int>(cancellationToken);
@@ -211,8 +211,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
     {
-        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
+        ThrowIfDisposed();
         WriteCore(buffer.AsSpan(offset, count));
     }
     /// <inheritdoc/>
@@ -267,8 +267,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
+        ThrowIfDisposed();
 
         if (cancellationToken.IsCancellationRequested)
             return Task.FromCanceled(cancellationToken);
@@ -308,8 +308,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override void CopyTo(Stream destination, int bufferSize)
     {
-        ThrowIfDisposed();
         ValidateDestination(destination);
+        ThrowIfDisposed();
 
         var remaining = length - position;
         if (remaining <= 0)
@@ -334,8 +334,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
         ValidateDestination(destination);
+        ThrowIfDisposed();
         return CopyToAsyncCore(destination, cancellationToken);
     }
     // split so the argument checks above throw synchronously instead of surfacing as a faulted task
@@ -380,8 +380,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override void SetLength(long value)
     {
-        ThrowIfDisposed();
         ArgumentOutOfRangeException.ThrowIfNegative(value);
+        ThrowIfDisposed();
 
         if (value > length)
         {
@@ -512,8 +512,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// </remarks>
     public void Advance(int count)
     {
-        ThrowIfDisposed();
         ArgumentOutOfRangeException.ThrowIfNegative(count);
+        ThrowIfDisposed();
 
         if (count == 0)
             return;
@@ -548,8 +548,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     }
     private (byte[] Array, int Offset, int Count) GetWritableSegment(int sizeHint)
     {
-        ThrowIfDisposed();
         ArgumentOutOfRangeException.ThrowIfNegative(sizeHint);
+        ThrowIfDisposed();
 
         // the contract forbids handing back an empty buffer, so 0 means "whatever is left, but at least one byte"
         if (sizeHint == 0)
@@ -603,6 +603,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         _segments.RemoveRange(first + 1, last - first - 1);
         capacity += buffer.Length - merged;
     }
+    // deliberately not bounded by _maxSegmentSize: the run has to be contiguous and has to start at position, which no capped segment can offer once position sits deep enough inside one
     private byte[] RentContiguous(long length) => length <= Array.MaxLength ? _pool.Rent((int)length) : throw new OutOfMemoryException("A contiguous buffer of the requested size cannot be rented.");
     #endregion
 }
