@@ -980,6 +980,50 @@ public class ArrayPoolMemoryStreamTests
     }
 
     [Fact]
+    public void LengthThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Length);
+
+    [Fact]
+    public void CapacityThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Capacity);
+
+    [Fact]
+    public void PositionGetterThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Position);
+
+    [Fact]
+    public void ReadAsyncThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().ReadAsync(new byte[3], 0, 3, TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void ReadAsyncMemoryThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().ReadAsync(new byte[3].AsMemory(), TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void WriteSpanThrowsWhenDisposed()
+    {
+        var stream = DisposedStream();
+        Assert.Throws<ObjectDisposedException>(() => stream.Write(new byte[3].AsSpan()));
+    }
+
+    [Fact]
+    public void WriteAsyncThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().WriteAsync(new byte[3], 0, 3, TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void WriteAsyncMemoryThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => { _ = DisposedStream().WriteAsync(new byte[3].AsMemory(), TestContext.Current.CancellationToken); });
+
+    [Fact]
+    public void ToArrayThrowsWhenDisposed() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().ToArray());
+
+    // the disposal checks are cheap enough to add everywhere, but Flush is documented as a no-op and must stay callable
+    [Fact]
+    public async Task FlushDoesNotThrowWhenDisposed()
+    {
+        var stream = DisposedStream();
+        stream.Flush();
+        await stream.FlushAsync(TestContext.Current.CancellationToken);
+    }
+
+    // a disposed stream reports ObjectDisposedException even when the arguments are also invalid
+    [Fact]
+    public void DisposalCheckPrecedesArgumentValidation() => Assert.Throws<ObjectDisposedException>(() => DisposedStream().Read(null, -1, -1));
+
+    [Fact]
     public void ReadRejectsNullBuffer()
     {
         using var stream = StreamWith(1, 2, 3);
@@ -1934,6 +1978,91 @@ public class ArrayPoolMemoryStreamTests
         for (var i = 0; i < data.Length; i += 256)
             stream.Write(data, i, int.Min(256, data.Length - i));
         Assert.Equal(data, stream.AsReadOnlySequence().ToArray());
+    }
+
+    [Fact]
+    public void ToArrayOfEmptyStreamIsEmpty()
+    {
+        using var stream = new ArrayPoolMemoryStream();
+        Assert.Empty(stream.ToArray());
+    }
+
+    [Fact]
+    public void ToArrayIsExactlyLengthSizedEvenWithSpareCapacity()
+    {
+        var data = Sequence(20);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xEE), data, 16);
+        Assert.True(stream.Capacity > stream.Length);
+        var actual = stream.ToArray();
+        Assert.Equal(data.Length, actual.Length);
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void ToArraySpansEverySegment()
+    {
+        var data = Sequence(70);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        Assert.Equal(data, stream.ToArray());
+    }
+
+    [Fact]
+    public void ToArrayDoesNotMovePosition()
+    {
+        using var stream = StreamWith(1, 2, 3);
+        stream.Position = 1;
+        stream.ToArray();
+        Assert.Equal(1, stream.Position);
+    }
+
+    [Fact]
+    public void ToArrayReturnsAnIndependentCopy()
+    {
+        var data = Sequence(40);
+        using var stream = SegmentedStream(new TrackingArrayPool(), data, 16);
+        var actual = stream.ToArray();
+        stream.Position = 0;
+        stream.Write(new byte[40], 0, 40);
+        Assert.Equal(data, actual);
+    }
+
+    [Fact]
+    public void ToArrayIgnoresBytesBeyondLength()
+    {
+        var data = Sequence(48);
+        using var stream = SegmentedStream(new TrackingArrayPool(0xEE), data, 16);
+        stream.SetLength(20);
+        Assert.Equal(data[..20], stream.ToArray());
+    }
+
+    [Fact]
+    public void ToArrayExposesZeroesForSetLengthGrowth()
+    {
+        using var stream = new ArrayPoolMemoryStream(16, pool: new TrackingArrayPool(0xAB));
+        var data = Sequence(8);
+        stream.Write(data, 0, data.Length);
+        stream.SetLength(40);
+
+        var actual = stream.ToArray();
+        Assert.Equal(40, actual.Length);
+        Assert.Equal(data, actual[..8]);
+        Assert.All(actual[8..], b => Assert.Equal(0, b));
+    }
+
+    [Fact]
+    public void ToArrayMatchesMemoryStreamOracle()
+    {
+        var random = new Random(12345);
+        using var stream = new ArrayPoolMemoryStream(16);
+        using var oracle = new MemoryStream();
+        for (var i = 0; i < 200; i++)
+        {
+            var chunk = new byte[random.Next(1, 64)];
+            random.NextBytes(chunk);
+            stream.Write(chunk, 0, chunk.Length);
+            oracle.Write(chunk, 0, chunk.Length);
+        }
+        Assert.Equal(oracle.ToArray(), stream.ToArray());
     }
 
     [Fact]

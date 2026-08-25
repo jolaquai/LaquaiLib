@@ -55,6 +55,9 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         EnsureCapacity(capacity);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed() => ObjectDisposedException.ThrowIf(_disposed, this);
+
     /// <inheritdoc/>
     public override bool CanRead => !_disposed;
     /// <inheritdoc/>
@@ -62,18 +65,36 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override bool CanWrite => !_disposed;
     /// <inheritdoc/>
-    public override long Length => length;
+    public override long Length
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return length;
+        }
+    }
     /// <summary>
     /// Gets the maximum <see cref="Length"/> this instance can reach without having to rent more memory.
     /// </summary>
-    public long Capacity => capacity;
+    public long Capacity
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return capacity;
+        }
+    }
     /// <inheritdoc/>
     public override long Position
     {
-        get => position;
+        get
+        {
+            ThrowIfDisposed();
+            return position;
+        }
         set
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
+            ThrowIfDisposed();
             ArgumentOutOfRangeException.ThrowIfNegative(value, nameof(value));
             position = value;
         }
@@ -115,16 +136,19 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override int Read(byte[] buffer, int offset, int count)
     {
+        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
         return ReadCore(buffer.AsSpan(offset, count));
     }
     /// <inheritdoc/>
-    public override int Read(Span<byte> buffer) => ReadCore(buffer);
-    // public entry points validate their own arguments and hand off here, so no path validates twice
+    public override int Read(Span<byte> buffer)
+    {
+        ThrowIfDisposed();
+        return ReadCore(buffer);
+    }
+    // public entry points check disposal and validate their own arguments and hand off here, so no path does either twice
     private int ReadCore(Span<byte> buffer)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-
         var available = length - position;
         if (available <= 0 || buffer.IsEmpty)
             return 0;
@@ -154,6 +178,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
+        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
 
         if (cancellationToken.IsCancellationRequested)
@@ -163,13 +188,17 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         return _lastReadTask.Get(read);
     }
     /// <inheritdoc/>
-    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) => cancellationToken.IsCancellationRequested
-        ? ValueTask.FromCanceled<int>(cancellationToken)
-        : new ValueTask<int>(ReadCore(buffer.Span));
+    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+    {
+        ThrowIfDisposed();
+        return cancellationToken.IsCancellationRequested
+            ? ValueTask.FromCanceled<int>(cancellationToken)
+            : new ValueTask<int>(ReadCore(buffer.Span));
+    }
     /// <inheritdoc/>
     public override int ReadByte()
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
 
         if (position >= length)
             return -1;
@@ -182,16 +211,19 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
     {
+        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
         WriteCore(buffer.AsSpan(offset, count));
     }
     /// <inheritdoc/>
-    public override void Write(ReadOnlySpan<byte> buffer) => WriteCore(buffer);
-    // public entry points validate their own arguments and hand off here, so no path validates twice
+    public override void Write(ReadOnlySpan<byte> buffer)
+    {
+        ThrowIfDisposed();
+        WriteCore(buffer);
+    }
+    // public entry points check disposal and validate their own arguments and hand off here, so no path does either twice
     private void WriteCore(ReadOnlySpan<byte> buffer)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-
         // MemoryStream grows to Position even for a zero-byte write past the end, and callers written against it rely on that
         if (buffer.IsEmpty)
         {
@@ -235,6 +267,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
+        ThrowIfDisposed();
         ValidateBufferArguments(buffer, offset, count);
 
         if (cancellationToken.IsCancellationRequested)
@@ -246,6 +279,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
+
         if (cancellationToken.IsCancellationRequested)
             return ValueTask.FromCanceled(cancellationToken);
 
@@ -253,7 +288,11 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         return ValueTask.CompletedTask;
     }
     /// <inheritdoc/>
-    public override void WriteByte(byte value) => WriteCore(new ReadOnlySpan<byte>(in value));
+    public override void WriteByte(byte value)
+    {
+        ThrowIfDisposed();
+        WriteCore(new ReadOnlySpan<byte>(in value));
+    }
 
     // Stream.ValidateCopyToArguments minus its bufferSize check, which is meaningless here because neither copy path buffers
     private static void ValidateDestination(Stream destination)
@@ -269,8 +308,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override void CopyTo(Stream destination, int bufferSize)
     {
+        ThrowIfDisposed();
         ValidateDestination(destination);
-        ObjectDisposedException.ThrowIf(_disposed, this);
 
         var remaining = length - position;
         if (remaining <= 0)
@@ -295,8 +334,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
     {
+        ThrowIfDisposed();
         ValidateDestination(destination);
-        ObjectDisposedException.ThrowIf(_disposed, this);
         return CopyToAsyncCore(destination, cancellationToken);
     }
     // split so the argument checks above throw synchronously instead of surfacing as a faulted task
@@ -309,6 +348,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         var (seg, off) = Locate(position);
         while (remaining > 0)
         {
+            // unlike every other path, this one yields mid-walk, so a dispose can land between iterations and empty the segment list out from under it
+            ThrowIfDisposed();
             var current = _segments[seg];
             var take = (int)long.Min(current.Length - off, remaining);
             await destination.WriteAsync(current.AsMemory(off, take), cancellationToken).ConfigureAwait(false);
@@ -326,6 +367,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override long Seek(long offset, SeekOrigin origin)
     {
+        ThrowIfDisposed();
         Position = origin switch
         {
             SeekOrigin.Begin => offset,
@@ -338,7 +380,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <inheritdoc/>
     public override void SetLength(long value)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
         ArgumentOutOfRangeException.ThrowIfNegative(value);
 
         if (value > length)
@@ -360,7 +402,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// </remarks>
     public void TrimExcess()
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
 
         long kept = 0;
         var keep = 0;
@@ -403,7 +445,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <returns>The created <see cref="ReadOnlySequence{T}"/>.</returns>
     public ReadOnlySequence<byte> AsReadOnlySequence()
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
         if (length == 0)
             return ReadOnlySequence<byte>.Empty;
 
@@ -423,6 +465,36 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         }
         return new ReadOnlySequence<byte>(first, 0, prev, prev.Memory.Length);
     }
+    /// <summary>
+    /// Copies the memory that has been written so far into a new array sized exactly to <see cref="Length"/>.
+    /// </summary>
+    /// <remarks>
+    /// Unlike <see cref="AsReadOnlySequence"/>, the returned array is owned by the caller and is unaffected by later mutations of this instance. <see cref="Position"/> is not advanced.
+    /// </remarks>
+    /// <returns>The created array.</returns>
+    /// <exception cref="OutOfMemoryException">Thrown if <see cref="Length"/> exceeds what a single array can hold.</exception>
+    public byte[] ToArray()
+    {
+        ThrowIfDisposed();
+        if (length == 0)
+            return [];
+        if (length > Array.MaxLength)
+            throw new OutOfMemoryException("A contiguous array of the requested size cannot be allocated.");
+
+        // every byte is overwritten by the copy below, so the runtime's zeroing pass would be wasted work
+        var result = GC.AllocateUninitializedArray<byte>((int)length);
+        var destination = result.AsSpan();
+        var segments = SegmentsSpan();
+        // the final segment is only partially filled whenever length falls inside it, so the destination drives the loop rather than the segment lengths
+        for (var i = 0; !destination.IsEmpty; i++)
+        {
+            var current = segments[i];
+            var take = int.Min(current.Length, destination.Length);
+            current.AsSpan(0, take).CopyTo(destination);
+            destination = destination[take..];
+        }
+        return result;
+    }
     private sealed class Segment : ReadOnlySequenceSegment<byte>
     {
         public Segment(ReadOnlyMemory<byte> memory, long index)
@@ -440,7 +512,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// </remarks>
     public void Advance(int count)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
         ArgumentOutOfRangeException.ThrowIfNegative(count);
 
         if (count == 0)
@@ -476,7 +548,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     }
     private (byte[] Array, int Offset, int Count) GetWritableSegment(int sizeHint)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ThrowIfDisposed();
         ArgumentOutOfRangeException.ThrowIfNegative(sizeHint);
 
         // the contract forbids handing back an empty buffer, so 0 means "whatever is left, but at least one byte"
