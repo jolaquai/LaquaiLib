@@ -746,12 +746,12 @@ public static partial class IEnumerableExtensions
         }
 
         /// <summary>
-        /// Returns an <see cref="IAsyncEnumerable{T}"/> wrapper around the specified <see cref="IEnumerable{T}"/>. This is fundamentally different from <see cref="AsyncEnumerable.ToAsyncEnumerable{TSource}(IEnumerable{TSource})"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
-        /// <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> or similar). Instead, call <see cref="AsyncEnumerable.ToAsyncEnumerable{TSource}(IEnumerable{TSource})"/>, then use a method such as <see cref="AsyncEnumerable.ToListAsync{TSource}(IAsyncEnumerable{TSource}, CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="IEnumerator{T}"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="AsyncEnumerable"/> is recommended (which are optimized for their purpose).
+        /// Returns an <see cref="IAsyncEnumerable{T}"/> wrapper around an enumerator for <paramref name="source"/>.
+        /// <para/>This is intended for use when <c>MoveNext</c> calls on an <see cref="IEnumerator{T}"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="AsyncEnumerable"/> is recommended (which are optimized for their purpose).
         /// </summary>
-        /// <returns>The sourc eas an <see cref="IAsyncEnumerable{T}"/>.</returns>
+        /// <returns>An <see cref="IAsyncEnumerator{T}"/> over <paramref name="source"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IAsyncEnumerable<T> AsAsynchronous() => new AsyncEnumerableWrapper<T>(source);
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new AsyncEnumeratorWrapper<T>(source.GetEnumerator(), cancellationToken);
 
         /// <summary>
         /// Returns an <see cref="IEnumerable{T}"/> that enumerates the elements of the input sequences is turn; that is, the first element of the first sequence, the first element of the second sequence, the second element of the first sequence, the second element of the second sequence, and so on.

@@ -1,5 +1,7 @@
 ﻿using System.Buffers;
 
+using DocumentFormat.OpenXml.Bibliography;
+
 namespace LaquaiLib.Extensions;
 
 #pragma warning disable CA5394 // Do not use insecure randomness
@@ -26,22 +28,7 @@ public static class RandomExtensions
 
             if (destination is MemoryStream ms)
             {
-                // Since a MemoryStream is resizable, calculate the next-greater power of 2 and resize it to that
-                var newSize = ms.Length + count;
-                if (newSize > ms.Capacity)
-                {
-                    // Start at a minimum of 1: a default MemoryStream has Capacity 0, and 0 << 1 == 0
-                    // would loop forever.
-                    var newCapacity = Math.Max(ms.Capacity, 1);
-                    while (newCapacity < newSize)
-                        newCapacity <<= 1;
-                    ms.Capacity = newCapacity;
-                }
-                ms.SetLength(newSize);
-
-                span = ms.AsSpan((int)ms.Position, count);
-                random.NextBytes(span);
-                ms.Position += count;
+                WriteMemoryStreamCore(ms, count, random);
                 return;
             }
 
@@ -70,19 +57,9 @@ public static class RandomExtensions
             if (!destination.CanWrite)
                 throw new ArgumentException("The stream must be writable.", nameof(destination));
 
-            // This branch actually remains synchronous
             if (destination is MemoryStream ms)
             {
-                var newSize = ms.Length + count;
-                if (newSize > Array.MaxLength)
-                    throw new ArgumentOutOfRangeException(nameof(count), "The resulting size of the MemoryStream exceeds the maximum allowed size.");
-
-                if (newSize > ms.Capacity)
-                    ms.Capacity = (int)newSize;
-                ms.SetLength(newSize);
-                var span = ms.AsSpan((int)ms.Position, count);
-                random.NextBytes(span);
-                ms.Position += count;
+                WriteMemoryStreamCore(ms, count, random);
                 return;
             }
 
@@ -97,6 +74,26 @@ public static class RandomExtensions
             {
                 ArrayPool<byte>.Shared.Return(buffer);
             }
+        }
+        private static void WriteMemoryStreamCore(MemoryStream ms, int count, Random rand)
+        {
+            var newSize = ms.Position + count;
+            if (newSize > Array.MaxLength)
+                throw new ArgumentOutOfRangeException(nameof(count), "The resulting size of the MemoryStream exceeds the maximum allowed size.");
+
+            if (newSize > ms.Capacity)
+            {
+                if (!MemoryStreamAccessors._expandable(ms))
+                    throw new OutOfMemoryException("The MemoryStream is not expandable and cannot accommodate the requested number of bytes.");
+                else
+                    ms.Capacity = (int)newSize;
+            }
+
+            ms.SetLength(newSize);
+
+            var span = ms.AsSpan((int)ms.Position, count);
+            rand.NextBytes(span);
+            ms.Position += count;
         }
     }
 }

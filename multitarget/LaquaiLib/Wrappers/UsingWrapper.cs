@@ -90,13 +90,13 @@ public class UsingWrapper<T> : IDisposable, IAsyncDisposable
     {
         if (disposed)
             return;
-        GC.SuppressFinalize(this);
 
         if (_disposeAsync is not null)
             throw new InvalidOperationException($"Cannot call {nameof(IDisposable.Dispose)} on a {nameof(UsingWrapper<>)} that has an asynchronous dispose action registered. Use {nameof(IAsyncDisposable.DisposeAsync)} instead.");
 
         _dispose(Instance);
         disposed = true;
+        GC.SuppressFinalize(this);
     }
     /// <summary>
     /// Executes the registered asynchronous dispose action on the wrapped instance.
@@ -105,7 +105,6 @@ public class UsingWrapper<T> : IDisposable, IAsyncDisposable
     {
         if (disposed)
             return;
-        GC.SuppressFinalize(this);
 
         switch (_disposeAsync)
         {
@@ -117,6 +116,7 @@ public class UsingWrapper<T> : IDisposable, IAsyncDisposable
                 break;
         }
         disposed = true;
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>

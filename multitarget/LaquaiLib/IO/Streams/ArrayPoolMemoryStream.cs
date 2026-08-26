@@ -207,6 +207,22 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         position++;
         return _segments[seg].Array[off];
     }
+    /// <summary>
+    /// Begins an asynchronous read operation.
+    /// </summary>
+    /// <param name="buffer">The buffer to read data into.</param>
+    /// <param name="offset">The byte offset in <paramref name="buffer"/> at which to begin writing data.</param>
+    /// <param name="count">The maximum number of bytes to read.</param>
+    /// <param name="callback">An optional <see cref="AsyncCallback"/> to be called when the read operation is complete.</param>
+    /// <param name="state">The state object to be passed to the callback.</param>
+    /// <returns>An <see cref="IAsyncResult"/> that represents the asynchronous read operation.</returns>
+    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state) => TaskToAsyncResult.Begin(ReadAsync(buffer, offset, count), callback, state);
+    /// <summary>
+    /// Waits for the end of an asynchronous read operation.
+    /// </summary>
+    /// <param name="asyncResult">The <see cref="IAsyncResult"/> that represents the asynchronous read operation.</param>
+    /// <returns>The number of bytes read from the stream.</returns>
+    public override int EndRead(IAsyncResult asyncResult) => TaskToAsyncResult.End<int>(asyncResult);
 
     /// <inheritdoc/>
     public override void Write(byte[] buffer, int offset, int count)
@@ -293,6 +309,21 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         ThrowIfDisposed();
         WriteCore(new ReadOnlySpan<byte>(in value));
     }
+    /// <summary>
+    /// Begins an asynchronous write operation.
+    /// </summary>
+    /// <param name="buffer">The buffer containing the data to write.</param>
+    /// <param name="offset">The byte offset in buffer at which to begin copying bytes to the stream.</param>
+    /// <param name="count">The number of bytes to write.</param>
+    /// <param name="callback">An optional <see cref="AsyncCallback"/> to be called when the write operation is complete.</param>
+    /// <param name="state">The state object to be passed to the callback.</param>
+    /// <returns>An <see cref="IAsyncResult"/> that represents the asynchronous write operation.</returns>
+    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state) => TaskToAsyncResult.Begin(WriteAsync(buffer, offset, count), callback, state);
+    /// <summary>
+    /// Waits for the end of an asynchronous write operation.
+    /// </summary>
+    /// <param name="asyncResult">The <see cref="IAsyncResult"/> that represents the asynchronous write operation.</param>
+    public override void EndWrite(IAsyncResult asyncResult) => TaskToAsyncResult.End(asyncResult);
 
     // Stream.ValidateCopyToArguments minus its bufferSize check, which is meaningless here because neither copy path buffers
     private static void ValidateDestination(Stream destination)
@@ -436,6 +467,12 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
             position = length = capacity = 0;
         }
         base.Dispose(disposing);
+    }
+    /// <inheritdoc/>
+    public override ValueTask DisposeAsync()
+    {
+        Dispose(true);
+        return default;
     }
 
     /// <summary>
