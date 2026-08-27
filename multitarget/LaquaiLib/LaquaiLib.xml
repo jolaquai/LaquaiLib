@@ -1340,8 +1340,8 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.BuildDictionaryZipped``1(System.Collections.Generic.IEnumerable{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.BuildDictionaryZipped"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AsAsynchronous``1(System.Collections.Generic.IEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.AsAsynchronous"/>
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.GetAsyncEnumerator``1(System.Collections.Generic.IEnumerable{``0},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.GetAsyncEnumerator(System.Threading.CancellationToken)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Interlace``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Interlace(System.Collections.Generic.IEnumerable{`0})"/>
@@ -1833,10 +1833,10 @@
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Majority(System.Func{`0,System.Boolean})">
             <summary>
-            Determines whether the majority of a sequence's elements satisfy a condition.
+            Determines whether more than half of a sequence's elements satisfy a condition.
             </summary>
             <param name="predicate">The condition to check for.</param>
-            <returns><see langword="true"/> if the majority of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
+            <returns><see langword="true"/> if more than half of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.BuildDictionaryLinear">
             <summary>
@@ -1852,12 +1852,12 @@
             <returns>A <see cref="T:System.Collections.Generic.Dictionary`2"/> built from the input sequence.</returns>
             <exception cref="T:System.ArgumentException">Thrown if the input sequence does not contain a positive and even number of elements.</exception>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.AsAsynchronous">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.GetAsyncEnumerator(System.Threading.CancellationToken)">
             <summary>
-            Returns an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> wrapper around the specified <see cref="T:System.Collections.Generic.IEnumerable`1"/>. This is fundamentally different from <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/> in that every <c>MoveNext</c> call is wrapped in a new <see cref="T:System.Threading.Tasks.Task"/> and <see langword="await"/>ed whereas the former still consumes each element synchronously.
-            <para/><b>Warning!</b> Do NOT use this method right before an aggregating operation (such as <see cref="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})"/> or similar). Instead, call <see cref="M:System.Linq.AsyncEnumerable.ToAsyncEnumerable``1(System.Collections.Generic.IEnumerable{``0})"/>, then use a method such as <see cref="M:System.Linq.AsyncEnumerable.ToListAsync``1(System.Collections.Generic.IAsyncEnumerable{``0},System.Threading.CancellationToken)"/>. This method is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="T:System.Linq.AsyncEnumerable"/> is recommended (which are optimized for their purpose).
+            Returns an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> wrapper around an enumerator for <paramref name="source"/>.
+            <para/>This is intended for use when <c>MoveNext</c> calls on an <see cref="T:System.Collections.Generic.IEnumerator`1"/> are expected to be computationally expensive or time-consuming. To reduce overhead, usage of the asynchronous methods in <see cref="T:System.Linq.AsyncEnumerable"/> is recommended (which are optimized for their purpose).
             </summary>
-            <returns>The sourc eas an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/>.</returns>
+            <returns>An <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> over <paramref name="source"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Interlace(System.Collections.Generic.IEnumerable{`0})">
             <summary>
@@ -2530,11 +2530,11 @@
         <member name="M:LaquaiLib.Extensions.NumberExtensions.HasFlag``1(``0,``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$2C74EDC4B19EAF20AD23ADC917FD325C`1.HasFlag(`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.NumberExtensions.AsBinary``1(``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.AsBinary"/>
+        <member name="M:LaquaiLib.Extensions.NumberExtensions.ToBinary``1(``0)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.ToBinary"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.NumberExtensions.AsHex``1(``0)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.AsHex"/>
+        <member name="M:LaquaiLib.Extensions.NumberExtensions.ToHex``1(``0)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.ToHex"/>
         </member>
         <member name="M:LaquaiLib.Extensions.NumberExtensions.AlignUp``1(``0,``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$588A1EAEEEB2BFC33F729C78B21D6BEB`1.AlignUp(`0)"/>
@@ -2547,13 +2547,13 @@
             <param name="other">The other number.</param>
             <returns>Whether the specified number has the specified flag(s) set.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.AsBinary">
+        <member name="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.ToBinary">
             <summary>
             Converts the specified number to its binary representation.
             </summary>
             <returns>The binary representation of the specified number.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.AsHex">
+        <member name="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$AD33535FE293CD09CB9F90A1C63F4914`1.ToHex">
             <summary>
             Converts the specified number to its hexadecimal representation.
             </summary>
@@ -8172,6 +8172,116 @@
             Indicates that <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/>'s previous node does not have a reference to <see cref="P:LaquaiLib.Collections.DetachedDequeNodeException`1.Node"/> as its next node.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Collections.DisposableList`1">
+            <summary>
+            Derives from <see cref="T:System.Collections.Generic.List`1"/> to support disposing of all items in the list that implement <see cref="T:System.IDisposable"/> when the list itself is disposed.
+            The collection is protected against multiple disposal.
+            </summary>
+            <typeparam name="T">The type of elements in the list.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableList`1.Dispose">
+            <summary>
+            Disposes of all items in the list that implement <see cref="T:System.IDisposable"/> and clears the list for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableHashSet`1">
+            <summary>
+            Derives from <see cref="T:System.Collections.Generic.HashSet`1"/> to support disposing of all items in the hashset that implement <see cref="T:System.IDisposable"/> when the hashset itself is disposed.
+            The collection is protected against multiple disposal.
+            </summary>
+            <typeparam name="T">The type of elements in the hashset.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableHashSet`1.Dispose">
+            <summary>
+            Disposes of all items in the hashset that implement <see cref="T:System.IDisposable"/> and clears the hashset for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableQueue`1">
+            <summary>
+            Derives from <see cref="T:System.Collections.Generic.Queue`1"/> to support disposing of all items in the queue that implement <see cref="T:System.IDisposable"/> when the queue itself is disposed.
+            The collection is protected against multiple disposal.
+            </summary>
+            <typeparam name="T">The type of elements in the queue.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableQueue`1.Dispose">
+            <summary>
+            Disposes of all items in the queue that implement <see cref="T:System.IDisposable"/> and clears the queue for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableStack`1">
+            <summary>
+            Derives from <see cref="T:System.Collections.Generic.Stack`1"/> to support disposing of all items in the stack that implement <see cref="T:System.IDisposable"/> when the stack itself is disposed.
+            The collection is protected against multiple disposal.
+            </summary>
+            <typeparam name="T">The type of elements in the stack.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableStack`1.Dispose">
+            <summary>
+            Disposes of all items in the stack that implement <see cref="T:System.IDisposable"/> and clears the stack for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableDictionary`2">
+            <summary>
+            Derives from <see cref="T:System.Collections.Generic.Dictionary`2"/> to support disposing of all keys and values in the dictionary that implement <see cref="T:System.IDisposable"/> when the dictionary itself is 
+            The collection is protected against multiple disposal.disposed.
+            </summary>
+            <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
+            <typeparam name="TValue">The type of values in the dictionary.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableDictionary`2.Dispose">
+            <summary>
+            Disposes of all items in the dictionary that implement <see cref="T:System.IDisposable"/> and clears the dictionary for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableConcurrentBag`1">
+            <summary>
+            Derives from <see cref="T:System.Collections.Concurrent.ConcurrentBag`1"/> to support disposing of all items in the concurrent bag that implement <see cref="T:System.IDisposable"/> when the concurrent bag itself is disposed.
+            The collection is protected against multiple disposal.
+            </summary>
+            <typeparam name="T">The type of elements in the concurrent bag.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableConcurrentBag`1.Dispose">
+            <summary>
+            Disposes of all items in the concurrent bag that implement <see cref="T:System.IDisposable"/> and clears the concurrent bag for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableConcurrentQueue`1">
+            <summary>
+            Derives from <see cref="T:System.Collections.Concurrent.ConcurrentQueue`1"/> to support disposing of all items in the concurrent queue that implement <see cref="T:System.IDisposable"/> when the concurrent queue itself is 
+            The collection is protected against multiple disposal.disposed.
+            </summary>
+            <typeparam name="T">The type of elements in the concurrent queue.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableConcurrentQueue`1.Dispose">
+            <summary>
+            Disposes of all items in the concurrent queue that implement <see cref="T:System.IDisposable"/> and clears the concurrent queue for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableConcurrentStack`1">
+            <summary>
+            Derives from <see cref="T:System.Collections.Concurrent.ConcurrentStack`1"/> to support disposing of all items in the concurrent stack that implement <see cref="T:System.IDisposable"/> when the concurrent stack itself is 
+            The collection is protected against multiple disposal.disposed.
+            </summary>
+            <typeparam name="T">The type of elements in the concurrent stack.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableConcurrentStack`1.Dispose">
+            <summary>
+            Disposes of all items in the concurrent stack that implement <see cref="T:System.IDisposable"/> and clears the concurrent stack for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.DisposableConcurrentDictionary`2">
+            <summary>
+            Derives from <see cref="T:System.Collections.Concurrent.ConcurrentDictionary`2"/> to support disposing of all keys and values in the concurrent dictionary that implement <see cref="T:System.IDisposable"/> when the 
+            The collection is protected against multiple disposal.concurrent dictionary itself is disposed.
+            </summary>
+            <typeparam name="TKey">The type of keys in the concurrent dictionary.</typeparam>
+            <typeparam name="TValue">The type of values in the concurrent dictionary.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.DisposableConcurrentDictionary`2.Dispose">
+            <summary>
+            Disposes of all items in the concurrent dictionary that implement <see cref="T:System.IDisposable"/> and clears the concurrent dictionary for <typeparamref name="T"/>s which are reference types or structs containing references.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Collections.Enumeration.FilterableEnumerable`1">
             <summary>
             Implements the enumerator pattern to iterate over only the items that match a given predicate.
@@ -8952,77 +9062,6 @@
             </summary>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of all values in the dictionary.</returns>
         </member>
-        <member name="T:LaquaiLib.Collections.Observable.AddedEventArgs`1">
-            <summary>
-            Represents the event arguments for the Added event.
-            </summary>
-            <typeparam name="T">The type of the item being added.</typeparam>
-            <remarks>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.AddedEventArgs`1"/> class.
-            </remarks>
-            <param name="item">The item that was added.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Observable.AddedEventArgs`1.#ctor(`0)">
-            <summary>
-            Represents the event arguments for the Added event.
-            </summary>
-            <typeparam name="T">The type of the item being added.</typeparam>
-            <remarks>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.AddedEventArgs`1"/> class.
-            </remarks>
-            <param name="item">The item that was added.</param>
-        </member>
-        <member name="P:LaquaiLib.Collections.Observable.AddedEventArgs`1.Item">
-            <summary>
-            Gets the item that was added.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Collections.Observable.IndexGetEventArgs">
-            <summary>
-            Represents the event arguments for the IndexGet event.
-            </summary>
-            <remarks>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexGetEventArgs"/> class.
-            </remarks>
-            <param name="index">The index being accessed.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Observable.IndexGetEventArgs.#ctor(System.Int32)">
-            <summary>
-            Represents the event arguments for the IndexGet event.
-            </summary>
-            <remarks>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexGetEventArgs"/> class.
-            </remarks>
-            <param name="index">The index being accessed.</param>
-        </member>
-        <member name="P:LaquaiLib.Collections.Observable.IndexGetEventArgs.Index">
-            <summary>
-            Gets the index being accessed.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Collections.Observable.IndexSetEventArgs">
-            <summary>
-            Represents the event arguments for the IndexSet event.
-            </summary>
-            <remarks>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexSetEventArgs"/> class.
-            </remarks>
-            <param name="index">The index being accessed.</param>
-        </member>
-        <member name="M:LaquaiLib.Collections.Observable.IndexSetEventArgs.#ctor(System.Int32)">
-            <summary>
-            Represents the event arguments for the IndexSet event.
-            </summary>
-            <remarks>
-            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexSetEventArgs"/> class.
-            </remarks>
-            <param name="index">The index being accessed.</param>
-        </member>
-        <member name="P:LaquaiLib.Collections.Observable.IndexSetEventArgs.Index">
-            <summary>
-            Gets the index being accessed.
-            </summary>
-        </member>
         <member name="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1">
             <summary>
             Represents a fast implementation of a dynamic data collection that provides notifications when items get added, removed, or when the whole list is refreshed.
@@ -9067,6 +9106,9 @@
             Gets a <see cref="T:System.ReadOnlySpan`1"/> over the items in the <see cref="T:System.Collections.ObjectModel.ObservableCollection`1"/>.
             Only valid slots in the backing store are included (only its actual count is respected, not its capacity). Allows for more efficient enumeration than use of <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
             </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.Dispose">
+            <inheritdoc/>
         </member>
         <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.#ctor">
             <summary>
@@ -9324,6 +9366,104 @@
         </member>
         <member name="M:LaquaiLib.Collections.Observable.ObservableCollectionFast`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1">
+            <summary>
+            Derives from <see cref="T:LaquaiLib.Collections.Observable.ObservableCollectionFast`1"/> to support disposing of all items in the collection that implement <see cref="T:System.IDisposable"/> when the collection itself is disposed.
+            The collection is protected against multiple disposal.
+            </summary>
+            <typeparam name="T">The type of elements in the collection.</typeparam>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1.#ctor">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1"/> that contains elements copied from the specified collection.
+            </summary>
+            <param name="collection">The collection from which the elements are copied.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1.#ctor(System.ReadOnlySpan{`0})">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1"/> that contains elements copied from the specified span.
+            </summary>
+            <param name="span">The <see cref="T:System.ReadOnlySpan`1"/> of <typeparamref name="T"/> from which the elements are copied.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.DisposableObservableCollectionFast`1.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Collections.Observable.AddedEventArgs`1">
+            <summary>
+            Represents the event arguments for the Added event.
+            </summary>
+            <typeparam name="T">The type of the item being added.</typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.AddedEventArgs`1"/> class.
+            </remarks>
+            <param name="item">The item that was added.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.AddedEventArgs`1.#ctor(`0)">
+            <summary>
+            Represents the event arguments for the Added event.
+            </summary>
+            <typeparam name="T">The type of the item being added.</typeparam>
+            <remarks>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.AddedEventArgs`1"/> class.
+            </remarks>
+            <param name="item">The item that was added.</param>
+        </member>
+        <member name="P:LaquaiLib.Collections.Observable.AddedEventArgs`1.Item">
+            <summary>
+            Gets the item that was added.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.Observable.IndexGetEventArgs">
+            <summary>
+            Represents the event arguments for the IndexGet event.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexGetEventArgs"/> class.
+            </remarks>
+            <param name="index">The index being accessed.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.IndexGetEventArgs.#ctor(System.Int32)">
+            <summary>
+            Represents the event arguments for the IndexGet event.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexGetEventArgs"/> class.
+            </remarks>
+            <param name="index">The index being accessed.</param>
+        </member>
+        <member name="P:LaquaiLib.Collections.Observable.IndexGetEventArgs.Index">
+            <summary>
+            Gets the index being accessed.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Collections.Observable.IndexSetEventArgs">
+            <summary>
+            Represents the event arguments for the IndexSet event.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexSetEventArgs"/> class.
+            </remarks>
+            <param name="index">The index being accessed.</param>
+        </member>
+        <member name="M:LaquaiLib.Collections.Observable.IndexSetEventArgs.#ctor(System.Int32)">
+            <summary>
+            Represents the event arguments for the IndexSet event.
+            </summary>
+            <remarks>
+            Initializes a new instance of the <see cref="T:LaquaiLib.Collections.Observable.IndexSetEventArgs"/> class.
+            </remarks>
+            <param name="index">The index being accessed.</param>
+        </member>
+        <member name="P:LaquaiLib.Collections.Observable.IndexSetEventArgs.Index">
+            <summary>
+            Gets the index being accessed.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Collections.Observable.RangeAddedEventArgs`1">
             <summary>
@@ -10281,6 +10421,62 @@
             Required to write to memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>.
             </summary>
         </member>
+        <member name="T:LaquaiLib.IO.BufferSegment`1">
+            <summary>
+            Represents one array within a segmented buffer, paired with the portion of it the buffer actually addresses.
+            </summary>
+            <remarks>
+            <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/> is usually the whole of <see cref="P:LaquaiLib.IO.BufferSegment`1.Array"/>, but a segment may deliberately address less than it holds; the remainder is then owned by the segment and unreachable through the buffer until it is released. Keeping the addressed extent separate from the array's own length is what lets a buffer end a segment early instead of copying its contents somewhere larger.
+            </remarks>
+            <typeparam name="T">The element type of the underlying array.</typeparam>
+            <param name="array">The array backing the segment.</param>
+            <param name="length">The number of elements at the start of <paramref name="array"/> the buffer addresses.</param>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferSegment`1.#ctor(`0[],System.Int32)">
+            <summary>
+            Represents one array within a segmented buffer, paired with the portion of it the buffer actually addresses.
+            </summary>
+            <remarks>
+            <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/> is usually the whole of <see cref="P:LaquaiLib.IO.BufferSegment`1.Array"/>, but a segment may deliberately address less than it holds; the remainder is then owned by the segment and unreachable through the buffer until it is released. Keeping the addressed extent separate from the array's own length is what lets a buffer end a segment early instead of copying its contents somewhere larger.
+            </remarks>
+            <typeparam name="T">The element type of the underlying array.</typeparam>
+            <param name="array">The array backing the segment.</param>
+            <param name="length">The number of elements at the start of <paramref name="array"/> the buffer addresses.</param>
+        </member>
+        <member name="P:LaquaiLib.IO.BufferSegment`1.Array">
+            <summary>
+            Gets the array backing this segment. It may be longer than <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.BufferSegment`1.Length">
+            <summary>
+            Gets the number of elements at the start of <see cref="P:LaquaiLib.IO.BufferSegment`1.Array"/> that the buffer addresses.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.BufferSegment`1.Span">
+            <summary>
+            Gets a <see cref="T:System.Span`1"/> over the addressed portion of this segment.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.IO.BufferSegment`1.Memory">
+            <summary>
+            Gets a <see cref="T:System.Memory`1"/> over the addressed portion of this segment.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferSegment`1.Full(`0[])">
+            <summary>
+            Creates a segment addressing the entirety of <paramref name="array"/>.
+            </summary>
+            <param name="array">The array backing the segment.</param>
+            <returns>The created <see cref="T:LaquaiLib.IO.BufferSegment`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.BufferSegment`1.Truncate(System.Int32)">
+            <summary>
+            Creates a segment over the same array as this one, addressing only the first <paramref name="length"/> elements.
+            </summary>
+            <param name="length">The number of elements to address. Must not exceed the current <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/>.</param>
+            <returns>The created <see cref="T:LaquaiLib.IO.BufferSegment`1"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.IO.SegmentOffset`1">
             <summary>
             Represents a position in a segmented chain of buffers.
@@ -10683,7 +10879,7 @@
             <param name="root">The absolute (rooted) path to the directory to start the search from. If <see langword="null"/>, the search starts from the root of each drive and returns all matches. This process may take a significant amount of time.</param>
             <param name="driveType">If <paramref name="root"/> is <see langword="null"/>, allows specifying which kinds of drives to search. The default is <see cref="F:System.IO.DriveType.Fixed"/>. Note that searching network drives may take a significant amount of time.</param>
             <param name="maxRecursionDepth">Limits the depth of recursion when searching for the directory structure. The default is <see cref="F:System.Int32.MaxValue"/>.</param>
-            <returns>An <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> that enumerates the full paths of directories that match the specified structure.</returns>
+            <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> that lazily enumerates the full paths of directories that match the specified structure.</returns>
             <exception cref="T:System.IO.IOException">Thrown if the root directory does not exist.</exception>
             <exception cref="T:System.ArgumentException">Thrown if the directory structure or root directory is invalid.</exception>
         </member>
@@ -11049,7 +11245,7 @@
             This is by no means meant to replace an implementation such as <see href="https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream"/>. This type's design is much simpler.
             </remarks>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.#ctor(System.Int32,System.Int64,System.Boolean,System.Buffers.ArrayPool{System.Byte})">
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.#ctor(System.Int32,System.Int64,System.Boolean,System.Buffers.ArrayPool{System.Byte},System.Boolean)">
             <summary>
             Initializes a new <see cref="T:LaquaiLib.IO.Streams.ArrayPoolMemoryStream"/>.
             </summary>
@@ -11057,6 +11253,7 @@
             <param name="capacity">Initial capacity to rent up front.</param>
             <param name="skipZeroing">If <see langword="true"/>, memory exposed by seeking or <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.SetLength(System.Int64)"/> past the current length is not zeroed and may contain arbitrary prior contents. Only set this if all such memory is overwritten before being read.</param>
             <param name="pool">The <see cref="T:System.Buffers.ArrayPool`1"/> to rent segments from, or <see langword="null"/> to use <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.</param>
+            <param name="disallowLohRenting">If <see langword="true"/>, no single segment is rented larger than 65536 bytes, the largest pool bucket below the 85000-byte Large Object Heap threshold. Every <see cref="T:System.IO.Stream"/> member honours this, as does appending through <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetMemory(System.Int32)"/>/<see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetSpan(System.Int32)"/>. The one exception is asking those two for a run that starts before <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> and crosses a segment boundary: the run has to be contiguous and has to start at <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>, and ending a segment early to arrange that would renumber the data stored past it, so the segments are merged into a single rent that may exceed the cap. A <c>sizeHint</c> smaller than the cap is enough to trigger it; only its reaching past the end of the segment <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> sits in matters.</param>
         </member>
         <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CanRead">
             <inheritdoc/>
@@ -11093,6 +11290,24 @@
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ReadByte">
             <inheritdoc/>
         </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins an asynchronous read operation.
+            </summary>
+            <param name="buffer">The buffer to read data into.</param>
+            <param name="offset">The byte offset in <paramref name="buffer"/> at which to begin writing data.</param>
+            <param name="count">The maximum number of bytes to read.</param>
+            <param name="callback">An optional <see cref="T:System.AsyncCallback"/> to be called when the read operation is complete.</param>
+            <param name="state">The state object to be passed to the callback.</param>
+            <returns>An <see cref="T:System.IAsyncResult"/> that represents the asynchronous read operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.EndRead(System.IAsyncResult)">
+            <summary>
+            Waits for the end of an asynchronous read operation.
+            </summary>
+            <param name="asyncResult">The <see cref="T:System.IAsyncResult"/> that represents the asynchronous read operation.</param>
+            <returns>The number of bytes read from the stream.</returns>
+        </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
@@ -11107,6 +11322,23 @@
         </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.WriteByte(System.Byte)">
             <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
+            <summary>
+            Begins an asynchronous write operation.
+            </summary>
+            <param name="buffer">The buffer containing the data to write.</param>
+            <param name="offset">The byte offset in buffer at which to begin copying bytes to the stream.</param>
+            <param name="count">The number of bytes to write.</param>
+            <param name="callback">An optional <see cref="T:System.AsyncCallback"/> to be called when the write operation is complete.</param>
+            <param name="state">The state object to be passed to the callback.</param>
+            <returns>An <see cref="T:System.IAsyncResult"/> that represents the asynchronous write operation.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.EndWrite(System.IAsyncResult)">
+            <summary>
+            Waits for the end of an asynchronous write operation.
+            </summary>
+            <param name="asyncResult">The <see cref="T:System.IAsyncResult"/> that represents the asynchronous write operation.</param>
         </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyTo(System.IO.Stream,System.Int32)">
             <inheritdoc/>
@@ -11137,12 +11369,35 @@
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Dispose(System.Boolean)">
             <inheritdoc/>
         </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.DisposeAsync">
+            <inheritdoc/>
+        </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.AsReadOnlySequence">
             <summary>
             Gets a <see cref="T:System.Buffers.ReadOnlySequence`1"/> over the memory that has been written so far.
             This is a snapshot; mutating calls, especially ones that return memory to the pool, invalidate the sequence. Reading from it after such a mutation is undefined behavior.
             </summary>
             <returns>The created <see cref="T:System.Buffers.ReadOnlySequence`1"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ToArray">
+            <summary>
+            Copies the memory that has been written so far into a new array sized exactly to <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>.
+            </summary>
+            <remarks>
+            Unlike <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.AsReadOnlySequence"/>, the returned array is owned by the caller and is unaffected by later mutations of this instance. <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> is not advanced.
+            </remarks>
+            <returns>The created array.</returns>
+            <exception cref="T:System.OutOfMemoryException">Thrown if <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> exceeds what a single array can hold.</exception>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyTo(System.Span{System.Byte})">
+            <summary>
+            Copies the memory that has been written so far into <paramref name="destination"/>.
+            </summary>
+            <remarks>
+            Unlike <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyTo(System.IO.Stream,System.Int32)"/>, which copies what is left from <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> onwards and advances it, this copies the whole of <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> from the start and leaves <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> alone; it is <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ToArray"/> without the allocation. Use <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Read(System.Span{System.Byte})"/> for the read-from-<see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> behaviour. <paramref name="destination"/> may be longer than <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>, in which case the bytes past it are left as they were.
+            </remarks>
+            <param name="destination">The span to copy into. Must be at least <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> long.</param>
+            <exception cref="T:System.ArgumentException">Thrown if <paramref name="destination"/> is shorter than <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>.</exception>
         </member>
         <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Advance(System.Int32)">
             <inheritdoc/>
@@ -12095,46 +12350,6 @@
         <member name="M:LaquaiLib.Numerics.BitArray.op_OnesComplement(LaquaiLib.Numerics.BitArray)">
             <summary>
             Returns a new <see cref="T:LaquaiLib.Numerics.BitArray"/> containing the bitwise complement of <paramref name="value"/> within its current <see cref="P:LaquaiLib.Numerics.BitArray.Capacity"/>. The result preserves <paramref name="value"/>'s <see cref="P:LaquaiLib.Numerics.BitArray.Signed"/> flag.
-            </summary>
-        </member>
-        <member name="T:LaquaiLib.Numerics.Fibonacci">
-            <summary>
-            A comprehensive Fibonacci calculation library that efficiently handles both one-off calculations and sequences of consecutive Fibonacci numbers.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Fibonacci.GetNth(System.UInt64)">
-            <summary>
-            Calculates the <paramref name="n"/>th Fibonacci number.
-            </summary>
-            <param name="n">The position in the Fibonacci sequence (zero-based).</param>
-            <returns>The <paramref name="n"/>th Fibonacci number.</returns>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Fibonacci.GenerateSequence(System.UInt64,System.UInt64)">
-            <summary>
-            Generates a sequence of consecutive Fibonacci numbers from start to end (inclusive).
-            Optimized for calculating multiple sequential values with O(end-start) time complexity.
-            </summary>
-            <param name="start">The starting position (zero-based, inclusive)</param>
-            <param name="end">The ending position (zero-based, inclusive)</param>
-            <returns>An enumerable of consecutive Fibonacci numbers</returns>
-            <exception cref="T:System.ArgumentException">Thrown when end is less than start</exception>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Fibonacci.IterativeSequence(System.UInt64,System.UInt64)">
-            <summary>
-            Helper method that generates Fibonacci sequence using the simple iterative approach.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Fibonacci.MatrixPower(System.UInt64)">
-            <summary>
-            Uses fast matrix exponentiation to compute Fibonacci numbers.
-            Based on the matrix identity:
-            [1 1]^n = [F(n+1) F(n)  ]
-            [1 0]     [F(n)   F(n-1)]
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Numerics.Fibonacci.MultiplyMatrix(System.Numerics.BigInteger[0:,0:],System.Numerics.BigInteger[0:,0:])">
-            <summary>
-            Multiplies two 2x2 matrices efficiently.
             </summary>
         </member>
         <member name="T:LaquaiLib.Numerics.Matrix`1">
@@ -13751,17 +13966,12 @@
             Contains static methods to find differences in memory regions.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Util.MemoryDiff.DiffImpl``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Collections.Generic.IEqualityComparer{``0})">
-            <summary>
-            Unconditionally uses scalar operations to find the first differing index. <c>-1</c> if no difference is found.
-            </summary>
-        </member>
         <member name="M:LaquaiLib.Util.MemoryDiff.FindDifference``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0},System.Int32,System.Collections.Generic.IEqualityComparer{``0})">
             <summary>
             Finds the index at which the specified <see cref="T:System.Span`1"/>s of <typeparamref name="T"/> differ (that is, where two elements at the same index do not compare equal).
             </summary>
             <typeparam name="T">The type of the elements in the spans.</typeparam>
-            <param name="left">The first span to compare.</param>4
+            <param name="left">The first span to compare.</param>
             <param name="right">The second span to compare.</param>
             <param name="startIndex">The index at which to start the comparison. Must be a valid index in both spans.</param>
             <param name="equalityComparer">An optional <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> implementation to use when comparing elements. If <c>null</c>, the default equality comparer for <typeparamref name="T"/> is used.</param>
@@ -14051,6 +14261,9 @@
             <param name="step">The step width of the range.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <typeparamref name="T"/> as described.</returns>
             <exception cref="T:System.ArgumentException">Thrown if <paramref name="step"/> evaluates to a value equivalent to <c>0</c>.</exception>
+            <remarks>
+            Prefer <see cref="M:LaquaiLib.Util.SpanFiller.FillSequential``1(System.Span{``0},``0,System.Boolean)"/> over a buffer for performance reasons.
+            </remarks>
         </member>
         <member name="T:LaquaiLib.Util.ShellInterfaces.CommandDispatchResult">
             <summary>
@@ -18445,33 +18658,11 @@
             <param name="count">The number of times the size of <typeparamref name="T"/> is added to the pointer.</param>
             <returns>A pointer to <typeparamref name="T"/> that is offset from <paramref name="ptr"/> by the size of <typeparamref name="T"/> <paramref name="count"/> times.</returns>
         </member>
-        <member name="T:LaquaiLib.Wrappers.AsyncEnumerableWrapper`1">
-            <summary>
-            Wraps an <see cref="T:System.Collections.Generic.IEnumerable`1"/> as an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> to allow asynchronous consumption by delegating to <see cref="T:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1"/>.
-            </summary>
-            <typeparam name="T">The Type of elements the <see cref="T:System.Collections.Generic.IEnumerable`1"/> yields.</typeparam>
-            <param name="from">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to wrap.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.AsyncEnumerableWrapper`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
-            <summary>
-            Wraps an <see cref="T:System.Collections.Generic.IEnumerable`1"/> as an <see cref="T:System.Collections.Generic.IAsyncEnumerable`1"/> to allow asynchronous consumption by delegating to <see cref="T:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1"/>.
-            </summary>
-            <typeparam name="T">The Type of elements the <see cref="T:System.Collections.Generic.IEnumerable`1"/> yields.</typeparam>
-            <param name="from">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to wrap.</param>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.AsyncEnumerableWrapper`1.Empty">
-            <summary>
-            Gets an empty <see cref="T:LaquaiLib.Wrappers.AsyncEnumerableWrapper`1"/> (that is, an instance that yields no elements).
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.AsyncEnumerableWrapper`1.GetAsyncEnumerator(System.Threading.CancellationToken)">
-            <inheritdoc/>
-        </member>
         <member name="T:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1">
             <summary>
             Wraps an <see cref="T:System.Collections.Generic.IEnumerator`1"/> as an <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> to allow asynchronous consumption.
-            Every <see cref="M:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.MoveNextAsync"/> call is awaited in a new <see cref="T:System.Threading.Tasks.Task"/>.
-            May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream or when every enumerator step is expensive.
+            Every <see cref="M:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.MoveNextAsync"/> call delegates to <paramref name="from"/>'s <see cref="M:System.Collections.IEnumerator.MoveNext"/> method, but runs it on a background thread to avoid blocking the calling thread.
+            May be useful in scenarios when the time between iterations may be long, such as when the enumerator does CPU-bound work that shouldn't run on the calling thread.
             </summary>
             <typeparam name="T">The Type of elements the <see cref="T:System.Collections.Generic.IEnumerator`1"/> yields.</typeparam>
             <param name="from">The <see cref="T:System.Collections.Generic.IEnumerator`1"/> to wrap.</param>
@@ -18480,23 +18671,11 @@
         <member name="M:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.#ctor(System.Collections.Generic.IEnumerator{`0},System.Threading.CancellationToken)">
             <summary>
             Wraps an <see cref="T:System.Collections.Generic.IEnumerator`1"/> as an <see cref="T:System.Collections.Generic.IAsyncEnumerator`1"/> to allow asynchronous consumption.
-            Every <see cref="M:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.MoveNextAsync"/> call is awaited in a new <see cref="T:System.Threading.Tasks.Task"/>.
-            May be useful in scenarios when the time between iterations may be long, such as when reading from a network stream or when every enumerator step is expensive.
+            Every <see cref="M:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.MoveNextAsync"/> call delegates to <paramref name="from"/>'s <see cref="M:System.Collections.IEnumerator.MoveNext"/> method, but runs it on a background thread to avoid blocking the calling thread.
+            May be useful in scenarios when the time between iterations may be long, such as when the enumerator does CPU-bound work that shouldn't run on the calling thread.
             </summary>
             <typeparam name="T">The Type of elements the <see cref="T:System.Collections.Generic.IEnumerator`1"/> yields.</typeparam>
             <param name="from">The <see cref="T:System.Collections.Generic.IEnumerator`1"/> to wrap.</param>
-            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to use for cancellation.</param>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.Empty">
-            <summary>
-            Gets an empty <see cref="T:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1"/> (that is, an instance that yields no elements).
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Threading.CancellationToken)">
-            <summary>
-            Initializes a new <see cref="T:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1"/> using an <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
-            </summary>
-            <param name="from">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> to wrap.</param>
             <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> to use for cancellation.</param>
         </member>
         <member name="P:LaquaiLib.Wrappers.AsyncEnumeratorWrapper`1.Current">

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Frozen;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace LaquaiLib.Analyzers.Shared;
@@ -17,29 +16,22 @@ public static class StringExtensions
 
     extension(string str)
     {
-        public unsafe string XmlEscape()
+        public string XmlEscape()
         {
+            var i = str.IndexOfAny(_escapeChars);
+            if (i < 0)
+                return str;
+
             var sb = new StringBuilder((int)(str.Length * 1.2));
-            var length = str.Length;
-            var span = str.AsSpan();
-            var ptr = (char*)Unsafe.AsPointer(ref MemoryMarshal.GetReference(span));
-            var start = ptr;
-            while (start - ptr < span.Length)
+            var start = 0;
+            while (i >= 0)
             {
-                var index = new ReadOnlySpan<char>(start, length - (int)(start - ptr)).IndexOfAny(_escapeChars);
-                if (index < 0)
-                {
-                    _ = sb.Append(start, (int)(span.Length - (start - ptr)));
-                    break;
-                }
-                else
-                {
-                    _ = sb.Append(start, index);
-                    var escapeChar = start[index];
-                    _ = sb.Append(_xmlEscapeDict[escapeChar]);
-                    start += index + 1;
-                }
+                _ = sb.Append(str, start, i - start);
+                _ = sb.Append(_xmlEscapeDict[str[i]]);
+                start = i + 1;
+                i = str.IndexOfAny(_escapeChars, start);
             }
+            _ = sb.Append(str, start, str.Length - start);
             return sb.ToString();
         }
     }

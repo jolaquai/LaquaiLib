@@ -45,7 +45,7 @@ public static unsafe class MemoryManager
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T* UnsafeCAlloc<T>(int count, bool pressure = false) where T : unmanaged
     {
-        var bytes = count * sizeof(T);
+        nint bytes = (nint)count * sizeof(T);
         if (pressure)
             GC.AddMemoryPressure(bytes);
         return (T*)Marshal.AllocHGlobal(bytes);
@@ -66,7 +66,7 @@ public static unsafe class MemoryManager
     /// <param name="ptr">The managed pointer to the first instance of type <typeparamref name="T"/>.</param>
     /// <param name="count">The number of instances to include in the span.</param>
     /// <returns>The created <see cref="Span{T}"/>.</returns>
-    public static Span<T> AsSpan<T>(ref this T ptr, int count) where T : unmanaged => new Span<T>(Unsafe.AsPointer(ref ptr), count);
+    public static Span<T> AsSpan<T>(ref this T ptr, int count) where T : unmanaged => MemoryMarshal.CreateSpan(ref ptr, count);
     /// <summary>
     /// Gets a <see cref="Span{T}"/> from a pointer to an instance of <typeparamref name="T"/>.
     /// </summary>
@@ -112,7 +112,7 @@ public static unsafe class MemoryManager
     /// <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the resized memory region.</returns>
     public static T* UnsafeReCAlloc<T>(T* ptr, int count, long oldCount = 0) where T : unmanaged
     {
-        var bytes = count * sizeof(T);
+        nint bytes = (nint)count * sizeof(T);
         if (oldCount != 0)
         {
             var oldBytes = oldCount * sizeof(T);
@@ -133,7 +133,7 @@ public static unsafe class MemoryManager
     /// <returns>A <typeparamref name="T"/>-typed managed pointer to the first instance in the allocated memory region.</returns>
     public static ref T ReCAlloc<T>(ref T ptr, int count, long oldCount = 0) where T : unmanaged
     {
-        var bytes = count * sizeof(T);
+        var bytes = (nint)count * sizeof(T);
         if (oldCount != 0)
         {
             var oldBytes = oldCount * sizeof(T);
@@ -172,7 +172,7 @@ public static unsafe class MemoryManager
     /// <param name="ptr">A managed pointer to the first byte of the previously allocated memory.</param>
     /// <param name="pressure">The length of the block of memory that is being freed. If <c>&gt; 0</c>, <see cref="GC.RemoveMemoryPressure(long)"/> is called with this value.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void Free<T>(ref T ptr, long pressure = -1) => Free(Unsafe.AsPointer(ref ptr), pressure);
+    public static void Free<T>(ref T ptr, long pressure = -1) where T : unmanaged => Free(Unsafe.AsPointer(ref ptr), pressure);
     /// <summary>
     /// Frees a previously allocated region of memory.
     /// </summary>

@@ -424,10 +424,10 @@ public static partial class FileSystemHelper
     /// <param name="root">The absolute (rooted) path to the directory to start the search from. If <see langword="null"/>, the search starts from the root of each drive and returns all matches. This process may take a significant amount of time.</param>
     /// <param name="driveType">If <paramref name="root"/> is <see langword="null"/>, allows specifying which kinds of drives to search. The default is <see cref="DriveType.Fixed"/>. Note that searching network drives may take a significant amount of time.</param>
     /// <param name="maxRecursionDepth">Limits the depth of recursion when searching for the directory structure. The default is <see cref="int.MaxValue"/>.</param>
-    /// <returns>An <see cref="IAsyncEnumerable{T}"/> that enumerates the full paths of directories that match the specified structure.</returns>
+    /// <returns>An <see cref="IEnumerable{T}"/> that lazily enumerates the full paths of directories that match the specified structure.</returns>
     /// <exception cref="IOException">Thrown if the root directory does not exist.</exception>
     /// <exception cref="ArgumentException">Thrown if the directory structure or root directory is invalid.</exception>
-    public static IAsyncEnumerable<string> EnumerateDirectoryStructureMatches(string dirStructure, string root = null, DriveType? driveType = null, int maxRecursionDepth = int.MaxValue)
+    public static IEnumerable<string> EnumerateDirectoryStructureMatches(string dirStructure, string root = null, DriveType? driveType = null, int maxRecursionDepth = int.MaxValue)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(dirStructure);
         if (Path.IsPathRooted(dirStructure) || dirStructure.AsSpan().IndexOfAny(InvalidPathChars) > -1)
@@ -436,25 +436,26 @@ public static partial class FileSystemHelper
         if (driveType is not null && !string.IsNullOrWhiteSpace(root))
             throw new ArgumentException("Cannot specify both a drive type and a root directory.", nameof(driveType));
 
-        static IAsyncEnumerable<string> ExamineRootImpl(string dirStructure, string root, int maxRecursionDepth)
-        {
-            var dir = new DirectoryInfo(root);
-            if (!dir.Exists)
-                return AsyncEnumerableWrapper<string>.Empty;
+        var dir = new DirectoryInfo(root);
+        if (!dir.Exists)
+            return [];
 
-            return new AsyncEnumerableWrapper<string>(dir
-                .EnumerateDirectories("*", new EnumerationOptions()
-                {
-                    IgnoreInaccessible = true,
-                    RecurseSubdirectories = maxRecursionDepth > 0,
-                    MaxRecursionDepth = maxRecursionDepth,
-                    AttributesToSkip = FileAttributes.None
-                })
+        var enumerationOptions = new EnumerationOptions()
+        {
+            IgnoreInaccessible = true,
+            RecurseSubdirectories = maxRecursionDepth > 0,
+            MaxRecursionDepth = maxRecursionDepth,
+            AttributesToSkip = FileAttributes.None
+        };
+        static IEnumerable<string> ExamineRootImpl(string dirStructure, DirectoryInfo dir, EnumerationOptions enumerationOptions)
+        {
+            return dir
+                .EnumerateDirectories("*", enumerationOptions)
                 .AsParallel()
                 .Where(d => d.FullName.EndsWith(dirStructure, StringComparison.OrdinalIgnoreCase))
                 .Select(d => d.FullName)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-            );
+            ;
         }
 
         if (!string.IsNullOrWhiteSpace(root))
@@ -464,17 +465,14 @@ public static partial class FileSystemHelper
             if (!Directory.Exists(root))
                 throw new IOException($"Directory '{root}' does not exist.");
 
-            return ExamineRootImpl(dirStructure, root, maxRecursionDepth);
+            return ExamineRootImpl(dirStructure, new DirectoryInfo(root), enumerationOptions);
         }
 
         driveType ??= DriveType.Fixed;
 
-        return IAsyncEnumerableExtensions.Concat(
-            DriveInfo.GetDrives()
+        return DriveInfo.GetDrives()
                 .Where(d => d.DriveType == driveType)
-                .Select(d => ExamineRootImpl(dirStructure, d.Name, maxRecursionDepth))
-                .ToArray()
-        );
+                .SelectMany(d => ExamineRootImpl(dirStructure, new DirectoryInfo(d.Name), enumerationOptions));
     }
 
     /// <summary>

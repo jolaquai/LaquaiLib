@@ -1345,26 +1345,26 @@ public class IEnumerableExtensionsTests
     }
     #endregion
 
-    #region AsAsynchronous Tests
+    #region GetAsyncEnumerator Tests
     [Fact]
-    public async Task AsAsynchronousConvertsToAsyncEnumerable()
+    public async Task GetAsyncEnumeratorConvertsToAsyncEnumerable()
     {
-        var source = new[] { 1, 2, 3 };
+        IEnumerable<int> source = [1, 2, 3];
 
         var result = new List<int>();
-        await foreach (var item in source.AsAsynchronous())
+        await foreach (var item in source)
             result.Add(item);
 
         Assert.Equal(source, result);
     }
 
     [Fact]
-    public async Task AsAsynchronousWithEmptySequenceCompletesSuccessfully()
+    public async Task GetAsyncEnumeratorWithEmptySequenceCompletesSuccessfully()
     {
-        var source = Array.Empty<int>();
+        IEnumerable<int> source = [];
 
         var result = new List<int>();
-        await foreach (var item in source.AsAsynchronous())
+        await foreach (var item in source)
             result.Add(item);
 
         Assert.Empty(result);

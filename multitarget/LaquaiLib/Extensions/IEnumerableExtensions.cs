@@ -701,10 +701,10 @@ public static partial class IEnumerableExtensions
         }
 
         /// <summary>
-        /// Determines whether the majority of a sequence's elements satisfy a condition.
+        /// Determines whether more than half of a sequence's elements satisfy a condition.
         /// </summary>
         /// <param name="predicate">The condition to check for.</param>
-        /// <returns><see langword="true"/> if the majority of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if more than half of the input sequence's elements satisfy the condition, otherwise <see langword="false"/>.</returns>
         public bool Majority(Func<T, bool> predicate)
         {
             if (!source.TryGetNonEnumeratedCount(out var total))
