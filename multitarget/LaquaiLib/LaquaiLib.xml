@@ -615,6 +615,100 @@
             <param name="value">An enum value that is checked against.</param>
             <returns>A value indicating whether <paramref name="source"/> has at least one value that <paramref name="value"/> also has.</returns>
         </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Invalid">
+            <summary>
+            Not a valid enum member.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Nullable">
+            <summary>
+            Indicates that the generic type parameter's generic type definition is <see cref="T:System.Nullable`1"/>. To find the true operation mode, get <see cref="M:LaquaiLib.Extensions.EqualityComparerExtensions.get_DefaultOperationMode``1"/> for the underlying type of the nullable type.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.String">
+            <summary>
+            Indicates that the generic type parameter was <see langword="string"/>. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will be a <see cref="T:System.StringComparer"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.IEquatable">
+            <summary>
+            Indicates that the generic type parameter implements <see cref="T:System.IEquatable`1"/>. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will use the <see cref="M:System.IEquatable`1.Equals(`0)"/> method for comparison.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Enum">
+            <summary>
+            Indicates that the generic type parameter is an <see langword="enum"/> type. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will use default <see langword="enum"/> comparison (that is, the underlying integral type of the <see langword="enum"/> is compared numerically).
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Equals">
+            <summary>
+            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
+            Specifically, the generic type parameter is a reference type and does not override <see cref="M:System.Object.Equals(System.Object)"/>, so the default implementation of <see cref="M:System.Object.Equals(System.Object)"/> uses reference equality.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.EqualsOverrideInherited">
+            <summary>
+            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
+            Specifically, the generic type parameter is a reference type and a type in its inheritance chain overrides <see cref="M:System.Object.Equals(System.Object)"/> but the generic type parameter itself does not, so that inherited override is used for comparison.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.EqualsOverrideDeclared">
+            <summary>
+            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
+            Specifically, the generic type parameter is a reference type and overrides <see cref="M:System.Object.Equals(System.Object)"/>, so that override is used for comparison.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.ValueTypeEquals">
+            <summary>
+            Indicates that <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
+            Specifically, the generic type parameter is a value type and does not override <see cref="M:System.Object.Equals(System.Object)"/>, so the default implementation of <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison.
+            <para/>For value types that recursively contain no reference type or floating-point fields, a simple byte compare is done. Otherwise, a recursive boxing field-by-field comparison is done.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.ValueTypeEqualsOverride">
+            <summary>
+            Indicates that <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
+            Specifically, the generic type parameter is a value type and overrides <see cref="M:System.Object.Equals(System.Object)"/>, so that override is used for comparison.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Extensions.EqualityComparerExtensions">
+            <summary>
+            Provides extensions for <see cref="T:System.Collections.Generic.EqualityComparer`1"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.EqualityComparerExtensions.get_DefaultOperationMode``1">
+            <inheritdoc cref="P:LaquaiLib.Extensions.EqualityComparerExtensions.&lt;G&gt;$824B137C9700787F7FAADF3CDD49751C`1.DefaultOperationMode"/>
+        </member>
+        <member name="T:LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride">
+            <summary>
+            Describes whether and where a <see cref="T:System.Type"/> overrides <see cref="M:System.Object.Equals(System.Object)"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride.None">
+            <summary>
+            The type resolves to <see cref="M:System.Object.Equals(System.Object)"/> directly, or only to the <see cref="T:System.ValueType"/>/<see cref="T:System.Enum"/> plumbing.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride.Inherited">
+            <summary>
+            A base type overrides <see cref="M:System.Object.Equals(System.Object)"/>; the queried type itself does not. Implies the queried type is a reference type.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride.Declared">
+            <summary>
+            The queried type itself declares the override.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.EqualityComparerExtensions.GetObjectEqualsOverride(System.Type)">
+            <summary>
+            Determines whether <paramref name="type"/> overrides <see cref="M:System.Object.Equals(System.Object)"/> and, if so, whether that override is declared on <paramref name="type"/> itself or inherited from a base type.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.EqualityComparerExtensions.&lt;G&gt;$824B137C9700787F7FAADF3CDD49751C`1.DefaultOperationMode">
+            <summary>
+            Gets the type of comparison <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> will use for the type <typeparamref name="T"/>.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Extensions.FileSystemModelExtensions">
             <summary>
             Provides extensions for the <see cref="T:System.IO.DirectoryInfo"/> type.
@@ -7004,6 +7098,56 @@
             <summary>
             Creates a <see cref="T:LaquaiLib.Extensions.QueryBuilder"/> that escapes values for query parameters when setting them.
             Assumes correct escaping for existing query parameters, otherwise the % signs would be escaped.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Extensions.EqualityComparerDefaultOperationModeData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Extensions.EqualityComparerDefaultOperationMode</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.EqualityComparerDefaultOperationModeData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerDefaultOperationMode</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.EqualityComparerDefaultOperationModeData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerDefaultOperationMode</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.EqualityComparerDefaultOperationModeData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerDefaultOperationMode</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.EqualityComparerDefaultOperationModeData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerDefaultOperationMode</c>.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Extensions.ObjectEqualsOverrideData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ObjectEqualsOverrideData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ObjectEqualsOverrideData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ObjectEqualsOverrideData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Extensions.ObjectEqualsOverrideData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Extensions.EqualityComparerExtensions.ObjectEqualsOverride</c>.
             </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.InheritanceBehaviorData">
@@ -28525,6 +28669,63 @@
             <param name="left">The <typeparamref name="T16"/> instance to compare.</param>
             <param name="right">The <see cref="T:LaquaiLib.Wrappers.OneOf`16"/> instance to compare.</param>
             <returns><see langword="true"/> if the values of the two instances are not equal; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="T:LaquaiLib.Wrappers.RentedArray`1">
+            <summary>
+            Wraps an array of <typeparamref name="T"/>, the <see cref="T:System.Buffers.ArrayPool`1"/> it was rented from, an optional <paramref name="offset"/> and <paramref name="length"/> delimiting the span of the array to be used, and a <paramref name="clear"/> flag indicating whether the array should be cleared when returned to the pool.
+            </summary>
+            <typeparam name="T">The type of the elements in the array.</typeparam>
+            <param name="array">The array to wrap.</param>
+            <param name="offset">The offset in the array where the span starts. Defaults to 0.</param>
+            <param name="length">The length of the span. Defaults to -1, which means the span will extend to the end of the array.</param>
+            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> from which the array was rented. Defaults to <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.</param>
+            <param name="clear">Whether to clear the array when returned to the pool. Defaults to <see langword="false"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.RentedArray`1.#ctor(`0[],System.Int32,System.Int32,System.Buffers.ArrayPool{`0},System.Boolean)">
+            <summary>
+            Wraps an array of <typeparamref name="T"/>, the <see cref="T:System.Buffers.ArrayPool`1"/> it was rented from, an optional <paramref name="offset"/> and <paramref name="length"/> delimiting the span of the array to be used, and a <paramref name="clear"/> flag indicating whether the array should be cleared when returned to the pool.
+            </summary>
+            <typeparam name="T">The type of the elements in the array.</typeparam>
+            <param name="array">The array to wrap.</param>
+            <param name="offset">The offset in the array where the span starts. Defaults to 0.</param>
+            <param name="length">The length of the span. Defaults to -1, which means the span will extend to the end of the array.</param>
+            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> from which the array was rented. Defaults to <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.</param>
+            <param name="clear">Whether to clear the array when returned to the pool. Defaults to <see langword="false"/>.</param>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.RentedArray`1.Array">
+            <summary>
+            Gets the underlying array.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Wrappers.RentedArray`1.Offset">
+            <summary>
+            The offset in the array where the span starts.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Wrappers.RentedArray`1.Length">
+            <summary>
+            The length of the span.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Wrappers.RentedArray`1.ArrayPool">
+            <summary>
+            The <see cref="T:System.Buffers.ArrayPool`1"/> from which the array was rented.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Wrappers.RentedArray`1.Clear">
+            <summary>
+            Whether to clear the array when returned to the pool.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Wrappers.RentedArray`1.Span">
+            <summary>
+            Gets a <see cref="T:System.Span`1"/> representing the portion of the array defined by the <see cref="F:LaquaiLib.Wrappers.RentedArray`1.Offset"/> and <see cref="F:LaquaiLib.Wrappers.RentedArray`1.Length"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Wrappers.RentedArray`1.Dispose">
+            <summary>
+            Disposes the <see cref="T:LaquaiLib.Wrappers.RentedArray`1"/> by returning the underlying array to the <see cref="T:System.Buffers.ArrayPool`1"/>.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Wrappers.TempDirectory">
             <summary>
