@@ -2,19 +2,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
-        <None Remove="bin\Debug\netstandard2.0\\LaquaiLib.Generators.dll"/>
+        <None Remove="bin\Debug\netstandard2.0\\LaquaiLib.Generators.dll" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="LaquaiLib.Generators.Tests"/>
+        <InternalsVisibleTo Include="LaquaiLib.Generators.Tests" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj"/>
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0"/>
+      <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
     </ItemGroup>
 
 </Project>

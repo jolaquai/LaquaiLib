@@ -2,26 +2,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <Compile Remove="Refactorings %284XXX%29\**"/>
-    <EmbeddedResource Remove="Refactorings %284XXX%29\**"/>
-    <None Remove="Refactorings %284XXX%29\**"/>
+    <Compile Remove="Refactorings %284XXX%29\**" />
+    <EmbeddedResource Remove="Refactorings %284XXX%29\**" />
+    <None Remove="Refactorings %284XXX%29\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.dll"/>
+    <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.dll" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj"/>
-    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj"/>
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Reliability %282XXX%29\"/>
+    <Folder Include="Reliability %282XXX%29\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0"/>
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
   </ItemGroup>
 
 </Project>

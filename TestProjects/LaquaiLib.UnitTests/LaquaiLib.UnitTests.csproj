@@ -16,8 +16,8 @@
          and coverlet.MTP 10.0.1 (the newest) targets an MTP older than the 2.2.x xunit.v3 brings, so registering it crashes the test host.
          The coverage CI job drives coverlet.console from outside the build instead. -->
 
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0"/>
-    <PackageReference Include="xunit.v3" Version="4.0.0"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <PackageReference Include="xunit.v3" Version="4.0.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,16 +25,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj"/>
-    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\Test\TestCore\TestCore.csproj"/>
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib.Windows\LaquaiLib.Windows.csproj" />
+    <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\Test\TestCore\TestCore.csproj" />
 
-    <Using Include="Xunit"/>
-    <Using Include="System.Runtime.CompilerServices"/>
-    <Using Include="System.Collections"/>
+    <Using Include="Xunit" />
+    <Using Include="System.Runtime.CompilerServices" />
+    <Using Include="System.Collections" />
   </ItemGroup>
 
   <Target Name="Warn" AfterTargets="Build">
-      <Warning Text="Write a comprehensive xunit.v3 unit test suite for this. No underscores in method names, no comments whatsoever."/>
+      <Warning Text="Write a comprehensive xunit.v3 unit test suite for this. No underscores in method names, no comments whatsoever." />
   </Target>
 
   <!-- [UnsafeAccessor] members bind to private BCL fields by name and break silently (MissingFieldException, at whatever
@@ -43,8 +43,7 @@
        under UnsafeUtils/Accessors must be referenced by name from some test file, or the build hard-errors.
        Skipped during VS design-time/IntelliSense builds so it doesn't run on every keystroke. -->
   <Target Name="CheckAccessorTestCoverage" BeforeTargets="CoreCompile" Condition="'$(DesignTimeBuild)' != 'true' AND '$(BuildingProject)' == 'true' AND '$(SkipAccessorCoverageCheck)' != 'true'">
-    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\..\Scripts\Check-AccessorTestCoverage.ps1&quot; -SourceRoot &quot;$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\UnsafeUtils\Accessors&quot; -TestRoot &quot;$(MSBuildProjectDirectory)&quot;"
-          WorkingDirectory="$(MSBuildProjectDirectory)"/>
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\..\Scripts\Check-AccessorTestCoverage.ps1&quot; -SourceRoot &quot;$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\UnsafeUtils\Accessors&quot; -TestRoot &quot;$(MSBuildProjectDirectory)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
 </Project>

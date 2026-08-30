@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.Shared.dll"/>
+    <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.Shared.dll" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0"/>
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
   </ItemGroup>
 </Project>
