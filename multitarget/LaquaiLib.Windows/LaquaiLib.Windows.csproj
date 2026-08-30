@@ -15,8 +15,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CoreAudio" Version="1.40.0"/>
-    <PackageReference Include="System.Management" Version="10.0.10"/>
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.10"/>
+    <PackageReference Include="System.Management" Version="10.0.11"/>
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.11"/>
 
     <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\LaquaiLib.csproj"/>
   </ItemGroup>
