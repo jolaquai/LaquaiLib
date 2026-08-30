@@ -615,6 +615,11 @@
             <param name="value">An enum value that is checked against.</param>
             <returns>A value indicating whether <paramref name="source"/> has at least one value that <paramref name="value"/> also has.</returns>
         </member>
+        <member name="T:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode">
+            <summary>
+            Specifies the kind of implementation <see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/> returns and how it will compare instances of the generic type specified for the type parameter of <see cref="T:System.Collections.Generic.EqualityComparer`1"/>.
+            </summary>
+        </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Invalid">
             <summary>
             Not a valid enum member.
@@ -622,53 +627,53 @@
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Nullable">
             <summary>
-            Indicates that the generic type parameter's generic type definition is <see cref="T:System.Nullable`1"/>. To find the true operation mode, get <see cref="M:LaquaiLib.Extensions.EqualityComparerExtensions.get_DefaultOperationMode``1"/> for the underlying type of the nullable type.
+            Indicates that the generic type argument's generic type definition is <see cref="T:System.Nullable`1"/>. To find the true operation mode, get <see cref="M:LaquaiLib.Extensions.EqualityComparerExtensions.get_DefaultOperationMode``1"/> for the underlying type of the nullable type.
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.String">
             <summary>
-            Indicates that the generic type parameter was <see langword="string"/>. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will be a <see cref="T:System.StringComparer"/>.
+            Indicates that the generic type argument was <see langword="string"/>. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will be a <see cref="T:System.StringComparer"/>.
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.IEquatable">
             <summary>
-            Indicates that the generic type parameter implements <see cref="T:System.IEquatable`1"/>. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will use the <see cref="M:System.IEquatable`1.Equals(`0)"/> method for comparison.
+            Indicates that the generic type argument implements <see cref="T:System.IEquatable`1"/>. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will use the <see cref="M:System.IEquatable`1.Equals(`0)"/> method for comparison.
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Enum">
             <summary>
-            Indicates that the generic type parameter is an <see langword="enum"/> type. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will use default <see langword="enum"/> comparison (that is, the underlying integral type of the <see langword="enum"/> is compared numerically).
+            Indicates that the generic type argument is an <see langword="enum"/> type. The returned implementation of <see cref="T:System.Collections.Generic.EqualityComparer`1"/> will use default <see langword="enum"/> comparison (that is, the underlying integral type of the <see langword="enum"/> is compared numerically).
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.Equals">
             <summary>
-            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
-            Specifically, the generic type parameter is a reference type and does not override <see cref="M:System.Object.Equals(System.Object)"/>, so the default implementation of <see cref="M:System.Object.Equals(System.Object)"/> uses reference equality.
+            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type argument does not fall into any of the other categories.
+            Specifically, the generic type argument is a reference type and does not override <see cref="M:System.Object.Equals(System.Object)"/>, so the default implementation of <see cref="M:System.Object.Equals(System.Object)"/> uses reference equality.
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.EqualsOverrideInherited">
             <summary>
-            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
-            Specifically, the generic type parameter is a reference type and a type in its inheritance chain overrides <see cref="M:System.Object.Equals(System.Object)"/> but the generic type parameter itself does not, so that inherited override is used for comparison.
+            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type argument does not fall into any of the other categories.
+            Specifically, the generic type argument is a reference type and a type in its inheritance chain overrides <see cref="M:System.Object.Equals(System.Object)"/> but the generic type argument itself does not, so that inherited override is used for comparison.
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.EqualsOverrideDeclared">
             <summary>
-            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
-            Specifically, the generic type parameter is a reference type and overrides <see cref="M:System.Object.Equals(System.Object)"/>, so that override is used for comparison.
+            Indicates that <see cref="M:System.Object.Equals(System.Object)"/> is used for comparison because the generic type argument does not fall into any of the other categories.
+            Specifically, the generic type argument is a reference type and overrides <see cref="M:System.Object.Equals(System.Object)"/>, so that override is used for comparison.
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.ValueTypeEquals">
             <summary>
-            Indicates that <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
-            Specifically, the generic type parameter is a value type and does not override <see cref="M:System.Object.Equals(System.Object)"/>, so the default implementation of <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison.
+            Indicates that <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison because the generic type argument does not fall into any of the other categories.
+            Specifically, the generic type argument is a value type and does not override <see cref="M:System.Object.Equals(System.Object)"/>, so the default implementation of <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison.
             <para/>For value types that recursively contain no reference type or floating-point fields, a simple byte compare is done. Otherwise, a recursive boxing field-by-field comparison is done.
             </summary>
         </member>
         <member name="F:LaquaiLib.Extensions.EqualityComparerDefaultOperationMode.ValueTypeEqualsOverride">
             <summary>
-            Indicates that <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison because the generic type parameter does not fall into any of the other categories.
-            Specifically, the generic type parameter is a value type and overrides <see cref="M:System.Object.Equals(System.Object)"/>, so that override is used for comparison.
+            Indicates that <see cref="M:System.ValueType.Equals(System.Object)"/> is used for comparison because the generic type argument does not fall into any of the other categories.
+            Specifically, the generic type argument is a value type and overrides <see cref="M:System.Object.Equals(System.Object)"/>, so that override is used for comparison.
             </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.EqualityComparerExtensions">
