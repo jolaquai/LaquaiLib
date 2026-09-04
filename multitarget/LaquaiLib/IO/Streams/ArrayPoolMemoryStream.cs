@@ -13,6 +13,7 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     private struct CachedInt32Task
     {
         private Task<int> task;
+        // task is only ever a completed, non-faulted Task.FromResult, so reading .Result here never blocks and never throws
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Task<int> Get(int value)
         {
@@ -31,6 +32,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     private CachedInt32Task _lastReadTask;
     private long position, length, capacity;
     private int _disposed;
+    // non-zero while a CopyToAsync walk is parked on an await still holding references to segment arrays; tells Dispose not to hand those arrays back to the pool
+    private int _asyncInFlight;
 
     /// <summary>
     /// Initializes a new <see cref="ArrayPoolMemoryStream"/>.
@@ -39,13 +42,21 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
     /// <param name="capacity">Initial capacity to rent up front.</param>
     /// <param name="skipZeroing">If <see langword="true"/>, memory exposed by seeking or <see cref="SetLength(long)"/> past the current length is not zeroed and may contain arbitrary prior contents. Only set this if all such memory is overwritten before being read.</param>
     /// <param name="pool">The <see cref="ArrayPool{T}"/> to rent segments from, or <see langword="null"/> to use <see cref="ArrayPool{T}.Shared"/>.</param>
-    /// <param name="disallowLohRenting">If <see langword="true"/>, no single segment is rented larger than 65536 bytes, the largest pool bucket below the 85000-byte Large Object Heap threshold. Every <see cref="Stream"/> member honours this, as does appending through <see cref="GetMemory(int)"/>/<see cref="GetSpan(int)"/>. The one exception is asking those two for a run that starts before <see cref="Length"/> and crosses a segment boundary: the run has to be contiguous and has to start at <see cref="Position"/>, and ending a segment early to arrange that would renumber the data stored past it, so the segments are merged into a single rent that may exceed the cap. A <c>sizeHint</c> smaller than the cap is enough to trigger it; only its reaching past the end of the segment <see cref="Position"/> sits in matters.</param>
+    /// <param name="disallowLohRenting">If <see langword="true"/>, no single segment is rented larger than 65536 bytes. This is rarely worth setting: an array on the Large Object Heap that the pool holds costs nothing in GC pressure, and <see cref="ArrayPool{T}.Shared"/> already refuses to pool anything above 1 MiB, so that is the effective cap whenever no custom <paramref name="pool"/> is supplied. Every <see cref="Stream"/> member honours this, as does appending through <see cref="GetMemory(int)"/>/<see cref="GetSpan(int)"/>. The one exception is asking those two for a run that starts before <see cref="Length"/> and crosses a segment boundary: the run has to be contiguous and has to start at <see cref="Position"/>, and ending a segment early to arrange that would renumber the data stored past it, so the segments are merged into a single rent that may exceed the cap. A <c>sizeHint</c> smaller than the cap is enough to trigger it; only its reaching past the end of the segment <see cref="Position"/> sits in matters.</param>
     public ArrayPoolMemoryStream(int minimumSegmentSize = 2048, long capacity = 0, bool skipZeroing = false, ArrayPool<byte> pool = null, bool disallowLohRenting = false)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(minimumSegmentSize);
         ArgumentOutOfRangeException.ThrowIfNegative(capacity, nameof(capacity));
 
-        _maxSegmentSize = disallowLohRenting ? 65536 : Array.MaxLength;
+        // ArrayPool<byte>.Shared's largest bucket is 1 MiB: Rent above that hands back an untracked
+        // array and Return silently drops it, which is exactly the LOH churn this type exists to
+        // avoid. Cap default-pool rents there so oversized content spills into several genuinely
+        // recycled segments instead. A caller-supplied pool may have larger buckets, so trust it;
+        // an explicit minimumSegmentSize above the cap is a deliberate opt-in and raises it.
+        const int SharedPoolMaxBucket = 1024 * 1024;
+        _maxSegmentSize = disallowLohRenting
+            ? 65536
+            : pool is null ? int.Max(SharedPoolMaxBucket, minimumSegmentSize) : Array.MaxLength;
         ArgumentOutOfRangeException.ThrowIfGreaterThan(minimumSegmentSize, _maxSegmentSize, nameof(minimumSegmentSize));
 
         _minimumSegmentSize = minimumSegmentSize;
@@ -376,23 +387,38 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         if (remaining <= 0)
             return;
 
-        var (seg, off) = Locate(position);
-        while (remaining > 0)
+        // A concurrent Dispose would otherwise return our segment arrays to the pool while we are
+        // parked on an await still reading from them, letting the next renter scribble on a buffer
+        // WriteAsync is mid-read on. The flag makes Dispose leak those arrays to the GC instead;
+        // the interlocked ordering guarantees Dispose either sees this increment and skips the
+        // Return, or set _disposed first and the ThrowIfDisposed below bails before any array is touched.
+        Interlocked.Increment(ref _asyncInFlight);
+        try
         {
-            // unlike every other path, this one yields mid-walk, so a dispose can land between iterations and empty the segment list out from under it
-            ThrowIfDisposed();
-            var current = _segments[seg];
-            var take = (int)long.Min(current.Length - off, remaining);
-            await destination.WriteAsync(current.Array.AsMemory(off, take), cancellationToken).ConfigureAwait(false);
-            remaining -= take;
-            off += take;
-            if (off == current.Length)
+            // snapshot so a Dispose that clears _segments mid-await cannot turn an index into an out-of-range throw
+            var segments = _segments.ToArray();
+            var (seg, off) = Locate(position);
+            while (remaining > 0)
             {
-                seg++;
-                off = 0;
+                // unlike every other path, this one yields mid-walk, so a dispose can land between iterations; bail promptly rather than copying from a stream that is gone
+                ThrowIfDisposed();
+                var current = segments[seg];
+                var take = (int)long.Min(current.Length - off, remaining);
+                await destination.WriteAsync(current.Array.AsMemory(off, take), cancellationToken).ConfigureAwait(false);
+                remaining -= take;
+                off += take;
+                if (off == current.Length)
+                {
+                    seg++;
+                    off = 0;
+                }
             }
+            position = length;
         }
-        position = length;
+        finally
+        {
+            Interlocked.Decrement(ref _asyncInFlight);
+        }
     }
 
     /// <inheritdoc/>
@@ -460,8 +486,15 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         // claiming the flag up front means a second call, from either this thread or another, cannot return the same segments twice
         if (Interlocked.Exchange(ref _disposed, 1) == 0)
         {
-            foreach (var segment in _segments)
-                _pool.Return(segment.Array);
+            // a CopyToAsync walk still in flight holds references to these arrays and will read from
+            // them after this returns; handing them back now would let the next renter corrupt a
+            // buffer WriteAsync is mid-read on. Leak them to the GC in that case. See CopyToAsyncCore
+            // for why the interlocked ordering makes this race-free rather than merely narrow.
+            if (Volatile.Read(ref _asyncInFlight) == 0)
+            {
+                foreach (var segment in _segments)
+                    _pool.Return(segment.Array);
+            }
             _segments.Clear();
 
             position = length = capacity = 0;
@@ -701,7 +734,8 @@ public sealed class ArrayPoolMemoryStream : Stream, IBufferWriter<byte>
         _segments.RemoveRange(first + 1, last - first - 1);
         capacity += addressed - merged;
     }
-    // deliberately not bounded by _maxSegmentSize: the run has to be contiguous and has to start at position, which no capped segment can offer once position sits deep enough inside one
+    // deliberately not bounded by _maxSegmentSize: the run has to be contiguous and has to start at position, which no capped segment can offer once position sits deep enough inside one.
+    // a merge above 1 MiB will not re-pool on Return with the default pool, which is unavoidable given the contiguity requirement; pass a custom pool with larger buckets if this path is hot
     private byte[] RentContiguous(long length) => length <= Array.MaxLength ? _pool.Rent((int)length) : throw new OutOfMemoryException("A contiguous buffer of the requested size cannot be rented.");
     #endregion
 }
