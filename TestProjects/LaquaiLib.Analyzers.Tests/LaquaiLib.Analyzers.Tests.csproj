@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <OutputType>Exe</OutputType>
+      <TargetFramework>net11.0</TargetFramework>
+      <IsPackable>false</IsPackable>
+      <LangVersion>preview</LangVersion>
+      <Nullable>disable</Nullable>
+      <ImplicitUsings>enable</ImplicitUsings>
+
+      <UseMicrosoftTestingPlatformRunner>True</UseMicrosoftTestingPlatformRunner>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="xunit.v3" Version="4.0.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.4" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeRefactoring.Testing" Version="1.1.4" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" ReferenceOutputAssembly="true" />
+      <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" ReferenceOutputAssembly="true" />
+
+      <Using Include="Xunit" />
+      <Using Include="Microsoft.CodeAnalysis.CSharp.Testing" />
+      <Using Include="Microsoft.CodeAnalysis.Testing" />
+      <Using Include="LaquaiLib.Analyzers.Fixes.Refactorings" />
+  </ItemGroup>
+
+</Project>

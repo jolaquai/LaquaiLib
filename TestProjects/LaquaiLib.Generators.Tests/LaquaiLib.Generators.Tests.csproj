@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net11.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <LangVersion>preview</LangVersion>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+        <UseMicrosoftTestingPlatformRunner>True</UseMicrosoftTestingPlatformRunner>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="xunit.v3" Version="4.0.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Plain references: these tests drive the generator via CSharpGeneratorDriver, so the assemblies must be linkable.
+             Deliberately NOT OutputItemType="Analyzer" - the generator must not run over this project's own sources. -->
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" ReferenceOutputAssembly="true" />
+        <ProjectReference Include="$(MSBuildProjectDirectory)\..\..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" ReferenceOutputAssembly="true" />
+
+        <Using Include="Xunit" />
+        <Using Include="Microsoft.CodeAnalysis" />
+        <Using Include="Microsoft.CodeAnalysis.CSharp" />
+        <Using Include="Microsoft.CodeAnalysis.Text" />
+        <Using Include="LaquaiLib.Analyzers.Shared.Attributes" />
+        <Using Include="LaquaiLib.Generators" />
+        <Using Include="System.Collections.Immutable" />
+        <Using Include="System.Reflection" />
+        <Using Include="System.Text" />
+        <Using Include="System.Text.RegularExpressions" />
+    </ItemGroup>
+
+</Project>

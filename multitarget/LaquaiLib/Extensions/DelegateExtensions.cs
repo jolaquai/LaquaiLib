@@ -1,0 +1,33 @@
+namespace LaquaiLib.Extensions;
+
+/// <summary>
+/// Provides extensions for the <see cref="Delegate"/> type.
+/// </summary>
+public static class DelegateExtensions
+{
+    extension<TDelegate>(TDelegate del) where TDelegate : Delegate
+    {
+        /// <summary>
+        /// Gets the invocation list of the specified <see cref="Delegate"/> forcibly retyped as an array of <typeparamref name="TDelegate"/>. This overload is useful when the delegate type is definitively known at compile-time (such as for <see langword="event"/>s).
+        /// </summary>
+        /// <returns>The invocation list of the specified <see cref="Delegate"/> retyped as an array of <typeparamref name="TDelegate"/>, or <see langword="null"/> if the delegate has no invocation list.</returns>
+        public TDelegate[] TypedInvocationList
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Unsafe.As<TDelegate[]>(del?.GetInvocationList());
+        }
+    }
+    extension(Delegate del)
+    {
+        /// <summary>
+        /// Gets the invocation list of the specified <see cref="Delegate"/> forcibly retyped as an array of <typeparamref name="TDelegate"/>.
+        /// </summary>
+        /// <typeparam name="TDelegate">The type of the <see cref="Delegate"/>.</typeparam>
+        /// <returns>The invocation list of the specified <see cref="Delegate"/> retyped as an array of <typeparamref name="TDelegate"/>, or <see langword="null"/> if the delegate has no invocation list.</returns>
+        /// <remarks>
+        /// If not all elements of the invocation list can be cast to <typeparamref name="TDelegate"/>, consumers will run into non-sensical exceptions when attempting to call the delegates.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TDelegate[] GetInvocationList<TDelegate>() where TDelegate : Delegate => Unsafe.As<TDelegate[]>(del?.GetInvocationList());
+    }
+}

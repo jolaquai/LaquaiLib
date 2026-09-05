@@ -1,0 +1,24 @@
+﻿namespace LaquaiLib.Extensions;
+
+/// <summary>
+/// Provides extensions for the <see cref="CancellationToken"/> type.
+/// </summary>
+public static class CancellationTokenExtensions
+{
+    extension(in CancellationToken cancellationToken)
+    {
+        /// <summary>
+        /// Creates a <see cref="Task"/> that completes successfully (that is, without throwing an exception) when the specified <paramref name="cancellationToken"/> is cancelled.
+        /// </summary>
+        /// <returns>The created <see cref="Task"/>.</returns>
+        public Task WhenCancelled()
+        {
+            if (cancellationToken.IsCancellationRequested)
+                return Task.CompletedTask;
+
+            var tcs = new TaskCompletionSource();
+            _ = cancellationToken.Register(tcs.SetResult);
+            return tcs.Task;
+        }
+    }
+}

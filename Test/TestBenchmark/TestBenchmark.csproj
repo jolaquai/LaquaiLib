@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFrameworks>net11.0</TargetFrameworks>
+
+        <!-- Always optimize the Benchmark -->
+        <Optimize>True</Optimize>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+
+        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <EnforceExtendedAnalyzerRules>False</EnforceExtendedAnalyzerRules>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.15.8"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <!--<ProjectReference Include="$(MSBuildProjectDirectory)\..\..\multitarget\LaquaiLib\LaquaiLib.csproj"/>-->
+    </ItemGroup>
+
+</Project>
