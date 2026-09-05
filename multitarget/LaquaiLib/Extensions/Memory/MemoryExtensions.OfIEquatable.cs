@@ -6,7 +6,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class MemoryExtensions
 {
-    extension<T>(ReadOnlySpan<T> span) where T : IEquatable<T>
+    extension<T>(in ReadOnlySpan<T> span) where T : IEquatable<T>
     {
         /// <summary>
         /// Returns a <see cref="SpanSplitEnumerable{T}"/> that enumerates the segments of a <see cref="ReadOnlySpan{T}"/> of <typeparamref name="T"/>s that are separated by any of the <typeparamref name="T"/>s specified by <paramref name="splits"/>.

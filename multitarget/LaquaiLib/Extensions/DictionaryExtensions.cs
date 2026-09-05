@@ -263,7 +263,7 @@ public static class IDictionaryExtensions
         public ref TValue GetValueRefOrAddDefault(TKey key, out bool existed) => ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out existed);
     }
 
-    extension<TKey, TValue, TAlternateKey>(Dictionary<TKey, TValue>.AlternateLookup<TAlternateKey> dictionary)
+    extension<TKey, TValue, TAlternateKey>(in Dictionary<TKey, TValue>.AlternateLookup<TAlternateKey> dictionary)
     {
         /// <inheritdoc cref="CollectionsMarshal.GetValueRefOrAddDefault{TKey, TValue}(Dictionary{TKey, TValue}, TKey, out bool)"/>
         public ref TValue GetValueRefOrNullRef(TAlternateKey key) => ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);

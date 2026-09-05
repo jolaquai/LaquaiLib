@@ -334,7 +334,7 @@
             Provides extensions for the <see cref="T:System.Threading.CancellationToken"/> type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.CancellationTokenExtensions.WhenCancelled(System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.Extensions.CancellationTokenExtensions.WhenCancelled(System.Threading.CancellationToken@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.CancellationTokenExtensions.&lt;G&gt;$49853BDED5F7090FEA8BBA2FA1B20683.WhenCancelled"/>
         </member>
         <member name="M:LaquaiLib.Extensions.CancellationTokenExtensions.&lt;G&gt;$49853BDED5F7090FEA8BBA2FA1B20683.WhenCancelled">
@@ -348,10 +348,10 @@
             Provides extensions for the <see cref="T:System.Char"/> type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.CharExtensions.get_IsVowel(System.Char)">
+        <member name="M:LaquaiLib.Extensions.CharExtensions.get_IsVowel(System.Char@)">
             <inheritdoc cref="P:LaquaiLib.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsVowel"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.CharExtensions.get_IsConsonant(System.Char)">
+        <member name="M:LaquaiLib.Extensions.CharExtensions.get_IsConsonant(System.Char@)">
             <inheritdoc cref="P:LaquaiLib.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsConsonant"/>
         </member>
         <member name="P:LaquaiLib.Extensions.CharExtensions.&lt;G&gt;$617F055EF883302AD66AFAF0ACA83DC6.IsVowel">
@@ -467,10 +467,10 @@
         <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetValueRefOrAddDefault``2(System.Collections.Generic.Dictionary{``0,``1},``0,System.Boolean@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IDictionaryExtensions.&lt;G&gt;$E42DFDC8D24EBEA929FB244FBCDF3D61`2.GetValueRefOrAddDefault(`0,System.Boolean@)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetValueRefOrNullRef``3(System.Collections.Generic.Dictionary{``0,``1}.AlternateLookup{``2},``2)">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetValueRefOrNullRef``3(System.Collections.Generic.Dictionary{``0,``1}.AlternateLookup{``2}@,``2)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IDictionaryExtensions.&lt;G&gt;$97380FA2A55B539599D4B1AD5C9A0A43`3.GetValueRefOrNullRef(`2)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetValueRefOrAddDefault``3(System.Collections.Generic.Dictionary{``0,``1}.AlternateLookup{``2},``2,System.Boolean@)">
+        <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.GetValueRefOrAddDefault``3(System.Collections.Generic.Dictionary{``0,``1}.AlternateLookup{``2}@,``2,System.Boolean@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IDictionaryExtensions.&lt;G&gt;$97380FA2A55B539599D4B1AD5C9A0A43`3.GetValueRefOrAddDefault(`2,System.Boolean@)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IDictionaryExtensions.&lt;G&gt;$23719EBE76C25B77BB4570F2B6C36041`2.AddOrUpdate(`0,`1,System.Func{`1,`1})">
@@ -1505,28 +1505,28 @@
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.Into``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.ICollection{``0},System.Boolean)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$E09FCB5EB13C1AE2FC524F6744DE5322`1.Into(System.Collections.Generic.ICollection{`0},System.Boolean)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},LaquaiLib.Interfaces.ISpanProvider{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0}@,LaquaiLib.Interfaces.ISpanProvider{``0},System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CopyTo(LaquaiLib.Interfaces.ISpanProvider{`0},System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},``0[],System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0}@,``0[],System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CopyTo(`0[],System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},System.Collections.Generic.List{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0}@,System.Collections.Generic.List{``0},System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CopyTo(System.Collections.Generic.List{`0},System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AddTo``1(System.ReadOnlySpan{``0},System.Collections.Generic.List{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.AddTo``1(System.ReadOnlySpan{``0}@,System.Collections.Generic.List{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.AddTo(System.Collections.Generic.List{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},System.Memory{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0}@,System.Memory{``0},System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CopyTo(System.Memory{`0},System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``2(System.ReadOnlySpan{``0},System.Collections.Generic.IDictionary{``0,``1},System.Func{``0,``1},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``2(System.ReadOnlySpan{``0}@,System.Collections.Generic.IDictionary{``0,``1},System.Func{``0,``1},System.Boolean)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CopyTo``1(System.Collections.Generic.IDictionary{`0,``0},System.Func{`0,``0},System.Boolean)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``2(System.ReadOnlySpan{``0},System.Collections.Generic.IDictionary{``1,``0},System.Func{``0,``1},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``2(System.ReadOnlySpan{``0}@,System.Collections.Generic.IDictionary{``1,``0},System.Func{``0,``1},System.Boolean)">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CopyTo``1(System.Collections.Generic.IDictionary{``0,`0},System.Func{`0,``0},System.Boolean)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0},System.Collections.Generic.ICollection{``0})">
+        <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.CopyTo``1(System.ReadOnlySpan{``0}@,System.Collections.Generic.ICollection{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.IEnumerableExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CopyTo(System.Collections.Generic.ICollection{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.IEnumerableExtensions.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1},System.Collections.Generic.IComparer{``1})">
@@ -2641,7 +2641,6 @@
         <member name="M:LaquaiLib.Extensions.NumberExtensions.&lt;G&gt;$2C74EDC4B19EAF20AD23ADC917FD325C`1.HasFlag(`0)">
             <summary>
             Determines whether the specified number has the specified flag(s) set, that is, whether the bitwise AND of the number and the other number is equal to the other number.
-            This is insanely slow compared to doing the bitwise operation yourself since this has to use interface binding.
             </summary>
             <param name="other">The other number.</param>
             <returns>Whether the specified number has the specified flag(s) set.</returns>
@@ -2796,10 +2795,8 @@
         <member name="M:LaquaiLib.Extensions.ListExtensions.MoveToArray``1(System.Collections.Generic.List{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.MoveToArray"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.ListExtensions.EvictImpl``1(System.Collections.Generic.List{``0},System.Boolean)">
-            <summary>
-            Evicts the contents of the specified <see cref="T:System.Collections.Generic.List`1"/> into an array and resets the list to a clean, empty state so it never co-owns the evicted array.
-            </summary>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.Evict``1(System.Collections.Generic.List{``0},System.Boolean)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.Evict(System.Boolean)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$4DB8CF06A2C0C864308343016A26ABD8`1.RemoveAt(System.Index)">
             <summary>
@@ -2867,7 +2864,7 @@
             This is done through <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.SetCount``1(System.Collections.Generic.List{``0},System.Int32)"/> and should be used as cautiously as that method.
             </summary>
             <param name="count">The new <see cref="P:System.Collections.Generic.List`1.Count"/> of the specified <see cref="T:System.Collections.Generic.List`1"/>.</param>
-            <returns>A <see cref="T:System.Span`1"/> over the valid portion of the specified <see cref="T:System.Collections.Generic.List`1"/> after setting its <see cref="P:System.Collections.Generic.List`1.Count"/> to <paramref name="count"/>.</returns>
+            <returns>A <see cref="T:System.Memory`1"/> over the valid portion of the specified <see cref="T:System.Collections.Generic.List`1"/> after setting its <see cref="P:System.Collections.Generic.List`1.Count"/> to <paramref name="count"/>.</returns>
         </member>
         <member name="P:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.CanMoveToArray">
             <summary>
@@ -2886,733 +2883,738 @@
             </summary>
             <returns>The backing array of the list.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.ListExtensions.&lt;G&gt;$64B67F85FE78DDA587BDEEBA2FF0A5A2`1.Evict(System.Boolean)">
+            <summary>
+            Evicts the contents of the specified <see cref="T:System.Collections.Generic.List`1"/> into an array and resets the list to a clean, empty state so it never co-owns the evicted array.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Extensions.LinqMemoryExtensions">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Aggregate``1(System.ReadOnlySpan{``0},System.Func{``0,``0,``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Aggregate``1(System.ReadOnlySpan{``0}@,System.Func{``0,``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Aggregate(System.Func{`0,`0,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Aggregate``2(System.ReadOnlySpan{``0},``1,System.Func{``1,``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Aggregate``2(System.ReadOnlySpan{``0}@,``1,System.Func{``1,``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Aggregate``1(``0,System.Func{``0,`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Aggregate``3(System.ReadOnlySpan{``0},``1,System.Func{``1,``0,``1},System.Func{``1,``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Aggregate``3(System.ReadOnlySpan{``0}@,``1,System.Func{``1,``0,``1},System.Func{``1,``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Aggregate``2(``0,System.Func{``0,`0,``0},System.Func{``0,``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.AggregateBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},``2,System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.AggregateBy``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},``2,System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.AggregateBy``2(System.Func{`0,``0},``1,System.Func{``1,`0,``1},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.AggregateBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.AggregateBy``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``1,``2},System.Func{``2,``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.AggregateBy``2(System.Func{`0,``0},System.Func{``0,``1},System.Func{``1,`0,``1},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.All``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.All``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.All(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Any``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Any``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Any"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Any``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Any``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Any(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int64})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Int64})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Single})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Single})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Double})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Double})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Decimal})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Decimal})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int32}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Nullable{System.Int32}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int64}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Nullable{System.Int64}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Single}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Nullable{System.Single}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Double}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Nullable{System.Double}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Decimal}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Average(System.Func{`0,System.Nullable{System.Decimal}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Convert``2(System.Span{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Convert``2(System.Span{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$15D68528D97A6B31D2157DF79C1196F7`1.Convert``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.BitCast``2(System.Span{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.BitCast``2(System.Span{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$15D68528D97A6B31D2157DF79C1196F7`1.BitCast``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Cast``2(System.Span{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Cast``2(System.Span{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9378704AB6CAE5AC0A39E45288D0AA6`1.Cast``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ReinterpretCast``2(System.Span{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ReinterpretCast``2(System.Span{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9378704AB6CAE5AC0A39E45288D0AA6`1.ReinterpretCast``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Convert``2(System.ReadOnlySpan{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Convert``2(System.ReadOnlySpan{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DA201D94D32CA938C8DF455F899985D5`1.Convert``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.BitCast``2(System.ReadOnlySpan{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.BitCast``2(System.ReadOnlySpan{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DA201D94D32CA938C8DF455F899985D5`1.BitCast``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Cast``2(System.ReadOnlySpan{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Cast``2(System.ReadOnlySpan{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$FFE330DE2BA1167974EAAD8D08BAC8F2`1.Cast``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ReinterpretCast``2(System.ReadOnlySpan{``0},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ReinterpretCast``2(System.ReadOnlySpan{``0}@,System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$FFE330DE2BA1167974EAAD8D08BAC8F2`1.ReinterpretCast``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Chunk``1(System.ReadOnlySpan{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Chunk``1(System.ReadOnlySpan{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Chunk(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Count``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Count``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Count"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Count``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Count``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Count(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.CountBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.CountBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.CountBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Distinct``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Distinct``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Distinct"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Distinct``1(System.ReadOnlySpan{``0},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Distinct``1(System.ReadOnlySpan{``0}@,System.Collections.Generic.IEqualityComparer{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Distinct(System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Distinct``1(System.ReadOnlySpan{``0},System.Span{``0},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Distinct``1(System.ReadOnlySpan{``0}@,System.Span{``0},System.Collections.Generic.IEqualityComparer{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Distinct(System.Span{`0},System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.DistinctBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Span{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.DistinctBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Span{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.DistinctBy``1(System.Func{`0,``0},System.Span{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.DistinctBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Span{``0},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.DistinctBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Span{``0},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.DistinctBy``1(System.Func{`0,``0},System.Span{`0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAt``1(System.ReadOnlySpan{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAt``1(System.ReadOnlySpan{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ElementAt(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAt``1(System.ReadOnlySpan{``0},System.Index)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAt``1(System.ReadOnlySpan{``0}@,System.Index)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ElementAt(System.Index)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAtOrDefault``1(System.ReadOnlySpan{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAtOrDefault``1(System.ReadOnlySpan{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ElementAtOrDefault(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAtOrDefault``1(System.ReadOnlySpan{``0},System.Index)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ElementAtOrDefault``1(System.ReadOnlySpan{``0}@,System.Index)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ElementAtOrDefault(System.Index)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.First``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.First``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.First"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.First``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.First``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.First(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.FirstOrDefault"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0}@,``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.FirstOrDefault(`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.FirstOrDefault(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.FirstOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.FirstOrDefault(System.Func{`0,System.Boolean},`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``1(System.Func{`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``2(System.Func{`0,``0},System.Func{`0,``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``2(System.Func{`0,``0},System.Func{`0,``1},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``2(System.Func{`0,``0},System.Func{``0,System.Collections.Generic.IEnumerable{`0},``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``2(System.Func{`0,``0},System.Func{``0,System.Collections.Generic.IEnumerable{`0},``1},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``4(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``4(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``3(System.Func{`0,``0},System.Func{`0,``1},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``2})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``4(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.GroupBy``4(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2},System.Func{``1,System.Collections.Generic.IEnumerable{``2},``3},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.GroupBy``3(System.Func{`0,``0},System.Func{`0,``1},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``2},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Last``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Last``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Last"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Last``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Last``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Last(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.LastOrDefault"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0}@,``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.LastOrDefault(`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.LastOrDefault(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LastOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.LastOrDefault(System.Func{`0,System.Boolean},`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LongCount``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LongCount``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.LongCount"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LongCount``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.LongCount``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.LongCount(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int64})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Int64})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Single})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Single})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Double})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Double})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Decimal})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Decimal})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int32}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Nullable{System.Int32}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int64}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Nullable{System.Int64}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Single}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Nullable{System.Single}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Double}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Nullable{System.Double}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Decimal}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max(System.Func{`0,System.Nullable{System.Decimal}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Max``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MaxBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MaxBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.MaxBy``1(System.Func{`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MaxBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MaxBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.MaxBy``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int64})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Int64})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Single})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Single})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Double})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Double})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Decimal})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Decimal})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int32}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Nullable{System.Int32}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int64}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Nullable{System.Int64}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Single}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Nullable{System.Single}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Double}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Nullable{System.Double}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Decimal}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min(System.Func{`0,System.Nullable{System.Decimal}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Min``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MinBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MinBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.MinBy``1(System.Func{`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MinBy``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.MinBy``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.MinBy``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.OnlyOrDefault``1(System.ReadOnlySpan{``0},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.OnlyOrDefault``1(System.ReadOnlySpan{``0}@,``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.OnlyOrDefault(`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.OnlyOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.OnlyOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Select``1(System.Func{`0,``0},System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,``1},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,``1},System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Select``1(System.Func{`0,System.Int32,``0},System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``2(System.ReadOnlySpan{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``1}},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``2(System.ReadOnlySpan{``0}@,System.Func{``0,System.Collections.Generic.IEnumerable{``1}},System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SelectMany``1(System.Func{`0,System.Collections.Generic.IEnumerable{``0}},System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``2(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}},System.Span{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``2(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}},System.Span{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SelectMany``1(System.Func{`0,System.Int32,System.Collections.Generic.IEnumerable{``0}},System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``3(System.ReadOnlySpan{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2},System.Span{``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``3(System.ReadOnlySpan{``0}@,System.Func{``0,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2},System.Span{``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SelectMany``2(System.Func{`0,System.Collections.Generic.IEnumerable{``0}},System.Func{`0,``0,``1},System.Span{``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``3(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2},System.Span{``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SelectMany``3(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}},System.Func{``0,``1,``2},System.Span{``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SelectMany``2(System.Func{`0,System.Int32,System.Collections.Generic.IEnumerable{``0}},System.Func{`0,``0,``1},System.Span{``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Single``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Single``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Single"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Single``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Single``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Single(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SingleOrDefault"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0}@,``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SingleOrDefault(`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SingleOrDefault(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},``0)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},``0)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SingleOrDefault(System.Func{`0,System.Boolean},`0)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Skip``1(System.ReadOnlySpan{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Skip``1(System.ReadOnlySpan{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Skip(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Skip``1(System.Span{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Skip``1(System.Span{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Skip(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipLast``1(System.ReadOnlySpan{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipLast``1(System.ReadOnlySpan{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SkipLast(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipLast``1(System.Span{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipLast``1(System.Span{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.SkipLast(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SkipWhile(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.SkipWhile(System.Func{`0,System.Int32,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.Span{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.Span{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.SkipWhile(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.Span{``0},System.Func{``0,System.Int32,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.SkipWhile``1(System.Span{``0}@,System.Func{``0,System.Int32,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.SkipWhile(System.Func{`0,System.Int32,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Int32})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int64})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Int64})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Single})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Single})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Double})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Double})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Decimal})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Decimal})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int32}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Nullable{System.Int32}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Int64}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Nullable{System.Int64}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Single}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Nullable{System.Single}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Double}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Nullable{System.Double}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0},System.Func{``0,System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Nullable{System.Decimal}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Sum(System.Func{`0,System.Nullable{System.Decimal}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.ReadOnlySpan{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.ReadOnlySpan{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Take(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.ReadOnlySpan{``0},System.Range)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.ReadOnlySpan{``0}@,System.Range)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Take(System.Range)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.Span{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.Span{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Take(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.Span{``0},System.Range)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Take``1(System.Span{``0}@,System.Range)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Take(System.Range)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeLast``1(System.ReadOnlySpan{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeLast``1(System.ReadOnlySpan{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.TakeLast(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeLast``1(System.Span{``0},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeLast``1(System.Span{``0}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.TakeLast(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.TakeWhile(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.TakeWhile(System.Func{`0,System.Int32,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.Span{``0},System.Func{``0,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.Span{``0}@,System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.TakeWhile(System.Func{`0,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.Span{``0},System.Func{``0,System.Int32,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TakeWhile``1(System.Span{``0}@,System.Func{``0,System.Int32,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.TakeWhile(System.Func{`0,System.Int32,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToArray``2(System.ReadOnlySpan{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToArray``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToArray``1(System.Func{`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToArray``2(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToArray``2(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToArray``1(System.Func{`0,System.Int32,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.WhereSelectToArray``2(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.WhereSelectToArray``2(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},System.Func{``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.WhereSelectToArray``1(System.Func{`0,System.Boolean},System.Func{`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToDictionary``2(System.Func{`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToDictionary``2(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToDictionary``2(System.Func{`0,``0},System.Func{`0,``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToDictionary``2(System.Func{`0,``0},System.Func{`0,``1},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToHashSet``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToHashSet``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToHashSet"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToHashSet``1(System.ReadOnlySpan{``0},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToHashSet``1(System.ReadOnlySpan{``0}@,System.Collections.Generic.IEqualityComparer{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToHashSet(System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToList``1(System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToList``1(System.ReadOnlySpan{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToList"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``2(System.ReadOnlySpan{``0},System.Func{``0,``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToLookup``1(System.Func{`0,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToLookup``1(System.Func{`0,``0},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToLookup``2(System.Func{`0,``0},System.Func{`0,``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``3(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToLookup``3(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToLookup``2(System.Func{`0,``0},System.Func{`0,``1},System.Collections.Generic.IEqualityComparer{``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TryGetNonEnumeratedCount``1(System.ReadOnlySpan{``0},System.Int32@)">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.TryGetNonEnumeratedCount``1(System.ReadOnlySpan{``0}@,System.Int32@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.TryGetNonEnumeratedCount(System.Int32@)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Where``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},System.Span{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Where``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},System.Span{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Where(System.Func{`0,System.Boolean},System.Span{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Where``1(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,System.Boolean},System.Span{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Where``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,System.Boolean},System.Span{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Where(System.Func{`0,System.Int32,System.Boolean},System.Span{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Zip``3(System.ReadOnlySpan{``0},System.ReadOnlySpan{``1},System.Func{``0,``1,``2},System.Span{``2})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Zip``3(System.ReadOnlySpan{``0}@,System.ReadOnlySpan{``1},System.Func{``0,``1,``2},System.Span{``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Zip``2(System.ReadOnlySpan{``0},System.Func{`0,``0,``1},System.Span{``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Zip``2(System.ReadOnlySpan{``0},System.ReadOnlySpan{``1},System.Span{System.ValueTuple{``0,``1}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Zip``2(System.ReadOnlySpan{``0}@,System.ReadOnlySpan{``1},System.Span{System.ValueTuple{``0,``1}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Zip``1(System.ReadOnlySpan{``0},System.Span{System.ValueTuple{`0,``0}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Zip``3(System.ReadOnlySpan{``0},System.ReadOnlySpan{``1},System.ReadOnlySpan{``2},System.Span{System.ValueTuple{``0,``1,``2}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Zip``3(System.ReadOnlySpan{``0}@,System.ReadOnlySpan{``1},System.ReadOnlySpan{``2},System.Span{System.ValueTuple{``0,``1,``2}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Zip``2(System.ReadOnlySpan{``0},System.ReadOnlySpan{``1},System.Span{System.ValueTuple{`0,``0,``1}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.All(System.ReadOnlySpan{System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.All(System.ReadOnlySpan{System.Boolean}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$C6FCF3AAF0FA40A2CF205A5016208DD6.All"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Byte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Byte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Byte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Byte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Byte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Byte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Byte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Byte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Decimal}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$733CE456C465B0D038CC3657030CC07A.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Decimal}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$733CE456C465B0D038CC3657030CC07A.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Decimal}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$733CE456C465B0D038CC3657030CC07A.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Decimal})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Decimal}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$733CE456C465B0D038CC3657030CC07A.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Double}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$061A320A33E297EB0AAC9F50F1DD496D.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Double}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$061A320A33E297EB0AAC9F50F1DD496D.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Double}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$061A320A33E297EB0AAC9F50F1DD496D.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Double})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Double}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$061A320A33E297EB0AAC9F50F1DD496D.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A6C244062DB443413E05FC9EDFC4F041.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A6C244062DB443413E05FC9EDFC4F041.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A6C244062DB443413E05FC9EDFC4F041.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A6C244062DB443413E05FC9EDFC4F041.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$301197DBC8562E78358289E8D1164F5F.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$301197DBC8562E78358289E8D1164F5F.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$301197DBC8562E78358289E8D1164F5F.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$301197DBC8562E78358289E8D1164F5F.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Int64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7C653899BBBBD9087AC4213066EEA6F1.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Int64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7C653899BBBBD9087AC4213066EEA6F1.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Int64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7C653899BBBBD9087AC4213066EEA6F1.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Int64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7C653899BBBBD9087AC4213066EEA6F1.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.Collections.Generic.KeyValuePair{``0,``1}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.Collections.Generic.KeyValuePair{``0,``1}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$120F83F4B2A371E10E011AC72DFC18A9`2.ToDictionary"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.Collections.Generic.KeyValuePair{``0,``1}},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.Collections.Generic.KeyValuePair{``0,``1}}@,System.Collections.Generic.IEqualityComparer{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$120F83F4B2A371E10E011AC72DFC18A9`2.ToDictionary(System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Byte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Byte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A56BF472688A86CF25B938FFE520203C.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Byte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Byte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A56BF472688A86CF25B938FFE520203C.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Byte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Byte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A56BF472688A86CF25B938FFE520203C.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Byte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Byte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A56BF472688A86CF25B938FFE520203C.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Decimal}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$800B2FC09DCFBB3F428CFEE105420235.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Decimal}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$800B2FC09DCFBB3F428CFEE105420235.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Decimal}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$800B2FC09DCFBB3F428CFEE105420235.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Decimal}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Decimal}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$800B2FC09DCFBB3F428CFEE105420235.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Double}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$9E953745047312F15EF0A6CAF33AE966.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Double}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$9E953745047312F15EF0A6CAF33AE966.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Double}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$9E953745047312F15EF0A6CAF33AE966.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Double}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Double}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$9E953745047312F15EF0A6CAF33AE966.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Int16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Int16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7CE87D33A428A2636E1293292E474DB4.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Int16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Int16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7CE87D33A428A2636E1293292E474DB4.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Int16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Int16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7CE87D33A428A2636E1293292E474DB4.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Int16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Int16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$7CE87D33A428A2636E1293292E474DB4.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Int32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9F1CB8B5318DA3FBB9DD8E293B8012C.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Int32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9F1CB8B5318DA3FBB9DD8E293B8012C.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Int32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9F1CB8B5318DA3FBB9DD8E293B8012C.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Int32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Int32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9F1CB8B5318DA3FBB9DD8E293B8012C.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Int64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$41E06FD964F00A95ADF7FA46980A79EB.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Int64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$41E06FD964F00A95ADF7FA46980A79EB.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Int64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$41E06FD964F00A95ADF7FA46980A79EB.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Int64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Int64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$41E06FD964F00A95ADF7FA46980A79EB.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.SByte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.SByte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DB0C2727DB93D596743CC7CD04AFBF67.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.SByte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.SByte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DB0C2727DB93D596743CC7CD04AFBF67.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.SByte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.SByte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DB0C2727DB93D596743CC7CD04AFBF67.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.SByte}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.SByte}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DB0C2727DB93D596743CC7CD04AFBF67.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.Single}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$E8440D685EB035B81B071A5150A95CF2.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.Single}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$E8440D685EB035B81B071A5150A95CF2.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.Single}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$E8440D685EB035B81B071A5150A95CF2.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Single}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.Single}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$E8440D685EB035B81B071A5150A95CF2.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.UInt16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.UInt16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$0931CFF2A0924E5782994DAC31A40460.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.UInt16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.UInt16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$0931CFF2A0924E5782994DAC31A40460.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.UInt16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.UInt16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$0931CFF2A0924E5782994DAC31A40460.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.UInt16}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.UInt16}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$0931CFF2A0924E5782994DAC31A40460.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.UInt32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.UInt32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A793FB7C889ACE3A0FDCA4DCF713E7B7.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.UInt32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.UInt32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A793FB7C889ACE3A0FDCA4DCF713E7B7.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.UInt32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.UInt32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A793FB7C889ACE3A0FDCA4DCF713E7B7.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.UInt32}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.UInt32}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A793FB7C889ACE3A0FDCA4DCF713E7B7.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.UInt64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Nullable{System.UInt64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$BF68AE6F9FD3F8433AB97486CD33B931.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.UInt64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Nullable{System.UInt64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$BF68AE6F9FD3F8433AB97486CD33B931.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.UInt64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Nullable{System.UInt64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$BF68AE6F9FD3F8433AB97486CD33B931.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.UInt64}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Nullable{System.UInt64}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$BF68AE6F9FD3F8433AB97486CD33B931.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.SByte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.SByte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$F8612AB49F8A2933D965F55E7F4FE894.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.SByte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.SByte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$F8612AB49F8A2933D965F55E7F4FE894.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.SByte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.SByte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$F8612AB49F8A2933D965F55E7F4FE894.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.SByte})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.SByte}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$F8612AB49F8A2933D965F55E7F4FE894.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.Single}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5943C367246CA5A942F0902A18553602.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.Single}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5943C367246CA5A942F0902A18553602.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.Single}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5943C367246CA5A942F0902A18553602.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Single})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.Single}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5943C367246CA5A942F0902A18553602.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.UInt16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.UInt16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5191050068F09BBE5FEC9CCA87E898EE.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.UInt16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.UInt16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5191050068F09BBE5FEC9CCA87E898EE.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.UInt16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.UInt16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5191050068F09BBE5FEC9CCA87E898EE.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.UInt16})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.UInt16}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$5191050068F09BBE5FEC9CCA87E898EE.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.UInt32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.UInt32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A764EB58B1D4C0025DA848AD0ECCE3F0.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.UInt32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.UInt32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A764EB58B1D4C0025DA848AD0ECCE3F0.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.UInt32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.UInt32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A764EB58B1D4C0025DA848AD0ECCE3F0.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.UInt32})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.UInt32}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A764EB58B1D4C0025DA848AD0ECCE3F0.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.UInt64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Average(System.ReadOnlySpan{System.UInt64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$D21859431C5E408B08C50847E8975CDE.Average"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.UInt64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Max(System.ReadOnlySpan{System.UInt64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$D21859431C5E408B08C50847E8975CDE.Max"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.UInt64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Min(System.ReadOnlySpan{System.UInt64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$D21859431C5E408B08C50847E8975CDE.Min"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.UInt64})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.Sum(System.ReadOnlySpan{System.UInt64}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$D21859431C5E408B08C50847E8975CDE.Sum"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.ValueTuple{``0,``1}})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.ValueTuple{``0,``1}}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A52645AB71680168CF8A99261B5D1D7A`2.ToDictionary"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.ValueTuple{``0,``1}},System.Collections.Generic.IEqualityComparer{``0})">
+        <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.ToDictionary``2(System.ReadOnlySpan{System.ValueTuple{``0,``1}}@,System.Collections.Generic.IEqualityComparer{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$A52645AB71680168CF8A99261B5D1D7A`2.ToDictionary(System.Collections.Generic.IEqualityComparer{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Aggregate(System.Func{`0,`0,`0})">
@@ -3861,7 +3863,7 @@
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.OnlyOrDefault(`0)">
             <summary>
             Determines whether a <see cref="T:System.ReadOnlySpan`1"/> contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
-            This behaves exactly like <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0},``0)"/> without throwing exceptions.
+            This behaves exactly like <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0}@,``0)"/> without throwing exceptions.
             </summary>
             <param name="defaultValue">The value to return if the source <see cref="T:System.ReadOnlySpan`1"/> contains no elements or more than one element.</param>
             <returns>The single element in the source <see cref="T:System.ReadOnlySpan`1"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
@@ -3869,7 +3871,7 @@
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.OnlyOrDefault(System.Func{`0,System.Boolean},`0)">
             <summary>
             Determines whether a <see cref="T:System.ReadOnlySpan`1"/> contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
-            This behaves exactly like <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},``0)"/> without throwing exceptions.
+            This behaves exactly like <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.SingleOrDefault``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},``0)"/> without throwing exceptions.
             </summary>
             <param name="predicate">The condition to check for.</param>
             <param name="defaultValue">The value to return if the source <see cref="T:System.ReadOnlySpan`1"/> contains no elements or more than one element.</param>
@@ -4024,7 +4026,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToArray``1(System.Func{`0,``0})">
             <summary>
-            Combines <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Span{``1})"/> and <see cref="M:System.ReadOnlySpan`1.ToArray"/>
+            Combines <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Span{``1})"/> and <see cref="M:System.ReadOnlySpan`1.ToArray"/>
             </summary>
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the source <see cref="T:System.ReadOnlySpan`1"/> and returns a transformed element.</param>
             <returns>An array of <typeparamref name="TResult"/> containing the elements produced by the <paramref name="selector"/>.</returns>
@@ -4034,7 +4036,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ToArray``1(System.Func{`0,System.Int32,``0})">
             <summary>
-            Combines <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0},System.Func{``0,System.Int32,``1},System.Span{``1})"/> and <see cref="M:System.ReadOnlySpan`1.ToArray"/>
+            Combines <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0}@,System.Func{``0,System.Int32,``1},System.Span{``1})"/> and <see cref="M:System.ReadOnlySpan`1.ToArray"/>
             </summary>
             <param name="selector">A <see cref="T:System.Func`2"/> that is passed each element of the source <see cref="T:System.ReadOnlySpan`1"/> and returns a transformed element.</param>
             <returns>An array of <typeparamref name="TResult"/> containing the elements produced by the <paramref name="selector"/>.</returns>
@@ -4044,7 +4046,7 @@
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.WhereSelectToArray``1(System.Func{`0,System.Boolean},System.Func{`0,``0})">
             <summary>
-            Combines <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Where``1(System.ReadOnlySpan{``0},System.Func{``0,System.Boolean},System.Span{``0})"/> and <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0},System.Func{``0,``1},System.Span{``1})"/> and returns an array of <typeparamref name="TResult"/> containing the results.
+            Combines <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Where``1(System.ReadOnlySpan{``0}@,System.Func{``0,System.Boolean},System.Span{``0})"/> and <see cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Select``2(System.ReadOnlySpan{``0}@,System.Func{``0,``1},System.Span{``1})"/> and returns an array of <typeparamref name="TResult"/> containing the results.
             Neither parameter may be <see langword="null"/>.
             </summary>
             <typeparam name="TResult">The type of the elements in the resulting array.</typeparam>
@@ -4138,16 +4140,16 @@
             <exception cref="T:System.ArgumentException">Thrown when the destination span is not large enough to hold the results.</exception>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$15D68528D97A6B31D2157DF79C1196F7`1.Convert``1(System.Span{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Convert``2(System.ReadOnlySpan{``0},System.Span{``1})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Convert``2(System.ReadOnlySpan{``0}@,System.Span{``1})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$15D68528D97A6B31D2157DF79C1196F7`1.BitCast``1(System.Span{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.BitCast``2(System.ReadOnlySpan{``0},System.Span{``1})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.BitCast``2(System.ReadOnlySpan{``0}@,System.Span{``1})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9378704AB6CAE5AC0A39E45288D0AA6`1.Cast``1(System.Span{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Cast``2(System.ReadOnlySpan{``0},System.Span{``1})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.Cast``2(System.ReadOnlySpan{``0}@,System.Span{``1})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$B9378704AB6CAE5AC0A39E45288D0AA6`1.ReinterpretCast``1(System.Span{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.ReinterpretCast``2(System.ReadOnlySpan{``0},System.Span{``1})"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.LinqMemoryExtensions.ReinterpretCast``2(System.ReadOnlySpan{``0}@,System.Span{``1})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.LinqMemoryExtensions.&lt;G&gt;$DA201D94D32CA938C8DF455F899985D5`1.Convert``1(System.Span{``0})">
             <summary>
@@ -4861,91 +4863,43 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeManagerSpan``2(System.ReadOnlyMemory{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3387D7F181FA234A9158DADA9224047F`1.UnsafeManagerSpan``1"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Span{``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Span{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0},System.Func{``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0}@,System.Func{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0},System.Func{``0,``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0}@,System.Func{``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill(System.Func{`0,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Span{``0},System.Func{System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Span{``0}@,System.Func{System.Int32,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Span{``0},System.Func{System.Int32,``0,``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Span{``0}@,System.Func{System.Int32,``0,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.FillIndexed(System.Func{System.Int32,`0,`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.ZeroMemory"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0,`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{``0},System.Func{System.Int32,``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0,`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Memory{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.ZeroMemory"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Memory{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Memory{``0},System.Func{``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Memory{``0},System.Func{``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0,`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Memory{``0},System.Func{System.Int32,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexed``1(System.Memory{``0},System.Func{System.Int32,``0,``0})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0,`0})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillAsync``1(System.Memory{``0},System.Func{System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Threading.Tasks.ValueTask{`0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillAsync``1(System.Memory{``0},System.Func{``0,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexedAsync``1(System.Memory{``0},System.Func{System.Int32,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.FillIndexedAsync``1(System.Memory{``0},System.Func{System.Int32,``0,System.Threading.Tasks.ValueTask{``0}})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32@,System.Text.Encoding)">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte}@,System.Int32@,System.Text.Encoding)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32@,System.Text.Encoding)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32,System.Text.Encoding)">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte}@,System.Int32,System.Text.Encoding)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32,System.Text.Encoding)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32@)">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte}@,System.Int32@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32@)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32@,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte}@,System.Int32@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32@,System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32)">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte}@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte},System.Int32,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Read``1(System.ReadOnlySpan{System.Byte}@,System.Int32,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.Read``1(System.Int32,System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Write``1(System.Span{System.Byte},``0,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.Write``1(System.Span{System.Byte}@,``0,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$BFA23C8808B2873C0738C2637169E9F3.Write``1(``0,System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeStringSpan(System.Memory{System.Char}@)">
@@ -4954,10 +4908,10 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.UnsafeStringSpan(System.ReadOnlyMemory{System.Char}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$4DAF1BD91680853E88605FA5C5B79236.UnsafeStringSpan"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplits``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplits``1(System.ReadOnlySpan{``0}@,System.ReadOnlySpan{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplits(System.ReadOnlySpan{`0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplitsBySequence``1(System.ReadOnlySpan{``0},System.ReadOnlySpan{``0})">
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplitsBySequence``1(System.ReadOnlySpan{``0}@,System.ReadOnlySpan{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplitsBySequence(System.ReadOnlySpan{`0})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0})">
@@ -5049,68 +5003,6 @@
             <typeparam name="TManager">The type of the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</typeparam>
             <returns>The <see cref="T:System.Span`1"/> created by the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.ZeroMemory">
-            <summary>
-            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Memory`1"/>s of <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.Fill(System.Func{`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexed(System.Func{System.Int32,`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillAsync(System.Func{`0,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$193157265A52AD952DC093DB64F5C131`1.FillIndexedAsync(System.Func{System.Int32,`0,System.Threading.Tasks.ValueTask{`0}})">
-            <summary>
-            Asynchronously fills the specified <see cref="T:System.Memory`1"/> using the specified <paramref name="factory"/>. It is passed the index in the memory that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
-        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3387D7F181FA234A9158DADA9224047F`1.UnsafeArraySpan">
             <summary>
             Forcibly obtains a <see cref="T:System.ReadOnlySpan`1"/> from <paramref name="memory"/>, assuming its backing store is an array.
@@ -5125,40 +5017,6 @@
             </summary>
             <typeparam name="TManager">The type of the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</typeparam>
             <returns>The <see cref="T:System.ReadOnlySpan`1"/> created by the backing <see cref="T:System.Buffers.MemoryManager`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.ZeroMemory">
-            <summary>
-            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.Fill(System.Func{`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$138F8DE700AF3F86FA01011A8A901A2D`1.FillIndexed(System.Func{System.Int32,`0,`0})">
-            <summary>
-            Fills the specified <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> using the specified <paramref name="factory"/>. It is passed the index in the <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> of <typeparamref name="T"/> that is being assigned and the previous iteration's value, seeded with the <see langword="default"/> value for type <typeparamref name="T"/>.
-            </summary>
-            <param name="factory">The factory method that produces the values to fill the span with.</param>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3ACAF3B02D8B046C283A1CF7613FDB41.ReadString(System.Int32@,System.Text.Encoding)">
             <summary>
@@ -5194,7 +5052,7 @@
             <remarks>
             There are several special-cased types.
             <list type="bullet">
-            <item/><see langword="string"/>s are read using <see cref="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32@,System.Text.Encoding)"/> instead of pointer casts.
+            <item/><see langword="string"/>s are read using <see cref="!:ReadString(ReadOnlySpan&lt;byte&gt;, ref int, Encoding)"/> instead of pointer casts.
             <item/><see langword="byte"/>s require no cast at all.
             <item/><see langword="bool"/>s are normalized to hold a value of exactly <c>1</c> or <c>0</c>.
             </list>
@@ -5223,7 +5081,7 @@
             <remarks>
             There are several special-cased types.
             <list type="bullet">
-            <item/><see langword="string"/>s are read using <see cref="M:LaquaiLib.Extensions.MemoryExtensions.ReadString(System.ReadOnlySpan{System.Byte},System.Int32@,System.Text.Encoding)"/> instead of pointer casts.
+            <item/><see langword="string"/>s are read using <see cref="!:ReadString(ReadOnlySpan&lt;byte&gt;, ref int, Encoding)"/> instead of pointer casts.
             <item/><see langword="byte"/>s require no cast at all.
             <item/><see langword="bool"/>s are normalized to hold a value of exactly <c>1</c> or <c>0</c>.
             </list>
@@ -5676,43 +5534,43 @@
             Provides extensions for the <see cref="T:System.Range"/> type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetRange(System.Range)">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetRange(System.Range@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GetRange"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetRange(System.Range,System.Int32)">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetRange(System.Range@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GetRange(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetEnumerator(System.Range)">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GetEnumerator(System.Range@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GetEnumerator"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.Select``1(System.Range,System.Func{System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.Select``1(System.Range@,System.Func{System.Int32,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.Select``1(System.Func{System.Int32,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.Where(System.Range,System.Func{System.Int32,System.Boolean})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.Where(System.Range@,System.Func{System.Int32,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.Where(System.Func{System.Int32,System.Boolean})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.SelectMany``1(System.Range,System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0}})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.SelectMany``1(System.Range@,System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0}})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.SelectMany``1(System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0}})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.SelectMany``2(System.Range,System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0}},System.Func{System.Int32,``0,``1})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.SelectMany``2(System.Range@,System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0}},System.Func{System.Int32,``0,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.SelectMany``2(System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0}},System.Func{System.Int32,``0,``1})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.Join``3(System.Range,System.Collections.Generic.IEnumerable{``0},System.Func{System.Int32,``1},System.Func{``0,``1},System.Func{System.Int32,``0,``2})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.Join``3(System.Range@,System.Collections.Generic.IEnumerable{``0},System.Func{System.Int32,``1},System.Func{``0,``1},System.Func{System.Int32,``0,``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.Join``3(System.Collections.Generic.IEnumerable{``0},System.Func{System.Int32,``1},System.Func{``0,``1},System.Func{System.Int32,``0,``2})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.GroupJoin``3(System.Range,System.Collections.Generic.IEnumerable{``0},System.Func{System.Int32,``1},System.Func{``0,``1},System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0},``2})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GroupJoin``3(System.Range@,System.Collections.Generic.IEnumerable{``0},System.Func{System.Int32,``1},System.Func{``0,``1},System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0},``2})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GroupJoin``3(System.Collections.Generic.IEnumerable{``0},System.Func{System.Int32,``1},System.Func{``0,``1},System.Func{System.Int32,System.Collections.Generic.IEnumerable{``0},``2})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.OrderBy``1(System.Range,System.Func{System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.OrderBy``1(System.Range@,System.Func{System.Int32,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.OrderBy``1(System.Func{System.Int32,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.OrderByDescending``1(System.Range,System.Func{System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.OrderByDescending``1(System.Range@,System.Func{System.Int32,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.OrderByDescending``1(System.Func{System.Int32,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.GroupBy``1(System.Range,System.Func{System.Int32,``0})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GroupBy``1(System.Range@,System.Func{System.Int32,``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GroupBy``1(System.Func{System.Int32,``0})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RangeExtensions.GroupBy``2(System.Range,System.Func{System.Int32,``0},System.Func{System.Int32,``1})">
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.GroupBy``2(System.Range@,System.Func{System.Int32,``0},System.Func{System.Int32,``1})">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GroupBy``2(System.Func{System.Int32,``0},System.Func{System.Int32,``1})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GetRange">
@@ -5778,10 +5636,10 @@
         <member name="M:LaquaiLib.Extensions.RegexExtensions.get_Text(System.Text.RegularExpressions.Capture)">
             <inheritdoc cref="P:LaquaiLib.Extensions.RegexExtensions.&lt;G&gt;$AD3FF65F2B4DCEDE54B47BE74F5B094C.Text"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RegexExtensions.Slice(System.ReadOnlySpan{System.Char},System.Text.RegularExpressions.ValueMatch)">
+        <member name="M:LaquaiLib.Extensions.RegexExtensions.Slice(System.ReadOnlySpan{System.Char}@,System.Text.RegularExpressions.ValueMatch)">
             <inheritdoc cref="M:LaquaiLib.Extensions.RegexExtensions.&lt;G&gt;$7E0B8C73485617FC5155886DD83A182C.Slice(System.Text.RegularExpressions.ValueMatch)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.RegexExtensions.Slice(System.Span{System.Char},System.Text.RegularExpressions.ValueMatch)">
+        <member name="M:LaquaiLib.Extensions.RegexExtensions.Slice(System.Span{System.Char}@,System.Text.RegularExpressions.ValueMatch)">
             <inheritdoc cref="M:LaquaiLib.Extensions.RegexExtensions.&lt;G&gt;$D5A9153091A98CB62727519FC4F22CCF.Slice(System.Text.RegularExpressions.ValueMatch)"/>
         </member>
         <member name="P:LaquaiLib.Extensions.RegexExtensions.&lt;G&gt;$D6B04C75D74BF86D0F6D307C4FF829EA.Regex">
@@ -6191,16 +6049,16 @@
         <member name="M:LaquaiLib.Extensions.StringExtensions.GetSimilarity(System.String,System.String,System.StringComparer)">
             <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.&lt;G&gt;$34505F560D9EACF86A87F3ED1F85E448.GetSimilarity(System.String,System.StringComparer)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.EnumerateSplits(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.EnumerateSplits(System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.String},System.StringComparison)">
             <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.&lt;G&gt;$7E0B8C73485617FC5155886DD83A182C.EnumerateSplits(System.ReadOnlySpan{System.String},System.StringComparison)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.Char})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.Char})">
             <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.&lt;G&gt;$7E0B8C73485617FC5155886DD83A182C.FindCount(System.ReadOnlySpan{System.Char})"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.String},System.StringComparison)">
             <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.&lt;G&gt;$7E0B8C73485617FC5155886DD83A182C.FindCount(System.ReadOnlySpan{System.String},System.StringComparison)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String})">
+        <member name="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.String})">
             <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.&lt;G&gt;$7E0B8C73485617FC5155886DD83A182C.FindCount(System.ReadOnlySpan{System.String})"/>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.Replace(System.String,System.Collections.Generic.IEnumerable{System.String},System.String)">
@@ -6581,7 +6439,7 @@
             <param name="stringComparison">The <see cref="T:System.StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="F:System.StringComparison.CurrentCulture"/>.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.ReadOnlySpan`1"/>s representing the segments of the input <see cref="T:System.ReadOnlySpan`1"/>.</returns>
             <remarks>
-            This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="M:LaquaiLib.Extensions.StringExtensions.EnumerateSplits(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)"/> instead.
+            This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="M:LaquaiLib.Extensions.StringExtensions.EnumerateSplits(System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.String},System.StringComparison)"/> instead.
             </remarks>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.&lt;G&gt;$7E0B8C73485617FC5155886DD83A182C.FindCount(System.ReadOnlySpan{System.Char})">
@@ -6600,7 +6458,7 @@
             <returns>The number of occurrences of any of the <paramref name="strings"/> in the input <see cref="T:System.ReadOnlySpan`1"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Extensions.StringExtensions.&lt;G&gt;$7E0B8C73485617FC5155886DD83A182C.FindCount(System.ReadOnlySpan{System.String})">
-            <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char},System.ReadOnlySpan{System.String},System.StringComparison)"/>
+            <inheritdoc cref="M:LaquaiLib.Extensions.StringExtensions.FindCount(System.ReadOnlySpan{System.Char}@,System.ReadOnlySpan{System.String},System.StringComparison)"/>
         </member>
         <member name="T:LaquaiLib.Extensions.TaskExtensions">
             <summary>
@@ -6707,25 +6565,25 @@
             Provides extensions for the <see cref="T:System.DateTime"/>, <see cref="T:System.DateTimeOffset"/>, <see cref="T:System.DateOnly"/> and <see cref="T:System.TimeOnly"/> types.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Extensions.TimingExtensions.NextWeekday(System.DateTime,System.Nullable{System.TimeOnly},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.TimingExtensions.NextWeekday(System.DateTime@,System.Nullable{System.TimeOnly},System.Boolean)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$AC0E513418EF159D5C3E15BA59576B4F.NextWeekday(System.Nullable{System.TimeOnly},System.Boolean)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TimingExtensions.NextWeekday(System.DateTime,System.Nullable{System.DateTime},System.Boolean)">
+        <member name="M:LaquaiLib.Extensions.TimingExtensions.NextWeekday(System.DateTime@,System.Nullable{System.DateTime},System.Boolean)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$AC0E513418EF159D5C3E15BA59576B4F.NextWeekday(System.Nullable{System.DateTime},System.Boolean)"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.DateTime)">
+        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.DateTime@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$AC0E513418EF159D5C3E15BA59576B4F.GetAwaiter"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.DateTimeOffset)">
+        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.DateTimeOffset@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$F57D98B00617BA4856B9B5882EBBA37F.GetAwaiter"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.DateOnly)">
+        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.DateOnly@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$B650E57A7BA0C437287F488E586EE958.GetAwaiter"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.TimeOnly)">
+        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.TimeOnly@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$8118879919D45E61A08432C6F1059EC2.GetAwaiter"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.TimeSpan)">
+        <member name="M:LaquaiLib.Extensions.TimingExtensions.GetAwaiter(System.TimeSpan@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$AEF4692409D6751FA6D278B69B50C9D0.GetAwaiter"/>
         </member>
         <member name="M:LaquaiLib.Extensions.TimingExtensions.&lt;G&gt;$AC0E513418EF159D5C3E15BA59576B4F.NextWeekday(System.Nullable{System.TimeOnly},System.Boolean)">
@@ -8556,6 +8414,12 @@
             Returns an <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/> over the elements of the array.
             </summary>
             <returns>The created <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Enumerator"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.op_Implicit(LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable{`0})~System.Span{`0}">
+            <summary>
+            Implicitly converts a <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> to a <see cref="T:System.Span`1"/> over the entire array.
+            </summary>
+            <param name="multiDimArrayEnumerable">The <see cref="T:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1"/> to convert.</param>
         </member>
         <member name="M:LaquaiLib.Collections.Enumeration.MultiDimArrayEnumerable`1.Dispose">
             <summary>
@@ -18616,16 +18480,16 @@
             Provides extensions for the <see cref="T:System.IntPtr"/> and <see cref="T:System.UIntPtr"/> types, which implicitly includes pointers.
             </summary>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.ToArray(System.IntPtr,System.Int32)">
+        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.ToArray(System.IntPtr@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.&lt;G&gt;$4F373AFAABDD639AB83427B59F106A43.ToArray(System.Int32)"/>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.CopyTo(System.IntPtr,System.Span{System.Byte})">
+        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.CopyTo(System.IntPtr@,System.Span{System.Byte})">
             <inheritdoc cref="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.&lt;G&gt;$4F373AFAABDD639AB83427B59F106A43.CopyTo(System.Span{System.Byte})"/>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.CopyTo``1(System.IntPtr,System.Span{``0})">
+        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.CopyTo``1(System.IntPtr@,System.Span{``0})">
             <inheritdoc cref="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.&lt;G&gt;$4F373AFAABDD639AB83427B59F106A43.CopyTo``1(System.Span{``0})"/>
         </member>
-        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.AsSpan``1(System.IntPtr,System.Int32)">
+        <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.AsSpan``1(System.IntPtr@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.&lt;G&gt;$4F373AFAABDD639AB83427B59F106A43.AsSpan``1(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.UnsafeUtils.Extensions.NintExtensions.&lt;G&gt;$4F373AFAABDD639AB83427B59F106A43.ToArray(System.Int32)">

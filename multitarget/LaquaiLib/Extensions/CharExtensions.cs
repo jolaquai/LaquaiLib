@@ -7,7 +7,7 @@ public static class CharExtensions
 {
     private static ReadOnlySpan<char> Vowels => ['a', 'e', 'i', 'o', 'u', 'y', 'A', 'E', 'I', 'O', 'U', 'Y'];
 
-    extension(char character)
+    extension(in char character)
     {
         /// <summary>
         /// Determines if a specified <see cref="char"/> is a vowel (including 'y').

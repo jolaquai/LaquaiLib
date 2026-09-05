@@ -5,7 +5,7 @@
 /// </summary>
 public static class TimingExtensions
 {
-    extension(DateTime dateTime)
+    extension(in DateTime dateTime)
     {
         /// <summary>
         /// Advances the given <see cref="DateTime"/> to the next weekday.
@@ -15,11 +15,12 @@ public static class TimingExtensions
         /// <returns>The next weekday after the given <see cref="DateTime"/>.</returns>
         public DateTime NextWeekday(TimeOnly? timeComponent = null, bool includeSaturdays = false)
         {
+            var dt = dateTime;
             if (timeComponent is not null)
-                dateTime = new DateTime(DateOnly.FromDateTime(dateTime), timeComponent.Value);
+                dt = new DateTime(DateOnly.FromDateTime(dt), timeComponent.Value);
 
-            var nextWeekday = dateTime.AddDays(1);
-            while (nextWeekday <= dateTime || (nextWeekday.DayOfWeek is DayOfWeek.Saturday && !includeSaturdays) || nextWeekday.DayOfWeek is DayOfWeek.Sunday)
+            var nextWeekday = dt.AddDays(1);
+            while (nextWeekday <= dt || (nextWeekday.DayOfWeek is DayOfWeek.Saturday && !includeSaturdays) || nextWeekday.DayOfWeek is DayOfWeek.Sunday)
                 nextWeekday = nextWeekday.AddDays(1);
             return nextWeekday;
         }
@@ -45,7 +46,7 @@ public static class TimingExtensions
         }
     }
 
-    extension(DateTimeOffset dateTimeOffset)
+    extension(in DateTimeOffset dateTimeOffset)
     {
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateTimeOffset"/> is reached.
@@ -59,7 +60,7 @@ public static class TimingExtensions
             return Task.CompletedTask.GetAwaiter();
         }
     }
-    extension(DateOnly dateOnly)
+    extension(in DateOnly dateOnly)
     {
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="DateOnly"/> at midnight is reached.
@@ -67,7 +68,7 @@ public static class TimingExtensions
         /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
         public TaskAwaiter GetAwaiter() => GetAwaiter(dateOnly.ToDateTime(TimeOnly.MinValue));
     }
-    extension(TimeOnly timeOnly)
+    extension(in TimeOnly timeOnly)
     {
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="TimeOnly"/> on the current day is reached.
@@ -75,7 +76,7 @@ public static class TimingExtensions
         /// <returns>A <see cref="TaskAwaiter"/> instance is used to await the <see cref="Task"/>.</returns>
         public TaskAwaiter GetAwaiter() => GetAwaiter(DateTime.Today.AddTicks(timeOnly.Ticks));
     }
-    extension(TimeSpan timeSpan)
+    extension(in TimeSpan timeSpan)
     {
         /// <summary>
         /// Returns an awaiter that can be used to await a <see cref="Task"/> that completes when the specified <see cref="TimeSpan"/>, starting from now, has passed.

@@ -40,7 +40,7 @@ public static class RegexExtensions
         }
     }
 
-    extension(ReadOnlySpan<char> span)
+    extension(in ReadOnlySpan<char> span)
     {
         /// <summary>
         /// Creates a slice from the source span using the range specified by the <see cref="ValueMatch"/>.
@@ -49,7 +49,7 @@ public static class RegexExtensions
         /// <returns>The formed slice.</returns>
         public ReadOnlySpan<char> Slice(ValueMatch vm) => span.Slice(vm.Index, vm.Length);
     }
-    extension(Span<char> span)
+    extension(in Span<char> span)
     {
         /// <summary>
         /// Creates a slice from the source span using the range specified by the <see cref="ValueMatch"/>.

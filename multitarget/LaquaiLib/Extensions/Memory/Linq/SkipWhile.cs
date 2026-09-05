@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
         /// <inheritdoc cref="Enumerable.SkipWhile{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -33,7 +33,7 @@ public static partial class LinqMemoryExtensions
         }
     }
 
-    extension<TSource>(Span<TSource> source)
+    extension<TSource>(in Span<TSource> source)
     {
         /// <inheritdoc cref="Enumerable.SkipWhile{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

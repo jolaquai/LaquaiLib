@@ -562,7 +562,7 @@ public static partial class StringExtensions
         #endregion
     }
 
-    extension(ReadOnlySpan<char> source)
+    extension(in ReadOnlySpan<char> source)
     {
         #region Span shit
         /// <summary>
@@ -572,7 +572,7 @@ public static partial class StringExtensions
         /// <param name="stringComparison">The <see cref="StringComparison"/> behavior to employ when searching for the delimiters. Defaults to <see cref="StringComparison.CurrentCulture"/>.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="ReadOnlySpan{T}"/>s representing the segments of the input <see cref="ReadOnlySpan{T}"/>.</returns>
         /// <remarks>
-        /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits(ReadOnlySpan{char}, ReadOnlySpan{string}, StringComparison)"/> instead.
+        /// This overload expects specifically one or more <see langword="string"/>s as the delimiter(s). To use one or more <see langword="char"/>s as the delimiter(s), use <see cref="EnumerateSplits(in ReadOnlySpan{char}, ReadOnlySpan{string}, StringComparison)"/> instead.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public SpanSplitByStringsEnumerable EnumerateSplits(ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture) => new SpanSplitByStringsEnumerable(source, strings, stringComparison);
@@ -584,14 +584,15 @@ public static partial class StringExtensions
         /// <returns>The number of occurrences of any of the <paramref name="chars"/> in the input <see cref="ReadOnlySpan{T}"/>.</returns>
         public int FindCount(params ReadOnlySpan<char> chars)
         {
+            var src = source;
             var count = 0;
-            while (source.Length > 0)
+            while (src.Length > 0)
             {
-                var index = source.IndexOfAny(chars);
+                var index = src.IndexOfAny(chars);
                 if (index == -1)
                     break;
                 count++;
-                source = source[(index + 1)..];
+                src = src[(index + 1)..];
             }
             return count;
         }
@@ -603,19 +604,20 @@ public static partial class StringExtensions
         /// <returns>The number of occurrences of any of the <paramref name="strings"/> in the input <see cref="ReadOnlySpan{T}"/>.</returns>
         public int FindCount(ReadOnlySpan<string> strings, StringComparison stringComparison = StringComparison.CurrentCulture)
         {
+            var src = source;
             var searchValues = SearchValues.Create(strings, stringComparison);
             var count = 0;
-            while (source.Length > 0)
+            while (src.Length > 0)
             {
-                var index = source.IndexOfAny(searchValues);
+                var index = src.IndexOfAny(searchValues);
                 if (index == -1)
                     break;
                 count++;
-                source = source[(index + 1)..];
+                src = src[(index + 1)..];
             }
             return count;
         }
-        /// <inheritdoc cref="FindCount(ReadOnlySpan{char}, ReadOnlySpan{string}, StringComparison)"/>
+        /// <inheritdoc cref="FindCount(in ReadOnlySpan{char}, ReadOnlySpan{string}, StringComparison)"/>
         public int FindCount(params ReadOnlySpan<string> strings) => FindCount(source, strings, stringComparison: StringComparison.CurrentCulture);
         #endregion
     }

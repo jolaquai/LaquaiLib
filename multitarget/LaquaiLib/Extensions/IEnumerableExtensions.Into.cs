@@ -359,7 +359,7 @@ public static partial class IEnumerableExtensions
 
     // We'll call these down here CopyTo to align with the existing (ReadOnly)Span.CopyTo method to prevent confusion over the name
     // The cool part is that there will never be unsafe mutation since we always know the length of the ReadOnlySpan
-    extension<T>(ReadOnlySpan<T> source)
+    extension<T>(in ReadOnlySpan<T> source)
     {
         /// <summary>
         /// Copies the elements of the input <see cref="ReadOnlySpan{T}"/> into the <see cref="Span{T}"/> provided by the specified <see cref="ISpanProvider{T}"/>.

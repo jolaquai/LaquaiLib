@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension(ReadOnlySpan<ushort?> source)
+    extension(in ReadOnlySpan<ushort?> source)
     {
         /// <summary>
         /// Calculates the average of a <see cref="ReadOnlySpan{T}"/> of nullable <see langword="ushort"/>s.

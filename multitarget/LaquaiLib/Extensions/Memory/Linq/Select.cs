@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
         // These are safe to invoke when source and destination point to the same location (if the types are compatible)
         /// <summary>

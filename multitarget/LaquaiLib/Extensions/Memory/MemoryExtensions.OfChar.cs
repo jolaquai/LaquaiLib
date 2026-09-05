@@ -13,6 +13,18 @@ public static partial class MemoryExtensions
         /// <returns>The created <see cref="ReadOnlySpan{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<char> UnsafeStringSpan() => Unsafe.As<Memory<char>, ReadOnlyMemory<char>>(ref Unsafe.AsRef(in memory)).UnsafeStringSpan();
+        /// <summary>
+        /// Determines a value indicating whether the backing store of <paramref name="memory"/> is a <see langword="string"/>.
+        /// </summary>
+        public bool IsBackedByString
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                ref readonly var shim = ref Unsafe.As<Memory<char>, MemoryMirror<char>>(ref Unsafe.AsRef(in memory));
+                return shim.Object is string;
+            }
+        }
     }
     extension(in ReadOnlyMemory<char> memory)
     {
@@ -30,6 +42,18 @@ public static partial class MemoryExtensions
             var str = Unsafe.As<string>(shim.Object);
             var index = shim.Index & RemoveFlagsBitMask;
             return MemoryMarshal.CreateReadOnlySpan(ref Unsafe.Add(ref MemoryMarshal.GetReference(str.AsSpan()), index), shim.Length);
+        }
+        /// <summary>
+        /// Determines a value indicating whether the backing store of <paramref name="memory"/> is a <see langword="string"/>.
+        /// </summary>
+        public bool IsBackedByString
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                ref readonly var shim = ref Unsafe.As<ReadOnlyMemory<char>, MemoryMirror<char>>(ref Unsafe.AsRef(in memory));
+                return shim.Object is string;
+            }
         }
     }
 }

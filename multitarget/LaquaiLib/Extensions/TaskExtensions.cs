@@ -35,7 +35,7 @@ public static class TaskExtensions
 
     extension<TResult>(Task<TResult> task) { }
 
-    extension(ValueTask task) { }
+    extension(in ValueTask task) { }
 
-    extension<TResult>(ValueTask<TResult> task) { }
+    extension<TResult>(in ValueTask<TResult> task) { }
 }

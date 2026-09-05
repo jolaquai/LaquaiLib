@@ -9,7 +9,7 @@
             Provides extensions for the <see cref="T:System.Drawing.Color"/> type.
             </summary>
         </member>
-        <member name="M:LaquaiLib.Windows.Extensions.ColorExtensions.get_Html(System.Drawing.Color)">
+        <member name="M:LaquaiLib.Windows.Extensions.ColorExtensions.get_Html(System.Drawing.Color@)">
             <inheritdoc cref="P:LaquaiLib.Windows.Extensions.ColorExtensions.&lt;G&gt;$B73B7345C6FAC66E9EBD3203731F9C85.Html"/>
         </member>
         <member name="P:LaquaiLib.Windows.Extensions.ColorExtensions.&lt;G&gt;$B73B7345C6FAC66E9EBD3203731F9C85.Html">

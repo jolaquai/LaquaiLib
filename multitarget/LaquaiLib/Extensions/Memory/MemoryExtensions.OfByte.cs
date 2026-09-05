@@ -4,7 +4,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class MemoryExtensions
 {
-    extension(ReadOnlySpan<byte> span)
+    extension(in ReadOnlySpan<byte> span)
     {
         /// <summary>
         /// Reads a <c>\0</c> or equivalently terminated (based on the specified <paramref name="encoding"/>) <see langword="string"/> from the specified <paramref name="span"/>. This terminator is stripped from the input.
@@ -180,13 +180,12 @@ public static partial class MemoryExtensions
             if (span.Length < length)
                 return false;
 
-            for (var i = 0; i < length; i++)
-                if (span[i] != 0)
-                    return false;
-            return true;
+            if (span[..length].IndexOfAnyExcept((byte)0) == -1)
+                return true;
+            return false;
         }
     }
-    extension(Span<byte> span)
+    extension(in Span<byte> span)
     {
         /// <summary>
         /// Formats the <see langword="byte"/>s of the specified <paramref name="data"/> instance into the <paramref name="span"/> at the specified <paramref name="index"/>.
@@ -199,24 +198,24 @@ public static partial class MemoryExtensions
         /// This can be used to chain calls to this method.
         /// </returns>
         /// <exception cref="ArgumentException">Thrown if the target <paramref name="span"/> cannot accomodate the specified <paramref name="data"/> instance.</exception>
-        public Span<byte> Write<T>(T data, int index = 0)
-            where T : unmanaged
+        public Span<byte> Write<T>(T data, int index = 0) where T : unmanaged
         {
+            var dest = span;
             if (index > 0)
-                span = span[index..];
+                dest = span[index..];
 
             var size = Marshal.SizeOf(data);
-            if (span.Length < size)
-                throw new ArgumentException($"The target {nameof(span)} cannot accomodate the specified {nameof(data)} instance (need {size} bytes, have {span.Length}).");
+            if (dest.Length < size)
+                throw new ArgumentException($"The target {nameof(span)} cannot accomodate the specified {nameof(data)} instance (need {size} bytes, have {dest.Length}).");
 
             // Cool thing is, Span pointer magic does all of what we need to do here
             unsafe
             {
-                var bytes = MemoryMarshal.AsBytes(new ReadOnlySpan<T>(&data, 1));
-                bytes.CopyTo(span);
+                var bytes = MemoryMarshal.AsBytes(new ReadOnlySpan<T>(ref data));
+                bytes.CopyTo(dest);
             }
 
-            return span[size..];
+            return dest[size..];
         }
     }
 }

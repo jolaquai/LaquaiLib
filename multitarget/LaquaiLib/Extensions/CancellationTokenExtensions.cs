@@ -5,7 +5,7 @@
 /// </summary>
 public static class CancellationTokenExtensions
 {
-    extension(CancellationToken cancellationToken)
+    extension(in CancellationToken cancellationToken)
     {
         /// <summary>
         /// Creates a <see cref="Task"/> that completes successfully (that is, without throwing an exception) when the specified <paramref name="cancellationToken"/> is cancelled.

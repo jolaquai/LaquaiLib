@@ -71,6 +71,16 @@ public static class ListExtensions
             var (offset, length) = range.GetOffsetAndLength(list.Count);
             return AsMemory(list, offset, length);
         }
+        private Memory<T> AsMemoryCore(Index start = default, int length = -1)
+        {
+            if (length == 0)
+                return Memory<T>.Empty;
+
+            var offset = start.GetOffset(list.Count);
+            Memory<T> memory = ListAccessors<T>._items(list);
+            var endIndex = length == -1 ? list.Count : offset + length;
+            return memory[offset..endIndex];
+        }
         /// <summary>
         /// Retrieves a <see cref="Span{T}"/> over a portion of the backing array of the specified <see cref="List{T}"/>. By default, only the portion considered valid (as indicated through <see cref="List{T}.Count"/>) is returned.
         /// </summary>
@@ -114,12 +124,12 @@ public static class ListExtensions
         /// This is done through <see cref="CollectionsMarshal.SetCount{T}(List{T}, int)"/> and should be used as cautiously as that method.
         /// </summary>
         /// <param name="count">The new <see cref="List{T}.Count"/> of the specified <see cref="List{T}"/>.</param>
-        /// <returns>A <see cref="Span{T}"/> over the valid portion of the specified <see cref="List{T}"/> after setting its <see cref="List{T}.Count"/> to <paramref name="count"/>.</returns>
+        /// <returns>A <see cref="Memory{T}"/> over the valid portion of the specified <see cref="List{T}"/> after setting its <see cref="List{T}.Count"/> to <paramref name="count"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Memory<T> SetCount(int count)
         {
             CollectionsMarshal.SetCount(list, count);
-            return AsMemory(list);
+            return AsMemoryCore(list);
         }
 
         /// <summary>
@@ -131,44 +141,44 @@ public static class ListExtensions
         /// </summary>
         /// <returns>The array containing the drained contents of the list.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] DrainToArray() => EvictImpl(list, false);
+        public T[] DrainToArray() => Evict(list, false);
         /// <summary>
         /// Steals the backing array of the <see cref="List{T}"/> without copying, leaving the list empty afterwards. Throws <see cref="InvalidOperationException"/> if the list is not currently at full capacity.
         /// </summary>
         /// <returns>The backing array of the list.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] MoveToArray() => EvictImpl(list, true);
-    }
+        public T[] MoveToArray() => Evict(list, true);
 
-    /// <summary>
-    /// Evicts the contents of the specified <see cref="List{T}"/> into an array and resets the list to a clean, empty state so it never co-owns the evicted array.
-    /// </summary>
-    private static T[] EvictImpl<T>(List<T> list, bool throwIfCopyNeeded)
-    {
-        ArgumentNullException.ThrowIfNull(list);
-
-        ref var items = ref ListAccessors<T>._items(list);
-        ref var size = ref ListAccessors<T>._size(list);
-        var count = size;
-
-        T[] ret;
-        if (count == 0)
-            ret = [];
-        else if (count == items.Length)
-            // At full capacity: steal the backing array outright, zero-copy.
-            ret = items;
-        else if (throwIfCopyNeeded)
-            throw new InvalidOperationException($"Cannot move to array when the list is not at full capacity (length: {count}, capacity: {items.Length}).");
-        else
+        /// <summary>
+        /// Evicts the contents of the specified <see cref="List{T}"/> into an array and resets the list to a clean, empty state so it never co-owns the evicted array.
+        /// </summary>
+        private T[] Evict(bool throwIfCopyNeeded)
         {
-            ret = new T[count];
-            Array.Copy(items, ret, count);
-        }
+            ArgumentNullException.ThrowIfNull(list);
 
-        // Detach: reset to the same state as a freshly-constructed empty list, then invalidate any live enumerators.
-        items = [];
-        size = 0;
-        ListAccessors<T>._version(list)++;
-        return ret;
+            ref var items = ref ListAccessors<T>._items(list);
+            ref var size = ref ListAccessors<T>._size(list);
+            var count = size;
+
+            T[] ret;
+            if (count == 0)
+                ret = [];
+            else if (count == items.Length)
+                // At full capacity: steal the backing array outright, zero-copy.
+                ret = items;
+            else if (throwIfCopyNeeded)
+                throw new InvalidOperationException($"Cannot move to array when the list is not at full capacity (length: {count}, capacity: {items.Length}).");
+            else
+            {
+                ret = new T[count];
+                Array.Copy(items, ret, count);
+            }
+
+            // Detach: reset to the same state as a freshly-constructed empty list, then invalidate any live enumerators.
+            items = [];
+            size = 0;
+            ListAccessors<T>._version(list)++;
+            return ret;
+        }
     }
 }

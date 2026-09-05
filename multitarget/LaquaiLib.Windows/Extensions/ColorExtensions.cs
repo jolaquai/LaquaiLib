@@ -5,7 +5,7 @@ namespace LaquaiLib.Windows.Extensions;
 /// </summary>
 public static class ColorExtensions
 {
-    extension(Color color)
+    extension(in Color color)
     {
         /// <summary>
         /// Formats the <see cref="Color"/> as a HTML color string.

@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
         /// <summary>
         /// Merges two <see cref="ReadOnlySpan{T}"/>s into another <see cref="Span{T}"/> by applying a result selector function to each pair of elements.

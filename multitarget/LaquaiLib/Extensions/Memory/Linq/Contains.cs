@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
 #if !NET10_0_OR_GREATER
         /// <inheritdoc cref="Enumerable.Contains{TSource}(IEnumerable{TSource}, TSource, IEqualityComparer{TSource})"/>

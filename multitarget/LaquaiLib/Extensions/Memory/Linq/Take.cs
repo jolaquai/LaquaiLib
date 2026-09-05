@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
         /// <inheritdoc cref="Enumerable.Take{TSource}(IEnumerable{TSource}, int)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13,7 +13,7 @@ public static partial class LinqMemoryExtensions
         public ReadOnlySpan<TSource> Take(Range range) => source[range];
     }
 
-    extension<TSource>(Span<TSource> source)
+    extension<TSource>(in Span<TSource> source)
     {
         /// <inheritdoc cref="Enumerable.Take{TSource}(IEnumerable{TSource}, int)"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -2,7 +2,7 @@
 
 public static partial class LinqMemoryExtensions
 {
-    extension(ReadOnlySpan<bool> source)
+    extension(in ReadOnlySpan<bool> source)
     {
         /// <summary>
         /// Determines whether all values in the source <see cref="ReadOnlySpan{T}"/> are <see langword="true"/>.

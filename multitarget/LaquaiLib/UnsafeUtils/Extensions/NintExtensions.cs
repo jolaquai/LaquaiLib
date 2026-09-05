@@ -5,7 +5,7 @@ namespace LaquaiLib.UnsafeUtils.Extensions;
 /// </summary>
 public static unsafe class NintExtensions
 {
-    extension(nint address)
+    extension(in nint address)
     {
         /// <summary>
         /// Constructs a <see cref="byte"/> array from a region of memory starting at <paramref name="address"/> with the specified <paramref name="count"/>.

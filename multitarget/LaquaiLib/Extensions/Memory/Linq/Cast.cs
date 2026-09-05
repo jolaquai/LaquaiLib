@@ -2,29 +2,29 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(Span<TSource> source) where TSource : struct
+    extension<TSource>(in Span<TSource> source) where TSource : struct
     {
-        /// <inheritdoc cref="Convert{TSource, TResult}(ReadOnlySpan{TSource}, Span{TResult})"/>
+        /// <inheritdoc cref="Convert{TSource, TResult}(in ReadOnlySpan{TSource}, Span{TResult})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Convert<TResult>(Span<TResult> destination) where TResult : struct
             => ((ReadOnlySpan<TSource>)source).Convert(destination);
-        /// <inheritdoc cref="BitCast{TSource, TResult}(ReadOnlySpan{TSource}, Span{TResult})"/>
+        /// <inheritdoc cref="BitCast{TSource, TResult}(in ReadOnlySpan{TSource}, Span{TResult})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int BitCast<TResult>(Span<TResult> destination) where TResult : struct
             => ((ReadOnlySpan<TSource>)source).BitCast(destination);
     }
-    extension<TSource>(Span<TSource> source) where TSource : class
+    extension<TSource>(in Span<TSource> source) where TSource : class
     {
-        /// <inheritdoc cref="Cast{TSource, TResult}(ReadOnlySpan{TSource}, Span{TResult})"/>
+        /// <inheritdoc cref="Cast{TSource, TResult}(in ReadOnlySpan{TSource}, Span{TResult})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Cast<TResult>(Span<TResult> destination) where TResult : class, TSource
             => ((ReadOnlySpan<TSource>)source).Cast(destination);
-        /// <inheritdoc cref="ReinterpretCast{TSource, TResult}(ReadOnlySpan{TSource}, Span{TResult})"/>
+        /// <inheritdoc cref="ReinterpretCast{TSource, TResult}(in ReadOnlySpan{TSource}, Span{TResult})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReinterpretCast<TResult>(Span<TResult> destination) where TResult : class
             => ((ReadOnlySpan<TSource>)source).ReinterpretCast(destination);
     }
-    extension<TSource>(ReadOnlySpan<TSource> source) where TSource : struct
+    extension<TSource>(in ReadOnlySpan<TSource> source) where TSource : struct
     {
         /// <summary>
         /// Converts each element of the source span to <typeparamref name="TResult"/> and stores the results in <paramref name="destination"/>.
@@ -68,7 +68,7 @@ public static partial class LinqMemoryExtensions
             return source.Length;
         }
     }
-    extension<TSource>(ReadOnlySpan<TSource> source) where TSource : class
+    extension<TSource>(in ReadOnlySpan<TSource> source) where TSource : class
     {
         /// <summary>
         /// Casts each element of the span to <typeparamref name="TResult"/> and stores the results in <paramref name="destination"/>.

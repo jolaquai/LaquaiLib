@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TKey, TValue>(ReadOnlySpan<(TKey, TValue)> source)
+    extension<TKey, TValue>(in ReadOnlySpan<(TKey, TValue)> source)
     {
         /// <inheritdoc cref="Enumerable.ToDictionary{TKey, TValue}(IEnumerable{ValueTuple{TKey, TValue}})"/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

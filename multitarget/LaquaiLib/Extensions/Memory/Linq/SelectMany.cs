@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
         /// <summary>
         /// Projects each element of the source <see cref="ReadOnlySpan{T}"/> into an <see cref="IEnumerable{T}"/> of <typeparamref name="TResult"/> and stores those elements in the specified <paramref name="destination"/> <see cref="Span{T}"/>.

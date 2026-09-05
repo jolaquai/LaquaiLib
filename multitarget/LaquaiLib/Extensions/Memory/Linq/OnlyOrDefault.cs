@@ -2,12 +2,12 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
         // Imma be honest, I stole these right out of System.Linq
         /// <summary>
         /// Determines whether a <see cref="ReadOnlySpan{T}"/> contains exactly one element and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
-        /// This behaves exactly like <see cref="SingleOrDefault{TSource}(ReadOnlySpan{TSource}, TSource)"/> without throwing exceptions.
+        /// This behaves exactly like <see cref="SingleOrDefault{TSource}(in ReadOnlySpan{TSource}, TSource)"/> without throwing exceptions.
         /// </summary>
         /// <param name="defaultValue">The value to return if the source <see cref="ReadOnlySpan{T}"/> contains no elements or more than one element.</param>
         /// <returns>The single element in the source <see cref="ReadOnlySpan{T}"/>, or <paramref name="defaultValue"/> if the sequence contains no or more than one element.</returns>
@@ -15,7 +15,7 @@ public static partial class LinqMemoryExtensions
         public TSource OnlyOrDefault(TSource defaultValue = default) => source.Length != 1 ? defaultValue : source[0];
         /// <summary>
         /// Determines whether a <see cref="ReadOnlySpan{T}"/> contains exactly one element that satisfies a <paramref name="predicate"/> and returns that element if so, otherwise returns the specified <paramref name="defaultValue"/>.
-        /// This behaves exactly like <see cref="SingleOrDefault{TSource}(ReadOnlySpan{TSource}, Func{TSource, bool}, TSource)"/> without throwing exceptions.
+        /// This behaves exactly like <see cref="SingleOrDefault{TSource}(in ReadOnlySpan{TSource}, Func{TSource, bool}, TSource)"/> without throwing exceptions.
         /// </summary>
         /// <param name="predicate">The condition to check for.</param>
         /// <param name="defaultValue">The value to return if the source <see cref="ReadOnlySpan{T}"/> contains no elements or more than one element.</param>

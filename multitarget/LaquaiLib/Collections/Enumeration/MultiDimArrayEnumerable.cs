@@ -105,6 +105,12 @@ public sealed class MultiDimArrayEnumerable<T> : IEnumerable<T>, ISpanProvider<T
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
+    /// Implicitly converts a <see cref="MultiDimArrayEnumerable{T}"/> to a <see cref="Span{T}"/> over the entire array.
+    /// </summary>
+    /// <param name="multiDimArrayEnumerable">The <see cref="MultiDimArrayEnumerable{T}"/> to convert.</param>
+    public static implicit operator Span<T>(MultiDimArrayEnumerable<T> multiDimArrayEnumerable) => multiDimArrayEnumerable.Span;
+
+    /// <summary>
     /// Marks this <see cref="MultiDimArrayEnumerable{T}"/> as disposed.
     /// The target array is referenced rather than pinned, so nothing is released; subsequent access to <see cref="Span"/> or to any <see cref="Enumerator"/>'s <see cref="Enumerator.Current"/> throws.
     /// </summary>

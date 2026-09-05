@@ -5,7 +5,7 @@ namespace LaquaiLib.Extensions;
 /// </summary>
 public static class RangeExtensions
 {
-    extension(Range range)
+    extension(in Range range)
     {
         /// <summary>
         /// Returns an <see cref="IEnumerable{T}"/> of <see cref="int"/>s that are within the given <paramref name="range"/>.

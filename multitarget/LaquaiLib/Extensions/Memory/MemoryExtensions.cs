@@ -116,6 +116,18 @@ public static partial class MemoryExtensions
             var span = rom.UnsafeArraySpan();
             return Unsafe.As<ReadOnlySpan<T>, Span<T>>(ref Unsafe.AsRef(in span));
         }
+        /// <summary>
+        /// Determines a value indicating whether the backing store of <paramref name="memory"/> is an array.
+        /// </summary>
+        public bool IsBackedByArray
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                ref readonly var shim = ref Unsafe.As<Memory<T>, MemoryMirror<T>>(ref Unsafe.AsRef(in memory));
+                return shim.Object is T[];
+            }
+        }
 
         /// <summary>
         /// Forcibly obtains a <see cref="Span{T}"/> from <paramref name="memory"/>, assuming its backing store is a <see cref="MemoryManager{T}"/>.
@@ -129,6 +141,17 @@ public static partial class MemoryExtensions
             ref readonly var rom = ref Unsafe.As<Memory<T>, ReadOnlyMemory<T>>(ref Unsafe.AsRef(in memory));
             var span = rom.UnsafeManagerSpan<T, TManager>();
             return Unsafe.As<ReadOnlySpan<T>, Span<T>>(ref Unsafe.AsRef(in span));
+        }
+        /// <summary>
+        /// Determines whether the backing store of <paramref name="memory"/> is a <see cref="MemoryManager{T}"/> of type <typeparamref name="TManager"/>.
+        /// </summary>
+        /// <typeparam name="TManager">The type of the backing <see cref="MemoryManager{T}"/>.</typeparam>
+        /// <returns><see langword="true"/> if the backing store is a <see cref="MemoryManager{T}"/> of type <typeparamref name="TManager"/>; otherwise, <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsBackedByManager<TManager>() where TManager : MemoryManager<T>
+        {
+            ref readonly var shim = ref Unsafe.As<Memory<T>, MemoryMirror<T>>(ref Unsafe.AsRef(in memory));
+            return shim.Object is TManager;
         }
     }
     extension<T>(in ReadOnlyMemory<T> memory)
@@ -148,6 +171,18 @@ public static partial class MemoryExtensions
             var index = shim.Index & RemoveFlagsBitMask;
             return MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(arr), index), shim.Length);
         }
+        /// <summary>
+        /// Determines a value indicating whether the backing store of <paramref name="memory"/> is an array.
+        /// </summary>
+        public bool IsBackedByArray
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                ref readonly var shim = ref Unsafe.As<ReadOnlyMemory<T>, MemoryMirror<T>>(ref Unsafe.AsRef(in memory));
+                return shim.Object is T[];
+            }
+        }
 
         /// <summary>
         /// Forcibly obtains a <see cref="ReadOnlySpan{T}"/> from <paramref name="memory"/>, assuming its backing store is a <see cref="MemoryManager{T}"/>.
@@ -165,6 +200,17 @@ public static partial class MemoryExtensions
             var mgr = Unsafe.As<TManager>(shim.Object);
             var index = shim.Index & RemoveFlagsBitMask;
             return mgr.GetSpan().Slice(index, shim.Length);
+        }
+        /// <summary>
+        /// Determines whether the backing store of <paramref name="memory"/> is a <see cref="MemoryManager{T}"/> of type <typeparamref name="TManager"/>.
+        /// </summary>
+        /// <typeparam name="TManager">The type of the backing <see cref="MemoryManager{T}"/>.</typeparam>
+        /// <returns><see langword="true"/> if the backing store is a <see cref="MemoryManager{T}"/> of type <typeparamref name="TManager"/>; otherwise, <see langword="false"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsBackedByManager<TManager>() where TManager : MemoryManager<T>
+        {
+            ref readonly var shim = ref Unsafe.As<ReadOnlyMemory<T>, MemoryMirror<T>>(ref Unsafe.AsRef(in memory));
+            return shim.Object is TManager;
         }
     }
 }

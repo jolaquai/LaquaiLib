@@ -41,10 +41,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
             for (var j = 0; j < arrays[i].Length; j++)
                 _data[i, j] = arrays[i][j];
 
-        Rows = _data.GetLength(0);
-        Columns = _data.GetLength(1);
-        IsSquare = Rows == Columns;
-        _toString = $"Matrix<{TypeExtensions.AsKeyword(typeof(T).FullName)}>[{Rows}x{Columns}]";
+        var rows = Rows = _data.GetLength(0);
+        var columns = Columns = _data.GetLength(1);
+        IsSquare = rows == columns;
+        _toString = ComputeToString(rows, columns);
     }
     /// <summary>
     /// Initializes a new <see cref="Matrix{T}"/> using the specified 2D array of <typeparamref name="T"/>.
@@ -57,10 +57,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
 
         _data = data.Copy();
 
-        Rows = _data.GetLength(0);
-        Columns = _data.GetLength(1);
-        IsSquare = Rows == Columns;
-        _toString = $"Matrix<{TypeExtensions.AsKeyword(typeof(T).FullName)}>[{Rows}x{Columns}]";
+        var rows = Rows = _data.GetLength(0);
+        var columns = Columns = _data.GetLength(1);
+        IsSquare = rows == columns;
+        _toString = ComputeToString(rows, columns);
     }
     /// <summary>
     /// Initializes a new <see cref="Matrix{T}"/> of size <c><paramref name="rows"/> x <paramref name="columns"/></c> and <paramref name="values"/> as the elements, distributed row-wise.
@@ -81,8 +81,8 @@ public readonly struct Matrix<T> : IEnumerable<T>,
 
         Rows = rows;
         Columns = columns;
-        IsSquare = Rows == Columns;
-        _toString = $"Matrix<{TypeExtensions.AsKeyword(typeof(T).FullName)}>[{Rows}x{Columns}]";
+        IsSquare = rows == columns;
+        _toString = ComputeToString(rows, columns);
     }
     /// <inheritdoc cref="Matrix{T}.Matrix(int, int, T[])"/>"
     public Matrix(int rows, int columns, params ReadOnlySpan<T> values)
@@ -97,9 +97,10 @@ public readonly struct Matrix<T> : IEnumerable<T>,
 
         Rows = rows;
         Columns = columns;
-        IsSquare = Rows == Columns;
-        _toString = $"Matrix<{TypeExtensions.AsKeyword(typeof(T).FullName)}>[{Rows}x{Columns}]";
+        IsSquare = rows == columns;
+        _toString = ComputeToString(rows, columns);
     }
+    private static string ComputeToString(int rows, int columns) => string.Create(null, stackalloc char[64], $"Matrix<{TypeExtensions.AsKeyword(typeof(T).FullName)}>[{rows}x{columns}]");
 
     /// <summary>
     /// Gets the value at the specified <paramref name="row"/> and <paramref name="column"/> in the matrix.

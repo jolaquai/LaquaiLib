@@ -2,7 +2,7 @@ namespace LaquaiLib.Extensions;
 
 public static partial class LinqMemoryExtensions
 {
-    extension<TSource>(ReadOnlySpan<TSource> source)
+    extension<TSource>(in ReadOnlySpan<TSource> source)
     {
         /// <summary>
         /// Filters the elements of the <see cref="ReadOnlySpan{T}"/> becased on a <paramref name="predicate"/> function and stores all matching elements in a specified <paramref name="destination"/> <see cref="Span{T}"/>.
