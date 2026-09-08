@@ -43,6 +43,7 @@ public class ConvertLambdaToMethodRefactorTests
                 {
                     Func<int, int> square = Square;
                 }
+
                 private static int Square(int x) => x * x;
             }
             """
@@ -72,6 +73,7 @@ public class ConvertLambdaToMethodRefactorTests
                 {
                     Func<int, int> square = Square;
                 }
+
                 private static int Square(int x)
                 {
                     return x * x;
@@ -102,8 +104,10 @@ public class ConvertLambdaToMethodRefactorTests
                 {
                     Invoke(Selector);
                 }
-                static void Invoke(Func<int, int> selector) { }
+
                 private static int Selector(int x) => x * x;
+
+                static void Invoke(Func<int, int> selector) { }
             }
             """
         );
@@ -131,6 +135,7 @@ public class ConvertLambdaToMethodRefactorTests
                 {
                     Func<int, int> scaled = Scaled;
                 }
+
                 private int Scaled(int x) => x * _factor;
             }
             """
@@ -159,6 +164,7 @@ public class ConvertLambdaToMethodRefactorTests
                 {
                     Func<int, int> square = Square2;
                 }
+
                 private static int Square2(int x) => x * x;
             }
             """
