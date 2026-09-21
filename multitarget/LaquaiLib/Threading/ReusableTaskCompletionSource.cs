@@ -100,13 +100,38 @@ public closed class ReusableTaskCompletionSourceBase<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => TaskOfTCore;
     }
+
+    private int _taskToken = -1;
     /// <summary>
     /// Gets a <see cref="Task{TResult}"/> that represents the currently pending operation.
     /// </summary>
     protected Task<T> TaskOfTCore
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ValueTaskOfTCore.AsTask();
+        get
+        {
+            var token = Token;
+            var task = field;
+            if (_taskToken == token)
+                return task;
+
+            var vt = new ValueTask<T>(_source, token);
+            if (vt.IsCompletedSuccessfully)
+            {
+                var result = vt.Result;
+                if (typeof(T).IsValueType && task is { IsCompletedSuccessfully: true } && EqualityComparer<T>.Default.Equals(task.Result, result))
+                {
+                    _taskToken = token;
+                    return task;
+                }
+                task = Task.FromResult(result);
+            }
+            else
+                task = vt.AsTask();
+
+            _taskToken = token;
+            return field = task;
+        }
     }
 
     /// <summary>
@@ -133,6 +158,7 @@ public closed class ReusableTaskCompletionSourceBase<T>
     {
         ThrowIfTokenHasNoResult(Token);
         _source.Core.Reset();
+        _taskToken = -1;
     }
 
     /// <summary>
