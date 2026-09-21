@@ -201,7 +201,7 @@
         <member name="M:LaquaiLib.Windows.LowLevelWindow.OnSourceInitialized(System.EventArgs)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.Windows.LowLevelWindow.OnMessageReceived(System.Windows.Interop.MSG,System.Boolean@)">
+        <member name="M:LaquaiLib.Windows.LowLevelWindow.OnMessageReceived(System.Windows.Interop.MSG@,System.Boolean@)">
             <summary>
             Invoked when a message is received by the window.
             Inheriting classes should delegate to <see langword="base"/> if their own logic does not handle the message, otherwise the window may become unresponsive.

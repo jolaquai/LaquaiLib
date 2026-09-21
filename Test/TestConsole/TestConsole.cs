@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.Intrinsics;
@@ -8,6 +9,7 @@ using System.Runtime.Intrinsics.X86;
 
 using LaquaiLib.Analyzers.Shared.Attributes;
 using LaquaiLib.Extensions;
+using LaquaiLib.Threading;
 
 namespace TestConsole;
 
@@ -46,11 +48,17 @@ public static partial class TestConsole
 
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
-        var bytes = RevolverBytes(512);
-        using (var ms = MemoryStream.UnsafeFromByteArray(bytes, 4, 8))
+        var tcs = new ReusableTaskCompletionSource();
+        for (var i = 0; i < 65535; i++)
         {
-            ;
+            tcs.Reset();
+            Debug.Assert(tcs.ValueTask.IsCompletedSuccessfully);
+            var thread = Environment.CurrentManagedThreadId;
+            await tcs.ValueTask;
+            Debug.Assert(thread == Environment.CurrentManagedThreadId, "Expected not to switch threads when the VT is already completed");
+            tcs.Reset();
         }
+        ;
     }
 
     [FullAccessProxy(typeof(MemoryStream))]
