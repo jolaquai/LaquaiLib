@@ -115,7 +115,7 @@ public closed class ReusableTaskCompletionSourceBase<T>
             if (_taskToken == token)
                 return task;
 
-            var vt = new ValueTask<T>(_source, token);
+            var vt = ValueTaskOfTCore;
             if (vt.IsCompletedSuccessfully)
             {
                 var result = vt.Result;
