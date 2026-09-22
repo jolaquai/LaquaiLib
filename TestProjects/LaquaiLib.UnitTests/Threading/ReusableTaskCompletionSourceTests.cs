@@ -1,5 +1,3 @@
-using System.Globalization;
-
 using LaquaiLib.Threading;
 
 namespace LaquaiLib.UnitTests.Threading;
@@ -25,13 +23,6 @@ public abstract class ReusableTaskCompletionSourceTestBase
         Assert.Equal(kind == CompletionKind.Result, tcs.IsCompletedSuccessfully);
         Assert.Equal(kind == CompletionKind.Exception, tcs.IsFaulted);
         Assert.Equal(kind == CompletionKind.Canceled, tcs.IsCanceled);
-    }
-
-    protected static void AssertTaskState(Task task, CompletionKind kind)
-    {
-        Assert.Equal(kind == CompletionKind.Result, task.IsCompletedSuccessfully);
-        Assert.Equal(kind == CompletionKind.Exception, task.IsFaulted);
-        Assert.Equal(kind == CompletionKind.Canceled, task.IsCanceled);
     }
 
     protected static void Complete(ReusableTaskCompletionSource tcs, CompletionKind kind)
@@ -110,17 +101,11 @@ public abstract class ReusableTaskCompletionSourceTestBase
 
 public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTestBase
 {
-    private static ValueTask Consume(ReusableTaskCompletionSource tcs, bool asTask) => asTask ? new ValueTask(tcs.Task) : tcs.ValueTask;
+    private static ValueTask Consume(ReusableTaskCompletionSource tcs, bool asTask) => asTask ? new ValueTask(tcs.ValueTask.AsTask()) : tcs.ValueTask;
     private static void CycleThroughValueTask(ReusableTaskCompletionSource tcs)
     {
         tcs.SetResult();
         tcs.ValueTask.GetAwaiter().GetResult();
-        tcs.Reset();
-    }
-    private static void CycleThroughTask(ReusableTaskCompletionSource tcs)
-    {
-        tcs.SetResult();
-        tcs.Task.GetAwaiter().GetResult();
         tcs.Reset();
     }
 
@@ -130,7 +115,6 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
         var tcs = new ReusableTaskCompletionSource();
         AssertState(tcs, null);
         Assert.False(tcs.ValueTask.IsCompleted);
-        Assert.False(tcs.Task.IsCompleted);
     }
 
     [Fact]
@@ -140,7 +124,6 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
         tcs.SetResult();
         AssertState(tcs, CompletionKind.Result);
         Assert.True(tcs.ValueTask.IsCompletedSuccessfully);
-        Assert.True(tcs.Task.IsCompletedSuccessfully);
     }
 
     [Fact]
@@ -151,28 +134,6 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
         Assert.False(pending.IsCompleted);
         tcs.SetResult();
         await pending.WaitAsync(WaitTimeout, Ct);
-    }
-
-    [Fact]
-    public async Task SetResultCompletesTaskObtainedWhilePending()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var task = tcs.Task;
-        Assert.False(task.IsCompleted);
-        tcs.SetResult();
-        await task.WaitAsync(WaitTimeout, Ct);
-        Assert.True(task.IsCompletedSuccessfully);
-    }
-
-    [Theory, MemberData(nameof(Kinds))]
-    public async Task ResetRightAfterCompletionPreservesTaskObtainedWhilePending(CompletionKind kind)
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var task = tcs.Task;
-        Complete(tcs, kind);
-        tcs.Reset();
-        await Task.WhenAny(task).WaitAsync(WaitTimeout, Ct);
-        AssertTaskState(task, kind);
     }
 
     [Theory, MemberData(nameof(Kinds))]
@@ -265,29 +226,6 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
     }
 
     [Fact]
-    public async Task SetExceptionFaultsTaskWithSameException()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var ex = new FormatException();
-        tcs.SetException(ex);
-        var task = tcs.Task;
-        Assert.True(task.IsFaulted);
-        Assert.Same(ex, task.Exception.InnerException);
-        Assert.Same(ex, await Assert.ThrowsAsync<FormatException>(() => task));
-    }
-
-    [Fact]
-    public async Task SetExceptionFaultsTaskObtainedWhilePending()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var ex = new FormatException();
-        var task = tcs.Task;
-        tcs.SetException(ex);
-        Assert.Same(ex, await Assert.ThrowsAsync<FormatException>(() => task.WaitAsync(WaitTimeout, Ct)));
-        Assert.True(task.IsFaulted);
-    }
-
-    [Fact]
     public void SetExceptionWithNullThrowsAndLeavesPending()
     {
         var tcs = new ReusableTaskCompletionSource();
@@ -316,30 +254,6 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
     }
 
     [Fact]
-    public async Task SetCanceledCancelsTaskWithToken()
-    {
-        using var cts = new CancellationTokenSource();
-        var tcs = new ReusableTaskCompletionSource();
-        tcs.SetCanceled(cts.Token);
-        var task = tcs.Task;
-        Assert.True(task.IsCanceled);
-        var oce = await Assert.ThrowsAnyAsync<OperationCanceledException>(() => task);
-        Assert.Equal(cts.Token, oce.CancellationToken);
-    }
-
-    [Fact]
-    public async Task SetCanceledCancelsTaskObtainedWhilePending()
-    {
-        using var cts = new CancellationTokenSource();
-        var tcs = new ReusableTaskCompletionSource();
-        var task = tcs.Task;
-        tcs.SetCanceled(cts.Token);
-        var oce = await Assert.ThrowsAnyAsync<OperationCanceledException>(() => task.WaitAsync(WaitTimeout, Ct));
-        Assert.True(task.IsCanceled);
-        Assert.Equal(cts.Token, oce.CancellationToken);
-    }
-
-    [Fact]
     public async Task SetCanceledWithoutTokenUsesNoneToken()
     {
         var tcs = new ReusableTaskCompletionSource();
@@ -356,19 +270,6 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
         tcs.Reset();
         AssertState(tcs, null);
         Assert.False(tcs.ValueTask.IsCompleted);
-        Assert.False(tcs.Task.IsCompleted);
-    }
-
-    [Theory, MemberData(nameof(Kinds))]
-    public void TaskAfterResetIsPendingWhenPreviousCycleTaskWasObtained(CompletionKind kind)
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        Complete(tcs, kind);
-        var previous = tcs.Task;
-        tcs.Reset();
-        var current = tcs.Task;
-        Assert.NotSame(previous, current);
-        Assert.False(current.IsCompleted);
     }
 
     [Fact]
@@ -407,65 +308,10 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
     }
 
     [Fact]
-    public void TaskFromPreviousCycleKeepsItsState()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var ex = new FormatException();
-        tcs.SetException(ex);
-        var previous = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult();
-        Assert.True(previous.IsFaulted);
-        Assert.Same(ex, previous.Exception.InnerException);
-        Assert.NotSame(previous, tcs.Task);
-        Assert.True(tcs.Task.IsCompletedSuccessfully);
-    }
-
-    [Fact]
-    public void TaskIsSameInstanceWithinCycle()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var pending = tcs.Task;
-        Assert.Same(pending, tcs.Task);
-        tcs.SetResult();
-        Assert.Same(pending, tcs.Task);
-    }
-
-    [Fact]
-    public void TaskIsReusedAcrossCyclesWhenObtainedAfterCompletion()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        tcs.SetResult();
-        var first = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult();
-        Assert.Same(first, tcs.Task);
-    }
-
-    [Fact]
-    public async Task MultipleAwaitersOfPendingTaskAllComplete()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var task = tcs.Task;
-        var awaiters = Enumerable.Range(0, 4).Select(async _ => await task).ToArray();
-        Assert.All(awaiters, static a => Assert.False(a.IsCompleted));
-        tcs.SetResult();
-        await Task.WhenAll(awaiters).WaitAsync(WaitTimeout, Ct);
-    }
-
-    [Fact]
     public void ValueTaskContinuationRunsAsynchronously()
     {
         var tcs = new ReusableTaskCompletionSource();
         var continuationThread = ContinuationThreadId(c => tcs.ValueTask.ConfigureAwait(false).GetAwaiter().OnCompleted(c), tcs.SetResult);
-        Assert.NotEqual(Environment.CurrentManagedThreadId, continuationThread);
-    }
-
-    [Fact]
-    public void TaskContinuationRunsAsynchronously()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        var continuationThread = ContinuationThreadId(c => tcs.Task.ConfigureAwait(false).GetAwaiter().OnCompleted(c), tcs.SetResult);
         Assert.NotEqual(Environment.CurrentManagedThreadId, continuationThread);
     }
 
@@ -515,34 +361,11 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
         }
     }
 
-    [Theory, InlineData(false), InlineData(true)]
-    public void TaskIsPendingAfterVersionWrapsAround(bool obtainTaskEachCycle)
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        for (var i = 0; i < ushort.MaxValue; i++)
-        {
-            tcs.SetResult();
-            if (obtainTaskEachCycle)
-                _ = tcs.Task;
-            tcs.Reset();
-        }
-        var task = tcs.Task;
-        Assert.NotNull(task);
-        Assert.False(task.IsCompleted);
-    }
-
     [Fact]
     public void ValueTaskCycleDoesNotAllocate()
     {
         var tcs = new ReusableTaskCompletionSource();
         Assert.Equal(0, AllocatedBytes(() => CycleThroughValueTask(tcs)));
-    }
-
-    [Fact]
-    public void TaskCycleDoesNotAllocateWhenObtainedAfterCompletion()
-    {
-        var tcs = new ReusableTaskCompletionSource();
-        Assert.Equal(0, AllocatedBytes(() => CycleThroughTask(tcs)));
     }
 
     [Fact]
@@ -620,40 +443,12 @@ public class ReusableTaskCompletionSourceTests : ReusableTaskCompletionSourceTes
 
 public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSourceTestBase
 {
-    private static ValueTask<T> Consume<T>(ReusableTaskCompletionSource<T> tcs, bool asTask) => asTask ? new ValueTask<T>(tcs.Task) : tcs.ValueTask;
+    private static ValueTask<T> Consume<T>(ReusableTaskCompletionSource<T> tcs, bool asTask) => asTask ? new ValueTask<T>(tcs.ValueTask.AsTask()) : tcs.ValueTask;
     private static T ResultOf<T>(ReusableTaskCompletionSource<T> tcs) => tcs.ValueTask.GetAwaiter().GetResult();
-    private static T TaskResult<T>(Task<T> task) => task.GetAwaiter().GetResult();
-    private static bool WaitFor(Task task) => task.Wait(WaitTimeout);
-
-    private sealed class GatedSynchronizationContext : SynchronizationContext, IDisposable
-    {
-        public ManualResetEventSlim Entered { get; } = new();
-        public ManualResetEventSlim Release { get; } = new();
-
-        public override void Post(SendOrPostCallback d, object state)
-        {
-            Entered.Set();
-            Release.Wait();
-            d(state);
-        }
-
-        public void Dispose()
-        {
-            Entered.Dispose();
-            Release.Dispose();
-        }
-    }
-    private static void RegisterNoOpContinuation<T>(ReusableTaskCompletionSource<T> tcs) => tcs.ValueTask.ConfigureAwait(false).GetAwaiter().OnCompleted(static () => { });
     private static void CycleThroughValueTask(ReusableTaskCompletionSource<int> tcs, int result)
     {
         tcs.SetResult(result);
         tcs.ValueTask.GetAwaiter().GetResult();
-        tcs.Reset();
-    }
-    private static void CycleThroughTask(ReusableTaskCompletionSource<int> tcs, int result)
-    {
-        tcs.SetResult(result);
-        tcs.Task.GetAwaiter().GetResult();
         tcs.Reset();
     }
 
@@ -663,19 +458,16 @@ public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSource
         var tcs = new ReusableTaskCompletionSource<int>();
         AssertState(tcs, null);
         Assert.False(tcs.ValueTask.IsCompleted);
-        Assert.False(tcs.Task.IsCompleted);
     }
 
     [Fact]
-    public async Task SetResultIsObservableThroughValueTaskAndTask()
+    public async Task SetResultIsObservableThroughValueTask()
     {
         var tcs = new ReusableTaskCompletionSource<int>();
         tcs.SetResult(42);
         AssertState(tcs, CompletionKind.Result);
         Assert.True(tcs.ValueTask.IsCompletedSuccessfully);
-        Assert.True(tcs.Task.IsCompletedSuccessfully);
         Assert.Equal(42, await tcs.ValueTask);
-        Assert.Equal(42, await tcs.Task);
     }
 
     [Fact]
@@ -685,7 +477,6 @@ public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSource
         tcs.SetResult(null);
         AssertState(tcs, CompletionKind.Result);
         Assert.Null(await tcs.ValueTask);
-        Assert.Null(await tcs.Task);
     }
 
     [Fact]
@@ -699,26 +490,13 @@ public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSource
     }
 
     [Fact]
-    public async Task SetResultCompletesTaskObtainedWhilePendingWithResult()
+    public async Task ValueTaskAsTaskObtainedWhilePendingReceivesResult()
     {
         var tcs = new ReusableTaskCompletionSource<int>();
-        var task = tcs.Task;
+        var task = tcs.ValueTask.AsTask();
         Assert.False(task.IsCompleted);
         tcs.SetResult(7);
         Assert.Equal(7, await task.WaitAsync(WaitTimeout, Ct));
-    }
-
-    [Theory, MemberData(nameof(Kinds))]
-    public async Task ResetRightAfterCompletionPreservesTaskObtainedWhilePending(CompletionKind kind)
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        var task = tcs.Task;
-        Complete(tcs, kind, 7);
-        tcs.Reset();
-        await Task.WhenAny(task).WaitAsync(WaitTimeout, Ct);
-        AssertTaskState(task, kind);
-        if (kind == CompletionKind.Result)
-            Assert.Equal(7, await task);
     }
 
     [Theory, MemberData(nameof(Kinds))]
@@ -789,27 +567,23 @@ public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSource
     }
 
     [Fact]
-    public async Task SetExceptionFaultsValueTaskAndTaskWithSameException()
+    public async Task SetExceptionFaultsValueTaskWithSameException()
     {
         var tcs = new ReusableTaskCompletionSource<int>();
         var ex = new FormatException();
         tcs.SetException(ex);
         AssertState(tcs, CompletionKind.Exception);
         Assert.Same(ex, await Assert.ThrowsAsync<FormatException>(async () => await tcs.ValueTask));
-        Assert.True(tcs.Task.IsFaulted);
-        Assert.Same(ex, await Assert.ThrowsAsync<FormatException>(() => tcs.Task));
     }
 
     [Fact]
-    public async Task SetCanceledCancelsValueTaskAndTaskWithToken()
+    public async Task SetCanceledCancelsValueTaskWithToken()
     {
         using var cts = new CancellationTokenSource();
         var tcs = new ReusableTaskCompletionSource<int>();
         tcs.SetCanceled(cts.Token);
         AssertState(tcs, CompletionKind.Canceled);
         Assert.Equal(cts.Token, (await Assert.ThrowsAnyAsync<OperationCanceledException>(async () => await tcs.ValueTask)).CancellationToken);
-        Assert.True(tcs.Task.IsCanceled);
-        Assert.Equal(cts.Token, (await Assert.ThrowsAnyAsync<OperationCanceledException>(() => tcs.Task)).CancellationToken);
     }
 
     [Theory, MemberData(nameof(Kinds))]
@@ -820,19 +594,6 @@ public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSource
         tcs.Reset();
         AssertState(tcs, null);
         Assert.False(tcs.ValueTask.IsCompleted);
-        Assert.False(tcs.Task.IsCompleted);
-    }
-
-    [Theory, MemberData(nameof(Kinds))]
-    public void TaskAfterResetIsPendingWhenPreviousCycleTaskWasObtained(CompletionKind kind)
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        Complete(tcs, kind, 1);
-        var previous = tcs.Task;
-        tcs.Reset();
-        var current = tcs.Task;
-        Assert.NotSame(previous, current);
-        Assert.False(current.IsCompleted);
     }
 
     [Fact]
@@ -872,271 +633,11 @@ public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSource
     }
 
     [Fact]
-    public async Task TaskFromPreviousCycleKeepsItsResult()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        tcs.SetResult(1);
-        var previous = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult(2);
-        Assert.NotSame(previous, tcs.Task);
-        Assert.Equal(1, await previous);
-        Assert.Equal(2, await tcs.Task);
-    }
-
-    [Fact]
-    public async Task TaskObtainedWhilePendingKeepsItsResultAfterLaterCycles()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        var previous = tcs.Task;
-        tcs.SetResult(1);
-        Assert.Equal(1, await previous.WaitAsync(WaitTimeout, Ct));
-        tcs.Reset();
-        tcs.SetResult(2);
-        Assert.Equal(1, await previous);
-        Assert.Equal(2, await tcs.Task);
-    }
-
-    [Fact]
-    public void TaskIsSameInstanceWithinCycle()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        var pending = tcs.Task;
-        Assert.Same(pending, tcs.Task);
-        tcs.SetResult(1);
-        Assert.Same(pending, tcs.Task);
-    }
-
-    [Fact]
-    public void TaskIsReusedAcrossCyclesForEqualValueTypeResult()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        tcs.SetResult(1000);
-        var first = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult(1000);
-        Assert.Same(first, tcs.Task);
-    }
-
-    [Fact]
-    public async Task TaskIsReplacedAcrossCyclesForDifferentResult()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        tcs.SetResult(1000);
-        var first = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult(2000);
-        Assert.NotSame(first, tcs.Task);
-        Assert.Equal(1000, await first);
-        Assert.Equal(2000, await tcs.Task);
-    }
-
-    [Fact]
-    public async Task TaskCarriesCurrentReferenceTypeInstanceForEqualResult()
-    {
-        var first = new string('x', 3);
-        var second = new string('x', 3);
-        var tcs = new ReusableTaskCompletionSource<string>();
-        tcs.SetResult(first);
-        Assert.Same(first, await tcs.Task);
-        tcs.Reset();
-        tcs.SetResult(second);
-        Assert.Same(second, await tcs.Task);
-    }
-
-    [Fact]
-    public async Task TaskPreservesNegativeZeroAfterPositiveZero()
-    {
-        var tcs = new ReusableTaskCompletionSource<double>();
-        tcs.SetResult(0.0);
-        _ = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult(-0.0);
-        Assert.True(double.IsNegative(await tcs.ValueTask));
-        Assert.True(double.IsNegative(await tcs.Task));
-    }
-
-    [Fact]
-    public async Task TaskPreservesDecimalScaleAfterEqualDecimal()
-    {
-        var tcs = new ReusableTaskCompletionSource<decimal>();
-        tcs.SetResult(1.0m);
-        _ = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult(1.00m);
-        Assert.Equal("1.00", (await tcs.ValueTask).ToString(CultureInfo.InvariantCulture));
-        Assert.Equal("1.00", (await tcs.Task).ToString(CultureInfo.InvariantCulture));
-    }
-
-    [Fact]
-    public async Task TaskAfterFaultedCycleCarriesNewResult()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        tcs.SetResult(1000);
-        _ = tcs.Task;
-        tcs.Reset();
-        tcs.SetException(new FormatException());
-        var faulted = tcs.Task;
-        tcs.Reset();
-        tcs.SetResult(1000);
-        Assert.True(faulted.IsFaulted);
-        Assert.True(tcs.Task.IsCompletedSuccessfully);
-        Assert.Equal(1000, await tcs.Task);
-    }
-
-    [Fact]
-    public async Task MultipleAwaitersOfPendingTaskAllObserveResult()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        var task = tcs.Task;
-        var awaiters = Enumerable.Range(0, 4).Select(async _ => await task).ToArray();
-        tcs.SetResult(5);
-        Assert.All(await Task.WhenAll(awaiters).WaitAsync(WaitTimeout, Ct), static r => Assert.Equal(5, r));
-    }
-
-    [Fact]
     public void ValueTaskContinuationRunsAsynchronously()
     {
         var tcs = new ReusableTaskCompletionSource<int>();
         var continuationThread = ContinuationThreadId(c => tcs.ValueTask.ConfigureAwait(false).GetAwaiter().OnCompleted(c), () => tcs.SetResult(1));
         Assert.NotEqual(Environment.CurrentManagedThreadId, continuationThread);
-    }
-
-    [Fact]
-    public void TaskContinuationRunsAsynchronously()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        var continuationThread = ContinuationThreadId(c => tcs.Task.ConfigureAwait(false).GetAwaiter().OnCompleted(c), () => tcs.SetResult(1));
-        Assert.NotEqual(Environment.CurrentManagedThreadId, continuationThread);
-    }
-
-    [Fact]
-    public void ConcurrentTrySetResultHasExactlyOneWinner()
-    {
-        const int iterations = 50000;
-        var tcs = new ReusableTaskCompletionSource<int>();
-        using var barrier = new Barrier(3);
-        var wins = 0;
-        var throws = 0;
-        var stop = false;
-
-        void Contend(int value)
-        {
-            while (true)
-            {
-                barrier.SignalAndWait();
-                if (Volatile.Read(ref stop))
-                    return;
-                try
-                {
-                    if (tcs.TrySetResult(value))
-                        Interlocked.Increment(ref wins);
-                }
-                catch (InvalidOperationException)
-                {
-                    Interlocked.Increment(ref throws);
-                }
-                barrier.SignalAndWait();
-            }
-        }
-
-        Thread[] threads = [new(() => Contend(1)) { IsBackground = true }, new(() => Contend(2)) { IsBackground = true }];
-        foreach (var thread in threads)
-            thread.Start();
-
-        var failures = 0;
-        for (var i = 0; i < iterations && failures == 0; i++)
-        {
-            RegisterNoOpContinuation(tcs);
-            barrier.SignalAndWait(Ct);
-            barrier.SignalAndWait(Ct);
-            if (Interlocked.Exchange(ref wins, 0) != 1 | Interlocked.Exchange(ref throws, 0) != 0)
-                failures++;
-            tcs.TryReset();
-        }
-
-        Volatile.Write(ref stop, true);
-        barrier.SignalAndWait(Ct);
-        foreach (var thread in threads)
-            thread.Join();
-        Assert.Equal(0, failures);
-    }
-
-    [Fact]
-    public void TaskObtainedConcurrentlyWithCompletionReceivesResult()
-    {
-        const int iterations = 50000;
-        var tcs = new ReusableTaskCompletionSource<int>();
-        using var barrier = new Barrier(2);
-        var value = 0;
-        var stop = false;
-
-        var completer = new Thread(() =>
-        {
-            while (true)
-            {
-                barrier.SignalAndWait();
-                if (Volatile.Read(ref stop))
-                    return;
-                tcs.SetResult(Volatile.Read(ref value));
-                barrier.SignalAndWait();
-            }
-        })
-        { IsBackground = true };
-        completer.Start();
-
-        var failures = 0;
-        for (var i = 0; i < iterations && failures == 0; i++)
-        {
-            Volatile.Write(ref value, i);
-            barrier.SignalAndWait(Ct);
-            var task = tcs.Task;
-            barrier.SignalAndWait(Ct);
-            if (!WaitFor(task) || TaskResult(task) != i)
-                failures++;
-            tcs.Reset();
-        }
-
-        Volatile.Write(ref stop, true);
-        barrier.SignalAndWait(Ct);
-        completer.Join();
-        Assert.Equal(0, failures);
-    }
-
-    [Fact]
-    public void CompleterStalledAfterSignalingNeverCompletesNextCycleTask()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        using var context = new GatedSynchronizationContext();
-        var previousContext = SynchronizationContext.Current;
-        SynchronizationContext.SetSynchronizationContext(context);
-        try
-        {
-            tcs.ValueTask.GetAwaiter().UnsafeOnCompleted(static () => { });
-        }
-        finally
-        {
-            SynchronizationContext.SetSynchronizationContext(previousContext);
-        }
-        var completer = new Thread(() => tcs.SetResult(1)) { IsBackground = true };
-        completer.Start();
-        Task<int> next;
-        try
-        {
-            Assert.True(context.Entered.Wait(WaitTimeout, Ct));
-            tcs.Reset();
-            next = tcs.Task;
-        }
-        finally
-        {
-            context.Release.Set();
-        }
-        Assert.True(completer.Join(WaitTimeout));
-
-        Assert.False(next.IsCompleted);
-        tcs.SetResult(2);
-        Assert.True(WaitFor(next));
-        Assert.Equal(2, TaskResult(next));
     }
 
     [Theory, InlineData(false), InlineData(true)]
@@ -1185,35 +686,12 @@ public class ReusableTaskCompletionSourceOfTTests : ReusableTaskCompletionSource
         }
     }
 
-    [Theory, InlineData(false), InlineData(true)]
-    public void TaskIsPendingAfterVersionWrapsAround(bool obtainTaskEachCycle)
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        for (var i = 0; i < ushort.MaxValue; i++)
-        {
-            tcs.SetResult(i);
-            if (obtainTaskEachCycle)
-                _ = tcs.Task;
-            tcs.Reset();
-        }
-        var task = tcs.Task;
-        Assert.NotNull(task);
-        Assert.False(task.IsCompleted);
-    }
-
     [Fact]
     public void ValueTaskCycleDoesNotAllocate()
     {
         var tcs = new ReusableTaskCompletionSource<int>();
         var i = 0;
         Assert.Equal(0, AllocatedBytes(() => CycleThroughValueTask(tcs, i++)));
-    }
-
-    [Fact]
-    public void TaskCycleWithRepeatedResultDoesNotAllocate()
-    {
-        var tcs = new ReusableTaskCompletionSource<int>();
-        Assert.Equal(0, AllocatedBytes(() => CycleThroughTask(tcs, 1000)));
     }
 
     [Fact]

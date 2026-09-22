@@ -6,31 +6,33 @@ namespace LaquaiLib.Threading;
 /// <summary>
 /// Implements a <see cref="TaskCompletionSource"/> that can be reused, remaining effectively zero-alloc beyond the wrapper.
 /// When using exclusively the <see cref="ValueTask"/> property, this is even slightly faster than <see cref="TaskCompletionSource"/>.
-/// Using the <see cref="Task"/> property makes this slower than <see cref="TaskCompletionSource"/>, but still zero-alloc.
 /// </summary>
 public sealed class ReusableTaskCompletionSource : ReusableTaskCompletionSourceBase<Nothing>
 {
     /// <summary>
-    /// Sets the currently pending <see cref="ValueTask"/> or <see cref="Task"/> as completed successfully.
+    /// Sets the currently pending <see cref="ValueTask"/> as completed successfully.
     /// </summary>
     public void SetResult() => SetResultCore(default);
     /// <summary>
-    /// Attempts to set the currently pending <see cref="ValueTask"/> or <see cref="Task"/> as completed successfully.
+    /// Attempts to set the currently pending <see cref="ValueTask"/> as completed successfully.
     /// </summary>
     /// <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
     public bool TrySetResult() => TrySetResultCore(default);
     /// <summary>
-    /// Sets the currently pending <see cref="ValueTask"/> or <see cref="Task"/> to the same completion state as the specified <paramref name="task"/>.
+    /// Sets the currently pending <see cref="ValueTask"/> to the same completion state as the specified <paramref name="task"/>.
     /// <paramref name="task"/> must be completed, otherwise an <see cref="InvalidOperationException"/> is thrown.
     /// </summary>
     /// <param name="task">The <see cref="System.Threading.Tasks.Task"/> to set the result from.</param>
     public void SetFromTask(Task task)
     {
         if (!TrySetFromTask(task))
-            ThrowCannotChangeSetResult(Token);
+        {
+            ThrowIfTokenHasResult(Token);
+            Debug.Fail($"Expected failure modes of {nameof(TrySetFromTask)} to exactly match those of {nameof(SetFromTask)}");
+        }
     }
     /// <summary>
-    /// Attempts to set the currently pending <see cref="ValueTask"/> or <see cref="Task"/> to the same completion state as the specified <paramref name="task"/>.
+    /// Attempts to set the currently pending <see cref="ValueTask"/> to the same completion state as the specified <paramref name="task"/>.
     /// <paramref name="task"/> must be completed, otherwise an <see cref="InvalidOperationException"/> is thrown.
     /// </summary>
     /// <param name="task">The <see cref="System.Threading.Tasks.Task"/> to set the result from.</param>
@@ -49,39 +51,39 @@ public sealed class ReusableTaskCompletionSource : ReusableTaskCompletionSourceB
 
     /// <inheritdoc cref="ReusableTaskCompletionSourceBase{T}.ValueTaskCore" />
     public ValueTask ValueTask => ValueTaskCore;
-    /// <inheritdoc cref="ReusableTaskCompletionSourceBase{T}.TaskCore" />
-    public Task Task => TaskCore;
 }
 /// <summary>
 /// Implements a <see cref="TaskCompletionSource{TResult}"/> that can be reused.
 /// When using exclusively the <see cref="ValueTask"/> property, this is even slightly faster than <see cref="TaskCompletionSource{TResult}"/>.
-/// Using the <see cref="Task"/> property makes this slower but still less allocation-heavy than <see cref="TaskCompletionSource{TResult}"/>.
 /// </summary>
 public sealed class ReusableTaskCompletionSource<T> : ReusableTaskCompletionSourceBase<T>
 {
     /// <summary>
-    /// Sets the result of the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> to <paramref name="result"/>.
+    /// Sets the result of the currently pending <see cref="ValueTask{TResult}"/> to <paramref name="result"/>.
     /// </summary>
     /// <param name="result">The result to set.</param>
     public void SetResult(T result) => SetResultCore(result);
     /// <summary>
-    /// Attempts to set the result of the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> to <paramref name="result"/>.
+    /// Attempts to set the result of the currently pending <see cref="ValueTask{TResult}"/> to <paramref name="result"/>.
     /// </summary>
     /// <param name="result">The result to set.</param>
     /// <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
     public bool TrySetResult(T result) => TrySetResultCore(result);
     /// <summary>
-    /// Sets the currently pending <see cref="ValueTask"/> or <see cref="Task"/> to the same completion state as the specified <paramref name="task"/>.
+    /// Sets the currently pending <see cref="ValueTask"/> to the same completion state as the specified <paramref name="task"/>.
     /// <paramref name="task"/> must be completed, otherwise an <see cref="InvalidOperationException"/> is thrown.
     /// </summary>
     /// <param name="task">The <see cref="Task{TResult}"/> to set the result from.</param>
     public void SetFromTask(Task<T> task)
     {
         if (!TrySetFromTask(task))
-            ThrowCannotChangeSetResult(Token);
+        {
+            ThrowIfTokenHasResult(Token);
+            Debug.Fail($"Expected failure modes of {nameof(TrySetFromTask)} to exactly match those of {nameof(SetFromTask)}");
+        }
     }
     /// <summary>
-    /// Attempts to set the currently pending <see cref="ValueTask"/> or <see cref="Task"/> to the same completion state as the specified <paramref name="task"/>.
+    /// Attempts to set the currently pending <see cref="ValueTask"/> to the same completion state as the specified <paramref name="task"/>.
     /// <paramref name="task"/> must be completed, otherwise an <see cref="InvalidOperationException"/> is thrown.
     /// </summary>
     /// <param name="task">The <see cref="Task{TResult}"/> to set the result from.</param>
@@ -100,8 +102,6 @@ public sealed class ReusableTaskCompletionSource<T> : ReusableTaskCompletionSour
 
     /// <inheritdoc cref="ReusableTaskCompletionSourceBase{T}.ValueTaskOfTCore" />
     public ValueTask<T> ValueTask => ValueTaskOfTCore;
-    /// <inheritdoc cref="ReusableTaskCompletionSourceBase{T}.TaskOfTCore" />
-    public Task<T> Task => TaskOfTCore;
 }
 
 /// <summary>
@@ -156,7 +156,6 @@ public closed class ReusableTaskCompletionSourceBase<T>
         T IValueTaskSource<T>.GetResult(short token) => Core.GetResult(token);
     }
     private readonly Source _source = new();
-    private int _claimed;
 
     /// <summary>
     /// Gets the token of the currently pending operation.
@@ -168,22 +167,25 @@ public closed class ReusableTaskCompletionSourceBase<T>
     }
 
     /// <summary>
-    /// Sets the result of the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> to <paramref name="result"/>.
+    /// Sets the result of the currently pending <see cref="ValueTask{TResult}"/> to <paramref name="result"/>.
     /// </summary>
     /// <param name="result">The result to set. Ignored for <see cref="ReusableTaskCompletionSource"/>.</param>
     protected void SetResultCore(T result)
     {
         if (!TrySetResultCore(result))
-            ThrowCannotChangeSetResult(Token);
+        {
+            ThrowIfTokenHasResult(Token);
+            Debug.Fail($"Expected failure modes of {nameof(TrySetResultCore)} to exactly match those of {nameof(SetResultCore)}");
+        }
     }
     /// <summary>
-    /// Attempts to set the result of the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> to <paramref name="result"/>.
+    /// Attempts to set the result of the currently pending <see cref="ValueTask{TResult}"/> to <paramref name="result"/>.
     /// </summary>
     /// <param name="result">The result to set. Ignored for <see cref="ReusableTaskCompletionSource"/>.</param>
     /// <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
     protected bool TrySetResultCore(T result)
     {
-        if (Interlocked.CompareExchange(ref _claimed, 1, 0) != 0)
+        if (HasResult())
             return false;
 
         _source.Core.SetResult(result);
@@ -205,51 +207,6 @@ public closed class ReusableTaskCompletionSourceBase<T>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => new(_source, Token);
     }
-    /// <summary>
-    /// Gets a <see cref="Task"/> that represents the currently pending operation.
-    /// </summary>
-    protected Task TaskCore
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => TaskOfTCore;
-    }
-
-    private const int NoTaskToken = int.MinValue;
-    private int _taskToken = NoTaskToken;
-    private Task<T> _task;
-    /// <summary>
-    /// Gets a <see cref="Task{TResult}"/> that represents the currently pending operation.
-    /// </summary>
-    protected Task<T> TaskOfTCore
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            var token = Token;
-            return Volatile.Read(ref _taskToken) == token ? _task : CreateTask(token);
-        }
-    }
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private Task<T> CreateTask(short token)
-    {
-        var vt = new ValueTask<T>(_source, token);
-        Task<T> task;
-        if (vt.IsCompletedSuccessfully)
-        {
-            var result = vt.Result;
-            task = _task is { IsCompletedSuccessfully: true } previous && BitwiseEquals(previous.Result, result) ? previous : Task.FromResult(result);
-        }
-        else
-            task = vt.AsTask();
-
-        _task = task;
-        Volatile.Write(ref _taskToken, token);
-        return task;
-    }
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static bool BitwiseEquals(T left, T right) => !RuntimeHelpers.IsReferenceOrContainsReferences<T>()
-        && MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<T, byte>(ref left), Unsafe.SizeOf<T>()).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(ref Unsafe.As<T, byte>(ref right), Unsafe.SizeOf<T>()));
-
     /// <summary>
     /// Gets whether the currently pending operation has been completed.
     /// </summary>
@@ -284,35 +241,37 @@ public closed class ReusableTaskCompletionSourceBase<T>
     }
 
     /// <summary>
-    /// Sets the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> as faulted with the specified <paramref name="exception"/>.
+    /// Sets the currently pending <see cref="ValueTask{TResult}"/> as faulted with the specified <paramref name="exception"/>.
     /// </summary>
     /// <param name="exception">The exception to set.</param>
     public void SetException(Exception exception)
     {
         if (!TrySetException(exception))
-            ThrowCannotChangeSetResult(Token);
+        {
+            ThrowIfTokenHasResult(Token);
+            Debug.Fail($"Expected failure modes of {nameof(TrySetException)} to exactly match those of {nameof(SetException)}");
+        }
     }
     /// <summary>
-    /// Attempts to set the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> as faulted with the specified <paramref name="exception"/>.
+    /// Attempts to set the currently pending <see cref="ValueTask{TResult}"/> as faulted with the specified <paramref name="exception"/>.
     /// </summary>
     /// <param name="exception">The exception to set.</param>
     /// <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
     public bool TrySetException(Exception exception)
     {
-        ArgumentNullException.ThrowIfNull(exception);
-        if (Interlocked.CompareExchange(ref _claimed, 1, 0) != 0)
+        if (HasResult())
             return false;
 
         _source.Core.SetException(exception);
         return true;
     }
     /// <summary>
-    /// Sets the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> as canceled with the specified <paramref name="cancellationToken"/>.
+    /// Sets the currently pending <see cref="ValueTask{TResult}"/> as canceled with the specified <paramref name="cancellationToken"/>.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token to set.</param>
     public void SetCanceled(CancellationToken cancellationToken = default) => SetException(new OperationCanceledException(cancellationToken));
     /// <summary>
-    /// Attempts to set the currently pending <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> as canceled with the specified <paramref name="cancellationToken"/>.
+    /// Attempts to set the currently pending <see cref="ValueTask{TResult}"/> as canceled with the specified <paramref name="cancellationToken"/>.
     /// </summary>
     /// <param name="cancellationToken">The cancellation token to set.</param>
     /// <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
@@ -321,12 +280,16 @@ public closed class ReusableTaskCompletionSourceBase<T>
     /// Resets the <see cref="ReusableTaskCompletionSource{T}"/> to its initial state, allowing it to be reused for another operation.
     /// </summary>
     /// <remarks>
-    /// Calls to this method are only allowed when the current <see cref="ValueTask{TResult}"/> or <see cref="Task{TResult}"/> has been completed.
+    /// Calls to this method are only allowed once the consumer has observed the completion of the current <see cref="ValueTask{TResult}"/>; a <see cref="Task{TResult}"/> obtained from it via <see cref="ValueTask{TResult}.AsTask"/> before completion must have completed.
+    /// Like <see cref="ManualResetValueTaskSourceCore{TResult}"/>, this type supports a single producer and a single consumer per operation.
     /// </remarks>
     public void Reset()
     {
         if (!TryReset())
-            ThrowTokenUnknown(Token);
+        {
+            ThrowIfTokenHasNoResult(Token);
+            Debug.Fail($"Expected failure modes of {nameof(TryReset)} to exactly match those of {nameof(Reset)}");
+        }
     }
     /// <summary>
     /// Attempts to reset the <see cref="ReusableTaskCompletionSource{T}"/> to its initial state, allowing it to be reused for another operation.
@@ -336,16 +299,7 @@ public closed class ReusableTaskCompletionSourceBase<T>
     {
         if (!HasResult())
             return false;
-        // A still-queued AsTask callback reads the core with this token; resetting first makes it throw on the thread pool.
-        if (Volatile.Read(ref _taskToken) == Token && _task is { IsCompleted: false } task)
-        {
-            var spinner = new SpinWait();
-            while (!task.IsCompleted)
-                spinner.SpinOnce();
-        }
         _source.Core.Reset();
-        _taskToken = NoTaskToken;
-        Volatile.Write(ref _claimed, 0);
         return true;
     }
 
@@ -382,7 +336,7 @@ public closed class ReusableTaskCompletionSourceBase<T>
             ThrowTokenUnknown(token);
     }
     private protected static Exception Unwrap(AggregateException exception) => exception.InnerExceptions.Count == 1 ? exception.InnerExceptions[0] : exception;
-    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private protected static void ThrowCannotChangeSetResult(short token) => throw new InvalidOperationException($"Cannot change the already-set result for token {token}. Call {nameof(ReusableTaskCompletionSource)}.{nameof(Reset)}.");
+    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowCannotChangeSetResult(short token) => throw new InvalidOperationException($"Cannot change the already-set result for token {token}. Call {nameof(ReusableTaskCompletionSource)}.{nameof(Reset)}.");
     [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowTokenUnknown(short token) => throw new InvalidOperationException($"The result for token {token} is unset.");
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> indicating that the result state cannot be copied from an uncompleted task.

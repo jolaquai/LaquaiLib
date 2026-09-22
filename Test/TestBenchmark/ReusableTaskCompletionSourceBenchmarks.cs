@@ -37,13 +37,13 @@ public class ReusableTaskCompletionSourceBenchmarks
         }
     }
     [BenchmarkCategory(VoidSync), Benchmark(OperationsPerInvoke = N)]
-    public async Task ReusableTask()
+    public async Task ReusableAsTask()
     {
         var tcs = new ReusableTaskCompletionSource();
         for (var i = 0; i < N; i++)
         {
             tcs.SetResult();
-            await tcs.Task;
+            await tcs.ValueTask.AsTask();
             tcs.Reset();
         }
     }
@@ -72,14 +72,14 @@ public class ReusableTaskCompletionSourceBenchmarks
         return sum;
     }
     [BenchmarkCategory(Int32Sync), Benchmark(OperationsPerInvoke = N)]
-    public async Task<int> ReusableTaskOfInt32()
+    public async Task<int> ReusableAsTaskOfInt32()
     {
         var tcs = new ReusableTaskCompletionSource<int>();
         var sum = 0;
         for (var i = 0; i < N; i++)
         {
             tcs.SetResult(i);
-            sum += await tcs.Task;
+            sum += await tcs.ValueTask.AsTask();
             tcs.Reset();
         }
         return sum;
@@ -121,24 +121,24 @@ public class ReusableTaskCompletionSourceBenchmarks
         }
     }
     [BenchmarkCategory(VoidAsync), Benchmark(OperationsPerInvoke = N)]
-    public async Task ReusableTaskPingPong()
+    public async Task ReusableAsTaskPingPong()
     {
         var ping = new ReusableTaskCompletionSource();
         var pong = new ReusableTaskCompletionSource();
-        var echo = EchoReusableTask(ping, pong);
+        var echo = EchoReusableAsTask(ping, pong);
         for (var i = 0; i < N; i++)
         {
             ping.SetResult();
-            await pong.Task;
+            await pong.ValueTask.AsTask();
             pong.Reset();
         }
         await echo;
     }
-    private static async Task EchoReusableTask(ReusableTaskCompletionSource ping, ReusableTaskCompletionSource pong)
+    private static async Task EchoReusableAsTask(ReusableTaskCompletionSource ping, ReusableTaskCompletionSource pong)
     {
         for (var i = 0; i < N; i++)
         {
-            await ping.Task;
+            await ping.ValueTask.AsTask();
             ping.Reset();
             pong.SetResult();
         }
@@ -192,26 +192,26 @@ public class ReusableTaskCompletionSourceBenchmarks
         }
     }
     [BenchmarkCategory(Int32Async), Benchmark(OperationsPerInvoke = N)]
-    public async Task<int> ReusableTaskOfInt32PingPong()
+    public async Task<int> ReusableAsTaskOfInt32PingPong()
     {
         var ping = new ReusableTaskCompletionSource<int>();
         var pong = new ReusableTaskCompletionSource<int>();
-        var echo = EchoReusableTaskOfInt32(ping, pong);
+        var echo = EchoReusableAsTaskOfInt32(ping, pong);
         var sum = 0;
         for (var i = 0; i < N; i++)
         {
             ping.SetResult(i);
-            sum += await pong.Task;
+            sum += await pong.ValueTask.AsTask();
             pong.Reset();
         }
         await echo;
         return sum;
     }
-    private static async Task EchoReusableTaskOfInt32(ReusableTaskCompletionSource<int> ping, ReusableTaskCompletionSource<int> pong)
+    private static async Task EchoReusableAsTaskOfInt32(ReusableTaskCompletionSource<int> ping, ReusableTaskCompletionSource<int> pong)
     {
         for (var i = 0; i < N; i++)
         {
-            var value = await ping.Task;
+            var value = await ping.ValueTask.AsTask();
             ping.Reset();
             pong.SetResult(value + 1);
         }
