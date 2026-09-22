@@ -45,7 +45,7 @@ public static unsafe class MemoryManager
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T* UnsafeCAlloc<T>(int count, bool pressure = false) where T : unmanaged
     {
-        nint bytes = (nint)count * sizeof(T);
+        var bytes = (nint)count * sizeof(T);
         if (pressure)
             GC.AddMemoryPressure(bytes);
         return (T*)Marshal.AllocHGlobal(bytes);
@@ -112,7 +112,7 @@ public static unsafe class MemoryManager
     /// <returns>A <typeparamref name="T"/>-typed pointer to the first byte of the resized memory region.</returns>
     public static T* UnsafeReCAlloc<T>(T* ptr, int count, long oldCount = 0) where T : unmanaged
     {
-        nint bytes = (nint)count * sizeof(T);
+        var bytes = (nint)count * sizeof(T);
         if (oldCount != 0)
         {
             var oldBytes = oldCount * sizeof(T);

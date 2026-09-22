@@ -18225,6 +18225,27 @@
             Sets the currently pending <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.ValueTask"/> or <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.Task"/> as completed successfully.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSource.TrySetResult">
+            <summary>
+            Attempts to set the currently pending <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.ValueTask"/> or <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.Task"/> as completed successfully.
+            </summary>
+            <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSource.SetFromTask(System.Threading.Tasks.Task)">
+            <summary>
+            Sets the currently pending <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.ValueTask"/> or <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.Task"/> to the same completion state as the specified <paramref name="task"/>.
+            <paramref name="task"/> must be completed, otherwise an <see cref="T:System.InvalidOperationException"/> is thrown.
+            </summary>
+            <param name="task">The <see cref="T:System.Threading.Tasks.Task"/> to set the result from.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSource.TrySetFromTask(System.Threading.Tasks.Task)">
+            <summary>
+            Attempts to set the currently pending <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.ValueTask"/> or <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource.Task"/> to the same completion state as the specified <paramref name="task"/>.
+            <paramref name="task"/> must be completed, otherwise an <see cref="T:System.InvalidOperationException"/> is thrown.
+            </summary>
+            <param name="task">The <see cref="T:System.Threading.Tasks.Task"/> to set the result from.</param>
+            <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
+        </member>
         <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSource.ValueTask">
             <inheritdoc cref="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.ValueTaskCore" />
         </member>
@@ -18244,6 +18265,28 @@
             </summary>
             <param name="result">The result to set.</param>
         </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSource`1.TrySetResult(`0)">
+            <summary>
+            Attempts to set the result of the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> to <paramref name="result"/>.
+            </summary>
+            <param name="result">The result to set.</param>
+            <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSource`1.SetFromTask(System.Threading.Tasks.Task{`0})">
+            <summary>
+            Sets the currently pending <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource`1.ValueTask"/> or <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource`1.Task"/> to the same completion state as the specified <paramref name="task"/>.
+            <paramref name="task"/> must be completed, otherwise an <see cref="T:System.InvalidOperationException"/> is thrown.
+            </summary>
+            <param name="task">The <see cref="T:System.Threading.Tasks.Task`1"/> to set the result from.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSource`1.TrySetFromTask(System.Threading.Tasks.Task{`0})">
+            <summary>
+            Attempts to set the currently pending <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource`1.ValueTask"/> or <see cref="P:LaquaiLib.Threading.ReusableTaskCompletionSource`1.Task"/> to the same completion state as the specified <paramref name="task"/>.
+            <paramref name="task"/> must be completed, otherwise an <see cref="T:System.InvalidOperationException"/> is thrown.
+            </summary>
+            <param name="task">The <see cref="T:System.Threading.Tasks.Task`1"/> to set the result from.</param>
+            <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
+        </member>
         <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSource`1.ValueTask">
             <inheritdoc cref="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.ValueTaskOfTCore" />
         </member>
@@ -18255,17 +18298,64 @@
             An empty <see langword="struct"/> definition.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Threading.Nothing.Equals(LaquaiLib.Threading.Nothing)">
+            <summary>
+            Determines whether this <see cref="T:LaquaiLib.Threading.Nothing"/> is equal to another <see cref="T:LaquaiLib.Threading.Nothing"/>.
+            Always returns <see langword="true"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.Nothing.Equals(System.Nullable{LaquaiLib.Threading.Nothing})">
+            <summary>
+            Determines whether this <see cref="T:LaquaiLib.Threading.Nothing"/> is equal to a nullable <see cref="T:LaquaiLib.Threading.Nothing"/>.
+            Returns <see langword="true"/> if the nullable <see cref="T:LaquaiLib.Threading.Nothing"/> has a value.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.Nothing.Equals(System.Object)">
+            <summary>
+            Determines whether this <see cref="T:LaquaiLib.Threading.Nothing"/> is equal to another object.
+            </summary>
+            <param name="obj">The object to compare with this <see cref="T:LaquaiLib.Threading.Nothing"/>.</param>
+            <returns><see langword="true"/> if <paramref name="obj"/> is a <see cref="T:LaquaiLib.Threading.Nothing"/>; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.Nothing.GetHashCode">
+            <summary>
+            Gets a hash code for this <see cref="T:LaquaiLib.Threading.Nothing"/>. Always returns 0.
+            </summary>
+            <returns>0.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.Nothing.op_Equality(LaquaiLib.Threading.Nothing,LaquaiLib.Threading.Nothing)">
+            <summary>
+            Determines whether two <see cref="T:LaquaiLib.Threading.Nothing"/> instances are equal. See <see cref="M:LaquaiLib.Threading.Nothing.Equals(LaquaiLib.Threading.Nothing)"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.Nothing.op_Inequality(LaquaiLib.Threading.Nothing,LaquaiLib.Threading.Nothing)">
+            <summary>
+            Determines whether two <see cref="T:LaquaiLib.Threading.Nothing"/> instances are not equal. See <see cref="M:LaquaiLib.Threading.Nothing.Equals(LaquaiLib.Threading.Nothing)"/>.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1">
             <summary>
             Implements base functionality for <see cref="T:LaquaiLib.Threading.ReusableTaskCompletionSource"/> and <see cref="T:LaquaiLib.Threading.ReusableTaskCompletionSource`1"/>.
             </summary>
             <typeparam name="T">The type of the result. Ignored for <see cref="T:LaquaiLib.Threading.ReusableTaskCompletionSource"/>.</typeparam>
         </member>
+        <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.Token">
+            <summary>
+            Gets the token of the currently pending operation.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.SetResultCore(`0)">
             <summary>
-            When overridden in a derived class, sets the result of the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> to <paramref name="result"/>.
+            Sets the result of the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> to <paramref name="result"/>.
             </summary>
             <param name="result">The result to set. Ignored for <see cref="T:LaquaiLib.Threading.ReusableTaskCompletionSource"/>.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.TrySetResultCore(`0)">
+            <summary>
+            Attempts to set the result of the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> to <paramref name="result"/>.
+            </summary>
+            <param name="result">The result to set. Ignored for <see cref="T:LaquaiLib.Threading.ReusableTaskCompletionSource"/>.</param>
+            <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.ValueTaskCore">
             <summary>
@@ -18287,17 +18377,51 @@
             Gets a <see cref="T:System.Threading.Tasks.Task`1"/> that represents the currently pending operation.
             </summary>
         </member>
+        <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.IsCompleted">
+            <summary>
+            Gets whether the currently pending operation has been completed.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.IsCompletedSuccessfully">
+            <summary>
+            Gets whether the currently pending operation has been completed successfully.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.IsFaulted">
+            <summary>
+            Gets whether the currently pending operation has been completed with an exception.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.IsCanceled">
+            <summary>
+            Gets whether the currently pending operation has been completed with a cancellation.
+            </summary>
+        </member>
         <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.SetException(System.Exception)">
             <summary>
             Sets the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> as faulted with the specified <paramref name="exception"/>.
             </summary>
             <param name="exception">The exception to set.</param>
         </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.TrySetException(System.Exception)">
+            <summary>
+            Attempts to set the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> as faulted with the specified <paramref name="exception"/>.
+            </summary>
+            <param name="exception">The exception to set.</param>
+            <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.SetCanceled(System.Threading.CancellationToken)">
             <summary>
             Sets the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> as canceled with the specified <paramref name="cancellationToken"/>.
             </summary>
             <param name="cancellationToken">The cancellation token to set.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.TrySetCanceled(System.Threading.CancellationToken)">
+            <summary>
+            Attempts to set the currently pending <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> as canceled with the specified <paramref name="cancellationToken"/>.
+            </summary>
+            <param name="cancellationToken">The cancellation token to set.</param>
+            <returns><see langword="true"/> if the completion state was successfully set; otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.Reset">
             <summary>
@@ -18306,6 +18430,26 @@
             <remarks>
             Calls to this method are only allowed when the current <see cref="T:System.Threading.Tasks.ValueTask`1"/> or <see cref="T:System.Threading.Tasks.Task`1"/> has been completed.
             </remarks>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.TryReset">
+            <summary>
+            Attempts to reset the <see cref="T:LaquaiLib.Threading.ReusableTaskCompletionSource`1"/> to its initial state, allowing it to be reused for another operation.
+            </summary>
+            <returns><see langword="true"/> if state was reset successfully; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.IsCurrent(System.Int16)">
+            <summary>
+            Gets whether the specified <paramref name="token"/> is the current token for the underlying <see cref="T:System.Threading.Tasks.Sources.ManualResetValueTaskSourceCore`1"/>.
+            </summary>
+            <param name="token">The token to check.</param>
+            <returns><see langword="true"/> if the specified <paramref name="token"/> is the current token; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.HasResult(System.Nullable{System.Int16})">
+            <summary>
+            Gets whether the result for the specified <paramref name="token"/> has been set.
+            </summary>
+            <param name="token">The token to check.</param>
+            <returns><see langword="true"/> if the result has been set; otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.ThrowIfTokenHasResult(System.Int16)">
             <summary>
@@ -18318,6 +18462,12 @@
             Throws an <see cref="T:System.InvalidOperationException"/> if the specified <paramref name="token"/> has not yet been completed.
             </summary>
             <param name="token">The token to check.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.ReusableTaskCompletionSourceBase`1.ThrowCannotCopyResultStateFromUncompletedTask">
+            <summary>
+            Throws an <see cref="T:System.InvalidOperationException"/> indicating that the result state cannot be copied from an uncompleted task.
+            </summary>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="T:LaquaiLib.Threading.SingleWaiterAsyncManualResetEvent">
             <summary>

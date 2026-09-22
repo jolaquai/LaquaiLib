@@ -20,7 +20,7 @@ public partial class MainWindow : LowLevelWindow
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e) { }
-    protected override nint OnMessageReceived(MSG message, ref bool handled)
+    protected override nint OnMessageReceived(ref readonly MSG message, ref bool handled)
     {
         switch (message.message)
         {

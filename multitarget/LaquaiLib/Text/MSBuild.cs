@@ -645,7 +645,7 @@ public static class MSBuild
             if (subcategory[^1] != ' ')
                 destination[pos++] = (byte)' ';
         }
-        ReadOnlySpan<byte> category = type == MSBuildErrorType.Warning ? "warning"u8 : "error"u8;
+        var category = type == MSBuildErrorType.Warning ? "warning"u8 : "error"u8;
         category.CopyTo(destination[pos..]);
         pos += category.Length;
         if (!code.IsEmpty)
