@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>LaquaiLib</Title>
+    <PackageDescription>Personal library. General purpose.</PackageDescription>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>$(AssemblyName).xml</DocumentationFile>
+
+    <EmitCompilerGeneratedFiles>True</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Numerics.Tensors" Version="10.0.11" />
+    <PackageReference Include="System.IO.Hashing" Version="10.0.11" />
+    <PackageReference Include="UnicodeInformation" Version="2.7.1" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
+
+    <Compile Remove="Numerics\Scalar.cs" />
+
+    <Using Include="LaquaiLib.Extensions" />
+    <Using Include="LaquaiLib.UnsafeUtils.Accessors" />
+
+    <_GenScripts Include="gen-*.ps1;**\gen-*.ps1" KeepDuplicates="False" />
+  </ItemGroup>
+
+  <!-- Outputs="%(...)" forces target batching, so Message + Exec run together per script instead of all Messages then all Execs.
+       CallTarget is deliberately avoided here: it evaluates the called target in an isolated scope, so an item defined in the
+       caller (like _GenScripts) would show up empty inside it. -->
+  <Target Name="RunGenScripts" BeforeTargets="Compile" Outputs="%(_GenScripts.Identity)">
+      <Message Text="Running gen script: %(_GenScripts.Identity)" Importance="high" />
+      <Exec Command="pwsh -ExecutionPolicy Bypass -File &quot;%(_GenScripts.Identity)&quot;" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+</Project>

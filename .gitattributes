@@ -1,7 +1,12 @@
 ###############################################################################
-# Set default behavior to automatically normalize line endings.
+# Set default behavior to automatically normalize line endings, always checked
+# out as CRLF regardless of the checkout machine's core.autocrlf setting - this
+# repo is developed exclusively on Windows and CI runs on windows-latest, so a
+# pinned eol keeps every checkout byte-identical instead of drifting with each
+# environment's autocrlf config (which is what broke RemoveBracesRefactorTests
+# on CI while passing locally).
 ###############################################################################
-* text=auto
+* text=auto eol=crlf
 
 ###############################################################################
 # Set default behavior for command prompt diff.
