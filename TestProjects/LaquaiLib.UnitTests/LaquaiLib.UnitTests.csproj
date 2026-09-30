@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net11.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -8,20 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="10.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <!-- No in-project coverage extension: global.json pins the runner to Microsoft.Testing.Platform, coverlet.collector is a VSTest data collector,
-         and coverlet.MTP 10.0.1 (the newest) targets an MTP older than the 2.2.x xunit.v3 brings, so registering it crashes the test host.
-         The coverage CI job drives coverlet.console from outside the build instead. -->
-
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+    <!-- No in-project coverage extension: coverlet.MTP 10.0.1 (the newest) targets an MTP older than the 2.2.x xunit.v3 brings, so registering
+         it crashes the test host. The coverage CI job drives coverlet.console from outside the build instead. -->
     <PackageReference Include="xunit.v3" Version="4.0.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
