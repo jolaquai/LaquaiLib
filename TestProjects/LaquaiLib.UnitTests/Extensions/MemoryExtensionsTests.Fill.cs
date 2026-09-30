@@ -8,46 +8,6 @@ public class MemoryExtensionsFillTests
     private static T[] Flatten<T>(Array array) => [.. array.Cast<T>()];
 
     [Fact]
-    public void SpanZeroMemoryClearsAllElements()
-    {
-        var array = new[] { 1, 2, 3, 4, 5 };
-
-        array.AsSpan().ZeroMemory();
-
-        Assert.Equal(new int[5], array);
-    }
-
-    [Fact]
-    public void SpanZeroMemoryNullsReferences()
-    {
-        var array = new[] { "a", "b", "c" };
-
-        array.AsSpan().ZeroMemory();
-
-        Assert.All(array, static s => Assert.Null(s));
-    }
-
-    [Fact]
-    public void SpanZeroMemoryOnEmptySpanDoesNothing()
-    {
-        var array = Array.Empty<int>();
-
-        array.AsSpan().ZeroMemory();
-
-        Assert.Empty(array);
-    }
-
-    [Fact]
-    public void SpanZeroMemoryOnSliceLeavesRemainderIntact()
-    {
-        var array = new[] { 1, 2, 3, 4, 5 };
-
-        array.AsSpan(1, 3).ZeroMemory();
-
-        Assert.Equal([1, 0, 0, 0, 5], array);
-    }
-
-    [Fact]
     public void SpanFillDefaultResetsValueTypes()
     {
         var array = new[] { 1L, 2L, 3L };

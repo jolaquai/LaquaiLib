@@ -4,13 +4,6 @@ public static partial class MemoryExtensions
 {
     extension<T>(in Span<T> span)
     {
-        // This is the ONLY place in the codebase where Span.Clear() is acceptable, EVERYWHERE else should use ZeroMemory() unconditionally
-        /// <summary>
-        /// Generalizes <see cref="System.Security.Cryptography.CryptographicOperations.ZeroMemory(Span{byte})"/> to arbitrary <see cref="Span{T}"/>s of <typeparamref name="T"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public void ZeroMemory() => span.Clear();
-
         /// <summary>
         /// Fills the specified <see cref="Span{T}"/> with the <see langword="default"/> value for type <typeparamref name="T"/>.
         /// </summary>

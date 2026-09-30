@@ -1,3 +1,4 @@
+using LaquaiLib.Buffers.Extensions;
 using LaquaiLib.Extensions;
 using LaquaiLib.IO;
 

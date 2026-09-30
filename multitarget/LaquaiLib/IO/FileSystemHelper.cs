@@ -2,7 +2,7 @@ using System.Buffers;
 using System.IO.Compression;
 using System.Security.AccessControl;
 
-using LaquaiLib.IO.Streams;
+using LaquaiLib.Buffers;
 using LaquaiLib.Wrappers;
 
 namespace LaquaiLib.IO;
