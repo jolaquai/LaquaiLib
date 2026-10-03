@@ -11,8 +11,8 @@ public static class FormattingHelpers
     // max rented size is (RentStartSize * (1 << MaxRetries))
     // for 256 and 9 or 16 and 13, that's 131,072
     // would love to stackalloc, but doing that would leave us with no way to actually give the result to the caller without copying anyway, so renting from the get-go is better
-    private const int RentStartSize = 16;
-    private const int MaxRetries = 13;
+    internal const int RentStartSize = 16;
+    internal const int MaxRetries = 13;
 
     public static ByteFormatResult<T> TryFormatBytes<T>(in T instance, ReadOnlySpan<char> format = default, IFormatProvider formatProvider = null) where T : IUtf8SpanFormattable
     {
@@ -26,21 +26,18 @@ public static class FormattingHelpers
                 if (!instance.TryFormat(buf, out var written, format, formatProvider))
                 {
                     pool.Return(buf);
+                    buf = null;
                     buf = pool.Rent(size <<= 1);
                 }
                 else
-                {
                     return new ByteFormatResult<T>(instance, buf.AsSpan(0, written), buf, true);
-                }
             }
-
-            pool.Return(buf);
             return default;
         }
-        catch
+        finally
         {
-            pool.Return(buf);
-            throw;
+            if (buf != null)
+                pool.Return(buf);
         }
     }
     public static CharFormatResult<T> TryFormatChars<T>(in T instance, ReadOnlySpan<char> format = default, IFormatProvider formatProvider = null) where T : ISpanFormattable
@@ -62,14 +59,12 @@ public static class FormattingHelpers
                     return new CharFormatResult<T>(instance, buf[..written], arr, true);
                 }
             }
-
-            pool.Return(arr);
             return default;
         }
-        catch
+        finally
         {
-            pool.Return(arr);
-            throw;
+            if (arr != null)
+                pool.Return(arr);
         }
     }
 }
@@ -111,8 +106,9 @@ public ref struct CharFormatResult<T> : IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
-        if (Interlocked.Exchange(ref _live, 0) == 0)
+        if (_live == 0)
             return;
+        _live = 0;
         if (RentedArray is byte[] arr)
         {
             ArrayPool<byte>.Shared.Return(arr);
@@ -157,8 +153,9 @@ public ref struct ByteFormatResult<T> : IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
-        if (Interlocked.Exchange(ref _live, 0) == 0)
+        if (_live == 0)
             return;
+        _live = 0;
         if (RentedArray is byte[] arr)
         {
             ArrayPool<byte>.Shared.Return(arr);

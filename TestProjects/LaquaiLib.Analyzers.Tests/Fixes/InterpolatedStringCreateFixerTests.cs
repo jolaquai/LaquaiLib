@@ -102,94 +102,18 @@ public class InterpolatedStringCreateFixerTests
         );
 
     [Fact]
-    public Task ExactSizeForChars()
+    public Task TooNarrowHexFallsBackToEstimate()
         => VerifyFix(
             """
             class C
             {
-                string M(char a, char b) => {|LAQ0009:$"<{a}{b}>"|};
+                string M(int i) => {|LAQ0009:$"#{i:X2}"|};
             }
             """,
             """
             class C
             {
-                string M(char a, char b) => string.Create(null, stackalloc char[4], $"<{a}{b}>");
-            }
-            """
-        );
-
-    [Fact]
-    public Task ExactSizeCountsEscapedBraces()
-        => VerifyFix(
-            """
-            class C
-            {
-                string M(char c) => {|LAQ0009:$"{{{c}}}"|};
-            }
-            """,
-            """
-            class C
-            {
-                string M(char c) => string.Create(null, stackalloc char[3], $"{{{c}}}");
-            }
-            """
-        );
-
-    [Fact]
-    public Task ExactSizeForGuid()
-        => VerifyFix(
-            """
-            using System;
-            class C
-            {
-                string M(Guid g) => {|LAQ0009:$"id-{g}/{g:N}"|};
-            }
-            """,
-            """
-            using System;
-            class C
-            {
-                string M(Guid g) => string.Create(null, stackalloc char[72], $"id-{g}/{g:N}");
-            }
-            """
-        );
-
-    [Fact]
-    public Task ExactSizeForConstantHoleAndAlignment()
-        => VerifyFix(
-            """
-            class C
-            {
-                const string P = "abc";
-                string M(char c) => {|LAQ0009:$"{P}/{c,5}"|};
-            }
-            """,
-            """
-            class C
-            {
-                const string P = "abc";
-                string M(char c) => string.Create(null, stackalloc char[9], $"{P}/{c,5}");
-            }
-            """
-        );
-
-    [Fact]
-    public Task ExactSizeForConstantNumbersAndBools()
-        => VerifyFix(
-            """
-            class C
-            {
-                const int N = 42;
-                const bool B = true;
-                string M(char c) => {|LAQ0009:$"{N}/{B}/{N:X4}/{c}"|};
-            }
-            """,
-            """
-            class C
-            {
-                const int N = 42;
-                const bool B = true;
-                string M(char c) => string.Create(null, stackalloc char[14], $"{N}/{B}/{N:X4}/{c}");
+                string M(int i) => string.Create(null, stackalloc char[48], $"#{i:X2}");
             }
             """
         );
@@ -212,6 +136,46 @@ public class InterpolatedStringCreateFixerTests
             }
             """
         );
+
+    // The argument and its expression share a span
+    [Fact]
+    public Task InterpolationAsArgument()
+        => VerifyFix(
+            """
+            class C
+            {
+                void M(int i) => Take({|LAQ0009:$"Id = {i}"|});
+                static void Take(string s) { }
+            }
+            """,
+            """
+            class C
+            {
+                void M(int i) => Take(string.Create(null, stackalloc char[32], $"Id = {i}"));
+                static void Take(string s) { }
+            }
+            """
+        );
+
+    // An exactly sized string is left to the string.Create<TState> fixer
+    [Fact]
+    public Task NoStackallocFixWhenExact()
+        => new CSharpCodeFixTest<InterpolatedStringCreateAnalyzer, InterpolatedStringCreateFixer, DefaultVerifier>
+        {
+            TestCode = """
+                class C
+                {
+                    string M(char a, char b) => {|LAQ0009:$"<{a}{b}>"|};
+                }
+                """.ReplaceLineEndings("\r\n"),
+            FixedCode = """
+                class C
+                {
+                    string M(char a, char b) => {|LAQ0009:$"<{a}{b}>"|};
+                }
+                """.ReplaceLineEndings("\r\n"),
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        }.RunAsync();
 
     [Fact]
     public Task OneUnknownHoleFallsBackToEstimate()

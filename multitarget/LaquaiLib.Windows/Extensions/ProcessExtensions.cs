@@ -24,12 +24,12 @@ public static partial class ProcessExtensions
                 {
                     if (process.StartInfo is ProcessStartInfo psi)
                         return psi.ArgumentList.Count > 0
-                            ? $"\"{psi.FileName}\" {string.Join(' ', psi.ArgumentList.Select(static a => '"' + a + '"'))}"
+                            ? $"\"{psi.FileName}\" {string.Join(' ', psi.ArgumentList.Select(static a => $"\"{a}\""))}"
                             : $"\"{psi.FileName}\" {psi.Arguments}";
                 }
                 catch { }
 
-                using var searcher = new ManagementObjectSearcher("SELECT CommandLine FROM Win32_Process WHERE ProcessId = " + process.Id);
+                using var searcher = new ManagementObjectSearcher(string.Create(null, stackalloc char[80], $"SELECT CommandLine FROM Win32_Process WHERE ProcessId = {process.Id}"));
                 using var objects = searcher.Get();
                 using var obj = objects.ReinterpretCast<ManagementBaseObject>().Single();
 

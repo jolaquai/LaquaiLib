@@ -10,7 +10,8 @@ public sealed class InterpolatedStringCreateFixer() : LaquaiLibNodeFixer(["LAQ00
 
     public override ImmutableArray<CodeActionInfo> GetCodeActionInfos(CompilationUnitSyntax compilationUnitSyntax, SyntaxNode syntaxNode, Diagnostic diagnostic)
     {
-        if (syntaxNode is not InterpolatedStringExpressionSyntax interpolated
+        // An argument spans exactly its expression, so the node found for the diagnostic's span is the outer one of the two
+        if ((syntaxNode as InterpolatedStringExpressionSyntax ?? (syntaxNode as ArgumentSyntax)?.Expression as InterpolatedStringExpressionSyntax) is not { } interpolated
             || !diagnostic.Properties.TryGetValue(StringCreateHelper.BufferLengthKey, out var lengthText)
             || !int.TryParse(lengthText, out var length))
             return [];

@@ -34,8 +34,8 @@ public enum ExactSegmentKind
     Text,
     /// <summary>A <see cref="char"/> hole.</summary>
     Char,
-    /// <summary>A <see cref="Guid"/> hole.</summary>
-    Guid
+    /// <summary>A hole of a type with a <c>TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;)</c> whose output length is fixed: a <see cref="Guid"/> or a fixed-width integer format.</summary>
+    Formatted
 }
 
 /// <summary>
@@ -59,7 +59,7 @@ public readonly struct ExactSegment
     public string Text { get; }
     /// <summary>The hole expression of any other segment.</summary>
     public ExpressionSyntax Expression { get; }
-    /// <summary>The format specifier of a <see cref="ExactSegmentKind.Guid"/> segment, or <see langword="null"/>.</summary>
+    /// <summary>The format specifier of a <see cref="ExactSegmentKind.Formatted"/> segment, or <see langword="null"/>.</summary>
     public string Format { get; }
     public int ContentLength { get; }
     public int PadLeft { get; }
@@ -126,9 +126,10 @@ public static class StringCreateHelper
         if (TryGetExactSegments(interpolatedString, semanticModel, cancellationToken, out _, out var length) && !IsInExpressionTree(interpolatedString, semanticModel, cancellationToken))
             exactLength = length;
 
+        // string.Create<TState> beats any handler-based rewrite, so the stackalloc one is only offered where that is not available
         // CS4007: both the handler and the Span<char> are ref structs, so neither survives an await the bare interpolation compiles fine across
         var stackLength = 0;
-        if (!ContainsAwait(interpolatedString) && !IsUnsafeSite(interpolatedString, semanticModel, cancellationToken))
+        if (exactLength == 0 && !ContainsAwait(interpolatedString) && !IsUnsafeSite(interpolatedString, semanticModel, cancellationToken))
             stackLength = EstimateBufferLength(interpolatedString, semanticModel, cancellationToken);
 
         return new StringCreatePlan(stackLength, exactLength);
@@ -165,7 +166,7 @@ public static class StringCreateHelper
 
     /// <summary>
     /// Splits <paramref name="interpolatedString"/> into runs whose output and length are known with certainty, or returns <see langword="false"/> if any part of it is not.
-    /// Constant holes are folded into the surrounding text. The only non-constant holes that qualify are <see cref="char"/>s and <see cref="Guid"/>s with a fixed format.
+    /// Constant holes are folded into the surrounding text. The only non-constant holes that qualify are <see cref="char"/>s, <see cref="Guid"/>s and integers with a width-fixing format.
     /// </summary>
     public static bool TryGetExactSegments(InterpolatedStringExpressionSyntax interpolatedString, SemanticModel semanticModel, CancellationToken cancellationToken, out ImmutableArray<ExactSegment> segments, out int length)
     {
@@ -321,14 +322,11 @@ public static class StringCreateHelper
     }
 
     /// <summary>
-    /// Sizes the buffer to the exact final length if that is known with certainty (see <see cref="TryGetExactSegments"/>), else to the literal text plus a per-hole worst case, rounded up.
-    /// Either is clamped to <see cref="MaximumBufferLength"/>. Overshooting wastes stack, undershooting lands back on the pool the rewrite exists to avoid, and neither changes the result.
+    /// Sizes the buffer to the literal text plus a per-hole worst case, rounded up and clamped to <see cref="MaximumBufferLength"/>.
+    /// Overshooting wastes stack, undershooting lands back on the pool the rewrite exists to avoid, and neither changes the result.
     /// </summary>
     private static int EstimateBufferLength(InterpolatedStringExpressionSyntax interpolatedString, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
-        if (TryGetExactSegments(interpolatedString, semanticModel, cancellationToken, out _, out var exactLength))
-            return Math.Min(exactLength, MaximumBufferLength);
-
         var length = 0;
         foreach (var content in interpolatedString.Contents)
         {
@@ -351,7 +349,7 @@ public static class StringCreateHelper
     }
 
     /// <summary>
-    /// Resolves a hole whose output does not depend on its value or the culture: a constant (see <see cref="TryGetConstantText"/>), a <see cref="char"/>, or a <see cref="Guid"/> with a fixed format; with an optional constant alignment.
+    /// Resolves a hole whose output does not depend on its value or the culture: a constant (see <see cref="TryGetConstantText"/>), a <see cref="char"/>, a <see cref="Guid"/> or an integer with a fixed-width format; with an optional constant alignment.
     /// </summary>
     private static bool TryGetExactHole(InterpolationSyntax interpolation, SemanticModel semanticModel, CancellationToken cancellationToken, out ExactSegmentKind kind, out string text, out int contentLength, out int width, out string format)
     {
@@ -374,8 +372,9 @@ public static class StringCreateHelper
             kind = ExactSegmentKind.Char;
             contentLength = 1;
         }
-        else if (type?.ToDisplayString() == "System.Guid" && TryGetGuidLength(format, out contentLength))
-            kind = ExactSegmentKind.Guid;
+        else if ((type?.ToDisplayString() == "System.Guid" && TryGetGuidLength(format, out contentLength))
+            || (type is not null && TryGetFixedIntegerLength(type.SpecialType, format, out contentLength)))
+            kind = ExactSegmentKind.Formatted;
         else
             return false;
 
@@ -429,6 +428,40 @@ public static class StringCreateHelper
             if (format[i] is < '0' or > '9')
                 return false;
         return true;
+    }
+
+    /// <summary>
+    /// <c>X</c> is fixed-width once its precision covers every nibble of the type (two's complement for negatives), and <c>D</c> once it covers every digit of an unsigned type. Neither depends on the culture.
+    /// </summary>
+    private static bool TryGetFixedIntegerLength(SpecialType type, string format, out int length)
+    {
+        length = 0;
+        if (format is not { Length: >= 2 and <= 3 } || !int.TryParse(format.Substring(1), NumberStyles.None, CultureInfo.InvariantCulture, out var precision))
+            return false;
+
+        int nibbles, digits;
+        switch (type)
+        {
+            case SpecialType.System_Byte: nibbles = 2; digits = 3; break;
+            case SpecialType.System_SByte: nibbles = 2; digits = 0; break;
+            case SpecialType.System_UInt16: nibbles = 4; digits = 5; break;
+            case SpecialType.System_Int16: nibbles = 4; digits = 0; break;
+            case SpecialType.System_UInt32: nibbles = 8; digits = 10; break;
+            case SpecialType.System_Int32: nibbles = 8; digits = 0; break;
+            case SpecialType.System_UInt64: nibbles = 16; digits = 20; break;
+            case SpecialType.System_Int64: nibbles = 16; digits = 0; break;
+            default: return false;
+        }
+
+        var fixedWidth = format[0] switch
+        {
+            'X' or 'x' => precision >= nibbles,
+            'D' or 'd' => digits != 0 && precision >= digits,
+            _ => false
+        };
+        if (fixedWidth)
+            length = precision;
+        return fixedWidth;
     }
 
     private static bool TryGetGuidLength(string format, out int length)

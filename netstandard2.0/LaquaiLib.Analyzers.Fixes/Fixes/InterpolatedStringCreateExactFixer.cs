@@ -12,7 +12,7 @@ public sealed class InterpolatedStringCreateExactFixer() : LaquaiLibFixer(["LAQ0
     public override async ValueTask<ImmutableArray<CodeActionInfo>> GetCodeActionInfosAsync(Document document, CompilationUnitSyntax compilationUnitSyntax, Diagnostic diagnostic, CancellationToken cancellationToken)
     {
         if (!diagnostic.Properties.ContainsKey(StringCreateHelper.ExactLengthKey)
-            || compilationUnitSyntax.FindNode(diagnostic.Location.SourceSpan) is not InterpolatedStringExpressionSyntax interpolated)
+            || compilationUnitSyntax.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true) is not InterpolatedStringExpressionSyntax interpolated)
             return [];
 
         var semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);

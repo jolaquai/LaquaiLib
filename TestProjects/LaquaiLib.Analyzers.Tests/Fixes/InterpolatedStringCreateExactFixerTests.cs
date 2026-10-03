@@ -107,6 +107,99 @@ public class InterpolatedStringCreateExactFixerTests
         );
 
     [Fact]
+    public Task FixedWidthHex()
+        => VerifyFix(
+            """
+            class C
+            {
+                string M(byte r, byte g) => {|LAQ0009:$"#{r:X2}{g:x2}"|};
+            }
+            """,
+            """
+            class C
+            {
+                string M(byte r, byte g) => string.Create(5, (r, g), static (span, state) =>
+                {
+                    span[0] = '#';
+                    state.Item1.TryFormat(span.Slice(1, 2), out _, "X2");
+                    state.Item2.TryFormat(span.Slice(3, 2), out _, "x2");
+                });
+            }
+            """
+        );
+
+    // The argument and its expression share a span
+    [Fact]
+    public Task InterpolationAsArgument()
+        => VerifyFix(
+            """
+            class C
+            {
+                void M(char c) => Take({|LAQ0009:$"a{c}"|});
+                static void Take(string s) { }
+            }
+            """,
+            """
+            class C
+            {
+                void M(char c) => Take(string.Create(2, c, static (span, state) =>
+                {
+                    span[0] = 'a';
+                    span[1] = state;
+                }));
+                static void Take(string s) { }
+            }
+            """
+        );
+
+    [Fact]
+    public Task EscapedBracesCountOnce()
+        => VerifyFix(
+            """
+            class C
+            {
+                string M(char c) => {|LAQ0009:$"{{{c}}}"|};
+            }
+            """,
+            """
+            class C
+            {
+                string M(char c) => string.Create(3, c, static (span, state) =>
+                {
+                    span[0] = '{';
+                    span[1] = state;
+                    span[2] = '}';
+                });
+            }
+            """
+        );
+
+    [Fact]
+    public Task ConstantNumbersAndBoolsAreFolded()
+        => VerifyFix(
+            """
+            class C
+            {
+                const int N = 42;
+                const bool B = true;
+                string M(char c) => {|LAQ0009:$"{N}/{B}/{N:X4}/{c}"|};
+            }
+            """,
+            """
+            class C
+            {
+                const int N = 42;
+                const bool B = true;
+                string M(char c) => string.Create(14, c, static (span, state) =>
+                {
+                    "42/True/002A/".CopyTo(span);
+                    span[13] = state;
+                });
+            }
+            """
+        );
+
+    [Fact]
     public Task ConstantHolesAreFoldedIntoText()
         => VerifyFix(
             """
