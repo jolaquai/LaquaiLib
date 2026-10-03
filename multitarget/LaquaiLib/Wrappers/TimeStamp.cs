@@ -119,5 +119,6 @@ public readonly struct TimeStamp() : IEquatable<TimeStamp>, IComparable<TimeStam
     [MethodImpl(MethodImplOptions.AggressiveInlining)] public static TimeSpan operator -(TimeStamp left, TimeStamp right) => Stopwatch.GetElapsedTime(right.Value, left.Value);
 
     /// <inheritdoc/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)] public override string ToString() => string.Concat("TimeStamp {", Value, '}');
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public override string ToString() => string.Create(null, stackalloc char[128], $"TimeStamp {{{Value}}}");
 }

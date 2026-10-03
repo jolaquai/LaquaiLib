@@ -8,7 +8,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="bin\Debug\netstandard2.0\LaquaiLib.Analyzers.dll" />
+    <None Remove="bin\Release\netstandard2.0\\LaquaiLib.Analyzers.dll" />
   </ItemGroup>
 
   <ItemGroup>

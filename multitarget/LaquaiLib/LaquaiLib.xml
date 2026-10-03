@@ -295,40 +295,6 @@
             <param name="count">The value to set the <see cref="P:System.Collections.Generic.Stack`1.Count"/> of the returned <see cref="T:System.Collections.Generic.Stack`1"/> to. The first <paramref name="count"/> items will be returned by methods such as <see cref="M:System.Collections.Generic.Stack`1.Pop"/> or <see cref="M:System.Collections.Generic.Stack`1.Peek"/> in reverse.</param>
             <returns>The created <see cref="T:System.Collections.Generic.Stack`1"/>.</returns>
         </member>
-        <member name="T:LaquaiLib.Extensions.ArrayPoolExtensions">
-            <summary>
-            Provides extensions for <see cref="T:System.Buffers.ArrayPool`1"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.ReturnSafe``1(System.Buffers.ArrayPool{``0},``0[])">
-            <inheritdoc cref="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$5CA848B3CF1D8163DBCE92377A052BF2`1.ReturnSafe(`0[])"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.Rent``2(System.Buffers.ArrayPool{``0},System.Int32,System.Span{``1}@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$A56A913095EC3730FE0F1B82A48331E3`1.Rent``1(System.Int32,System.Span{``0}@)"/>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$5CA848B3CF1D8163DBCE92377A052BF2`1.ReturnSafe(`0[])">
-            <summary>
-            Returns <paramref name="array"/> to <paramref name="pool"/>, ensuring it is cleared if <typeparamref name="T"/> is a reference type or contains references.
-            </summary>
-            <param name="array">The array to return to the pool.</param>
-        </member>
-        <member name="M:LaquaiLib.Extensions.ArrayPoolExtensions.&lt;G&gt;$A56A913095EC3730FE0F1B82A48331E3`1.Rent``1(System.Int32,System.Span{``0}@)">
-            <summary>
-            Requests a <typeparamref name="TSource"/> array from the <paramref name="pool"/> and hands out a <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> over it.
-            <paramref name="minimumSize"/> is used as a base for calculating the minimum number of <typeparamref name="TSource"/> instances to request from the pool, based on the size of <typeparamref name="TAs"/>.
-            </summary>
-            <typeparam name="TAs">The <see langword="unmanaged"/> type to cast views over the rented <typeparamref name="TSource"/> array to.</typeparam>
-            <param name="minimumSize">The minimum number of instances of <typeparamref name="TAs"/> to request for the rented array.</param>
-            <param name="span">The <typeparamref name="TAs"/>-typed <see cref="T:System.Span`1"/> view over the rented <typeparamref name="TSource"/> array.</param>
-            <returns>The rented <typeparamref name="TSource"/> array.</returns>
-            <remarks>
-            Easiest way to use this method is to call it by explicitly typing the <paramref name="span"/> parameter:
-            <code lang="csharp">
-            var array = ArrayPool&lt;byte&gt;.Shared.Rent(minimumSize, out Span&lt;long&gt; span);
-            // array.GetType() == typeof(byte[])
-            </code>
-            </remarks>
-        </member>
         <member name="T:LaquaiLib.Extensions.CancellationTokenExtensions">
             <summary>
             Provides extensions for the <see cref="T:System.Threading.CancellationToken"/> type.
@@ -4875,9 +4841,6 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.IsBackedByManager``2(System.ReadOnlyMemory{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$3387D7F181FA234A9158DADA9224047F`1.IsBackedByManager``1"/>
         </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.ZeroMemory``1(System.Span{``0}@)">
-            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory"/>
-        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Fill``1(System.Span{``0}@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill"/>
         </member>
@@ -4971,11 +4934,6 @@
             </summary>
             <param name="action">The <see cref="T:System.Action`2"/> to invoke for each element.</param>
             <returns>The original <see cref="T:System.Span`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ZeroMemory">
-            <summary>
-            Generalizes <see cref="M:System.Security.Cryptography.CryptographicOperations.ZeroMemory(System.Span{System.Byte})"/> to arbitrary <see cref="T:System.Span`1"/>s of <typeparamref name="T"/>.
-            </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Fill">
             <summary>
@@ -10486,62 +10444,6 @@
             Required to write to memory in a process using <see href="https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-writeprocessmemory">WriteProcessMemory</see>.
             </summary>
         </member>
-        <member name="T:LaquaiLib.IO.BufferSegment`1">
-            <summary>
-            Represents one array within a segmented buffer, paired with the portion of it the buffer actually addresses.
-            </summary>
-            <remarks>
-            <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/> is usually the whole of <see cref="P:LaquaiLib.IO.BufferSegment`1.Array"/>, but a segment may deliberately address less than it holds; the remainder is then owned by the segment and unreachable through the buffer until it is released. Keeping the addressed extent separate from the array's own length is what lets a buffer end a segment early instead of copying its contents somewhere larger.
-            </remarks>
-            <typeparam name="T">The element type of the underlying array.</typeparam>
-            <param name="array">The array backing the segment.</param>
-            <param name="length">The number of elements at the start of <paramref name="array"/> the buffer addresses.</param>
-        </member>
-        <member name="M:LaquaiLib.IO.BufferSegment`1.#ctor(`0[],System.Int32)">
-            <summary>
-            Represents one array within a segmented buffer, paired with the portion of it the buffer actually addresses.
-            </summary>
-            <remarks>
-            <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/> is usually the whole of <see cref="P:LaquaiLib.IO.BufferSegment`1.Array"/>, but a segment may deliberately address less than it holds; the remainder is then owned by the segment and unreachable through the buffer until it is released. Keeping the addressed extent separate from the array's own length is what lets a buffer end a segment early instead of copying its contents somewhere larger.
-            </remarks>
-            <typeparam name="T">The element type of the underlying array.</typeparam>
-            <param name="array">The array backing the segment.</param>
-            <param name="length">The number of elements at the start of <paramref name="array"/> the buffer addresses.</param>
-        </member>
-        <member name="P:LaquaiLib.IO.BufferSegment`1.Array">
-            <summary>
-            Gets the array backing this segment. It may be longer than <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/>.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.IO.BufferSegment`1.Length">
-            <summary>
-            Gets the number of elements at the start of <see cref="P:LaquaiLib.IO.BufferSegment`1.Array"/> that the buffer addresses.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.IO.BufferSegment`1.Span">
-            <summary>
-            Gets a <see cref="T:System.Span`1"/> over the addressed portion of this segment.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.IO.BufferSegment`1.Memory">
-            <summary>
-            Gets a <see cref="T:System.Memory`1"/> over the addressed portion of this segment.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.IO.BufferSegment`1.Full(`0[])">
-            <summary>
-            Creates a segment addressing the entirety of <paramref name="array"/>.
-            </summary>
-            <param name="array">The array backing the segment.</param>
-            <returns>The created <see cref="T:LaquaiLib.IO.BufferSegment`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.IO.BufferSegment`1.Truncate(System.Int32)">
-            <summary>
-            Creates a segment over the same array as this one, addressing only the first <paramref name="length"/> elements.
-            </summary>
-            <param name="length">The number of elements to address. Must not exceed the current <see cref="P:LaquaiLib.IO.BufferSegment`1.Length"/>.</param>
-            <returns>The created <see cref="T:LaquaiLib.IO.BufferSegment`1"/>.</returns>
-        </member>
         <member name="T:LaquaiLib.IO.SegmentOffset`1">
             <summary>
             Represents a position in a segmented chain of buffers.
@@ -11302,185 +11204,119 @@
             </summary>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the cancellation request. When it completes, the operation has been canceled.</returns>
         </member>
-        <member name="T:LaquaiLib.IO.Streams.ArrayPoolMemoryStream">
+        <member name="T:LaquaiLib.IO.Streams.DispatchStream">
             <summary>
-            Implements a <see cref="T:System.IO.Stream"/> whose backing memory is source from an <see cref="T:System.Buffers.ArrayPool`1"/>.
+            Implements a <see cref="T:System.IO.Stream"/> that dispatches all calls to an inner <see cref="T:System.IO.Stream"/>.
             </summary>
-            <remarks>
-            This is by no means meant to replace an implementation such as <see href="https://github.com/microsoft/Microsoft.IO.RecyclableMemoryStream"/>. This type's design is much simpler.
-            </remarks>
+            <param name="inner">The inner <see cref="T:System.IO.Stream"/> to dispatch to.</param>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.#ctor(System.Int32,System.Int64,System.Boolean,System.Buffers.ArrayPool{System.Byte},System.Boolean)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.#ctor(System.IO.Stream)">
             <summary>
-            Initializes a new <see cref="T:LaquaiLib.IO.Streams.ArrayPoolMemoryStream"/>.
+            Implements a <see cref="T:System.IO.Stream"/> that dispatches all calls to an inner <see cref="T:System.IO.Stream"/>.
             </summary>
-            <param name="minimumSegmentSize">Smallest size any single segment will be rented at.</param>
-            <param name="capacity">Initial capacity to rent up front.</param>
-            <param name="skipZeroing">If <see langword="true"/>, memory exposed by seeking or <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.SetLength(System.Int64)"/> past the current length is not zeroed and may contain arbitrary prior contents. Only set this if all such memory is overwritten before being read.</param>
-            <param name="pool">The <see cref="T:System.Buffers.ArrayPool`1"/> to rent segments from, or <see langword="null"/> to use <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.</param>
-            <param name="disallowLohRenting">If <see langword="true"/>, no single segment is rented larger than 65536 bytes. This is rarely worth setting: an array on the Large Object Heap that the pool holds costs nothing in GC pressure, and <see cref="P:System.Buffers.ArrayPool`1.Shared"/> already refuses to pool anything above 1 MiB, so that is the effective cap whenever no custom <paramref name="pool"/> is supplied. Every <see cref="T:System.IO.Stream"/> member honours this, as does appending through <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetMemory(System.Int32)"/>/<see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetSpan(System.Int32)"/>. The one exception is asking those two for a run that starts before <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> and crosses a segment boundary: the run has to be contiguous and has to start at <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>, and ending a segment early to arrange that would renumber the data stored past it, so the segments are merged into a single rent that may exceed the cap. A <c>sizeHint</c> smaller than the cap is enough to trigger it; only its reaching past the end of the segment <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> sits in matters.</param>
+            <param name="inner">The inner <see cref="T:System.IO.Stream"/> to dispatch to.</param>
         </member>
-        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CanRead">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.CanRead">
             <inheritdoc/>
         </member>
-        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CanSeek">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.CanSeek">
             <inheritdoc/>
         </member>
-        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CanWrite">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.CanWrite">
             <inheritdoc/>
         </member>
-        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.Length">
             <inheritdoc/>
         </member>
-        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Capacity">
-            <summary>
-            Gets the maximum <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> this instance can reach without having to rent more memory.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.Position">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Read(System.Byte[],System.Int32,System.Int32)">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.CanTimeout">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Read(System.Span{System.Byte})">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.ReadTimeout">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+        <member name="P:LaquaiLib.IO.Streams.DispatchStream.WriteTimeout">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Flush">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ReadByte">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Read(System.Byte[],System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
-            <summary>
-            Begins an asynchronous read operation.
-            </summary>
-            <param name="buffer">The buffer to read data into.</param>
-            <param name="offset">The byte offset in <paramref name="buffer"/> at which to begin writing data.</param>
-            <param name="count">The maximum number of bytes to read.</param>
-            <param name="callback">An optional <see cref="T:System.AsyncCallback"/> to be called when the read operation is complete.</param>
-            <param name="state">The state object to be passed to the callback.</param>
-            <returns>An <see cref="T:System.IAsyncResult"/> that represents the asynchronous read operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.EndRead(System.IAsyncResult)">
-            <summary>
-            Waits for the end of an asynchronous read operation.
-            </summary>
-            <param name="asyncResult">The <see cref="T:System.IAsyncResult"/> that represents the asynchronous read operation.</param>
-            <returns>The number of bytes read from the stream.</returns>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Write(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Seek(System.Int64,System.IO.SeekOrigin)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Write(System.ReadOnlySpan{System.Byte})">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.SetLength(System.Int64)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Write(System.Byte[],System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Equals(System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.WriteByte(System.Byte)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.GetHashCode">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
-            <summary>
-            Begins an asynchronous write operation.
-            </summary>
-            <param name="buffer">The buffer containing the data to write.</param>
-            <param name="offset">The byte offset in buffer at which to begin copying bytes to the stream.</param>
-            <param name="count">The number of bytes to write.</param>
-            <param name="callback">An optional <see cref="T:System.AsyncCallback"/> to be called when the write operation is complete.</param>
-            <param name="state">The state object to be passed to the callback.</param>
-            <returns>An <see cref="T:System.IAsyncResult"/> that represents the asynchronous write operation.</returns>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.EndWrite(System.IAsyncResult)">
-            <summary>
-            Waits for the end of an asynchronous write operation.
-            </summary>
-            <param name="asyncResult">The <see cref="T:System.IAsyncResult"/> that represents the asynchronous write operation.</param>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyTo(System.IO.Stream,System.Int32)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.ToString">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.BeginRead(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Seek(System.Int64,System.IO.SeekOrigin)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.BeginWrite(System.Byte[],System.Int32,System.Int32,System.AsyncCallback,System.Object)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.SetLength(System.Int64)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Close">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.TrimExcess">
-            <summary>
-            Returns every segment that lies entirely beyond <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> to the pool.
-            </summary>
-            <remarks>
-            Only whole segments can be released, so the segment <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> falls inside is kept and <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Capacity"/> may remain above <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>. <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> is left alone; writing past the end afterwards simply rents again. Any buffer previously handed out by <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetMemory(System.Int32)"/> or <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetSpan(System.Int32)"/> is invalidated.
-            </remarks>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Flush">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.CopyTo(System.IO.Stream,System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.FlushAsync(System.Threading.CancellationToken)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.CopyToAsync(System.IO.Stream,System.Int32,System.Threading.CancellationToken)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Dispose(System.Boolean)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Dispose(System.Boolean)">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.DisposeAsync">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.DisposeAsync">
             <inheritdoc/>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.AsReadOnlySequence">
-            <summary>
-            Gets a <see cref="T:System.Buffers.ReadOnlySequence`1"/> over the memory that has been written so far.
-            This is a snapshot; mutating calls, especially ones that return memory to the pool, invalidate the sequence. Reading from it after such a mutation is undefined behavior.
-            </summary>
-            <returns>The created <see cref="T:System.Buffers.ReadOnlySequence`1"/>.</returns>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ToArray">
-            <summary>
-            Copies the memory that has been written so far into a new array sized exactly to <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>.
-            </summary>
-            <remarks>
-            Unlike <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.AsReadOnlySequence"/>, the returned array is owned by the caller and is unaffected by later mutations of this instance. <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> is not advanced.
-            </remarks>
-            <returns>The created array.</returns>
-            <exception cref="T:System.OutOfMemoryException">Thrown if <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> exceeds what a single array can hold.</exception>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyTo(System.Span{System.Byte})">
-            <summary>
-            Copies the memory that has been written so far into <paramref name="destination"/>.
-            </summary>
-            <remarks>
-            Unlike <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.CopyTo(System.IO.Stream,System.Int32)"/>, which copies what is left from <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> onwards and advances it, this copies the whole of <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> from the start and leaves <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> alone; it is <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.ToArray"/> without the allocation. Use <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Read(System.Span{System.Byte})"/> for the read-from-<see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/> behaviour. <paramref name="destination"/> may be longer than <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>, in which case the bytes past it are left as they were.
-            </remarks>
-            <param name="destination">The span to copy into. Must be at least <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/> long.</param>
-            <exception cref="T:System.ArgumentException">Thrown if <paramref name="destination"/> is shorter than <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Length"/>.</exception>
-        </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Advance(System.Int32)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.EndRead(System.IAsyncResult)">
             <inheritdoc/>
-            <remarks>
-            The write head is <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>, so this behaves exactly as if <paramref name="count"/> bytes had been written through <see cref="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Write(System.ReadOnlySpan{System.Byte})"/>.
-            </remarks>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetMemory(System.Int32)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.EndWrite(System.IAsyncResult)">
             <inheritdoc/>
-            <remarks>
-            The buffer starts at <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>. It may be longer than <paramref name="sizeHint"/> and, where it overlaps existing content, exposes that content rather than blank memory.
-            </remarks>
         </member>
-        <member name="M:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.GetSpan(System.Int32)">
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.FlushAsync(System.Threading.CancellationToken)">
             <inheritdoc/>
-            <remarks>
-            The buffer starts at <see cref="P:LaquaiLib.IO.Streams.ArrayPoolMemoryStream.Position"/>. It may be longer than <paramref name="sizeHint"/> and, where it overlaps existing content, exposes that content rather than blank memory.
-            </remarks>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Read(System.Span{System.Byte})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.ReadAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.ReadAsync(System.Memory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.ReadByte">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.Write(System.ReadOnlySpan{System.Byte})">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.WriteAsync(System.Byte[],System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.WriteAsync(System.ReadOnlyMemory{System.Byte},System.Threading.CancellationToken)">
+            <inheritdoc/>
+        </member>
+        <member name="M:LaquaiLib.IO.Streams.DispatchStream.WriteByte(System.Byte)">
+            <inheritdoc/>
         </member>
         <member name="T:LaquaiLib.IO.Streams.MemoryOrFileStream">
             <summary>
@@ -28829,63 +28665,6 @@
             <param name="left">The <typeparamref name="T16"/> instance to compare.</param>
             <param name="right">The <see cref="T:LaquaiLib.Wrappers.OneOf`16"/> instance to compare.</param>
             <returns><see langword="true"/> if the values of the two instances are not equal; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="T:LaquaiLib.Wrappers.RentedArray`1">
-            <summary>
-            Wraps an array of <typeparamref name="T"/>, the <see cref="T:System.Buffers.ArrayPool`1"/> it was rented from, an optional <paramref name="offset"/> and <paramref name="length"/> delimiting the span of the array to be used, and a <paramref name="clear"/> flag indicating whether the array should be cleared when returned to the pool.
-            </summary>
-            <typeparam name="T">The type of the elements in the array.</typeparam>
-            <param name="array">The array to wrap.</param>
-            <param name="offset">The offset in the array where the span starts. Defaults to 0.</param>
-            <param name="length">The length of the span. Defaults to -1, which means the span will extend to the end of the array.</param>
-            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> from which the array was rented. Defaults to <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.</param>
-            <param name="clear">Whether to clear the array when returned to the pool. Defaults to <see langword="false"/>.</param>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.RentedArray`1.#ctor(`0[],System.Int32,System.Int32,System.Buffers.ArrayPool{`0},System.Boolean)">
-            <summary>
-            Wraps an array of <typeparamref name="T"/>, the <see cref="T:System.Buffers.ArrayPool`1"/> it was rented from, an optional <paramref name="offset"/> and <paramref name="length"/> delimiting the span of the array to be used, and a <paramref name="clear"/> flag indicating whether the array should be cleared when returned to the pool.
-            </summary>
-            <typeparam name="T">The type of the elements in the array.</typeparam>
-            <param name="array">The array to wrap.</param>
-            <param name="offset">The offset in the array where the span starts. Defaults to 0.</param>
-            <param name="length">The length of the span. Defaults to -1, which means the span will extend to the end of the array.</param>
-            <param name="arrayPool">The <see cref="T:System.Buffers.ArrayPool`1"/> from which the array was rented. Defaults to <see cref="P:System.Buffers.ArrayPool`1.Shared"/>.</param>
-            <param name="clear">Whether to clear the array when returned to the pool. Defaults to <see langword="false"/>.</param>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.RentedArray`1.Array">
-            <summary>
-            Gets the underlying array.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Wrappers.RentedArray`1.Offset">
-            <summary>
-            The offset in the array where the span starts.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Wrappers.RentedArray`1.Length">
-            <summary>
-            The length of the span.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Wrappers.RentedArray`1.ArrayPool">
-            <summary>
-            The <see cref="T:System.Buffers.ArrayPool`1"/> from which the array was rented.
-            </summary>
-        </member>
-        <member name="F:LaquaiLib.Wrappers.RentedArray`1.Clear">
-            <summary>
-            Whether to clear the array when returned to the pool.
-            </summary>
-        </member>
-        <member name="P:LaquaiLib.Wrappers.RentedArray`1.Span">
-            <summary>
-            Gets a <see cref="T:System.Span`1"/> representing the portion of the array defined by the <see cref="F:LaquaiLib.Wrappers.RentedArray`1.Offset"/> and <see cref="F:LaquaiLib.Wrappers.RentedArray`1.Length"/>.
-            </summary>
-        </member>
-        <member name="M:LaquaiLib.Wrappers.RentedArray`1.Dispose">
-            <summary>
-            Disposes the <see cref="T:LaquaiLib.Wrappers.RentedArray`1"/> by returning the underlying array to the <see cref="T:System.Buffers.ArrayPool`1"/>.
-            </summary>
         </member>
         <member name="T:LaquaiLib.Wrappers.TempDirectory">
             <summary>
