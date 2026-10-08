@@ -7,9 +7,10 @@ internal sealed class Program
 {
     private static void Main(string[] args)
     {
-        BenchmarkRunner.Run<ReusableTaskCompletionSourceBenchmarks>(
-            DefaultConfig.Instance.AddJob(Job.Default.WithToolchain(InProcessEmitToolchain.Instance)),
-            args
+        BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(
+            args,
+            DefaultConfig.Instance
+                .AddJob(Job.Default.WithToolchain(InProcessEmitToolchain.Instance).WithLaunchCount(1).WithWarmupCount(5).WithIterationCount(12))
         );
     }
 }

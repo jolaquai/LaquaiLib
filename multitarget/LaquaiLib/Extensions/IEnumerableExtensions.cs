@@ -63,8 +63,8 @@ public static partial class IEnumerableExtensions
                 case ISpanProvider<T> spanProvider:
                     span = spanProvider.Span;
                     break;
-                case T[]:
-                    span = Unsafe.As<T[]>(source);
+                case T[] array:
+                    span = array;
                     break;
                 case List<T>:
                     span = CollectionsMarshal.AsSpan(Unsafe.As<List<T>>(source));

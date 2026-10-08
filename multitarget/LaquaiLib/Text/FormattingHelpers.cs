@@ -30,7 +30,12 @@ public static class FormattingHelpers
                     buf = pool.Rent(size <<= 1);
                 }
                 else
-                    return new ByteFormatResult<T>(instance, buf.AsSpan(0, written), buf, true);
+                {
+                    // ownership of the rented array moves to the result; returning it in finally would let the next rent alias it
+                    var rented = buf;
+                    buf = null;
+                    return new ByteFormatResult<T>(instance, rented.AsSpan(0, written), rented, true);
+                }
             }
             return default;
         }
@@ -56,7 +61,9 @@ public static class FormattingHelpers
                 }
                 else
                 {
-                    return new CharFormatResult<T>(instance, buf[..written], arr, true);
+                    var rented = arr;
+                    arr = null;
+                    return new CharFormatResult<T>(instance, buf[..written], rented, true);
                 }
             }
             return default;

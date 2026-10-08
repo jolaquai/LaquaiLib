@@ -217,7 +217,6 @@ public sealed class SequenceEqualityComparer : IEqualityComparer<ICollection>, I
 public sealed class SequenceEqualityComparer<T> : IEqualityComparer<T[]>, IEqualityComparer<List<T>>, IEqualityComparer<IList<T>>, IEqualityComparer<ICollection<T>>, IEqualityComparer<IEnumerable<T>>, IEqualityComparer
 {
     // 0 when T's elements cannot be compared by their raw bytes
-    private static readonly int _bitwiseElementSize = SequenceHelpers.GetBitwiseSize(typeof(T));
 
     // null means EqualityComparer<T>.Default, which doubles as the signal that elements may be compared bitwise where T allows it
     private readonly IEqualityComparer<T> _inner;
@@ -283,13 +282,7 @@ public sealed class SequenceEqualityComparer<T> : IEqualityComparer<T[]>, IEqual
     {
         if (x.Length != y.Length)
             return false;
-        // the length guard keeps the byte count from overflowing for very large arrays of multi-byte elements
-        if (_inner is null && _bitwiseElementSize != 0)
-            return SequenceHelpers.BytesEqual(
-                ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(x)),
-                ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(y)),
-                (long)x.Length * _bitwiseElementSize
-            );
+        // SequenceEqual already vectorizes bitwise-equatable element types when the comparer is null
         return x.SequenceEqual(y, _inner);
     }
     private bool ListsEqual(IList<T> x, IList<T> y)
@@ -377,8 +370,8 @@ public sealed class SequenceEqualityComparer<T> : IEqualityComparer<T[]>, IEqual
     {
         switch (source)
         {
-            case T[]:
-                span = Unsafe.As<T[]>(source);
+            case T[] array:
+                span = array;
                 return true;
             case List<T>:
                 span = CollectionsMarshal.AsSpan(Unsafe.As<List<T>>(source));

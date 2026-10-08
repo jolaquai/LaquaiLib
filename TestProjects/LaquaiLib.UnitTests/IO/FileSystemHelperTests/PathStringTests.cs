@@ -11,34 +11,34 @@ public class PathStringTests
     [Fact]
     public void ChangeNameWithBasicPathReturnsNewName()
     {
-        var path = @"C:\folder\oldname.txt";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "oldname.txt");
         var newName = "newname";
 
         var result = FileSystemHelper.ChangeName(path, newName);
 
-        Assert.Equal(@"C:\folder\newname.txt", result);
+        Assert.Equal(Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "newname.txt"), result);
     }
 
     [Fact]
     public void ChangeNameWithNewNameHavingExtensionReplacesFullName()
     {
-        var path = @"C:\folder\oldname.txt";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "oldname.txt");
         var newName = "newname.doc";
 
         var result = FileSystemHelper.ChangeName(path, newName);
 
-        Assert.Equal(@"C:\folder\newname.doc", result);
+        Assert.Equal(Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "newname.doc"), result);
     }
 
     [Fact]
     public void ChangeNameWithPathWithoutExtensionReturnsNewName()
     {
-        var path = @"C:\folder\oldname";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "oldname");
         var newName = "newname";
 
         var result = FileSystemHelper.ChangeName(path, newName);
 
-        Assert.Equal(@"C:\folder\newname", result);
+        Assert.Equal(Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "newname"), result);
     }
 
     [Fact]
@@ -66,29 +66,29 @@ public class PathStringTests
     [Fact]
     public void ChangeNameWithMultipleExtensionDotsHandlesCorrectly()
     {
-        var path = @"C:\folder\file.name.with.dots.txt";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "file.name.with.dots.txt");
         var newName = "newname";
 
         var result = FileSystemHelper.ChangeName(path, newName);
 
-        Assert.Equal(@"C:\folder\newname.txt", result);
+        Assert.Equal(Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "newname.txt"), result);
     }
 
     [Fact]
     public void ChangeNameWithFileNameStartingWithDotHandlesCorrectly()
     {
-        var path = @"C:\folder\.hiddenfile";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", ".hiddenfile");
         var newName = "newname";
 
         var result = FileSystemHelper.ChangeName(path, newName);
 
-        Assert.Equal(@"C:\folder\newname", result);
+        Assert.Equal(Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "newname"), result);
     }
 
     [Fact]
     public void ChangeNameWithEmptyNewNameThrowsArgumentException()
     {
-        var path = @"C:\folder\oldname.txt";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "oldname.txt");
         var newName = "";
 
         Assert.ThrowsAny<ArgumentException>(() => FileSystemHelper.ChangeName(path, newName));
@@ -97,7 +97,7 @@ public class PathStringTests
     [Fact]
     public void ChangeNameWithNullNewNameThrowsArgumentNullException()
     {
-        var path = @"C:\folder\oldname.txt";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder", "oldname.txt");
         string newName = null;
 
         Assert.ThrowsAny<ArgumentException>(() => FileSystemHelper.ChangeName(path, newName));
@@ -124,23 +124,23 @@ public class PathStringTests
     [Fact]
     public void ChangeNameWithPathEndingWithDirectorySeparatorHandlesCorrectly()
     {
-        var path = @"C:\folder\";
+        var path = Path.Combine("C:" + Path.DirectorySeparatorChar, "folder") + Path.DirectorySeparatorChar;
         var newName = "newname";
 
         var result = FileSystemHelper.ChangeName(path, newName);
 
-        Assert.Equal(@"C:\newname", result);
+        Assert.Equal(Path.Combine("C:" + Path.DirectorySeparatorChar, "newname"), result);
     }
 
     [Fact]
     public void ChangeNameWithRelativePathHandlesCorrectly()
     {
-        var path = @"..\folder\oldname.txt";
+        var path = Path.Combine("..", "folder", "oldname.txt");
         var newName = "newname";
 
         var result = FileSystemHelper.ChangeName(path, newName);
 
-        Assert.Equal(@"..\folder\newname.txt", result);
+        Assert.Equal(Path.Combine("..", "folder", "newname.txt"), result);
     }
     #endregion
 }

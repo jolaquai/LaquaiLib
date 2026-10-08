@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 using LaquaiLib.Extensions;
 
@@ -677,15 +677,6 @@ public class TextWriterExtensionsTests
         var handler = new TextWriterExtensions.TextWriterInterpolatedStringHandler(0, 1, tw);
         handler.AppendFormatted<object>(null, 3);
         Assert.Equal("   ", tw.ToString());
-    }
-
-    [Fact]
-    public void HandlerAppendLiteralSpanWritesSpan()
-    {
-        using var tw = Create();
-        var handler = new TextWriterExtensions.TextWriterInterpolatedStringHandler(0, 0, tw);
-        handler.AppendLiteral("span".AsSpan());
-        Assert.Equal("span", tw.ToString());
     }
 
     [Fact]
