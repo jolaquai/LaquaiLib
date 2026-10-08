@@ -50,10 +50,6 @@ public static class TextWriterExtensions
         /// </summary>
         public void AppendLiteral(string s) => WriteValueCore(s);
         /// <summary>
-        /// Writes a literal <see langword="ReadOnlySpan{char}"/> to the <see cref="TextWriter"/>.
-        /// </summary>
-        public void AppendLiteral(ReadOnlySpan<char> s) => WriteValueCore(s);
-        /// <summary>
         /// Formats a <see langword="string"/> into the <see cref="TextWriter"/>.
         /// </summary>
         public void AppendFormatted(string s, int alignment = 0, string format = null) => WriteValueCore(s.AsSpan(), alignment);
