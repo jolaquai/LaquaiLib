@@ -1,0 +1,61 @@
+using System.Text.RegularExpressions;
+
+namespace LaquaiLib.Extensions;
+
+/// <summary>
+/// Provides extensions for the <see cref="Regex"/> Types.
+/// </summary>
+public static class RegexExtensions
+{
+    extension(Match match)
+    {
+        /// <summary>
+        /// Retrieves the <see cref="Regex"/> instance that produced this <see cref="Match"/>.
+        /// </summary>
+        /// <returns>The <see cref="Regex"/> instance that produced this <see cref="Match"/>.</returns>
+        public Regex Regex
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                ArgumentNullException.ThrowIfNull(match);
+                return RegexAccessors._regex(match);
+            }
+        }
+    }
+
+    extension(Capture capture)
+    {
+        /// <summary>
+        /// Retrieves the original <see cref="string"/> that was matched by a <see cref="Regex"/> instance to produce this <paramref name="capture"/>.
+        /// </summary>
+        /// <returns>The original <see cref="string"/> that was matched by a <see cref="Regex"/> instance to produce this <paramref name="capture"/>.</returns>
+        public string Text
+        {
+            get
+            {
+                ArgumentNullException.ThrowIfNull(capture);
+                return RegexAccessors.get_Text(capture);
+            }
+        }
+    }
+
+    extension(in ReadOnlySpan<char> span)
+    {
+        /// <summary>
+        /// Creates a slice from the source span using the range specified by the <see cref="ValueMatch"/>.
+        /// </summary>
+        /// <param name="vm">The <see cref="ValueMatch"/> specifying the range to slice.</param>
+        /// <returns>The formed slice.</returns>
+        public ReadOnlySpan<char> Slice(ValueMatch vm) => span.Slice(vm.Index, vm.Length);
+    }
+    extension(in Span<char> span)
+    {
+        /// <summary>
+        /// Creates a slice from the source span using the range specified by the <see cref="ValueMatch"/>.
+        /// </summary>
+        /// <param name="vm">The <see cref="ValueMatch"/> specifying the range to slice.</param>
+        /// <returns>The formed slice.</returns>
+        public ReadOnlySpan<char> Slice(ValueMatch vm) => span.Slice(vm.Index, vm.Length);
+    }
+}

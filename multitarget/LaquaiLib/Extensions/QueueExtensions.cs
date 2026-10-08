@@ -1,0 +1,53 @@
+using LaquaiLib.Collections.LimitedCollections;
+
+namespace LaquaiLib.Extensions;
+
+/// <summary>
+/// Provides extensions for the <see cref="Queue{T}"/> type.
+/// </summary>
+public static class QueueExtensions
+{
+    extension<T>(Queue<T> queue)
+    {
+        /// <summary>
+        /// Adds items to the end of the <see cref="Queue{T}"/>.
+        /// </summary>
+        /// <param name="items">The items to add to <paramref name="queue"/>.</param>
+        public void EnqueueRange(params ReadOnlySpan<T> items)
+        {
+            for (var i = 0; i < items.Length; i++)
+                queue.Enqueue(items[i]);
+        }
+        /// <summary>
+        /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
+        /// </summary>
+        /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        public void EnqueueRange(IEnumerable<T> collection)
+        {
+            foreach (var item in collection)
+                queue.Enqueue(item);
+        }
+    }
+
+    extension<T>(LimitedQueue<T> queue)
+    {
+        /// <summary>
+        /// Adds items to the end of the <see cref="Queue{T}"/>.
+        /// </summary>
+        /// <param name="items">The items to add to <paramref name="queue"/>.</param>
+        public void EnqueueRange(params ReadOnlySpan<T> items)
+        {
+            for (var i = 0; i < items.Length; i++)
+                queue.Enqueue(items[i]);
+        }
+        /// <summary>
+        /// Adds items from a collection to the end of the <see cref="Queue{T}"/>.
+        /// </summary>
+        /// <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
+        public void EnqueueRange(IEnumerable<T> collection)
+        {
+            foreach (var item in collection)
+                queue.Enqueue(item);
+        }
+    }
+}

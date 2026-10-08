@@ -1,0 +1,17 @@
+version: 2
+
+updates:
+  # Action majors drift silently: a pin only reveals it is stale when a runtime bump or a breaking
+  # change detonates on an unrelated push. Weekly PRs turn that into something reviewable instead.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    groups:
+      # Minor and patch bumps batch into one PR; majors stay separate on purpose, since those are
+      # the ones that need their own CI run to prove the release path still works.
+      actions:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]

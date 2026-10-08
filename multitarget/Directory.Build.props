@@ -1,0 +1,79 @@
+<Project>
+    <PropertyGroup>
+        <TargetFramework>net11.0</TargetFramework>
+
+        <GeneratePackageOnBuild Condition="'$(Configuration)' == 'Release'"></GeneratePackageOnBuild>
+
+        <LangVersion>preview</LangVersion>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <DebugType>full</DebugType>
+        <DebugSymbols>True</DebugSymbols>
+        <IncludeSymbols>True</IncludeSymbols>
+        <IncludeSource>True</IncludeSource>
+        <NoWarn>$(NoWarn);CS8714;IDE0010;IDE0045;IDE0046;IDE0079;IDE0072;IDE0058;IDE0060;CA1034</NoWarn>
+
+        <AnalysisLevel>preview-recommended</AnalysisLevel>
+        <AnalysisModePerformance>all</AnalysisModePerformance>
+
+        <UseRuntimeAsync>True</UseRuntimeAsync>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('android'))">$(DefineConstants);ANDROID</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('browser'))">$(DefineConstants);BROWSER</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('freebsd'))">$(DefineConstants);FREEBSD</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('haiku'))">$(DefineConstants);HAIKU</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('illumos'))">$(DefineConstants);ILLUMOS</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('ios'))">$(DefineConstants);IOS</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('iossimulator'))">$(DefineConstants);IOS;SIMULATOR;IOSSIMULATOR</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);LINUX</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('maccatalyst'))">$(DefineConstants);MACCATALYST</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);OSX</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('solaris'))">$(DefineConstants);SOLARIS</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('tvos'))">$(DefineConstants);TVOS</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('tvossimulator'))">$(DefineConstants);TVOS;SIMULATOR;TVOSSIMULATOR</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('unix'))">$(DefineConstants);UNIX</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('wasi'))">$(DefineConstants);WASI</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">$(DefineConstants);WIN</DefineConstants>
+
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('wasm'))">$(DefineConstants);WASM</DefineConstants>
+
+        <DefineConstants Condition="$(RuntimeIdentifier.Contains('-bionic'))">$(DefineConstants);BIONIC</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.Contains('-musl'))">$(DefineConstants);MUSL</DefineConstants>
+
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('arm'))">$(DefineConstants);ARM</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('arm64'))">$(DefineConstants);ARM64</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('armel'))">$(DefineConstants);ARMEL</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('armv6'))">$(DefineConstants);ARMV6</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('loongarch64'))">$(DefineConstants);LOONGARCH64</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('mips64'))">$(DefineConstants);MIPS64</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('ppc64le'))">$(DefineConstants);PPC64LE</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('riscv64'))">$(DefineConstants);RISCV64</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('s390x'))">$(DefineConstants);S390X</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('x64'))">$(DefineConstants);X64</DefineConstants>
+        <DefineConstants Condition="$(RuntimeIdentifier.EndsWith('x86'))">$(DefineConstants);X86</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers\LaquaiLib.Analyzers.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers.Shared\LaquaiLib.Analyzers.Shared.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Analyzers.Fixes\LaquaiLib.Analyzers.Fixes.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+      <ProjectReference Include="$(MSBuildThisFileDirectory)..\netstandard2.0\LaquaiLib.Generators\LaquaiLib.Generators.csproj" OutputItemType="Analyzer" TreatAsPackageReference="True"/>
+
+      <InternalsVisibleTo Include="LaquaiLib.Windows"/>
+
+      <InternalsVisibleTo Include="LaquaiLib.UnitTests"/>
+
+      <Using Include="System.Collections"/>
+      <Using Include="System.Collections.Concurrent"/>
+      <Using Include="System.Diagnostics"/>
+      <Using Include="System.Runtime.CompilerServices"/>
+      <Using Include="System.Runtime.InteropServices"/>
+      <Using Include="System.Text"/>
+      <Using Include="System.Text.Json"/>
+      <Using Include="LaquaiLib.Interop" Static="True"/>
+    </ItemGroup>
+</Project>
