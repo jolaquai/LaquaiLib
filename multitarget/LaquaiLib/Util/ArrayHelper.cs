@@ -22,23 +22,22 @@ public static class ArrayHelper
         return PermutationChanged(indices);
     }
 
-    private static void SortGenericImpl<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, TValue[][] itemsArrays, delegate*<int[], TKey[], bool> inBetween)
+    private static void SortGenericImpl<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, TValue[][] itemsArrays, bool descending)
     {
         comparer ??= Comparer<TKey>.Default;
 
         // What's in these is irrelevant if ValidateAndGetKeys returns null so we can skip initialization
-        Unsafe.SkipInit(out int keysLength);
-        Unsafe.SkipInit(out int[] indices);
+        var keysLength = 0;
+        int[] indices = null;
         var changed = ValidateAndGetKeys(keys, null, comparer, itemsArrays, ref keysLength, ref indices);
         if (changed is null)
             return;
 
-        if (inBetween is not null)
-            unsafe
-            {
-                if (!inBetween(indices, keys))
-                    return;
-            }
+        if (descending)
+        {
+            if (!Reverse(indices, keys))
+                return;
+        }
         else if (!changed.Value)
             return;
 
@@ -54,23 +53,22 @@ public static class ArrayHelper
                 arr[j] = temp[indices[j]];
         }
     }
-    private static void SortNonGenericImpl(Array keys, IComparer comparer, Array[] itemsArrays, delegate*<int[], Array, bool> inBetween)
+    private static void SortNonGenericImpl(Array keys, IComparer comparer, Array[] itemsArrays, bool descending)
     {
         comparer ??= Comparer.Default;
 
         // What's in these is irrelevant if ValidateAndGetKeys returns null so we can skip initialization
-        Unsafe.SkipInit(out int keysLength);
-        Unsafe.SkipInit(out int[] indices);
+        var keysLength = 0;
+        int[] indices = null;
         var changed = ValidateAndGetKeys<object>(keys, comparer, null, itemsArrays, ref keysLength, ref indices);
         if (changed is null)
             return;
 
-        if (inBetween is not null)
-            unsafe
-            {
-                if (!inBetween(indices, keys))
-                    return;
-            }
+        if (descending)
+        {
+            if (!Reverse(indices, keys))
+                return;
+        }
         else if (!changed.Value)
             return;
 
@@ -90,7 +88,7 @@ public static class ArrayHelper
     // SortGenericImpl's homogeneous itemsArrays can - so this sorts interimKeys once to get the permutation, then applies it
     // via two separate typed passes. Nothing here boxes: Array.Sort(TCompare[], int[], IComparer<TCompare>) and both
     // reassignment loops stay fully typed.
-    private static void SortGenericSelectorImpl<TKey, TCompare, TValue>(TKey[] items, TCompare[] interimKeys, IComparer<TCompare> comparer, TValue[][] itemsArrays, delegate*<int[], TCompare[], bool> inBetween)
+    private static void SortGenericSelectorImpl<TKey, TCompare, TValue>(TKey[] items, TCompare[] interimKeys, IComparer<TCompare> comparer, TValue[][] itemsArrays, bool descending)
     {
         comparer ??= Comparer<TCompare>.Default;
 
@@ -105,12 +103,11 @@ public static class ArrayHelper
 
         Array.Sort(interimKeys, indices, comparer);
 
-        if (inBetween is not null)
-            unsafe
-            {
-                if (!inBetween(indices, interimKeys))
-                    return;
-            }
+        if (descending)
+        {
+            if (!Reverse(indices, interimKeys))
+                return;
+        }
         else if (!PermutationChanged(indices))
             return;
 
@@ -185,10 +182,7 @@ public static class ArrayHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Sort<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays)
     {
-        unsafe
-        {
-            SortGenericImpl(keys, comparer, itemsArrays, null);
-        }
+        SortGenericImpl(keys, comparer, itemsArrays, false);
     }
 
     /// <summary>
@@ -220,10 +214,7 @@ public static class ArrayHelper
         var interimKeys = GC.AllocateUninitializedArray<TCompare>(items.Length);
         for (var i = 0; i < interimKeys.Length; i++)
             interimKeys[i] = selector(items[i]);
-        unsafe
-        {
-            SortGenericSelectorImpl(items, interimKeys, comparer, itemsArrays, null);
-        }
+        SortGenericSelectorImpl(items, interimKeys, comparer, itemsArrays, false);
     }
     /// <summary>
     /// According to an array of <paramref name="keys"/>, sorts an arbitrary number of <typeparamref name="TValue"/> arrays using the default comparer for <typeparamref name="TKey"/> in descending order.
@@ -241,8 +232,7 @@ public static class ArrayHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SortDescending<TKey, TValue>(TKey[] keys, IComparer<TKey> comparer, params TValue[][] itemsArrays)
     {
-        unsafe
-        { SortGenericImpl(keys, comparer, itemsArrays, &Reverse); }
+        SortGenericImpl(keys, comparer, itemsArrays, true);
     }
 
     /// <summary>
@@ -274,10 +264,7 @@ public static class ArrayHelper
         var interimKeys = GC.AllocateUninitializedArray<TCompare>(items.Length);
         for (var i = 0; i < interimKeys.Length; i++)
             interimKeys[i] = selector(items[i]);
-        unsafe
-        {
-            SortGenericSelectorImpl(items, interimKeys, comparer, itemsArrays, &Reverse);
-        }
+        SortGenericSelectorImpl(items, interimKeys, comparer, itemsArrays, true);
     }
 
     /// <summary>
@@ -296,8 +283,7 @@ public static class ArrayHelper
     /// <param name="itemsArrays">The arrays of items to sort.</param>
     public static void Sort(Array keys, IComparer comparer, params Array[] itemsArrays)
     {
-        unsafe
-        { SortNonGenericImpl(keys, comparer, itemsArrays, null); }
+        SortNonGenericImpl(keys, comparer, itemsArrays, false);
     }
 
     /// <summary>
@@ -343,8 +329,7 @@ public static class ArrayHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void SortDescending(Array keys, IComparer comparer, params Array[] itemsArrays)
     {
-        unsafe
-        { SortNonGenericImpl(keys, comparer, itemsArrays, &Reverse); }
+        SortNonGenericImpl(keys, comparer, itemsArrays, true);
     }
 
     /// <summary>

@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Buffers.Binary;
 using System.IO.Compression;
 using System.Security.AccessControl;
 
@@ -626,10 +627,10 @@ public static partial class FileSystemHelper
                             if (offset + 20 > bytesRead)
                                 break;
 
-                            var streamId = MemoryMarshal.Read<int>(buffer[offset..]);
-                            var streamAttributes = MemoryMarshal.Read<uint>(buffer[(offset + 4)..]);
-                            var streamSize = MemoryMarshal.Read<long>(buffer[(offset + 8)..]);
-                            var streamNameSize = MemoryMarshal.Read<uint>(buffer[(offset + 16)..]);
+                            var streamId = BinaryPrimitives.ReadInt32LittleEndian(buffer[offset..]);
+                            var streamAttributes = BinaryPrimitives.ReadUInt32LittleEndian(buffer[(offset + 4)..]);
+                            var streamSize = BinaryPrimitives.ReadInt64LittleEndian(buffer[(offset + 8)..]);
+                            var streamNameSize = BinaryPrimitives.ReadUInt32LittleEndian(buffer[(offset + 16)..]);
 
                             var headerSize = 20 + (int)streamNameSize;
 

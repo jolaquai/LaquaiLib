@@ -44,7 +44,7 @@ public static partial class LinqMemoryExtensions
                 MemoryMarshal.Cast<TSource, TResult>(source).CopyTo(destination);
             else
                 for (var i = 0; i < source.Length; i++)
-                    destination[i] = Unsafe.As<TSource, TResult>(ref Unsafe.AsRef(in source[i]));
+                    destination[i] = Unsafe.BitCast<TSource, TResult>(source[i]);
             return source.Length;
         }
         /// <summary>
