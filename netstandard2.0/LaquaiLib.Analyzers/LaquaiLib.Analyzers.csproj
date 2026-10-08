@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
+    <PropertyGroup>
+        <Features>$(Features);runtime-async=on</Features>
+    </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Refactorings %284XXX%29\**" />
     <EmbeddedResource Remove="Refactorings %284XXX%29\**" />

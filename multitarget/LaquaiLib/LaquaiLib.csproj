@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <Features>$(Features);runtime-async=on</Features>
     <Title>LaquaiLib</Title>
     <PackageDescription>Personal library. General purpose.</PackageDescription>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>

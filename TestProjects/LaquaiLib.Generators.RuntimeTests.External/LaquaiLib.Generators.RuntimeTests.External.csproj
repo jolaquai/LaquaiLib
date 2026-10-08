@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Features>$(Features);runtime-async=on</Features>
         <TargetFramework>net11.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <LangVersion>preview</LangVersion>
