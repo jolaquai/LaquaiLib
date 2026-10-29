@@ -1,0 +1,64 @@
+name: .NET
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: windows-latest
+        
+    steps:
+    - uses: actions/checkout@v7
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
+      with:
+        dotnet-version: 11.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+
+  # Isolated from `build` on purpose: coverage tooling has broken the test host before,
+  # and nothing here may ever turn the authoritative build red.
+  coverage:
+    runs-on: windows-latest
+    continue-on-error: true
+
+    steps:
+    - uses: actions/checkout@v7
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
+      with:
+        dotnet-version: 11.0.x
+    - name: Build test project
+      run: dotnet build TestProjects/LaquaiLib.UnitTests/LaquaiLib.UnitTests.csproj
+    - name: Install coverlet
+      run: dotnet tool install --global coverlet.console
+    # coverlet propagates the test run's exit code, so a failing test would otherwise
+    # abort the job before the summary below ever runs
+    - name: Collect coverage
+      continue-on-error: true
+      shell: pwsh
+      run: |
+        $asm = Get-ChildItem -Path TestProjects/LaquaiLib.UnitTests/bin -Recurse -Filter LaquaiLib.UnitTests.dll | Select-Object -First 1
+        if (-not $asm) { Write-Host "test assembly not found"; exit 0 }
+        coverlet $asm.DirectoryName --target dotnet --targetargs "$($asm.FullName)" --format cobertura --output coverage.cobertura.xml --include "[LaquaiLib]*"
+    - name: Coverage summary
+      if: always()
+      shell: pwsh
+      run: |
+        $file = Get-ChildItem -Path . -Recurse -Filter "coverage*.xml" -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $file) { Write-Host "no cobertura report found"; exit 0 }
+        Write-Host "report: $($file.FullName)"
+        [xml]$doc = Get-Content -LiteralPath $file.FullName
+        Write-Host "overall line-rate=$($doc.coverage.'line-rate') branch-rate=$($doc.coverage.'branch-rate')"
+        foreach ($cls in $doc.SelectNodes("//class")) {
+          if ($cls.name -notlike "*ArrayPoolMemoryStream*") { continue }
+          Write-Host "$($cls.name): line-rate=$($cls.'line-rate') branch-rate=$($cls.'branch-rate')"
+          $miss = @($cls.SelectNodes("./lines/line") | Where-Object { [int]$_.hits -eq 0 } | ForEach-Object { $_.number })
+          if ($miss.Count -gt 0) { Write-Host "  uncovered lines: $($miss -join ', ')" } else { Write-Host "  all lines covered" }
+          $partial = @($cls.SelectNodes("./lines/line") | Where-Object { $_.branch -eq 'True' -and $_.'condition-coverage' -notlike '100%*' } | ForEach-Object { "$($_.number)[$($_.'condition-coverage')]" })
+          if ($partial.Count -gt 0) { Write-Host "  partial branches: $($partial -join ', ')" }
+        }
