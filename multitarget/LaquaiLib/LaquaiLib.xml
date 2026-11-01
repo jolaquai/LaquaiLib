@@ -682,7 +682,7 @@
         </member>
         <member name="T:LaquaiLib.Extensions.FileSystemModelExtensions">
             <summary>
-            Provides extensions for the <see cref="T:System.IO.DirectoryInfo"/> type.
+            Provides extensions for the file system model-related types, such as <see cref="T:System.IO.File"/>, <see cref="T:System.IO.Directory"/>, <see cref="T:System.IO.FileInfo"/>, and <see cref="T:System.IO.DirectoryInfo"/>.
             </summary>
         </member>
         <member name="M:LaquaiLib.Extensions.FileSystemModelExtensions.Directory(System.IO.DirectoryInfo,System.String)">
@@ -6490,6 +6490,55 @@
             Provides extensions for the <see cref="T:System.IO.TextWriter"/> type.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler">
+            <summary>
+            Represents an interpolated string handler that writes directly to a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler.#ctor(System.Int32,System.Int32,System.IO.TextWriter)">
+            <summary>
+            Represents an interpolated string handler that writes directly to a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler.AppendLiteral(System.String)">
+            <summary>
+            Writes a literal <see langword="string"/> to the <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler.AppendFormatted(System.String,System.Int32,System.String)">
+            <summary>
+            Formats a <see langword="string"/> into the <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler.AppendFormatted(System.ReadOnlySpan{System.Char},System.Int32,System.String)">
+            <summary>
+            Formats a <see langword="ReadOnlySpan{char}"/> into the <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler.AppendFormatted``1(``0,System.Int32,System.String)">
+            <summary>
+            Formats an instance of <typeparamref name="T"/> into the <see cref="T:System.IO.TextWriter"/>.
+            Arguments whose type <typeparamref name="T"/> implements <see cref="T:System.ISpanFormattable"/> or <see cref="T:System.IFormattable"/> will use those interface implementations to format the value.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.WriteInterpolated(System.IO.TextWriter,LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.TextWriterExtensions.&lt;G&gt;$C8AD13954C5CA5B5C3C3A998919CD66C.WriteInterpolated(LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler@)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.WriteLineInterpolated(System.IO.TextWriter,LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.TextWriterExtensions.&lt;G&gt;$C8AD13954C5CA5B5C3C3A998919CD66C.WriteLineInterpolated(LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler@)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.&lt;G&gt;$C8AD13954C5CA5B5C3C3A998919CD66C.WriteInterpolated(LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler@)">
+            <summary>
+            Writes an interpolated string to the <see cref="T:System.IO.TextWriter"/> using the <see cref="T:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler"/>.
+            </summary>
+            <param name="handler">The <see cref="T:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler"/> that formats the interpolated string. Compiler use only.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.TextWriterExtensions.&lt;G&gt;$C8AD13954C5CA5B5C3C3A998919CD66C.WriteLineInterpolated(LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler@)">
+            <summary>
+            Writes an interpolated string followed by a line terminator to the <see cref="T:System.IO.TextWriter"/> using the <see cref="T:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler"/>.
+            </summary>
+            <param name="handler">The <see cref="T:LaquaiLib.Extensions.TextWriterExtensions.TextWriterInterpolatedStringHandler"/> that formats the interpolated string. Compiler use only.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.IndentedTextWriterExtensions">
             <summary>
             Provides extensions for the <see cref="T:System.CodeDom.Compiler.IndentedTextWriter"/> type.
@@ -6976,6 +7025,11 @@
             <summary>
             Creates a <see cref="T:LaquaiLib.Extensions.QueryBuilder"/> that escapes values for query parameters when setting them.
             Assumes correct escaping for existing query parameters, otherwise the % signs would be escaped.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Extensions.VersionExtensions">
+            <summary>
+            Provides extensions for <see cref="T:System.Version"/>.
             </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.EqualityComparerDefaultOperationModeData">
@@ -17547,6 +17601,132 @@
             Gets whether the event is in the signaled state.
             </summary>
         </member>
+        <member name="T:LaquaiLib.Threading.AsyncReaderWriterLock">
+            <summary>
+            Manages exclusive access to a resource for any number of concurrent readers and a single writer.
+            Additionally, a single reader may be in upgradeable mode, which initially acts the same as a reader, but allows upgrade to a writer lock without releasing the lock in between.
+            Any writer lock may likewise be downgraded to upgradeable mode without releasing the lock in between.
+            </summary>
+            <remarks>
+            For the purposes of fairness and entry ordering, upgradeable locks are treated the same as writers. A pending upgrade takes precedence over all other waiters, regardless of the fairness policy.
+            <para/>Waits that time out complete with <see langword="null"/> (or <see langword="false"/> for upgrades); waits that are canceled throw an <see cref="T:System.OperationCanceledException"/>.
+            <para/>Lock entries are not thread-affine and may be disposed on a thread different from the one that acquired them.
+            <para/>This type is thread-safe.
+            </remarks>
+        </member>
+        <member name="T:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry">
+            <summary>
+            Represents a single entry in an <see cref="T:LaquaiLib.Threading.AsyncReaderWriterLock"/> instance.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry.IsUpgradeable">
+            <summary>
+            Gets whether this entry is currently an upgradeable read lock, either from creation or through a downgrade.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry.IsWriter">
+            <summary>
+            Gets whether this entry is a writer lock, either from creation or through an upgrade.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry.TryUpgrade">
+            <summary>
+            Attempts to upgrade the lock entry to a writer lock without waiting.
+            If the entry is not upgradeable or has been released, this will return <see langword="false"/>.
+            If the entry was created as a writer lock or has already been upgraded, this will return <see langword="true"/>.
+            If other readers are currently holding the lock, this will return <see langword="false"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry.WaitToUpgradeAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Waits to upgrade the lock entry to a writer lock.
+            If the entry was created as a writer lock or has already been upgraded, this will return <see langword="true"/>.
+            If the entry has been released or the wait times out, this will return <see langword="false"/>.
+            </summary>
+            <param name="timeout">The maximum time to wait. <see langword="null"/> or <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> waits indefinitely.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to cancel the wait.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry.Downgrade">
+            <summary>
+            Downgrades a writer lock entry to an upgradeable read lock without releasing the lock in between, admitting waiting readers according to the fairness policy.
+            This never waits. The entry may be upgraded again afterwards.
+            If the entry is already upgradeable, this has no effect.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">The entry is a plain read lock or has been released.</exception>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry.Dispose">
+            <summary>
+            Releases the lock entry. Subsequent calls have no effect.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.#ctor(LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy)">
+            <summary>
+            Initializes a new <see cref="T:LaquaiLib.Threading.AsyncReaderWriterLock"/>.
+            </summary>
+            <param name="fairnessPolicy">The <see cref="T:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy"/> to employ for this lock.</param>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.TryEnterRead(LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry@)">
+            <summary>
+            Attempts to enter the lock in read mode without waiting.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.TryEnterUpgradeable(LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry@)">
+            <summary>
+            Attempts to enter the lock in upgradeable read mode without waiting.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.TryEnterWriter(LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry@)">
+            <summary>
+            Attempts to enter the lock in write mode without waiting.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.WaitToEnterReadAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Waits to enter the lock in read mode.
+            </summary>
+            <param name="timeout">The maximum time to wait. <see langword="null"/> or <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> waits indefinitely.</param>
+            <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to cancel the wait.</param>
+            <returns>The acquired <see cref="T:LaquaiLib.Threading.AsyncReaderWriterLock.LockEntry"/>, or <see langword="null"/> if the wait timed out.</returns>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.WaitToEnterUpgradeableAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Waits to enter the lock in upgradeable read mode.
+            </summary>
+            <inheritdoc cref="M:LaquaiLib.Threading.AsyncReaderWriterLock.WaitToEnterReadAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.WaitToEnterWriterAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)">
+            <summary>
+            Waits to enter the lock in write mode.
+            </summary>
+            <inheritdoc cref="M:LaquaiLib.Threading.AsyncReaderWriterLock.WaitToEnterReadAsync(System.Nullable{System.TimeSpan},System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:LaquaiLib.Threading.AsyncReaderWriterLock.DisposeAsync">
+            <summary>
+            Disposes the lock, faulting all pending waiters with an <see cref="T:System.ObjectDisposedException"/>.
+            Entries that are currently held may still be released.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy">
+            <summary>
+            Specifies the fairness policy for an <see cref="T:LaquaiLib.Threading.AsyncReaderWriterLock"/> instance.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy.FirstComeFirstServed">
+            <summary>
+            Specifies that the lock approximately follows a first-come-first-served policy, with no preference for readers or writers
+            This is the default policy. Note that this differs from <see cref="T:System.Threading.ReaderWriterLockSlim"/>'s default policy, which is equivalent to <see cref="F:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy.PreferWriters"/>.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy.PreferReaders">
+            <summary>
+            Specifies that the lock prefers readers; that is, if both readers and writers are waiting, readers will be granted access before writers and waiting writers will be delayed until all waiting readers have released the lock.
+            </summary>
+        </member>
+        <member name="F:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy.PreferWriters">
+            <summary>
+            Specifies that the lock prefers writers; that is, if both readers and writers are waiting, writers will be granted access before readers and waiting readers will be delayed until all waiting writers have released the lock.
+            </summary>
+        </member>
         <member name="T:LaquaiLib.Threading.ExtendedDebugTaskExtensions">
             <summary>
             Provides factory methods for creating <see cref="T:LaquaiLib.Threading.ExtendedDebugTask"/> instances.
@@ -18425,6 +18605,31 @@
         <member name="M:LaquaiLib.Threading.TaskSchedulerAwaiter.GetResult">
             <summary>
             Ends the await on this awaiter.
+            </summary>
+        </member>
+        <member name="T:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicyData">
+            <summary>
+            Provides alternative data representations for the enum <c>global::LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicyData.Names">
+            <summary>
+            Gets the names of the enum members of <c>global::LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicyData.Values">
+            <summary>
+            Gets the values of the enum members of <c>global::LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicyData.UnderlyingValues">
+            <summary>
+            Gets the underlying values of the enum members of <c>global::LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy</c>.
+            </summary>
+        </member>
+        <member name="P:LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicyData.Data">
+            <summary>
+            Gets the data of the enum members of <c>global::LaquaiLib.Threading.AsyncReaderWriterLockFairnessPolicy</c>.
             </summary>
         </member>
         <member name="T:LaquaiLib.UnsafeUtils.Accessors.CompositeFormatAccessors">

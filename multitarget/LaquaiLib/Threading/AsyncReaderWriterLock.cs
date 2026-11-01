@@ -6,6 +6,7 @@ namespace LaquaiLib.Threading;
 /// <summary>
 /// Manages exclusive access to a resource for any number of concurrent readers and a single writer.
 /// Additionally, a single reader may be in upgradeable mode, which initially acts the same as a reader, but allows upgrade to a writer lock without releasing the lock in between.
+/// Any writer lock may likewise be downgraded to upgradeable mode without releasing the lock in between.
 /// </summary>
 /// <remarks>
 /// For the purposes of fairness and entry ordering, upgradeable locks are treated the same as writers. A pending upgrade takes precedence over all other waiters, regardless of the fairness policy.
@@ -23,7 +24,7 @@ public sealed class AsyncReaderWriterLock : IAsyncDisposable
         private readonly AsyncReaderWriterLock _lock;
         private int released;
         /// <summary>
-        /// Gets whether this entry is an upgradeable read lock that has not been upgraded yet.
+        /// Gets whether this entry is currently an upgradeable read lock, either from creation or through a downgrade.
         /// </summary>
         public bool IsUpgradeable { get; internal set; }
         /// <summary>
@@ -59,6 +60,20 @@ public sealed class AsyncReaderWriterLock : IAsyncDisposable
                 ThrowLockEntryNotUpgradeable();
             return _lock.WaitToUpgradeAsync(this, timeout, cancellationToken);
         }
+        /// <summary>
+        /// Downgrades a writer lock entry to an upgradeable read lock without releasing the lock in between, admitting waiting readers according to the fairness policy.
+        /// This never waits. The entry may be upgraded again afterwards.
+        /// If the entry is already upgradeable, this has no effect.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">The entry is a plain read lock or has been released.</exception>
+        public void Downgrade()
+        {
+            if (IsUpgradeable)
+                return;
+            if (!IsWriter)
+                ThrowLockEntryNotDowngradeable();
+            _lock.Downgrade(this);
+        }
 
         /// <summary>
         /// Releases the lock entry. Subsequent calls have no effect.
@@ -71,6 +86,7 @@ public sealed class AsyncReaderWriterLock : IAsyncDisposable
 
         #region Throw helpers
         [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowLockEntryNotUpgradeable() => throw new InvalidOperationException("Lock entry is not upgradeable.");
+        [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowLockEntryNotDowngradeable() => throw new InvalidOperationException("Lock entry is not a writer lock.");
         #endregion
     }
 
@@ -207,6 +223,20 @@ public sealed class AsyncReaderWriterLock : IAsyncDisposable
             waiter = Enqueue(WaiterKind.Upgrade, entry);
         }
         return WaitUpgradeCoreAsync(waiter, ms, cancellationToken);
+    }
+
+    private void Downgrade(LockEntry entry)
+    {
+        lock (_sync)
+        {
+            if (writer != entry)
+                ThrowEntryReleased();
+            writer = null;
+            upgrader = entry;
+            entry.IsWriter = false;
+            entry.IsUpgradeable = true;
+            Pump();
+        }
     }
 
     [AsyncMethodBuilder(typeof(PoolingAsyncValueTaskMethodBuilder<>))]
@@ -407,6 +437,7 @@ public sealed class AsyncReaderWriterLock : IAsyncDisposable
     #region Throw helpers
     [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowDisposed() => throw new ObjectDisposedException(nameof(AsyncReaderWriterLock));
     [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowUpgradePending() => throw new InvalidOperationException("An upgrade is already pending for this lock entry.");
+    [MethodImpl(MethodImplOptions.NoInlining), DoesNotReturn] private static void ThrowEntryReleased() => throw new InvalidOperationException("Lock entry has been released.");
     #endregion
 }
 
