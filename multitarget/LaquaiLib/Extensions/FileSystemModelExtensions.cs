@@ -3,7 +3,7 @@
 namespace LaquaiLib.Extensions;
 
 /// <summary>
-/// Provides extensions for the <see cref="DirectoryInfo"/> type.
+/// Provides extensions for the file system model-related types, such as <see cref="System.IO.File"/>, <see cref="System.IO.Directory"/>, <see cref="FileInfo"/>, and <see cref="DirectoryInfo"/>.
 /// </summary>
 public static partial class FileSystemModelExtensions
 {

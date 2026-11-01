@@ -13,7 +13,7 @@ public static partial class IEnumerableExtensions
         /// </remarks>
         public void Dispose()
         {
-            var innerExceptions = new List<Exception>();
+            List<Exception> innerExceptions = null;
             foreach (var disposable in disposables)
                 try
                 {
@@ -21,6 +21,7 @@ public static partial class IEnumerableExtensions
                 }
                 catch (Exception ex)
                 {
+                    innerExceptions ??= [];
                     innerExceptions.Add(ex);
                 }
             if (innerExceptions.Count > 0)
