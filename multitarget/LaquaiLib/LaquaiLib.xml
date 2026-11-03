@@ -39,6 +39,9 @@
         <member name="M:LaquaiLib.Extensions.AnyExtensions.As``1(System.Object)">
             <inheritdoc cref="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.As``1"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.GetPinnableReference``1(System.Object)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.GetPinnableReference``1"/>
+        </member>
         <member name="P:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$66F77D1E46F965A5B22D4932892FA78B`1.Annotations">
             <summary>
             Gets an <see cref="T:System.Collections.Generic.ISet`1"/> that can be used to store annotations for the given value.
@@ -53,6 +56,16 @@
             </summary>
             <typeparam name="T">The type to cast <paramref name="obj"/> to.</typeparam>
             <returns><paramref name="obj"/> reinterpreted as an instance of <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.AnyExtensions.&lt;G&gt;$C43E2675C7BBF9284AF22FB8A9BF0280.GetPinnableReference``1">
+            <summary>
+            Gets a pinnable reference to the underlying data of <paramref name="obj"/>.
+            <para/>If <paramref name="obj"/> is <see langword="null"/>, the reference is a <see langword="null"/> reference.
+            <para/>If <paramref name="obj"/> is a non-zero-length <see langword="string"/>, the reference points to the first character of the string.
+            <para/>If <paramref name="obj"/> is a non-zero-length array, the reference points to the first element of the array.
+            <para/>In any other case, the reference points to the first field of the object.
+            </summary>
+            <returns>The pinnable reference to the underlying data of <paramref name="obj"/>, retyped as <typeparamref name="T"/>.</returns>
         </member>
         <member name="T:LaquaiLib.Extensions.ArrayExtensionsByte">
             <summary>
@@ -4802,6 +4815,18 @@
             Provides extensions for the <see cref="T:System.Span`1"/>, <see cref="T:System.ReadOnlySpan`1"/>, <see cref="T:System.Memory`1"/> and <see cref="T:System.ReadOnlyMemory`1"/> types.
             </summary>
         </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.get_Ref``1(System.ReadOnlySpan{``0}@)">
+            <inheritdoc cref="P:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Ref"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.RefAt``1(System.ReadOnlySpan{``0}@,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.RefAt(System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.get_RefUnsafe``1(System.ReadOnlySpan{``0}@)">
+            <inheritdoc cref="P:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.RefUnsafe"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.RefAtUnsafe``1(System.ReadOnlySpan{``0}@,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.RefAtUnsafe(System.Int32)"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.ReadOnlySpan{``0}@,System.Action{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0})"/>
         </member>
@@ -4810,6 +4835,15 @@
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.Split``1(System.ReadOnlySpan{``0}@,System.Span{``0},System.Span{``0},System.Func{``0,System.Boolean})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Split(System.Span{`0},System.Span{`0},System.Func{`0,System.Boolean})"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.get_Ref``1(System.Span{``0}@)">
+            <inheritdoc cref="P:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Ref"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.RefAt``1(System.Span{``0}@,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.RefAt(System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.RefAtUnsafe``1(System.Span{``0}@,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.RefAtUnsafe(System.Int32)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.ForEach``1(System.Span{``0}@,System.Action{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0})"/>
@@ -4895,6 +4929,28 @@
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.EnumerateSplitsBySequence``1(System.ReadOnlySpan{``0}@,System.ReadOnlySpan{``0})">
             <inheritdoc cref="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$12A0FC79533CAAC5A8B069B719F4E022`1.EnumerateSplitsBySequence(System.ReadOnlySpan{`0})"/>
         </member>
+        <member name="P:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.Ref">
+            <summary>
+            Gets the <see langword="readonly"/> <see langword="ref"/> the <paramref name="span"/> points to.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.RefAt(System.Int32)">
+            <summary>
+            Gets the <see langword="readonly"/> <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+            </summary>
+            <param name="offset">The offset to shift the <see langword="ref"/> by. Checked against <paramref name="span"/>'s length.</param>
+        </member>
+        <member name="P:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.RefUnsafe">
+            <summary>
+            Gets the <see langword="ref"/> the <paramref name="span"/> points to.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.RefAtUnsafe(System.Int32)">
+            <summary>
+            Gets the <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+            </summary>
+            <param name="offset">The offset to shift the <see langword="ref"/> by. No bounds checking is performed.</param>
+        </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$CCC6C15EC93AA06816794B41FF241F94`1.ForEach(System.Action{`0})">
             <summary>
             Invokes the specified <paramref name="action"/> for each element in the <see cref="T:System.ReadOnlySpan`1"/>.
@@ -4920,6 +4976,23 @@
             <paramref name="whereTrue"/> and <paramref name="whereFalse"/>'s lengths are not checked against <paramref name="span"/>'s length.
             If they are too small, an <see cref="T:System.IndexOutOfRangeException"/> will be thrown by the runtime.
             </remarks>
+        </member>
+        <member name="P:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.Ref">
+            <summary>
+            Gets the <see langword="ref"/> the <paramref name="span"/> points to.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.RefAt(System.Int32)">
+            <summary>
+            Gets the <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+            </summary>
+            <param name="offset">The offset to shift the <see langword="ref"/> by. Checked against <paramref name="span"/>'s length.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.RefAtUnsafe(System.Int32)">
+            <summary>
+            Gets the <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+            </summary>
+            <param name="offset">The offset to shift the <see langword="ref"/> by. No bounds checking is performed.</param>
         </member>
         <member name="M:LaquaiLib.Extensions.MemoryExtensions.&lt;G&gt;$DF14BF232572D3470F1D92467B9113E3`1.ForEach(System.Action{`0})">
             <summary>
@@ -5550,6 +5623,12 @@
         <member name="M:LaquaiLib.Extensions.RangeExtensions.GetRange(System.Range@,System.Int32)">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GetRange(System.Int32)"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.ToArray(System.Range@)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.ToArray"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.ToArray(System.Range@,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.ToArray(System.Int32)"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.RangeExtensions.GetEnumerator(System.Range@)">
             <inheritdoc cref="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GetEnumerator"/>
         </member>
@@ -5596,6 +5675,19 @@
             <param name="length">The length of the range to reference.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Int32"/>s that are within the given <paramref name="range"/>.</returns>
         </member>
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.ToArray">
+            <summary>
+            Returns an array of <see cref="T:System.Int32"/>s that are within the given <paramref name="range"/>.
+            </summary>
+            <returns>The array of <see cref="T:System.Int32"/>s that are within the given <paramref name="range"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.ToArray(System.Int32)">
+            <summary>
+            Returns an array of <see cref="T:System.Int32"/>s that are within the given <paramref name="range"/>, calculating the required indices from the given <paramref name="length"/>.
+            </summary>
+            <param name="length">The length of the range to reference.</param>
+            <returns>The array of <see cref="T:System.Int32"/>s that are within the given <paramref name="range"/>.</returns>
+        </member>
         <member name="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GetEnumerator">
             <summary>
             Returns an <see cref="T:System.Collections.Generic.IEnumerator`1"/> of <see cref="T:System.Int32"/>s that may be used to iterate through the numbers within the given <paramref name="range"/>.
@@ -5634,6 +5726,39 @@
         </member>
         <member name="M:LaquaiLib.Extensions.RangeExtensions.&lt;G&gt;$2BED71C534053B53AEFDCE16BD914EC5.GroupBy``2(System.Func{System.Int32,``0},System.Func{System.Int32,``1})">
             <inheritdoc/>
+        </member>
+        <member name="T:LaquaiLib.Extensions.RangeEnumerator">
+            <summary>
+            Enumerates the indices of a <see cref="T:System.Range"/> whose <see cref="T:System.Index"/> values may not be from the end of the range, since there is no end to reference from.
+            </summary>
+            <param name="range">The <see cref="T:System.Range"/> whose indices are to be enumerated.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeEnumerator.#ctor(System.Range)">
+            <summary>
+            Enumerates the indices of a <see cref="T:System.Range"/> whose <see cref="T:System.Index"/> values may not be from the end of the range, since there is no end to reference from.
+            </summary>
+            <param name="range">The <see cref="T:System.Range"/> whose indices are to be enumerated.</param>
+        </member>
+        <member name="P:LaquaiLib.Extensions.RangeEnumerator.Current">
+            <summary>
+            Gets the current index in the enumeration of the <see cref="T:System.Range"/>.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeEnumerator.Dispose">
+            <summary>
+            Disposes the enumerator. This is a no-op.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next index in the enumeration of the <see cref="T:System.Range"/>.
+            </summary>
+            <returns><see langword="true"/> if advancing the enumerator was successful; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RangeEnumerator.Reset">
+            <summary>
+            Resets the enumerator to its initial state; that is, before the first index in the enumeration of the <see cref="T:System.Range"/>.
+            </summary>
         </member>
         <member name="T:LaquaiLib.Extensions.RegexExtensions">
             <summary>

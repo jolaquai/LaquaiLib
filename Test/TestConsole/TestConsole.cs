@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Buffers;
+using System.Diagnostics;
 using System.IO;
 using System.Numerics;
 using System.Reflection;
@@ -48,21 +49,13 @@ public static partial class TestConsole
 
     public static async Task ActualMain(IServiceProvider serviceProvider)
     {
-        var tcs = new ReusableTaskCompletionSource();
-        for (var i = 0; i < 65535; i++)
-        {
-            tcs.Reset();
-            Debug.Assert(tcs.ValueTask.IsCompletedSuccessfully);
-            var thread = Environment.CurrentManagedThreadId;
-            await tcs.ValueTask;
-            Debug.Assert(thread == Environment.CurrentManagedThreadId, "Expected not to switch threads when the VT is already completed");
-            tcs.Reset();
-        }
-        ;
-    }
+        cw((1..195).ToArray());
+        cw((195..1).ToArray());
+        cw((^1..^195).ToArray(1025));
+        cw((^195..^1).ToArray(1025));
 
-    [FullAccessProxy(typeof(MemoryStream))]
-    public partial class Test;
+        Environment.Exit(0);
+    }
 
     public static byte[] RevolverBytes(int length)
     {

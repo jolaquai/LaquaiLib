@@ -21,6 +21,41 @@ public static partial class MemoryExtensions
     extension<T>(in ReadOnlySpan<T> span)
     {
         /// <summary>
+        /// Gets the <see langword="readonly"/> <see langword="ref"/> the <paramref name="span"/> points to.
+        /// </summary>
+        public ref readonly T Ref
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref span.RefUnsafe;
+        }
+        /// <summary>
+        /// Gets the <see langword="readonly"/> <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset to shift the <see langword="ref"/> by. Checked against <paramref name="span"/>'s length.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref readonly T RefAt(int offset)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(offset, nameof(offset));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(offset, span.Length, nameof(offset));
+            return ref Unsafe.Add(ref span.RefUnsafe, offset);
+        }
+
+        /// <summary>
+        /// Gets the <see langword="ref"/> the <paramref name="span"/> points to.
+        /// </summary>
+        public ref T RefUnsafe
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref MemoryMarshal.GetReference(span);
+        }
+        /// <summary>
+        /// Gets the <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset to shift the <see langword="ref"/> by. No bounds checking is performed.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T RefAtUnsafe(int offset) => ref Unsafe.Add(ref span.RefUnsafe, offset);
+
+        /// <summary>
         /// Invokes the specified <paramref name="action"/> for each element in the <see cref="ReadOnlySpan{T}"/>.
         /// </summary>
         /// <param name="action">The <see cref="Action{T}"/> to invoke for each element.</param>
@@ -76,6 +111,32 @@ public static partial class MemoryExtensions
     }
     extension<T>(in Span<T> span)
     {
+        /// <summary>
+        /// Gets the <see langword="ref"/> the <paramref name="span"/> points to.
+        /// </summary>
+        public ref T Ref
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref MemoryMarshal.GetReference(span);
+        }
+        /// <summary>
+        /// Gets the <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset to shift the <see langword="ref"/> by. Checked against <paramref name="span"/>'s length.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T RefAt(int offset)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegative(offset, nameof(offset));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(offset, span.Length, nameof(offset));
+            return ref span.RefAtUnsafe(offset);
+        }
+        /// <summary>
+        /// Gets the <see langword="ref"/> the <paramref name="span"/> points to, shifted by the specified offset.
+        /// </summary>
+        /// <param name="offset">The offset to shift the <see langword="ref"/> by. No bounds checking is performed.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref T RefAtUnsafe(int offset) => ref Unsafe.Add(ref span.Ref, offset);
+
         /// <summary>
         /// Invokes the specified <paramref name="action"/> for each element in the <see cref="Span{T}"/>.
         /// </summary>
