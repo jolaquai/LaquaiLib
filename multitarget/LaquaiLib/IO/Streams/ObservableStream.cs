@@ -194,10 +194,14 @@ public class ObservableStream<T> : Stream
     public override void Write(ReadOnlySpan<byte> buffer)
     {
         var temp = ArrayPool<byte>.Shared.Rent(buffer.Length);
+        try
         {
             var span = temp.AsSpan(0, buffer.Length);
             buffer.CopyTo(span);
             Write(temp, 0, buffer.Length);
+        }
+        finally
+        {
             ArrayPool<byte>.Shared.Return(temp);
         }
     }
@@ -222,23 +226,35 @@ public class ObservableStream<T> : Stream
     public override void CopyTo(Stream destination, int bufferSize)
     {
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
-        while (Position != Length)
+        try
         {
-            var read = Read(temp, 0, bufferSize);
-            destination.Write(temp, 0, read);
+            while (Position != Length)
+            {
+                var read = Read(temp, 0, bufferSize);
+                destination.Write(temp, 0, read);
+            }
         }
-        ArrayPool<byte>.Shared.Return(temp);
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(temp);
+        }
     }
     /// <inheritdoc/>
     public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken = default)
     {
         var temp = ArrayPool<byte>.Shared.Rent(bufferSize);
-        while (Position != Length)
+        try
         {
-            var read = await ReadAsync(temp.AsMemory(0, bufferSize), cancellationToken).ConfigureAwait(false);
-            await destination.WriteAsync(temp.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
+            while (Position != Length)
+            {
+                var read = await ReadAsync(temp.AsMemory(0, bufferSize), cancellationToken).ConfigureAwait(false);
+                await destination.WriteAsync(temp.AsMemory(0, read), cancellationToken).ConfigureAwait(false);
+            }
         }
-        ArrayPool<byte>.Shared.Return(temp);
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(temp);
+        }
     }
 
     /// <inheritdoc/>

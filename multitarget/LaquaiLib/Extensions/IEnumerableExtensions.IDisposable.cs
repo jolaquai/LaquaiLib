@@ -24,7 +24,7 @@ public static partial class IEnumerableExtensions
                     innerExceptions ??= [];
                     innerExceptions.Add(ex);
                 }
-            if (innerExceptions.Count > 0)
+            if (innerExceptions is not null)
                 throw new AggregateException(innerExceptions);
         }
     }

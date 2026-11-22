@@ -2,6 +2,7 @@
 
 /// <summary>
 /// Implements a <see cref="Stream"/> that dispatches all calls to an inner <see cref="Stream"/>.
+/// All members not overridden simply call the corresponding member on the inner stream.
 /// </summary>
 /// <param name="inner">The inner <see cref="Stream"/> to dispatch to.</param>
 public class DispatchStream(Stream inner) : Stream

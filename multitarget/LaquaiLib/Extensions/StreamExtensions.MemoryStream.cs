@@ -8,60 +8,106 @@ public static partial class StreamExtensions
     extension(MemoryStream stream)
     {
         /// <summary>
-        /// Gets a <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.
+        /// Gets a <see cref="Span{T}"/> over the entire backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
-        /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+        /// <returns>A <see cref="Span{T}"/> over the entire backing storage of the specified <see cref="MemoryStream"/>.</returns>
         /// <remarks>
+        /// Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
         /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan() => MemoryStreamAccessors._buffer(stream);
+        public Span<byte> AsSpanUnsafe() => MemoryStreamAccessors._buffer(stream);
         /// <summary>
-        /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
-        /// </summary>
-        /// <param name="start">The starting index of the slice.</param>
-        /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
-        /// <remarks>
-        /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
-        /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
-        /// </remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(Index start) => MemoryStreamAccessors._buffer(stream).AsSpan(start);
-        /// <summary>
-        /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+        /// Gets a <see cref="Span{T}"/> over a section of the entire backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
         /// <param name="start">The starting index of the slice.</param>
-        /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+        /// <returns>A <see cref="Span{T}"/> over the entire backing storage of the specified <see cref="MemoryStream"/>.</returns>
         /// <remarks>
+        /// Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
         /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(int start) => MemoryStreamAccessors._buffer(stream).AsSpan(start);
+        public Span<byte> AsSpanUnsafe(Index start) => MemoryStreamAccessors._buffer(stream).AsSpan(start);
         /// <summary>
-        /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+        /// Gets a <see cref="Span{T}"/> over a section of the entire backing storage of the specified <see cref="MemoryStream"/>.
+        /// </summary>
+        /// <param name="start">The starting index of the slice.</param>
+        /// <returns>A <see cref="Span{T}"/> over the entire backing storage of the specified <see cref="MemoryStream"/>.</returns>
+        /// <remarks>
+        /// Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
+        /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
+        /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> AsSpanUnsafe(int start) => MemoryStreamAccessors._buffer(stream).AsSpan(start);
+        /// <summary>
+        /// Gets a <see cref="Span{T}"/> over a section of the entire backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
         /// <param name="range">The range in the backing storage to get a <see cref="Span{T}"/> over.</param>
-        /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+        /// <returns>A <see cref="Span{T}"/> over the entire backing storage of the specified <see cref="MemoryStream"/>.</returns>
         /// <remarks>
+        /// Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
         /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(Range range) => MemoryStreamAccessors._buffer(stream).AsSpan(range);
+        public Span<byte> AsSpanUnsafe(Range range) => MemoryStreamAccessors._buffer(stream).AsSpan(range);
         /// <summary>
-        /// Gets a <see cref="Span{T}"/> over a section of the backing storage of the specified <see cref="MemoryStream"/>.
+        /// Gets a <see cref="Span{T}"/> over a section of the entire backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>
         /// <param name="start">The starting index of the slice.</param>
         /// <param name="length">The length of the slice.</param>
-        /// <returns>A <see cref="Span{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.</returns>
+        /// <returns>A <see cref="Span{T}"/> over the entire backing storage of the specified <see cref="MemoryStream"/>.</returns>
         /// <remarks>
+        /// Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
         /// This should be treated with the same care as a <see cref="Span{T}"/> returned from <see cref="CollectionsMarshal.AsSpan{T}(List{T}?)"/>.
         /// Do not use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Span<byte> AsSpan(int start, int length) => MemoryStreamAccessors._buffer(stream).AsSpan(start, length);
+        public Span<byte> AsSpanUnsafe(int start, int length) => MemoryStreamAccessors._buffer(stream).AsSpan(start, length);
+        /// <summary>
+        /// Gets a <see cref="Span{T}"/> over the visible contents of the specified <see cref="MemoryStream"/>, from its origin up to its <see cref="Stream.Length"/>.
+        /// </summary>
+        /// <returns>A <see cref="Span{T}"/> over the contents of the specified <see cref="MemoryStream"/>.</returns>
+        /// <remarks>
+        /// Offsets are relative to the start of the stream, like <see cref="Stream.Position"/>.
+        /// Do not resize or otherwise use the <see cref="MemoryStream"/> while the <see cref="Span{T}"/> is in use.
+        /// </remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> AsSpan() => MemoryStreamAccessors._buffer(stream).AsSpan(MemoryStreamAccessors._origin(stream), MemoryStreamAccessors._length(stream) - MemoryStreamAccessors._origin(stream));
+        /// <summary>
+        /// Gets a <see cref="Span{T}"/> over a section of the visible contents of the specified <see cref="MemoryStream"/>.
+        /// </summary>
+        /// <param name="start">The starting index of the slice, relative to the start of the stream.</param>
+        /// <returns>A <see cref="Span{T}"/> over the section.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="start"/> is outside the stream's contents.</exception>
+        /// <inheritdoc cref="AsSpan(MemoryStream)" path="/remarks"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> AsSpan(Index start) => stream.AsSpan()[start..];
+        /// <inheritdoc cref="AsSpan(MemoryStream, Index)"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> AsSpan(int start) => stream.AsSpan()[start..];
+        /// <summary>
+        /// Gets a <see cref="Span{T}"/> over a section of the visible contents of the specified <see cref="MemoryStream"/>.
+        /// </summary>
+        /// <param name="range">The range in the stream's contents to get a <see cref="Span{T}"/> over.</param>
+        /// <returns>A <see cref="Span{T}"/> over the section.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="range"/> is outside the stream's contents.</exception>
+        /// <inheritdoc cref="AsSpan(MemoryStream)" path="/remarks"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> AsSpan(Range range) => stream.AsSpan()[range];
+        /// <summary>
+        /// Gets a <see cref="Span{T}"/> over a section of the visible contents of the specified <see cref="MemoryStream"/>.
+        /// </summary>
+        /// <param name="start">The starting index of the slice, relative to the start of the stream.</param>
+        /// <param name="length">The length of the slice.</param>
+        /// <returns>A <see cref="Span{T}"/> over the section.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if the section is outside the stream's contents.</exception>
+        /// <inheritdoc cref="AsSpan(MemoryStream)" path="/remarks"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Span<byte> AsSpan(int start, int length) => stream.AsSpan().Slice(start, length);
         /// <summary>
         /// Gets a <see cref="Memory{T}"/> over the backing storage of the specified <see cref="MemoryStream"/>.
         /// </summary>

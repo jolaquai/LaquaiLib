@@ -18,6 +18,7 @@ public static partial class FileSystemHelper
 {
     /// <summary>
     /// In parallel, migrates the contents of a directory from one location to another.
+    /// Usage is effectively <c>robocopy</c>; that is, <paramref name="source"/> is not replicated as a subdirectory into <paramref name="destination"/>, but rather its contents are moved directly into <paramref name="destination"/>.
     /// </summary>
     /// <param name="source">The directory to move.</param>
     /// <param name="destination">The directory that <paramref name="source"/> will be moved or copied to.</param>
@@ -53,13 +54,12 @@ public static partial class FileSystemHelper
         {
             var dirPath = directories[i];
             var newDirPath = dirPath.Replace(source, destination);
-            _ = Directory.CreateDirectory(newDirPath);
+            var di = Directory.CreateDirectory(newDirPath);
 
             if (OperatingSystem.IsWindows())
                 if (restorePermissionsAndAttributes)
                 {
                     var srcSecurity = new DirectoryInfo(dirPath).GetAccessControl();
-                    var di = new DirectoryInfo(newDirPath);
                     ReplacePermissions(di, srcSecurity);
                 }
         }
@@ -81,26 +81,19 @@ public static partial class FileSystemHelper
                     throw new IOException($"Destination file '{fileDest}' already exists.");
 
                 cancellationToken.ThrowIfCancellationRequested();
+                var sourceFs = new FileStream(fileSrc, FileMode.Open, FileAccess.Read, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan | (copy ? FileOptions.None : FileOptions.DeleteOnClose));
+                var destFs = new FileStream(fileDest, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+                await using (sourceFs.ConfigureAwait(false))
+                await using (destFs.ConfigureAwait(false))
                 {
-                    var sourceFs = File.OpenRead(fileSrc);
-                    var destFs = File.Create(fileDest);
-                    await using (sourceFs.ConfigureAwait(false))
-                    await using (destFs.ConfigureAwait(false))
-                    {
-                        const int baseCutoff = 1 << 18;
-                        int buffer;
-                        switch (sourceFs.Length)
-                        {
-                            case < baseCutoff:
-                                buffer = (int)sourceFs.Length;
-                                break;
-                            default:
-                                buffer = bufferSize > 0 ? bufferSize : baseCutoff;
-                                break;
-                        }
+                    const int baseCutoff = 1 << 18;
+                    int buffer;
+                    if (sourceFs.Length < baseCutoff)
+                        buffer = (int)sourceFs.Length;
+                    else
+                        buffer = bufferSize > 0 ? bufferSize : baseCutoff;
 
-                        await sourceFs.CopyToAsync(destFs, buffer, cancellationToken).ConfigureAwait(false);
-                    }
+                    await sourceFs.CopyToAsync(destFs, buffer, cancellationToken).ConfigureAwait(false);
                 }
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -118,9 +111,6 @@ public static partial class FileSystemHelper
                     }
                 }
 
-                if (!copy)
-                    File.Delete(fileSrc);
-
                 var prog = Interlocked.Increment(ref filesCompleted);
                 progressSink?.Report((prog, partitioner.TotalCount));
             }
@@ -133,6 +123,7 @@ public static partial class FileSystemHelper
     }
     /// <summary>
     /// Migrates the contents of a directory from one location to another while employing the common trick of first compressing, then moving and decompressing the data.
+    /// Usage is effectively <c>robocopy</c>; that is, <paramref name="source"/> is not replicated as a subdirectory into <paramref name="destination"/>, but rather its contents are moved directly into <paramref name="destination"/>.
     /// </summary>
     /// <param name="source">The directory to move.</param>
     /// <param name="destination">The directory that <paramref name="source"/> will be moved or copied to.</param>
@@ -169,14 +160,13 @@ public static partial class FileSystemHelper
         {
             var dirPath = directories[i];
             var newDirPath = dirPath.Replace(source, destination);
-            _ = Directory.CreateDirectory(newDirPath);
-            if (OperatingSystem.IsWindows())
-                if (restorePermissionsAndAttributes)
-                {
-                    var srcSecurity = new DirectoryInfo(dirPath).GetAccessControl();
-                    var di = new DirectoryInfo(newDirPath);
-                    ReplacePermissions(di, srcSecurity);
-                }
+            var di = Directory.CreateDirectory(newDirPath);
+
+            if (OperatingSystem.IsWindows() && restorePermissionsAndAttributes)
+            {
+                var srcSecurity = new DirectoryInfo(dirPath).GetAccessControl();
+                ReplacePermissions(di, srcSecurity);
+            }
         }
 
         var partitioner = new FileSizePartitioner(Directory.GetFiles(source, "*", SearchOption.AllDirectories));
@@ -201,8 +191,8 @@ public static partial class FileSystemHelper
                 cancellationToken.ThrowIfCancellationRequested();
                 // Lots of stream overhead + compression and decompression for every file, but (ideally) less data to move around
                 intermediary.SetLength(0);
-                var sourceFs = File.OpenRead(fileSrc);
-                var destFs = File.Create(fileDest);
+                var sourceFs = new FileStream(fileSrc, FileMode.Open, FileAccess.Read, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan | (copy ? FileOptions.None : FileOptions.DeleteOnClose));
+                var destFs = new FileStream(fileDest, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
                 await using (sourceFs.ConfigureAwait(false))
                 await using (destFs.ConfigureAwait(false))
                 {
@@ -570,46 +560,79 @@ public static partial class FileSystemHelper
             directoryInfo.Delete(allowEmptyDirectories);
     }
 
-    private static partial class LockedFileInterop
+    private static bool CopyLockedFile(string sourceFile, string destFile, int bufferSize)
     {
-        public static bool CopyLockedFile(string sourceFile, string destFile, int bufferSize)
+        const uint GENERIC_READ = 0x80000000;
+        const uint FILE_SHARE_READ = 0x00000001;
+        const uint FILE_SHARE_WRITE = 0x00000002;
+        const uint FILE_SHARE_DELETE = 0x00000004;
+        const uint OPEN_EXISTING = 3;
+        const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
+        const uint BACKUP_DATA = 1;
+
+        var handle = Kernel32.CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
+
+        if (handle == new nint(-1))
+            return false;
+
+        try
         {
-            const uint GENERIC_READ = 0x80000000;
-            const uint FILE_SHARE_READ = 0x00000001;
-            const uint FILE_SHARE_WRITE = 0x00000002;
-            const uint FILE_SHARE_DELETE = 0x00000004;
-            const uint OPEN_EXISTING = 3;
-            const uint FILE_FLAG_BACKUP_SEMANTICS = 0x02000000;
-            const uint BACKUP_DATA = 1;
+            using var destStream = new FileStream(destFile, FileMode.Create);
 
-            var handle = Kernel32.CreateFile(sourceFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, nint.Zero, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
-
-            if (handle == new nint(-1))
-                return false;
-
+            byte[] array = null;
+            scoped var buffer = bufferSize <= Config.MaxStackallocSize ? stackalloc byte[bufferSize] : (array = ArrayPool<byte>.Shared.Rent(bufferSize)).AsSpan(0, bufferSize);
             try
             {
-                using var destStream = new FileStream(destFile, FileMode.Create);
+                uint bytesRead = 0;
+                var context = nint.Zero;
+                var inDataStream = false;
+                long remainingDataSize = 0;
 
-                byte[] array = null;
-                scoped var buffer = bufferSize <= Config.MaxStackallocSize ? stackalloc byte[bufferSize] : (array = ArrayPool<byte>.Shared.Rent(bufferSize)).AsSpan(0, bufferSize);
-                try
+                while (Kernel32.BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
                 {
-                    uint bytesRead = 0;
-                    var context = nint.Zero;
-                    var inDataStream = false;
-                    long remainingDataSize = 0;
+                    if (bytesRead == 0)
+                        break;
 
-                    while (Kernel32.BackupRead(handle, buffer, (uint)buffer.Length, ref bytesRead, false, false, ref context))
+                    var offset = 0;
+                    while (offset < bytesRead)
                     {
-                        if (bytesRead == 0)
+                        // Continue reading data from previous stream
+                        if (inDataStream)
+                        {
+                            var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
+                            destStream.Write(buffer.Slice(offset, dataChunkSize));
+
+                            remainingDataSize -= dataChunkSize;
+                            offset += dataChunkSize;
+
+                            if (remainingDataSize <= 0)
+                                inDataStream = false;
+
+                            continue;
+                        }
+
+                        // Not enough bytes left for a header
+                        if (offset + 20 > bytesRead)
                             break;
 
-                        var offset = 0;
-                        while (offset < bytesRead)
+                        var streamId = BinaryPrimitives.ReadInt32LittleEndian(buffer[offset..]);
+                        var streamAttributes = BinaryPrimitives.ReadUInt32LittleEndian(buffer[(offset + 4)..]);
+                        var streamSize = BinaryPrimitives.ReadInt64LittleEndian(buffer[(offset + 8)..]);
+                        var streamNameSize = BinaryPrimitives.ReadUInt32LittleEndian(buffer[(offset + 16)..]);
+
+                        var headerSize = 20 + (int)streamNameSize;
+
+                        // Skip past header
+                        offset += headerSize;
+
+                        // Check if this is a data stream
+                        if (streamId == BACKUP_DATA)
                         {
-                            // Continue reading data from previous stream
-                            if (inDataStream)
+                            inDataStream = true;
+                            remainingDataSize = streamSize;
+
+                            // Process available data now
+                            if (offset < bytesRead)
                             {
                                 var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
                                 destStream.Write(buffer.Slice(offset, dataChunkSize));
@@ -619,70 +642,34 @@ public static partial class FileSystemHelper
 
                                 if (remainingDataSize <= 0)
                                     inDataStream = false;
-
-                                continue;
-                            }
-
-                            // Not enough bytes left for a header
-                            if (offset + 20 > bytesRead)
-                                break;
-
-                            var streamId = BinaryPrimitives.ReadInt32LittleEndian(buffer[offset..]);
-                            var streamAttributes = BinaryPrimitives.ReadUInt32LittleEndian(buffer[(offset + 4)..]);
-                            var streamSize = BinaryPrimitives.ReadInt64LittleEndian(buffer[(offset + 8)..]);
-                            var streamNameSize = BinaryPrimitives.ReadUInt32LittleEndian(buffer[(offset + 16)..]);
-
-                            var headerSize = 20 + (int)streamNameSize;
-
-                            // Skip past header
-                            offset += headerSize;
-
-                            // Check if this is a data stream
-                            if (streamId == BACKUP_DATA)
-                            {
-                                inDataStream = true;
-                                remainingDataSize = streamSize;
-
-                                // Process available data now
-                                if (offset < bytesRead)
-                                {
-                                    var dataChunkSize = (int)Math.Min(remainingDataSize, bytesRead - offset);
-                                    destStream.Write(buffer.Slice(offset, dataChunkSize));
-
-                                    remainingDataSize -= dataChunkSize;
-                                    offset += dataChunkSize;
-
-                                    if (remainingDataSize <= 0)
-                                        inDataStream = false;
-                                }
-                            }
-                            else
-                            {
-                                // Skip non-data stream
-                                var skipSize = (int)Math.Min(streamSize, bytesRead - offset);
-                                offset += skipSize;
-                                remainingDataSize = streamSize - skipSize;
-
-                                if (remainingDataSize > 0)
-                                    inDataStream = true;  // Will be skipped next time
                             }
                         }
-                    }
+                        else
+                        {
+                            // Skip non-data stream
+                            var skipSize = (int)Math.Min(streamSize, bytesRead - offset);
+                            offset += skipSize;
+                            remainingDataSize = streamSize - skipSize;
 
-                    // Final read with bAbort = true
-                    _ = Kernel32.BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
-                    return true;
+                            if (remainingDataSize > 0)
+                                inDataStream = true;  // Will be skipped next time
+                        }
+                    }
                 }
-                finally
-                {
-                    if (array != null)
-                        ArrayPool<byte>.Shared.Return(array);
-                }
+
+                // Final read with bAbort = true
+                _ = Kernel32.BackupRead(handle, null, 0, ref bytesRead, true, false, ref context);
+                return true;
             }
             finally
             {
-                _ = Kernel32.CloseHandle(handle);
+                if (array != null)
+                    ArrayPool<byte>.Shared.Return(array);
             }
+        }
+        finally
+        {
+            _ = Kernel32.CloseHandle(handle);
         }
     }
     /// <summary>
@@ -701,7 +688,7 @@ public static partial class FileSystemHelper
             return false;
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(bufferSize);
 
-        return LockedFileInterop.CopyLockedFile(source, destination, bufferSize);
+        return CopyLockedFile(source, destination, bufferSize);
     }
 
     /// <summary>

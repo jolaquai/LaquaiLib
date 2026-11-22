@@ -173,7 +173,7 @@ public class MemoryStreamBufferWriterTests
 
         writer.Clear(false);
         Assert.Equal(0, writer.BaseStream.Length);
-        Assert.Equal(1, writer.BaseStream.AsSpan()[0]);
+        Assert.Equal(1, writer.BaseStream.AsSpanUnsafe()[0]);
     }
 
     [Fact]
@@ -188,9 +188,9 @@ public class MemoryStreamBufferWriterTests
 
         writer.Clear(true);
         Assert.Equal(0, writer.BaseStream.Length);
-        Assert.Equal(0, writer.BaseStream.AsSpan()[0]);
-        Assert.Equal(0, writer.BaseStream.AsSpan()[1]);
-        Assert.Equal(0, writer.BaseStream.AsSpan()[2]);
+        Assert.Equal(0, writer.BaseStream.AsSpanUnsafe()[0]);
+        Assert.Equal(0, writer.BaseStream.AsSpanUnsafe()[1]);
+        Assert.Equal(0, writer.BaseStream.AsSpanUnsafe()[2]);
     }
 
     [Fact]

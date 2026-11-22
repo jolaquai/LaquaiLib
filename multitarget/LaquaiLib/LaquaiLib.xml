@@ -5585,6 +5585,52 @@
             </summary>
             <param name="collection">A collection of items to add to <paramref name="queue"/>.</param>
         </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.Read(System.IO.MemoryStream,System.Span{System.Byte},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Read(System.IO.MemoryStream,System.Span{System.Byte},System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.Read(System.IO.MemoryStream,System.Collections.Generic.IReadOnlyList{System.Memory{System.Byte}},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Read(System.IO.MemoryStream,System.Collections.Generic.IReadOnlyList{System.Memory{System.Byte}},System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.Write(System.IO.MemoryStream,System.ReadOnlySpan{System.Byte},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Write(System.IO.MemoryStream,System.ReadOnlySpan{System.Byte},System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.Write(System.IO.MemoryStream,System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}},System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Write(System.IO.MemoryStream,System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}},System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Read(System.IO.MemoryStream,System.Span{System.Byte},System.Int32)">
+            <summary>
+            Reads a sequence of bytes from the specified <see cref="T:System.IO.MemoryStream"/> into the provided buffer, starting at the given offset.
+            </summary>
+            <param name="ms">The <see cref="T:System.IO.MemoryStream"/> to read from.</param>
+            <param name="buffer">The <see cref="T:System.Span`1"/> of <see langword="byte"/> to read the bytes into.</param>
+            <param name="offset">The zero-based byte offset in the <see cref="T:System.IO.MemoryStream"/> at which to begin reading.</param>
+            <returns>The total number of bytes read into the buffer.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Read(System.IO.MemoryStream,System.Collections.Generic.IReadOnlyList{System.Memory{System.Byte}},System.Int32)">
+            <summary>
+            Reads a sequence of bytes from the specified <see cref="T:System.IO.MemoryStream"/> into the provided list of buffers, starting at the given offset.
+            </summary>
+            <param name="ms">The <see cref="T:System.IO.MemoryStream"/> to read from.</param>
+            <param name="buffers">An <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> of <see cref="T:System.Memory`1"/> of <see langword="byte"/> to read the bytes into.</param>
+            <param name="offset">The zero-based byte offset in the <see cref="T:System.IO.MemoryStream"/> at which to begin reading.</param>
+            <returns>The total number of bytes read into the buffers.</returns>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Write(System.IO.MemoryStream,System.ReadOnlySpan{System.Byte},System.Int32)">
+            <summary>
+            Writes a sequence of bytes from the provided buffer into the specified <see cref="T:System.IO.MemoryStream"/>, starting at the given offset.
+            </summary>
+            <param name="ms">The <see cref="T:System.IO.MemoryStream"/> to write to.</param>
+            <param name="buffer">The <see cref="T:System.ReadOnlySpan`1"/> of <see langword="byte"/> containing the bytes to write.</param>
+            <param name="offset">The zero-based byte offset in the <see cref="T:System.IO.MemoryStream"/> at which to begin writing.</param>
+        </member>
+        <member name="M:LaquaiLib.Extensions.RandomAccessExtensions.&lt;G&gt;$C96D8E9F0696BB9874524503674A89C7.Write(System.IO.MemoryStream,System.Collections.Generic.IReadOnlyList{System.ReadOnlyMemory{System.Byte}},System.Int32)">
+            <summary>
+            Writes a sequence of bytes from the provided list of buffers into the specified <see cref="T:System.IO.MemoryStream"/>, starting at the given offset.
+            </summary>
+            <param name="ms">The <see cref="T:System.IO.MemoryStream"/> to write to.</param>
+            <param name="buffers">An <see cref="T:System.Collections.Generic.IReadOnlyList`1"/> of <see cref="T:System.ReadOnlyMemory`1"/> of <see langword="byte"/> containing the bytes to write.</param>
+            <param name="offset">The zero-based byte offset in the <see cref="T:System.IO.MemoryStream"/> at which to begin writing.</param>
+        </member>
         <member name="T:LaquaiLib.Extensions.RandomExtensions">
             <summary>
             Provides extensions for the <see cref="T:System.Random"/> type.
@@ -5849,6 +5895,21 @@
         <member name="M:LaquaiLib.Extensions.StreamExtensions.ReadToEndAsync(System.IO.Stream,System.Memory{System.Byte},System.Threading.CancellationToken)">
             <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$50F26341F4F164F9281EDEBBEB746904.ReadToEndAsync(System.Memory{System.Byte},System.Threading.CancellationToken)"/>
         </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.AsSpanUnsafe(System.IO.MemoryStream)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.AsSpanUnsafe(System.IO.MemoryStream,System.Index)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Index)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.AsSpanUnsafe(System.IO.MemoryStream,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Int32)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.AsSpanUnsafe(System.IO.MemoryStream,System.Range)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Range)"/>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.AsSpanUnsafe(System.IO.MemoryStream,System.Int32,System.Int32)">
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Int32,System.Int32)"/>
+        </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.AsSpan(System.IO.MemoryStream)">
             <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpan"/>
         </member>
@@ -5919,60 +5980,106 @@
             <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> to monitor for cancellation requests.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous read operation.</returns>
         </member>
-        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpan">
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe">
             <summary>
-            Gets a <see cref="T:System.Span`1"/> over the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            Gets a <see cref="T:System.Span`1"/> over the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
             </summary>
-            <returns>A <see cref="T:System.Span`1"/> over the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
+            <returns>A <see cref="T:System.Span`1"/> over the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
             <remarks>
+            Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
             This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
             Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Index)">
+            <summary>
+            Gets a <see cref="T:System.Span`1"/> over a section of the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            </summary>
+            <param name="start">The starting index of the slice.</param>
+            <returns>A <see cref="T:System.Span`1"/> over the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
+            <remarks>
+            Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
+            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
+            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Int32)">
+            <summary>
+            Gets a <see cref="T:System.Span`1"/> over a section of the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            </summary>
+            <param name="start">The starting index of the slice.</param>
+            <returns>A <see cref="T:System.Span`1"/> over the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
+            <remarks>
+            Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
+            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
+            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Range)">
+            <summary>
+            Gets a <see cref="T:System.Span`1"/> over a section of the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            </summary>
+            <param name="range">The range in the backing storage to get a <see cref="T:System.Span`1"/> over.</param>
+            <returns>A <see cref="T:System.Span`1"/> over the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
+            <remarks>
+            Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
+            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
+            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpanUnsafe(System.Int32,System.Int32)">
+            <summary>
+            Gets a <see cref="T:System.Span`1"/> over a section of the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            </summary>
+            <param name="start">The starting index of the slice.</param>
+            <param name="length">The length of the slice.</param>
+            <returns>A <see cref="T:System.Span`1"/> over the entire backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
+            <remarks>
+            Offsets are relative to the start of the backing array, not the stream: the stream's origin and length are ignored, so the span includes unused capacity and bytes before the origin.
+            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
+            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
+            </remarks>
+        </member>
+        <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpan">
+            <summary>
+            Gets a <see cref="T:System.Span`1"/> over the visible contents of the specified <see cref="T:System.IO.MemoryStream"/>, from its origin up to its <see cref="P:System.IO.Stream.Length"/>.
+            </summary>
+            <returns>A <see cref="T:System.Span`1"/> over the contents of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
+            <remarks>
+            Offsets are relative to the start of the stream, like <see cref="P:System.IO.Stream.Position"/>.
+            Do not resize or otherwise use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
             </remarks>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpan(System.Index)">
             <summary>
-            Gets a <see cref="T:System.Span`1"/> over a section of the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            Gets a <see cref="T:System.Span`1"/> over a section of the visible contents of the specified <see cref="T:System.IO.MemoryStream"/>.
             </summary>
-            <param name="start">The starting index of the slice.</param>
-            <returns>A <see cref="T:System.Span`1"/> over the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
-            <remarks>
-            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
-            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
-            </remarks>
+            <param name="start">The starting index of the slice, relative to the start of the stream.</param>
+            <returns>A <see cref="T:System.Span`1"/> over the section.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="start"/> is outside the stream's contents.</exception>
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.AsSpan(System.IO.MemoryStream)" path="/remarks"/>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpan(System.Int32)">
-            <summary>
-            Gets a <see cref="T:System.Span`1"/> over a section of the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
-            </summary>
-            <param name="start">The starting index of the slice.</param>
-            <returns>A <see cref="T:System.Span`1"/> over the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
-            <remarks>
-            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
-            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
-            </remarks>
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.AsSpan(System.IO.MemoryStream,System.Index)"/>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpan(System.Range)">
             <summary>
-            Gets a <see cref="T:System.Span`1"/> over a section of the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            Gets a <see cref="T:System.Span`1"/> over a section of the visible contents of the specified <see cref="T:System.IO.MemoryStream"/>.
             </summary>
-            <param name="range">The range in the backing storage to get a <see cref="T:System.Span`1"/> over.</param>
-            <returns>A <see cref="T:System.Span`1"/> over the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
-            <remarks>
-            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
-            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
-            </remarks>
+            <param name="range">The range in the stream's contents to get a <see cref="T:System.Span`1"/> over.</param>
+            <returns>A <see cref="T:System.Span`1"/> over the section.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if <paramref name="range"/> is outside the stream's contents.</exception>
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.AsSpan(System.IO.MemoryStream)" path="/remarks"/>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsSpan(System.Int32,System.Int32)">
             <summary>
-            Gets a <see cref="T:System.Span`1"/> over a section of the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.
+            Gets a <see cref="T:System.Span`1"/> over a section of the visible contents of the specified <see cref="T:System.IO.MemoryStream"/>.
             </summary>
-            <param name="start">The starting index of the slice.</param>
+            <param name="start">The starting index of the slice, relative to the start of the stream.</param>
             <param name="length">The length of the slice.</param>
-            <returns>A <see cref="T:System.Span`1"/> over the backing storage of the specified <see cref="T:System.IO.MemoryStream"/>.</returns>
-            <remarks>
-            This should be treated with the same care as a <see cref="T:System.Span`1"/> returned from <see cref="M:System.Runtime.InteropServices.CollectionsMarshal.AsSpan``1(System.Collections.Generic.List{``0})"/>.
-            Do not use the <see cref="T:System.IO.MemoryStream"/> while the <see cref="T:System.Span`1"/> is in use.
-            </remarks>
+            <returns>A <see cref="T:System.Span`1"/> over the section.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the section is outside the stream's contents.</exception>
+            <inheritdoc cref="M:LaquaiLib.Extensions.StreamExtensions.AsSpan(System.IO.MemoryStream)" path="/remarks"/>
         </member>
         <member name="M:LaquaiLib.Extensions.StreamExtensions.&lt;G&gt;$B638B83B5DB47AE2E8FB75F89860C508.AsMemory">
             <summary>
@@ -10405,6 +10512,52 @@
             <para/>To prevent double-adding entities, <paramref name="entity"/> is attached to the <see cref="T:Microsoft.EntityFrameworkCore.DbSet`1"/> before anything else is done.
             </remarks>
         </member>
+        <member name="T:LaquaiLib.Env.LocationStack">
+            <summary>
+            Implements a process-wide stack of working directories.
+            The stack is seeded with <see cref="P:System.Environment.CurrentDirectory"/> as of first use of this type and that entry is never removed.
+            All access is serialized. <see cref="M:LaquaiLib.Env.LocationStack.Push(System.String)"/> and <see cref="M:LaquaiLib.Env.LocationStack.Pop"/> block while an <see cref="M:LaquaiLib.Env.LocationStack.In(System.String,System.Func{System.Threading.Tasks.ValueTask},System.Threading.CancellationToken)"/> scope is active on another flow of execution.
+            </summary>
+        </member>
+        <member name="M:LaquaiLib.Env.LocationStack.Pop">
+            <summary>
+            Restores the previous location, makes it the process's current directory and returns it.
+            If only the initial location remains, it is re-applied and returned; it is never removed.
+            </summary>
+            <returns>The full path of the location that is current after the call (not the one that was popped).</returns>
+            <exception cref="T:System.InvalidOperationException">Called from within an <see cref="M:LaquaiLib.Env.LocationStack.In(System.String,System.Func{System.Threading.Tasks.ValueTask},System.Threading.CancellationToken)"/> action, which would deadlock.</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The location to restore no longer exists. The popped entry is not pushed back.</exception>
+        </member>
+        <member name="M:LaquaiLib.Env.LocationStack.Push(System.String)">
+            <summary>
+            Pushes <paramref name="location"/> onto the stack and makes it the process's current directory.
+            </summary>
+            <param name="location">The directory to enter. Relative paths are resolved against the current directory.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="location"/> is <see langword="null"/>, empty or whitespace.</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The directory does not exist.</exception>
+            <exception cref="T:System.InvalidOperationException">Called from within an <see cref="M:LaquaiLib.Env.LocationStack.In(System.String,System.Func{System.Threading.Tasks.ValueTask},System.Threading.CancellationToken)"/> action, which would deadlock.</exception>
+        </member>
+        <member name="M:LaquaiLib.Env.LocationStack.In(System.String,System.Func{System.Threading.Tasks.ValueTask},System.Threading.CancellationToken)">
+            <summary>
+            Pushes <paramref name="location"/>, runs <paramref name="action"/> and restores the previous location afterwards, even if the action throws.
+            The stack is exclusively held for the duration of the action, so concurrent calls are serialized.
+            Calls to this method from within <paramref name="action"/>, including from async continuations and child tasks, are nested: they reuse the held exclusive access and stack their location on top.
+            Nested scopes must not overlap (e.g. by running sibling <c>In</c> calls concurrently, or letting one outlive its parent); that is detected and throws <see cref="T:System.InvalidOperationException"/>.
+            <see cref="M:LaquaiLib.Env.LocationStack.Push(System.String)"/> and <see cref="M:LaquaiLib.Env.LocationStack.Pop"/> from within <paramref name="action"/> throw <see cref="T:System.InvalidOperationException"/>.
+            </summary>
+            <param name="location">The directory to run in. Relative paths are resolved against the current directory.</param>
+            <param name="action">The action to run.</param>
+            <param name="cancellationToken">Cancels waiting for exclusive access. Does not affect a running action.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="location"/> is <see langword="null"/>, empty or whitespace.</exception>
+            <exception cref="T:System.ArgumentNullException"><paramref name="action"/> is <see langword="null"/>.</exception>
+            <exception cref="T:System.IO.DirectoryNotFoundException">The directory does not exist. The action is not run.</exception>
+            <exception cref="T:System.InvalidOperationException">Nested scopes overlapped.</exception>
+        </member>
+        <member name="M:LaquaiLib.Env.LocationStack.In``1(System.String,System.Func{System.Threading.Tasks.ValueTask{``0}},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:LaquaiLib.Env.LocationStack.In(System.String,System.Func{System.Threading.Tasks.ValueTask},System.Threading.CancellationToken)"/>
+            <typeparam name="T">The result type of <paramref name="action"/>.</typeparam>
+            <returns>The result of <paramref name="action"/>.</returns>
+        </member>
         <member name="T:LaquaiLib.Interfaces.IAwaitable`2">
             <summary>
             Defines the duck-typed shape for an awaitable object.
@@ -10950,6 +11103,7 @@
         <member name="M:LaquaiLib.IO.FileSystemHelper.MigrateDirectoryAsync(System.String,System.String,System.Boolean,System.Boolean,System.Int32,System.Int32,System.IProgress{System.ValueTuple{System.Int32,System.Int32}},System.Boolean,System.Threading.CancellationToken)">
             <summary>
             In parallel, migrates the contents of a directory from one location to another.
+            Usage is effectively <c>robocopy</c>; that is, <paramref name="source"/> is not replicated as a subdirectory into <paramref name="destination"/>, but rather its contents are moved directly into <paramref name="destination"/>.
             </summary>
             <param name="source">The directory to move.</param>
             <param name="destination">The directory that <paramref name="source"/> will be moved or copied to.</param>
@@ -10968,6 +11122,7 @@
         <member name="M:LaquaiLib.IO.FileSystemHelper.MigrateDirectoryAsArchiveAsync(System.String,System.String,System.Boolean,System.Boolean,System.Int32,System.IProgress{System.ValueTuple{System.Int32,System.Int32}},System.Boolean,System.IO.Compression.CompressionLevel,System.Threading.CancellationToken)">
             <summary>
             Migrates the contents of a directory from one location to another while employing the common trick of first compressing, then moving and decompressing the data.
+            Usage is effectively <c>robocopy</c>; that is, <paramref name="source"/> is not replicated as a subdirectory into <paramref name="destination"/>, but rather its contents are moved directly into <paramref name="destination"/>.
             </summary>
             <param name="source">The directory to move.</param>
             <param name="destination">The directory that <paramref name="source"/> will be moved or copied to.</param>
@@ -11391,12 +11546,14 @@
         <member name="T:LaquaiLib.IO.Streams.DispatchStream">
             <summary>
             Implements a <see cref="T:System.IO.Stream"/> that dispatches all calls to an inner <see cref="T:System.IO.Stream"/>.
+            All members not overridden simply call the corresponding member on the inner stream.
             </summary>
             <param name="inner">The inner <see cref="T:System.IO.Stream"/> to dispatch to.</param>
         </member>
         <member name="M:LaquaiLib.IO.Streams.DispatchStream.#ctor(System.IO.Stream)">
             <summary>
             Implements a <see cref="T:System.IO.Stream"/> that dispatches all calls to an inner <see cref="T:System.IO.Stream"/>.
+            All members not overridden simply call the corresponding member on the inner stream.
             </summary>
             <param name="inner">The inner <see cref="T:System.IO.Stream"/> to dispatch to.</param>
         </member>
