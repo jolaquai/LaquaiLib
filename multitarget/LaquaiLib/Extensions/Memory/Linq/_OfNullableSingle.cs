@@ -1,0 +1,74 @@
+namespace LaquaiLib.Extensions;
+
+public static partial class LinqMemoryExtensions
+{
+    extension(in ReadOnlySpan<float?> source)
+    {
+        /// <summary>
+        /// Calculates the average of a <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.
+        /// </summary>
+        /// <returns>The average of the <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float? Average()
+        {
+            var sum = Sum(source);
+            return sum.HasValue ? sum.Value / source.Length : null;
+        }
+        /// <summary>
+        /// Finds the maximum value in a <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.
+        /// </summary>
+        /// <returns>The maximum value in the <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the <see cref="ReadOnlySpan{T}"/> is empty.</exception>
+        public float? Max()
+        {
+            if (source.Length == 0)
+                throw new InvalidOperationException("Span is empty.");
+            var max = source[0];
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                if (value.HasValue && (!max.HasValue || value.Value > max.Value))
+                    max = value;
+            }
+            return max;
+        }
+        /// <summary>
+        /// Finds the minimum value in a <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.
+        /// </summary>
+        /// <returns>The minimum value in the <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the <see cref="ReadOnlySpan{T}"/> is empty.</exception>
+        public float? Min()
+        {
+            if (source.Length == 0)
+                throw new InvalidOperationException("Span is empty.");
+            var min = source[0];
+            for (var i = 1; i < source.Length; i++)
+            {
+                var value = source[i];
+                if (value.HasValue && (!min.HasValue || value.Value < min.Value))
+                    min = value;
+            }
+            return min;
+        }
+        /// <summary>
+        /// Calculates the sum of a <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.
+        /// </summary>
+        /// <returns>The sum of the <see cref="ReadOnlySpan{T}"/> of nullable <see langword="float"/>s.</returns>
+        /// <exception cref="OverflowException">Thrown when the calculation would overflow.</exception>
+        public float? Sum()
+        {
+            float? buf = 0;
+            var allNull = true;
+            for (var i = 0; i < source.Length; i++)
+            {
+                var value = source[i];
+                if (value.HasValue)
+                {
+                    allNull = false;
+                    buf += value.Value;
+                }
+            }
+            return allNull ? null : buf;
+        }
+    }
+}

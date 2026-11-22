@@ -1,0 +1,21 @@
+namespace LaquaiLib.Extensions;
+
+/// <summary>
+/// Provides extensions for the <see cref="Array"/> of <see cref="byte"/> type.
+/// </summary>
+public static class ArrayExtensionsByte
+{
+    extension(byte[] bytes)
+    {
+        /// <summary>
+        /// Creates a resizable <see cref="MemoryStream"/> from the given <see cref="byte"/> array. Its <see cref="Stream.Position"/> upon return is set to the <see cref="Array.Length"/> of <paramref name="bytes"/>, i.e. it is not sought to the beginning.
+        /// </summary>
+        /// <returns>The created <see cref="MemoryStream"/>.</returns>
+        public MemoryStream ToMemoryStream()
+        {
+            var ms = new MemoryStream(bytes.Length + 1);
+            ms.Write(bytes, 0, bytes.Length);
+            return ms;
+        }
+    }
+}
